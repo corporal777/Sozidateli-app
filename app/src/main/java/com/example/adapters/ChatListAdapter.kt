@@ -29,7 +29,7 @@ class ChatListAdapter(options: FirestoreRecyclerOptions<UserChat>, private val p
                     .into(ivAvatar)
             // }
             model.lastMessage?.let { chatMessage ->
-                chatMessage.message?.let {
+                chatMessage.text?.let {
                     tvLastMessage.text = it
                 }
             }
