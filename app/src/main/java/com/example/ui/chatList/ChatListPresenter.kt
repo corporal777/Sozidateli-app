@@ -16,18 +16,24 @@ class ChatListPresenter
         super.onFirstViewAttach()
         viewState?.apply {
             iniChatAdapter(chatRepository.getChatListQuery())
-            chatRepository.createChatIfNeed("73971a51bbca5672")
+            /*chatRepository.getChatId("73971a51bbca5672")
                     .performOnBackgroundOutOnMain()
                     .subscribe ({
                         Timber.tag("CREATE_CHAT").d("3 ${it.userId}")
                     },{
                         Timber.tag("ARA").d("------------------------")
                         it.printStackTrace()
-                    })
+                    })*/
         }
     }
 
 
-    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat)
+    override fun onChatClick(userChat: UserChat) {
+        userChat.userId?.let {userId->
+            userChat.chatId?.let {
+                viewState.openChat(userId,it)
+            }
+        }
+    }
 
 }

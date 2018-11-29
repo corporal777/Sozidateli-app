@@ -11,7 +11,7 @@ interface ChatRepository {
 
     fun subscribeOnChatList(): Flowable<List<UserChat>>
 
-    fun createChatIfNeed(userId: String): Observable<UserChat>
+    fun getChatId(): String
 
     fun getChatMessageQuery(chatId: String): Query
 

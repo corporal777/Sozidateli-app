@@ -53,10 +53,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         recyclerView.adapter = ChatListAdapter(options,presenter)
     }
 
-    override fun openChat(userChat: UserChat) {
-        userChat.chatId?.let {
-            findNavController().navigate(ChatListFragmentDirections.chatListToChat().setChatId(it))
-        }
+    override fun openChat(userOpponent: String, chatId: String) {
+        findNavController().navigate(ChatListFragmentDirections.chatListToChat().setChatId(chatId))
     }
 
     override fun layout() = R.layout.fragment_chat_list

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.Query
 interface ChatListContract {
     interface View : BaseContract.View{
         fun iniChatAdapter(query: Query)
-        fun openChat(userChat: UserChat)
+        fun openChat(userOpponent:String, chatId:String)
     }
 
     interface Presenter : BaseContract.Presenter{
