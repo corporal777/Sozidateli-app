@@ -31,20 +31,11 @@ class ChatRepositoryImpl
         return RxFirestore.observeQueryRef(query, UserChat::class.java)
     }
 
-    override fun getChatId(): String {
-        val queryChats = firestore.collection(COLLECTION_CHATS).document()
-        return queryChats.id
-    }
-
     override fun getChatMessageQuery(chatId: String) = firestore.collection(COLLECTION_CHATS)
             .document(chatId)
             .collection(COLLECTION_MESSAGES)
             .orderBy(ChatMessage.FIELD_SEND_AT)
 
-    override fun getChatListQuery() = firestore.collection(COLLECTION_USERS)
-            .document(appData.uid)
-            .collection(COLLECTION_CHATS)
-    //.whereGreaterThan("lastMessage","")
 
     override fun sendChatMessage(chatId: String, toUser: String, message: ChatMessage): Completable {
         val messageMap = message.toMap()

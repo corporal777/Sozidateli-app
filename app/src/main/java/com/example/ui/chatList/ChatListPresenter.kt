@@ -15,15 +15,6 @@ class ChatListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState?.apply {
-            iniChatAdapter(chatRepository.getChatListQuery())
-            /*chatRepository.getChatId("73971a51bbca5672")
-                    .performOnBackgroundOutOnMain()
-                    .subscribe ({
-                        Timber.tag("CREATE_CHAT").d("3 ${it.userId}")
-                    },{
-                        Timber.tag("ARA").d("------------------------")
-                        it.printStackTrace()
-                    })*/
         }
     }
 

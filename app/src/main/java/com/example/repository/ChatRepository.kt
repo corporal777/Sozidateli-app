@@ -11,11 +11,7 @@ interface ChatRepository {
 
     fun subscribeOnChatList(): Flowable<List<UserChat>>
 
-    fun getChatId(): String
-
     fun getChatMessageQuery(chatId: String): Query
-
-    fun getChatListQuery(): Query
 
     fun sendChatMessage(chatId: String, toUser: String, message: ChatMessage): Completable
 }

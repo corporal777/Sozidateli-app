@@ -8,7 +8,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.ChatAdapter
-import com.example.adapters.ChatListAdapter
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChat
 import com.example.holders.UserChatItem
@@ -50,7 +49,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                 .setQuery(query, UserChat::class.java)
                 .build()
 
-        recyclerView.adapter = ChatListAdapter(options,presenter)
     }
 
     override fun openChat(userOpponent: String, chatId: String) {
