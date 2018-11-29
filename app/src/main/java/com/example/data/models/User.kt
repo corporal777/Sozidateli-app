@@ -6,5 +6,7 @@ import android.arch.persistence.room.PrimaryKey
 @Entity
 data class User(
         @PrimaryKey
-        val id: Int
+        val id: Int,
+        var name: String?,
+        var image: String?
 )

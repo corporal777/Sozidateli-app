@@ -11,4 +11,11 @@
         android:label="Game"
         tools:layout="@layout/fragment_first">
     </fragment>
+
+    <fragment
+        android:id="@+id/chat_list_fragment"
+        android:name="com.example.ui.chatList.ChatListFragment"
+        android:label="Chat list"
+        tools:layout="@layout/fragment_chat_list">
+    </fragment>
 </navigation>

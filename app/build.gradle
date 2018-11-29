@@ -69,6 +69,12 @@ dependencies {
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
+    //ui
+    implementation "com.xwray:groupie:2.1.0"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.1.0"
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
