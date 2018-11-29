@@ -7,9 +7,13 @@
 
     <fragment
         android:id="@+id/first_fragment"
-        android:name="com.example.ui.firstFragment.FirstFragment"
+        android:name="com.example.ui.chat.ChatFragment"
         android:label="Game"
         tools:layout="@layout/fragment_first">
+        <argument
+            android:name="chatId"
+            android:defaultValue="vLXGEfI6ItL0rEPMMqNM"
+            app:argType="string" />
     </fragment>
 
     <fragment

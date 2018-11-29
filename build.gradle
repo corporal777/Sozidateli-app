@@ -8,6 +8,7 @@ buildscript {
     ext.nav_version = '1.0.0-alpha07'
     ext.moxy_version = '1.5.3'
     ext.room_version = '1.1.1'
+    ext.paging_version = '1.0.1'
 
     repositories {
         google()
@@ -17,6 +18,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+        classpath 'com.google.gms:google-services:4.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -27,6 +29,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
