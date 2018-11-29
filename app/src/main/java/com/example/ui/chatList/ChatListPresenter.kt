@@ -15,11 +15,11 @@ class ChatListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState?.apply {
-            setData()
-            chatRepository.createChatIfNeed("34")
+            iniChatAdapter(chatRepository.getChatListQuery())
+            chatRepository.createChatIfNeed("73971a51bbca5672")
                     .performOnBackgroundOutOnMain()
                     .subscribe ({
-                        Timber.tag("ARA").d("${it.chatId}")
+                        Timber.tag("CREATE_CHAT").d("3 ${it.userId}")
                     },{
                         Timber.tag("ARA").d("------------------------")
                         it.printStackTrace()

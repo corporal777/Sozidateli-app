@@ -3,12 +3,19 @@ package com.example.ui.chatList
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.ChatAdapter
+import com.example.adapters.ChatListAdapter
+import com.example.data.models.ChatMessage
 import com.example.data.models.UserChat
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.Query
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import durdinapps.rxfirebase2.RxFirebaseRecyclerAdapter
@@ -27,26 +34,29 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    var groupAdapter = GroupAdapter<ViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = groupAdapter
         }
 
 
     }
 
-    override fun setData() {
-        for(i in 0..10){
-            groupAdapter.add(UserChatItem())
-        }
+    override fun iniChatAdapter(query: Query) {
+        val options = FirestoreRecyclerOptions.Builder<UserChat>()
+                .setLifecycleOwner(this)
+                .setQuery(query, UserChat::class.java)
+                .build()
+
+        recyclerView.adapter = ChatListAdapter(options,presenter)
     }
 
     override fun openChat(userChat: UserChat) {
-        showToast("Open chat ${userChat.chatId}")
+        userChat.chatId?.let {
+            findNavController().navigate(ChatListFragmentDirections.chatListToChat().setChatId(it))
+        }
     }
 
     override fun layout() = R.layout.fragment_chat_list

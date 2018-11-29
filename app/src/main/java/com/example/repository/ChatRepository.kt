@@ -18,4 +18,6 @@ interface ChatRepository {
     fun createChatIfNeed(userId:String): Observable<UserChat>
 
     fun getChatMessageQuery(chatId: String): Query
+
+    fun getChatListQuery(): Query
 }
