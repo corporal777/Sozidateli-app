@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChat
+import com.example.data.models.UserChat.Companion.FIELD_LAST_MESSAGE
 import com.example.util.COLLECTION_CHATS
 import com.example.util.COLLECTION_MESSAGES
 import com.example.util.COLLECTION_USERS
@@ -18,13 +19,6 @@ class ChatRepositoryImpl
 @Inject constructor(
         private val firestore: FirebaseFirestore
 ) : ChatRepository {
-
-    override fun subscribeChatMessages(chatId: String): Flowable<List<ChatMessage>> {
-        val query = getChatMessageQuery(chatId)
-
-        Timber.tag("CHAT_T").d("QUERY ${query.path}")
-        return RxFirestore.observeQueryRef(query, ChatMessage::class.java)
-    }
 
     override fun subscribeOnChatList(): Flowable<List<UserChat>> {
         val query = firestore.collection(COLLECTION_USERS)
@@ -62,4 +56,26 @@ class ChatRepositoryImpl
     override fun getChatMessageQuery(chatId: String) = firestore.collection(COLLECTION_CHATS)
             .document(chatId)
             .collection(COLLECTION_MESSAGES)
+            .orderBy(ChatMessage.FIELD_SEND_AT)
+
+    override fun sendChatMessage(chatId: String, toUser: String, message: ChatMessage): Completable {
+        val messageMap = message.toMap()
+
+        return RxFirestore.runTransaction(firestore) {
+            it.set(firestore.collection(COLLECTION_CHATS)
+                    .document(chatId)
+                    .collection(COLLECTION_MESSAGES)
+                    .document(), messageMap)
+
+            it.set(firestore.collection(COLLECTION_USERS)
+                    .document(message.senderId)
+                    .collection(COLLECTION_CHATS)
+                    .document(toUser), mapOf(FIELD_LAST_MESSAGE to messageMap))
+
+            it.set(firestore.collection(COLLECTION_USERS)
+                    .document(toUser)
+                    .collection(COLLECTION_CHATS)
+                    .document(message.senderId), mapOf(FIELD_LAST_MESSAGE to messageMap))
+        }
+    }
 }
