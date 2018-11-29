@@ -3,12 +3,12 @@ package com.example.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.R
-import com.example.data.models.ChatMessage
+import com.example.data.models.UserChatMessage
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
 
-class ChatAdapter(options: FirestoreRecyclerOptions<ChatMessage>) : FirestoreRecyclerAdapter<ChatMessage, ViewHolder>(options) {
+class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -16,10 +16,8 @@ class ChatAdapter(options: FirestoreRecyclerOptions<ChatMessage>) : FirestoreRec
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ChatMessage) {
-        holder.apply {
-            tvChatMessage.text = model.message
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
+        holder.apply { tvChatMessage.text = model.message.text }
     }
 
     private fun getItemLayout(itemView: Int): Int {

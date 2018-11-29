@@ -6,7 +6,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.ChatAdapter
-import com.example.data.models.ChatMessage
+import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseFragment
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
@@ -32,10 +32,14 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
+
+        rvChat.apply {
+
+        }
     }
 
-    override fun iniChatAdapter(query: Query, parser: SnapshotParser<ChatMessage>) {
-        val options = FirestoreRecyclerOptions.Builder<ChatMessage>()
+    override fun iniChatAdapter(query: Query, parser: SnapshotParser<UserChatMessage>) {
+        val options = FirestoreRecyclerOptions.Builder<UserChatMessage>()
                 .setLifecycleOwner(this)
                 .setQuery(query, parser)
                 .build()
