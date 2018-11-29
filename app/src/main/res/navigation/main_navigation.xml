@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/first_fragment">
+    app:startDestination="@id/chat_fragment">
 
     <fragment
-        android:id="@+id/first_fragment"
+        android:id="@+id/chat_fragment"
         android:name="com.example.ui.chat.ChatFragment"
         android:label="Game"
         tools:layout="@layout/fragment_first">
         <argument
             android:name="chatId"
-            android:defaultValue="vLXGEfI6ItL0rEPMMqNM"
+            android:defaultValue="45yvD6JxOSPiBra5KtfG"
             app:argType="string" />
     </fragment>
 
