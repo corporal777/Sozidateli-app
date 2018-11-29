@@ -21,7 +21,7 @@ class ChatPresenter
 
         chatRepository.subscribeChatMessages(chatId)
                 .subscribe({ result ->
-                    Timber.tag("CHAT_T").d("${result.documents.map { it.data }}")
+                    //Timber.tag("CHAT_T").d("${result.documents.map { it.data }}")
                 }, {
                     Timber.tag("CHAT_T").d(Log.getStackTraceString(it))
                 })

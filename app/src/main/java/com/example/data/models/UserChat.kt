@@ -1,6 +1,8 @@
 package com.example.data.models
 
-data class UserChat(
-        var user:User,
-        var lastMessage:Any
+class UserChat(
+        var userId: String? = null,
+        var chatId: String? = null,
+        var user: User?=null,
+        var lastMessage: ChatMessage?=null
 )
