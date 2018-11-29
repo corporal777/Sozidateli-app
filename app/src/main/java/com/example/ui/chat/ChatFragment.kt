@@ -1,6 +1,7 @@
 package com.example.ui.chat
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -27,6 +28,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val args = ChatFragmentArgs.fromBundle(arguments)
         chatId = args.chatId
+        userId = args.userId
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +36,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
 
         rvChat.apply {
-
+            (layoutManager as LinearLayoutManager).stackFromEnd = true
         }
     }
 
@@ -45,6 +47,10 @@ class ChatFragment : BaseFragment(), ChatContract.View {
                 .build()
 
         rvChat.adapter = ChatAdapter(options)
+    }
+
+    override fun clearMessageInput() {
+        etMessage.text.clear()
     }
 
     override fun layout() = R.layout.fragment_first

@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_first">
         <argument
             android:name="chatId"
-            android:defaultValue="45yvD6JxOSPiBra5KtfG"
+            app:argType="string" />
+        <argument
+            android:name="userId"
             app:argType="string" />
     </fragment>
 

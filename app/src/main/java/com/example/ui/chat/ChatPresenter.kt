@@ -1,6 +1,5 @@
 package com.example.ui.chat
 
-import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -10,7 +9,6 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.firebase.ui.firestore.SnapshotParser
 import performOnBackgroundOutOnMain
-import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -21,13 +19,14 @@ class ChatPresenter
 ) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String
+    lateinit var userId: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
         val chatMessageParser = SnapshotParser { snapshot ->
             snapshot.toObject(ChatMessage::class.java)!!.let {
-                UserChatMessage(it, appData.uid === it.senderId)
+                UserChatMessage(it, appData.uid == it.senderId)
             }
         }
 
@@ -37,13 +36,11 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
-        chatRepository.sendChatMessage(chatId, "test", ChatMessage(text = message, senderId = appData.uid))
+        viewState.apply { clearMessageInput() }
+
+        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.uid))
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    Timber.tag("CHAT_T").d("UPDATED")
-                }, {
-                    Timber.tag("CHAT_T").d(Log.getStackTraceString(it))
-                })
+                .subscribe({}, {})
                 .call(compositeDisposable)
     }
 }
