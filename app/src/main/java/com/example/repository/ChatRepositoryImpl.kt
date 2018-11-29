@@ -20,9 +20,8 @@ class ChatRepositoryImpl
 ) : ChatRepository {
 
     override fun subscribeChatMessages(chatId: String): Flowable<List<ChatMessage>> {
-        val query = firestore.collection(COLLECTION_CHATS)
-                .document(chatId)
-                .collection(COLLECTION_MESSAGES)
+        val query = getChatMessageQuery(chatId)
+
         Timber.tag("CHAT_T").d("QUERY ${query.path}")
         return RxFirestore.observeQueryRef(query, ChatMessage::class.java)
     }
@@ -60,4 +59,7 @@ class ChatRepositoryImpl
         }
     }
 
+    override fun getChatMessageQuery(chatId: String) = firestore.collection(COLLECTION_CHATS)
+            .document(chatId)
+            .collection(COLLECTION_MESSAGES)
 }

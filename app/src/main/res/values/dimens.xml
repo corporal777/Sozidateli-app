@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="chat_message_corners_radius">20dp</dimen>
+    <dimen name="chat_message_padding_horizontal">10dp</dimen>
+    <dimen name="chat_message_padding_vertical">10dp</dimen>
+</resources>
