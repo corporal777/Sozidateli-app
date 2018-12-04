@@ -43,4 +43,8 @@ class ChatPresenter
                 .subscribe({}, {})
                 .call(compositeDisposable)
     }
+
+    override fun onNewMessage() {
+        viewState.scrollToLastPosition()
+    }
 }
