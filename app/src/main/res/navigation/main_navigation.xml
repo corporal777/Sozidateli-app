@@ -15,7 +15,7 @@
         android:id="@+id/chat_fragment"
         android:name="com.example.ui.chat.ChatFragment"
         android:label="Game"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_chat">
         <argument
             android:name="chatId"
             app:argType="string" />
