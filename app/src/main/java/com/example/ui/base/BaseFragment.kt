@@ -45,4 +45,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
+
+    override fun onBack() {
+        activity?.apply {
+            onBackPressed()
+        }
+    }
 }

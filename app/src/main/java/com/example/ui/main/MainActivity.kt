@@ -31,10 +31,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         navController.addOnNavigatedListener(navigatedListener)
     }
 
-    override fun onSupportNavigateUp() = findNavController().navigateUp()
+    override fun onSupportNavigateUp() = findNavController().popBackStack()
 
     override fun onBackPressed() {
-        onSupportNavigateUp()
+        if(!onSupportNavigateUp()){
+            finish()
+        }
     }
 
     private fun isCurrentNavigationAreSame(navId: Int): Boolean {
@@ -62,7 +64,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onDestroy()
     }
 
-
+    override fun onBack() {
+        onBackPressed()
+    }
 
     override fun layout() = R.layout.activity_main
 }

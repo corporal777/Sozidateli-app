@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/auth_background"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <include layout="@layout/auth_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="60dp"
+                android:text="@string/auth_register_btn"
+                android:textColor="@android:color/black"
+                android:textSize="21sp" />
+
+            <EditText
+                android:id="@+id/etName"
+                style="@style/Auth.EditText"
+                android:layout_marginTop="30dp"
+                android:hint="@string/auth_hint_name" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                style="@style/Auth.EditText"
+                android:layout_marginTop="30dp"
+                android:hint="@string/email" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                style="@style/Auth.EditText"
+                android:layout_marginTop="30dp"
+                android:hint="@string/auth_hint_password" />
+
+            <TextView
+                android:id="@+id/tvPasswordStrong1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="end"
+                android:text="@string/auth_hint_password_strong_1" />
+
+            <TextView
+                android:id="@+id/tvPasswordStrong2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="@string/auth_hint_password_strong_2" />
+
+            <TextView
+                android:id="@+id/tvPasswordStrong3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="@string/auth_hint_password_strong_3" />
+
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/background_btn_auth"
+                android:text="@string/auth_create_account"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+
+
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_close_black_24dp" />
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

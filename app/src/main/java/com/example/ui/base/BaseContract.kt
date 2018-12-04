@@ -12,6 +12,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showToast(message: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun onBack()
     }
 
     interface Presenter

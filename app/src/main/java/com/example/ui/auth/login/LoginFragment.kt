@@ -1,0 +1,48 @@
+package com.example.ui.auth.login
+
+import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import androidx.navigation.fragment.findNavController
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.R
+import com.example.data.models.UserChat
+import com.example.ui.base.BaseFragment
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.fragment_chat_list.*
+import kotlinx.android.synthetic.main.fragment_login.*
+import javax.inject.Inject
+import javax.inject.Provider
+
+class LoginFragment : BaseFragment(), LoginContract.View {
+
+    @InjectPresenter
+    lateinit var presenter: LoginPresenter
+
+    @Inject
+    lateinit var presenterProvider: Provider<LoginPresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): LoginPresenter = presenterProvider.get()
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        flFbAuth.setOnClickListener { presenter.clickOnFbAuth() }
+        flVkAuth.setOnClickListener { presenter.clickOnVkAuth() }
+        flEmailAuth.setOnClickListener { presenter.clickOnLoginEmail() }
+    }
+
+
+    override fun showWelcome() {
+        findNavController().navigate(LoginFragmentDirections.loginToWelcome())
+    }
+
+    override fun showLogin() {
+        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction())
+    }
+
+    override fun layout() = R.layout.fragment_login
+}

@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Example</string>
+    
+    <string name="auth_title_login">Сообщество лидеров социальных проектов</string>
+    <string name="auth_label_choose_login">Войти с помощью</string>
+    <string name="auth_label_login">Войти</string>
+    <string name="email">E-mail</string>
+    <string name="auth_hint_password">Пароль</string>
+    <string name="auth_forgot_password"><u>Забыли пароль</u></string>
+    <string name="auth_login_btn">Войти</string>
+    <string name="auth_register_btn">Регистрация</string>
+    <string name="auth_create_account">Создать аккаунт</string>
+    <string name="auth_hint_name">Ваше имя</string>
+    <string name="auth_hint_password_strong_1">-6 знаков</string>
+    <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
+    <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
+
 </resources>
