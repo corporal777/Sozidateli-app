@@ -9,12 +9,15 @@ import com.example.R
 import com.example.adapters.ChatAdapter
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseFragment
+import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_first.*
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class ChatFragment : BaseFragment(), ChatContract.View {
 
@@ -31,6 +34,8 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         userId = args.userId
     }
 
+    private lateinit var chatAdapter: ChatAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
@@ -46,8 +51,25 @@ class ChatFragment : BaseFragment(), ChatContract.View {
                 .setQuery(query, parser)
                 .build()
 
-        rvChat.adapter = ChatAdapter(options)
+        chatAdapter = object : ChatAdapter(options) {
+            override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
+                super.onChildChanged(type, snapshot, newIndex, oldIndex)
+                if (type == ChangeEventType.ADDED) presenter.onNewMessage()
+            }
+        }
+
+        rvChat.adapter = chatAdapter
     }
+
+    private fun scrollToPosition(position: Int, smooth: Boolean) {
+        if (position < 0) return
+        if (smooth) rvChat.smoothScrollToPosition(position)
+        else rvChat.layoutManager.scrollToPosition(position)
+    }
+
+    override fun scrollToLastPosition() = scrollToLastPosition(true)
+
+    private fun scrollToLastPosition(smooth: Boolean) = scrollToPosition(chatAdapter.itemCount - 1, smooth)
 
     override fun clearMessageInput() {
         etMessage.text.clear()

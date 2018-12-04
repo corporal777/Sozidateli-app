@@ -9,9 +9,11 @@ interface ChatContract {
     interface View : BaseContract.View {
         fun iniChatAdapter(query: Query, parser: SnapshotParser<UserChatMessage>)
         fun clearMessageInput()
+        fun scrollToLastPosition()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onSendTextMessageClick(message: String)
+        fun onNewMessage()
     }
 }

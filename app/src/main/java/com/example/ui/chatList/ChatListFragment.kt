@@ -52,7 +52,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun openChat(userOpponent: String, chatId: String) {
-        findNavController().navigate(ChatListFragmentDirections.chatListToChat(chatId,userOpponent))
+//        findNavController().navigate(ChatListFragmentDirections.chatListToChat(chatId,userOpponent))
     }
 
     override fun layout() = R.layout.fragment_chat_list

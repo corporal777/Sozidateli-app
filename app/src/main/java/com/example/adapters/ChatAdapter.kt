@@ -8,7 +8,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
 
-class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
+open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
