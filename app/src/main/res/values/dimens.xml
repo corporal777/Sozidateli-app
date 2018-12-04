@@ -3,4 +3,8 @@
     <dimen name="chat_message_corners_radius">20dp</dimen>
     <dimen name="chat_message_padding_horizontal">10dp</dimen>
     <dimen name="chat_message_padding_vertical">10dp</dimen>
+
+    <dimen name="background_default_corners_radius">4dp</dimen>
+
+    <dimen name="event_item_border_width">1dp</dimen>
 </resources>

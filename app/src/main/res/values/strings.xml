@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Example</string>
+
+    <string name="sans_serif">sans-serif</string>
+    <string name="sans_serif_light">sans-serif-light</string>
+    <string name="sans_serif_regular">sans-serif-regular</string>
+    <string name="sans_serif_condensed">sans-serif-condensed</string>
+    <string name="sans_serif_thin">sans-serif-thin</string>
+    <string name="sans_serif_medium">sans-serif-medium</string>
+
+    <string name="events_tabs_title">Мероприятия</string>
+    <string name="tab_recommended_title">Рекомендуемые</string>
+    <string name="tab_subscriptions_title">Подписки</string>
+    <string name="tab_events_title">Мои мероприятия</string>
+
+    <string name="go_to_event">Участвовать</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="unsubscribe">Отписаться</string>
+
+    <string name="event_status_approved">Одобрено</string>
+    <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
+    <string name="event_status_finished">Завершено</string>
 </resources>

@@ -62,7 +62,5 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onDestroy()
     }
 
-
-
     override fun layout() = R.layout.activity_main
 }

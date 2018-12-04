@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/chat_list_fragment">
+    app:startDestination="@id/events_tabs_fragment">
+
+    <fragment
+        android:id="@+id/events_tabs_fragment"
+        android:name="com.example.ui.eventsTabs.EventsTabsFragment"
+        android:label="@string/events_tabs_title"
+        tools:layout="@layout/fragment_events_tabs" />
 
     <fragment
         android:id="@+id/chat_fragment"
@@ -27,6 +33,5 @@
         <action
             android:id="@+id/chat_list_to_chat"
             app:destination="@id/chat_fragment" />
-
     </fragment>
 </navigation>

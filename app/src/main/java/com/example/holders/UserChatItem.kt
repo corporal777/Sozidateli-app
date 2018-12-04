@@ -1,7 +1,7 @@
 package com.example.holders
 
 import com.example.R
-import com.example.utils.CropCircleTransformation
+import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder

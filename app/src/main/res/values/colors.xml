@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#949494</color>
+    <color name="colorAccent">#C49A6C</color>
 
     <color name="chat_message_background_outgoing">#C49A6C</color>
     <color name="chat_message_background_incoming">#E4E4E4</color>
+
+    <color name="event_item_background">#FFFFFF</color>
+    <color name="event_item_border">#E4E4E4</color>
+    <color name="event_status_approved_text">#FFFFFF</color>
+    <color name="event_status_approved_background">#2BB673</color>
+    <color name="event_status_wait_confirmation_text">#FFFFFF</color>
+    <color name="event_status_wait_confirmation_background">#A7A9AC</color>
+    <color name="event_status_finished_text">#A7A9AC</color>
+    <color name="event_status_finished_background">#E4E4E4</color>
+
+    <color name="subscription_background">#FFFFFF</color>
 </resources>
