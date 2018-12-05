@@ -64,7 +64,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     private fun scrollToPosition(position: Int, smooth: Boolean) {
         if (position < 0) return
         if (smooth) rvChat.smoothScrollToPosition(position)
-        else rvChat.layoutManager.scrollToPosition(position)
+        else rvChat.layoutManager?.scrollToPosition(position)
     }
 
     override fun scrollToLastPosition() = scrollToLastPosition(true)
