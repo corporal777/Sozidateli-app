@@ -78,5 +78,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
+    override fun isShowToolbar() = true
+
     override fun layout() = R.layout.fragment_events_list
 }

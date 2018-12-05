@@ -3,10 +3,12 @@ package com.example.ui.main
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragmentActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -26,15 +28,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnNavigatedListener(navigatedListener)
+        setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp() = findNavController().popBackStack()
 
     override fun onBackPressed() {
-        if(!onSupportNavigateUp()){
+        if (!onSupportNavigateUp()) {
             finish()
         }
     }

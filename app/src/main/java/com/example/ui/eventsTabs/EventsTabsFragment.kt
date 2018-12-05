@@ -64,5 +64,7 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
 
     private fun findNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
 
+    override fun isShowToolbar() = true
+
     override fun layout() = R.layout.fragment_events_tabs
 }

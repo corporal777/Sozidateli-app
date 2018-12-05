@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
 import dagger.android.support.AndroidSupportInjection
 
-
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     private var mActivity: BaseActivity? = null
@@ -29,6 +28,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mActivity?.apply { supportActionBar?.apply { if (isShowToolbar()) show() else hide() } }
         return inflater.inflate(layout(), container, false)
     }
 
@@ -39,6 +39,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     @LayoutRes
     abstract fun layout(): Int
+
+    protected open fun isShowToolbar(): Boolean = false
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
 
