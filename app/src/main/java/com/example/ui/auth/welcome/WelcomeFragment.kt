@@ -2,6 +2,7 @@ package com.example.ui.auth.welcome
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -22,7 +23,7 @@ class WelcomeFragment : BaseFragment(), WelcomeContract.View {
 
 
     override fun showMain() {
-        showToast("Show main")
+        findNavController().navigate(WelcomeFragmentDirections.welcomeToMain())
     }
 
     override fun layout() = R.layout.fragment_welcome
