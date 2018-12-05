@@ -1,11 +1,11 @@
 package com.example.repository
 
-import com.example.data.models.Event
-import com.example.data.models.Status
-import com.example.data.models.Subscription
+import com.example.data.models.*
+import com.example.util.LOREM
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import javax.inject.Inject
+import kotlin.random.Random
 
 class DummyRepositoryImpl
 @Inject constructor(
@@ -27,14 +27,31 @@ class DummyRepositoryImpl
             "https://pbs.twimg.com/profile_images/424484505915621376/EOwsjaMZ.png"
     )
 
+    private fun getRandomDate(): Long {
+        val oneYear = 31536000000
+        val now = System.currentTimeMillis()
+        return Random.nextLong(now - oneYear, now + oneYear)
+    }
+
+    private fun getRandomLongText(): String {
+        val suggestions = LOREM.split(".")
+        var text = ""
+        for (index in 0..Random.nextInt(1, suggestions.size)) {
+            text = text.plus(suggestions[index]).plus(". ")
+        }
+        return text.trim()
+    }
+
     private fun generateEvents(limit: Int, offset: Int): List<Event> {
         return (1..limit).map { index ->
+            val dates = arrayOf(getRandomDate(), getRandomDate())
             Event(
                     "${offset + index}",
                     "Российский инвестиционный форум ${offset + index}",
                     logos.random(),
-                    0,
-                    0,
+                    getRandomLongText(),
+                    dates.min() ?: 0,
+                    dates.max() ?: System.currentTimeMillis(),
                     "Форум $index",
                     Status.values().random()
             )
@@ -51,11 +68,40 @@ class DummyRepositoryImpl
         }
     }
 
+    private fun generateNews(limit: Int, offset: Int): List<News> {
+        return (1..limit).map { index ->
+            News(
+                    "${offset + index}",
+                    "Заголовок новсти Российский инвестиционный форум ${offset + index}",
+                    getRandomLongText(),
+                    logos.random(),
+                    getRandomDate()
+            )
+        }
+    }
+
+    private fun generateDocuments(limit: Int, offset: Int): List<Document> {
+        return (1..limit).map { index ->
+            Document(
+                    "${offset + index}",
+                    "РРТ Название презентации ${offset + index}\nв две строки"
+            )
+        }
+    }
+
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateEvents(limit, offset)) }
     }
 
     override fun loadSubscriptions(limit: Int, offset: Int): Maybe<PaginationResponse<Subscription>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSubscriptions(limit, offset)) }
+    }
+
+    override fun loadNews(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateNews(limit, offset)) }
+    }
+
+    override fun loadDocuments(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateDocuments(limit, offset)) }
     }
 }

@@ -9,31 +9,15 @@
         android:id="@+id/events_tabs_fragment"
         android:name="com.example.ui.eventsTabs.EventsTabsFragment"
         android:label="@string/events_tabs_title"
-        tools:layout="@layout/fragment_events_tabs" />
-
-    <fragment
-        android:id="@+id/chat_fragment"
-        android:name="com.example.ui.chat.ChatFragment"
-        android:label="Game"
-        tools:layout="@layout/fragment_chat">
-        <argument
-            android:name="chatId"
-            android:defaultValue="testChatId"
-            app:argType="string" />
-        <argument
-            android:name="userId"
-            android:defaultValue="testUserId"
-            app:argType="string" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/chat_list_fragment"
-        android:name="com.example.ui.chatList.ChatListFragment"
-        android:label="Chat list"
-        tools:layout="@layout/fragment_chat_list">
-
+        tools:layout="@layout/fragment_events_tabs">
         <action
-            android:id="@+id/chat_list_to_chat"
-            app:destination="@id/chat_fragment" />
+            android:id="@+id/action_events_tabs_fragment_to_chat_navigation"
+            app:destination="@id/chat_navigation" />
+        <action
+            android:id="@+id/action_events_tabs_fragment_to_about_event_navigation"
+            app:destination="@id/about_event_navigation" />
     </fragment>
+    <include app:graph="@navigation/chat_navigation" />
+    <include app:graph="@navigation/about_event_navigation" />
+
 </navigation>

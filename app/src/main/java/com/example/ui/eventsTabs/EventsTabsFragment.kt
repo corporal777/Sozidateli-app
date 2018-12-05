@@ -2,9 +2,13 @@ package com.example.ui.eventsTabs
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -26,6 +30,7 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         tabLayout.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -49,20 +54,47 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
 
     override fun selectRecommendedTab() {
         tabLayout.setScrollPosition(0, 0f, true)
-        findNavController().navigate(R.id.recommendations_fragment)
+        findNestedNavController().navigate(R.id.recommendations_fragment)
     }
 
     override fun selectSubscriptionsTab() {
         tabLayout.setScrollPosition(1, 0f, true)
-        findNavController().navigate(R.id.subscriptions_fragment)
+        findNestedNavController().navigate(R.id.subscriptions_fragment)
     }
 
     override fun selectEventsTab() {
         tabLayout.setScrollPosition(2, 0f, true)
-        findNavController().navigate(R.id.my_events_fragment)
+        findNestedNavController().navigate(R.id.my_events_fragment)
     }
 
-    private fun findNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
+    override fun showChat() {
+        findNavController().navigate(EventsTabsFragmentDirections.actionEventsTabsFragmentToChatNavigation())
+    }
+
+    override fun showSearch() {
+
+    }
+
+    override fun showAccount() {
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_event_tabs, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.chat -> presenter.onMenuChatClick()
+            R.id.search -> presenter.onMenuSearchClick()
+            R.id.account -> presenter.onMenuAccountClick()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
+    private fun findNestedNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
 
     override fun isShowToolbar() = true
 

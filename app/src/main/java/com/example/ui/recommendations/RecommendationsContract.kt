@@ -1,6 +1,7 @@
 package com.example.ui.recommendations
 
 import android.arch.paging.PagedList
+import android.view.View
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -14,10 +15,13 @@ interface RecommendationsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onEventClick(event: Event)
+        fun onEventClick(event: Event, vararg sharedElements: Pair<android.view.View, String>)
         fun onGoToEventClick(event: Event)
         fun onScrollChange(position: Int, offset: Int)
     }

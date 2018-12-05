@@ -14,4 +14,10 @@ class EventsTabsPresenter
     override fun onSubscriptionsClick() = viewState.selectSubscriptionsTab()
 
     override fun onEventsClick() = viewState.selectEventsTab()
+
+    override fun onMenuChatClick() = viewState.showChat()
+
+    override fun onMenuSearchClick() = viewState.showSearch()
+
+    override fun onMenuAccountClick() = viewState.showAccount()
 }

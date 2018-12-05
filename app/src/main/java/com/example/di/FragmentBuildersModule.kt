@@ -1,11 +1,16 @@
 package com.example.di
 
+import com.example.ui.aboutEvent.AboutEventFragment
+import com.example.ui.aboutForum.AboutForumFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
+import com.example.ui.eventDocuments.DocumentsListFragment
+import com.example.ui.eventNews.NewsFragment
+import com.example.ui.eventNewsList.NewsListFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.recommendations.RecommendationsFragment
@@ -48,4 +53,19 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMyEventsFragment(): MyEventsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAboutEventFragment(): AboutEventFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAboutForumFragment(): AboutForumFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNewsListFragment(): NewsListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNewsFragment(): NewsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeDocumentsListFragment(): DocumentsListFragment
 }

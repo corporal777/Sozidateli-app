@@ -2,6 +2,7 @@ package com.example.ui.recommendations
 
 import android.arch.paging.PagedList
 import android.arch.paging.RxPagedListBuilder
+import android.view.View
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
@@ -48,8 +49,8 @@ class RecommendationsPresenter
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
     }
 
-    override fun onEventClick(event: Event) {
-
+    override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {
+        viewState.showAboutEvent(event, *sharedElements)
     }
 
     override fun onGoToEventClick(event: Event) {

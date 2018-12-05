@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -13,15 +15,16 @@ import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
 import com.example.data.models.Status
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_event.*
+import setDatesIntervalText
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MyEventsFragment : BaseFragment(), MyEventsContract.View {
+class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "MyEventsPresenter")
     lateinit var presenter: MyEventsPresenter
@@ -45,13 +48,22 @@ class MyEventsFragment : BaseFragment(), MyEventsContract.View {
                     itemContainer.apply {
                         clipToOutline = true
                         alpha = if (item.status === Status.FINISHED) 0.5f else 1f
+                        setOnClickListener {
+                            presenter.onEventClick(
+                                    item,
+                                    ivLogo to "logo",
+                                    tvOrganizationLabel to "organizationLabel",
+                                    tvEventLabel to "eventLabel",
+                                    tvEventDate to "eventDate"
+                            )
+                        }
                     }
 
                     Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
 
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name
-                    tvEventDate.text = item.startDate.toString()
+                    tvEventDate.setDatesIntervalText(item.startDate, item.finishDate)
 
                     btnGoToEvent.apply { visibility = View.GONE }
                     tvStatus.apply {
@@ -103,6 +115,11 @@ class MyEventsFragment : BaseFragment(), MyEventsContract.View {
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+    }
+
+    override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
+        val extras = FragmentNavigatorExtras(*sharedElements)
+        findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
     }
 
     override fun isShowToolbar() = true
