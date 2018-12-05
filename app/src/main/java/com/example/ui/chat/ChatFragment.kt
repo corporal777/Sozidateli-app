@@ -14,7 +14,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.fragment_chat.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -75,5 +75,5 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         etMessage.text.clear()
     }
 
-    override fun layout() = R.layout.fragment_first
+    override fun layout() = R.layout.fragment_chat
 }

@@ -9,6 +9,7 @@ buildscript {
     ext.moxy_version = '1.5.3'
     ext.room_version = '1.1.1'
     ext.paging_version = '1.0.1'
+    ext.retrofit_version = '2.3.0'
 
     repositories {
         google()

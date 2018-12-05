@@ -18,4 +18,15 @@
         <item name="android:textCursorDrawable">@null</item>
     </style>
 
+    <style name="EventsTabText" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="ViewBackgroundPrimary">
+        <item name="viewBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="ViewBackgroundAccent">
+        <item name="viewBackground">@color/colorAccent</item>
+    </style>
 </resources>
