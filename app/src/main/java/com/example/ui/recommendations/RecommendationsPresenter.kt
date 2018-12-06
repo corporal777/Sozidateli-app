@@ -1,15 +1,12 @@
 package com.example.ui.recommendations
 
-import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
 import android.view.View
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
-import io.reactivex.BackpressureStrategy
+import com.example.util.pagination.SimplePagination
 import javax.inject.Inject
 
 @InjectViewState
@@ -23,24 +20,9 @@ class RecommendationsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        val factory = PaginationDataSourceFactory { limit, offset -> dummyRepository.loadRecommendations(limit, offset) }
-
-        val config = PagedList.Config.Builder()
-                .setInitialLoadSizeHint(20)
-                .setPageSize(20)
-                .setEnablePlaceholders(false)
-                .build()
-
-        RxPagedListBuilder(factory, config)
-                .buildFlowable(BackpressureStrategy.LATEST)
-                .subscribe({
-                    viewState.apply {
-                        setData(it)
-                    }
-                }, {
-                    it.printStackTrace()
-                })
+        SimplePagination { limit, offset -> dummyRepository.loadRecommendations(limit, offset) }
+                .create()
+                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
 
