@@ -1,18 +1,22 @@
 package com.example.ui.chatList
 
-import com.example.data.models.ChatMessage
+import android.arch.paging.PagedList
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChat
 import com.example.ui.base.BaseContract
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.Query
 
 interface ChatListContract {
-    interface View : BaseContract.View{
-        fun iniChatAdapter(query: Query)
-        fun openChat(userOpponent:String, chatId:String)
+    interface View : BaseContract.View {
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setData(data: PagedList<UserChat>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun openChat(userOpponent: String, chatId: String)
     }
 
-    interface Presenter : BaseContract.Presenter{
+    interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
     }
 }

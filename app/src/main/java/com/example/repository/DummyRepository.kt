@@ -12,4 +12,5 @@ interface DummyRepository {
     fun loadDocuments(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
     fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 }

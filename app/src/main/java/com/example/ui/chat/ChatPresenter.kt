@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.repository.ChatRepository
+import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.firebase.ui.firestore.SnapshotParser
 import performOnBackgroundOutOnMain
@@ -32,6 +33,7 @@ class ChatPresenter
 
         viewState.apply {
             iniChatAdapter(chatMessageQuery, chatMessageParser)
+            setChatLabel("Тестовый чат")
         }
     }
 

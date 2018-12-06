@@ -14,7 +14,10 @@ class AboutEventPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setEventData(event)
+        viewState.apply {
+            setEventData(event)
+            setChatLabel(event.name)
+        }
     }
 
     override fun onAboutForumClick() = viewState.showAboutForum(event)

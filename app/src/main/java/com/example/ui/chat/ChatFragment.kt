@@ -1,8 +1,10 @@
 package com.example.ui.chat
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.view.WindowManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -17,7 +19,6 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_chat.*
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class ChatFragment : BaseFragment(), ChatContract.View {
 
@@ -35,6 +36,11 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     }
 
     private lateinit var chatAdapter: ChatAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,6 +80,12 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     override fun clearMessageInput() {
         etMessage.text.clear()
     }
+
+    override fun setChatLabel(label: String) {
+        (activity as AppCompatActivity?)?.supportActionBar?.title = label
+    }
+
+    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_chat
 }

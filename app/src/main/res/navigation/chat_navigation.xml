@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/chat_list_fragment"
         android:name="com.example.ui.chatList.ChatListFragment"
-        android:label="Chat list"
+        android:label="@string/chat_list"
         tools:layout="@layout/fragment_chat_list">
         <action
             android:id="@+id/chat_list_to_chat"
@@ -18,15 +18,12 @@
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.example.ui.chat.ChatFragment"
-        android:label="Game"
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="chatId"
-            android:defaultValue="testChatId"
             app:argType="string" />
         <argument
             android:name="userId"
-            android:defaultValue="testUserId"
             app:argType="string" />
     </fragment>
 

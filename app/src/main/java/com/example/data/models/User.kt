@@ -7,10 +7,10 @@ import android.arch.persistence.room.PrimaryKey
 @Entity
 data class User(
         @PrimaryKey
-        var id: Int=0,
-        var name: String="",
-        var image: String?="",
-        var status: String?=null,
+        var id: String = "",
+        var name: String = "",
+        var image: String? = "",
+        var status: String? = null,
         @Ignore
         var currentEvent: Event?=null,
         var email:String?=null,

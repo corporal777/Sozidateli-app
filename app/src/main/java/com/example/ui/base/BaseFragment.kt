@@ -28,7 +28,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mActivity?.apply { supportActionBar?.apply { if (isShowToolbar()) show() else hide() } }
+        mActivity?.apply { if (isShowToolbar()) showToolbar() else hideToolbar() }
         return inflater.inflate(layout(), container, false)
     }
 

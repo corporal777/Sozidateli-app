@@ -78,4 +78,6 @@
         <item>Спикеры</item>
         <item>Организации</item>
     </string-array>
+
+    <string name="chat_list">Чаты</string>
 </resources>

@@ -1,30 +1,30 @@
 package com.example.ui.chatList
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.UserChat
-import com.example.repository.ChatRepository
+import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
-import performOnBackgroundOutOnMain
-import timber.log.Timber
+import com.example.util.pagination.SimplePagination
 import javax.inject.Inject
 
 @InjectViewState
 class ChatListPresenter
-@Inject constructor(private val chatRepository: ChatRepository
-) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter{
+@Inject constructor(
+        private val dummyRepository: DummyRepository
+) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState?.apply {
-        }
+        SimplePagination { limit, offset -> dummyRepository.loadUserChats(limit, offset) }
+                .create()
+                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
+                .call(compositeDisposable)
     }
 
 
     override fun onChatClick(userChat: UserChat) {
-        userChat.userId?.let {userId->
-            userChat.chatId?.let {
-                viewState.openChat(userId,it)
-            }
+        userChat.user?.id?.let { userId ->
+            viewState.openChat(userId, userChat.id)
         }
     }
-
 }

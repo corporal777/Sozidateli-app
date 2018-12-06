@@ -8,11 +8,19 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         app:tabGravity="fill"
         app:tabIndicatorFullWidth="false"
         app:tabMaxWidth="0dp"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/EventsTabText" />
+
+    <View
+        android:id="@+id/tabsDivider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
     <fragment
         android:id="@+id/tabsNavHostFragment"
@@ -22,6 +30,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        app:layout_constraintTop_toBottomOf="@+id/tabsDivider"
         app:navGraph="@navigation/events_tabs_navigation" />
 </android.support.constraint.ConstraintLayout>
