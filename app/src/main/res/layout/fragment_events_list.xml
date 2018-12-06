@@ -8,11 +8,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:clipToPadding="false"
         android:paddingTop="16dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_subscription" />
+        tools:listitem="@layout/item_event" />
 
 </android.support.constraint.ConstraintLayout>

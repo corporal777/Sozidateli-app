@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FAFAFA</color>
     <color name="colorPrimaryDark">#949494</color>
     <color name="colorAccent">#C49A6C</color>
+    <color name="colorDivider">#EEEEEE</color>
 
     <color name="chat_message_background_outgoing">#C49A6C</color>
     <color name="chat_message_background_incoming">#E4E4E4</color>

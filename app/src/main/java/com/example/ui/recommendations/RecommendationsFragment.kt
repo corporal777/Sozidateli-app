@@ -4,6 +4,8 @@ import android.arch.paging.PagedList
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -11,15 +13,17 @@ import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_event.*
+import setDatesIntervalText
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RecommendationsFragment : BaseFragment(), RecommendationsContract.View {
+class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsContract.View {
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "RecommendationsPresenter")
     lateinit var presenter: RecommendationsPresenter
@@ -40,12 +44,23 @@ class RecommendationsFragment : BaseFragment(), RecommendationsContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: Event?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    itemContainer.apply { clipToOutline = true }
+                    itemContainer.apply {
+                        clipToOutline = true
+                        setOnClickListener {
+                            presenter.onEventClick(
+                                    item,
+                                    ivLogo to "logo",
+                                    tvOrganizationLabel to "organizationLabel",
+                                    tvEventLabel to "eventLabel",
+                                    tvEventDate to "eventDate"
+                            )
+                        }
+                    }
 
                     Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name
-                    tvEventDate.text = item.startDate.toString()
+                    tvEventDate.setDatesIntervalText(item.startDate, item.finishDate)
 
                     btnGoToEvent.apply {
                         setOnClickListener { presenter.onGoToEventClick(item) }
@@ -74,6 +89,11 @@ class RecommendationsFragment : BaseFragment(), RecommendationsContract.View {
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+    }
+
+    override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
+        val extras = FragmentNavigatorExtras(*sharedElements)
+        findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
     }
 
     override fun isShowToolbar() = true

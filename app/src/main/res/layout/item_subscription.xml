@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/subscription_background">
+    android:background="@color/subscription_background"
+    android:foreground="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -57,6 +58,7 @@
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
+        android:theme="@style/ViewBackgroundAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintHorizontal_bias="0.0"

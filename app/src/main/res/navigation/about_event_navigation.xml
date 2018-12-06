@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_event_navigation"
+    app:startDestination="@id/about_event_fragment">
+
+    <fragment
+        android:id="@+id/about_event_fragment"
+        android:name="com.example.ui.aboutEvent.AboutEventFragment"
+        tools:layout="@layout/fragment_about_event">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_about_forum_fragment"
+            app:destination="@id/about_forum_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_news_list_fragment"
+            app:destination="@id/news_list_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_documents_list_fragment"
+            app:destination="@id/documents_list_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_speakers_list_fragment"
+            app:destination="@id/speakers_list_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/about_forum_fragment"
+        android:name="com.example.ui.aboutForum.AboutForumFragment"
+        android:label="@string/about_event_about_forum"
+        tools:layout="@layout/fragment_about_forum">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/news_list_fragment"
+        android:name="com.example.ui.eventNewsList.NewsListFragment"
+        android:label="@string/about_event_news"
+        tools:layout="@layout/fragment_news_list">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+        <action
+            android:id="@+id/action_news_list_fragment_to_news_fragment"
+            app:destination="@id/news_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/news_fragment"
+        android:name="com.example.ui.eventNews.NewsFragment"
+        android:label=""
+        tools:layout="@layout/fragment_news">
+        <argument
+            android:name="news"
+            app:argType="com.example.data.models.News" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/documents_list_fragment"
+        android:name="com.example.ui.eventDocuments.DocumentsListFragment"
+        android:label="@string/about_event_documents"
+        tools:layout="@layout/fragment_documents_list">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/speakers_list_fragment"
+        android:name="com.example.ui.eventSpeakers.SpeakersFragment"
+        android:label="@string/speakers"
+        tools:layout="@layout/fragment_speakers">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+</navigation>

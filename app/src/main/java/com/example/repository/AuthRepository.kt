@@ -1,13 +1,12 @@
 package com.example.repository
 
-import com.example.data.models.User
 import io.reactivex.Completable
 
-interface AuthRepository{
+interface AuthRepository {
 
-    fun authSN():Completable
+    fun authSN(): Completable
 
-    fun authEmail():Completable
+    fun authEmail(): Completable
 
-    fun register():Completable
+    fun register(): Completable
 }

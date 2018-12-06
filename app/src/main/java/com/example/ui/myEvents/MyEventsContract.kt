@@ -14,10 +14,13 @@ interface MyEventsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onEventClick(event: Event)
+        fun onEventClick(event: Event, vararg sharedElements: Pair<android.view.View, String>)
         fun onScrollChange(position: Int, offset: Int)
     }
 }
