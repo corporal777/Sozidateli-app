@@ -7,4 +7,8 @@
     <dimen name="background_default_corners_radius">4dp</dimen>
 
     <dimen name="event_item_border_width">1dp</dimen>
+
+    <dimen name="profile_height_field">45dp</dimen>
+
+    <dimen name="profile_padding_start">20dp</dimen>
 </resources>

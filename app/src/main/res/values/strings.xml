@@ -35,4 +35,25 @@
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
 
+    <string name="profile_status">Ваш статус: %s</string>
+    <string name="profile_status_more">Подробнее о статусе ></string>
+    <string name="profile_title">Личный кабинет</string>
+    <string name="profile_favorite">Избранное</string>
+    <string name="profile_me_events">Мои мероприятия</string>
+    <string name="profile_current_event">Текущее мероприятие</string>
+    <string name="change">Изменить</string>
+    <string name="profile_about_app">О приложении</string>
+    <string name="profile_setting_chat">Настройки чата</string>
+
+    <string name="profile_phone">Телефон</string>
+    <string name="profile_birthday">Дата рождения</string>
+    <string name="profile_city">Город</string>
+    <string name="profile_sn">Социальные сети</string>
+    <string name="profile_education">Образование ученая степень звание</string>
+    <string name="profile_institution">Учебное заведение</string>
+    <string name="profile_work_experience">Опыт работы</string>
+    <string name="profile_social_project">Социальные проекты</string>
+    <string name="profile_events">Мероприятия</string>
+    <string name="profile_interests">Интересы</string>
+
 </resources>

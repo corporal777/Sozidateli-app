@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_navigations"
+    app:startDestination="@id/profile_fragment">
+    <fragment
+        android:id="@+id/profile_fragment"
+        android:name="com.example.ui.profile.ProfileFragment"
+        android:label="@string/profile_title">
+        <action
+            android:id="@+id/profile_to_my_events"
+            app:destination="@+id/my_events_fragment" />
+
+        <action
+            android:id="@+id/profile_to_about"
+            app:destination="@+id/about_fragment" />
+
+        <action
+            android:id="@+id/profile_to_full_profile"
+            app:destination="@+id/profile_full_fragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/my_events_fragment"
+        android:name="com.example.ui.myEvents.MyEventsFragment"
+        android:label="@string/profile_me_events" />
+
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="com.example.ui.about.AboutFragment"
+        android:label=" "/>
+
+    <fragment
+        android:id="@+id/profile_full_fragment"
+        android:name="com.example.ui.profile.profileFull.ProfileFullFragment"
+        android:label=" "/>
+</navigation>
