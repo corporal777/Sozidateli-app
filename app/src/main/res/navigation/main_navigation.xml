@@ -16,8 +16,13 @@
         <action
             android:id="@+id/action_events_tabs_fragment_to_about_event_navigation"
             app:destination="@id/about_event_navigation" />
+
+        <action
+            android:id="@+id/main_to_profile"
+            app:destination="@id/profile_navigation" />
     </fragment>
     <include app:graph="@navigation/chat_navigation" />
     <include app:graph="@navigation/about_event_navigation" />
+    <include app:graph="@navigation/profile_navigation" />
 
 </navigation>

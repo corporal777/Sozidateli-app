@@ -76,7 +76,7 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
     }
 
     override fun showAccount() {
-
+        findNavController().navigate(EventsTabsFragmentDirections.mainToProfile())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
