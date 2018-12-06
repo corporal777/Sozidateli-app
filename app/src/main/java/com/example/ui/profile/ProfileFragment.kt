@@ -33,6 +33,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         flAbout.setOnClickListener { presenter.clickAboutApp() }
         tvAboutStatus.setOnClickListener { presenter.clickAboutStatus() }
         clProfile.setOnClickListener { presenter.clickFullProfile() }
+        flFavorite.setOnClickListener { presenter.clickFavorite() }
     }
 
     override fun showAboutStatus() {
@@ -44,7 +45,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun showFavorite() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        findNavController().navigate(ProfileFragmentDirections.profileToFavorite())
     }
 
     override fun showMyEvents() {

@@ -7,22 +7,24 @@
         android:id="@+id/tvName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:paddingTop="10dp"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_toStartOf="@id/ivArrow"
+        android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
+
     <ImageView
-        android:layout_width="17dp"
-        android:layout_height="17dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
         android:id="@+id/ivArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_keyboard_arrow_right" />
 
     <View
         android:layout_width="match_parent"
@@ -36,9 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvName"
-        android:visibility="gone"
         android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
     </LinearLayout>
 

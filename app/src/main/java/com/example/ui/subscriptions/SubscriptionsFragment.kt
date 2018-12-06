@@ -24,13 +24,13 @@ import javax.inject.Provider
 
 class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = "SubscriptionsPresenter")
+    @InjectPresenter(type = PresenterType.WEAK, tag = "FavoriteSpeakersPresenter")
     lateinit var presenter: SubscriptionsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SubscriptionsPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = "SubscriptionsPresenter")
+    @ProvidePresenter(type = PresenterType.WEAK, tag = "FavoriteSpeakersPresenter")
     fun providePresenter(): SubscriptionsPresenter = presenterProvider.get()
 
     private val adapter: SimplePagingRecyclerViewAdapter<Subscription> by lazy {

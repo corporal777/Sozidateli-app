@@ -105,16 +105,20 @@ class DummyRepositoryImpl
         }
     }
 
-    private fun generateSpeakers(limit: Int, offset: Int): List<User> {
+    private fun generateSpeakers(limit: Int, offset: Int,onlyFavorite:Boolean = false): List<User> {
         return (1..limit).map { index ->
             User(
                     offset + index,
                     names.random(),
                     avatars.random(),
                     getRandomLongText(),
-                    Random.nextBoolean()
+                    subscribed = if(onlyFavorite) true else Random.nextBoolean()
             )
         }
+    }
+
+    override fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset,true)) }
     }
 
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {

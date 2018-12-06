@@ -18,7 +18,7 @@ class ProfilePresenter
 @Inject constructor(private val appData:AppData) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter{
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.user = User(1,"Иван Петрович","https://histrf.ru/uploads/media/person/0001/04/thumb_3560_person_full.jpeg","участник",Event("231","Тестовое мероприятие","",0,0,"Test LDT", Status.APPROVED),"ivanivanov@yandex.ru","+7 (932) 451-21-33",0,"Москва","https://vk.com/id_0","Высшее политтехническое Депутат академии высших научных дипломированных специалистов в области шкафостроения Директор кандидатов наук")
+        appData.user = User(1,"Иван Петрович","https://histrf.ru/uploads/media/person/0001/04/thumb_3560_person_full.jpeg","участник",Event("231","Тестовое мероприятие","","",0,0,"Test LDT", Status.APPROVED),"ivanivanov@yandex.ru","+7 (932) 451-21-33",0,"Москва","https://vk.com/id_0","Высшее политтехническое Депутат академии высших научных дипломированных специалистов в области шкафостроения Директор кандидатов наук")
     }
 
     override fun attachView(view: ProfileContract.View?) {

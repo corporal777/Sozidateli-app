@@ -9,6 +9,7 @@ import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.view.View
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -33,8 +34,27 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SpeakersPresenter = presenterProvider.get().apply {
-        val data = SpeakersFragmentArgs.fromBundle(arguments)
-        event = data.event
+        arguments?.let {
+            if(it.containsKey(ARG_EVENT)) {
+                val data = SpeakersFragmentArgs.fromBundle(it)
+                event = data.event
+            }
+            onlyFavorite = it.getBoolean(ARG_ONLY_FAVORITE, false)
+        }
+    }
+
+    companion object {
+        private const val ARG_ONLY_FAVORITE = "only_fav"
+        private const val ARG_EVENT = "event"
+
+
+        fun newInstance(onlyFavorite: Boolean = false): SpeakersFragment {
+            val fragment = SpeakersFragment()
+            fragment.arguments = bundleOf(
+                    ARG_ONLY_FAVORITE to onlyFavorite
+            )
+            return fragment
+        }
     }
 
     private val adapter: SimplePagingRecyclerViewAdapter<User> by lazy {

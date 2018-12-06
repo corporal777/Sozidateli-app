@@ -69,6 +69,14 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_keyboard_arrow_right"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
         </android.support.constraint.ConstraintLayout>
 
         <View
@@ -94,6 +102,12 @@
                 style="@style/ProfileFieldTextView"
                 android:text="@string/profile_favorite" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_keyboard_arrow_right"/>
+
         </FrameLayout>
 
         <View
@@ -112,6 +126,12 @@
             <TextView
                 style="@style/ProfileFieldTextView"
                 android:text="@string/profile_me_events" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_keyboard_arrow_right"/>
 
         </FrameLayout>
 
@@ -213,6 +233,12 @@
                 style="@style/ProfileFieldTextView"
                 android:text="@string/profile_about_app" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_keyboard_arrow_right"/>
+
         </FrameLayout>
 
         <View
@@ -231,7 +257,11 @@
             <TextView
                 style="@style/ProfileFieldTextView"
                 android:text="@string/profile_setting_chat" />
-
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_keyboard_arrow_right"/>
         </FrameLayout>
 
         <View

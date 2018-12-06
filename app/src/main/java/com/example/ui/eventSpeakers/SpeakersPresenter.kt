@@ -15,11 +15,12 @@ class SpeakersPresenter
         private val dummyRepository: DummyRepository
 ) : BasePresenter<SpeakersContract.View>(), SpeakersContract.Presenter {
 
-    lateinit var event: Event
+    var event: Event?=null
+    var onlyFavorite = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        SimplePagination { limit, offset -> dummyRepository.loadEventSpeakers(event.id, limit, offset) }
+        SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.id, limit, offset) }
                 .create()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)

@@ -19,6 +19,6 @@ data class User(
         var city:String? = null,
         var sn:String?=null,
         var educations:String?=null,
-        var info: String?,
-        var subscribed: Boolean
+        var info: String?="",
+        var subscribed: Boolean=false
 )

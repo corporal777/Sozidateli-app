@@ -18,6 +18,10 @@
         <action
             android:id="@+id/profile_to_full_profile"
             app:destination="@+id/profile_full_fragment" />
+
+        <action
+            android:id="@+id/profile_to_favorite"
+            app:destination="@+id/favorite_fragment" />
     </fragment>
 
 
@@ -35,4 +39,9 @@
         android:id="@+id/profile_full_fragment"
         android:name="com.example.ui.profile.profileFull.ProfileFullFragment"
         android:label=" "/>
+
+    <fragment
+        android:id="@+id/favorite_fragment"
+        android:name="com.example.ui.profile.favoritesTab.FavoriteFragment"
+        android:label="@string/favorite_title"/>
 </navigation>

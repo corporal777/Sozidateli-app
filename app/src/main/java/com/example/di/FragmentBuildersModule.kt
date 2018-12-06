@@ -16,6 +16,7 @@ import com.example.ui.eventSpeakers.SpeakersFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.profile.ProfileFragment
+import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
@@ -82,4 +83,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSpeakersFragment(): SpeakersFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFavoriteFragment(): FavoriteFragment
 }

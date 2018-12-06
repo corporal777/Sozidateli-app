@@ -36,7 +36,7 @@
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
 
     <string name="profile_status">Ваш статус: %s</string>
-    <string name="profile_status_more">Подробнее о статусе ></string>
+    <string name="profile_status_more">Подробнее о статусе</string>
     <string name="profile_title">Личный кабинет</string>
     <string name="profile_favorite">Избранное</string>
     <string name="profile_me_events">Мои мероприятия</string>
@@ -72,4 +72,10 @@
     <string name="speakers">Спикеры</string>
     <string name="add_to_favorites">Добавить в избранное</string>
     <string name="remove_from_favorites">Удалить из избранного</string>
+
+    <string name="favorite_title">Избранное</string>
+    <string-array name="favorite_tab_name_array">
+        <item>Спикеры</item>
+        <item>Организации</item>
+    </string-array>
 </resources>
