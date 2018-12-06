@@ -108,11 +108,11 @@ class DummyRepositoryImpl
 
     private fun generateUser(id: Int): User {
         return User(
-                "$id",
-                names.random(),
-                avatars.random(),
-                getRandomLongText(),
-                Random.nextBoolean()
+                id = "$id",
+                name = names.random(),
+                image = avatars.random(),
+                info = getRandomLongText(),
+                subscribed = Random.nextBoolean()
         )
     }
 
