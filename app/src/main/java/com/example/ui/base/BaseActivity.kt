@@ -15,6 +15,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         setContentView(layout())
     }
 
+    abstract fun hideToolbar()
+    abstract fun showToolbar()
+
     @LayoutRes
     abstract fun layout(): Int
 

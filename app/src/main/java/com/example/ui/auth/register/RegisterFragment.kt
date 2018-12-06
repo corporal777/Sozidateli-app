@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -27,6 +28,10 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     @ProvidePresenter
     fun providePresenter(): RegisterPresenter = presenterProvider.get()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,7 +43,9 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { presenter.changeEmailText(p0.toString())}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                presenter.changeEmailText(p0.toString())
+            }
         })
 
         etPassword.addTextChangedListener(object : TextWatcher {
@@ -46,7 +53,9 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { presenter.chagnePasswordText(p0.toString())}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                presenter.chagnePasswordText(p0.toString())
+            }
         })
 
         etName.addTextChangedListener(object : TextWatcher {
@@ -54,7 +63,9 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { presenter.changeNameText(p0.toString())}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                presenter.changeNameText(p0.toString())
+            }
         })
     }
 
@@ -71,14 +82,14 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     }
 
     override fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean) {
-        colorTextPasswordChecker(tvPasswordStrong1,isHasSix)
-        colorTextPasswordChecker(tvPasswordStrong2,isOneCap)
-        colorTextPasswordChecker(tvPasswordStrong3,isHasSymbol)
+        colorTextPasswordChecker(tvPasswordStrong1, isHasSix)
+        colorTextPasswordChecker(tvPasswordStrong2, isOneCap)
+        colorTextPasswordChecker(tvPasswordStrong3, isHasSymbol)
     }
 
     private fun colorTextPasswordChecker(textView: TextView, has: Boolean) {
         val colorRed = Color.RED
-        val colorGreen = ContextCompat.getColor(context!!,R.color.auth_accept_green)
+        val colorGreen = ContextCompat.getColor(context!!, R.color.auth_accept_green)
 
         textView.setTextColor(if (has) colorGreen else colorRed)
     }

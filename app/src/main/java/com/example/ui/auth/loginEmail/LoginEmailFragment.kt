@@ -2,10 +2,10 @@ package com.example.ui.auth.loginEmail
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -26,26 +26,34 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     @ProvidePresenter
     fun providePresenter(): LoginEmailPresenter = presenterProvider.get()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnRegister.setOnClickListener { presenter.clickRegister() }
         btnLogin.setOnClickListener { presenter.clickLogin() }
         ivClose.setOnClickListener { presenter.clickOnBack() }
-        etEmail.addTextChangedListener(object :TextWatcher{
+        etEmail.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { presenter.changeEmailText(p0.toString())}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                presenter.changeEmailText(p0.toString())
+            }
         })
 
-        etPassword.addTextChangedListener(object :TextWatcher{
+        etPassword.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { presenter.chagnePasswordText(p0.toString())}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                presenter.chagnePasswordText(p0.toString())
+            }
         })
     }
 
@@ -59,14 +67,25 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     }
 
     override fun enableLoginBtn(isEnable: Boolean) {
-        btnLogin.isEnabled = isEnable
+        btnLogin.apply {
+            isEnabled = isEnable
 
-        if(isEnable){
-            btnLogin.setBackgroundResource(R.drawable.background_btn_auth)
-            btnLogin.setTextColor(Color.WHITE)
-        } else{
-            btnLogin.setBackgroundResource(R.drawable.background_edittext_login)
-            btnLogin.setTextColor(Color.GRAY)
+            val background: Int
+            val textColor: Int
+            val alpha: Float
+            if (isEnable) {
+                background = R.drawable.background_btn_auth
+                textColor = Color.WHITE
+                alpha = 1f
+            } else {
+                background = R.drawable.background_edittext_login
+                textColor = Color.GRAY
+                alpha = 0.5f
+            }
+
+            setBackgroundResource(background)
+            setTextColor(textColor)
+            this.alpha = alpha
         }
     }
 

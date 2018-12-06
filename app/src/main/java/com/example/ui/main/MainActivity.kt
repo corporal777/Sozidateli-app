@@ -1,6 +1,7 @@
 package com.example.ui.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -24,6 +25,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     fun providePresenter(): MainPresenter = presenterProvider.get()
 
     private val navigatedListener = NavController.OnNavigatedListener { controller, destination ->
+        destination.defaultArguments
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onStop() {
         super.onStop()
 //        EventBus.getDefault().unregister(this)
+    }
+
+    override fun hideToolbar() {
+        supportActionBar?.hide()
+        toolbarDivider.visibility = View.GONE
+    }
+
+    override fun showToolbar() {
+        supportActionBar?.show()
+        toolbarDivider.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {

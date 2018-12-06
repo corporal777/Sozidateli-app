@@ -4,6 +4,7 @@ import com.example.data.models.*
 import com.example.util.LOREM
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
+import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -105,14 +106,30 @@ class DummyRepositoryImpl
         }
     }
 
+    private fun generateUser(id: Int): User {
+        return User(
+                "$id",
+                names.random(),
+                avatars.random(),
+                getRandomLongText(),
+                Random.nextBoolean()
+        )
+    }
+
     private fun generateSpeakers(limit: Int, offset: Int): List<User> {
+        return (1..limit).map { index -> generateUser(offset + index) }
+    }
+
+    private fun generateUserChats(limit: Int, offset: Int): List<UserChat> {
         return (1..limit).map { index ->
-            User(
-                    offset + index,
-                    names.random(),
-                    avatars.random(),
-                    getRandomLongText(),
-                    Random.nextBoolean()
+            UserChat(
+                    "testChat",
+                    generateUser(offset + index),
+                    ChatMessage(
+                            getRandomLongText(),
+                            "${offset + index}",
+                            Date(getRandomDate())
+                    )
             )
         }
     }
@@ -135,5 +152,9 @@ class DummyRepositoryImpl
 
     override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset)) }
+    }
+
+    override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
     }
 }

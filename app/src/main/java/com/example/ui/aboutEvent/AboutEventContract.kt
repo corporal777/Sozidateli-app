@@ -1,6 +1,7 @@
 package com.example.ui.aboutEvent
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
@@ -25,6 +26,9 @@ interface AboutEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showTransfer(event: Event)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setChatLabel(label: String)
     }
 
     interface Presenter : BaseContract.Presenter {

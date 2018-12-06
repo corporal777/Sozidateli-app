@@ -9,12 +9,19 @@
         android:id="@+id/rvChat"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/white"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/inputContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_chat_message_incoming" />
+
+    <View
+        android:id="@+id/inputDivider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/inputContainer"
+        app:layout_constraintTop_toBottomOf="@+id/rvChat" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/inputContainer"
@@ -36,7 +43,7 @@
             android:inputType="textCapSentences"
             android:paddingStart="18dp"
             android:paddingEnd="10dp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnSend"
@@ -51,6 +58,7 @@
             android:background="?attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_send"
+            android:tint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="ContentDescription" />
     </android.support.constraint.ConstraintLayout>

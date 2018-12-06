@@ -1,6 +1,7 @@
 package com.example.ui.aboutEvent
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -86,6 +87,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
 
     override fun showTransfer(event: Event) {
 
+    }
+
+    override fun setChatLabel(label: String) {
+        (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 
     override fun isShowToolbar() = true
