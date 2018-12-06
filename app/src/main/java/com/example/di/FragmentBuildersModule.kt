@@ -1,5 +1,6 @@
 package com.example.di
 
+import com.example.ui.about.AboutFragment
 import com.example.ui.aboutEvent.AboutEventFragment
 import com.example.ui.aboutForum.AboutForumFragment
 import com.example.ui.auth.login.LoginFragment
@@ -14,6 +15,8 @@ import com.example.ui.eventNewsList.NewsListFragment
 import com.example.ui.eventSpeakers.SpeakersFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
+import com.example.ui.profile.ProfileFragment
+import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
@@ -41,8 +44,6 @@ abstract class FragmentBuildersModule {
     @ContributesAndroidInjector
     abstract fun contributeWelcomeFragment(): WelcomeFragment
 
-    abstract fun contributeChatFragment(): ChatFragment
-
     @ContributesAndroidInjector
     abstract fun contributeEventsTabsFragment(): EventsTabsFragment
 
@@ -54,6 +55,15 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMyEventsFragment(): MyEventsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProfileFragment(): ProfileFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAboutFragment(): AboutFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProfileFullFragment(): ProfileFullFragment
 
     @ContributesAndroidInjector
     abstract fun contributeAboutEventFragment(): AboutEventFragment

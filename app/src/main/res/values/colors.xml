@@ -24,4 +24,6 @@
     <color name="auth_email_color">#bd9b72</color>
     <color name="auth_background">#fafafa</color>
     <color name="auth_accept_green">#acd9be</color>
+
+    <color name="profile_divider">#eaeaea</color>
 </resources>

@@ -33,6 +33,37 @@
         <item name="viewBackground">@color/colorAccent</item>
     </style>
 
+    <style name="ProfileFieldTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    
+    <style name="ProfileInfoField">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <style name="ProfileInfoField.Label">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="ProfileInfoField.Text">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">4dp</item>
+    </style>
+    
     <style name="ViewDivider">
         <item name="android:background">@drawable/divider</item>
     </style>
