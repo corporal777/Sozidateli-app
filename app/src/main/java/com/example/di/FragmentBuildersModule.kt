@@ -11,6 +11,7 @@ import com.example.ui.chatList.ChatListFragment
 import com.example.ui.eventDocuments.DocumentsListFragment
 import com.example.ui.eventNews.NewsFragment
 import com.example.ui.eventNewsList.NewsListFragment
+import com.example.ui.eventSpeakers.SpeakersFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.recommendations.RecommendationsFragment
@@ -68,4 +69,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeDocumentsListFragment(): DocumentsListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSpeakersFragment(): SpeakersFragment
 }

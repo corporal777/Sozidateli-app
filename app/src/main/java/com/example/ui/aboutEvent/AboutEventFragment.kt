@@ -81,7 +81,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
     }
 
     override fun showContacts(event: Event) {
-
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(event))
     }
 
     override fun showTransfer(event: Event) {

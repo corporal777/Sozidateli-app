@@ -8,5 +8,7 @@ data class User(
         @PrimaryKey
         val id: Int,
         var name: String?,
-        var image: String?
+        var image: String?,
+        var info: String?,
+        var subscribed: Boolean
 )

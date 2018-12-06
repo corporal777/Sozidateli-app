@@ -27,6 +27,22 @@ class DummyRepositoryImpl
             "https://pbs.twimg.com/profile_images/424484505915621376/EOwsjaMZ.png"
     )
 
+    private val names = listOf(
+            "Наталья Краснова",
+            "Анна Морозова",
+            "Владимир Малыч",
+            "Николай Иванов",
+            "Александра Майер"
+    )
+
+    private val avatars = listOf(
+            "https://st.kp.yandex.net/images/actor_iphone/iphone360_10143.jpg",
+            "https://st.kp.yandex.net/images/actor_iphone/iphone360_11380.jpg",
+            "https://st.kp.yandex.net/images/actor_iphone/iphone360_24302.jpg",
+            "https://st.kp.yandex.net/images/actor_iphone/iphone360_21444.jpg",
+            "https://st.kp.yandex.net/images/actor_iphone/iphone360_3903.jpg"
+    )
+
     private fun getRandomDate(): Long {
         val oneYear = 31536000000
         val now = System.currentTimeMillis()
@@ -89,6 +105,18 @@ class DummyRepositoryImpl
         }
     }
 
+    private fun generateSpeakers(limit: Int, offset: Int): List<User> {
+        return (1..limit).map { index ->
+            User(
+                    offset + index,
+                    names.random(),
+                    avatars.random(),
+                    getRandomLongText(),
+                    Random.nextBoolean()
+            )
+        }
+    }
+
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateEvents(limit, offset)) }
     }
@@ -103,5 +131,9 @@ class DummyRepositoryImpl
 
     override fun loadDocuments(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateDocuments(limit, offset)) }
+    }
+
+    override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset)) }
     }
 }

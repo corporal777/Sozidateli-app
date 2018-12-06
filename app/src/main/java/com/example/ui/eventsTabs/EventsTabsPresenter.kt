@@ -9,6 +9,11 @@ class EventsTabsPresenter
 @Inject constructor(
 ) : BasePresenter<EventsTabsContract.View>(), EventsTabsContract.Presenter {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.apply { selectRecommendedTab() }
+    }
+
     override fun onRecommendedTabClick() = viewState.selectRecommendedTab()
 
     override fun onSubscriptionsClick() = viewState.selectSubscriptionsTab()

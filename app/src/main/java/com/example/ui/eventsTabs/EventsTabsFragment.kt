@@ -46,9 +46,9 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
                 }
             })
 
-            addTab(newTab().apply { setText(R.string.tab_recommended_title) }, true)
-            addTab(newTab().apply { setText(R.string.tab_subscriptions_title) })
-            addTab(newTab().apply { setText(R.string.tab_events_title) })
+            addTab(newTab().apply { setText(R.string.tab_recommended_title) }, false)
+            addTab(newTab().apply { setText(R.string.tab_subscriptions_title) }, false)
+            addTab(newTab().apply { setText(R.string.tab_events_title) }, false)
         }
     }
 

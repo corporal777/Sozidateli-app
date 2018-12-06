@@ -34,6 +34,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_about_event_fragment_to_speakers_list_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -44,8 +49,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="259" />
-                            <option name="y" value="-274" />
+                            <option name="x" value="191" />
+                            <option name="y" value="-233" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -56,8 +61,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="250" />
-                            <option name="y" value="348" />
+                            <option name="x" value="389" />
+                            <option name="y" value="208" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -68,8 +73,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="602" />
-                            <option name="y" value="54" />
+                            <option name="x" value="609" />
+                            <option name="y" value="-75" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -80,8 +85,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="404" />
-                            <option name="y" value="54" />
+                            <option name="x" value="389" />
+                            <option name="y" value="-77" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -92,6 +97,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="speakers_list_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="190" />
+                            <option name="y" value="423" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
