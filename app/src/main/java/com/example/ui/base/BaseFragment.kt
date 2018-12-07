@@ -48,9 +48,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onBack() {
-        activity?.apply {
-            onBackPressed()
-        }
+    override fun navigateUp() {
+        mActivity?.navigateUp()
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -24,8 +23,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @ProvidePresenter
     fun providePresenter(): MainPresenter = presenterProvider.get()
 
+    private val startDestinations = arrayOf(R.id.events_tabs_fragment)
+
     private val navigatedListener = NavController.OnNavigatedListener { controller, destination ->
-        destination.defaultArguments
+        supportActionBar?.title = destination.label
+
+        presenter.apply {
+            if (startDestinations.contains(destination.id)) onOpenStartDestination()
+            else onOpenNotStartDestination()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,40 +39,23 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnNavigatedListener(navigatedListener)
-        setupActionBarWithNavController(navController)
     }
 
-    override fun onSupportNavigateUp() = findNavController().popBackStack()
+    override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onBackPressed() {
-        if (!onSupportNavigateUp()) {
-            finish()
-        }
-    }
-
-    private fun isCurrentNavigationAreSame(navId: Int): Boolean {
-        return findNavController().currentDestination?.id == navId
+        if (!onSupportNavigateUp()) finish()
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
-//    @Subscribe
-//    fun onEvent(event: ShowGroupEvent) {
-//    }
-
-    override fun onStart() {
-        super.onStart()
-//        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        EventBus.getDefault().unregister(this)
-    }
-
     override fun hideToolbar() {
         supportActionBar?.hide()
         toolbarDivider.visibility = View.GONE
+    }
+
+    override fun navigateUp() {
+        findNavController().navigateUp()
     }
 
     override fun showToolbar() {
@@ -74,13 +63,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         toolbarDivider.visibility = View.VISIBLE
     }
 
+    override fun showBackButton(show: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(show)
+    }
+
     override fun onDestroy() {
         findNavController().removeOnNavigatedListener(navigatedListener)
         super.onDestroy()
-    }
-
-    override fun onBack() {
-        onBackPressed()
     }
 
     override fun layout() = R.layout.activity_main

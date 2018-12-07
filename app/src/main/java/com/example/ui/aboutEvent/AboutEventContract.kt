@@ -27,8 +27,11 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showTransfer(event: Event)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setChatLabel(label: String)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setLabel(label: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRequest(event: Event)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -37,5 +40,6 @@ interface AboutEventContract {
         fun onDocumentsClick()
         fun onContactsClick()
         fun onTransferClick()
+        fun onGoToEventClick()
     }
 }

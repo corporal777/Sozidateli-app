@@ -19,7 +19,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_event.*
 import setDatesIntervalText
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -94,6 +93,10 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
         val extras = FragmentNavigatorExtras(*sharedElements)
         findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
+    }
+
+    override fun showEventRequest(event: Event) {
+        findParentNavigation().navigate(R.id.request_fragment)
     }
 
     override fun isShowToolbar() = true

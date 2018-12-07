@@ -7,4 +7,8 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter
 @Inject constructor(
-) : BasePresenter<MainContract.View>(), MainContract.Presenter
+) : BasePresenter<MainContract.View>(), MainContract.Presenter {
+    override fun onOpenStartDestination() = viewState.showBackButton(false)
+
+    override fun onOpenNotStartDestination() = viewState.showBackButton(true)
+}

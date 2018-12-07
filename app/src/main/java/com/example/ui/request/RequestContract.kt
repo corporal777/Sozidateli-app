@@ -1,17 +1,18 @@
-package com.example.ui.main
+package com.example.ui.request
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 
-interface MainContract {
+interface RequestContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
-        fun showBackButton(show: Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun enableActionButton(enable: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onOpenStartDestination()
-        fun onOpenNotStartDestination()
+        fun onCloseClick()
     }
 }

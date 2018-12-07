@@ -85,4 +85,8 @@
     <string name="edit">Редактировать</string>
     <string name="save">Сохранить</string>
 
+    <string name="request_label">Заявка на участие</string>
+    <string name="request_requires">Пожалуйста, заполните все поля, чтобы участвовать в мероприятии</string>
+    <string name="request_make_request">Подать заявку</string>
+
 </resources>

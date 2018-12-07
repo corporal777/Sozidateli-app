@@ -33,6 +33,10 @@
         <item name="viewBackground">@color/colorAccent</item>
     </style>
 
+    <style name="InputBorder">
+        <item name="viewBackground">@color/input_border</item>
+    </style>
+
     <style name="ProfileFieldTextView">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -40,7 +44,7 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">15sp</item>
     </style>
-    
+
     <style name="ProfileInfoField">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
@@ -63,7 +67,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">4dp</item>
     </style>
-    
+
     <style name="ViewDivider">
         <item name="android:background">@drawable/divider</item>
     </style>
@@ -76,5 +80,10 @@
     <style name="ViewDivider.Vertical">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="TextTitle">
+        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textSize">21sp</item>
     </style>
 </resources>

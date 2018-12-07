@@ -1,7 +1,6 @@
 package com.example.ui.recommendations
 
 import android.arch.paging.PagedList
-import android.view.View
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -18,6 +17,9 @@ interface RecommendationsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRequest(event: Event)
     }
 
     interface Presenter : BaseContract.Presenter {

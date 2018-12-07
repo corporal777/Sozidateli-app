@@ -20,6 +20,7 @@ import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
+import com.example.ui.request.RequestFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -90,4 +91,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeProfileEditFragment(): ProfileEditFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeRequestFragment(): RequestFragment
 }
