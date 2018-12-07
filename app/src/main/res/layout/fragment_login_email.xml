@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
+    android:layout_height="match_parent"
     android:background="@color/auth_background"
-    android:layout_height="match_parent">
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,66 +12,65 @@
 
         android:orientation="vertical">
 
-        <include layout="@layout/auth_logo"/>
+        <include layout="@layout/auth_logo" />
 
         <TextView
+            style="@style/TextTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/auth_label_login"
             android:layout_gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="21sp"
-            android:layout_marginTop="60dp"/>
+            android:layout_marginTop="60dp"
+            android:text="@string/auth_label_login" />
 
         <EditText
-            style="@style/Auth.EditText"
-            android:hint="@string/email"
             android:id="@+id/etEmail"
-            android:layout_marginTop="30dp"/>
+            style="@style/Auth.EditText"
+            android:layout_marginTop="30dp"
+            android:hint="@string/email" />
 
         <EditText
-            style="@style/Auth.EditText"
             android:id="@+id/etPassword"
-            android:hint="@string/auth_hint_password"
-            android:layout_marginTop="30dp"/>
+            style="@style/Auth.EditText"
+            android:layout_marginTop="30dp"
+            android:hint="@string/auth_hint_password" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/auth_forgot_password"
             android:layout_marginTop="7dp"
-            android:textSize="15sp"
-            android:gravity="end"/>
+            android:gravity="end"
+            android:text="@string/auth_forgot_password"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/auth_login_btn"
-        android:textColor="@android:color/white"
-        android:id="@+id/btnLogin"
-        android:layout_marginBottom="10dp"
         android:layout_above="@id/btnRegister"
-        android:background="@drawable/background_btn_auth" />
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/background_btn_auth"
+        android:text="@string/auth_login_btn"
+        android:textColor="@android:color/white" />
 
     <Button
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/auth_register_btn"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:id="@+id/btnRegister"
-        android:textStyle="bold"
-        android:textColor="@color/auth_email_color"
         android:background="@android:color/transparent"
-        android:layout_alignParentBottom="true"/>
+        android:text="@string/auth_register_btn"
+        android:textColor="@color/auth_email_color"
+        android:textStyle="bold" />
 
     <ImageView
+        android:id="@+id/ivClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ivClose"
-        android:src="@drawable/ic_close_black_24dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_close_black_24dp" />
 
 </RelativeLayout>

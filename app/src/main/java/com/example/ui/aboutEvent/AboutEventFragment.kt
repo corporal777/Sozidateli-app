@@ -56,6 +56,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
             text = getString(R.string.about_event_transfer)
             setOnClickListener { presenter.onTransferClick() }
         }
+
+        btnGoToEvent.setOnClickListener { presenter.onGoToEventClick() }
     }
 
     override fun setEventData(event: Event) {
@@ -89,7 +91,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
 
     }
 
-    override fun setChatLabel(label: String) {
+    override fun showEventRequest(event: Event) {
+        findNavController().navigate(R.id.request_fragment)
+    }
+
+    override fun setLabel(label: String) {
         (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 

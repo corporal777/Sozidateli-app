@@ -16,7 +16,7 @@ class AboutEventPresenter
         super.onFirstViewAttach()
         viewState.apply {
             setEventData(event)
-            setChatLabel(event.name)
+            setLabel(event.name)
         }
     }
 
@@ -29,4 +29,6 @@ class AboutEventPresenter
     override fun onContactsClick() = viewState.showContacts(event)
 
     override fun onTransferClick() = viewState.showTransfer(event)
+
+    override fun onGoToEventClick() = viewState.showEventRequest(event)
 }

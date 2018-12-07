@@ -24,8 +24,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="60dp"
                 android:text="@string/auth_register_btn"
-                android:textColor="@android:color/black"
-                android:textSize="21sp" />
+                style="@style/TextTitle" />
 
             <EditText
                 android:id="@+id/etName"

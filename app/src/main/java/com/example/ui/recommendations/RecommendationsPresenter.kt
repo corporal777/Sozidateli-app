@@ -35,9 +35,7 @@ class RecommendationsPresenter
         viewState.showAboutEvent(event, *sharedElements)
     }
 
-    override fun onGoToEventClick(event: Event) {
-
-    }
+    override fun onGoToEventClick(event: Event) = viewState.showEventRequest(event)
 
     override fun onScrollChange(position: Int, offset: Int) {
         scrollPosition = position

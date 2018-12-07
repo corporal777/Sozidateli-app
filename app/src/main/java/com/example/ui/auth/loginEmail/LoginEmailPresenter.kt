@@ -3,7 +3,6 @@ package com.example.ui.auth.loginEmail
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
-import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthUtil
 import performOnBackgroundOutOnMain
@@ -25,7 +24,7 @@ class LoginEmailPresenter
     }
 
 
-    override fun clickOnBack() = viewState.onBack()
+    override fun clickOnBack() = viewState.navigateUp()
 
     override fun changeEmailText(email: String) {
         isEmailValid = AuthUtil.isValidEmail(email)

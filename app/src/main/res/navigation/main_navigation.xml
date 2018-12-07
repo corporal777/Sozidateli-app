@@ -20,9 +20,20 @@
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_navigation" />
+        <action
+            android:id="@+id/action_events_tabs_fragment_to_request_fragment"
+            app:destination="@id/request_fragment" />
     </fragment>
     <include app:graph="@navigation/chat_navigation" />
     <include app:graph="@navigation/about_event_navigation" />
     <include app:graph="@navigation/profile_navigation" />
 
+    <fragment
+        android:id="@+id/request_fragment"
+        android:name="com.example.ui.request.RequestFragment"
+        tools:layout="@layout/fragment_request">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
 </navigation>
