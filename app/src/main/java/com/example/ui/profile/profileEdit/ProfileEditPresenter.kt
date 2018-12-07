@@ -55,6 +55,6 @@ class ProfileEditPresenter
             }
         }
 
-        viewState.onBack()
+        viewState.navigateUp()
     }
 }

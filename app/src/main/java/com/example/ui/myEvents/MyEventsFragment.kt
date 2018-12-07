@@ -119,7 +119,11 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
         val extras = FragmentNavigatorExtras(*sharedElements)
-        findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
+        try {
+            findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
+        } catch (e:IllegalArgumentException){
+            e.printStackTrace()
+        }
     }
 
     override fun isShowToolbar() = true
