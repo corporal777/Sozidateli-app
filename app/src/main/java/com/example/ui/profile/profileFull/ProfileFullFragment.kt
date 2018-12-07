@@ -1,5 +1,9 @@
 package com.example.ui.profile.profileFull
 
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -8,6 +12,7 @@ import com.example.R
 import com.example.data.models.User
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
+import com.example.util.Utils
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile_full.*
 import javax.inject.Inject
@@ -23,6 +28,28 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
 
     @ProvidePresenter
     fun providePresenter(): ProfileFullPresenter = presenterProvider.get()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_profile_full, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.edit -> presenter.onEditClick()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
+    override fun showEditProfile() {
+        findNavController().navigate(ProfileFullFragmentDirections.profileToEdit())
+    }
 
     override fun setUser(user: User) {
         if (!user.image.isNullOrEmpty()) Picasso.get().load(user.image).transform(CropCircleTransformation()).into(ivAvatar)
@@ -41,7 +68,7 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         }
 
         setVisibleField(llBirthday, user.birthday)
-        tvBirthday.text = user.birthday.toString()
+        tvBirthday.text = Utils.defaultDataFormatter.format(user.birthday)
 
         setVisibleField(llCity, user.city)
         user.city?.let {
@@ -60,9 +87,9 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
 
         eiInstitution.setName(getString(R.string.profile_institution))
         eiInstitution.setDataInfo(hashMapOf(
-                "" to "2013 - н.в.",
-                "Специальность" to "Технолог",
-                "Учебное заведение" to "Коледж имени ПТУ"
+                "" to Utils.getDatesInterval(user.startEducate,user.endEducate),
+                "Специальность" to user.speciality,
+                getString(R.string.profile_institution) to user.institution
         ))
     }
 

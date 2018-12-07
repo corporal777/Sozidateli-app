@@ -20,5 +20,9 @@ data class User(
         var sn:String?=null,
         var educations:String?=null,
         var info: String?="",
-        var subscribed: Boolean=false
+        var subscribed: Boolean=false,
+        var startEducate: Long = 0,
+        var endEducate: Long = 0,
+        var speciality:String="",
+        var institution:String=""
 )

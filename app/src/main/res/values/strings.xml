@@ -80,4 +80,9 @@
     </string-array>
 
     <string name="chat_list">Чаты</string>
+
+    <string name="profile_show_in_profile">Отображать в профиле</string>
+    <string name="edit">Редактировать</string>
+    <string name="save">Сохранить</string>
+
 </resources>
