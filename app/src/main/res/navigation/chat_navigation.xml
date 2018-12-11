@@ -18,13 +18,15 @@
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.example.ui.chat.ChatFragment"
+        android:label="{label}"
         tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="label"
+            app:argType="string" />
         <argument
             android:name="chatId"
             app:argType="string" />
-        <argument
-            android:name="userId"
-            app:argType="string" />
+        <deepLink app:uri="http://fond.ru/chat/{chatId}?user={label}" />
     </fragment>
 
 </navigation>

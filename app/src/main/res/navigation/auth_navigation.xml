@@ -18,15 +18,14 @@
             android:id="@+id/login_to_welcome"
             app:destination="@id/welcome_fragment"
             app:popUpTo="@id/login_fragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
 
     </fragment>
 
     <fragment
         android:id="@+id/login_email_fragment"
         android:name="com.example.ui.auth.loginEmail.LoginEmailFragment"
-        android:label="Login email"
-        >
+        android:label="Login email">
 
         <action
             android:id="@+id/login_email_to_register_action"
@@ -36,7 +35,7 @@
             android:id="@+id/login_email_to_welcome_action"
             app:destination="@id/welcome_fragment"
             app:popUpTo="@id/login_email_fragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -49,8 +48,7 @@
             android:id="@+id/register_to_welcome_action"
             app:destination="@id/welcome_fragment"
             app:popUpTo="@id/register_fragment"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -62,11 +60,11 @@
         <action
             android:id="@+id/welcome_to_main"
             app:destination="@id/main_navigation"
+            app:launchSingleTop="true"
             app:popUpTo="@id/welcome_fragment"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
 
     </fragment>
 
-    <include app:graph="@navigation/main_navigation"/>
+    <include app:graph="@navigation/main_navigation" />
 </navigation>

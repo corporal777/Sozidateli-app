@@ -13,5 +13,5 @@ interface ChatRepository {
 
     fun getChatMessageQuery(chatId: String): Query
 
-    fun sendChatMessage(chatId: String, toUser: String, message: ChatMessage): Completable
+    fun sendChatMessage(chatId: String, message: ChatMessage): Completable
 }

@@ -9,7 +9,9 @@ const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"
 const val DATE_FORMAT_FULL_MONTH_NO_YEAR = "d MMMM"
 const val DATE_FORMAT_FULL_MONTH_FULL_YEAR = "d MMMM yyyy"
 
-const val CUSTOM_LABEL = "custom_label"
+const val ARG_CUSTOM_LABEL = "label"
+
+const val NOTIFICATION_DATA_DEEP_LINK = "deepLink"
 
 const val LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget sodales risus. Ut consequat mattis ipsum non sagittis. Quisque aliquam diam in placerat ultrices. Pellentesque elementum elementum nibh, vel efficitur leo pretium id. Aliquam eget risus lacus. Pellentesque rutrum risus eget augue rhoncus viverra. Phasellus id nunc bibendum, faucibus lacus ac, congue sem. Etiam a diam nec nisl fringilla tincidunt. Donec at efficitur neque. Vestibulum dictum erat in mi varius, volutpat tincidunt orci tempor. Nam id odio laoreet, scelerisque nunc et, dapibus tellus. Integer ultrices at urna et hendrerit. Duis molestie felis eget quam condimentum, eget ornare dolor faucibus. Etiam quis ante tincidunt velit pharetra aliquam ut condimentum nulla. Mauris ligula justo, efficitur in maximus quis, aliquam non ante.\n" +
         "\n" +
