@@ -17,6 +17,7 @@ import com.example.ui.eventsTabs.EventsTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
+import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
@@ -87,6 +88,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProfileEditFragment(): ProfileEditFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRequestFragment(): RequestFragment

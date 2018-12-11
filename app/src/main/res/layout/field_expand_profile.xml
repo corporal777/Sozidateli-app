@@ -24,26 +24,25 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="end|center_vertical"
         android:layout_marginTop="10dp"
-        android:rotation="90"
         android:layout_marginEnd="@dimen/profile_padding_start"
+        android:rotation="90"
         android:src="@drawable/ic_keyboard_arrow_right" />
 
+    <View style="@style/ViewDivider.Horizontal" />
+
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/llContainerInfo"
-        android:background="@color/profile_divider" />
+        android:id="@+id/bottomDivider"
+        style="@style/ViewDivider.Horizontal"
+        android:layout_below="@id/fieldRecyclerView" />
 
 
-    <LinearLayout
-        android:id="@+id/llContainerInfo"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fieldRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvName"
-        android:layout_marginBottom="20dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_marginTop="15dp"
+        android:visibility="gone" />
 
-    </LinearLayout>
 
 </RelativeLayout>
