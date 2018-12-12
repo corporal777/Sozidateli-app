@@ -1,11 +1,9 @@
-package com.example.ui.eventSpeakers
+package com.example.ui.speakers
 
 import android.arch.paging.PagedList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.view.View

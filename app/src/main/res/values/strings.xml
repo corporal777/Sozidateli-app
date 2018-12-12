@@ -90,4 +90,9 @@
     <string name="request_requires">Пожалуйста, заполните все поля, чтобы участвовать в мероприятии</string>
     <string name="request_make_request">Подать заявку</string>
 
+    <string name="event_tab_my_schedule">Расписание</string>
+    <string name="event_tab_schedule">События</string>
+    <string name="event_tab_about">О мероприятии</string>
+    <string name="event_tab_map">Карта</string>
+    <string name="event_tab_to_list">К списку</string>
 </resources>

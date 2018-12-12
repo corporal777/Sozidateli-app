@@ -36,4 +36,13 @@
             android:name="event"
             app:argType="com.example.data.models.Event" />
     </fragment>
+
+    <fragment
+        android:id="@+id/event_tabs_fragment"
+        android:name="com.example.ui.eventTabs.EventTabsFragment"
+        tools:layout="@layout/fragment_event_tabs">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
 </navigation>

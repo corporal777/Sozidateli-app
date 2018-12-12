@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/news_list_fragment"
-        android:name="com.example.ui.eventNewsList.NewsListFragment"
+        android:name="com.example.ui.newsList.NewsListFragment"
         android:label="@string/about_event_news"
         tools:layout="@layout/fragment_news_list">
         <argument
@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/news_fragment"
-        android:name="com.example.ui.eventNews.NewsFragment"
+        android:name="com.example.ui.news.NewsFragment"
         android:label=""
         tools:layout="@layout/fragment_news">
         <argument
@@ -61,7 +61,7 @@
 
     <fragment
         android:id="@+id/documents_list_fragment"
-        android:name="com.example.ui.eventDocuments.DocumentsListFragment"
+        android:name="com.example.ui.documents.DocumentsListFragment"
         android:label="@string/about_event_documents"
         tools:layout="@layout/fragment_documents_list">
         <argument
@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/speakers_list_fragment"
-        android:name="com.example.ui.eventSpeakers.SpeakersFragment"
+        android:name="com.example.ui.speakers.SpeakersFragment"
         android:label="@string/speakers"
         tools:layout="@layout/fragment_speakers">
         <argument

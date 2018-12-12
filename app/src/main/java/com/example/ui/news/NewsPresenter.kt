@@ -1,4 +1,4 @@
-package com.example.ui.eventNews
+package com.example.ui.news
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.News

@@ -9,18 +9,22 @@ import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
-import com.example.ui.eventDocuments.DocumentsListFragment
-import com.example.ui.eventNews.NewsFragment
-import com.example.ui.eventNewsList.NewsListFragment
-import com.example.ui.eventSpeakers.SpeakersFragment
+import com.example.ui.documents.DocumentsListFragment
+import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
+import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
+import com.example.ui.mySchedule.MyScheduleFragment
+import com.example.ui.news.NewsFragment
+import com.example.ui.newsList.NewsListFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
+import com.example.ui.schedule.ScheduleFragment
+import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -94,4 +98,16 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeRequestFragment(): RequestFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventTabsFragment(): EventTabsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMyScheduleFragment(): MyScheduleFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeScheduleFragment(): ScheduleFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMapTabsFragment(): MapTabsFragment
 }

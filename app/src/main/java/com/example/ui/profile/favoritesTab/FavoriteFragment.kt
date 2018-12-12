@@ -9,7 +9,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.eventSpeakers.SpeakersFragment
+import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import java.util.ArrayList

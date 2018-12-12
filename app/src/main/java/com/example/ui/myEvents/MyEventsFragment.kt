@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -48,15 +47,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                     itemContainer.apply {
                         clipToOutline = true
                         alpha = if (item.status === Status.FINISHED) 0.5f else 1f
-                        setOnClickListener {
-                            presenter.onEventClick(
-                                    item,
-                                    ivLogo to "logo",
-                                    tvOrganizationLabel to "organizationLabel",
-                                    tvEventLabel to "eventLabel",
-                                    tvEventDate to "eventDate"
-                            )
-                        }
+                        setOnClickListener { presenter.onEventClick(item) }
                     }
 
                     Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
@@ -117,13 +108,8 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
-    override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
-        val extras = FragmentNavigatorExtras(*sharedElements)
-        try {
-            findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
-        } catch (e:IllegalArgumentException){
-            e.printStackTrace()
-        }
+    override fun selectEvent(event: Event) {
+        findParentNavigation().navigate(R.id.event_tabs_fragment, bundleOf("event" to event))
     }
 
     override fun isShowToolbar() = true

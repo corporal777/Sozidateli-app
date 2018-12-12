@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/my_schedule_fragment"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/event_tab_my_schedule" />
+    <item
+        android:id="@+id/schedule_fragment"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/event_tab_schedule" />
+    <item
+        android:id="@+id/about_fragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/event_tab_about" />
+    <item
+        android:id="@+id/map_tabs_fragment"
+        android:icon="@drawable/ic_account"
+        android:title="@string/event_tab_map" />
+    <item
+        android:id="@+id/to_list"
+        android:icon="@drawable/ic_account"
+        android:title="@string/event_tab_to_list" />
+</menu>
