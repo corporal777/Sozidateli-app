@@ -2,6 +2,7 @@ package com.example.ui.myEvents
 
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Event
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
@@ -11,6 +12,7 @@ import javax.inject.Inject
 @InjectViewState
 class MyEventsPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val dummyRepository: DummyRepository
 ) : BasePresenter<MyEventsContract.View>(), MyEventsContract.Presenter {
 
@@ -31,6 +33,7 @@ class MyEventsPresenter
     }
 
     override fun onEventClick(event: Event) {
+        appData.event = event
         viewState.selectEvent(event)
     }
 

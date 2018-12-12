@@ -26,8 +26,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
 
     @ProvidePresenter
     fun providePresenter(): AboutEventPresenter = presenterProvider.get().apply {
-        val data = AboutEventFragmentArgs.fromBundle(arguments)
-        event = data.event
+//        val data = AboutEventFragmentArgs.fromBundle(arguments)
+//        event = data.event
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

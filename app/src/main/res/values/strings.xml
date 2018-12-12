@@ -95,4 +95,9 @@
     <string name="event_tab_about">О мероприятии</string>
     <string name="event_tab_map">Карта</string>
     <string name="event_tab_to_list">К списку</string>
+
+    <string name="event_map_tab_how_to_get">Как добраться</string>
+    <string name="event_map_tab_building_scheme">Схема комплекса</string>
+
+    <string name="image_load_error">Ошибка загрузки изображения</string>
 </resources>

@@ -44,6 +44,14 @@ class DummyRepositoryImpl
             "https://st.kp.yandex.net/images/actor_iphone/iphone360_3903.jpg"
     )
 
+    private val buildingSchemas = listOf(
+            "https://unecon.ru/sites/default/files/1etazh.jpg",
+            "https://sapr.ru/archive/sg/2009/1/21/3b.jpg",
+            "http://www.kirovssk.ru/upload/iblock/0d6/0d6deeb9d485cf3537456add390f8c14.jpg",
+            "https://sport.bmstu.net/uploads/media/branch_page/2016/05/09/02/469e56b0dce650be2396.jpg",
+            "https://freelance.ru/img/portfolio/pics/00/1F/A1/2072950.jpg"
+    )
+
     private fun getRandomDate(): Long {
         val oneYear = 31536000000
         val now = System.currentTimeMillis()
@@ -70,7 +78,8 @@ class DummyRepositoryImpl
                     dates.min() ?: 0,
                     dates.max() ?: System.currentTimeMillis(),
                     "Форум $index",
-                    Status.values().random()
+                    Status.values().random(),
+                    buildingSchemas.random()
             )
         }
     }
@@ -106,14 +115,14 @@ class DummyRepositoryImpl
         }
     }
 
-    private fun generateSpeakers(limit: Int, offset: Int,onlyFavorite:Boolean = false): List<User> {
+    private fun generateSpeakers(limit: Int, offset: Int, onlyFavorite: Boolean = false): List<User> {
         return (1..limit).map { index ->
             User(
                     (offset + index).toString(),
                     names.random(),
                     avatars.random(),
                     getRandomLongText(),
-                    subscribed = if(onlyFavorite) true else Random.nextBoolean()
+                    subscribed = if (onlyFavorite) true else Random.nextBoolean()
             )
         }
     }
@@ -147,7 +156,7 @@ class DummyRepositoryImpl
     }
 
     override fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset,true)) }
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset, true)) }
     }
 
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
@@ -173,4 +182,6 @@ class DummyRepositoryImpl
     override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
     }
+
+    override fun getEvent() = generateEvents(1, 0).first()
 }

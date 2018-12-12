@@ -12,17 +12,17 @@ data class User(
         var image: String? = "",
         var status: String? = null,
         @Ignore
-        var currentEvent: Event?=null,
-        var email:String?=null,
-        var phone:String?=null,
-        var birthday:Long = 0,
-        var city:String? = null,
-        var sn:String?=null,
-        var educations:String?=null,
-        var info: String?="",
-        var subscribed: Boolean=false,
+        var currentEvent: Event? = null,
+        var email: String? = null,
+        var phone: String? = null,
+        var birthday: Long = 0,
+        var city: String? = null,
+        var sn: String? = null,
+        var educations: String? = null,
+        var info: String? = "",
+        var subscribed: Boolean = false,
         var startEducate: Long = 0,
         var endEducate: Long = 0,
-        var speciality:String="",
-        var institution:String=""
+        var speciality: String = "",
+        var institution: String = ""
 )

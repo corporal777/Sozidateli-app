@@ -12,6 +12,8 @@ import com.example.ui.chatList.ChatListFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
+import com.example.ui.image.ImageViewFragment
+import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
@@ -110,4 +112,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMapTabsFragment(): MapTabsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMapFragment(): MapFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeImageViewFragment(): ImageViewFragment
 }

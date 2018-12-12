@@ -1,26 +1,78 @@
 package com.example.ui.mapTabs
 
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
+import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.Event
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.image.ImageViewFragment
+import com.example.ui.map.MapFragment
+import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
 
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.WEAK, tag = "MapTabsPresenter")
     lateinit var presenter: MapTabsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<MapTabsPresenter>
 
-    @ProvidePresenter
+    @ProvidePresenter(type = PresenterType.WEAK, tag = "MapTabsPresenter")
     fun providePresenter(): MapTabsPresenter = presenterProvider.get()
 
-    private fun findNestedNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
+    private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
+        override fun onPageSelected(position: Int) {
+            presenter.onPageSelected(position)
+        }
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewPager.apply {
+            addOnPageChangeListener(pageChangeListener)
+            tabLayout.setupWithViewPager(this)
+        }
+    }
+
+    override fun initPagesWithEvent(event: Event) {
+        val fragments by lazy {
+            listOf<Pair<Fragment, String>>(
+                    MapFragment() to getString(R.string.event_map_tab_how_to_get),
+                    ImageViewFragment.newInstance(event.buildingScheme) to getString(R.string.event_map_tab_building_scheme)
+            )
+        }
+
+        viewPager.apply {
+            adapter = TabsAdapter(fragments, childFragmentManager)
+            offscreenPageLimit = fragments.size
+        }
+    }
+
+    override fun selectPageAtPosition(position: Int) {
+        viewPager.setCurrentItem(position, false)
+    }
+
+    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_map_tabs
+
+    private inner class TabsAdapter(
+            private val fragments: List<Pair<Fragment, String>>,
+            fragmentManager: FragmentManager
+    ) : FragmentPagerAdapter(fragmentManager) {
+
+        override fun getItem(position: Int) = fragments[position].first
+
+        override fun getPageTitle(position: Int) = fragments[position].second
+
+        override fun getCount() = fragments.size
+    }
 }
