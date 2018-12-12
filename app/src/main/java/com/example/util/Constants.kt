@@ -14,6 +14,10 @@ const val DATE_FORMAT_FULL_MONTH_FULL_YEAR = "d MMMM yyyy"
 
 const val CUSTOM_LABEL = "custom_label"
 
+const val TYPE_DATE="date"
+const val TYPE_DATE_PERIOD_FROM="period_from"
+const val TYPE_DATE_PERIOD_TO="period_to"
+
 const val LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget sodales risus. Ut consequat mattis ipsum non sagittis. Quisque aliquam diam in placerat ultrices. Pellentesque elementum elementum nibh, vel efficitur leo pretium id. Aliquam eget risus lacus. Pellentesque rutrum risus eget augue rhoncus viverra. Phasellus id nunc bibendum, faucibus lacus ac, congue sem. Etiam a diam nec nisl fringilla tincidunt. Donec at efficitur neque. Vestibulum dictum erat in mi varius, volutpat tincidunt orci tempor. Nam id odio laoreet, scelerisque nunc et, dapibus tellus. Integer ultrices at urna et hendrerit. Duis molestie felis eget quam condimentum, eget ornare dolor faucibus. Etiam quis ante tincidunt velit pharetra aliquam ut condimentum nulla. Mauris ligula justo, efficitur in maximus quis, aliquam non ante.\n" +
         "\n" +
         "Sed id odio ornare, pharetra arcu id, gravida ex. Aliquam fermentum sed neque sit amet laoreet. Maecenas dolor orci, efficitur ac interdum sit amet, varius ut est. Maecenas fringilla ultrices mollis. Donec ultricies arcu est, sit amet fringilla arcu imperdiet efficitur. Aenean tincidunt lacus ut mauris aliquam, eget interdum massa mattis. Curabitur ullamcorper ex quam, et convallis dolor feugiat nec. Pellentesque vel felis at tellus cursus fringilla. Ut a elit sed nisi sagittis sagittis faucibus id massa. In imperdiet faucibus dolor id molestie. Donec efficitur enim iaculis varius interdum. Cras nec magna egestas dolor gravida accumsan sit amet eget ex. In tristique erat turpis, et lacinia velit scelerisque in. Duis lorem odio, accumsan et sem vel, auctor sollicitudin sapien.\n" +

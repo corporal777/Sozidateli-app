@@ -4,8 +4,10 @@ import com.example.data.models.*
 import com.example.util.LOREM
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
+import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 class DummyRepositoryImpl
@@ -143,6 +145,14 @@ class DummyRepositoryImpl
                             Date(getRandomDate())
                     )
             )
+        }
+    }
+
+    override fun loadSearchType(): Single<List<SearchTypeEvent>> {
+        return Single.fromCallable {
+            return@fromCallable (1..12).map{
+                SearchTypeEvent(it.toString(),"Тестовый итем ${it}")
+            }
         }
     }
 

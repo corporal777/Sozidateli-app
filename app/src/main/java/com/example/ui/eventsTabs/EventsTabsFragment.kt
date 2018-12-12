@@ -72,7 +72,7 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
     }
 
     override fun showSearch() {
-
+        findNavController().navigate(EventsTabsFragmentDirections.mainToSearch())
     }
 
     override fun showAccount() {

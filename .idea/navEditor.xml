@@ -305,6 +305,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_events_tabs_fragment_to_request_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="main_to_profile">
                               <value>
                                 <LayoutPositions />
@@ -316,6 +321,18 @@
                     </value>
                   </entry>
                   <entry key="profile_navigation">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="request_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -343,7 +360,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="265" />
-                            <option name="y" value="1080" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -355,7 +372,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="265" />
-                            <option name="y" value="368" />
+                            <option name="y" value="1080" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -367,6 +384,18 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="265" />
+                            <option name="y" value="368" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="profile_edit_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="518" />
                             <option name="y" value="724" />
                           </Point>
                         </option>
@@ -415,10 +444,34 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="265" />
-                            <option name="y" value="12" />
+                            <option name="y" value="724" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="profile_to_edit">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+        <entry key="search_navigation.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="search_fragment">
+                    <value>
+                      <LayoutPositions />
                     </value>
                   </entry>
                 </map>

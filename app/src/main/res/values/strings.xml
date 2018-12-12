@@ -89,4 +89,14 @@
     <string name="request_requires">Пожалуйста, заполните все поля, чтобы участвовать в мероприятии</string>
     <string name="request_make_request">Подать заявку</string>
 
+    <string name="search_label">Поиск</string>
+    <string name="search_hint">Введите название</string>
+    <string name="search_date">Дата мероприятия</string>
+    <string name="search_period_date">Период мероприятия</string>
+    <string name="search_places">Площадки</string>
+    <string name="search_type_event">Типы мероприятий</string>
+    <string name="search_select">Выбрать</string>
+    <string name="search_date_hint">DD/MM/YYYY</string>
+    <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
+
 </resources>
