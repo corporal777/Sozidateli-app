@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+
+    <View style="@style/ViewDivider.Horizontal" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/profile_padding_start"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="Example 1" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:id="@+id/ivSelected"/>
+
+    <View
+        style="@style/ViewDivider.Horizontal"
+        android:layout_gravity="bottom" />
+</FrameLayout>

@@ -25,6 +25,8 @@ import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
+import com.example.ui.search.SearchFragment
+import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.schedule.ScheduleFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
@@ -100,6 +102,12 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeRequestFragment(): RequestFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchFragment(): SearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchTypeFragment(): SearchTypeFragment
 
     @ContributesAndroidInjector
     abstract fun contributeEventTabsFragment(): EventTabsFragment
