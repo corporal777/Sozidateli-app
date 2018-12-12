@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/my_schedule_fragment">
+
+    <fragment
+        android:id="@+id/my_schedule_fragment"
+        android:name="com.example.ui.mySchedule.MyScheduleFragment"
+        tools:layout="@layout/fragment_my_schedule">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/schedule_fragment"
+        android:name="com.example.ui.schedule.ScheduleFragment"
+        tools:layout="@layout/fragment_schedule">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="com.example.ui.aboutEvent.AboutEventFragment"
+        tools:layout="@layout/fragment_about_event">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/map_tabs_fragment"
+        android:name="com.example.ui.mapTabs.MapTabsFragment"
+        tools:layout="@layout/fragment_map_tabs">
+        <argument
+            android:name="event"
+            app:argType="com.example.data.models.Event" />
+    </fragment>
+</navigation>

@@ -21,10 +21,5 @@ class ChatListPresenter
                 .call(compositeDisposable)
     }
 
-
-    override fun onChatClick(userChat: UserChat) {
-        userChat.user?.id?.let { userId ->
-            viewState.openChat(userId, userChat.id)
-        }
-    }
+    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id)
 }

@@ -6,7 +6,6 @@ import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.repository.ChatRepository
-import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.firebase.ui.firestore.SnapshotParser
 import performOnBackgroundOutOnMain
@@ -20,7 +19,6 @@ class ChatPresenter
 ) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String
-    lateinit var userId: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -33,14 +31,13 @@ class ChatPresenter
 
         viewState.apply {
             iniChatAdapter(chatMessageQuery, chatMessageParser)
-            setChatLabel("Тестовый чат")
         }
     }
 
     override fun onSendTextMessageClick(message: String) {
         viewState.apply { clearMessageInput() }
 
-        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.uid))
+        chatRepository.sendChatMessage(chatId, ChatMessage(text = message, senderId = appData.uid))
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, {})
                 .call(compositeDisposable)

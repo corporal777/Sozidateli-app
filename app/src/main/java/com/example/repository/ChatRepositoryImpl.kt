@@ -35,7 +35,7 @@ class ChatRepositoryImpl
             .orderBy(ChatMessage.FIELD_SEND_AT)
 
 
-    override fun sendChatMessage(chatId: String, toUser: String, message: ChatMessage): Completable {
+    override fun sendChatMessage(chatId: String, message: ChatMessage): Completable {
         val messageMap = message.toMap()
         return RxFirestore.setDocument(firestore.collection(COLLECTION_CHATS)
                 .document(chatId)

@@ -1,4 +1,4 @@
-package com.example.ui.eventDocuments
+package com.example.ui.documents
 
 import android.arch.paging.PagedList
 import android.os.Bundle

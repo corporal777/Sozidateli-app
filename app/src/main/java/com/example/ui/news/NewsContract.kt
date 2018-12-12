@@ -1,4 +1,4 @@
-package com.example.ui.eventNews
+package com.example.ui.news
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType

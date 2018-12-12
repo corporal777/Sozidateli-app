@@ -1,22 +1,22 @@
-package com.example.ui.eventNewsList
+package com.example.ui.speakers
 
 import android.arch.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.News
+import com.example.data.models.User
 import com.example.ui.base.BaseContract
 
-interface NewsListContract {
+interface SpeakersContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(news: PagedList<News>)
+        fun setData(data: PagedList<User>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showNews(news: News)
+        fun showSpeaker(user: User)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onNewsClick(news: News)
+        fun onSpeakerClick(user: User)
     }
 }

@@ -18,9 +18,6 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun scrollToLastPosition()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setChatLabel(label: String)
     }
 
     interface Presenter : BaseContract.Presenter {

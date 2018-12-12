@@ -1,7 +1,6 @@
 package com.example.ui.chat
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.WindowManager
@@ -32,7 +31,6 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val args = ChatFragmentArgs.fromBundle(arguments)
         chatId = args.chatId
-        userId = args.userId
     }
 
     private lateinit var chatAdapter: ChatAdapter
@@ -79,10 +77,6 @@ class ChatFragment : BaseFragment(), ChatContract.View {
 
     override fun clearMessageInput() {
         etMessage.text.clear()
-    }
-
-    override fun setChatLabel(label: String) {
-        (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 
     override fun isShowToolbar() = true

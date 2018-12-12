@@ -13,7 +13,7 @@ interface ChatListContract {
         fun setData(data: PagedList<UserChat>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(userOpponent: String, chatId: String)
+        fun openChat(chatId: String)
     }
 
     interface Presenter : BaseContract.Presenter {

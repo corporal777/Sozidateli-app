@@ -1,10 +1,9 @@
-package com.example.ui.eventNewsList
+package com.example.ui.newsList
 
 import android.arch.paging.PagedList
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -14,7 +13,6 @@ import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.News
 import com.example.ui.base.BaseFragment
-import com.example.util.PositionOffsetScrollListener
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_news.*
 import setDateCheckYearText

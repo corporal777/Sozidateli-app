@@ -66,8 +66,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         adapter.submitList(data)
     }
 
-    override fun openChat(userOpponent: String, chatId: String) {
-        findNavController().navigate(ChatListFragmentDirections.chatListToChat(chatId, userOpponent))
+    override fun openChat(chatId: String) {
+        findNavController().navigate(ChatListFragmentDirections.chatListToChat("Tecтовый чат", chatId))
     }
 
     override fun isShowToolbar() = true

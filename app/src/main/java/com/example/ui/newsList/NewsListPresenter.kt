@@ -1,31 +1,31 @@
-package com.example.ui.eventSpeakers
+package com.example.ui.newsList
 
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
-import com.example.data.models.User
+import com.example.data.models.News
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
 import javax.inject.Inject
 
 @InjectViewState
-class SpeakersPresenter
+class NewsListPresenter
 @Inject constructor(
         private val dummyRepository: DummyRepository
-) : BasePresenter<SpeakersContract.View>(), SpeakersContract.Presenter {
+) : BasePresenter<NewsListContract.View>(), NewsListContract.Presenter {
 
-    var event: Event?=null
-    var onlyFavorite = false
+    lateinit var event: Event
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.id, limit, offset) }
+
+        SimplePagination { limit, offset -> dummyRepository.loadNews(event.id, limit, offset) }
                 .create()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
 
-    override fun onSpeakerClick(user: User) = viewState.showSpeaker(user)
 
+    override fun onNewsClick(news: News) = viewState.showNews(news)
 }

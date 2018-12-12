@@ -12,7 +12,9 @@ const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"
 const val DATE_FORMAT_FULL_MONTH_NO_YEAR = "d MMMM"
 const val DATE_FORMAT_FULL_MONTH_FULL_YEAR = "d MMMM yyyy"
 
-const val CUSTOM_LABEL = "custom_label"
+const val ARG_CUSTOM_LABEL = "label"
+
+const val NOTIFICATION_DATA_DEEP_LINK = "deepLink"
 
 const val TYPE_DATE="date"
 const val TYPE_DATE_PERIOD_FROM="period_from"
