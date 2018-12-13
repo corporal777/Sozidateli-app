@@ -33,4 +33,6 @@
 
     <color name="event_tabs_background">#42403E</color>
     <color name="event_tabs_text">#FFFFFF</color>
+
+    <color name="image_view_error_background">#42403E</color>
 </resources>

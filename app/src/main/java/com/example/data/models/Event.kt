@@ -12,8 +12,9 @@ data class Event(
         val startDate: Long,
         val finishDate: Long,
         val organizationName: String,
-        val status: Status
-): Parcelable
+        val status: Status,
+        val place: Place
+) : Parcelable
 
 enum class Status(val code: Int) {
     APPROVED(1),

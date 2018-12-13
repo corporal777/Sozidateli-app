@@ -7,7 +7,6 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 class DummyRepositoryImpl
@@ -54,6 +53,21 @@ class DummyRepositoryImpl
             "Череповец"
     )
 
+    private val buildingSchemas = listOf(
+            "https://unecon.ru/sites/default/files/1etazh.jpg",
+            "https://sapr.ru/archive/sg/2009/1/21/3b.jpg",
+            "http://www.kirovssk.ru/upload/iblock/0d6/0d6deeb9d485cf3537456add390f8c14.jpg",
+            "https://sport.bmstu.net/uploads/media/branch_page/2016/05/09/02/469e56b0dce650be2396.jpg",
+            "https://freelance.ru/img/portfolio/pics/00/1F/A1/2072950.jpg"
+    )
+
+    private val coordinates = listOf(
+            listOf(55.753705, 37.619918),
+            listOf(55.759824, 37.625112),
+            listOf(55.741015, 37.628317),
+            listOf(55.757374, 37.660706),
+            listOf(55.828684, 37.633627)
+    )
 
     private fun getRandomDate(): Long {
         val oneYear = 31536000000
@@ -81,7 +95,13 @@ class DummyRepositoryImpl
                     dates.min() ?: 0,
                     dates.max() ?: System.currentTimeMillis(),
                     "Форум $index",
-                    Status.values().random()
+                    Status.values().random(),
+                    Place(
+                            coordinates.random(),
+                            getRandomLongText(),
+                            buildingSchemas.random(),
+                            getRandomLongText()
+                    )
             )
         }
     }
@@ -117,14 +137,14 @@ class DummyRepositoryImpl
         }
     }
 
-    private fun generateSpeakers(limit: Int, offset: Int,onlyFavorite:Boolean = false): List<User> {
+    private fun generateSpeakers(limit: Int, offset: Int, onlyFavorite: Boolean = false): List<User> {
         return (1..limit).map { index ->
             User(
                     (offset + index).toString(),
                     names.random(),
                     avatars.random(),
                     getRandomLongText(),
-                    subscribed = if(onlyFavorite) true else Random.nextBoolean()
+                    subscribed = if (onlyFavorite) true else Random.nextBoolean()
             )
         }
     }
@@ -173,14 +193,14 @@ class DummyRepositoryImpl
 
     override fun loadSearchType(): Single<List<SearchTypeEvent>> {
         return Single.fromCallable {
-            return@fromCallable (1..12).map{
-                SearchTypeEvent(it.toString(),"Тестовый итем ${it}")
+            return@fromCallable (1..12).map {
+                SearchTypeEvent(it.toString(), "Тестовый итем ${it}")
             }
         }
     }
 
     override fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset,true)) }
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset, true)) }
     }
 
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
@@ -206,4 +226,6 @@ class DummyRepositoryImpl
     override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
     }
+
+    override fun getEvent() = generateEvents(1, 0).first()
 }

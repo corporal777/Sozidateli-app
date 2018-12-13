@@ -1,6 +1,7 @@
 package com.example.ui.aboutEvent
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Event
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
@@ -8,9 +9,12 @@ import javax.inject.Inject
 @InjectViewState
 class AboutEventPresenter
 @Inject constructor(
+        private val appData: AppData
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
-    lateinit var event: Event
+    private lateinit var event: Event
+
+    private var isUserEvent = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -31,4 +35,13 @@ class AboutEventPresenter
     override fun onTransferClick() = viewState.showTransfer(event)
 
     override fun onGoToEventClick() = viewState.showEventRequest(event)
+
+    fun setEvent(event: Event) {
+        this.event = event
+    }
+
+    fun setupWithUserEvent() {
+        isUserEvent = true
+        setEvent(appData.event!!)
+    }
 }

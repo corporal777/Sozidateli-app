@@ -7,11 +7,14 @@ import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
+import com.example.ui.buildingScheme.BuildingSchemeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
+import com.example.ui.image.ImageViewFragment
+import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
@@ -118,4 +121,13 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMapTabsFragment(): MapTabsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMapFragment(): MapFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeBuildingSchemeFragment(): BuildingSchemeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeImageViewFragment(): ImageViewFragment
 }

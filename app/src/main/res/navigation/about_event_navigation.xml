@@ -11,7 +11,8 @@
         tools:layout="@layout/fragment_about_event">
         <argument
             android:name="event"
-            app:argType="com.example.data.models.Event" />
+            app:argType="com.example.data.models.Event"
+            app:nullable="true" />
         <action
             android:id="@+id/action_about_event_fragment_to_about_forum_fragment"
             app:destination="@id/about_forum_fragment" />

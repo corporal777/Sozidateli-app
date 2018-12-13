@@ -16,7 +16,6 @@
         <action
             android:id="@+id/action_events_tabs_fragment_to_about_event_navigation"
             app:destination="@id/about_event_navigation" />
-
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_navigation" />
@@ -49,5 +48,26 @@
         <argument
             android:name="event"
             app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/image_view_fragment"
+        android:name="com.example.ui.image.ImageViewFragment"
+        tools:layout="@layout/fragment_image_view">
+
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="resource"
+            app:argType="java.lang.Integer"
+            app:nullable="true" />
+
+        <argument
+            android:name="bitmap"
+            app:argType="android.graphics.Bitmap"
+            app:nullable="true" />
     </fragment>
 </navigation>

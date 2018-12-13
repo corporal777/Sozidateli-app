@@ -17,4 +17,5 @@ interface DummyRepository {
     fun loadSearchType(): Single<List<SearchTypeEvent>>
     fun loadSubevent(inSchedule:Boolean): Single<List<Subevent>>
     fun loadTags():Single<List<String>>
+    fun getEvent(): Event
 }

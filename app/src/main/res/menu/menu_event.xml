@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_chat"
         android:title="@string/event_tab_schedule" />
     <item
-        android:id="@+id/about_fragment"
+        android:id="@+id/about_event_navigation"
         android:icon="@drawable/ic_search"
         android:title="@string/event_tab_about" />
     <item
