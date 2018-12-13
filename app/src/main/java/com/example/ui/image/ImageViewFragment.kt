@@ -4,24 +4,22 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.annotation.DrawableRes
+import android.support.transition.*
+import android.support.transition.TransitionSet.ORDERING_TOGETHER
 import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import bundleOf
-import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.ui.base.BaseFragment
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_image_view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ImageViewFragment : MvpAppCompatFragment(), ImageViewContract.View {
+class ImageViewFragment : BaseFragment(), ImageViewContract.View {
 
     @InjectPresenter
     lateinit var presenter: ImageViewPresenter
@@ -50,17 +48,27 @@ class ImageViewFragment : MvpAppCompatFragment(), ImageViewContract.View {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
-        super.onCreate(savedInstanceState)
+    init {
+        val transition = TransitionSet().apply {
+            ordering = ORDERING_TOGETHER
+            addTransition(ChangeBounds())
+            addTransition(ChangeTransform())
+            addTransition(ChangeImageTransform())
+        }
+
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
+        enterTransition = Fade()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_image_view, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        postponeEnterTransition()
     }
 
     override fun setImage(bitmap: Bitmap) {
         photoView.setImageBitmap(bitmap)
+        startPostponedEnterTransition()
     }
 
     override fun showError() {
@@ -69,10 +77,14 @@ class ImageViewFragment : MvpAppCompatFragment(), ImageViewContract.View {
             setImageResource(R.drawable.ic_broken_image)
             setBackgroundColor(ContextCompat.getColor(context, R.color.image_view_error_background))
         }
+        startPostponedEnterTransition()
     }
 
     override fun findImageBitmap(url: String) = Picasso.get().load(url).into(dummyTarget)
     override fun findImageBitmap(resource: Int) = Picasso.get().load(resource).into(dummyTarget)
+
+    override fun isShowToolbar() = true
+    override fun layout() = R.layout.fragment_image_view
 
     companion object {
         const val ARG_IMAGE_URL = "image_url"

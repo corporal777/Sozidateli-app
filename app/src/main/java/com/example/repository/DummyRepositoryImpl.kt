@@ -7,7 +7,6 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 class DummyRepositoryImpl
@@ -54,6 +53,14 @@ class DummyRepositoryImpl
             "https://freelance.ru/img/portfolio/pics/00/1F/A1/2072950.jpg"
     )
 
+    private val coordinates = listOf(
+            listOf(55.753705, 37.619918),
+            listOf(55.759824, 37.625112),
+            listOf(55.741015, 37.628317),
+            listOf(55.757374, 37.660706),
+            listOf(55.828684, 37.633627)
+    )
+
     private fun getRandomDate(): Long {
         val oneYear = 31536000000
         val now = System.currentTimeMillis()
@@ -81,7 +88,12 @@ class DummyRepositoryImpl
                     dates.max() ?: System.currentTimeMillis(),
                     "Форум $index",
                     Status.values().random(),
-                    buildingSchemas.random()
+                    Place(
+                            coordinates.random(),
+                            getRandomLongText(),
+                            buildingSchemas.random(),
+                            getRandomLongText()
+                    )
             )
         }
     }
@@ -159,8 +171,8 @@ class DummyRepositoryImpl
 
     override fun loadSearchType(): Single<List<SearchTypeEvent>> {
         return Single.fromCallable {
-            return@fromCallable (1..12).map{
-                SearchTypeEvent(it.toString(),"Тестовый итем ${it}")
+            return@fromCallable (1..12).map {
+                SearchTypeEvent(it.toString(), "Тестовый итем ${it}")
             }
         }
     }

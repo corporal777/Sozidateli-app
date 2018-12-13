@@ -284,6 +284,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="event_tabs_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="164" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="events_tabs_fragment">
                     <value>
                       <LayoutPositions>
@@ -315,7 +327,24 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="main_to_search">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="image_view_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="169" />
+                            <option name="y" value="321" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -333,6 +362,18 @@
                     </value>
                   </entry>
                   <entry key="request_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="search_navigation">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.ui.base.BaseNestedNavigationFragment
-import com.example.ui.image.ImageViewFragment
+import com.example.ui.buildingScheme.BuildingSchemeFragment
 import com.example.ui.map.MapFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
@@ -47,7 +47,7 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
         val fragments by lazy {
             listOf<Pair<Fragment, String>>(
                     MapFragment() to getString(R.string.event_map_tab_how_to_get),
-                    ImageViewFragment.newInstance(event.buildingScheme) to getString(R.string.event_map_tab_building_scheme)
+                    BuildingSchemeFragment() to getString(R.string.event_map_tab_building_scheme)
             )
         }
 

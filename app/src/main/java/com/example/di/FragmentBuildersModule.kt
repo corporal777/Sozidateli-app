@@ -7,6 +7,7 @@ import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
+import com.example.ui.buildingScheme.BuildingSchemeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
 import com.example.ui.documents.DocumentsListFragment
@@ -123,6 +124,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMapFragment(): MapFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeBuildingSchemeFragment(): BuildingSchemeFragment
 
     @ContributesAndroidInjector
     abstract fun contributeImageViewFragment(): ImageViewFragment
