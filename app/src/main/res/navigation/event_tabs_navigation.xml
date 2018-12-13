@@ -12,15 +12,17 @@
         <argument
             android:name="event"
             app:argType="com.example.data.models.Event" />
+        <argument android:name="type" android:defaultValue="my_schedule"/>
     </fragment>
 
     <fragment
         android:id="@+id/schedule_fragment"
-        android:name="com.example.ui.schedule.ScheduleFragment"
+        android:name="com.example.ui.mySchedule.MyScheduleFragment"
         tools:layout="@layout/fragment_schedule">
         <argument
             android:name="event"
             app:argType="com.example.data.models.Event" />
+        <argument  android:name="type" android:defaultValue="all_schedule"/>
     </fragment>
 
     <fragment

@@ -105,4 +105,10 @@
     <string name="event_tab_about">О мероприятии</string>
     <string name="event_tab_map">Карта</string>
     <string name="event_tab_to_list">К списку</string>
+    
+    <string name="sub_event_register_users">Регистрация участников форума</string>
+    <string name="sub_event_add_to_schedule">Добавить в расписание</string>
+
+    <string name="remove">Удалить</string>
+
 </resources>

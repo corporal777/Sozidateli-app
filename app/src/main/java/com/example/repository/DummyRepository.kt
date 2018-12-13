@@ -15,4 +15,6 @@ interface DummyRepository {
     fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
     fun loadSearchType(): Single<List<SearchTypeEvent>>
+    fun loadSubevent(inSchedule:Boolean): Single<List<Subevent>>
+    fun loadTags():Single<List<String>>
 }
