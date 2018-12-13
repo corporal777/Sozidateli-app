@@ -15,10 +15,7 @@
         android:name="com.example.ui.schedule.ScheduleFragment"
         tools:layout="@layout/fragment_schedule" />
 
-    <fragment
-        android:id="@+id/about_fragment"
-        android:name="com.example.ui.aboutEvent.AboutEventFragment"
-        tools:layout="@layout/fragment_about_event" />
+    <include app:graph="@navigation/about_event_navigation" />
 
     <fragment
         android:id="@+id/map_tabs_fragment"
