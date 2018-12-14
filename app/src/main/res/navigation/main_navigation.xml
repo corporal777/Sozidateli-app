@@ -70,4 +70,20 @@
             app:argType="android.graphics.Bitmap"
             app:nullable="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/subevent_fragment"
+        android:name="com.example.ui.mySchedule.subevent.SubeventFragment">
+        <argument
+            android:name="subevent"
+            app:argType="com.example.data.models.Subevent" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/speaker_fragment"
+        android:name="com.example.ui.speaker.SpeakerFragment">
+        <argument
+            android:name="user"
+            app:argType="com.example.data.models.User" />
+    </fragment>
 </navigation>

@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -61,6 +64,12 @@ class MyScheduleFragment : BaseNestedNavigationFragment(), MyScheduleContract.Vi
             list.add(SubEventItem(it,isMySchedule,presenter))
         }
         section.update(list)
+    }
+
+    override fun openSubevent(subevent: Subevent,isMySchedule: Boolean) {
+        findParentNavigation().navigate(R.id.subevent_fragment,bundleOf(
+                "subevent" to subevent
+        ))
     }
 
     override fun isShowToolbar() = true

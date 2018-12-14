@@ -18,6 +18,8 @@ import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
+import com.example.ui.speaker.SpeakerFragment
+import com.example.ui.mySchedule.subevent.SubeventFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.profile.ProfileFragment
@@ -28,7 +30,6 @@ import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
 import com.example.ui.search.searchType.SearchTypeFragment
-import com.example.ui.schedule.ScheduleFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
@@ -117,9 +118,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeMyScheduleFragment(): MyScheduleFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeScheduleFragment(): ScheduleFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeMapTabsFragment(): MapTabsFragment
 
     @ContributesAndroidInjector
@@ -130,4 +128,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeImageViewFragment(): ImageViewFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSubeventFragment(): SubeventFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSpeakerFragment(): SpeakerFragment
 }

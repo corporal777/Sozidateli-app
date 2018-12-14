@@ -186,7 +186,7 @@ class DummyRepositoryImpl
             return@fromCallable (0..7).map {
                 Subevent(it.toString(),"9:00 - 14:00",(0..Random(System.currentTimeMillis()).nextInt(0,4)).map {
                     tags.random()
-                },false,inSchedule)
+                }, Random.nextBoolean(),inSchedule,tags.random())
             }
         }
     }

@@ -16,8 +16,9 @@ class MySchedulePresenter
 
     var isMySchedule = false
 
-    override fun attachView(view: MyScheduleContract.View?) {
-        super.attachView(view)
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
         selectDate(1543968000000)
         if (isMySchedule) {
             viewState.setTagsAndDays(null, 1543968000000, 1545264000000)
@@ -29,7 +30,6 @@ class MySchedulePresenter
                     }, {})
                     .call(compositeDisposable)
         }
-
     }
 
     override fun selectDate(date: Long) {
@@ -51,5 +51,9 @@ class MySchedulePresenter
     }
 
     override fun removeFromeSchedule(subevent: Subevent) {
+    }
+
+    override fun onSubeventClick(subevent: Subevent) {
+        viewState.openSubevent(subevent,isMySchedule)
     }
 }
