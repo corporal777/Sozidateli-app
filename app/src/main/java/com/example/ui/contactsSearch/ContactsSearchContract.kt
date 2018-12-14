@@ -1,26 +1,25 @@
-package com.example.ui.chatList
+package com.example.ui.contactsSearch
 
 import android.arch.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.UserChat
+import com.example.data.models.ContactSearch
 import com.example.ui.base.BaseContract
 
-interface ChatListContract {
+interface ContactsSearchContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(data: PagedList<UserChat>)
+        fun setData(contactSearch: PagedList<ContactSearch>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(chatId: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun openSearchContact()
+        fun scrollToPositionWithOffset(position: Int, offset: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onChatClick(userChat: UserChat)
-        fun onMenuAddChatClick()
+        fun onScrollChange(position: Int, offset: Int)
+        fun onQueryTextSubmit(text: String)
+        fun onQueryTextChange(text: String)
+        fun onSearchCollapsed()
     }
 }

@@ -3,6 +3,9 @@ package com.example.ui.chatList
 import android.arch.paging.PagedList
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -56,6 +59,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -68,6 +72,23 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     override fun openChat(chatId: String) {
         findNavController().navigate(ChatListFragmentDirections.chatListToChat("Tecтовый чат", chatId))
+    }
+
+    override fun openSearchContact() {
+        findNavController().navigate(ChatListFragmentDirections.actionChatListFragmentToContactsSearchFragment())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_chat_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.addChat -> presenter.onMenuAddChatClick()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
     override fun isShowToolbar() = true

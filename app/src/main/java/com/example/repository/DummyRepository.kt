@@ -17,4 +17,5 @@ interface DummyRepository {
     fun loadSearchType(): Single<List<SearchTypeEvent>>
 
     fun getEvent(): Event
+    fun getUser(id: Int): User
 }

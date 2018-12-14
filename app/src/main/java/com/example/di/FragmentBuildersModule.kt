@@ -10,6 +10,7 @@ import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.buildingScheme.BuildingSchemeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
+import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
@@ -26,9 +27,9 @@ import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
+import com.example.ui.schedule.ScheduleFragment
 import com.example.ui.search.SearchFragment
 import com.example.ui.search.searchType.SearchTypeFragment
-import com.example.ui.schedule.ScheduleFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
@@ -130,4 +131,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeImageViewFragment(): ImageViewFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
 }
