@@ -10,6 +10,7 @@ import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.buildingScheme.BuildingSchemeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
+import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventsTabsFragment
@@ -134,4 +135,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSpeakerFragment(): SpeakerFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
 }

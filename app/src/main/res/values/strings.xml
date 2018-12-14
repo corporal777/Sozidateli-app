@@ -61,6 +61,7 @@
     <string name="menu_item_chat_label">Чат</string>
     <string name="menu_item_search_label">Поиск</string>
     <string name="menu_item_account_label">Аккаунт</string>
+    <string name="menu_item_search_contact">Поиск пользователя</string>
 
     <string name="about_event_about_forum">О форуме</string>
     <string name="about_event_news">Новости</string>
@@ -123,4 +124,7 @@
     
     <string name="write_message">Написать сообщение</string>
     
+    <string name="contacts_search_favorites">Избранные контакты</string>
+    <string name="contacts_search_chats">Текущие чаты</string>
+    <string name="contacts_search_another">Все контакты</string>
 </resources>

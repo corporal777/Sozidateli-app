@@ -13,6 +13,9 @@
         <action
             android:id="@+id/chat_list_to_chat"
             app:destination="@id/chat_fragment" />
+        <action
+            android:id="@+id/action_chat_list_fragment_to_contacts_search_fragment"
+            app:destination="@id/contacts_search_fragment" />
     </fragment>
 
     <fragment
@@ -29,4 +32,8 @@
         <deepLink app:uri="http://fond.ru/chat/{chatId}?user={label}" />
     </fragment>
 
+    <fragment
+        android:id="@+id/contacts_search_fragment"
+        android:name="com.example.ui.contactsSearch.ContactsSearchFragment"
+        tools:layout="@layout/fragment_contacts_search" />
 </navigation>

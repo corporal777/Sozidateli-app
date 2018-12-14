@@ -18,4 +18,5 @@ interface DummyRepository {
     fun loadSubevent(inSchedule:Boolean): Single<List<Subevent>>
     fun loadTags():Single<List<String>>
     fun getEvent(): Event
+    fun getUser(id: Int): User
 }

@@ -22,4 +22,6 @@ class ChatListPresenter
     }
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id)
+
+    override fun onMenuAddChatClick() = viewState.openSearchContact()
 }
