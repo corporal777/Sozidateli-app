@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    android:background="@android:color/white">
+
+    <View
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/profile_padding_start"
+        android:paddingTop="15dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:text="9:00 - 10:00" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/profile_padding_start"
+        android:paddingTop="7dp"
+        android:text="@string/sub_event_register_users"
+        android:textColor="@android:color/black"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@id/tvTime" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvTags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        android:paddingStart="@dimen/profile_padding_start"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:background="@drawable/background_corners"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/sub_event_add_to_schedule"
+        android:textColor="@android:color/white"
+        android:theme="@style/ViewBackgroundAccent"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvTags" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivArrow"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:src="@drawable/ic_keyboard_arrow_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+</android.support.constraint.ConstraintLayout>

@@ -8,12 +8,16 @@
     <fragment
         android:id="@+id/my_schedule_fragment"
         android:name="com.example.ui.mySchedule.MyScheduleFragment"
-        tools:layout="@layout/fragment_my_schedule" />
+        tools:layout="@layout/fragment_my_schedule">
+        <argument android:name="type" android:defaultValue="my_schedule"/>
+    </fragment>
 
     <fragment
         android:id="@+id/schedule_fragment"
-        android:name="com.example.ui.schedule.ScheduleFragment"
-        tools:layout="@layout/fragment_schedule" />
+        android:name="com.example.ui.mySchedule.MyScheduleFragment"
+        tools:layout="@layout/fragment_schedule">
+        <argument  android:name="type" android:defaultValue="all_schedule"/>
+    </fragment>
 
     <include app:graph="@navigation/about_event_navigation" />
 

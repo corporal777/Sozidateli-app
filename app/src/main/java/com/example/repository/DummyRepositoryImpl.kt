@@ -59,6 +59,14 @@ class DummyRepositoryImpl
             "https://st.kp.yandex.net/images/actor_iphone/iphone360_3903.jpg"
     )
 
+    private val tags = listOf(
+            "Для всех",
+            "Технологии",
+            "Спорт",
+            "Домашнее хоз-во",
+            "Череповец"
+    )
+
     private val buildingSchemas = listOf(
             "https://unecon.ru/sites/default/files/1etazh.jpg",
             "https://sapr.ru/archive/sg/2009/1/21/3b.jpg",
@@ -180,6 +188,20 @@ class DummyRepositoryImpl
                             Date(getRandomDate())
                     )
             )
+        }
+    }
+
+    override fun loadTags(): Single<List<String>> {
+        return Single.fromCallable { return@fromCallable tags }
+    }
+
+    override fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>> {
+        return Single.fromCallable {
+            return@fromCallable (0..7).map {
+                Subevent(it.toString(),"9:00 - 14:00",(0..Random(System.currentTimeMillis()).nextInt(0,4)).map {
+                    tags.random()
+                },false,inSchedule)
+            }
         }
     }
 
