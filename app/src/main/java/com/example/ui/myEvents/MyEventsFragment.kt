@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import bundleOf
+import androidx.navigation.NavOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -109,7 +109,13 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
     }
 
     override fun selectEvent(event: Event) {
-        findParentNavigation().navigate(R.id.event_tabs_fragment, bundleOf("event" to event))
+        findParentNavigation().apply {
+            graph.startDestination = R.id.event_tabs_fragment
+            val opts = NavOptions.Builder()
+                    .setPopUpTo(R.id.events_tabs_fragment, true)
+                    .build()
+            navigate(R.id.event_tabs_fragment, null, opts)
+        }
     }
 
     override fun isShowToolbar() = true
