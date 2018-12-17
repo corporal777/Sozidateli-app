@@ -130,4 +130,16 @@
     <string name="contacts_search_favorites">Избранные контакты</string>
     <string name="contacts_search_chats">Текущие чаты</string>
     <string name="contacts_search_another">Все контакты</string>
+
+    <string name="setting_chat_title">Настройки чата</string>
+    <string name="setting_chat_all_users">Принимать сообщения от всех пользователей</string>
+    <string name="setting_chat_only_from_favorite">Разрешить сообщения от пользователей из списка избранных</string>
+
+    <string name="search_event_involve">Участвовать</string>
+    <string name="search_result">Результат поиска</string>
+
+    <string name="enter_code_title">Ввода кода</string>
+    <string name="enter_code_hint">XXXXX</string>
+
+
 </resources>

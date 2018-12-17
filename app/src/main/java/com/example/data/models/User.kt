@@ -21,5 +21,7 @@ data class User(
         var startEducate: Long = 0,
         var endEducate: Long = 0,
         var speciality: String = "",
-        var institution: String = ""
-) : Parcelable
+        var institution: String = "",
+        var chatAllowAllUsers:Boolean = true,
+        var chatAllowFromFavorite:Boolean = true
+): Parcelable

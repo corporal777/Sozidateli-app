@@ -21,6 +21,7 @@ import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.mySchedule.subevent.SubeventFragment
+import com.example.ui.mySchedule.usersList.UserListFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
@@ -29,9 +30,12 @@ import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.qr.QrScannerFragment
+import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
+import com.example.ui.search.enterCode.EnterCodeFragment
+import com.example.ui.search.enterCode.`EnterCodeFragment$$PresentersBinder`
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
@@ -142,8 +146,17 @@ abstract class FragmentBuildersModule {
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
 
     @ContributesAndroidInjector
+    abstract fun contributeUserListFragment(): UserListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSettingChatFragment(): SettingChatFragment
+
+    @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeQrScannerFragment(): QrScannerFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEnterCodeFragmentFragment(): EnterCodeFragment
 }

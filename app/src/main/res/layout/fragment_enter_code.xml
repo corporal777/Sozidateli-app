@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingStart="@dimen/profile_padding_start"
+    android:paddingEnd="@dimen/profile_padding_start"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/auth_background">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/etCode"
+        android:maxLength="5"
+        android:hint="@string/enter_code_hint"
+        android:paddingStart="15dp"
+        android:inputType="numberSigned"
+        android:background="@drawable/background_edittext_login"
+        tools:ignore="Autofill,LabelFor,TextFields" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:theme="@style/ViewBackgroundAccent"
+        android:id="@+id/btnSearch"
+        android:text="@string/search_label"
+        android:textColor="@android:color/white"
+        android:background="@drawable/background_corners"
+        />
+
+</LinearLayout>

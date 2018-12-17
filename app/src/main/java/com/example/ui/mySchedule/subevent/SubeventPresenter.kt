@@ -34,7 +34,9 @@ class SubeventPresenter
         viewState.showSpeakerProfile(user)
     }
 
-    override fun onShowMembersClick() {
-
+    override fun onOpenUserListClick() {
+        if(subevent.isSpeaker) {
+            viewState.openUserList(subevent)
+        }
     }
 }

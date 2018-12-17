@@ -21,7 +21,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.field_profile.view.*
 import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search_type.*
 import java.util.*
 import javax.inject.Inject
@@ -68,9 +67,9 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
 
     override fun setData(data: ArrayList<SearchTypeEvent>) {
         groupAdapter.update(data.map {
-            SearchTypeItem(it,{item, isSelect->
+            SearchTypeItem(it){item, isSelect->
                 presenter.selectItem(isSelect, item)
-            })
+            }
         })
     }
 

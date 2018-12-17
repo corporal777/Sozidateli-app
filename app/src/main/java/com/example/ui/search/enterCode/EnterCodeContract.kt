@@ -1,30 +1,21 @@
-package com.example.ui.mySchedule.subevent
+package com.example.ui.search.enterCode
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
-import com.example.data.models.Subevent
-import com.example.data.models.User
+import com.example.data.models.Event
 import com.example.data.models.UserChat
 import com.example.ui.base.BaseContract
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.Query
 
-interface SubeventContract {
+interface EnterCodeContract {
     interface View : BaseContract.View{
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(subevent:Subevent, users:List<User>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeakerProfile(user:User)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun openUserList(subevent: Subevent)
-
+        fun openEvent(event:Event)
     }
 
     interface Presenter : BaseContract.Presenter{
-        fun onSpeakerClick(user: User)
-        fun onOpenUserListClick()
+        fun onSearchClick(code:String)
     }
 }
