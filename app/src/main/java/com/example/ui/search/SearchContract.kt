@@ -1,11 +1,10 @@
 package com.example.ui.search
 
+import android.arch.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.ChatMessage
-import com.example.data.models.DataArgsSearchType
-import com.example.data.models.SearchTypeEvent
-import com.example.data.models.UserChat
+import com.example.data.models.*
+import com.example.holders.SearchEventResultItem
 import com.example.ui.base.BaseContract
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.Query
@@ -31,17 +30,21 @@ interface SearchContract {
         fun updateTypeEventsList(searchHolder: SearchHolder)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSearchResult()
+        fun showSearchResult(data:PagedList<SearchEventResultItem>)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEvent(event:Event)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun removePlacesItem(searchTypeEvent: SearchTypeEvent)
         fun removeTypeEventItem(searchTypeEvent: SearchTypeEvent)
+        fun onSearchTextChange(text:String)
         fun onPlacesClick()
         fun onTypeEventsClick()
         fun onClickDate(type:String)
         fun onDateSelected(date:Long, type:String)
         fun onSearchClick()
+        fun onEventClick(event: Event)
     }
 }

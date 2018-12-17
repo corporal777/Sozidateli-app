@@ -1,21 +1,26 @@
 package com.example.ui.search
 
 import android.app.DatePickerDialog
+import android.arch.paging.PagedList
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.DataArgsSearchType
+import com.example.data.models.Event
+import com.example.holders.SearchEventResultItem
+import com.example.holders.SearchHeaderItem
 import com.example.holders.SelectedSearchTypeItem
 import com.example.ui.base.BaseFragment
-import com.example.util.TYPE_DATE
-import com.example.util.TYPE_DATE_PERIOD_FROM
-import com.example.util.TYPE_DATE_PERIOD_TO
-import com.example.util.Utils
+import com.example.util.*
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_search.*
 import java.util.*
@@ -31,41 +36,30 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     lateinit var presenterProvider: Provider<SearchPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): SearchPresenter = presenterProvider.get()
+    fun providePresenter(): SearchPresenter = presenterProvider.get().apply {
+        header = SearchHeaderItem(this)
+        section.setHeader(header)
+        groupAdapter.add(section)
+    }
 
-    private var placesAdapter = GroupAdapter<ViewHolder>()
-    private var typeEventsAdapter = GroupAdapter<ViewHolder>()
-    private lateinit var datePickerDialogDate: DatePickerDialog
+    private lateinit var header: SearchHeaderItem
+
+    private val pagedList = PagedListGroup<SearchEventResultItem>()
+
+    private val section = Section().apply {
+        add(pagedList)
+    }
+
+    private val groupAdapter = GroupAdapter<ViewHolder>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        recyclerViewPlaces.apply {
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            adapter = placesAdapter
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = groupAdapter
+            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
         }
-
-        recyclerViewType.apply {
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            adapter = typeEventsAdapter
-        }
-
-        tvPlaces.setOnClickListener {
-            presenter.onPlacesClick()
-        }
-
-        tvTypeEvents.setOnClickListener {
-            presenter.onTypeEventsClick()
-        }
-
-        tvDate.setOnClickListener { presenter.onClickDate(TYPE_DATE) }
-        tvPeriodFrom.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_FROM) }
-        tvPeriodTo.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_TO) }
-
-        datePickerDialogDate = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
-
-        }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
     }
 
     override fun showTypeEvent(data: DataArgsSearchType) {
@@ -77,58 +71,30 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     }
 
     override fun setSearchData(searchHolder: SearchHolder) {
-        searchHolder.text?.let {
-            etSearchText.setText(it)
-            etSearchText.setSelection(it.length)
-        }
-        if (searchHolder.date != 0L) {
-            tvDate.text = Utils.defaultDataFormatter.format(searchHolder.date)
-        }
-
-        if (searchHolder.dateFrom != 0L) {
-            tvPeriodFrom.text = Utils.defaultDataFormatter.format(searchHolder.dateFrom)
-        }
-
-        if (searchHolder.dateTo != 0L) {
-            tvPeriodTo.text = Utils.defaultDataFormatter.format(searchHolder.dateTo)
-        }
-
+        header.setSearchData(searchHolder)
     }
 
     override fun updatePlacesList(searchHolder: SearchHolder) {
-        placesAdapter.update(searchHolder.places.map {
-            SelectedSearchTypeItem(it, { type ->
-                presenter.removePlacesItem(type)
-            })
-        })
+        header.updatePlacesList(searchHolder)
     }
 
     override fun updateTypeEventsList(searchHolder: SearchHolder) {
-        typeEventsAdapter.update(searchHolder.typeEvents.map {
-            SelectedSearchTypeItem(it, { type ->
-                presenter.removeTypeEventItem(type)
-            })
-        })
+        header.updateTypeEventsList(searchHolder)
     }
 
-    override fun showSearchResult() {
+    override fun showSearchResult(data: PagedList<SearchEventResultItem>) {
+        pagedList.submitList(data)
+        header.showResultHeader(true)
+    }
 
+    override fun showEvent(event: Event) {
+        findNavController().navigate(R.id.search_to_event_screen,bundleOf(
+                ARG_EVENT to event
+        ))
     }
 
     override fun showDateDialog(date: Long, type: String) {
-        val calendar = Calendar.getInstance()
-        if (date != 0L) {
-            calendar.timeInMillis = date
-        }
-        datePickerDialogDate = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, monthOfYear)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            presenter.onDateSelected(calendar.timeInMillis, type)
-
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-
-        datePickerDialogDate.show()
+        header.showDateDialog(date, type)
     }
 
     override fun isShowToolbar() = true

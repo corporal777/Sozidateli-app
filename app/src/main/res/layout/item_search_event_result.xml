@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/profile_padding_start"
+    android:paddingEnd="@dimen/profile_padding_start"
+    android:background="@android:color/white"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tvOrganizationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:text="Fond temp" />
+
+    <TextView
+        android:id="@+id/tvEventName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvOrganizationName"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        tools:text="Российский инвестиционный форум" />
+
+    <TextView
+        android:id="@+id/tvEventDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEventName"
+        android:layout_marginTop="5dp"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        tools:text="5.02 - 30.09.18" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivArrow"
+        android:src="@drawable/ic_keyboard_arrow_right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnEvent"
+        android:theme="@style/ViewBackgroundAccent"
+        android:background="@drawable/background_corners"
+        android:text="@string/search_event_involve"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/tvEventDate"
+        android:layout_marginTop="15dp"/>
+
+</android.support.constraint.ConstraintLayout>

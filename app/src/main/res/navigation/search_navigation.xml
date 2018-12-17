@@ -7,11 +7,15 @@
     <fragment
         android:id="@+id/search_fragment"
         android:name="com.example.ui.search.SearchFragment"
-        android:label="@string/search_label" >
+        android:label="@string/search_label">
 
         <action
             android:id="@+id/search_to_search_type"
             app:destination="@+id/search_type_fragment" />
+
+        <action
+            android:id="@+id/search_to_event_screen"
+            app:destination="@+id/about_event_navigation" />
     </fragment>
 
 
@@ -20,9 +24,24 @@
         android:name="com.example.ui.search.searchType.SearchTypeFragment"
         android:label="@string/search_label">
 
-        <argument android:name="data"
-             app:argType="com.example.data.models.DataArgsSearchType"/>
+        <argument
+            android:name="data"
+            app:argType="com.example.data.models.DataArgsSearchType" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/enter_code_fragment"
+        android:name="com.example.ui.search.enterCode.EnterCodeFragment"
+        android:label="@string/enter_code_title">
+
+        <action
+            android:id="@+id/enter_code_to_event"
+            app:destination="@+id/about_event_navigation" />
+
+    </fragment>
+
+    <include app:graph="@navigation/about_event_navigation" />
+
 
 </navigation>

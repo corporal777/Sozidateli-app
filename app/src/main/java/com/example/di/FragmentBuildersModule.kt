@@ -33,6 +33,8 @@ import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
+import com.example.ui.search.enterCode.EnterCodeFragment
+import com.example.ui.search.enterCode.`EnterCodeFragment$$PresentersBinder`
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
@@ -150,4 +152,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEnterCodeFragmentFragment(): EnterCodeFragment
 }
