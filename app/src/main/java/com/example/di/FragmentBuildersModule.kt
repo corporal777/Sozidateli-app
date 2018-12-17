@@ -21,6 +21,7 @@ import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
+import com.example.ui.notifications.NotificationsFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
@@ -134,4 +135,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNotificationsFragment(): NotificationsFragment
 }

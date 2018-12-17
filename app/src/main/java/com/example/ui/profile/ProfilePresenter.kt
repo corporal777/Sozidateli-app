@@ -31,6 +31,10 @@ class ProfilePresenter
                 institution = "Коледж им. ПТУ",
                 speciality = "Технолог"
         )
+
+        viewState.apply {
+            showLastNotification("Текст последней нотификации. Максимум 2 строки", 20)
+        }
     }
 
     override fun attachView(view: ProfileContract.View?) {
@@ -41,7 +45,6 @@ class ProfilePresenter
     }
 
     override fun clickAboutStatus() = viewState.showAboutStatus()
-
 
     override fun clickFullProfile() = viewState.showFullProfile()
 
@@ -60,4 +63,6 @@ class ProfilePresenter
     override fun clickAboutApp() = viewState.showAboutApp()
 
     override fun clickChatSetting() = viewState.showChatSetting()
+
+    override fun onNotificationClick() = viewState.showNotifications()
 }

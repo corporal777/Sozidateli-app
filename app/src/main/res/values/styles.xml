@@ -34,6 +34,10 @@
         <item name="viewBackground">@color/colorAccent</item>
     </style>
 
+    <style name="ViewBackgroundGray">
+        <item name="viewBackground">@color/gray</item>
+    </style>
+
     <style name="InputBorder">
         <item name="viewBackground">@color/input_border</item>
     </style>

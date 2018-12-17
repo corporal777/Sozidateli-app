@@ -11,6 +11,96 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/profile_notification_background"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/ivNotificationIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_notifications_none"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tvNotificationCount"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/background_badge"
+                android:gravity="center"
+                android:maxLength="3"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivNotificationIcon"
+                app:layout_constraintStart_toStartOf="@+id/ivNotificationIcon"
+                tools:ignore="SmallSp"
+                tools:text="99"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvLastNotification"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@string/sans_serif_medium"
+                android:text="@string/profile_last_notification"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/tvLastNotificationText"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow"
+                app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/tvLastNotificationText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/sans_serif_light"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow"
+                app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
+                app:layout_constraintTop_toBottomOf="@+id/tvLastNotification"
+                tools:text="@tools:sample/lorem" />
+
+            <ImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_keyboard_arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+        </android.support.constraint.ConstraintLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -18,10 +108,10 @@
             android:background="@color/profile_divider" />
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/clProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:id="@+id/clProfile"
             android:padding="@dimen/profile_padding_start">
 
             <ImageView
@@ -29,7 +119,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@mipmap/ic_launcher" />
-
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -73,9 +162,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_keyboard_arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -106,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right"/>
+                android:src="@drawable/ic_keyboard_arrow_right" />
 
         </FrameLayout>
 
@@ -131,7 +220,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right"/>
+                android:src="@drawable/ic_keyboard_arrow_right" />
 
         </FrameLayout>
 
@@ -237,7 +326,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right"/>
+                android:src="@drawable/ic_keyboard_arrow_right" />
 
         </FrameLayout>
 
@@ -257,11 +346,12 @@
             <TextView
                 style="@style/ProfileFieldTextView"
                 android:text="@string/profile_setting_chat" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right"/>
+                android:src="@drawable/ic_keyboard_arrow_right" />
         </FrameLayout>
 
         <View

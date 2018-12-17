@@ -89,10 +89,16 @@ class DummyRepositoryImpl
         return Random.nextLong(now - oneYear, now + oneYear)
     }
 
-    private fun getRandomLongText(): String {
+    private fun getRandomText(suggestionCount: Int? = null): String {
         val suggestions = LOREM.split(".")
+
+        val max = if (suggestionCount != null) {
+            if (suggestionCount >= suggestions.size) suggestions.size - 1
+            else suggestionCount
+        } else Random.nextInt(1, suggestions.size)
+
         var text = ""
-        for (index in 0..Random.nextInt(1, suggestions.size)) {
+        for (index in 0..max) {
             text = text.plus(suggestions[index]).plus(". ")
         }
         return text.trim()
@@ -105,16 +111,16 @@ class DummyRepositoryImpl
                     "${offset + index}",
                     "Российский инвестиционный форум ${offset + index}",
                     logos.random(),
-                    getRandomLongText(),
+                    getRandomText(),
                     dates.min() ?: 0,
                     dates.max() ?: System.currentTimeMillis(),
                     "Форум $index",
                     Status.values().random(),
                     Place(
                             coordinates.random(),
-                            getRandomLongText(),
+                            getRandomText(),
                             buildingSchemas.random(),
-                            getRandomLongText()
+                            getRandomText()
                     )
             )
         }
@@ -135,7 +141,7 @@ class DummyRepositoryImpl
             News(
                     "${offset + index}",
                     "Заголовок новсти Российский инвестиционный форум ${offset + index}",
-                    getRandomLongText(),
+                    getRandomText(),
                     logos.random(),
                     getRandomDate()
             )
@@ -157,7 +163,7 @@ class DummyRepositoryImpl
                     (offset + index).toString(),
                     names.random(),
                     avatars.random(),
-                    getRandomLongText(),
+                    getRandomText(),
                     subscribed = if (onlyFavorite) true else Random.nextBoolean()
             )
         }
@@ -168,7 +174,7 @@ class DummyRepositoryImpl
                 id = "$id",
                 name = names.random(),
                 image = avatars.random(),
-                info = getRandomLongText(),
+                info = getRandomText(),
                 subscribed = Random.nextBoolean()
         )
     }
@@ -183,10 +189,20 @@ class DummyRepositoryImpl
                     "testChat",
                     generateUser(offset + index),
                     ChatMessage(
-                            getRandomLongText(),
+                            getRandomText(),
                             "${offset + index}",
                             Date(getRandomDate())
                     )
+            )
+        }
+    }
+
+    private fun generateUserNotifications(limit: Int, offset: Int): List<Notification> {
+        return (1..limit).map { index ->
+            Notification(
+                    "${offset + index}",
+                    getRandomText(Random.nextInt(1, 5)),
+                    getRandomDate()
             )
         }
     }
@@ -198,9 +214,9 @@ class DummyRepositoryImpl
     override fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>> {
         return Single.fromCallable {
             return@fromCallable (0..7).map {
-                Subevent(it.toString(),"9:00 - 14:00",(0..Random(System.currentTimeMillis()).nextInt(0,4)).map {
+                Subevent(it.toString(), "9:00 - 14:00", (0..Random(System.currentTimeMillis()).nextInt(0, 4)).map {
                     tags.random()
-                },false,inSchedule)
+                }, false, inSchedule)
             }
         }
     }
@@ -239,6 +255,10 @@ class DummyRepositoryImpl
 
     override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
+    }
+
+    override fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserNotifications(limit, offset)) }
     }
 
     override fun getEvent() = generateEvents(1, 0).first()

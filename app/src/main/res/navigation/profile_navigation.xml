@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_navigation"
     app:startDestination="@id/profile_fragment">
     <fragment
@@ -22,6 +23,9 @@
         <action
             android:id="@+id/profile_to_favorite"
             app:destination="@+id/favorite_fragment" />
+        <action
+            android:id="@+id/action_profile_fragment_to_notifications_fragment"
+            app:destination="@id/notifications_fragment" />
     </fragment>
 
 
@@ -54,4 +58,10 @@
         android:id="@+id/profile_edit_fragment"
         android:name="com.example.ui.profile.profileEdit.ProfileEditFragment"
         android:label=" " />
+
+    <fragment
+        android:id="@+id/notifications_fragment"
+        android:name="com.example.ui.notifications.NotificationsFragment"
+        android:label="@string/notifications_label"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

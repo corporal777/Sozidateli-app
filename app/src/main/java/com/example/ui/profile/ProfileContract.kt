@@ -1,15 +1,12 @@
 package com.example.ui.profile
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.ChatMessage
 import com.example.data.models.Event
 import com.example.data.models.User
-import com.example.data.models.UserChat
 import com.example.ui.base.BaseContract
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.Query
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface ProfileContract {
     interface View : BaseContract.View {
@@ -39,6 +36,15 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: User)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "NOTIFICATION")
+        fun showLastNotification(text: String, notificationCount: Int)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "NOTIFICATION")
+        fun hideLastNotification()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNotifications()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -50,5 +56,6 @@ interface ProfileContract {
         fun clickCurrentEvent(event: Event)
         fun clickAboutApp()
         fun clickChatSetting()
+        fun onNotificationClick()
     }
 }

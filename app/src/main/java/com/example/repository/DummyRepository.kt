@@ -14,9 +14,10 @@ interface DummyRepository {
     fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
+    fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
     fun loadSearchType(): Single<List<SearchTypeEvent>>
-    fun loadSubevent(inSchedule:Boolean): Single<List<Subevent>>
-    fun loadTags():Single<List<String>>
+    fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>>
+    fun loadTags(): Single<List<String>>
     fun getEvent(): Event
     fun getUser(id: Int): User
 }
