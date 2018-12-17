@@ -1,7 +1,7 @@
 package com.example.holders
 
 import android.os.Parcelable
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.Subevent
 import com.example.ui.mySchedule.MySchedulePresenter
@@ -46,7 +46,7 @@ open class HeaderSchedule(private val tags: List<String>?, private val dateStart
 
                 recyclerViewTags.apply {
                     adapter = groupAdapterTags
-                    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
                 }
             }
 
@@ -67,7 +67,7 @@ open class HeaderSchedule(private val tags: List<String>?, private val dateStart
 
 
             recyclerViewDays.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
                 adapter = groupAdapterDays
             }
         }

@@ -1,8 +1,8 @@
 package com.example.ui.eventTabs
 
 import android.os.Bundle
-import android.support.annotation.IdRes
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination

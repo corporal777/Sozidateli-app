@@ -1,8 +1,8 @@
 package com.example.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 
-open class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+open class ViewHolder(override val containerView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView),
         LayoutContainer

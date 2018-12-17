@@ -1,20 +1,14 @@
 package com.example.data.models
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity
 data class User(
-        @PrimaryKey
         var id: String = "",
         var name: String = "",
         var image: String? = "",
         var status: String? = null,
-        @Ignore
         var currentEvent: Event? = null,
         var email: String? = null,
         var phone: String? = null,
@@ -28,4 +22,4 @@ data class User(
         var endEducate: Long = 0,
         var speciality: String = "",
         var institution: String = ""
-): Parcelable
+) : Parcelable

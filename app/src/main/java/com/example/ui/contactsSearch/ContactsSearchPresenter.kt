@@ -1,7 +1,7 @@
 package com.example.ui.contactsSearch
 
-import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
+import androidx.paging.PagedList
+import androidx.paging.RxPagedListBuilder
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.ContactSearch

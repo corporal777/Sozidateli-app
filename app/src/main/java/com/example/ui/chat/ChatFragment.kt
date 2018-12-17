@@ -1,7 +1,7 @@
 package com.example.ui.chat
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.WindowManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -45,7 +45,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
 
         rvChat.apply {
-            (layoutManager as LinearLayoutManager).stackFromEnd = true
+            (layoutManager as androidx.recyclerview.widget.LinearLayoutManager).stackFromEnd = true
         }
     }
 

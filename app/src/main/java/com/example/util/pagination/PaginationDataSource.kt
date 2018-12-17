@@ -1,6 +1,6 @@
 package com.example.util.pagination
 
-import android.arch.paging.PositionalDataSource
+import androidx.paging.PositionalDataSource
 import io.reactivex.Maybe
 import retrofit2.Call
 import kotlin.math.min

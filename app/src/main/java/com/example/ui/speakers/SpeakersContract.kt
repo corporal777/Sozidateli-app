@@ -1,6 +1,6 @@
 package com.example.ui.speakers
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType

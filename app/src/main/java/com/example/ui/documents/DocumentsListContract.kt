@@ -1,6 +1,6 @@
 package com.example.ui.documents
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Document

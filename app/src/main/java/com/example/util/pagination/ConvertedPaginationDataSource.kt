@@ -1,6 +1,6 @@
 package com.example.util.pagination
 
-import android.arch.paging.DataSource
+import androidx.paging.DataSource
 
 class ConvertedPaginationDataSource<I, R>(
         private val source: PaginationDataSource<I>,

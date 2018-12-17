@@ -1,12 +1,12 @@
 package com.example.ui.contactsSearch
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.SearchView
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.Menu
@@ -98,7 +98,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ContactsSearchFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
@@ -110,7 +110,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

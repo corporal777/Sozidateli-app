@@ -1,7 +1,7 @@
 package com.example.ui.profile.profileEdit
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -41,7 +41,7 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fieldRecyclerView.layoutManager = LinearLayoutManager(context)
+        fieldRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         fieldRecyclerView.adapter = adapter
     }
 

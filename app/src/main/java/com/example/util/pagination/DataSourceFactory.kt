@@ -1,6 +1,6 @@
 package com.example.util.pagination
 
-import android.arch.paging.DataSource
+import androidx.paging.DataSource
 
 abstract class DataSourceFactory<K, V> : DataSource.Factory<K, V>() {
 

@@ -1,9 +1,9 @@
 package com.example.ui.notifications
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -57,7 +57,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@NotificationsFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
     }
 

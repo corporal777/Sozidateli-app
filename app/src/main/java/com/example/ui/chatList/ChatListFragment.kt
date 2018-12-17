@@ -1,8 +1,8 @@
 package com.example.ui.chatList
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -62,7 +62,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
     }
 

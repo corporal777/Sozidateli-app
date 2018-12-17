@@ -8,9 +8,10 @@ import com.example.data.AppData
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class])
+@Module(includes = [AndroidSupportInjectionModule::class, RepositoryModule::class])
 class AppModule {
 
     @Provides

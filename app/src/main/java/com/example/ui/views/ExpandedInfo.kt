@@ -1,11 +1,11 @@
 package com.example.ui.views
 
 import android.content.Context
-import android.support.transition.AutoTransition
-import android.support.transition.Transition
-import android.support.transition.TransitionListenerAdapter
-import android.support.transition.TransitionManager
-import android.support.v7.view.ContextThemeWrapper
+import androidx.transition.AutoTransition
+import androidx.transition.Transition
+import androidx.transition.TransitionListenerAdapter
+import androidx.transition.TransitionManager
+import androidx.appcompat.view.ContextThemeWrapper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View

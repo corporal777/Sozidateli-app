@@ -1,11 +1,11 @@
 package com.example.holders
 
-import android.support.transition.AutoTransition
-import android.support.transition.Transition
-import android.support.transition.TransitionListenerAdapter
-import android.support.transition.TransitionManager
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.transition.AutoTransition
+import androidx.transition.Transition
+import androidx.transition.TransitionListenerAdapter
+import androidx.transition.TransitionManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +37,7 @@ class ProfileExpandFieldItem(private val name:String, private val mutableList: M
             }
             tvName.text = name
             fieldRecyclerView.apply {
-                layoutManager  = LinearLayoutManager(context)
+                layoutManager  = androidx.recyclerview.widget.LinearLayoutManager(context)
                 adapter = groupAdapter
             }
             groupAdapter.update(mutableList)

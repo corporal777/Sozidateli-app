@@ -1,11 +1,11 @@
 package com.example.adapters
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 
-abstract class SimpleRecyclerViewAdapter<T>(var items: List<T>) : RecyclerView.Adapter<ViewHolder>() {
+abstract class SimpleRecyclerViewAdapter<T>(var items: List<T>) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

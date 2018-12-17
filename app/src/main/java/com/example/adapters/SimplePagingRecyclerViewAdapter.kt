@@ -1,8 +1,8 @@
 package com.example.adapters
 
-import android.arch.paging.PagedListAdapter
-import android.support.annotation.LayoutRes
-import android.support.v7.util.DiffUtil
+import androidx.paging.PagedListAdapter
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
 

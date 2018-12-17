@@ -1,13 +1,13 @@
 package com.example.util
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class PositionOffsetScrollListener(
         private val onScroll: (position: Int, offset: Int) -> Unit)
-    : RecyclerView.OnScrollListener() {
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+    : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+    override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
         val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
         val firstVisibleView = layoutManager.findViewByPosition(firstVisiblePosition)
         onScroll.invoke(firstVisiblePosition, (firstVisibleView?.top

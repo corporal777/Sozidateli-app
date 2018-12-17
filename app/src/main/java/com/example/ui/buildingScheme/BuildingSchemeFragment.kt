@@ -1,8 +1,8 @@
 package com.example.ui.buildingScheme
 
 import android.os.Bundle
-import android.support.transition.Fade
-import android.support.v4.widget.NestedScrollView
+import androidx.transition.Fade
+import androidx.core.widget.NestedScrollView
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import bundleOf

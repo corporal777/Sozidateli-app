@@ -1,8 +1,8 @@
 package com.example.ui.recommendations
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import bundleOf
@@ -87,7 +87,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {

@@ -1,7 +1,7 @@
 package com.example.ui.mySchedule
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
@@ -49,7 +49,7 @@ class MyScheduleFragment : BaseNestedNavigationFragment(), MyScheduleContract.Vi
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = groupAdapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         }
     }
 

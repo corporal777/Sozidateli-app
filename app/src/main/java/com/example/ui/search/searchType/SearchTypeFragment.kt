@@ -2,7 +2,7 @@ package com.example.ui.search.searchType
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -47,7 +47,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             adapter = groupAdapter
         }
     }

@@ -1,10 +1,10 @@
 package com.example.ui.mapTabs
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -29,7 +29,7 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
     @ProvidePresenter(type = PresenterType.WEAK, tag = "MapTabsPresenter")
     fun providePresenter(): MapTabsPresenter = presenterProvider.get()
 
-    private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
+    private val pageChangeListener = object : androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             presenter.onPageSelected(position)
         }
@@ -45,7 +45,7 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
 
     override fun initPagesWithEvent(event: Event) {
         val fragments by lazy {
-            listOf<Pair<Fragment, String>>(
+            listOf<Pair<androidx.fragment.app.Fragment, String>>(
                     MapFragment() to getString(R.string.event_map_tab_how_to_get),
                     BuildingSchemeFragment() to getString(R.string.event_map_tab_building_scheme)
             )
@@ -65,9 +65,9 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
     override fun layout() = R.layout.fragment_map_tabs
 
     private inner class TabsAdapter(
-            private val fragments: List<Pair<Fragment, String>>,
-            fragmentManager: FragmentManager
-    ) : FragmentPagerAdapter(fragmentManager) {
+            private val fragments: List<Pair<androidx.fragment.app.Fragment, String>>,
+            fragmentManager: androidx.fragment.app.FragmentManager
+    ) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager) {
 
         override fun getItem(position: Int) = fragments[position].first
 

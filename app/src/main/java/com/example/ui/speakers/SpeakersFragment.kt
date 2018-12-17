@@ -1,11 +1,11 @@
 package com.example.ui.speakers
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import bundleOf
@@ -104,7 +104,7 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@SpeakersFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
     }
 

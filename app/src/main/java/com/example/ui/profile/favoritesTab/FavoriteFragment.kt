@@ -1,9 +1,9 @@
 package com.example.ui.profile.favoritesTab
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -30,11 +30,11 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragments = ArrayList<Fragment>()
+        val fragments = ArrayList<androidx.fragment.app.Fragment>()
         fragments.add(SpeakersFragment.newInstance(true))
         fragments.add(SubscriptionsFragment())
 
-        viewPager.adapter = object : FragmentPagerAdapter(childFragmentManager) {
+        viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {
             override fun getItem(position: Int) = fragments[position]
             override fun getCount() = fragments.size
             override fun getPageTitle(position: Int) = resources.getStringArray(R.array.favorite_tab_name_array)[position]
@@ -47,7 +47,7 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
         }
     }
 
-    private val pageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
+    private val pageChangeListener: androidx.viewpager.widget.ViewPager.OnPageChangeListener = object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
         override fun onPageSelected(position: Int) {

@@ -1,7 +1,7 @@
 package com.example.holders
 
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.InputType
 import com.example.R
 import com.example.data.models.User

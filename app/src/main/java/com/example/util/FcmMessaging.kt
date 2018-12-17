@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationCompat.DEFAULT_ALL
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import com.example.R
 import com.example.ui.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService

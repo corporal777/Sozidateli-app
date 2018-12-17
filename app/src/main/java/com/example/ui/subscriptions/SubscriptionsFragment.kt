@@ -1,10 +1,10 @@
 package com.example.ui.subscriptions
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -62,7 +62,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
         recyclerView.apply {
             adapter = this@SubscriptionsFragment.adapter
             if (itemDecorationCount == 0) {
-                addItemDecoration(DividerItemDecoration(context, VERTICAL))
+                addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
             }
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
@@ -75,7 +75,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
     override fun isShowToolbar() = true

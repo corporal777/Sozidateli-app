@@ -3,10 +3,10 @@ package com.example.ui.image
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.annotation.DrawableRes
-import android.support.transition.*
-import android.support.transition.TransitionSet.ORDERING_TOGETHER
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.transition.*
+import androidx.transition.TransitionSet.ORDERING_TOGETHER
+import androidx.core.content.ContextCompat
 import android.widget.Toast
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter

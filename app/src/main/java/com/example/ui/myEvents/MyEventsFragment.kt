@@ -1,9 +1,9 @@
 package com.example.ui.myEvents
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.navigation.NavOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -105,7 +105,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
     override fun selectEvent(event: Event) {

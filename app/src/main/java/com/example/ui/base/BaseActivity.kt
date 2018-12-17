@@ -1,10 +1,9 @@
 package com.example.ui.base
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.annotation.StringRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import android.widget.Toast
-import com.arellomobile.mvp.MvpAppCompatActivity
 import dagger.android.AndroidInjection
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {

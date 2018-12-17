@@ -1,8 +1,8 @@
 package com.example.ui.mySchedule.subevent
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -46,9 +46,9 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             adapter = groupAdapter
-            if(itemDecorationCount==0) addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
+            if(itemDecorationCount==0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
     }
 
