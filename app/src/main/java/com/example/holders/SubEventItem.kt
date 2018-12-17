@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.view.View
 import android.widget.GridLayout
 import com.example.R
 import com.example.data.models.Subevent
@@ -41,6 +42,12 @@ open class SubEventItem(private val subEvent: Subevent,private val isInMySchedul
                 btnAdd.setText(context.getString(R.string.sub_event_add_to_schedule))
             }
 
+            if(subEvent.isSpeaker){
+                tvIsSpeaker.visibility = View.VISIBLE
+            } else{
+                tvIsSpeaker.visibility = View.GONE
+            }
+
             btnAdd.setOnClickListener {
                 if(subEvent.isInSchedule){
                     presenter.removeFromeSchedule(subEvent)
@@ -48,6 +55,8 @@ open class SubEventItem(private val subEvent: Subevent,private val isInMySchedul
                     presenter.addToSchedule(subEvent)
                 }
             }
+
+            setOnClickListener { presenter.onSubeventClick(subEvent) }
         }
     }
 

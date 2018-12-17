@@ -27,6 +27,17 @@
         tools:text="9:00 - 10:00" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:id="@+id/tvIsSpeaker"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:text="@string/suevent_u_speaker"
+        android:textColor="@color/event_status_approved_background"
+        app:layout_constraintBottom_toBottomOf="@id/tvTime"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

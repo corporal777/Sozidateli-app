@@ -122,6 +122,11 @@
     <string name="image_load_error">Ошибка загрузки изображения</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="subevent_list_member">Список участников</string>
+    <string name="suevent_u_speaker">Вы спикер</string>
+    
+    <string name="write_message">Написать сообщение</string>
+    
     <string name="contacts_search_favorites">Избранные контакты</string>
     <string name="contacts_search_chats">Текущие чаты</string>
     <string name="contacts_search_another">Все контакты</string>

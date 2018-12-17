@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -15,6 +16,7 @@ import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.User
 import com.example.ui.base.BaseFragment
+import com.example.util.ARG_USER
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_news_list.*
@@ -111,7 +113,9 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
     }
 
     override fun showSpeaker(user: User) {
-
+        findNavController().navigate(R.id.speaker_fragment,bundleOf(
+                ARG_USER to user
+        ))
     }
 
     override fun isShowToolbar() = true

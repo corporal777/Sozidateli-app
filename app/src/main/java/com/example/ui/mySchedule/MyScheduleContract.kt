@@ -13,6 +13,9 @@ interface MyScheduleContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun updateSubevents(date:Long,subevents:List<Subevent>,isMySchedule:Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun openSubevent(subevent: Subevent,isMySchedule: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -20,5 +23,6 @@ interface MyScheduleContract {
         fun changeSelectedTags(tags:ArrayList<String>)
         fun addToSchedule(subevent: Subevent)
         fun removeFromeSchedule(subevent: Subevent)
+        fun onSubeventClick(subevent: Subevent)
     }
 }
