@@ -1,6 +1,5 @@
 package com.example.holders
 
-import android.text.InputType
 import android.view.View
 import com.example.R
 import com.example.data.models.Subevent
@@ -17,7 +16,7 @@ open class SubeventHeaderItem(private val subevent: Subevent,private val present
                 tvDescription.text = subevent.description
                 tvLocation.text = subevent.location
 
-                llListMember.setOnClickListener { presenter.onShowMembersClick() }
+                llListMember.setOnClickListener { presenter.onOpenUserListClick() }
 
                 if(subevent.isSpeaker){
                     llListMember.visibility = View.VISIBLE

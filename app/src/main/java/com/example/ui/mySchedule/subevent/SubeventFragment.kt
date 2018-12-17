@@ -34,7 +34,7 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SubeventPresenter = presenterProvider.get().apply {
-        var args = SubeventFragmentArgs.fromBundle(arguments)
+        val args = SubeventFragmentArgs.fromBundle(arguments)
         subevent = args.subevent
     }
 
@@ -63,6 +63,10 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
         findParentNavigation().navigate(R.id.speaker_fragment,bundleOf(
                 ARG_USER to user
         ))
+    }
+
+    override fun openUserList(subevent: Subevent) {
+        findParentNavigation().navigate(SubeventFragmentDirections.subeventToUserList(subevent.id))
     }
 
     override fun isShowToolbar() = true

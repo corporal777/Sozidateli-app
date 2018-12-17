@@ -34,6 +34,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         tvAboutStatus.setOnClickListener { presenter.clickAboutStatus() }
         clProfile.setOnClickListener { presenter.clickFullProfile() }
         flFavorite.setOnClickListener { presenter.clickFavorite() }
+        flChatSetting.setOnClickListener { presenter.clickChatSetting() }
     }
 
     override fun showAboutStatus() {
@@ -65,7 +66,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun showChatSetting() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
     }
 
     override fun setUser(user: User) {

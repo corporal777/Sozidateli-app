@@ -21,12 +21,14 @@ import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.mySchedule.subevent.SubeventFragment
+import com.example.ui.mySchedule.usersList.UserListFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
+import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
@@ -138,4 +140,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserListFragment(): UserListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSettingChatFragment(): SettingChatFragment
 }

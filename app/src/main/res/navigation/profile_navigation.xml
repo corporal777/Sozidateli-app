@@ -22,6 +22,10 @@
         <action
             android:id="@+id/profile_to_favorite"
             app:destination="@+id/favorite_fragment" />
+
+        <action
+            android:id="@+id/profile_to_setting"
+            app:destination="@+id/profile_setting_chat_fragment" />
     </fragment>
 
 
@@ -54,4 +58,9 @@
         android:id="@+id/profile_edit_fragment"
         android:name="com.example.ui.profile.profileEdit.ProfileEditFragment"
         android:label=" " />
+
+    <fragment
+        android:id="@+id/profile_setting_chat_fragment"
+        android:name="com.example.ui.profile.settingChat.SettingChatFragment"
+        android:label="@string/setting_chat_title" />
 </navigation>

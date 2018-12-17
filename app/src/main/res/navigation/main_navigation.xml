@@ -73,6 +73,9 @@
         <argument
             android:name="subevent"
             app:argType="com.example.data.models.Subevent" />
+        <action
+            android:id="@+id/subevent_to_user_list"
+            app:destination="@id/subevent_users_list_fragment" />
     </fragment>
 
     <fragment
@@ -82,4 +85,11 @@
             android:name="user"
             app:argType="com.example.data.models.User" />
     </fragment>
+
+    <fragment
+        android:id="@+id/subevent_users_list_fragment"
+        android:name="com.example.ui.mySchedule.usersList.UserListFragment">
+        <argument android:name="subevent_id" />
+    </fragment>
+
 </navigation>

@@ -1,30 +1,21 @@
-package com.example.ui.mySchedule.subevent
+package com.example.ui.profile.settingChat
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
-import com.example.data.models.Subevent
 import com.example.data.models.User
 import com.example.data.models.UserChat
 import com.example.ui.base.BaseContract
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.Query
 
-interface SubeventContract {
+interface SettingChatContract {
     interface View : BaseContract.View{
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(subevent:Subevent, users:List<User>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeakerProfile(user:User)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun openUserList(subevent: Subevent)
-
+        fun setSetting(user:User)
     }
 
     interface Presenter : BaseContract.Presenter{
-        fun onSpeakerClick(user: User)
-        fun onOpenUserListClick()
+        fun onChangeSetting(type:String,isEnabled:Boolean)
     }
 }
