@@ -35,6 +35,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         clProfile.setOnClickListener { presenter.clickFullProfile() }
         flFavorite.setOnClickListener { presenter.clickFavorite() }
         flChatSetting.setOnClickListener { presenter.clickChatSetting() }
+        notification.setOnClickListener { presenter.onNotificationClick() }
     }
 
     override fun showAboutStatus() {
@@ -83,6 +84,19 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         }
     }
 
+    override fun showLastNotification(text: String, notificationCount: Int) {
+        notification.visibility = View.VISIBLE
+        tvLastNotificationText.text = text
+        tvNotificationCount.text = notificationCount.toString()
+    }
+
+    override fun hideLastNotification() {
+        notification.visibility = View.GONE
+    }
+
+    override fun showNotifications() {
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToNotificationsFragment())
+    }
 
     override fun isShowToolbar() = true
 

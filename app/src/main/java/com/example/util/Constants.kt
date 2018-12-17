@@ -1,8 +1,5 @@
 package com.example.util
 
-import java.text.SimpleDateFormat
-import java.util.*
-
 const val COLLECTION_CHATS = "chats"
 const val COLLECTION_MESSAGES = "messages"
 const val COLLECTION_USERS = "users"
@@ -16,9 +13,9 @@ const val ARG_CUSTOM_LABEL = "label"
 
 const val NOTIFICATION_DATA_DEEP_LINK = "deepLink"
 
-const val TYPE_DATE="date"
-const val TYPE_DATE_PERIOD_FROM="period_from"
-const val TYPE_DATE_PERIOD_TO="period_to"
+const val TYPE_DATE = "date"
+const val TYPE_DATE_PERIOD_FROM = "period_from"
+const val TYPE_DATE_PERIOD_TO = "period_to"
 
 const val TYPE_SCHEDULE_MY = "my_schedule"
 const val TYPE_SCHEDULE_ALL = "all_schedule"

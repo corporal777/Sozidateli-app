@@ -5,6 +5,8 @@
     <color name="colorAccent">#C49A6C</color>
     <color name="colorDivider">#EEEEEE</color>
 
+    <color name="gray">#E4E4E4</color>
+
     <color name="text_title">#515151</color>
 
     <color name="chat_message_background_outgoing">#C49A6C</color>
@@ -28,6 +30,7 @@
     <color name="auth_accept_green">#acd9be</color>
 
     <color name="profile_divider">#eaeaea</color>
+    <color name="profile_notification_background">#C49A6C</color>
 
     <color name="input_border">#D5D7D8</color>
 

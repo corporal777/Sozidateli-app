@@ -56,6 +56,9 @@
     <string name="profile_social_project">Социальные проекты</string>
     <string name="profile_events">Мероприятия</string>
     <string name="profile_interests">Интересы</string>
+    <string name="profile_last_notification">Последнее уведомление</string>
+
+    <string name="notifications_label">Уведомления</string>
 
 
     <string name="menu_item_chat_label">Чат</string>
