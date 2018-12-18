@@ -15,6 +15,7 @@ import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import kotlinx.android.synthetic.main.brown_button.view.*
 import kotlinx.android.synthetic.main.item_search_header.view.*
 import java.util.*
 
@@ -30,6 +31,9 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
     override fun bind(viewHolder: ViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.itemView.apply {
+
+            btnQr.setOnClickListener { presenter.onQrScanClick() }
+
             etSearchText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     presenter.onSearchTextChange(p0.toString())

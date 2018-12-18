@@ -583,6 +583,51 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="about_event_navigation">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="265" />
+                            <option name="y" value="121" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="enter_code_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="enter_code_to_event">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="qr_scanner_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="search_fragment">
                     <value>
                       <LayoutPositions>
@@ -594,6 +639,16 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_search_fragment_to_qr_scanner_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="search_to_event_screen">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="search_to_search_type">
                               <value>
                                 <LayoutPositions />
