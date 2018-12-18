@@ -1,6 +1,6 @@
 package com.example.holders
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.InputType
 import android.view.View
 import com.example.R

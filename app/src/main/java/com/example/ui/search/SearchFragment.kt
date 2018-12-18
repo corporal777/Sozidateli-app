@@ -1,13 +1,11 @@
 package com.example.ui.search
 
-import android.app.DatePickerDialog
-import android.arch.paging.PagedList
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -16,14 +14,13 @@ import com.example.data.models.DataArgsSearchType
 import com.example.data.models.Event
 import com.example.holders.SearchEventResultItem
 import com.example.holders.SearchHeaderItem
-import com.example.holders.SelectedSearchTypeItem
 import com.example.ui.base.BaseFragment
-import com.example.util.*
+import com.example.util.ARG_EVENT
+import com.example.util.PagedListGroup
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_search.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -58,7 +55,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = groupAdapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
+            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 
@@ -88,13 +85,17 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     }
 
     override fun showEvent(event: Event) {
-        findNavController().navigate(R.id.search_to_event_screen,bundleOf(
+        findNavController().navigate(R.id.search_to_event_screen, bundleOf(
                 ARG_EVENT to event
         ))
     }
 
     override fun showDateDialog(date: Long, type: String) {
         header.showDateDialog(date, type)
+    }
+
+    override fun showQrScan() {
+        findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToQrScannerFragment())
     }
 
     override fun isShowToolbar() = true

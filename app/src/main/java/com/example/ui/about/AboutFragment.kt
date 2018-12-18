@@ -1,6 +1,5 @@
 package com.example.ui.about
 
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R

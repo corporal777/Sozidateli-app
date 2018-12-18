@@ -1,7 +1,7 @@
 package com.example.ui.search
 
-import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
+import androidx.paging.PagedList
+import androidx.paging.RxPagedListBuilder
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.DataArgsSearchType
@@ -9,16 +9,13 @@ import com.example.data.models.Event
 import com.example.data.models.SearchTypeEvent
 import com.example.events.OnAddSearchTypeEvent
 import com.example.holders.SearchEventResultItem
-import com.example.repository.ChatRepository
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
 import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.SimplePagination
 import io.reactivex.BackpressureStrategy
-import kotlinx.android.synthetic.main.fragment_search.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -146,6 +143,8 @@ class SearchPresenter
     override fun onSearchClick() {
 
     }
+
+    override fun onQrScanClick() = viewState.showQrScan()
 
     override fun onDestroy() {
         super.onDestroy()

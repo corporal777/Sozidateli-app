@@ -1,23 +1,13 @@
 package com.example.ui.about
 
-import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import io.reactivex.Completable
-import performOnBackgroundOutOnMain
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
 class AboutPresenter
-@Inject constructor(private val chatRepository: ChatRepository
-) : BasePresenter<AboutContract.View>(), AboutContract.Presenter{
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-
-
-    }
+@Inject constructor(
+) : BasePresenter<AboutContract.View>(), AboutContract.Presenter {
 
     override fun attachView(view: AboutContract.View?) {
         super.attachView(view)

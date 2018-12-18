@@ -1,11 +1,10 @@
 package com.example.ui.newsList
 
-import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R

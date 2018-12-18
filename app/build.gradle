@@ -78,8 +78,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
     //ui
-    implementation "com.xwray:groupie:2.1.0"
-    implementation "com.xwray:groupie-kotlin-android-extensions:2.1.0"
+    implementation "com.xwray:groupie:2.3.0"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.3.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
     implementation 'com.budiyev.android:code-scanner:2.1.0'

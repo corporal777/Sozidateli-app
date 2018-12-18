@@ -1,12 +1,10 @@
 package com.example.ui.mySchedule.usersList
 
-import android.arch.paging.PagedList
-import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -45,7 +43,7 @@ class UserListFragment : BaseNestedNavigationFragment(), UserListContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if(!item.image.isNullOrEmpty()) {
+                    if (!item.image.isNullOrEmpty()) {
                         Picasso.get()
                                 .load(item.image)
                                 .transform(CropCircleTransformation())

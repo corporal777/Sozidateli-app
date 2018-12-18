@@ -1,16 +1,13 @@
 package com.example.holders
 
 import android.app.DatePickerDialog
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.navigation.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
 import com.example.ui.search.SearchContract
-import com.example.ui.search.SearchFragmentDirections
 import com.example.ui.search.SearchHolder
-import com.example.ui.search.SearchPresenter
 import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
@@ -33,8 +30,7 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
     override fun bind(viewHolder: ViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.itemView.apply {
-
-            etSearchText.addTextChangedListener(object:TextWatcher{
+            etSearchText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
                     presenter.onSearchTextChange(p0.toString())
                 }
@@ -131,12 +127,12 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
 
     }
 
-    fun showResultHeader(isShow:Boolean){
+    fun showResultHeader(isShow: Boolean) {
         viewHolder?.let {
             it.itemView.apply {
-                if(isShow){
+                if (isShow) {
                     llSearchResultTitle.visibility = View.VISIBLE
-                } else{
+                } else {
                     llSearchResultTitle.visibility = View.GONE
                 }
             }
