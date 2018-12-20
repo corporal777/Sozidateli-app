@@ -7,7 +7,13 @@
 
     <color name="gray">#E4E4E4</color>
 
-    <color name="text_title">#515151</color>
+    <color name="hint_gray">#939598</color>
+
+    <color name="main_background">#fafafa</color>
+
+    <color name="text_title">#404041</color>
+
+    <color name="disabled_color">#d1d3d4</color>
 
     <color name="chat_message_background_outgoing">#C49A6C</color>
     <color name="chat_message_background_incoming">#E4E4E4</color>
@@ -17,7 +23,7 @@
     <color name="event_status_approved_text">#FFFFFF</color>
     <color name="event_status_approved_background">#2BB673</color>
     <color name="event_status_wait_confirmation_text">#FFFFFF</color>
-    <color name="event_status_wait_confirmation_background">#A7A9AC</color>
+    <color name="event_status_wait_confirmation_background">#a7a9ac</color>
     <color name="event_status_finished_text">#A7A9AC</color>
     <color name="event_status_finished_background">#E4E4E4</color>
 
@@ -26,8 +32,7 @@
     <color name="auth_fb_color">#4968ac</color>
     <color name="auth_vk_color">#5376a3</color>
     <color name="auth_email_color">#bd9b72</color>
-    <color name="auth_background">#fafafa</color>
-    <color name="auth_accept_green">#acd9be</color>
+    <color name="auth_accept_green">#2bb673</color>
 
     <color name="profile_divider">#eaeaea</color>
     <color name="profile_notification_background">#C49A6C</color>

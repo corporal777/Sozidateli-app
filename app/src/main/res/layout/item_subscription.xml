@@ -31,7 +31,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/btnUnsubscribe"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintStart_toEndOf="@+id/ivLogo"

@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/text_title</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>
@@ -18,6 +20,8 @@
         <item name="android:background">@drawable/background_edittext_login</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">40dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColorHint">@color/hint_gray</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:textCursorDrawable">@null</item>
     </style>
@@ -46,8 +50,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ProfileInfoField">
@@ -62,7 +65,7 @@
     <style name="ProfileInfoField.Label">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="fontPath">fonts/OpenSans-Light.ttf</item>
     </style>
 
     <style name="ProfileInfoField.Text">
@@ -89,6 +92,6 @@
 
     <style name="TextTitle">
         <item name="android:textColor">@color/text_title</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">22sp</item>
     </style>
 </resources>

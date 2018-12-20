@@ -14,18 +14,19 @@
         android:layout_centerInParent="true">
         
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_refresh_temp"/>
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_load"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/auth_email_color"
-            android:textSize="30sp"
+            android:textSize="32sp"
             android:layout_marginTop="25dp"
             android:layout_gravity="center"
             android:gravity="center"
+            fontPath="fonts/OpenSans-Light.ttf"
             android:text="Здравствуйте, Иван Петрович"/>
         
     </LinearLayout>

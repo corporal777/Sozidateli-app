@@ -31,11 +31,21 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:id="@+id/tvIsSpeaker"
-        android:layout_marginEnd="@dimen/profile_padding_start"
+        app:layout_constraintEnd_toStartOf="@id/ivStar"
+        app:layout_constraintBottom_toBottomOf="@id/ivStar"
+        android:layout_marginEnd="10dp"
         android:text="@string/suevent_u_speaker"
         android:textColor="@color/event_status_approved_background"
+        />
+    
+    <ImageView
+        android:layout_width="17dp"
+        android:id="@+id/ivStar"
+        android:layout_height="17dp"
         app:layout_constraintBottom_toBottomOf="@id/tvTime"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:src="@drawable/ic_star"/>
 
     <TextView
         android:id="@+id/tvStatus"

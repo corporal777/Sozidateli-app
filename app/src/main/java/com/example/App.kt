@@ -12,6 +12,7 @@ import com.squareup.leakcanary.LeakCanary
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import timber.log.Timber
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Inject
 
 class App : Application(), HasActivityInjector {
@@ -19,6 +20,9 @@ class App : Application(), HasActivityInjector {
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
     lateinit var appComponent: AppComponent
+
+    @Inject
+    internal lateinit var calligraphyConfig: CalligraphyConfig
 
     override fun onCreate() {
         super.onCreate()
@@ -40,6 +44,8 @@ class App : Application(), HasActivityInjector {
                 .application(this)
                 .build()
                 .apply { inject(this@App) }
+
+        CalligraphyConfig.initDefault(calligraphyConfig)
     }
 
     override fun activityInjector() = dispatchingAndroidInjector
