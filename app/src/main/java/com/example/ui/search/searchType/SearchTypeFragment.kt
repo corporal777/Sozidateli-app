@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -67,7 +68,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
 
     override fun setData(data: ArrayList<SearchTypeEvent>) {
         groupAdapter.update(data.map {
-            SearchTypeItem(it){item, isSelect->
+            SearchTypeItem(it) { item, isSelect ->
                 presenter.selectItem(isSelect, item)
             }
         })

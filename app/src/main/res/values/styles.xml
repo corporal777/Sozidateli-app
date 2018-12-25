@@ -42,6 +42,10 @@
         <item name="viewBackground">@color/gray</item>
     </style>
 
+    <style name="ViewBackgroundBlack">
+        <item name="viewBackground">@color/text_title</item>
+    </style>
+
     <style name="InputBorder">
         <item name="viewBackground">@color/input_border</item>
     </style>

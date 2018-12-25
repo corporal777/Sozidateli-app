@@ -41,6 +41,11 @@
 
     <color name="event_tabs_background">#42403E</color>
     <color name="event_tabs_text">#FFFFFF</color>
+    <color name="event_tabs_text_unchecked">#7dffffff</color>
 
     <color name="image_view_error_background">#42403E</color>
+
+    <color name="search_edit_text_bg">#f8f8f8</color>
+
+    <color name="red">#ed1c24</color>
 </resources>

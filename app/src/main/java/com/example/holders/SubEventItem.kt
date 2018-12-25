@@ -13,9 +13,10 @@ import com.example.ui.mySchedule.MySchedulePresenter
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import kotlinx.android.synthetic.main.brown_button.view.*
 import kotlinx.android.synthetic.main.item_sub_event.view.*
 
-open class SubEventItem(private val subEvent: Subevent,private val isInMySchedule:Boolean,private val presenter:MySchedulePresenter) : Item() {
+open class SubEventItem(private val subEvent: Subevent, private val isInMySchedule: Boolean, private val presenter: MySchedulePresenter) : Item() {
 
     private val groupAdapterTags = GroupAdapter<ViewHolder>()
 
@@ -24,7 +25,7 @@ open class SubEventItem(private val subEvent: Subevent,private val isInMySchedul
             tvTime.text = subEvent.time
             groupAdapterTags.update(
                     subEvent.tags.map {
-                        TagItem(it,false,!isInMySchedule){tag, isSelected -> }
+                        TagItem(it, false, !isInMySchedule) { tag, isSelected -> }
                     }
             )
             rvTags.apply {
@@ -32,26 +33,33 @@ open class SubEventItem(private val subEvent: Subevent,private val isInMySchedul
                 adapter = groupAdapterTags
             }
 
-            if(subEvent.isInSchedule){
+            if (subEvent.isInSchedule) {
                 btnAdd.setBackgroundResource(R.drawable.background_corners_border)
-                btnAdd.setTextColor(ContextCompat.getColor(context,R.color.colorAccent))
+                btnAdd.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
                 btnAdd.setText(context.getString(R.string.remove))
-            } else{
+                btnAdd.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.remove_from_schedule_height)
+                btnAdd.isAllCaps = false
+            } else {
                 btnAdd.setBackgroundResource(R.drawable.background_corners)
                 btnAdd.setTextColor(Color.WHITE)
                 btnAdd.setText(context.getString(R.string.sub_event_add_to_schedule))
+                btnAdd.layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.add_schedule_height)
+                btnAdd.isAllCaps = true
             }
 
-            if(subEvent.isSpeaker){
-                tvIsSpeaker.visibility = View.VISIBLE
-            } else{
-                tvIsSpeaker.visibility = View.GONE
+            val visibilityIsSpeaker: Int
+            if (subEvent.isSpeaker) {
+                visibilityIsSpeaker = View.VISIBLE
+            } else {
+                visibilityIsSpeaker = View.GONE
             }
+            tvIsSpeaker.visibility = visibilityIsSpeaker
+            ivStar.visibility = visibilityIsSpeaker
 
             btnAdd.setOnClickListener {
-                if(subEvent.isInSchedule){
+                if (subEvent.isInSchedule) {
                     presenter.removeFromeSchedule(subEvent)
-                } else{
+                } else {
                     presenter.addToSchedule(subEvent)
                 }
             }

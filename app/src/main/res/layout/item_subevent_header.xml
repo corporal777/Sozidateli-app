@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
@@ -12,7 +13,8 @@
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        fontPath="fonts/OpenSans-Light.ttf"
         tools:text="9:00-10:00" />
 
     <TextView
@@ -23,7 +25,7 @@
         android:layout_marginTop="7dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         tools:text="Прикладная че то там сессия" />
 
 
@@ -33,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="10dp"
+        fontPath="fonts/OpenSans-Light.ttf"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:textColor="@android:color/black"
         android:textSize="16sp"
@@ -49,7 +52,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="20dp"
+            android:layout_width="15dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_launcher"
@@ -63,8 +66,8 @@
             android:layout_marginStart="10dp"
             android:textAllCaps="true"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:textStyle="bold"
+            android:textSize="12sp"
+            fontPath="fonts/OpenSans-Bold.ttf"
             tools:text="Павильон 1" />
 
     </LinearLayout>
@@ -74,34 +77,46 @@
         android:layout_marginTop="20dp"
         android:id="@+id/topDivider"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llListMember"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@android:color/white"
         android:orientation="horizontal"
+        android:layout_gravity="center"
         android:paddingStart="@dimen/profile_padding_start"
-        android:paddingTop="10dp"
         android:paddingEnd="@dimen/profile_padding_start"
-        android:paddingBottom="10dp">
+        >
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_launcher"
+            android:id="@+id/ivStart"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_star"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/ivStart"
             android:text="@string/subevent_list_member"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp"
+            tools:ignore="RelativeOverlap" />
 
-    </LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_keyboard_arrow_right"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
 
     <View style="@style/ViewDivider.Horizontal"
         android:id="@+id/bottomDivider"/>
@@ -113,9 +128,7 @@
         android:textAllCaps="true"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:text="@string/speakers"
-        android:textColor="@android:color/black"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        fontPath="fonts/OpenSans-Bold.ttf"
         android:layout_marginBottom="10dp" />
 
 </LinearLayout>

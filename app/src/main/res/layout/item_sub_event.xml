@@ -22,14 +22,13 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/profile_padding_start"
         android:paddingTop="15dp"
-        android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:text="9:00 - 10:00" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:id="@+id/tvIsSpeaker"
         app:layout_constraintEnd_toStartOf="@id/ivStar"
         app:layout_constraintBottom_toBottomOf="@id/ivStar"
@@ -39,13 +38,14 @@
         />
     
     <ImageView
-        android:layout_width="17dp"
+        android:layout_width="20dp"
         android:id="@+id/ivStar"
-        android:layout_height="17dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="@id/tvTime"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/profile_padding_start"
-        android:src="@drawable/ic_star"/>
+        android:src="@drawable/ic_star"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvStatus"
@@ -55,7 +55,7 @@
         android:paddingTop="7dp"
         android:text="@string/sub_event_register_users"
         android:textColor="@android:color/black"
-        android:textSize="17sp"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tvTime" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -78,6 +78,7 @@
         android:background="@drawable/background_corners"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
+        android:textSize="14sp"
         android:text="@string/sub_event_add_to_schedule"
         android:textColor="@android:color/white"
         android:theme="@style/ViewBackgroundAccent"

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.SearchView
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -25,6 +26,8 @@ import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_search_contact.*
+import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
+import uk.co.chrisjenx.calligraphy.TypefaceUtils
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -39,6 +42,9 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     @ProvidePresenter
     fun providePresenter(): ContactsSearchPresenter = presenterProvider.get()
+
+
+    private lateinit var typefaceBold:CalligraphyTypefaceSpan
 
     private val adapter: SimplePagingRecyclerViewAdapter<ContactSearch> by lazy {
         object : SimplePagingRecyclerViewAdapter<ContactSearch>(
@@ -85,7 +91,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                     var start = text.indexOf(string = textToBold, ignoreCase = true)
                     while (start > 0) {
                         val end = start + textToBold.length
-                        setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
+                        setSpan(typefaceBold, start, end, 0)
                         start = text.indexOf(textToBold, start + 1, true)
                     }
                 }
@@ -96,6 +102,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        typefaceBold = CalligraphyTypefaceSpan(uk.co.chrisjenx.calligraphy.TypefaceUtils.load(context!!.assets,"fonts/OpenSans-Bold.ttf"))
         recyclerView.apply {
             adapter = this@ContactsSearchFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))

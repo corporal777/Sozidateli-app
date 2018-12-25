@@ -24,6 +24,15 @@ interface EventTabsContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setLabel(label: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChat()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSearch()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAccount()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -32,5 +41,9 @@ interface EventTabsContract {
         fun onAboutSelected()
         fun onMapTabsSelected()
         fun onToListSelected()
+
+        fun onMenuChatClick()
+        fun onMenuSearchClick()
+        fun onMenuAccountClick()
     }
 }

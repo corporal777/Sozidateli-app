@@ -1,6 +1,9 @@
 package com.example.ui.eventTabs
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -13,6 +16,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.eventsTabs.EventsTabsFragmentDirections
+import com.example.util.BottomNavigationViewHelper
+import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -28,9 +34,14 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     @ProvidePresenter
     fun providePresenter(): EventTabsPresenter = presenterProvider.get()
 
+    private lateinit var bottomNavigationViewHelper: BottomNavigationViewHelper
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val controller = findNestedNavController()
+        bottomNavigationViewHelper = BottomNavigationViewHelper(bottomNavigation)
+        bottomNavigationViewHelper.removeShiftMode()
+        setHasOptionsMenu(true)
         bottomNavigation.apply {
             setOnNavigationItemSelectedListener {
                 presenter.apply {
@@ -65,6 +76,16 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
+        Utils.processMainMenu(menu,{
+            presenter.onMenuChatClick()
+        },{
+            presenter.onMenuAccountClick()
+        })
+    }
+
     override fun showMyScheduleTab() = findNestedNavController().navigate(R.id.my_schedule_fragment, null, buildNavOptions())
 
     override fun showScheduleTab() = findNestedNavController().navigate(R.id.schedule_fragment, null, buildNavOptions())
@@ -72,6 +93,26 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     override fun showAboutTab() = findNestedNavController().navigate(R.id.about_event_navigation, null, buildNavOptions())
 
     override fun showMapTab() = findNestedNavController().navigate(R.id.map_tabs_fragment, null, buildNavOptions())
+
+    override fun showChat() {
+        findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatNavigation())
+    }
+
+    override fun showSearch() {
+        findNavController().navigate(EventTabsFragmentDirections.mainToSearch())
+    }
+
+    override fun showAccount() {
+        findNavController().navigate(EventTabsFragmentDirections.mainToProfile())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.search -> presenter.onMenuSearchClick()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
 
     override fun showEventList() {
         findNavController().apply {

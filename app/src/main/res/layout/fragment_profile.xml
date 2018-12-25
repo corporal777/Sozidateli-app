@@ -71,7 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
@@ -114,8 +114,8 @@
 
             <ImageView
                 android:id="@+id/ivAvatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/profile_avatar_size"
+                android:layout_height="@dimen/profile_avatar_size"
                 android:src="@mipmap/ic_launcher"
                 tools:ignore="ContentDescription" />
 
@@ -219,7 +219,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right" />
+                android:src="@drawable/ic_keyboard_arrow_right"
+                tools:ignore="ContentDescription" />
 
         </FrameLayout>
 

@@ -23,6 +23,7 @@
         android:paddingBottom="1dp"
         app:itemIconTint="@color/event_tab_color_set"
         app:itemTextColor="@color/event_tab_color_set"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

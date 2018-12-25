@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
+
+
     <dimen name="chat_message_corners_radius">20dp</dimen>
     <dimen name="chat_message_padding_horizontal">10dp</dimen>
     <dimen name="chat_message_padding_vertical">10dp</dimen>
@@ -11,4 +15,10 @@
     <dimen name="profile_height_field">50dp</dimen>
 
     <dimen name="profile_padding_start">20dp</dimen>
+
+    <dimen name="profile_avatar_size">60dp</dimen>
+    
+    <dimen name="add_schedule_height">50dp</dimen>
+    <dimen name="remove_from_schedule_height">35dp</dimen>
+
 </resources>

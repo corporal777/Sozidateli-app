@@ -39,6 +39,7 @@ import com.example.ui.search.enterCode.`EnterCodeFragment$$PresentersBinder`
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speakers.SpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
+import com.example.ui.views.chatView.ChatView
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

@@ -10,11 +10,10 @@
 
     <ImageView
         android:id="@+id/ivDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_file_download"
-        android:tint="@color/colorAccent"
+        android:layout_width="17dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:src="@drawable/ic_document"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvDocumentName"
         tools:ignore="ContentDescription" />
@@ -25,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
         android:layout_marginBottom="16dp"
         android:textSize="16sp"
         android:transitionName="eventLabel"
