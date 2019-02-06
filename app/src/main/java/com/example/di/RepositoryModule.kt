@@ -1,11 +1,6 @@
 package com.example.di
 
-import com.example.repository.AuthRepository
-import com.example.repository.AuthRepositoryImp
-import com.example.repository.ChatRepository
-import com.example.repository.ChatRepositoryImpl
-import com.example.repository.DummyRepository
-import com.example.repository.DummyRepositoryImpl
+import com.example.repository.*
 import dagger.Module
 import dagger.Provides
 
@@ -20,4 +15,7 @@ class RepositoryModule {
 
     @Provides
     fun eventRepository(repository: DummyRepositoryImpl): DummyRepository = repository
+
+    @Provides
+    fun userRepository(repository: UserRepositoryImp): UserRepository = repository
 }

@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import com.example.data.models.user.User
+
 data class ContactSearch(
         val user: User,
         val contactType: Type,

@@ -3,7 +3,7 @@ package com.example.ui.mySchedule.usersList
 import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface UserListContract {

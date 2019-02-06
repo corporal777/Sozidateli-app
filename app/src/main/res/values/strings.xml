@@ -48,6 +48,7 @@
 
     <string name="profile_phone">Телефон</string>
     <string name="profile_birthday">Дата рождения</string>
+    <string name="profile_country">Страна</string>
     <string name="profile_city">Город</string>
     <string name="profile_sn">Социальные сети</string>
     <string name="profile_education">Образование ученая степень звание</string>
@@ -141,5 +142,6 @@
     <string name="enter_code_title">Ввода кода</string>
     <string name="enter_code_hint">XXXXX</string>
 
+    <integer name="com_vk_sdk_AppId">123213</integer>
 
 </resources>

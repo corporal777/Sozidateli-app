@@ -1,7 +1,7 @@
 package com.example.ui.speaker
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject

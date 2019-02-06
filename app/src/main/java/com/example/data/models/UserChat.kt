@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import com.example.data.models.user.User
+
 class UserChat(
         val id: String,
         val user: User? = null,

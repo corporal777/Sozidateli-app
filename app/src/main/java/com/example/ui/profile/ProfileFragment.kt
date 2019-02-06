@@ -7,7 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
@@ -71,16 +71,17 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun setUser(user: User) {
-        tvName.text = user.name
-        tvStatus.text = String.format(getString(R.string.profile_status), user.status)
-        if (!user.image.isNullOrEmpty()) Picasso.get().load(user.image).transform(CropCircleTransformation()).into(ivAvatar)
-        val visibleCurrentEvent = if (user.currentEvent == null) View.GONE else View.VISIBLE
+        tvName.text = user.user_name
+        //TODO: need status
+        //tvStatus.text = String.format(getString(R.string.profile_status), user.status)
+        if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
+        val visibleCurrentEvent = if (user.default_event == null) View.GONE else View.VISIBLE
         llCurrentEvent.visibility = visibleCurrentEvent
 
-        user.currentEvent?.let {
-            tvEventName.text = it.name
+        user.default_event?.let {
+            /*tvEventName.text = it.name
             tvOrganizationName.text = it.organizationName
-            tvEventDate.text = it.startDate.toString()
+            tvEventDate.text = it.startDate.toString()*/
         }
     }
 

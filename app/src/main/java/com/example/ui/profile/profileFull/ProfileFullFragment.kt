@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
 import com.example.util.Utils
@@ -52,45 +52,45 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
     }
 
     override fun setUser(user: User) {
-        if (!user.image.isNullOrEmpty()) Picasso.get().load(user.image).transform(CropCircleTransformation()).into(ivAvatar)
+        if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
 
-        tvName.text = user.name
-        tvId.text = user.id.toString()
+        tvName.text = user.user_name
+        tvId.text = user.user_id.toString()
 
-        setVisibleField(llEmail, user.email)
+        /*setVisibleField(llEmail, user.email)
         user.email?.let {
             tvEmail.text = it
-        }
+        }*/
 
-        setVisibleField(llPhone, user.phone)
-        user.phone?.let {
+        setVisibleField(llPhone, user.user_phone)
+        user.user_phone?.let {
             tvPhone.text = it
         }
 
-        setVisibleField(llBirthday, user.birthday)
-        tvBirthday.text = Utils.defaultDataFormatter.format(user.birthday)
+        setVisibleField(llBirthday, user.user_birthday)
+        tvBirthday.text = Utils.defaultDataFormatter.format(user.user_birthday)
 
-        setVisibleField(llCity, user.city)
-        user.city?.let {
+        setVisibleField(llCity, user.user_address_city)
+        user.user_address_city?.let {
             tvCity.text = it
         }
 
-        setVisibleField(llSN, user.sn)
+        /*setVisibleField(llSN, user.sn)
         user.sn?.let {
             tvSn.text = it
-        }
+        }*/
 
-        setVisibleField(llEducation, user.educations)
+        /*setVisibleField(llEducation, user.educations)
         user.educations?.let {
             tvEducation.text = it
-        }
+        }*/
 
-        eiInstitution.setName(getString(R.string.profile_institution))
+        /*eiInstitution.setName(getString(R.string.profile_institution))
         eiInstitution.setDataInfo(hashMapOf(
                 "" to Utils.getDatesInterval(user.startEducate,user.endEducate),
                 "Специальность" to user.speciality,
                 getString(R.string.profile_institution) to user.institution
-        ))
+        ))*/
     }
 
     private fun setVisibleField(view: View, data: Any?) {

@@ -3,7 +3,7 @@ package com.example.ui.profile
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Event
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
@@ -16,21 +16,6 @@ class ProfilePresenter
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.user = User(
-                "1",
-                "Иван Петрович",
-                "https://histrf.ru/uploads/media/person/0001/04/thumb_3560_person_full.jpeg",
-                "участник",
-                dummyRepository.getEvent(),
-                "ivanivanov@yandex.ru",
-                "+7 (932) 451-21-33",
-                0,
-                "Москва",
-                "https://vk.com/id_0",
-                "Высшее политтехническое Депутат академии высших научных дипломированных специалистов в области шкафостроения Директор кандидатов наук",
-                institution = "Коледж им. ПТУ",
-                speciality = "Технолог"
-        )
 
         viewState.apply {
             showLastNotification("Текст последней нотификации. Максимум 2 строки", 20)
@@ -55,8 +40,8 @@ class ProfilePresenter
     override fun clickTabEvents() = viewState.showTabEvents()
 
     override fun clickCurrentEvent(event: Event) {
-        appData.user.currentEvent?.let {
-            viewState.showCurrentEvent(it)
+        appData.user.default_event?.let {
+           // viewState.showCurrentEvent(it)
         }
     }
 

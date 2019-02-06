@@ -48,7 +48,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     private val adapter: SimplePagingRecyclerViewAdapter<ContactSearch> by lazy {
         object : SimplePagingRecyclerViewAdapter<ContactSearch>(
-                { oldItem, newItem -> oldItem.user.id == newItem.user.id },
+                { oldItem, newItem -> oldItem.user.user_id == newItem.user.user_id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_search_contact
@@ -56,8 +56,10 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: ContactSearch?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    Picasso.get().load(item.user.image).transform(CropCircleTransformation()).into(ivUserAvatar)
-                    tvUserName.text = makeSectionOfTextBold(item.user.name, item.searchText)
+                    if(!item.user.user_avatar.isNullOrEmpty()) {
+                        Picasso.get().load(item.user.user_avatar).transform(CropCircleTransformation()).into(ivUserAvatar)
+                    }
+                    tvUserName.text = makeSectionOfTextBold(item.user.user_name, item.searchText)
 
                     val showTitle = position == 0 || getItem(position - 1)?.contactType != item.contactType
 

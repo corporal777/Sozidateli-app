@@ -3,8 +3,7 @@ package com.example.ui.mySchedule.subevent
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Subevent
-import com.example.data.models.User
-import com.example.repository.ChatRepository
+import com.example.data.models.user.User
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -21,12 +20,12 @@ class SubeventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        dummyRepository.loadEventSpeakers("1",5,0)
+        /*dummyRepository.loadEventSpeakers("1",5,0)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.setData(subevent,it.data)
                 },{})
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
 

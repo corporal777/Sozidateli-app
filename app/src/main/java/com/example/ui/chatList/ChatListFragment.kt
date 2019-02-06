@@ -43,13 +43,14 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: UserChat?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    Picasso.get()
-                            .load(item.user?.image)
-                            .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher)
-                            .into(ivAvatar)
-
-                    tvName.text = item.user?.name
+                    if(!item.user?.user_avatar.isNullOrEmpty()) {
+                        Picasso.get()
+                                .load(item.user?.user_avatar)
+                                .transform(CropCircleTransformation())
+                                .placeholder(R.drawable.ic_launcher)
+                                .into(ivAvatar)
+                    }
+                    tvName.text = item.user?.user_name
                     tvLastMessage.text = item.lastMessage?.text
                     itemView.setOnClickListener { presenter.onChatClick(item) }
                 }

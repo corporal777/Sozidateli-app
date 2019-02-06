@@ -2,13 +2,13 @@ package com.example.ui.speaker
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface SpeakerContract {
     interface View : BaseContract.View{
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUser(user:User)
+        fun setUser(user: User)
     }
 
     interface Presenter : BaseContract.Presenter{

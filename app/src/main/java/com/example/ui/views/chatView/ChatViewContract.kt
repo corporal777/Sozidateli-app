@@ -1,6 +1,5 @@
 package com.example.ui.views.chatView
 
-import com.example.data.models.User
 import com.example.ui.base.BaseContract
 
 class ChatViewContract {

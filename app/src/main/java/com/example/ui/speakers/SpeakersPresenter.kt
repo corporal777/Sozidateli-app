@@ -3,7 +3,7 @@ package com.example.ui.speakers
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
@@ -20,10 +20,10 @@ class SpeakersPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.id, limit, offset) }
+       /* SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.id, limit, offset) }
                 .create()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     override fun onSpeakerClick(user: User) = viewState.showSpeaker(user)
