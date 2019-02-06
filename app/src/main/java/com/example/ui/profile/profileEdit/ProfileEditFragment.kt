@@ -1,17 +1,13 @@
 package com.example.ui.profile.profileEdit
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.Type
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.holders.BrownButtonItem
 import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
@@ -48,29 +44,36 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
     override fun setUser(user: User) {
 
-        if (!user.image.isNullOrEmpty()) Picasso.get().load(user.image).transform(CropCircleTransformation()).into(ivAvatar)
+        if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
 
-        tvName.text = user.name
-        tvId.text = user.id
+        tvName.text = user.user_name
+        tvId.text = user.user_id.toString()
 
         val listField = mutableListOf<Item>()
 
-        listField.add(ProfileFieldItem(ProfileField("email",Type.EMAIL,getString(R.string.email),true,user.email)))
-        listField.add(ProfileFieldItem(ProfileField("password",Type.PASSWORD,getString(R.string.auth_hint_password),false,null)))
+        listField.add(ProfileFieldItem(ProfileField("user_email",Type.EMAIL,getString(R.string.email),true,user.user_email)))
+        listField.add(ProfileFieldItem(ProfileField("user_password",Type.PASSWORD,getString(R.string.auth_hint_password),false,null)))
         listField.add(ProfileFieldItem(ProfileField("password_one_more",Type.PASSWORD,"Повторите пароль",false,null)))
-        listField.add(ProfileFieldItem(ProfileField("phone",Type.PHONE,getString(R.string.profile_phone),true,user.phone)))
-        listField.add(ProfileFieldItem(ProfileField("birthday",Type.DATE,getString(R.string.profile_birthday),true,user.birthday)))
-        listField.add(ProfileFieldItem(ProfileField("city",Type.TEXT,getString(R.string.profile_city),false,user.city)))
-        listField.add(ProfileFieldItem(ProfileField("sn",Type.TEXT,getString(R.string.profile_sn),false,user.sn)))
-        listField.add(ProfileFieldItem(ProfileField("education",Type.TEXT,getString(R.string.profile_education),false,user.educations)))
+        listField.add(ProfileFieldItem(ProfileField("user_phone",Type.PHONE,getString(R.string.profile_phone),true,user.user_phone)))
+        listField.add(ProfileFieldItem(ProfileField("user_birthday",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday?.date)))
+        listField.add(ProfileFieldItem(ProfileField("user_address_country",Type.TEXT,getString(R.string.profile_country),false,user.user_address_country)))
+        listField.add(ProfileFieldItem(ProfileField("user_address_city",Type.TEXT,getString(R.string.profile_city),false,user.user_address_city)))
+        listField.add(ProfileFieldItem(ProfileField("social_links",Type.TEXT,getString(R.string.profile_sn),false,user.social_links)))
+        //listField.add(ProfileFieldItem(ProfileField("education",Type.TEXT,getString(R.string.profile_education),false,user.education)))
 
-        val listFirstExpandField = mutableListOf<ProfileFieldItem>()
-        listFirstExpandField.add(ProfileFieldItem(ProfileField("startEducate",Type.DATE,"Дата начала обучение",false,user.startEducate)))
-        listFirstExpandField.add(ProfileFieldItem(ProfileField("endEducate",Type.DATE,"Дата окончания",false,user.endEducate)))
-        listFirstExpandField.add(ProfileFieldItem(ProfileField("speciality",Type.DATE,"Спиальность",false,user.speciality)))
-        listFirstExpandField.add(ProfileFieldItem(ProfileField("institution",Type.TEXT,getString(R.string.profile_institution),false,user.institution)))
+        user.education?.let {
+            for(education in it){
+                val listFirstExpandField = mutableListOf<ProfileFieldItem>()
+                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.begin",Type.DATE,"Дата начала обучение",false,education.begin)))
+                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.end",Type.DATE,"Дата окончания",false,education.end)))
+                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.specialty",Type.DATE,"Спиальность",false,education.specialty)))
+                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.organization",Type.TEXT,getString(R.string.profile_institution),false,education.organization)))
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution),listFirstExpandField,true))
+                listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution),listFirstExpandField,true))
+            }
+        }
+
+
 
         listField.add(BrownButtonItem(getString(R.string.save), View.OnClickListener {
             presenter.onSaveClick(adapter)

@@ -16,7 +16,7 @@ class EventTabsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            setLabel(appData.event!!.name)
+          //  setLabel(appData.event!!.name)
         }
     }
 

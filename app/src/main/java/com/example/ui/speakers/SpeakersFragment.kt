@@ -4,7 +4,6 @@ import androidx.paging.PagedList
 import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -14,7 +13,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.util.ARG_USER
 import com.example.util.CropCircleTransformation
@@ -59,7 +58,7 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
 
     private val adapter: SimplePagingRecyclerViewAdapter<User> by lazy {
         object : SimplePagingRecyclerViewAdapter<User>(
-                { oldItem, newItem -> oldItem.id == newItem.id },
+                { oldItem, newItem -> oldItem.user_id== newItem.user_id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_speaker
@@ -68,19 +67,22 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
                 item!!
                 viewHolder.apply {
                     itemView.setOnClickListener { presenter.onSpeakerClick(item) }
-                    Picasso.get()
-                            .load(item.image)
-                            .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher)
-                            .into(ivSpeakerAvatar)
-
-                    tvSpeakerName.text = item.name
-                    tvSpeakerInfo.text = item.info
+                    if(!item.user_avatar.isNullOrEmpty()) {
+                        Picasso.get()
+                                .load(item.user_avatar)
+                                .transform(CropCircleTransformation())
+                                .placeholder(R.drawable.ic_launcher)
+                                .into(ivSpeakerAvatar)
+                    }
+                    tvSpeakerName.text = item.user_name
+                    tvSpeakerInfo.text = item.user_notes
 
                     val btnFavoriteBackground: Int
                     val btnFavoriteTextColor: Int
                     val btnFavoriteText: String
-                    if (item.subscribed) {
+
+                    //TODO: subscribed
+                    /*if (item.subscribed) {
                         btnFavoriteBackground = R.drawable.background_corners_border
                         btnFavoriteTextColor = ContextCompat.getColor(context!!, R.color.colorAccent)
                         btnFavoriteText = getString(R.string.remove_from_favorites)
@@ -94,7 +96,7 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
                         setBackgroundResource(btnFavoriteBackground)
                         setTextColor(btnFavoriteTextColor)
                         text = btnFavoriteText
-                    }
+                    }*/
                 }
             }
         }

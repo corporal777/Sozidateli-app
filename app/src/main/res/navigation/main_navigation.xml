@@ -95,7 +95,7 @@
         android:name="com.example.ui.speaker.SpeakerFragment">
         <argument
             android:name="user"
-            app:argType="com.example.data.models.User" />
+            app:argType="com.example.data.models.user.User" />
     </fragment>
 
     <fragment

@@ -25,7 +25,7 @@ class ContactsSearchPresenter
     private var scrollOffset = 0
     private var searchText = ""
 
-    private val factory = PaginationDataSourceFactory { limit, offset ->
+    /*private val factory = PaginationDataSourceFactory { limit, offset ->
         Maybe.fromCallable {
             val searchText = this.searchText
             if (searchText.isBlank()) return@fromCallable PaginationResponse(totalCount = null, data = listOf<ContactSearch>())
@@ -45,7 +45,7 @@ class ContactsSearchPresenter
                                 searchText)
                     })
         }
-    }
+    }*/
 
     private val config = PagedList.Config.Builder()
             .setInitialLoadSizeHint(20)
@@ -53,15 +53,15 @@ class ContactsSearchPresenter
             .setEnablePlaceholders(false)
             .build()
 
-    private val dummyUsers = (0..100).map { dummyRepository.getUser(it) }
+    //private val dummyUsers = (0..100).map { dummyRepository.getUser(it) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        RxPagedListBuilder(factory, config)
+        /*RxPagedListBuilder(factory, config)
                 .buildFlowable(BackpressureStrategy.LATEST)
                 .debounce(200, TimeUnit.MILLISECONDS, Schedulers.io())
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
@@ -75,7 +75,7 @@ class ContactsSearchPresenter
 
     private fun search(text: String) {
         searchText = text
-        factory.invalidateFromStart()
+        //factory.invalidateFromStart()
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()

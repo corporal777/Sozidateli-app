@@ -7,7 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Subevent
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.holders.SpeakerItem
 import com.example.holders.SubeventHeaderItem
 import com.example.ui.base.BaseNestedNavigationFragment

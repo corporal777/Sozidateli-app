@@ -10,7 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
-import com.example.data.models.User
+import com.example.data.models.user.User
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
@@ -35,7 +35,7 @@ class UserListFragment : BaseNestedNavigationFragment(), UserListContract.View {
 
     private val adapter: SimplePagingRecyclerViewAdapter<User> by lazy {
         object : SimplePagingRecyclerViewAdapter<User>(
-                { oldItem, newItem -> oldItem.id == newItem.id },
+                { oldItem, newItem -> oldItem.user_id== newItem.user_id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_user_list
@@ -43,15 +43,15 @@ class UserListFragment : BaseNestedNavigationFragment(), UserListContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if (!item.image.isNullOrEmpty()) {
+                    if (!item.user_avatar.isNullOrEmpty()) {
                         Picasso.get()
-                                .load(item.image)
+                                .load(item.user_avatar)
                                 .transform(CropCircleTransformation())
                                 .placeholder(R.drawable.ic_launcher)
                                 .into(ivAvatar)
                     }
 
-                    tvName.text = item.name
+                    tvName.text = item.user_name
 
                 }
             }

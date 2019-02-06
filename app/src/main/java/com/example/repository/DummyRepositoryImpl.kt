@@ -1,6 +1,7 @@
 package com.example.repository
 
 import com.example.data.models.*
+import com.example.data.models.user.User
 import com.example.util.LOREM
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
@@ -157,7 +158,7 @@ class DummyRepositoryImpl
         }
     }
 
-    private fun generateSpeakers(limit: Int, offset: Int, onlyFavorite: Boolean = false): List<User> {
+   /* private fun generateSpeakers(limit: Int, offset: Int, onlyFavorite: Boolean = false): List<User> {
         return (1..limit).map { index ->
             User(
                     (offset + index).toString(),
@@ -177,9 +178,9 @@ class DummyRepositoryImpl
                 info = getRandomText(),
                 subscribed = Random.nextBoolean()
         )
-    }
+    }*/
 
-    private fun generateSpeakers(limit: Int, offset: Int): List<User> {
+    /*private fun generateSpeakers(limit: Int, offset: Int): List<User> {
         return (1..limit).map { index -> generateUser(offset + index) }
     }
 
@@ -195,7 +196,7 @@ class DummyRepositoryImpl
                     )
             )
         }
-    }
+    }*/
 
     private fun generateUserNotifications(limit: Int, offset: Int): List<Notification> {
         return (1..limit).map { index ->
@@ -229,9 +230,9 @@ class DummyRepositoryImpl
         }
     }
 
-    override fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+   /* override fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset, true)) }
-    }
+    }*/
 
     override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateEvents(limit, offset)) }
@@ -249,13 +250,13 @@ class DummyRepositoryImpl
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateDocuments(limit, offset)) }
     }
 
-    override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+   /* override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset)) }
     }
 
     override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
-    }
+    }*/
 
     override fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserNotifications(limit, offset)) }
@@ -263,5 +264,5 @@ class DummyRepositoryImpl
 
     override fun getEvent() = generateEvents(1, 0).first()
 
-    override fun getUser(id: Int) = generateUser(id)
+    //override fun getUser(id: Int) = generateUser(id)
 }
