@@ -3,7 +3,7 @@
     package="com.example">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name="com.example.App"
@@ -25,6 +25,27 @@
             <nav-graph android:value="@navigation/main_navigation" />
         </activity>
 
+        <activity
+            android:name=".ui.snAuth.SnAuthActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="ru.ok.android.sdk.OkAuthActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="ok1274287872"
+                    android:scheme="okauth" />
+            </intent-filter>
+        </activity>
+
         <service android:name=".util.FcmMessaging">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -34,5 +55,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
     </application>
 </manifest>

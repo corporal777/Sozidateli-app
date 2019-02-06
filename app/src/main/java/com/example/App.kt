@@ -9,6 +9,7 @@ import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.squareup.leakcanary.LeakCanary
+import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import timber.log.Timber
@@ -46,6 +47,7 @@ class App : Application(), HasActivityInjector {
                 .apply { inject(this@App) }
 
         CalligraphyConfig.initDefault(calligraphyConfig)
+        VKSdk.initialize(this)
     }
 
     override fun activityInjector() = dispatchingAndroidInjector

@@ -7,7 +7,13 @@ import com.example.ui.base.BaseContract
 interface LoginContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun startSocialNetworkAuthorization()
+        fun startVkAuthorization()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun startFbAuthorization()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun startOkAuthorization()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showWelcome()

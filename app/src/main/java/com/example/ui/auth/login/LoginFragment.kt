@@ -7,6 +7,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.snAuth.SnAuthActivity
+import com.example.ui.snAuth.SnAuthManager
+import com.vk.sdk.VKScope
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -30,8 +33,16 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         flEmailAuth.setOnClickListener { presenter.onClickEmail() }
     }
 
-    override fun startSocialNetworkAuthorization() {
+    override fun startVkAuthorization() {
+        SnAuthManager.startAuthVk(requireContext(), arrayOf(VKScope.EMAIL))
+    }
 
+    override fun startFbAuthorization() {
+        SnAuthManager.startAuthFacebook(requireContext())
+    }
+
+    override fun startOkAuthorization() {
+        SnAuthManager.startAuthOk(requireContext())
     }
 
     override fun showWelcome() {
