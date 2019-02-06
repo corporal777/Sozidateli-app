@@ -8,23 +8,23 @@
     android:paddingStart="20dp"
     android:paddingEnd="20dp">
 
-
     <include layout="@layout/auth_logo" />
 
     <TextView
+        style="@style/TextTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        android:text="@string/auth_label_choose_login"
-        style="@style/TextTitle" />
+        android:text="@string/auth_label_choose_login" />
 
     <FrameLayout
         android:id="@+id/flFbAuth"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="30dp"
-        android:background="@color/auth_fb_color">
+        android:background="@color/auth_fb_color"
+        android:foreground="?attr/selectableItemBackground">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -39,13 +39,30 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:background="@color/auth_vk_color">
+        android:background="@color/auth_vk_color"
+        android:foreground="?attr/selectableItemBackground">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="17dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_vk"
+            tools:ignore="ContentDescription" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flOkAuth"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/auth_ok_color"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher_background"
             tools:ignore="ContentDescription" />
     </FrameLayout>
 

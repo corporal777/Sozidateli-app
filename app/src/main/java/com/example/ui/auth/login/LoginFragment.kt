@@ -22,14 +22,17 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenterProvider.get()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flFbAuth.setOnClickListener { presenter.clickOnFbAuth() }
-        flVkAuth.setOnClickListener { presenter.clickOnVkAuth() }
-        flEmailAuth.setOnClickListener { presenter.clickOnLoginEmail() }
+        flFbAuth.setOnClickListener { presenter.onClickFb() }
+        flVkAuth.setOnClickListener { presenter.onClickVk() }
+        flOkAuth.setOnClickListener { presenter.onClickOk() }
+        flEmailAuth.setOnClickListener { presenter.onClickEmail() }
     }
 
+    override fun startSocialNetworkAuthorization() {
+
+    }
 
     override fun showWelcome() {
         findNavController().navigate(LoginFragmentDirections.loginToWelcome())

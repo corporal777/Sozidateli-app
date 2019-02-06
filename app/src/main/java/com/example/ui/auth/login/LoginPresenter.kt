@@ -2,19 +2,18 @@ package com.example.ui.auth.login
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.UserChat
 import com.example.repository.AuthRepository
-import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
 class LoginPresenter
-@Inject constructor(private val authRepository: AuthRepository) : BasePresenter<LoginContract.View>(), LoginContract.Presenter{
+@Inject constructor(
+        private val authRepository: AuthRepository
+) : BasePresenter<LoginContract.View>(), LoginContract.Presenter {
 
-
-    override fun clickOnVkAuth() {
+    override fun onClickVk() {
         authRepository.authSN()
                 .performOnBackgroundOutOnMain()
                 .subscribe {
@@ -23,16 +22,13 @@ class LoginPresenter
                 .call(compositeDisposable)
     }
 
-    override fun clickOnFbAuth() {
-        authRepository.authSN()
-                .performOnBackgroundOutOnMain()
-                .subscribe {
-                    viewState.showWelcome()
-                }
-                .call(compositeDisposable)
+    override fun onClickFb() {
     }
 
-    override fun clickOnLoginEmail() {
+    override fun onClickOk() {
+    }
+
+    override fun onClickEmail() {
         viewState.showLogin()
     }
 }
