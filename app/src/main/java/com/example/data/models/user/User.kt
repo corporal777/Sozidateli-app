@@ -2,7 +2,6 @@ package com.example.data.models.user
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class User(
@@ -61,5 +60,5 @@ data class User(
         var education: ArrayList<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
-        var default_event:String?=null
+        var default_event: String? = null
 ) : Parcelable

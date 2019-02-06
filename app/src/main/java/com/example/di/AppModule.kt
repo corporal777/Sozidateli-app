@@ -26,7 +26,7 @@ class AppModule {
     @SuppressLint("HardwareIds")
     @Provides
     @Singleton
-    fun provideAppData(context: Context,appPrefs: AppPrefs): AppData = AppData.apply {
+    fun provideAppData(context: Context, appPrefs: AppPrefs): AppData = AppData.apply {
         uid = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
         token = "595a687c6b1c69de065a549072ae4737"
     }

@@ -1,7 +1,6 @@
 package com.example.api
 
 import com.example.data.AppData
-import com.example.data.prefs.AppPrefs
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

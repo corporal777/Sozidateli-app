@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,77 +14,85 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical">
 
             <include layout="@layout/auth_logo" />
 
             <TextView
+                style="@style/TextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="60dp"
-                android:text="@string/auth_register_btn"
-                style="@style/TextTitle" />
+                android:text="@string/auth_register_btn" />
 
             <EditText
                 android:id="@+id/etName"
                 style="@style/Auth.EditText"
                 android:layout_marginTop="30dp"
-                android:hint="@string/auth_hint_name" />
+                android:hint="@string/auth_hint_name"
+                android:importantForAutofill="no"
+                android:inputType="textCapWords"
+                tools:ignore="UnusedAttribute" />
 
             <EditText
                 android:id="@+id/etEmail"
                 style="@style/Auth.EditText"
                 android:layout_marginTop="30dp"
-                android:hint="@string/email" />
+                android:hint="@string/email"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                tools:ignore="UnusedAttribute" />
 
             <EditText
                 android:id="@+id/etPassword"
                 style="@style/Auth.EditText"
                 android:layout_marginTop="30dp"
-                android:hint="@string/auth_hint_password" />
+                android:hint="@string/auth_hint_password"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                tools:ignore="UnusedAttribute" />
 
             <TextView
                 android:id="@+id/tvPasswordStrong1"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="end"
-                fontPath="fonts/OpenSans-Light.ttf"
-                android:text="@string/auth_hint_password_strong_1" />
+                android:text="@string/auth_hint_password_strong_1"
+                tools:ignore="MissingPrefix" />
 
             <TextView
                 android:id="@+id/tvPasswordStrong2"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                fontPath="fonts/OpenSans-Light.ttf"
-                android:text="@string/auth_hint_password_strong_2" />
+                android:text="@string/auth_hint_password_strong_2"
+                tools:ignore="MissingPrefix" />
 
             <TextView
                 android:id="@+id/tvPasswordStrong3"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                fontPath="fonts/OpenSans-Light.ttf"
-                android:text="@string/auth_hint_password_strong_3" />
+                android:text="@string/auth_hint_password_strong_3"
+                tools:ignore="MissingPrefix" />
 
 
             <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/background_btn_auth"
                 android:text="@string/auth_create_account"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
-
-
-
 
         <ImageView
             android:id="@+id/ivClose"

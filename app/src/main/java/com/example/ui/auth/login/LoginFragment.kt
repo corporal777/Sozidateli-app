@@ -7,7 +7,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.snAuth.SnAuthActivity
 import com.example.ui.snAuth.SnAuthManager
 import com.vk.sdk.VKScope
 import kotlinx.android.synthetic.main.fragment_login.*

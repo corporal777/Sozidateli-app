@@ -1,12 +1,15 @@
 package com.example.ui.auth.login
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnAuthManager
-import io.reactivex.Single
+import com.example.ui.snAuth.SnType
+import io.reactivex.Completable
+import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
@@ -17,7 +20,12 @@ class LoginPresenter
 
     private val snAuthListener = object : SnAuthManager.OnSnAuthListener {
         override fun onSnAuthComplete(snAuth: SnAuth) {
-            authRepository.authSN()
+            when (snAuth.snType) {
+                SnType.VK -> executeAuthorization(authRepository.authVk(snAuth.token, snAuth.email))
+                SnType.FB -> executeAuthorization(authRepository.authFb(snAuth.token))
+                SnType.OK -> executeAuthorization(authRepository.authOk(snAuth.token))
+            }
+
         }
 
         override fun onSnAuthError(error: SnAuthError) {
@@ -42,6 +50,14 @@ class LoginPresenter
 
     override fun onClickEmail() {
         viewState.showLogin()
+    }
+
+    private fun executeAuthorization(completable: Completable) {
+        completable.performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.showWelcome()
+                }, { viewState.showToast(it.message ?: "") })
+                .call(compositeDisposable)
     }
 
     private fun setSnAuthListener() {

@@ -14,11 +14,11 @@ object SnAuthManager {
         authListeners.remove(snAuthListener)
     }
 
-    fun startAuthVk(context: Context, scopes: Array<String>? = null) = start(context, SnAuthActivity.SnType.VK, scopes)
-    fun startAuthFacebook(context: Context) = start(context, SnAuthActivity.SnType.FB)
-    fun startAuthOk(context: Context) = start(context, SnAuthActivity.SnType.OK)
+    fun startAuthVk(context: Context, scopes: Array<String>? = null) = start(context, SnType.VK, scopes)
+    fun startAuthFacebook(context: Context) = start(context, SnType.FB)
+    fun startAuthOk(context: Context) = start(context, SnType.OK)
 
-    private fun start(context: Context, snType: SnAuthActivity.SnType, vkScopes: Array<String>? = null) {
+    private fun start(context: Context, snType: SnType, vkScopes: Array<String>? = null) {
         context.startActivity(SnAuthActivity.getStartIntent(context, snType, vkScopes))
     }
 

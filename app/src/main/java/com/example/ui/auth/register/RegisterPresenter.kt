@@ -19,27 +19,24 @@ class RegisterPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState?.apply {
-            enableRegisterBtn(false)
-        }
+        setValidRegister()
     }
 
+    override fun onClickBack() = viewState.navigateUp()
 
-    override fun clickOnBack() = viewState.navigateUp()
-
-    override fun changeEmailText(email: String) {
+    override fun onChangeEmailText(email: String) {
         isEmailValid = AuthUtil.isValidEmail(email)
         setValidRegister()
     }
 
-    override fun chagnePasswordText(password: String) {
+    override fun onChangePasswordText(password: String) {
         isPasswordValid = AuthUtil.isValidPassword(password)
         viewState.passwordCheckColored(AuthUtil.isPasswordHasSix(password), AuthUtil.isPasswordHasOneCap(password), AuthUtil.isPasswordHasSymbol(password))
         setValidRegister()
     }
 
 
-    override fun changeNameText(name: String) {
+    override fun onChangeNameText(name: String) {
         isNameValid = name.trim().isNotEmpty()
         setValidRegister()
     }
@@ -48,8 +45,8 @@ class RegisterPresenter
         viewState.enableRegisterBtn(isEmailValid && isNameValid && isPasswordValid)
     }
 
-    override fun clickRegister() {
-        authRepository.register()
+    override fun onClickRegister(email: String, password: String, name: String) {
+        authRepository.register(email, password, name)
                 .performOnBackgroundOutOnMain()
                 .subscribe {
                     viewState.showWelcome()

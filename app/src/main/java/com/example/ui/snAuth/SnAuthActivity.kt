@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import bundleOf
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
@@ -23,8 +24,6 @@ import ru.ok.android.sdk.util.OkScope
 
 
 class SnAuthActivity : AppCompatActivity() {
-
-    private val compositeDisposable = CompositeDisposable()
 
     private val vkAuthCallback by lazy {
         object : VKCallback<VKAccessToken> {
@@ -93,9 +92,14 @@ class SnAuthActivity : AppCompatActivity() {
     }
 
     private fun authFb() {
-        LoginButton(this).apply {
-            registerCallback(fbAuthCallbackManager, fbAuthCallback)
-            callOnClick()
+        val accessToken = AccessToken.getCurrentAccessToken()
+        if (AccessToken.isCurrentAccessTokenActive()) {
+            authComplete(SnAuth(accessToken.token, snType = SnType.FB))
+        } else {
+            LoginManager.getInstance().apply {
+                registerCallback(fbAuthCallbackManager, fbAuthCallback)
+                logInWithReadPermissions(this@SnAuthActivity, listOf())
+            }
         }
     }
 
@@ -129,7 +133,7 @@ class SnAuthActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
+        LoginManager.getInstance().unregisterCallback(fbAuthCallbackManager)
     }
 
     companion object {
@@ -143,7 +147,7 @@ class SnAuthActivity : AppCompatActivity() {
 
         private const val ERROR_AUTH_CANCELLED = "Authorization was cancelled"
 
-        internal fun getStartIntent(context: Context, snType: SnAuthActivity.SnType, vkScopes: Array<String>? = null): Intent {
+        internal fun getStartIntent(context: Context, snType: SnType, vkScopes: Array<String>? = null): Intent {
             return Intent(context, SnAuthActivity::class.java).apply {
                 putExtras(bundleOf(
                         SnAuthActivity.ARG_AUTH_TYPE to snType,
@@ -151,9 +155,5 @@ class SnAuthActivity : AppCompatActivity() {
                 ))
             }
         }
-    }
-
-    enum class SnType {
-        VK, FB, OK
     }
 }
