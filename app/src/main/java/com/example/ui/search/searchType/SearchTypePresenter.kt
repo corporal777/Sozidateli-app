@@ -4,10 +4,8 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.SearchTypeEvent
 import com.example.events.OnAddSearchTypeEvent
-import com.example.repository.ChatRepository
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
-import io.reactivex.Observable
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
@@ -17,8 +15,8 @@ class SearchTypePresenter
 @Inject constructor(private val dummyRepository: DummyRepository
 ) : BasePresenter<SearchTypeContract.View>(), SearchTypeContract.Presenter {
 
-    private var data: ArrayList<SearchTypeEvent> = ArrayList()
-    private var selectedData: ArrayList<SearchTypeEvent> = ArrayList()
+    private var data: MutableList<SearchTypeEvent> = ArrayList()
+    private var selectedData: MutableList<SearchTypeEvent> = ArrayList()
     private var isPlaces: Boolean = true
 
     override fun onFirstViewAttach() {
@@ -45,7 +43,7 @@ class SearchTypePresenter
                 }).call(compositeDisposable)
     }
 
-    override fun setData(data: ArrayList<SearchTypeEvent>, isPlaces: Boolean) {
+    override fun setData(data: MutableList<SearchTypeEvent>, isPlaces: Boolean) {
         this.selectedData = data
         this.isPlaces = isPlaces
     }

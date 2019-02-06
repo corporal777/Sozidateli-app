@@ -27,7 +27,7 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): DocumentsListPresenter = presenterProvider.get().apply {
-        val data = DocumentsListFragmentArgs.fromBundle(arguments)
+        val data = DocumentsListFragmentArgs.fromBundle(arguments!!)
         event = data.event
     }
 

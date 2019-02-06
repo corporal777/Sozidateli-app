@@ -1,8 +1,5 @@
 package com.example.util
 
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-
 class PositionOffsetScrollListener(
         private val onScroll: (position: Int, offset: Int) -> Unit)
     : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {

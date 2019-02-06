@@ -25,7 +25,7 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SpeakerPresenter = presenterProvider.get().apply {
-        val args = SpeakerFragmentArgs.fromBundle(arguments)
+        val args = SpeakerFragmentArgs.fromBundle(arguments!!)
         user = args.user
     }
 

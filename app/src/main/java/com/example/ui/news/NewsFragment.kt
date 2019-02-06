@@ -20,7 +20,7 @@ class NewsFragment : BaseFragment(), NewsContract.View {
 
     @ProvidePresenter
     fun providePresenter(): NewsPresenter = presenterProvider.get().apply {
-        val data = NewsFragmentArgs.fromBundle(arguments)
+        val data = NewsFragmentArgs.fromBundle(arguments!!)
         news = data.news
     }
 

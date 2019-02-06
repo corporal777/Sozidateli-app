@@ -29,7 +29,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
 
     @ProvidePresenter
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
-        val args = ChatFragmentArgs.fromBundle(arguments)
+        val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
     }
 

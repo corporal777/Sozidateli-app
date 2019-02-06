@@ -28,7 +28,7 @@ class NewsListFragment : BaseFragment(), NewsListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): NewsListPresenter = presenterProvider.get().apply {
-        val data = NewsListFragmentArgs.fromBundle(arguments)
+        val data = NewsListFragmentArgs.fromBundle(arguments!!)
         event = data.event
     }
 

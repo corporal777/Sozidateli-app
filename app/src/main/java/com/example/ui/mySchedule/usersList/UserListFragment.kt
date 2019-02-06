@@ -29,7 +29,7 @@ class UserListFragment : BaseNestedNavigationFragment(), UserListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): UserListPresenter = presenterProvider.get().apply {
-        subevent_id = UserListFragmentArgs.fromBundle(arguments).subeventId
+        subevent_id = UserListFragmentArgs.fromBundle(arguments!!).subeventId
     }
 
 

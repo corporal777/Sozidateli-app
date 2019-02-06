@@ -20,7 +20,7 @@ class AboutForumFragment : BaseFragment(), AboutForumContract.View {
 
     @ProvidePresenter
     fun providePresenter(): AboutForumPresenter = presenterProvider.get().apply {
-        val data = AboutForumFragmentArgs.fromBundle(arguments)
+        val data = AboutForumFragmentArgs.fromBundle(arguments!!)
         event = data.event
     }
 

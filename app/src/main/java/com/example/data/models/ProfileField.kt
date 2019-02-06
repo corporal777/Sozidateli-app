@@ -1,11 +1,11 @@
 package com.example.data.models
 
 data class ProfileField(
-        var nameField:String,
-        var type:Type,
-        var label:String?=null,
-        var isShowOnlyProfile:Boolean = false,
-        var data:Any?
+        var nameField: String,
+        var type: Type,
+        var label: String? = null,
+        var isShowOnlyProfile: Boolean = false,
+        var data: Any?
 )
 
 enum class Type(val code: Int) {

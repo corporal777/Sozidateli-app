@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SearchTypeEvent(
-        var id:String,
-        var name:String,
-        var selected:Boolean = false
-): Parcelable
+        var id: String,
+        var name: String,
+        var selected: Boolean = false
+) : Parcelable

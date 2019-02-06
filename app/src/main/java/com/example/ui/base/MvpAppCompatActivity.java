@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.arellomobile.mvp.MvpDelegate;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @author Yuri Shmakov
  * @author Alexander Bliniov
  * @author Konstantin Tckhovrebov
- *
+ * <p>
  * Code from https://gitlab.com/victorlapin/flasher/blob/master/src/com/arellomobile/mvp/MvpAppCompatActivity.java
  */
 @SuppressWarnings("unused")
@@ -42,7 +43,7 @@ public class MvpAppCompatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         getMvpDelegate().onSaveInstanceState(outState);
@@ -52,7 +53,6 @@ public class MvpAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         getMvpDelegate().onDetach();
     }
 

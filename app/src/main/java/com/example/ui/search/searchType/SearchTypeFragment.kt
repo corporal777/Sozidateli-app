@@ -1,26 +1,18 @@
 package com.example.ui.search.searchType
 
-import android.app.DatePickerDialog
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.DataArgsSearchType
 import com.example.data.models.SearchTypeEvent
 import com.example.holders.SearchTypeItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.search.SearchFragmentDirections
-import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.field_profile.view.*
-import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.android.synthetic.main.fragment_search_type.*
 import java.util.*
 import javax.inject.Inject
@@ -36,7 +28,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SearchTypePresenter = presenterProvider.get().apply {
-        val args = SearchTypeFragmentArgs.fromBundle(arguments)
+        val args = SearchTypeFragmentArgs.fromBundle(arguments!!)
         this.setData(args.data.array, args.data.isPlaces)
     }
 
@@ -65,9 +57,9 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
     }
 
 
-    override fun setData(data: ArrayList<SearchTypeEvent>) {
+    override fun setData(data: MutableList<SearchTypeEvent>) {
         groupAdapter.update(data.map {
-            SearchTypeItem(it){item, isSelect->
+            SearchTypeItem(it) { item, isSelect ->
                 presenter.selectItem(isSelect, item)
             }
         })

@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DataArgsSearchType(
-        var array:ArrayList<SearchTypeEvent>,
-        var isPlaces:Boolean
-): Parcelable
+        var array: MutableList<SearchTypeEvent>,
+        var isPlaces: Boolean
+) : Parcelable
