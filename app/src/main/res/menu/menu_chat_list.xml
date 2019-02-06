@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/addChat"
-        android:icon="@drawable/ic_add_circle_outline"
+        android:icon="@drawable/ic_round_add"
         android:title="@string/menu_item_search_contact"
         app:showAsAction="ifRoom" />
 </menu>

@@ -11,21 +11,21 @@
         android:label="@string/events_tabs_title"
         tools:layout="@layout/fragment_events_tabs">
         <action
-            android:id="@+id/action_events_tabs_fragment_to_chat_navigation"
-            app:destination="@id/chat_navigation" />
-        <action
             android:id="@+id/action_events_tabs_fragment_to_about_event_navigation"
             app:destination="@id/about_event_navigation" />
-        <action
-            android:id="@+id/main_to_profile"
-            app:destination="@id/profile_navigation" />
+
         <action
             android:id="@+id/action_events_tabs_fragment_to_request_fragment"
             app:destination="@id/request_fragment" />
-
+        <action
+            android:id="@+id/action_events_tabs_fragment_to_chat_navigation"
+            app:destination="@id/chat_navigation" />
         <action
             android:id="@+id/main_to_search"
             app:destination="@id/search_navigation" />
+        <action
+            android:id="@+id/main_to_profile"
+            app:destination="@id/profile_navigation" />
     </fragment>
     <include app:graph="@navigation/chat_navigation" />
     <include app:graph="@navigation/about_event_navigation" />
@@ -44,7 +44,19 @@
     <fragment
         android:id="@+id/event_tabs_fragment"
         android:name="com.example.ui.eventTabs.EventTabsFragment"
-        tools:layout="@layout/fragment_event_tabs" />
+        tools:layout="@layout/fragment_event_tabs" >
+
+        <action
+            android:id="@+id/action_event_tabs_fragment_to_chat_navigation"
+            app:destination="@id/chat_navigation" />
+        <action
+            android:id="@+id/main_to_search"
+            app:destination="@id/search_navigation" />
+        <action
+            android:id="@+id/main_to_profile"
+            app:destination="@id/profile_navigation" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/image_view_fragment"

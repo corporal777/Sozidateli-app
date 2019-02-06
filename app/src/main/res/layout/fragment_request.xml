@@ -32,6 +32,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/request_label"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnClose"
             app:layout_constraintWidth_default="wrap" />
@@ -46,6 +47,7 @@
             android:gravity="center_horizontal"
             android:text="@string/request_requires"
             android:textSize="16sp"
+            fontPath="fonts/OpenSans-Light.ttf"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLabel"
@@ -70,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp"
+            android:textSize="14sp"
             android:text="@string/request_make_request"
             android:theme="@style/ViewBackgroundAccent"
             app:layout_constraintBottom_toBottomOf="parent"

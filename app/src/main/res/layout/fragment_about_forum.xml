@@ -27,13 +27,13 @@
 
         <TextView
             android:id="@+id/tvInfo"
+            fontPath="fonts/OpenSans-Light.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/profile_padding_start"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/profile_padding_start"
             android:layout_marginBottom="8dp"
-            android:fontFamily="@string/sans_serif_regular"
             android:textSize="16sp"
             android:transitionName="organizationLabel"
             app:layout_constraintBottom_toBottomOf="parent"

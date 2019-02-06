@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/auth_background"
+        android:background="@color/main_background"
         android:paddingStart="20dp"
         android:paddingEnd="20dp">
 
@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="end"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:text="@string/auth_hint_password_strong_1" />
 
             <TextView
@@ -57,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:text="@string/auth_hint_password_strong_2" />
 
             <TextView
@@ -64,6 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:text="@string/auth_hint_password_strong_3" />
 
 

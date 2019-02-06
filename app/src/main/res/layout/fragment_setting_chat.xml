@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background"
+    android:background="@color/main_background"
     android:orientation="vertical">
 
     <View
@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/text_title"
             android:text="@string/setting_chat_all_users"
             android:layout_weight="1"
             android:layout_marginEnd="10dp"
@@ -53,7 +53,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/text_title"
             android:text="@string/setting_chat_only_from_favorite"
             android:layout_weight="1"
             android:layout_marginEnd="10dp"

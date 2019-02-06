@@ -1,6 +1,7 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.graphics.Typeface
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
@@ -50,12 +51,14 @@ class ExpandedInfo : FrameLayout {
     }
 
     fun setDataInfo(info: HashMap<String, String>) {
+        val typeface = Typeface.createFromAsset(context.assets,"fonts/OpenSans-Light.ttf")
         info.forEach { (key, value) ->
             val ll = LinearLayout(ContextThemeWrapper(context, R.style.ProfileInfoField))
            // val layParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
             if (key.isNotEmpty()) {
                 val label = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Label))
+                label.typeface = typeface
                 label.text = key
                 ll.addView(label)
             }

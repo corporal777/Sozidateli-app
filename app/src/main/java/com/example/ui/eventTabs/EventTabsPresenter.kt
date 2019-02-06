@@ -33,4 +33,10 @@ class EventTabsPresenter
         appData.event = null
         viewState.showEventList()
     }
+
+    override fun onMenuChatClick() = viewState.showChat()
+
+    override fun onMenuSearchClick() = viewState.showSearch()
+
+    override fun onMenuAccountClick() = viewState.showAccount()
 }

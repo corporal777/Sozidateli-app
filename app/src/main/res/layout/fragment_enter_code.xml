@@ -7,7 +7,7 @@
     android:paddingEnd="@dimen/profile_padding_start"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/auth_background">
+    android:background="@color/main_background">
 
     <EditText
         android:layout_width="match_parent"

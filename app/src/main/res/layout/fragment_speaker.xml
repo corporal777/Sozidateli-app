@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background">
+    android:background="@color/main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/profile_avatar_size"
+            android:layout_height="@dimen/profile_avatar_size"
             android:layout_marginStart="@dimen/profile_padding_start"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,6 @@
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 tools:text="Avraam linkoln" />
 
@@ -47,7 +46,7 @@
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/hint_gray"
                 android:textSize="14sp" />
 
             <Button
@@ -55,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:textSize="14sp"
                 android:background="@drawable/background_corners"
                 android:textColor="@android:color/white"
                 android:text="@string/add_to_favorites"
@@ -69,6 +69,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/background_corners_border"
             android:paddingStart="15dp"
+            android:textSize="14sp"
             android:paddingEnd="15dp"
             android:textColor="@color/colorAccent"
             android:text="@string/write_message"
@@ -88,10 +89,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:lineSpacingMultiplier="1.5"
+            android:textSize="16sp"
+            fontPath="fonts/Helvetica-Light.ttf"
             android:paddingStart="@dimen/profile_padding_start"
             android:paddingBottom="@dimen/profile_padding_start"
             android:paddingEnd="@dimen/profile_padding_start"
-            android:textColor="@android:color/black"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

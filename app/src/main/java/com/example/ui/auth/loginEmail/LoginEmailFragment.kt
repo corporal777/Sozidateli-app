@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -72,20 +73,16 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
 
             val background: Int
             val textColor: Int
-            val alpha: Float
             if (isEnable) {
                 background = R.drawable.background_btn_auth
                 textColor = Color.WHITE
-                alpha = 1f
             } else {
-                background = R.drawable.background_edittext_login
-                textColor = Color.GRAY
-                alpha = 0.5f
+                background = R.drawable.background_disabled_btn_login
+                textColor = ContextCompat.getColor(context,R.color.disabled_color)
             }
 
             setBackgroundResource(background)
             setTextColor(textColor)
-            this.alpha = alpha
         }
     }
 

@@ -1,10 +1,12 @@
 package com.example.ui.base
 
+import android.content.Context
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import android.widget.Toast
 import dagger.android.AndroidInjection
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
@@ -12,6 +14,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(layout())
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 
     abstract fun hideToolbar()

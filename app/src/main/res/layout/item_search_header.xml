@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingBottom="10dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,14 +13,18 @@
         android:padding="@dimen/profile_padding_start">
 
         <EditText
+            android:id="@+id/etSearchText"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/background_search_edittext"
             android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="10dp"
             android:hint="@string/search_hint"
-            android:id="@+id/etSearchText"
             android:paddingStart="15dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/hint_gray"
+            android:textSize="16sp"
+            tools:ignore="Autofill,TextFields" />
     </FrameLayout>
 
     <View style="@style/ViewDivider.Horizontal" />
@@ -29,31 +34,30 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
-        android:text="@string/search_date"
-        android:textColor="@android:color/black" />
+        android:text="@string/search_date" />
 
     <TextView
+        android:id="@+id/tvDate"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/profile_height_field"
+        android:layout_height="40dp"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:background="@drawable/background_edittext_login"
         android:drawableEnd="@drawable/ic_keyboard_arrow_down_black_24dp"
         android:gravity="center_vertical"
-        android:id="@+id/tvDate"
         android:hint="@string/search_date_hint"
         android:paddingStart="10dp"
         android:paddingEnd="7dp"
-        android:textSize="18sp" />
+        android:textColorHint="@color/hint_gray"
+        android:textSize="16sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
-        android:text="@string/search_period_date"
-        android:textColor="@android:color/black" />
+        android:text="@string/search_period_date" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,18 +67,19 @@
         android:paddingEnd="@dimen/profile_padding_start">
 
         <TextView
+            android:id="@+id/tvPeriodFrom"
             android:layout_width="0dp"
-            android:layout_height="@dimen/profile_height_field"
+            android:layout_height="40dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:id="@+id/tvPeriodFrom"
             android:background="@drawable/background_edittext_login"
             android:drawableEnd="@drawable/ic_keyboard_arrow_down_black_24dp"
             android:gravity="center_vertical"
             android:hint="@string/search_date_hint"
             android:paddingStart="10dp"
             android:paddingEnd="7dp"
-            android:textSize="17sp" />
+            android:textColorHint="@color/hint_gray"
+            android:textSize="16sp" />
 
         <View
             android:layout_width="0dp"
@@ -83,21 +88,22 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="0.09"
-            android:background="@android:color/black" />
+            android:background="@color/text_title" />
 
         <TextView
+            android:id="@+id/tvPeriodTo"
             android:layout_width="0dp"
-            android:layout_height="@dimen/profile_height_field"
+            android:layout_height="40dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:id="@+id/tvPeriodTo"
             android:background="@drawable/background_edittext_login"
             android:drawableEnd="@drawable/ic_keyboard_arrow_down_black_24dp"
             android:gravity="center_vertical"
             android:hint="@string/search_date_hint"
             android:paddingStart="10dp"
             android:paddingEnd="7dp"
-            android:textSize="17sp" />
+            android:textColorHint="@color/hint_gray"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -106,24 +112,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
-        android:text="@string/search_places"
-        android:textColor="@android:color/black" />
+        android:text="@string/search_places" />
 
     <View
         style="@style/ViewDivider.Horizontal"
         android:layout_marginTop="5dp" />
 
     <TextView
+        android:id="@+id/tvPlaces"
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_height_field"
         android:background="@android:color/white"
         android:drawableEnd="@drawable/ic_keyboard_arrow_right"
         android:gravity="center_vertical"
-        android:id="@+id/tvPlaces"
         android:hint="@string/search_select"
         android:paddingStart="@dimen/profile_padding_start"
         android:paddingEnd="@dimen/profile_padding_start"
-        android:textSize="18sp" />
+        android:textColorHint="@color/hint_gray"
+        android:textSize="16sp" />
 
     <View style="@style/ViewDivider.Horizontal" />
 
@@ -132,7 +138,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/profile_padding_start"
-        android:paddingEnd="@dimen/profile_padding_start" />
+        android:paddingEnd="@dimen/profile_padding_start"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -147,16 +154,17 @@
         android:layout_marginTop="5dp" />
 
     <TextView
+        android:id="@+id/tvTypeEvents"
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_height_field"
         android:background="@android:color/white"
         android:drawableEnd="@drawable/ic_keyboard_arrow_right"
         android:gravity="center_vertical"
-        android:id="@+id/tvTypeEvents"
         android:hint="@string/search_select"
         android:paddingStart="@dimen/profile_padding_start"
         android:paddingEnd="@dimen/profile_padding_start"
-        android:textSize="18sp" />
+        android:textColorHint="@color/hint_gray"
+        android:textSize="16sp" />
 
     <View style="@style/ViewDivider.Horizontal" />
 
@@ -167,34 +175,52 @@
         android:paddingStart="@dimen/profile_padding_start"
         android:paddingEnd="@dimen/profile_padding_start" />
 
-    <Button
+
+    <FrameLayout
+        android:id="@+id/btnQr"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/profile_height_field"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="60dp"
-        android:id="@+id/btnQr"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:background="@drawable/background_corners_border"
-        android:text="@string/search_scan_qr_btn"
-        android:textColor="@color/colorAccent"
-        android:theme="@style/ViewBackgroundAccent" />
+        android:theme="@style/ViewBackgroundAccent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/llSearchResultTitle"
-        android:paddingStart="@dimen/profile_padding_start">
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_scan"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:layout_gravity="center"
+            android:text="@string/search_scan_qr_btn"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llSearchResultTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/profile_padding_start"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/search_result"
-            android:textSize="18sp"/>
+            fontPath="fonts/OpenSans-Light.ttf"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

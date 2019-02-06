@@ -224,7 +224,7 @@ class DummyRepositoryImpl
     override fun loadSearchType(): Single<List<SearchTypeEvent>> {
         return Single.fromCallable {
             return@fromCallable (1..12).map {
-                SearchTypeEvent(it.toString(), "Тестовый итем ${it}")
+                SearchTypeEvent(it.toString(), "Тестовый ${it}")
             }
         }
     }

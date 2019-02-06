@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/auth_background">
+    android:background="@color/main_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_notifications_none"
+                android:src="@drawable/ic_notification"
                 android:tint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:fontFamily="@string/sans_serif_medium"
+                fontPath="fonts/Helvetica-Bold.ttf"
                 android:text="@string/profile_last_notification"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvLastNotificationText"
                 app:layout_constraintEnd_toStartOf="@+id/ivArrow"
                 app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
@@ -72,14 +71,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
-                android:fontFamily="@string/sans_serif_light"
+                fontPath="fonts/Helvetica-Light.ttf"
                 android:maxLines="2"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivArrow"
                 app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
@@ -116,8 +114,8 @@
 
             <ImageView
                 android:id="@+id/ivAvatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/profile_avatar_size"
+                android:layout_height="@dimen/profile_avatar_size"
                 android:src="@mipmap/ic_launcher"
                 tools:ignore="ContentDescription" />
 
@@ -133,7 +131,6 @@
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     tools:text="Avraam linkoln" />
 
@@ -142,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/hint_gray"
                     android:textSize="14sp"
                     tools:text="Ваш статус: участник" />
 
@@ -153,6 +150,7 @@
                     android:layout_marginTop="2dp"
                     android:text="@string/profile_status_more"
                     android:textAllCaps="true"
+                    fontPath="fonts/OpenSans-Bold.ttf"
                     android:textColor="@color/auth_email_color"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -221,7 +219,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_right" />
+                android:src="@drawable/ic_keyboard_arrow_right"
+                tools:ignore="ContentDescription" />
 
         </FrameLayout>
 
@@ -243,8 +242,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/profile_current_event"
                 android:textAllCaps="true"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                fontPath="fonts/OpenSans-Bold.ttf"
+                />
 
             <TextView
                 android:id="@+id/tvChangeCurrentEvent"
@@ -254,7 +253,7 @@
                 android:text="@string/change"
                 android:textAllCaps="true"
                 android:textColor="@color/auth_email_color"
-                android:textStyle="bold" />
+                fontPath="fonts/OpenSans-Bold.ttf" />
         </FrameLayout>
 
         <View
@@ -276,8 +275,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                fontPath="fonts/OpenSans-Bold.ttf"
                 tools:text="Fond temp" />
 
             <TextView
@@ -286,7 +284,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 tools:text="Российский инвестиционный форум" />
 
             <TextView
@@ -294,6 +292,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                fontPath="fonts/OpenSans-Light.ttf"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 tools:text="5.02 - 30.09.18" />

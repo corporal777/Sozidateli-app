@@ -76,8 +76,8 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
             btnRegister.setBackgroundResource(R.drawable.background_btn_auth)
             btnRegister.setTextColor(Color.WHITE)
         } else {
-            btnRegister.setBackgroundResource(R.drawable.background_edittext_login)
-            btnRegister.setTextColor(Color.GRAY)
+            btnRegister.setBackgroundResource(R.drawable.background_disabled_btn_login)
+            btnRegister.setTextColor(ContextCompat.getColor(context!!,R.color.disabled_color))
         }
     }
 
