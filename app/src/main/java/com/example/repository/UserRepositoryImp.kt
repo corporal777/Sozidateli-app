@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -22,5 +23,13 @@ class UserRepositoryImp
 
     override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
         return callPagination(api.getUserNotifications(limit, offset))
+    }
+
+    override fun notificationsRegister(token: String): Completable {
+        return call(api.notificationsRegister(token))
+    }
+
+    override fun notificationsUnregister(token: String): Completable {
+        return call(api.notificationsUnregister(token))
     }
 }

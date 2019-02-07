@@ -27,6 +27,12 @@ class AppData(
             appPrefs.selectedEvent = value?.id
         }
 
+    var isSubscribedToPush: Boolean = appPrefs.isFCMTokenSent
+        set(value) {
+            field = value
+            appPrefs.isFCMTokenSent = value
+        }
+
     private var user: User? = null
 
     fun setUser(user: User) {

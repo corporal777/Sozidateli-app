@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.google.firebase.iid.FirebaseInstanceId
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -33,9 +34,15 @@ class MainPresenter
             if (appData.token == null) {
                 initWithAuth()
             } else {
-                loadUser(onLoad = {
-                    if (it.default_event != null) initWithEvent()
+                loadUser(onLoad = { user ->
+                    if (user.default_event != null) initWithEvent()
                     else initWithEventList()
+
+                    if (!appData.isSubscribedToPush) {
+                        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+                            sendFCMToken(it.token)
+                        }
+                    }
                 },
                         onError = {
                             appData.token = null
@@ -48,6 +55,16 @@ class MainPresenter
         userRepository.getUser()
                 .performOnBackgroundOutOnMain()
                 .subscribe({ onLoad?.invoke(it) }, { onError?.invoke(it) })
+                .call(compositeDisposable)
+    }
+
+    private fun sendFCMToken(token: String) {
+        userRepository.notificationsRegister(token)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.isSubscribedToPush = true
+                }, {
+                })
                 .call(compositeDisposable)
     }
 

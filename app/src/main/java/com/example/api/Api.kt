@@ -4,6 +4,7 @@ import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.user.User
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -42,4 +43,12 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/notifications")
     fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Notification>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/notifications/register")
+    fun notificationsRegister(@Field("token") token: String): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/user/notifications/unregister")
+    fun notificationsUnregister(@Field("token") token: String): Completable
 }

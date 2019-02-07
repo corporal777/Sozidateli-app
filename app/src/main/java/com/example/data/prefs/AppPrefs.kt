@@ -25,8 +25,16 @@ class AppPrefs
             prefs.edit().putString(USER_TOKEN, value).commit()
         }
 
+    var isFCMTokenSent: Boolean
+        get() = prefs.getBoolean(FCM_TOKEN_SENT, false)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putBoolean(FCM_TOKEN_SENT, value).commit()
+        }
+
     companion object {
         const val SELECTED_EVENT = "selected_event"
         const val USER_TOKEN = "user_token"
+        const val FCM_TOKEN_SENT = "fcm_token_sent"
     }
 }
