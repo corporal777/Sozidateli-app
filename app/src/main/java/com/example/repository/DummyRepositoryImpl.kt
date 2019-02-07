@@ -198,7 +198,7 @@ class DummyRepositoryImpl
         }
     }*/
 
-    private fun generateUserNotifications(limit: Int, offset: Int): List<Notification> {
+  /*  private fun generateUserNotifications(limit: Int, offset: Int): List<Notification> {
         return (1..limit).map { index ->
             Notification(
                     "${offset + index}",
@@ -206,7 +206,7 @@ class DummyRepositoryImpl
                     getRandomDate()
             )
         }
-    }
+    }*/
 
     override fun loadTags(): Single<List<String>> {
         return Single.fromCallable { return@fromCallable tags }
@@ -259,7 +259,7 @@ class DummyRepositoryImpl
     }*/
 
     override fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
-        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserNotifications(limit, offset)) }
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = listOf<Notification>()) }
     }
 
     override fun getEvent() = generateEvents(1, 0).first()

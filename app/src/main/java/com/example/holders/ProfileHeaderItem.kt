@@ -23,6 +23,7 @@ class ProfileHeaderItem(private val name:String, private val image:String?,priva
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
+            Picasso.get().setLoggingEnabled(true)
             if (!image.isNullOrEmpty()) Picasso.get().load(image).transform(CropCircleTransformation()).into(ivAvatar)
 
             tvName.text = name

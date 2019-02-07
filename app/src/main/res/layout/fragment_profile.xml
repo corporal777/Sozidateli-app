@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
-            <TextView
+            <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/tvLastNotificationText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

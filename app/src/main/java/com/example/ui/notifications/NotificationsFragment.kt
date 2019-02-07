@@ -46,8 +46,8 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: Notification?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    tvMessage.text = item.message
-                    tvDate.text = dateFormat.format(item.date)
+                    tvMessage.text = item.text
+                    tvDate.text = item.time
                 }
             }
         }

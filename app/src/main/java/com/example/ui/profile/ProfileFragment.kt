@@ -87,7 +87,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
 
     override fun showLastNotification(text: String, notificationCount: Int) {
         notification.visibility = View.VISIBLE
-        tvLastNotificationText.text = text
+        tvLastNotificationText.setHtml(text)
         tvNotificationCount.text = notificationCount.toString()
     }
 

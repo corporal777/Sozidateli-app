@@ -2,6 +2,7 @@ package com.example.api
 
 import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
+import com.example.data.models.Notification
 import com.example.data.models.user.User
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -33,4 +34,7 @@ interface Api {
 
     @GET("/v1/user/info")
     fun getUser(): Single<ApiResponse<User>>
+
+    @GET("/v1/user/notifications/last")
+    fun getLastNotification(): Single<ApiResponse<List<Notification>>>
 }
