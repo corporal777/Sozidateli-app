@@ -11,6 +11,7 @@ import com.example.data.models.user.User
 import com.example.holders.BrownButtonItem
 import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
+import com.example.holders.ProfileHeaderItem
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
@@ -44,12 +45,9 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
     override fun setUser(user: User) {
 
-        if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
-
-        tvName.text = user.user_name
-        tvId.text = user.user_id.toString()
-
         val listField = mutableListOf<Item>()
+
+        listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id))
 
         listField.add(ProfileFieldItem(ProfileField("user_email",Type.EMAIL,getString(R.string.email),true,user.user_email)))
         listField.add(ProfileFieldItem(ProfileField("user_password",Type.PASSWORD,getString(R.string.auth_hint_password),false,null)))

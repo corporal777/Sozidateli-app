@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/root"
     android:background="@android:color/white">
 
     <TextView
@@ -29,11 +30,13 @@
         android:src="@drawable/ic_keyboard_arrow_right" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
+        style="@style/ViewDivider.Horizontal"
         android:layout_below="@id/llContainerInfo"
-        android:background="@color/profile_divider" />
-
+         />
+    <View
+        style="@style/ViewDivider.Horizontal"
+        android:id="@+id/topDivider"
+        />
 
     <LinearLayout
         android:id="@+id/llContainerInfo"

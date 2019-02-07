@@ -30,18 +30,19 @@ class ExpandedInfo : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
-
+    lateinit var typeface:Typeface
 
     private fun init() {
         view = LayoutInflater.from(context).inflate(R.layout.expended_info_view, this, true)
         view.tvName.setOnClickListener {
             if (isAnimationInProcess) return@setOnClickListener
-            if(isExpanded){
+            if (isExpanded) {
                 animCollapse(view.llContainerInfo)
-            } else{
+            } else {
                 animExpand(view.llContainerInfo)
             }
         }
+        typeface = Typeface.createFromAsset(context.assets, "fonts/OpenSans-Light.ttf")
     }
 
     fun setName(name: String?) {
@@ -50,26 +51,33 @@ class ExpandedInfo : FrameLayout {
         }
     }
 
-    fun setDataInfo(info: HashMap<String, String>) {
-        val typeface = Typeface.createFromAsset(context.assets,"fonts/OpenSans-Light.ttf")
-        info.forEach { (key, value) ->
-            val ll = LinearLayout(ContextThemeWrapper(context, R.style.ProfileInfoField))
-           // val layParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    fun setDataInfo(info: HashMap<String, String?>) {
+        if (view.llContainerInfo.childCount == 0) {
+            info.forEach { (key, value) ->
+                val ll = LinearLayout(ContextThemeWrapper(context, R.style.ProfileInfoField))
+                // val layParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-            if (key.isNotEmpty()) {
-                val label = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Label))
-                label.typeface = typeface
-                label.text = key
-                ll.addView(label)
+                if (key.isNotEmpty()) {
+                    val label = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Label))
+                    label.typeface = typeface
+                    label.text = key
+                    ll.addView(label)
+                }
+
+                val text = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Text))
+                text.text = value
+                ll.addView(text)
+
+                val layParamsLL = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                view.llContainerInfo.addView(ll, layParamsLL)
             }
-
-            val text = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Text))
-            text.text = value
-            ll.addView(text)
-
-            val layParamsLL = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            view.llContainerInfo.addView(ll, layParamsLL)
         }
+    }
+
+    fun setisFirstExpand(isFirst: Boolean) {
+        val marginTop = if (isFirst) context.resources.getDimensionPixelSize(R.dimen.profile_first_expand_margin_top) else 0
+        view.topDivider.visibility = if (isFirst) View.VISIBLE else View.GONE
+        (view.root.layoutParams as FrameLayout.LayoutParams).topMargin = marginTop
     }
 
 

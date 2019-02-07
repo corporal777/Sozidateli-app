@@ -6,14 +6,22 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.user.User
+import com.example.holders.InfoProfileExpandFieldItem
+import com.example.holders.InfoProfileFieldItem
+import com.example.holders.ProfileHeaderItem
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
 import com.example.util.Utils
 import com.squareup.picasso.Picasso
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_profile_full.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -28,6 +36,8 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
 
     @ProvidePresenter
     fun providePresenter(): ProfileFullPresenter = presenterProvider.get()
+
+    private var adapter = GroupAdapter<ViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,50 +62,79 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
     }
 
     override fun setUser(user: User) {
-        if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
 
-        tvName.text = user.user_name
-        tvId.text = user.user_id.toString()
 
-        /*setVisibleField(llEmail, user.email)
-        user.email?.let {
-            tvEmail.text = it
-        }*/
+        val listField = mutableListOf<Item>()
 
-        setVisibleField(llPhone, user.user_phone)
+        listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id))
+
+        user.emails?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.email), it))
+        }
+
         user.user_phone?.let {
-            tvPhone.text = it
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_phone), arrayListOf(it)))
         }
 
-        setVisibleField(llBirthday, user.user_birthday)
-        tvBirthday.text = user.user_birthday
+        user.user_birthday?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_birthday), arrayListOf(it)))
+        }
 
-        setVisibleField(llCity, user.user_address_city)
+        user.user_address_country?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_country), arrayListOf(it)))
+        }
+
         user.user_address_city?.let {
-            tvCity.text = it
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_city), arrayListOf(it)))
         }
 
-        /*setVisibleField(llSN, user.sn)
-        user.sn?.let {
-            tvSn.text = it
-        }*/
+        user.social_links?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_sn), it))
+        }
 
-        /*setVisibleField(llEducation, user.educations)
-        user.educations?.let {
-            tvEducation.text = it
-        }*/
+        user.academic_degree?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.profile_education), it))
+        }
 
-        /*eiInstitution.setName(getString(R.string.profile_institution))
-        eiInstitution.setDataInfo(hashMapOf(
-                "" to Utils.getDatesInterval(user.startEducate,user.endEducate),
-                "Специальность" to user.speciality,
-                getString(R.string.profile_institution) to user.institution
-        ))*/
-    }
+        user.education?.let {
+            for (item in it) {
+                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_institution), hashMapOf(
+                        "" to Utils.getDatesInterval(item.begin, item.end),
+                        getString(R.string.profile_educate_speciality) to item.specialty,
+                        getString(R.string.profile_educate_name) to item.organization
+                ), it.indexOf(item) == 0))
+            }
+        }
 
-    private fun setVisibleField(view: View, data: Any?) {
-        val visibility = if (data == null) View.GONE else View.VISIBLE
-        view.visibility = visibility
+        user.work?.let {
+            for (item in it) {
+                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_work_experience), hashMapOf(
+                        "" to Utils.getDatesInterval(item.begin, item.end),
+                        getString(R.string.profile_work_organization) to item.organization,
+                        getString(R.string.profile_work_position) to item.position,
+                        getString(R.string.profile_work_description) to item.description
+                )))
+            }
+        }
+
+        user.social_projects?.let {
+            for (item in it) {
+                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_social_project), hashMapOf(
+                        "" to Utils.getDatesInterval(item.begin, item.end),
+                        getString(R.string.profile_social_project_name) to item.name,
+                        getString(R.string.profile_work_position) to item.role,
+                        getString(R.string.profile_work_description) to item.description
+                )))
+            }
+        }
+
+        adapter.addAll(listField)
+
+        fieldRecyclerView.apply {
+            this.adapter = this@ProfileFullFragment.adapter
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+        }
     }
 
     override fun isShowToolbar() = true

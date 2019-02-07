@@ -141,4 +141,14 @@
 
     <string name="enter_code_title">Ввода кода</string>
     <string name="enter_code_hint">XXXXX</string>
+    
+    <string name="profile_educate_speciality">Специальность</string>
+    <string name="profile_educate_name">Учебное заведение</string>
+    <string name="profile_work_organization">Организация</string>
+    <string name="profile_work_position">Должность</string>
+    <string name="profile_work_description">Описание</string>
+    <string name="profile_social_project_name">Проект</string>
+
+
+
 </resources>

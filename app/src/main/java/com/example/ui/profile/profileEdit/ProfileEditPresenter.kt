@@ -17,11 +17,11 @@ class ProfileEditPresenter
 ) : BasePresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setUser(appData.user)
     }
 
     override fun attachView(view: ProfileEditContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.user)
     }
 
     override fun onSaveClick(groupAdapter: GroupAdapter<ViewHolder>) {

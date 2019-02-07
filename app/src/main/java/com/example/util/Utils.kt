@@ -14,8 +14,8 @@ object Utils {
 
     val defaultServerDateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    fun getDatesInterval(startDate: String, finishDate: String): String {
-        return getDatesInterval(defaultServerDateFormatter.parse(startDate).time, defaultServerDateFormatter.parse(finishDate).time)
+    fun getDatesInterval(startDate: String?, finishDate: String?): String {
+        return getDatesInterval(if (startDate == null) 0 else defaultServerDateFormatter.parse(startDate).time, if (finishDate == null) 0 else defaultServerDateFormatter.parse(finishDate).time)
     }
 
 
@@ -25,7 +25,9 @@ object Utils {
 
         val startFormat = if (start.get(Calendar.YEAR) == finish.get(Calendar.YEAR)) DATE_FORMAT_SHORT_MONTH_NO_YEAR else DATE_FORMAT_SHORT_MONTH_FULL_YEAR
         val formattedStart = SimpleDateFormat(startFormat, Locale.getDefault()).format(start.time)
-        val formattedFinish = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault()).format(finish.time)
+        var formattedFinish = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault()).format(finish.time)
+
+        if(finishDate==0L) formattedFinish = "н.в"
 
         val result = "$formattedStart - $formattedFinish"
 

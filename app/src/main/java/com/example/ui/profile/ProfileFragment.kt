@@ -71,7 +71,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun setUser(user: User) {
-        tvName.text = user.user_name
+        tvName.text = user.fullName
         //TODO: need status
         //tvStatus.text = String.format(getString(R.string.profile_status), user.status)
         if (!user.user_avatar.isNullOrEmpty()) Picasso.get().load(user.user_avatar).transform(CropCircleTransformation()).into(ivAvatar)
