@@ -3,7 +3,6 @@ package com.example.ui.myEvents
 import androidx.paging.PagedList
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.navigation.NavOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -54,7 +53,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name
-                    tvEventDate.setDatesIntervalText(item.startDate, item.finishDate)
+                    tvEventDate.setDatesIntervalText(item.start, item.finish)
 
                     btnGoToEvent.apply { visibility = View.GONE }
                     tvStatus.apply {

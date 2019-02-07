@@ -2,7 +2,6 @@ package com.example.ui.recommendations
 
 import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import bundleOf
@@ -59,7 +58,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
                     Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name
-                    tvEventDate.setDatesIntervalText(item.startDate, item.finishDate)
+                    tvEventDate.setDatesIntervalText(item.start, item.finish)
 
                     btnGoToEvent.apply {
                         setOnClickListener { presenter.onGoToEventClick(item) }

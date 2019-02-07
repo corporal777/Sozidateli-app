@@ -68,7 +68,7 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         }
 
         setVisibleField(llBirthday, user.user_birthday)
-        tvBirthday.text = Utils.defaultDataFormatter.format(user.user_birthday)
+        tvBirthday.text = user.user_birthday
 
         setVisibleField(llCity, user.user_address_city)
         user.user_address_city?.let {

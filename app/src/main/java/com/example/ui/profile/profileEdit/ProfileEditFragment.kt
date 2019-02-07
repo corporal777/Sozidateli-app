@@ -55,7 +55,7 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
         listField.add(ProfileFieldItem(ProfileField("user_password",Type.PASSWORD,getString(R.string.auth_hint_password),false,null)))
         listField.add(ProfileFieldItem(ProfileField("password_one_more",Type.PASSWORD,"Повторите пароль",false,null)))
         listField.add(ProfileFieldItem(ProfileField("user_phone",Type.PHONE,getString(R.string.profile_phone),true,user.user_phone)))
-        listField.add(ProfileFieldItem(ProfileField("user_birthday",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday?.date)))
+        listField.add(ProfileFieldItem(ProfileField("user_birthday",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday)))
         listField.add(ProfileFieldItem(ProfileField("user_address_country",Type.TEXT,getString(R.string.profile_country),false,user.user_address_country)))
         listField.add(ProfileFieldItem(ProfileField("user_address_city",Type.TEXT,getString(R.string.profile_city),false,user.user_address_city)))
         listField.add(ProfileFieldItem(ProfileField("social_links",Type.TEXT,getString(R.string.profile_sn),false,user.social_links)))

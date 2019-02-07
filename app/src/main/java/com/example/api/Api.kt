@@ -7,7 +7,6 @@ import retrofit2.http.GET
 
 interface Api {
 
-
     @GET("/v1/user/info")
     fun getUser():Single<DefaultResponse<User>>
 }

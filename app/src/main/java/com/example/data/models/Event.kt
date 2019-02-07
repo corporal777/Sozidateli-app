@@ -9,15 +9,15 @@ data class Event(
         val name: String,
         val logo: String,
         val info: String,
-        val startDate: Long,
-        val finishDate: Long,
+        val start: String,
+        val finish: String,
         val organizationName: String,
         val status: Status,
         val place: Place
 ) : Parcelable
 
-enum class Status(val code: Int) {
-    APPROVED(1),
-    CONFIRMATION_EXPECTED(2),
-    FINISHED(3)
+enum class Status(val code: String) {
+    APPROVED("APPROVED"),
+    CONFIRMATION_EXPECTED("2"),
+    FINISHED("3")
 }

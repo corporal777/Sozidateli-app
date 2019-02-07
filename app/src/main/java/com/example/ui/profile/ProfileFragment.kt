@@ -79,9 +79,9 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         llCurrentEvent.visibility = visibleCurrentEvent
 
         user.default_event?.let {
-            /*tvEventName.text = it.name
+            tvEventName.text = it.name
             tvOrganizationName.text = it.organizationName
-            tvEventDate.text = it.startDate.toString()*/
+            tvEventDate.text = it.start
         }
     }
 

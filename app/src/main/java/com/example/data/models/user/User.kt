@@ -1,6 +1,7 @@
 package com.example.data.models.user
 
 import android.os.Parcelable
+import com.example.data.models.Event
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 
@@ -27,7 +28,7 @@ data class User(
         var user_name: String = "",
         var user_middle_name: String = "",
         var user_last_name: String = "",
-        var user_birthday: DefaultDate? = null,
+        var user_birthday: String? = null,
         var user_age: Int = -1,
         var user_birthday_show: Boolean = false,
         var user_avatar: String? = null,
@@ -36,7 +37,7 @@ data class User(
         var passport_serial: String? = null,
         var passport_number: String? = null,
         var passport_given_by: String? = null,
-        var passport_given_at: DefaultDate? = null,
+        var passport_given_at: String? = null,
         var user_address: String? = null,
         var user_address_index: String? = null,
         var user_address_country: String? = null,
@@ -61,5 +62,6 @@ data class User(
         var education: ArrayList<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
-        var default_event:String?=null
+        var default_event:Event?=null,
+        var web:ArrayList<Value>? = null
 ) : Parcelable

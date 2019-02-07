@@ -113,8 +113,8 @@ class DummyRepositoryImpl
                     "Российский инвестиционный форум ${offset + index}",
                     logos.random(),
                     getRandomText(),
-                    dates.min() ?: 0,
-                    dates.max() ?: System.currentTimeMillis(),
+                    "2019-01-01",
+                    "2019-02-28",
                     "Форум $index",
                     Status.values().random(),
                     Place(

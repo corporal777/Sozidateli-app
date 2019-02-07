@@ -12,6 +12,12 @@ object Utils {
 
     val defaultDataFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
+    val defaultServerDateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    fun getDatesInterval(startDate: String, finishDate: String): String {
+        return getDatesInterval(defaultServerDateFormatter.parse(startDate).time, defaultServerDateFormatter.parse(finishDate).time)
+    }
+
 
     fun getDatesInterval(startDate: Long, finishDate: Long): String {
         val start = Calendar.getInstance().apply { timeInMillis = startDate }

@@ -5,11 +5,12 @@ import java.util.*
 import java.util.Calendar.YEAR
 
 fun TextView.setDatesIntervalText(startDate: Long, finishDate: Long) {
-
     this.text = Utils.getDatesInterval(startDate,finishDate)
 }
 
-
+fun TextView.setDatesIntervalText(startDate: String, finishDate: String) {
+    this.text = Utils.getDatesInterval(startDate,finishDate)
+}
 
 fun TextView.setDateCheckYearText(date: Long) {
     val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
