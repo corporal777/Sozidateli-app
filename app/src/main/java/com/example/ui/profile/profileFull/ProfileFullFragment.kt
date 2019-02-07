@@ -68,8 +68,8 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
 
         listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id))
 
-        user.emails?.let {
-            listField.add(InfoProfileFieldItem(getString(R.string.email), it))
+        user.user_email?.let {
+            listField.add(InfoProfileFieldItem(getString(R.string.email), arrayListOf(it)))
         }
 
         user.user_phone?.let {
@@ -128,6 +128,7 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
             }
         }
 
+        adapter.clear()
         adapter.addAll(listField)
 
         fieldRecyclerView.apply {

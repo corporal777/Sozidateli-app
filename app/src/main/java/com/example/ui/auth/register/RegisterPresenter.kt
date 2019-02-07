@@ -48,8 +48,10 @@ class RegisterPresenter
     override fun onClickRegister(email: String, password: String, name: String) {
         authRepository.register(email, password, name)
                 .performOnBackgroundOutOnMain()
-                .subscribe {
+                .subscribe ({
                     viewState.showWelcome()
-                }.call(compositeDisposable)
+                },{
+                    it.printStackTrace()
+                }).call(compositeDisposable)
     }
 }

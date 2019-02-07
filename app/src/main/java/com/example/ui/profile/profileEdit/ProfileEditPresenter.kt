@@ -8,6 +8,7 @@ import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.profile.profileFull.ProfileFullContract
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import javax.inject.Inject
@@ -16,6 +17,8 @@ import javax.inject.Inject
 class ProfileEditPresenter
 @Inject constructor(private val appData: AppData
 ) : BasePresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
+
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.addOnUserChangeListener(object:AppData.OnUserChangeListener{
@@ -27,6 +30,10 @@ class ProfileEditPresenter
         })
     }
 
+    override fun attachView(view: ProfileEditContract.View?) {
+        super.attachView(view)
+        viewState.setUser(appData.getUser())
+    }
 
     override fun onSaveClick(groupAdapter: GroupAdapter<ViewHolder>) {
         val arrayField = mutableListOf<ProfileField>()
