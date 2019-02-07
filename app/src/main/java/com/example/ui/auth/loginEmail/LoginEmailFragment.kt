@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_login_email.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -34,27 +35,16 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnRegister.setOnClickListener { presenter.clickRegister() }
-        btnLogin.setOnClickListener { presenter.clickLogin() }
-        ivClose.setOnClickListener { presenter.clickOnBack() }
-        etEmail.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
+        btnRegister.setOnClickListener { presenter.onClickRegister() }
+        btnLogin.setOnClickListener { presenter.onClickLogin(etEmail.text.toString(), etPassword.text.toString()) }
+        ivClose.setOnClickListener { presenter.onClickBack() }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                presenter.changeEmailText(p0.toString())
-            }
+        etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangeEmailText(charSequence.toString())
         })
 
-        etPassword.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                presenter.chagnePasswordText(p0.toString())
-            }
+        etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangePasswordText(charSequence.toString())
         })
     }
 
@@ -78,7 +68,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
                 textColor = Color.WHITE
             } else {
                 background = R.drawable.background_disabled_btn_login
-                textColor = ContextCompat.getColor(context,R.color.disabled_color)
+                textColor = ContextCompat.getColor(context, R.color.disabled_color)
             }
 
             setBackgroundResource(background)

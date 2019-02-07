@@ -14,35 +14,33 @@ class LoginEmailPresenter
 ) : BasePresenter<LoginEmailContract.View>(), LoginEmailContract.Presenter {
 
     private var isEmailValid = false
-    private var isPasswordValid = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState?.apply {
-            enableLoginBtn(false)
-        }
+        viewState?.apply { enableLoginBtn(false) }
     }
 
+    override fun onClickBack() = viewState.navigateUp()
 
-    override fun clickOnBack() = viewState.navigateUp()
-
-    override fun changeEmailText(email: String) {
+    override fun onChangeEmailText(email: String) {
         isEmailValid = AuthUtil.isValidEmail(email)
-        viewState.enableLoginBtn(isEmailValid && isPasswordValid)
+        viewState.enableLoginBtn(isEmailValid)
     }
 
-    override fun chagnePasswordText(password: String) {
-        isPasswordValid = AuthUtil.isValidPassword(password)
-        viewState.enableLoginBtn(isEmailValid && isPasswordValid)
+    override fun onChangePasswordText(password: String) {
+
     }
 
-    override fun clickLogin() {
-        authRepository.authEmail()
+    override fun onClickLogin(email: String, password: String) {
+        authRepository.authEmail(email, password)
                 .performOnBackgroundOutOnMain()
-                .subscribe {
+                .subscribe({
                     viewState.showWelcome()
-                }.call(compositeDisposable)
+                }, {
+                    viewState.showToast(it.message ?: it.localizedMessage)
+                })
+                .call(compositeDisposable)
     }
 
-    override fun clickRegister() = viewState.showRegister()
+    override fun onClickRegister() = viewState.showRegister()
 }

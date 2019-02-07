@@ -4,9 +4,10 @@ import io.reactivex.Completable
 
 interface AuthRepository {
 
-    fun authSN(): Completable
+    fun authVk(token: String, email: String?): Completable
+    fun authFb(token: String): Completable
+    fun authOk(token: String): Completable
 
-    fun authEmail(): Completable
-
-    fun register(): Completable
+    fun authEmail(email: String, password: String): Completable
+    fun register(email: String, password: String, name: String): Completable
 }

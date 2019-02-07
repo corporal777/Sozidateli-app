@@ -2,17 +2,16 @@ package com.example.ui.auth.register
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_register.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -36,48 +35,34 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ivClose.setOnClickListener { presenter.clickOnBack() }
+        ivClose.setOnClickListener { presenter.onClickBack() }
 
-        etEmail.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                presenter.changeEmailText(p0.toString())
-            }
+        etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangeEmailText(charSequence.toString())
         })
 
-        etPassword.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                presenter.chagnePasswordText(p0.toString())
-            }
+        etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangePasswordText(charSequence.toString())
         })
 
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                presenter.changeNameText(p0.toString())
-            }
+        etName.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangeNameText(charSequence.toString())
         })
+
+        btnRegister.setOnClickListener {
+            presenter.onClickRegister(
+                    email = etEmail.text.toString(),
+                    password = etPassword.text.toString(),
+                    name = etName.text.toString()
+            )
+        }
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        btnRegister.isEnabled = isEnable
-
-        if (isEnable) {
-            btnRegister.setBackgroundResource(R.drawable.background_btn_auth)
-            btnRegister.setTextColor(Color.WHITE)
-        } else {
-            btnRegister.setBackgroundResource(R.drawable.background_disabled_btn_login)
-            btnRegister.setTextColor(ContextCompat.getColor(context!!,R.color.disabled_color))
+        btnRegister.apply {
+            isEnabled = isEnable
+            setBackgroundResource(if (isEnable) R.drawable.background_btn_auth else R.drawable.background_disabled_btn_login)
+            setTextColor(if (isEnable) Color.WHITE else ContextCompat.getColor(requireContext(), R.color.disabled_color))
         }
     }
 
@@ -89,7 +74,7 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
 
     private fun colorTextPasswordChecker(textView: TextView, has: Boolean) {
         val colorRed = Color.RED
-        val colorGreen = ContextCompat.getColor(context!!, R.color.auth_accept_green)
+        val colorGreen = ContextCompat.getColor(requireContext(), R.color.auth_accept_green)
 
         textView.setTextColor(if (has) colorGreen else colorRed)
     }

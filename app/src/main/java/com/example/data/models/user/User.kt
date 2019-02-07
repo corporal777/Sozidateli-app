@@ -3,7 +3,6 @@ package com.example.data.models.user
 import android.os.Parcelable
 import com.example.data.models.Event
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class User(

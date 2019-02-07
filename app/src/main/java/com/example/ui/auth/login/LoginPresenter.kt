@@ -4,6 +4,11 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.snAuth.SnAuth
+import com.example.ui.snAuth.SnAuthError
+import com.example.ui.snAuth.SnAuthManager
+import com.example.ui.snAuth.SnType
+import io.reactivex.Completable
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -13,22 +18,54 @@ class LoginPresenter
         private val authRepository: AuthRepository
 ) : BasePresenter<LoginContract.View>(), LoginContract.Presenter {
 
+    private val snAuthListener = object : SnAuthManager.OnSnAuthListener {
+        override fun onSnAuthComplete(snAuth: SnAuth) {
+            when (snAuth.snType) {
+                SnType.VK -> executeAuthorization(authRepository.authVk(snAuth.token, snAuth.email))
+                SnType.FB -> executeAuthorization(authRepository.authFb(snAuth.token))
+                SnType.OK -> executeAuthorization(authRepository.authOk(snAuth.token))
+            }
+
+        }
+
+        override fun onSnAuthError(error: SnAuthError) {
+            error.message?.let { errorMessage -> viewState.showToast(errorMessage) }
+        }
+    }
+
     override fun onClickVk() {
-        authRepository.authSN()
-                .performOnBackgroundOutOnMain()
-                .subscribe {
-                    viewState.showWelcome()
-                }
-                .call(compositeDisposable)
+        setSnAuthListener()
+        viewState.startVkAuthorization()
     }
 
     override fun onClickFb() {
+        setSnAuthListener()
+        viewState.startFbAuthorization()
     }
 
     override fun onClickOk() {
+        setSnAuthListener()
+        viewState.startOkAuthorization()
     }
 
     override fun onClickEmail() {
         viewState.showLogin()
+    }
+
+    private fun executeAuthorization(completable: Completable) {
+        completable.performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.showWelcome()
+                }, { viewState.showToast(it.message ?: "") })
+                .call(compositeDisposable)
+    }
+
+    private fun setSnAuthListener() {
+        SnAuthManager.addOnSnAuthListener(snAuthListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SnAuthManager.removeOnSnAuthListener(snAuthListener)
     }
 }
