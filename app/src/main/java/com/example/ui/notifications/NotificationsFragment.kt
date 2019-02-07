@@ -1,6 +1,9 @@
 package com.example.ui.notifications
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.View
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
@@ -14,8 +17,10 @@ import com.example.ui.base.BaseFragment
 import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_notification.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class NotificationsFragment : BaseFragment(), NotificationsContract.View {
 
@@ -34,11 +39,20 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
                 { oldItem, newItem -> oldItem == newItem }
         ) {
 
+            private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
+                presenter.onNotificationUrlClick(url)
+                true
+            }
+
             override fun getItemLayout(itemView: Int) = R.layout.item_notification
 
             override fun onBindItem(viewHolder: ViewHolder, item: Notification?, position: Int) {
                 viewHolder.apply {
-                    tvMessage.setHtml(item?.text ?: "-")
+                    tvMessage.apply {
+                        setHtml(item?.text ?: "-")
+                        BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+                                .setOnLinkClickListener(linkClickListener)
+                    }
                     tvDate.text = item?.time?.let { Utils.formatToDefaultDate(it) } ?: "-"
                 }
             }
@@ -55,6 +69,12 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
 
     override fun setData(notifications: PagedList<Notification>) {
         adapter.submitList(notifications)
+    }
+
+    override fun showUrl(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(url)
+        })
     }
 
     override fun isShowToolbar() = true

@@ -93,6 +93,7 @@ dependencies {
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
     implementation 'org.sufficientlysecure:html-textview:3.6'
+    implementation 'me.saket:better-link-movement-method:2.2.0'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

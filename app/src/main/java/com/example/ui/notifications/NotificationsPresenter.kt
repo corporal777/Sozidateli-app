@@ -21,4 +21,8 @@ class NotificationsPresenter
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
+
+    override fun onNotificationUrlClick(url: String) {
+        viewState.showUrl(url)
+    }
 }
