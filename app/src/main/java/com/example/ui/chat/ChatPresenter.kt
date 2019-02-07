@@ -25,7 +25,7 @@ class ChatPresenter
         val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
         val chatMessageParser = SnapshotParser { snapshot ->
             snapshot.toObject(ChatMessage::class.java)!!.let {
-                UserChatMessage(it, appData.uid == it.senderId)
+                UserChatMessage(it, appData.getUser().user_id == it.senderId)
             }
         }
 
@@ -37,7 +37,7 @@ class ChatPresenter
     override fun onSendTextMessageClick(message: String) {
         viewState.apply { clearMessageInput() }
 
-        chatRepository.sendChatMessage(chatId, ChatMessage(text = message, senderId = appData.uid))
+        chatRepository.sendChatMessage(chatId, ChatMessage(text = message, senderId = appData.getUser().user_id))
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, {})
                 .call(compositeDisposable)

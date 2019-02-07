@@ -22,7 +22,7 @@ class ProfileFullPresenter
 
     override fun attachView(view: ProfileFullContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.user)
+        viewState.setUser(appData.getUser())
     }
 
     override fun onEditClick() {

@@ -21,7 +21,7 @@ class ProfileEditPresenter
 
     override fun attachView(view: ProfileEditContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.user)
+        viewState.setUser(appData.getUser())
     }
 
     override fun onSaveClick(groupAdapter: GroupAdapter<ViewHolder>) {
@@ -47,9 +47,9 @@ class ProfileEditPresenter
 
         arrayField.forEach {
             try {
-                val field = appData.user::class.java.getDeclaredField(it.nameField)
+                val field = appData.getUser()::class.java.getDeclaredField(it.nameField)
                 field.isAccessible = true
-                field.set(appData.user, it.data)
+                field.set(appData.getUser(), it.data)
             } catch (e: NoSuchFieldException) {
                 e.printStackTrace()
             }

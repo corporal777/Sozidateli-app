@@ -25,7 +25,7 @@ class ProfilePresenter
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
         viewState?.apply {
-            setUser(appData.user)
+            setUser(appData.getUser())
         }
     }
 
@@ -40,7 +40,7 @@ class ProfilePresenter
     override fun clickTabEvents() = viewState.showTabEvents()
 
     override fun clickCurrentEvent(event: Event) {
-        appData.user.default_event?.let {
+        appData.getUser().default_event?.let {
            // viewState.showCurrentEvent(it)
         }
     }
