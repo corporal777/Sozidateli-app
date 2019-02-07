@@ -4,7 +4,6 @@ import com.example.BuildConfig
 import com.example.api.Api
 import com.example.api.AuthInterceptor
 import com.example.data.AppData
-import com.example.data.prefs.AppPrefs
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -44,7 +43,7 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(authInterceptor:AuthInterceptor): OkHttpClient {
+    fun provideHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.MINUTES)

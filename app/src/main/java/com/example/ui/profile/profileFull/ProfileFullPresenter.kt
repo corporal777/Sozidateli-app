@@ -3,6 +3,7 @@ package com.example.ui.profile.profileFull
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
@@ -16,12 +17,15 @@ class ProfileFullPresenter
 ) : BasePresenter<ProfileFullContract.View>(), ProfileFullContract.Presenter{
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setUser(appData.user)
+        appData.addOnUserChangeListener(object:AppData.OnUserChangeListener{
+            override fun onUserChange(user: User?) {
+                user?.let {
+                    viewState.setUser(it)
+                }
+            }
+        })
     }
 
-    override fun attachView(view: ProfileFullContract.View?) {
-        super.attachView(view)
-    }
 
     override fun onEditClick() {
         viewState.showEditProfile()

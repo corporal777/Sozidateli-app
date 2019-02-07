@@ -3,6 +3,7 @@ package com.example.ui.profile.profileEdit
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ProfileField
+import com.example.data.models.user.User
 import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
 import com.example.repository.ChatRepository
@@ -17,12 +18,15 @@ class ProfileEditPresenter
 ) : BasePresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setUser(appData.user)
+        appData.addOnUserChangeListener(object:AppData.OnUserChangeListener{
+            override fun onUserChange(user: User?) {
+                user?.let {
+                    viewState.setUser(it)
+                }
+            }
+        })
     }
 
-    override fun attachView(view: ProfileEditContract.View?) {
-        super.attachView(view)
-    }
 
     override fun onSaveClick(groupAdapter: GroupAdapter<ViewHolder>) {
         val arrayField = mutableListOf<ProfileField>()
@@ -47,9 +51,9 @@ class ProfileEditPresenter
 
         arrayField.forEach {
             try {
-                val field = appData.user::class.java.getDeclaredField(it.nameField)
+                val field = appData.getUser()::class.java.getDeclaredField(it.nameField)
                 field.isAccessible = true
-                field.set(appData.user, it.data)
+                field.set(appData.getUser(), it.data)
             } catch (e: NoSuchFieldException) {
                 e.printStackTrace()
             }

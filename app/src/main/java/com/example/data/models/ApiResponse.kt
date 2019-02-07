@@ -1,10 +1,10 @@
 package com.example.data.models
 
 data class ApiResponse<T>(
-        var server: Any? = null,
-        var response: T,
-        var response_detail: List<Any>? = null,
-        var session: Any? = null,
-        var code: Int = 0,
-        var errors: List<Any>? = null
+        val server: Any? = null,
+        val response: T,
+        val response_detail: List<Any>? = null,
+        val session: Session? = null,
+        val code: Int = 0,
+        val errors: List<Any>? = null
 )

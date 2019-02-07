@@ -4,7 +4,6 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Event
-import com.example.data.prefs.AppPrefs
 import com.example.repository.DummyRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
@@ -14,7 +13,6 @@ import javax.inject.Inject
 class MyEventsPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val appPrefs: AppPrefs,
         private val dummyRepository: DummyRepository
 ) : BasePresenter<MyEventsContract.View>(), MyEventsContract.Presenter {
 
@@ -36,7 +34,6 @@ class MyEventsPresenter
 
     override fun onEventClick(event: Event) {
         appData.event = event
-        appPrefs.selectedEvent = event.id
         viewState.selectEvent(event)
     }
 

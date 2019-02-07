@@ -3,7 +3,6 @@ package com.example.di
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.provider.Settings
 import com.example.R
 import com.example.data.AppData
 import com.example.data.prefs.AppPrefs
@@ -26,10 +25,7 @@ class AppModule {
     @SuppressLint("HardwareIds")
     @Provides
     @Singleton
-    fun provideAppData(context: Context, appPrefs: AppPrefs): AppData = AppData.apply {
-        uid = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-        token = "595a687c6b1c69de065a549072ae4737"
-    }
+    fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
 
     @Provides
     @Singleton

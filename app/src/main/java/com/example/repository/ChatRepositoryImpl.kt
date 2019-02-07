@@ -18,11 +18,11 @@ class ChatRepositoryImpl
 @Inject constructor(
         private val firestore: FirebaseFirestore,
         private val appData: AppData
-) : ChatRepository {
+) : ApiRepository(appData), ChatRepository {
 
     override fun subscribeOnChatList(): Flowable<List<UserChat>> {
         val query = firestore.collection(COLLECTION_USERS)
-                .document(appData.uid)
+                .document(appData.getUser().user_id.toString())
                 .collection(COLLECTION_CHATS)
         Timber.tag("CHAT_T").d("QUERY ${query.path}")
 
