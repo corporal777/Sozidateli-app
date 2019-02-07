@@ -4,6 +4,7 @@ import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.user.User
+import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -37,4 +38,8 @@ interface Api {
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/notifications")
+    fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Notification>>>
 }

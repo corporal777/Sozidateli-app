@@ -611,6 +611,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="notifications_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="168" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="profile_edit_fragment">
                     <value>
                       <LayoutPositions>
@@ -634,6 +646,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_profile_fragment_to_notifications_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="profile_to_about">
                               <value>
                                 <LayoutPositions />
@@ -650,6 +667,11 @@
                               </value>
                             </entry>
                             <entry key="profile_to_my_events">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="profile_to_setting">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -676,6 +698,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="profile_setting_chat_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

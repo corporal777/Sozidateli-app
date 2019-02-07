@@ -15,7 +15,6 @@ import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.brown_button.view.*
 import kotlinx.android.synthetic.main.item_search_header.view.*
 import java.util.*
 
@@ -80,15 +79,15 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
                     etSearchText.setSelection(it.length)
                 }
                 if (searchHolder.date != 0L) {
-                    tvDate.text = Utils.defaultDataFormatter.format(searchHolder.date)
+                    tvDate.text = Utils.defaultDateFormatter.format(searchHolder.date)
                 }
 
                 if (searchHolder.dateFrom != 0L) {
-                    tvPeriodFrom.text = Utils.defaultDataFormatter.format(searchHolder.dateFrom)
+                    tvPeriodFrom.text = Utils.defaultDateFormatter.format(searchHolder.dateFrom)
                 }
 
                 if (searchHolder.dateTo != 0L) {
-                    tvPeriodTo.text = Utils.defaultDataFormatter.format(searchHolder.dateTo)
+                    tvPeriodTo.text = Utils.defaultDateFormatter.format(searchHolder.dateTo)
                 }
             }
         }

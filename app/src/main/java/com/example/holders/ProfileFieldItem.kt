@@ -1,26 +1,17 @@
 package com.example.holders
 
 import android.app.DatePickerDialog
-import android.content.Context
-import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.view.MotionEvent
 import android.view.View
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.Toast
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.Type
 import com.example.util.Utils
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_profile.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileFieldItem(private val profileField: ProfileField) : Item() {
@@ -39,7 +30,7 @@ class ProfileFieldItem(private val profileField: ProfileField) : Item() {
                         editText.setText(it)
                     }
                     is Long -> {
-                        editText.setText(Utils.defaultDataFormatter.format(it))
+                        editText.setText(Utils.defaultDateFormatter.format(it))
                         calendar.timeInMillis = it
                     }
                 }
@@ -64,7 +55,7 @@ class ProfileFieldItem(private val profileField: ProfileField) : Item() {
                         val calendar = Calendar.getInstance()
                         calendar.set(year, monthOfYear, dayOfMonth)
                         profileField.data = calendar.timeInMillis
-                        editText.setText(Utils.defaultDataFormatter.format(calendar.timeInMillis))
+                        editText.setText(Utils.defaultDateFormatter.format(calendar.timeInMillis))
                     }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
                 }
                 Type.EMAIL -> {

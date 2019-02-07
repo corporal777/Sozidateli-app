@@ -4,6 +4,8 @@ import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.user.User
+import com.example.util.pagination.PaginationResponse
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -17,4 +19,8 @@ class UserRepositoryImp
             .doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())
+
+    override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
+        return callPagination(api.getUserNotifications(limit, offset))
+    }
 }

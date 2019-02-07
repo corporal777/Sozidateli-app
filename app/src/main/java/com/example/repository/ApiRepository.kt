@@ -2,12 +2,10 @@ package com.example.repository
 
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
+import com.example.util.pagination.PaginationResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.*
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -26,6 +24,13 @@ abstract class ApiRepository(
                 .map { it.response }
     }
 
+    fun <T> call(request: Maybe<ApiResponse<T>>): Maybe<T> {
+        return request
+                .doOnError { saveSession(parseApiResponseError(it)) }
+                .doOnSuccess { saveSession(it) }
+                .map { it.response }
+    }
+
     fun <T> call(request: Observable<ApiResponse<T>>): Observable<T> {
         return request
                 .doOnError { saveSession(parseApiResponseError(it)) }
@@ -38,6 +43,18 @@ abstract class ApiRepository(
                 .doOnError { saveSession(parseApiResponseError(it)) }
                 .doOnNext { saveSession(it) }
                 .map { it.response }
+    }
+
+    fun <T, C : List<T>> callPagination(request: Maybe<ApiResponse<C>>): Maybe<PaginationResponse<T>> {
+        return request
+                .doOnError { saveSession(parseApiResponseError(it)) }
+                .doOnSuccess { saveSession(it) }
+                .map {
+                    PaginationResponse(
+                            it.response_detail?.total,
+                            it.response
+                    )
+                }
     }
 
     private fun saveSession(response: ApiResponse<*>?) {

@@ -2,7 +2,7 @@ package com.example.ui.notifications
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.repository.DummyRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
 import javax.inject.Inject
@@ -10,13 +10,13 @@ import javax.inject.Inject
 @InjectViewState
 class NotificationsPresenter
 @Inject constructor(
-        private val dummyRepository: DummyRepository
+        private val userRepository: UserRepository
 ) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        SimplePagination { limit, offset -> dummyRepository.loadUserNotifications(limit, offset) }
+        SimplePagination { limit, offset -> userRepository.getNotifications(limit, offset) }
                 .create()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
