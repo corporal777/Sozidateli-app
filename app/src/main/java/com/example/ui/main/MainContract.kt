@@ -8,15 +8,6 @@ interface MainContract {
     interface View : BaseContract.View {
         @StateStrategyType(SkipStrategy::class)
         fun showBackButton(show: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun initWithAuth()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun initWithEventList()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun initWithEvent()
     }
 
     interface Presenter : BaseContract.Presenter {

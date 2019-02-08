@@ -42,24 +42,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         navController.addOnDestinationChangedListener(navigatedListener)
     }
 
-    override fun initWithAuth() = findNavController().setGraph(R.navigation.auth_navigation)
-
-    override fun initWithEventList() {
-        findNavController().apply {
-            graph = navInflater.inflate(R.navigation.main_navigation).apply {
-                startDestination = R.id.events_tabs_fragment
-            }
-        }
-    }
-
-    override fun initWithEvent() {
-        findNavController().apply {
-            graph = navInflater.inflate(R.navigation.main_navigation).apply {
-                startDestination = R.id.event_tabs_fragment
-            }
-        }
-    }
-
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
     override fun hideToolbar() {

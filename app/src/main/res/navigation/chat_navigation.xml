@@ -29,7 +29,6 @@
         <argument
             android:name="chatId"
             app:argType="string" />
-        <deepLink app:uri="http://fond.ru/chat/{chatId}?user={label}" />
     </fragment>
 
     <fragment

@@ -32,7 +32,7 @@ interface Api {
     fun registerEmail(@Field("user_email") email: String, @Field("user_pwd") password: String, @Field("user_name") name: String, @Field("user_last_name") lastName: String): Single<ApiResponse<AuthResponse>>
 
     @GET("/v1/user/info")
-    fun getUser(): Single<ApiResponse<User>>
+    fun getUser(): Maybe<ApiResponse<User>>
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>

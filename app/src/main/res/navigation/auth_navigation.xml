@@ -4,7 +4,6 @@
     android:id="@+id/auth_navigation"
     app:startDestination="@id/login_fragment">
 
-
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.example.ui.auth.login.LoginFragment"
@@ -19,7 +18,9 @@
             app:destination="@id/welcome_fragment"
             app:popUpTo="@id/login_fragment"
             app:popUpToInclusive="true" />
-
+        <argument
+            android:name="email"
+            app:argType="string" />
     </fragment>
 
     <fragment
