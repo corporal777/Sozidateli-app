@@ -1,10 +1,12 @@
 package com.example.repository
 
 import com.example.data.models.*
+import com.example.data.models.user.User
 import com.example.util.LOREM
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -166,21 +168,19 @@ class DummyRepositoryImpl
                      subscribed = if (onlyFavorite) true else Random.nextBoolean()
              )
          }
-     }
-
-     private fun generateUser(id: Int): User {
-         return User(
-                 id = "$id",
-                 name = names.random(),
-                 image = avatars.random(),
-                 info = getRandomText(),
-                 subscribed = Random.nextBoolean()
-         )
      }*/
+
+    private fun generateUser(id: Int): User {
+        return User(
+                user_id = id,
+                user_name = names.random(),
+                user_avatar = avatars.random()
+        )
+    }
 
     /*private fun generateSpeakers(limit: Int, offset: Int): List<User> {
         return (1..limit).map { index -> generateUser(offset + index) }
-    }
+    }*/
 
     private fun generateUserChats(limit: Int, offset: Int): List<UserChat> {
         return (1..limit).map { index ->
@@ -189,12 +189,12 @@ class DummyRepositoryImpl
                     generateUser(offset + index),
                     ChatMessage(
                             getRandomText(),
-                            "${offset + index}",
+                            offset + index,
                             Date(getRandomDate())
                     )
             )
         }
-    }*/
+    }
 
 /*    private fun generateUserNotifications(limit: Int, offset: Int): List<Notification> {
         return (1..limit).map { index ->
@@ -250,11 +250,11 @@ class DummyRepositoryImpl
 
     /* override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
          return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset)) }
-     }
-
-     override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
-         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
      }*/
+
+    override fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
+        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateUserChats(limit, offset)) }
+    }
 
     override fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = listOf<Notification>()) }

@@ -15,10 +15,10 @@ class ChatListPresenter
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-       /* SimplePagination { limit, offset -> dummyRepository.loadUserChats(limit, offset) }
+        SimplePagination { limit, offset -> dummyRepository.loadUserChats(limit, offset) }
                 .create()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
-                .call(compositeDisposable)*/
+                .call(compositeDisposable)
     }
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id)

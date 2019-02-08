@@ -5,7 +5,7 @@ import java.util.*
 
 data class ChatMessage(
         val text: String? = null,
-        val senderId: Int,
+        val senderId: Int = -1,
         val sendAt: Date = Date()
 ) {
     fun toMap() = mapOf(

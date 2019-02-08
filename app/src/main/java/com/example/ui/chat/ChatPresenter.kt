@@ -22,21 +22,23 @@ class ChatPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
-        val chatMessageParser = SnapshotParser { snapshot ->
-            snapshot.toObject(ChatMessage::class.java)!!.let {
-                UserChatMessage(it, appData.getUser().user_id == it.senderId)
-            }
-        }
+        chatRepository.singInFirebase()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
+                    val chatMessageParser = SnapshotParser { snapshot ->
+                        snapshot.toObject(ChatMessage::class.java)!!.let {
+                            UserChatMessage(it, appData.getUser().user_id == it.senderId)
+                        }
+                    }
 
-        viewState.apply {
-            iniChatAdapter(chatMessageQuery, chatMessageParser)
-        }
+                    viewState.apply { iniChatAdapter(chatMessageQuery, chatMessageParser) }
+                }, {})
+                .call(compositeDisposable)
     }
 
     override fun onSendTextMessageClick(message: String) {
         viewState.apply { clearMessageInput() }
-
         chatRepository.sendChatMessage(chatId, ChatMessage(text = message, senderId = appData.getUser().user_id))
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, {})

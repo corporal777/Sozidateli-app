@@ -9,9 +9,9 @@ import io.reactivex.Observable
 
 interface ChatRepository {
 
-    fun subscribeOnChatList(): Flowable<List<UserChat>>
-
     fun getChatMessageQuery(chatId: String): Query
 
     fun sendChatMessage(chatId: String, message: ChatMessage): Completable
+
+    fun singInFirebase(): Completable
 }
