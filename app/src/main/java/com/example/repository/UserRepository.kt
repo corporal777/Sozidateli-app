@@ -13,4 +13,5 @@ interface UserRepository {
     fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
+    fun updateUser(user:User): Single<User>
 }

@@ -32,4 +32,7 @@ class UserRepositoryImp
     override fun notificationsUnregister(token: String): Completable {
         return call(api.notificationsUnregister(token))
     }
+
+    override fun updateUser(user: User)= call(api.updateUser(user)
+            .doOnSuccess { appData.setUser(it.response) })
 }

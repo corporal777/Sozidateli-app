@@ -1,5 +1,6 @@
 package com.example.ui.profile.profileEdit
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ProfileField
@@ -7,16 +8,17 @@ import com.example.data.models.user.User
 import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
 import com.example.repository.ChatRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.profile.profileFull.ProfileFullContract
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
 class ProfileEditPresenter
-@Inject constructor(private val appData: AppData
-) : BasePresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
+@Inject constructor(private val appData: AppData, private val userRepository: UserRepository) : BasePresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
 
 
     override fun onFirstViewAttach() {
@@ -56,16 +58,34 @@ class ProfileEditPresenter
             }
         }
 
+        var user = appData.getUser()
+
+
+
         arrayField.forEach {
             try {
-                val field = appData.getUser()::class.java.getDeclaredField(it.nameField)
+                val field = user::class.java.getDeclaredField(it.nameField)
                 field.isAccessible = true
-                field.set(appData.getUser(), it.data)
+                field.set(user, it.data)
+
+                it.nameFieldIsShowOnlyProfile?.let {nameField->
+                    val fieldShow = user::class.java.getDeclaredField(nameField)
+                    fieldShow.isAccessible = true
+                    fieldShow.set(user, it.isOnlyProfile)
+                }
             } catch (e: NoSuchFieldException) {
                 e.printStackTrace()
             }
         }
 
-        viewState.navigateUp()
+        userRepository.updateUser(user)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.navigateUp()
+
+                },{
+                    it.printStackTrace()
+                }).call(compositeDisposable)
+
     }
 }

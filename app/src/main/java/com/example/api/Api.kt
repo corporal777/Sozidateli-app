@@ -7,10 +7,7 @@ import com.example.data.models.user.User
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface Api {
 
@@ -51,4 +48,8 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/notifications/unregister")
     fun notificationsUnregister(@Field("token") token: String): Completable
+
+
+    @POST("/v1/user/update")
+    fun updateUser(@Body user: User): Single<ApiResponse<User>>
 }

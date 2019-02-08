@@ -41,6 +41,11 @@ class ProfileFieldItem(private val profileField: ProfileField) : Item() {
             }
 
             switchView.visibility = if (profileField.isShowOnlyProfile) View.VISIBLE else View.GONE
+            switchView.isChecked = profileField.isOnlyProfile
+
+            switchView.setOnCheckedChangeListener { compoundButton, b ->
+                profileField.isOnlyProfile = b;
+            }
 
 
             var inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -54,7 +59,7 @@ class ProfileFieldItem(private val profileField: ProfileField) : Item() {
                     datePickerDialog = DatePickerDialog(editText.context, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
                         val calendar = Calendar.getInstance()
                         calendar.set(year, monthOfYear, dayOfMonth)
-                        profileField.data = calendar.timeInMillis
+                        profileField.data = Utils.defaultServerDateFormatter.format(calendar.timeInMillis)
                         editText.setText(Utils.defaultDateFormatter.format(calendar.timeInMillis))
                     }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
                 }
@@ -82,6 +87,7 @@ class ProfileFieldItem(private val profileField: ProfileField) : Item() {
                     }
                 }
             })
+
         }
     }
 

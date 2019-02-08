@@ -49,17 +49,17 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
         listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id))
 
-        listField.add(ProfileFieldItem(ProfileField("user_email",Type.EMAIL,getString(R.string.email),true,user.user_email)))
-        listField.add(ProfileFieldItem(ProfileField("user_password",Type.PASSWORD,getString(R.string.auth_hint_password),false,null)))
-        listField.add(ProfileFieldItem(ProfileField("password_one_more",Type.PASSWORD,"Повторите пароль",false,null)))
-        listField.add(ProfileFieldItem(ProfileField("user_phone",Type.PHONE,getString(R.string.profile_phone),true,user.user_phone)))
-        listField.add(ProfileFieldItem(ProfileField("user_birthday",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday)))
-        listField.add(ProfileFieldItem(ProfileField("user_address_country",Type.TEXT,getString(R.string.profile_country),false,user.user_address_country)))
-        listField.add(ProfileFieldItem(ProfileField("user_address_city",Type.TEXT,getString(R.string.profile_city),false,user.user_address_city)))
-        listField.add(ProfileFieldItem(ProfileField("social_links",Type.TEXT,getString(R.string.profile_sn),false,user.social_links)))
+        listField.add(ProfileFieldItem(ProfileField("user_email","user_email_show",Type.EMAIL,getString(R.string.email),true,user.user_email_show,user.user_email)))
+        listField.add(ProfileFieldItem(ProfileField("user_password",null,Type.PASSWORD,getString(R.string.auth_hint_password),false,false,null)))
+        listField.add(ProfileFieldItem(ProfileField("password_one_more",null,Type.PASSWORD,"Повторите пароль",false,false,null)))
+        listField.add(ProfileFieldItem(ProfileField("user_phone","user_phone_show",Type.PHONE,getString(R.string.profile_phone),true,user.user_phone_show,user.user_phone)))
+        listField.add(ProfileFieldItem(ProfileField("user_birthday","user_birthday_show",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday_show,user.user_birthday)))
+        listField.add(ProfileFieldItem(ProfileField("user_address_country",null,Type.TEXT,getString(R.string.profile_country),false,false,user.user_address_country)))
+        listField.add(ProfileFieldItem(ProfileField("user_address_city",null,Type.TEXT,getString(R.string.profile_city),false,false,user.user_address_city)))
+        //listField.add(ProfileFieldItem(ProfileField("social_links",Type.TEXT,getString(R.string.profile_sn),false,user.social_links)))
         //listField.add(ProfileFieldItem(ProfileField("education",Type.TEXT,getString(R.string.profile_education),false,user.education)))
 
-        user.education?.let {
+        /*user.education?.let {
             for(education in it){
                 val listFirstExpandField = mutableListOf<ProfileFieldItem>()
                 listFirstExpandField.add(ProfileFieldItem(ProfileField("education.begin",Type.DATE,"Дата начала обучение",false,education.begin)))
@@ -69,7 +69,7 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
                 listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution),listFirstExpandField,true))
             }
-        }
+        }*/
 
 
 
