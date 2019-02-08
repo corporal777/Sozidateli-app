@@ -1,13 +1,12 @@
 package com.example.ui.chatList
 
-import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -43,7 +42,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: UserChat?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if(!item.user?.user_avatar.isNullOrEmpty()) {
+                    if (!item.user?.user_avatar.isNullOrEmpty()) {
                         Picasso.get()
                                 .load(item.user?.user_avatar)
                                 .transform(CropCircleTransformation())

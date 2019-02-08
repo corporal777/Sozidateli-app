@@ -6,6 +6,7 @@ import android.content.Context
 import com.example.R
 import com.example.data.AppData
 import com.example.data.prefs.AppPrefs
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -21,6 +22,9 @@ class AppModule {
 
     @Provides
     fun provideFireStore() = FirebaseFirestore.getInstance()
+
+    @Provides
+    fun provideFirebaseAuth() = FirebaseAuth.getInstance()
 
     @SuppressLint("HardwareIds")
     @Provides
