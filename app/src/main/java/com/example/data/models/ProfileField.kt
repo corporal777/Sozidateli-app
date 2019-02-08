@@ -2,9 +2,11 @@ package com.example.data.models
 
 data class ProfileField(
         var nameField: String,
+        var nameFieldIsShowOnlyProfile:String?=null,
         var type: Type,
         var label: String? = null,
         var isShowOnlyProfile: Boolean = false,
+        var isOnlyProfile:Boolean = false,
         var data: Any?
 )
 
