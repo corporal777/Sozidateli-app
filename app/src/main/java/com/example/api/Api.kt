@@ -2,6 +2,7 @@ package com.example.api
 
 import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
+import com.example.data.models.Event
 import com.example.data.models.Notification
 import com.example.data.models.user.User
 import io.reactivex.Completable
@@ -49,7 +50,10 @@ interface Api {
     @POST("/v1/user/notifications/unregister")
     fun notificationsUnregister(@Field("token") token: String): Completable
 
-
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>
+
+    @FormUrlEncoded
+    @POST("/v1/events")
+    fun getEventList(@Field("name") name: String?, @Field("date_start") dateStart: String?, @Field("date_end") dateEnd: String?, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Event>>>
 }
