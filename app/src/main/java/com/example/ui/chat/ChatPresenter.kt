@@ -7,6 +7,7 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.FIELD_IS_READ
 import com.firebase.ui.firestore.SnapshotParser
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
@@ -18,7 +19,10 @@ class ChatPresenter
         private val chatRepository: ChatRepository
 ) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
 
+    private var isChatScrolledToLastPosition = true
+
     lateinit var chatId: String
+    lateinit var userId: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -28,6 +32,8 @@ class ChatPresenter
                     val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
                     val chatMessageParser = SnapshotParser { snapshot ->
                         snapshot.toObject(ChatMessage::class.java)!!.let {
+                            it.id = snapshot.id
+                            it.isRead = snapshot.getBoolean(FIELD_IS_READ)
                             UserChatMessage(it, appData.getUser().user_id == it.senderId)
                         }
                     }
@@ -38,14 +44,35 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
+        if (message.isBlank()) return
         viewState.apply { clearMessageInput() }
-        chatRepository.sendChatMessage(chatId, ChatMessage(text = message, senderId = appData.getUser().user_id))
+        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.getUser().user_id))
                 .performOnBackgroundOutOnMain()
-                .subscribe({}, {})
+                .subscribe({
+
+                }, {
+                    it.printStackTrace()
+                })
                 .call(compositeDisposable)
     }
 
-    override fun onNewMessage() {
-        viewState.scrollToLastPosition()
+    override fun onChatMessageOnScreen(message: UserChatMessage) {
+        if (message.isMyMessage || message.message.isRead == true) return
+        message.message.id?.also {
+            chatRepository.setMessageRead(chatId, it)
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({}, {
+                        it.printStackTrace()
+                    })
+                    .call(compositeDisposable)
+        }
+    }
+
+    override fun onNewMessage(message: UserChatMessage) {
+        if (isChatScrolledToLastPosition) viewState.scrollToLastPosition()
+    }
+
+    override fun onChatScrollChange(isLastPosition: Boolean) {
+        isChatScrolledToLastPosition = isLastPosition
     }
 }

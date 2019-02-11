@@ -20,7 +20,7 @@ class SubscriptionsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         SimplePagination { limit, offset -> dummyRepository.loadSubscriptions(limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

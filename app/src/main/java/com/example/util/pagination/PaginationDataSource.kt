@@ -2,7 +2,6 @@ package com.example.util.pagination
 
 import androidx.paging.PositionalDataSource
 import io.reactivex.Maybe
-import retrofit2.Call
 import kotlin.math.min
 
 open class PaginationDataSource<I> : PositionalDataSource<I>() {
@@ -15,7 +14,11 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<I>) {
-        val startPosition = if (loadInitialFromStart) 0 else params.requestedStartPosition
+        val startPosition = when {
+            loadInitialFromStart || params.requestedStartPosition < params.pageSize -> 0
+            else -> params.requestedStartPosition
+        }
+
         val result = executeRequest(params.requestedLoadSize, startPosition)
         var data = getDataFromResult(result)
         val totalCount = result?.totalCount

@@ -1,13 +1,16 @@
 package com.example.ui.chat
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.WindowManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.ChatAdapter
+import com.example.adapters.ViewHolder
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseFragment
 import com.firebase.ui.common.ChangeEventType
@@ -31,6 +34,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
+        userId = args.userId
     }
 
     private lateinit var chatAdapter: ChatAdapter
@@ -44,8 +48,20 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         super.onViewCreated(view, savedInstanceState)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
 
+        val layoutManager = LinearLayoutManager(context).apply {
+            stackFromEnd = true
+        }
         rvChat.apply {
-            (layoutManager as androidx.recyclerview.widget.LinearLayoutManager).stackFromEnd = true
+            this.layoutManager = layoutManager
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    val isLastPosition = if (newState == SCROLL_STATE_IDLE) {
+                        layoutManager.findLastCompletelyVisibleItemPosition() == adapter?.itemCount?.minus(1)
+                    } else false
+
+                    presenter.onChatScrollChange(isLastPosition)
+                }
+            })
         }
     }
 
@@ -58,7 +74,12 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         chatAdapter = object : ChatAdapter(options) {
             override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
                 super.onChildChanged(type, snapshot, newIndex, oldIndex)
-                if (type == ChangeEventType.ADDED) presenter.onNewMessage()
+                if (type == ChangeEventType.ADDED) presenter.onNewMessage(parser.parseSnapshot(snapshot))
+            }
+
+            override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
+                super.onBindViewHolder(holder, position, model)
+                presenter.onChatMessageOnScreen(model)
             }
         }
 
@@ -71,13 +92,9 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         else rvChat.layoutManager?.scrollToPosition(position)
     }
 
-    override fun scrollToLastPosition() = scrollToLastPosition(true)
+    override fun scrollToLastPosition() = scrollToPosition(chatAdapter.itemCount - 1, true)
 
-    private fun scrollToLastPosition(smooth: Boolean) = scrollToPosition(chatAdapter.itemCount - 1, smooth)
-
-    override fun clearMessageInput() {
-        etMessage.text.clear()
-    }
+    override fun clearMessageInput() = etMessage.text.clear()
 
     override fun isShowToolbar() = true
 

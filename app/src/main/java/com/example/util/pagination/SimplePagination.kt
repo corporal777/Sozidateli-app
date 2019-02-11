@@ -7,18 +7,17 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 class SimplePagination<I>(
-        private val paginationRequest: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
-) {
-    fun create(initialSize: Int = 20, pageSize: Int = 20, enablePlaceholders: Boolean = false): Flowable<PagedList<I>> {
-        val factory = PaginationDataSourceFactory(paginationRequest)
+        paginationRequest: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
+) : PaginationDataSourceFactory<I>(paginationRequest) {
 
+    fun build(initialSize: Int = 20, pageSize: Int = 20, enablePlaceholders: Boolean = false): Flowable<PagedList<I>> {
         val config = PagedList.Config.Builder()
                 .setInitialLoadSizeHint(initialSize)
                 .setPageSize(pageSize)
                 .setEnablePlaceholders(enablePlaceholders)
                 .build()
 
-        return RxPagedListBuilder(factory, config)
+        return RxPagedListBuilder(this, config)
                 .buildFlowable(BackpressureStrategy.LATEST)
     }
 }

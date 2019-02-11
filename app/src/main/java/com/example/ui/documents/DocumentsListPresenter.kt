@@ -20,7 +20,7 @@ class DocumentsListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         SimplePagination { limit, offset -> dummyRepository.loadDocuments(event.id, limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

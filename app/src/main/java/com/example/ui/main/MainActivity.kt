@@ -27,7 +27,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val startDestinations = arrayOf(R.id.events_tabs_fragment, R.id.event_tabs_fragment)
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
-        supportActionBar?.title = destination.label ?: arguments?.getString(ARG_CUSTOM_LABEL)
+        supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
 
         presenter.apply {
             if (startDestinations.contains(destination.id)) onOpenStartDestination()

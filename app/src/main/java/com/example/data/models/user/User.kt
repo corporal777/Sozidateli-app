@@ -61,9 +61,9 @@ data class User(
         var education: ArrayList<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
-        var default_event:Event?=null,
-        var web:ArrayList<Value>? = null
-) : Parcelable{
-    var fullName:String=""
-    get() = "$user_name $user_last_name"
+        var default_event: Event? = null,
+        var web: ArrayList<Value>? = null
+) : Parcelable {
+    var fullName: String = ""
+        get() = "$user_name $user_last_name"
 }

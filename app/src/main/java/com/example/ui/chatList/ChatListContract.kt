@@ -13,7 +13,7 @@ interface ChatListContract {
         fun setData(data: PagedList<UserChat>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(chatId: String)
+        fun openChat(chatId: String, userId: String, userName: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun openSearchContact()

@@ -1,9 +1,6 @@
 package com.example.api
 
-import com.example.data.models.ApiResponse
-import com.example.data.models.AuthResponse
-import com.example.data.models.Event
-import com.example.data.models.Notification
+import com.example.data.models.*
 import com.example.data.models.user.User
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -49,6 +46,14 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/notifications/unregister")
     fun notificationsUnregister(@Field("token") token: String): Completable
+
+    @FormUrlEncoded
+    @POST("http://api.ha-slsp.ru/v1/user/chat/search")
+    fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<UserChat>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/chat/{chat}/message")
+    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String): Completable
 
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>

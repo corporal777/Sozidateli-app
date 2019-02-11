@@ -1,13 +1,20 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.example.data.models.user.User
+import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class UserChat(
         val id: String,
-        val user: User? = null,
-        val lastMessage: ChatMessage? = null
-) {
-    companion object {
-        const val FIELD_LAST_MESSAGE = "lastMessage"
-    }
-}
+        @SerializedName("user_recepient")
+        val user: User,
+        val created: String,
+        @SerializedName("last_message")
+        val lastMessage: String?,
+        @SerializedName("last_message_datetime")
+        val lastMessageDate: String?,
+        @SerializedName("last_message_user_id")
+        val lastMessageSender: Int?
+) : Parcelable

@@ -3,6 +3,11 @@ package com.example.util
 const val COLLECTION_CHATS = "chats"
 const val COLLECTION_MESSAGES = "messages"
 const val COLLECTION_USERS = "users"
+const val FIELD_TEXT = "text"
+const val FIELD_SENDER_ID = "senderId"
+const val FIELD_SEND_AT = "sendAt"
+const val FIELD_IS_READ = "isRead"
+const val FIELD_UNREAD_MESSAGE_COUNT = "unreadMessageCount"
 
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "d.MM.yyyy"
 const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"

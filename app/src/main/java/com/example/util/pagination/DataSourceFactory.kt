@@ -4,7 +4,7 @@ import androidx.paging.DataSource
 
 abstract class DataSourceFactory<K, V> : DataSource.Factory<K, V>() {
 
-    lateinit var source: DataSource<K, V>
+    var source: DataSource<K, V>? = null
         private set
 
     override fun create(): DataSource<K, V> {
