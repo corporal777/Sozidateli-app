@@ -1,8 +1,6 @@
 package com.example.repository
 
-import com.example.data.models.ChatMessage
-import com.example.data.models.ChatStartResponse
-import com.example.data.models.UserChat
+import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.firestore.Query
 import io.reactivex.Completable
@@ -24,5 +22,7 @@ interface ChatRepository {
 
     fun subscribeChatUnreadMessageCount(): Flowable<Int>
 
-    fun startChat(userId: Int):Single<ChatStartResponse>
+    fun startChat(userId: Int): Single<ChatStartResponse>
+
+    fun uploadImage(chatId: String, image: String) : Single<ApiResponseUpload<UploadImage>>
 }

@@ -13,6 +13,7 @@ import com.example.adapters.ChatAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.firebase.ui.firestore.SnapshotParser
@@ -22,10 +23,10 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : BaseFragment(), ChatContract.View {
+class ChatFragment : TakePhotoFragment<ChatContract.View,ChatPresenter>(), ChatContract.View {
 
     @InjectPresenter
-    lateinit var presenter: ChatPresenter
+    override lateinit var presenter: ChatPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
@@ -47,6 +48,7 @@ class ChatFragment : BaseFragment(), ChatContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
+        btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
 
         val layoutManager = LinearLayoutManager(context).apply {
             stackFromEnd = true
@@ -91,6 +93,8 @@ class ChatFragment : BaseFragment(), ChatContract.View {
         if (smooth) rvChat.smoothScrollToPosition(position)
         else rvChat.layoutManager?.scrollToPosition(position)
     }
+
+
 
     override fun scrollToLastPosition() = scrollToPosition(chatAdapter.itemCount - 1, true)
 

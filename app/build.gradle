@@ -47,7 +47,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // support
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'com.google.android.material:material:1.1.0-alpha03'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
@@ -104,6 +104,8 @@ dependencies {
     //utils
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
+    implementation 'com.github.qingmei2:rximagepicker:2.2.0'
+    implementation 'com.isseiaoki:simplecropview:1.1.8'
 
     // network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
