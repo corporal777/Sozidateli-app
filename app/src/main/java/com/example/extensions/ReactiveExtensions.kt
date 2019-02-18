@@ -1,3 +1,4 @@
+import com.example.ui.base.BaseContract
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -77,4 +78,40 @@ fun <T> Observable<T>.performOnBackground(): Observable<T> {
  * */
 fun <T> Observable<T>.performOnMain(): Observable<T> {
     return this.subscribeOn(AndroidSchedulers.mainThread())
+}
+
+/**
+ * Extension function to show and hide loading dialog for Completable
+ * */
+fun Completable.withLoadingDialog(viewState: BaseContract.View): Completable {
+    viewState.showLoadingDialog()
+    return this.observeOn(AndroidSchedulers.mainThread())
+            .doFinally { viewState.hideLoadingDialog() }
+}
+
+/**
+ * Extension function to show and hide loading dialog for Flowable
+ * */
+fun <T> Flowable<T>.withLoadingDialog(viewState: BaseContract.View): Flowable<T> {
+    viewState.showLoadingDialog()
+    return this.observeOn(AndroidSchedulers.mainThread())
+            .doFinally { viewState.hideLoadingDialog() }
+}
+
+/**
+ * Extension function to show and hide loading dialog for Observable
+ * */
+fun <T> Observable<T>.withLoadingDialog(viewState: BaseContract.View): Observable<T> {
+    viewState.showLoadingDialog()
+    return this.observeOn(AndroidSchedulers.mainThread())
+            .doFinally { viewState.hideLoadingDialog() }
+}
+
+/**
+ * Extension function to show and hide loading dialog for Single
+ * */
+fun <T> Single<T>.withLoadingDialog(viewState: BaseContract.View): Single<T> {
+    viewState.showLoadingDialog()
+    return this.observeOn(AndroidSchedulers.mainThread())
+            .doFinally { viewState.hideLoadingDialog() }
 }

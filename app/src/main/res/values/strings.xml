@@ -149,6 +149,7 @@
     <string name="profile_work_description">Описание</string>
     <string name="profile_social_project_name">Проект</string>
 
-
+    <string name="contact_search_title">Поиск контактов</string>
+    <string name="contact_search_hint">Ведите ФИО или ID</string>
 
 </resources>

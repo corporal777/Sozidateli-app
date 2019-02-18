@@ -1,12 +1,14 @@
 package com.example.repository
 
 import com.example.data.models.ChatMessage
+import com.example.data.models.ChatStartResponse
 import com.example.data.models.UserChat
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.firestore.Query
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Single
 
 interface ChatRepository {
 
@@ -21,4 +23,6 @@ interface ChatRepository {
     fun setMessageRead(chatId: String, messageId: String): Completable
 
     fun subscribeChatUnreadMessageCount(): Flowable<Int>
+
+    fun startChat(userId: Int):Single<ChatStartResponse>
 }

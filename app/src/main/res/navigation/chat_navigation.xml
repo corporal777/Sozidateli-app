@@ -37,5 +37,10 @@
     <fragment
         android:id="@+id/contacts_search_fragment"
         android:name="com.example.ui.contactsSearch.ContactsSearchFragment"
-        tools:layout="@layout/fragment_contacts_search" />
+        android:label="@string/contact_search_title"
+        tools:layout="@layout/fragment_contacts_search" >
+        <action
+            android:id="@+id/user_list_to_chat"
+            app:destination="@id/chat_fragment" />
+    </fragment>
 </navigation>

@@ -55,10 +55,18 @@ interface Api {
     @POST("/v1/user/chat/{chat}/message")
     fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String): Completable
 
+    @POST("/v1/user/chat/start/{user}")
+    fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
+
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>
 
     @FormUrlEncoded
     @POST("/v1/events")
     fun getEventList(@Field("name") name: String?, @Field("date_start") dateStart: String?, @Field("date_end") dateEnd: String?, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Event>>>
+
+
+    @FormUrlEncoded
+    @POST("/v1/pgrants/search_users")
+    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 }
