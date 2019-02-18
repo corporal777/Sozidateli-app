@@ -54,7 +54,7 @@ class ContactsSearchPresenter
         searchText = text
         searchCompositeDisposable.clear()
         SimplePagination { limit, offset -> userRepository.searchUser(searchText,searchText,limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply {
                     viewState.hideLoadingDialog()
                     setData(it)
