@@ -47,6 +47,26 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun showLoadingDialog() {
+        mActivity?.showLoadingDialog()
+    }
+
+    override fun hideLoadingDialog() {
+        mActivity?.hideLoadingDialog()
+    }
+
+    override fun hideKeyboard() {
+        mActivity?.hideKeyboard()
+    }
+
+    override fun hideKeyboard(view: View?) {
+        mActivity?.hideKeyboard(view)
+    }
+
+    override fun showKeyboard() {
+        mActivity?.showKeyboard()
+    }
+
     override fun navigateUp() {
         mActivity?.navigateUp()
     }

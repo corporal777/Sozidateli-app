@@ -35,5 +35,6 @@
     <fragment
         android:id="@+id/contacts_search_fragment"
         android:name="com.example.ui.contactsSearch.ContactsSearchFragment"
+        android:label="@string/contact_search_title"
         tools:layout="@layout/fragment_contacts_search" />
 </navigation>

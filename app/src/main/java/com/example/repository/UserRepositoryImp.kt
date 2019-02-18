@@ -35,4 +35,9 @@ class UserRepositoryImp
 
     override fun updateUser(user: User)= call(api.updateUser(user)
             .doOnSuccess { appData.setUser(it.response) })
+
+    override fun searchUser(name: String, email: String,limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+
+        return callPagination(api.userSearch(if(name.isEmpty()) " " else name,limit,offset))
+    }
 }

@@ -56,4 +56,9 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/events")
     fun getEventList(@Field("name") name: String?, @Field("date_start") dateStart: String?, @Field("date_end") dateEnd: String?, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Event>>>
+
+
+    @FormUrlEncoded
+    @POST("/v1/pgrants/search_users")
+    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 }

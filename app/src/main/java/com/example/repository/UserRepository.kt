@@ -14,4 +14,5 @@ interface UserRepository {
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
     fun updateUser(user:User): Single<User>
+    fun searchUser(name:String, email:String,limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 }

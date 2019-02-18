@@ -1,5 +1,6 @@
 package com.example.ui.base
 
+import android.view.View
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -15,6 +16,21 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun navigateUp()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showLoadingDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideLoadingDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideKeyboard()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideKeyboard(v: android.view.View?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showKeyboard()
     }
 
     interface Presenter

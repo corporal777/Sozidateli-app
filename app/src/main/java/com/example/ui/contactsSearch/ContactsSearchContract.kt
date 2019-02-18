@@ -5,12 +5,13 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ContactSearch
+import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface ContactsSearchContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(contactSearch: PagedList<ContactSearch>)
+        fun setData(contactSearch: PagedList<User>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)

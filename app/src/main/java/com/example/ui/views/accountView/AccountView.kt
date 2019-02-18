@@ -58,6 +58,22 @@ class AccountView : FrameLayout, AccountViewContract.View {
         view.tvBadge.text = result.toString()
     }
 
+    override fun showLoadingDialog() {
+
+    }
+
+    override fun hideLoadingDialog() {
+    }
+
+    override fun hideKeyboard() {
+
+    }
+
+    override fun hideKeyboard(view: View?) {
+    }
+
+    override fun showKeyboard() {
+    }
 
     override fun showToast(message: Int) {}
     override fun showToast(message: String) {}
