@@ -18,14 +18,17 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
+import com.example.data.models.ChatStartResponse
 import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
+import com.example.ui.chatList.ChatListFragmentDirections
 import com.example.util.CropCircleTransformation
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
@@ -91,6 +94,8 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                     }
 
                     typeDivider.apply { this.visibility = visibility }
+
+                    itemView.setOnClickListener { presenter.onUserClick(item) }
                 }
             }
 
@@ -169,6 +174,10 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                 return@setOnTouchListener false
             }
         }
+    }
+
+    override fun openChat(chatId: String, userId: String, userName: String) {
+        findNavController().navigate(ContactsSearchFragmentDirections.userListToChat(userName, chatId, userId))
     }
 
     override fun setData(contactSearch: PagedList<User>) {

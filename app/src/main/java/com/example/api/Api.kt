@@ -55,6 +55,9 @@ interface Api {
     @POST("/v1/user/chat/{chat}/message")
     fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String): Completable
 
+    @POST("/v1/user/chat/start/{user}")
+    fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
+
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>
 

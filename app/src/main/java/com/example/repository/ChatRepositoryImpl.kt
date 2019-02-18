@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
+import com.example.data.models.ChatStartResponse
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,6 +11,7 @@ import durdinapps.rxfirebase2.RxFirebaseAuth
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 import javax.inject.Inject
 
 
@@ -73,5 +75,9 @@ class ChatRepositoryImpl
         val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
         return RxFirestore.observeDocumentRef(unreadMessageCountRef)
                 .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
+    }
+
+    override fun startChat(userId: Int): Single<ChatStartResponse> {
+        return call(api.startChat(userId))
     }
 }

@@ -8,6 +8,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
+import com.example.repository.ChatRepository
 import com.example.repository.DummyRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -18,13 +19,16 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import performOnBackgroundOutOnMain
+import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
 class ContactsSearchPresenter
 @Inject constructor(
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val chatRepository: ChatRepository
 ) : BasePresenter<ContactsSearchContract.View>(), ContactsSearchContract.Presenter {
 
     private var scrollPosition = 0
@@ -66,6 +70,17 @@ class ContactsSearchPresenter
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()
+
+    override fun onUserClick(user: User) {
+        chatRepository.startChat(user.user_id)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.openChat(it.chat_id.toString(),it.user_id.toString(),user.user_name)
+                },{
+                    it.printStackTrace()
+                }).call(compositeDisposable)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
