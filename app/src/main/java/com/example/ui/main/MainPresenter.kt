@@ -15,33 +15,29 @@ class MainPresenter
         private val userRepository: UserRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
-    private val tokenChangeListener = object : AppData.OnTokenChangeListener {
-        override fun onTokenChange(token: String?) {
-            if (token == null) {
-
-            } else {
-                userRepository.getUser()
-                        .flatMap { userRepository.getFcmToken() }
-                        .flatMapCompletable { userRepository.notificationsRegister(it.token) }
-                        .doOnComplete { appData.isSubscribedToPush = true }
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({}, {})
-                        .call(compositeDisposable)
-            }
-        }
-    }
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.addOnTokenChangeListener(tokenChangeListener)
+        appData.onTokenChange
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    if (it.value == null) {
+
+                    } else {
+                        userRepository.getUser()
+                                .flatMap { userRepository.getFcmToken() }
+                                .flatMapCompletable { userRepository.notificationsRegister(it.token) }
+                                .doOnComplete { appData.isSubscribedToPush = true }
+                                .performOnBackgroundOutOnMain()
+                                .subscribe({}, {})
+                                .call(compositeDisposable)
+                    }
+                }, {
+
+                })
+                .call(compositeDisposable)
     }
 
     override fun onOpenStartDestination() = viewState.showBackButton(false)
 
     override fun onOpenNotStartDestination() = viewState.showBackButton(true)
-
-    override fun onDestroy() {
-        super.onDestroy()
-        appData.removeOnTokenChangeListener(tokenChangeListener)
-    }
 }

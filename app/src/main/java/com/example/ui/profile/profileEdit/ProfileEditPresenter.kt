@@ -4,13 +4,10 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ProfileField
-import com.example.data.models.user.User
 import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
-import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.profile.profileFull.ProfileFullContract
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import performOnBackgroundOutOnMain
@@ -23,13 +20,12 @@ class ProfileEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.addOnUserChangeListener(object:AppData.OnUserChangeListener{
-            override fun onUserChange(user: User?) {
-                user?.let {
-                    viewState.setUser(it)
-                }
-            }
-        })
+        appData.onUserChange
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    it.value?.let { viewState::setUser }
+                }, {})
+                .call(compositeDisposable)
     }
 
     override fun attachView(view: ProfileEditContract.View?) {
@@ -68,7 +64,7 @@ class ProfileEditPresenter
                 field.isAccessible = true
                 field.set(user, it.data)
 
-                it.nameFieldIsShowOnlyProfile?.let {nameField->
+                it.nameFieldIsShowOnlyProfile?.let { nameField ->
                     val fieldShow = user::class.java.getDeclaredField(nameField)
                     fieldShow.isAccessible = true
                     fieldShow.set(user, it.isOnlyProfile)
@@ -83,7 +79,7 @@ class ProfileEditPresenter
                 .subscribe({
                     viewState.navigateUp()
 
-                },{
+                }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
 

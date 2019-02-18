@@ -1,15 +1,21 @@
 package com.example.data
 
 import com.example.data.models.Event
+import com.example.data.models.Optional
+import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
+import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
 ) {
 
-    private val userChangeListeners = mutableListOf<OnUserChangeListener>()
-    private val tokenChangeListeners = mutableListOf<OnTokenChangeListener>()
+    private val userChangeSubject = PublishSubject.create<Optional<User>>()
+    val onUserChange = userChangeSubject.publish().autoConnect()
+
+    private val tokenChangeSubject = PublishSubject.create<Optional<String>>()
+    val onTokenChange = tokenChangeSubject.publish().autoConnect()
 
     var token: String? = appPrefs.userToken
         set(value) {
@@ -45,34 +51,10 @@ class AppData(
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
     private fun performOnUserChange() {
-        userChangeListeners.forEach { it.onUserChange(user) }
-    }
-
-    fun addOnUserChangeListener(userChangeListener: OnUserChangeListener) {
-        if (!userChangeListeners.contains(userChangeListener)) userChangeListeners.add(userChangeListener)
-    }
-
-    fun removeOnUserChangeListener(userChangeListener: OnUserChangeListener) {
-        userChangeListeners.remove(userChangeListener)
+        userChangeSubject.onNext(user.asOptional())
     }
 
     private fun performOnTokenChange() {
-        tokenChangeListeners.forEach { it.onTokenChange(token) }
-    }
-
-    fun addOnTokenChangeListener(tokenChangeListener: OnTokenChangeListener) {
-        if (!tokenChangeListeners.contains(tokenChangeListener)) tokenChangeListeners.add(tokenChangeListener)
-    }
-
-    fun removeOnTokenChangeListener(tokenChangeListener: OnTokenChangeListener) {
-        tokenChangeListeners.remove(tokenChangeListener)
-    }
-
-    interface OnUserChangeListener {
-        fun onUserChange(user: User?)
-    }
-
-    interface OnTokenChangeListener {
-        fun onTokenChange(token: String?)
+        tokenChangeSubject.onNext(token.asOptional())
     }
 }

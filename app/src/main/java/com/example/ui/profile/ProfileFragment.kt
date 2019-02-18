@@ -1,6 +1,9 @@
 package com.example.ui.profile
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -67,7 +70,12 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun showChatSetting() {
-        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
+//        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        startActivity(intent)
     }
 
     override fun setUser(user: User) {
