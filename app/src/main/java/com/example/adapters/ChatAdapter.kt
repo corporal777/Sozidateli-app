@@ -1,11 +1,13 @@
 package com.example.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.example.R
 import com.example.data.models.UserChatMessage
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
 
 open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
@@ -17,7 +19,19 @@ open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : Fir
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
-        holder.apply { tvChatMessage.text = model.message.text }
+        holder.apply {
+            tvChatMessage.text = model.message.text
+            tvChatMessage.visibility = View.VISIBLE
+            ivImage.visibility = View.GONE
+
+            if (!model.message.image.isNullOrBlank()) {
+                tvChatMessage.visibility = View.GONE
+                ivImage.visibility = View.VISIBLE
+
+                Picasso.get().load(model.message.image).into(ivImage)
+            }
+
+        }
     }
 
     private fun getItemLayout(itemView: Int): Int {

@@ -1,5 +1,6 @@
 package com.example.ui.chat
 
+import android.net.Uri
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -7,9 +8,11 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.FIELD_IS_READ
 import com.firebase.ui.firestore.SnapshotParser
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -17,7 +20,7 @@ class ChatPresenter
 @Inject constructor(
         private val appData: AppData,
         private val chatRepository: ChatRepository
-) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
+) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     private var isChatScrolledToLastPosition = true
 
@@ -44,9 +47,13 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
+        sendMessage(message)
+    }
+
+    private fun sendMessage(message: String, image: String? = null) {
         if (message.isBlank()) return
         viewState.apply { clearMessageInput() }
-        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.getUser().user_id))
+        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.getUser().user_id, image = image))
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 
@@ -74,5 +81,16 @@ class ChatPresenter
 
     override fun onChatScrollChange(isLastPosition: Boolean) {
         isChatScrolledToLastPosition = isLastPosition
+    }
+
+    override fun onImageTaken(path: String, uri: Uri) {
+        chatRepository.uploadImage(chatId, path)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    if(!it.response[0].error) sendMessage("Фото",it.response[0].path)
+                }, {
+                    it.printStackTrace()
+                }).call(compositeDisposable)
     }
 }

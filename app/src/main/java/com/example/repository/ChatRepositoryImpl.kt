@@ -2,8 +2,10 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.models.ApiResponseUpload
 import com.example.data.models.ChatMessage
 import com.example.data.models.ChatStartResponse
+import com.example.data.models.UploadImage
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,6 +14,10 @@ import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import javax.inject.Inject
 
 
@@ -79,5 +85,16 @@ class ChatRepositoryImpl
 
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.startChat(userId))
+    }
+
+
+    override fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>> {
+        return api.uploadChatImage(
+                chatId,
+                image.let {
+                    val imageFile = File(it)
+                    val body = RequestBody.create(MediaType.parse("image/*"), imageFile)
+                    MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
+                })
     }
 }

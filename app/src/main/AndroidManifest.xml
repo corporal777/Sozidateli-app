@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.example.App"
@@ -26,6 +28,8 @@
             </intent-filter>
             <nav-graph android:value="@navigation/start_navigation" />
         </activity>
+
+        <activity android:name=".util.photohelper.CropActivity" />
 
         <activity
             android:name=".ui.snAuth.SnAuthActivity"

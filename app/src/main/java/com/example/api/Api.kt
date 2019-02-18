@@ -5,6 +5,7 @@ import com.example.data.models.user.User
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface Api {
@@ -57,6 +58,10 @@ interface Api {
 
     @POST("/v1/user/chat/start/{user}")
     fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
+
+    @Multipart
+    @POST("/v1/user/chat/{chat}/upload")
+    fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
 
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>

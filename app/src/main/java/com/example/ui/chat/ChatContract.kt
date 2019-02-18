@@ -6,11 +6,12 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseContract
+import com.example.ui.base.takePhoto.TakePhotoContract
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.Query
 
 interface ChatContract {
-    interface View : BaseContract.View {
+    interface View : TakePhotoContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun iniChatAdapter(query: Query, parser: SnapshotParser<UserChatMessage>)
 
@@ -21,7 +22,7 @@ interface ChatContract {
         fun scrollToLastPosition()
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onNewMessage(message: UserChatMessage)
         fun onChatScrollChange(isLastPosition: Boolean)

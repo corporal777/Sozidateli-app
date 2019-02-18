@@ -6,6 +6,7 @@ const val COLLECTION_USERS = "users"
 const val FIELD_TEXT = "text"
 const val FIELD_SENDER_ID = "senderId"
 const val FIELD_SEND_AT = "sendAt"
+const val FIELD_IMAGE = "image"
 const val FIELD_IS_READ = "isRead"
 const val FIELD_UNREAD_MESSAGE_COUNT = "unreadMessageCount"
 
@@ -31,6 +32,9 @@ const val ARG_EVENT = "event"
 
 const val SETTING_TYPE_CHAT_ALL = "all_users"
 const val SETTING_TYPE_CHAT_FAVORITE = "favorite_users"
+
+const val APP_DATA_DIR_NAME = "Fond"
+const val APP_IMAGE_DIR_NAME = "image"
 
 
 const val LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget sodales risus. Ut consequat mattis ipsum non sagittis. Quisque aliquam diam in placerat ultrices. Pellentesque elementum elementum nibh, vel efficitur leo pretium id. Aliquam eget risus lacus. Pellentesque rutrum risus eget augue rhoncus viverra. Phasellus id nunc bibendum, faucibus lacus ac, congue sem. Etiam a diam nec nisl fringilla tincidunt. Donec at efficitur neque. Vestibulum dictum erat in mi varius, volutpat tincidunt orci tempor. Nam id odio laoreet, scelerisque nunc et, dapibus tellus. Integer ultrices at urna et hendrerit. Duis molestie felis eget quam condimentum, eget ornare dolor faucibus. Etiam quis ante tincidunt velit pharetra aliquam ut condimentum nulla. Mauris ligula justo, efficitur in maximus quis, aliquam non ante.\n" +
