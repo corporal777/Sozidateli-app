@@ -5,14 +5,16 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/ivImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:id="@+id/ivImage"
-        android:src="@drawable/ic_chat"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_chat" />
 
+    <!--suppress AndroidUnknownAttribute -->
     <TextView
+        android:id="@+id/tvBadge"
         fontPath="fonts/OpenSans-Bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,9 +23,8 @@
         android:gravity="center"
         android:minWidth="20dp"
         android:minHeight="20dp"
-        android:id="@+id/tvBadge"
         android:textColor="@android:color/white"
         android:textSize="10sp"
-        tools:ignore="SmallSp"
+        tools:ignore="MissingPrefix,SmallSp"
         tools:text="99" />
 </FrameLayout>

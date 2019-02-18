@@ -20,7 +20,7 @@ class UserListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
        /* SimplePagination { limit, offset -> dummyRepository.loadFavoriteSpeakers(limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setUsers(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)*/
     }

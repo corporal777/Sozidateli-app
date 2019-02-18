@@ -22,7 +22,7 @@ class RecommendationsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         SimplePagination { limit, offset -> eventRepository.getEventList(limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

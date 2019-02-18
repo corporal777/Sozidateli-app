@@ -35,22 +35,24 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     private val adapter: SimplePagingRecyclerViewAdapter<UserChat> by lazy {
         object : SimplePagingRecyclerViewAdapter<UserChat>(
                 { oldItem, newItem -> oldItem.id == newItem.id },
-                { oldItem, newItem -> oldItem == newItem }
+                { oldItem, newItem ->
+                    oldItem.id == newItem.id
+                            && oldItem.lastMessage == newItem.lastMessage
+                            && oldItem.user.user_name == newItem.user.user_name
+                }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_chat
 
             override fun onBindItem(viewHolder: ViewHolder, item: UserChat?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if (!item.user?.user_avatar.isNullOrEmpty()) {
-                        Picasso.get()
-                                .load(item.user?.user_avatar)
-                                .transform(CropCircleTransformation())
-                                .placeholder(R.drawable.ic_launcher)
-                                .into(ivAvatar)
-                    }
-                    tvName.text = item.user?.user_name
-                    tvLastMessage.text = item.lastMessage?.text
+                    Picasso.get().load(item.user.user_avatar.let { if (it.isNullOrBlank()) null else it })
+                            .transform(CropCircleTransformation())
+                            .placeholder(R.drawable.ic_launcher)
+                            .into(ivAvatar)
+
+                    tvName.text = item.user.user_name
+                    tvLastMessage.text = item.lastMessage ?: "-"
                     itemView.setOnClickListener { presenter.onChatClick(item) }
                 }
             }
@@ -70,8 +72,9 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         adapter.submitList(data)
     }
 
-    override fun openChat(chatId: String) {
-        findNavController().navigate(ChatListFragmentDirections.chatListToChat("Tecтовый чат", chatId))
+    override fun openChat(chatId: String, userId: String, userName: String) {
+        findNavController().navigate(ChatListFragmentDirections.chatListToChat(userName, chatId, userId))
+
     }
 
     override fun openSearchContact() {

@@ -21,7 +21,7 @@ class NewsListPresenter
         super.onFirstViewAttach()
 
         SimplePagination { limit, offset -> dummyRepository.loadNews(event.id, limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

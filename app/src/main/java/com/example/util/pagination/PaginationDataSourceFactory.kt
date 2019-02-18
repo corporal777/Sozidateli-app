@@ -29,8 +29,12 @@ open class PaginationDataSourceFactory<I>(
         }
     }
 
+    fun invalidate() {
+        source?.invalidate()
+    }
+
     fun invalidateFromStart() {
         loadFromStart = true
-        source.invalidate()
+        invalidate()
     }
 }

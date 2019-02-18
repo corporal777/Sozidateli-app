@@ -5,9 +5,11 @@ import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
+import durdinapps.rxfirebase2.RxHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import javax.inject.Inject
 
 class UserRepositoryImp
@@ -16,13 +18,19 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUser(): Single<User> = call(api.getUser())
+    override fun getUser(): Maybe<User> = call(api.getUser())
             .doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())
 
     override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
         return callPagination(api.getUserNotifications(limit, offset))
+    }
+
+    override fun getFcmToken(): Maybe<InstanceIdResult> {
+        return Maybe.create<InstanceIdResult> { emitter ->
+            RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
+        }
     }
 
     override fun notificationsRegister(token: String): Completable {
@@ -33,7 +41,7 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
-    override fun updateUser(user: User)= call(api.updateUser(user)
+    override fun updateUser(user: User) = call(api.updateUser(user)
             .doOnSuccess { appData.setUser(it.response) })
 
     override fun searchUser(name: String, email: String,limit: Int, offset: Int): Maybe<PaginationResponse<User>> {

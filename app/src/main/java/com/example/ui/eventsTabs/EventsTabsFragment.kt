@@ -1,7 +1,6 @@
 package com.example.ui.eventsTabs
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,9 +12,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.accountView.AccountView
-import com.example.ui.views.chatView.ChatView
 import com.example.util.Utils
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -85,9 +83,9 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu,{
+        Utils.processMainMenu(menu, {
             presenter.onMenuChatClick()
-        },{
+        }, {
             presenter.onMenuAccountClick()
         })
     }

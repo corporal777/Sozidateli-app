@@ -44,7 +44,7 @@
     <fragment
         android:id="@+id/event_tabs_fragment"
         android:name="com.example.ui.eventTabs.EventTabsFragment"
-        tools:layout="@layout/fragment_event_tabs" >
+        tools:layout="@layout/fragment_event_tabs">
 
         <action
             android:id="@+id/action_event_tabs_fragment_to_chat_navigation"

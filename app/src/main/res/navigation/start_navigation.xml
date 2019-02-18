@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start_navigation"
+    app:startDestination="@id/splash_fragment">
+
+    <fragment
+        android:id="@+id/splash_fragment"
+        android:name="com.example.ui.splash.SplashFragment"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splash_fragment_to_auth_navigation"
+            app:destination="@id/auth_navigation"
+            app:popUpTo="@id/splash_fragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splash_fragment_to_main_navigation"
+            app:destination="@id/main_navigation"
+            app:popUpTo="@id/splash_fragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splash_fragment_to_event_tabs_navigation"
+            app:destination="@id/event_tabs_navigation"
+            app:popUpTo="@id/splash_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <include app:graph="@navigation/auth_navigation" />
+    <include app:graph="@navigation/main_navigation" />
+    <include app:graph="@navigation/event_tabs_navigation" />
+</navigation>

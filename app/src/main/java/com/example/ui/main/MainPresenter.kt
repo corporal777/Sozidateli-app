@@ -3,10 +3,8 @@ package com.example.ui.main
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.google.firebase.iid.FirebaseInstanceId
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -20,9 +18,15 @@ class MainPresenter
     private val tokenChangeListener = object : AppData.OnTokenChangeListener {
         override fun onTokenChange(token: String?) {
             if (token == null) {
-                viewState.initWithAuth()
+
             } else {
-                loadUser()
+                userRepository.getUser()
+                        .flatMap { userRepository.getFcmToken() }
+                        .flatMapCompletable { userRepository.notificationsRegister(it.token) }
+                        .doOnComplete { appData.isSubscribedToPush = true }
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({}, {})
+                        .call(compositeDisposable)
             }
         }
     }
@@ -30,42 +34,6 @@ class MainPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.addOnTokenChangeListener(tokenChangeListener)
-        viewState.apply {
-            if (appData.token == null) {
-                initWithAuth()
-            } else {
-                loadUser(onLoad = { user ->
-                    if (user.default_event != null) initWithEvent()
-                    else initWithEventList()
-
-                    if (!appData.isSubscribedToPush) {
-                        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                            sendFCMToken(it.token)
-                        }
-                    }
-                },
-                        onError = {
-                            appData.token = null
-                        })
-            }
-        }
-    }
-
-    private fun loadUser(onLoad: ((User) -> Unit)? = null, onError: ((Throwable) -> Unit)? = null) {
-        userRepository.getUser()
-                .performOnBackgroundOutOnMain()
-                .subscribe({ onLoad?.invoke(it) }, { onError?.invoke(it) })
-                .call(compositeDisposable)
-    }
-
-    private fun sendFCMToken(token: String) {
-        userRepository.notificationsRegister(token)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    appData.isSubscribedToPush = true
-                }, {
-                })
-                .call(compositeDisposable)
     }
 
     override fun onOpenStartDestination() = viewState.showBackButton(false)

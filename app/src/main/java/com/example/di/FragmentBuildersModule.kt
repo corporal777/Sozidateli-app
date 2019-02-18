@@ -19,7 +19,6 @@ import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.mySchedule.MyScheduleFragment
-import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.mySchedule.subevent.SubeventFragment
 import com.example.ui.mySchedule.usersList.UserListFragment
 import com.example.ui.news.NewsFragment
@@ -29,17 +28,17 @@ import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
-import com.example.ui.qr.QrScannerFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
+import com.example.ui.qr.QrScannerFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment
-import com.example.ui.search.enterCode.`EnterCodeFragment$$PresentersBinder`
 import com.example.ui.search.searchType.SearchTypeFragment
+import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.SpeakersFragment
+import com.example.ui.splash.SplashFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
-import com.example.ui.views.chatView.ChatView
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -160,4 +159,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEnterCodeFragmentFragment(): EnterCodeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSplashFragment(): SplashFragment
 }

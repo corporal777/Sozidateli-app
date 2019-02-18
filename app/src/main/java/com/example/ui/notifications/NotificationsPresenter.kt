@@ -17,7 +17,7 @@ class NotificationsPresenter
         super.onFirstViewAttach()
 
         SimplePagination { limit, offset -> userRepository.getNotifications(limit, offset) }
-                .create()
+                .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

@@ -3,6 +3,7 @@ package com.example.ui.chat
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.BaseContract
 import com.firebase.ui.firestore.SnapshotParser
@@ -22,6 +23,8 @@ interface ChatContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onSendTextMessageClick(message: String)
-        fun onNewMessage()
+        fun onNewMessage(message: UserChatMessage)
+        fun onChatScrollChange(isLastPosition: Boolean)
+        fun onChatMessageOnScreen(message: UserChatMessage)
     }
 }
