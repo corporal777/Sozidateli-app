@@ -3,6 +3,7 @@ package com.example.ui.main
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -12,6 +13,7 @@ import javax.inject.Inject
 class MainPresenter
 @Inject constructor(
         private val appData: AppData,
+        private val authRepository: AuthRepository,
         private val userRepository: UserRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
@@ -21,7 +23,7 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     if (it.value == null) {
-
+                        viewState.initWithAuth()
                     } else {
                         userRepository.getUser()
                                 .flatMap { userRepository.getFcmToken() }
@@ -33,6 +35,26 @@ class MainPresenter
                     }
                 }, {
 
+                })
+                .call(compositeDisposable)
+    }
+
+    override fun onHandleAuthLink(email: String, code: String) {
+        if (appData.token != null) return
+        authRepository.registerConfirm(email, code)
+                .andThen(appData.onUserChange)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val user = it.value
+                    viewState.apply {
+                        when {
+                            appData.token == null || user == null -> initWithAuth()
+                            user.default_event != null -> initWithEvent()
+                            else -> initWithEventList()
+                        }
+                    }
+                }, {
+                    viewState.initWithAuth()
                 })
                 .call(compositeDisposable)
     }

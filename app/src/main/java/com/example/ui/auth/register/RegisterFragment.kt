@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -79,8 +79,12 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         textView.setTextColor(if (has) colorGreen else colorRed)
     }
 
-    override fun showWelcome() {
-        findNavController().navigate(RegisterFragmentDirections.registerToWelcomeAction())
+    override fun showConfirmEmailDialog(email: String) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.auth_register_confirm_email_title))
+                .setMessage(getString(R.string.auth_register_confirm_email_message).format(email))
+                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     override fun layout() = R.layout.fragment_register

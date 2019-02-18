@@ -35,7 +35,6 @@ class RegisterPresenter
         setValidRegister()
     }
 
-
     override fun onChangeNameText(name: String) {
         isNameValid = name.trim().isNotEmpty()
         setValidRegister()
@@ -48,9 +47,9 @@ class RegisterPresenter
     override fun onClickRegister(email: String, password: String, name: String) {
         authRepository.register(email, password, name)
                 .performOnBackgroundOutOnMain()
-                .subscribe ({
-                    viewState.showWelcome()
-                },{
+                .subscribe({
+                    viewState.showConfirmEmailDialog(email)
+                }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
     }

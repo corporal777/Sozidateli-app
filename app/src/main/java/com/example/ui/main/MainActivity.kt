@@ -1,5 +1,7 @@
 package com.example.ui.main
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
@@ -8,7 +10,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragmentActivity
+import com.example.ui.splash.SplashFragmentDirections
 import com.example.util.ARG_CUSTOM_LABEL
+import com.example.util.AUTH_CONFIRM_EMAIL_CODE
+import com.example.util.AUTH_CONFIRM_EMAIL_EMAIL
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -40,7 +45,31 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
+        handleIntent(intent)
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData: Uri? = intent.data
+        if (Intent.ACTION_VIEW == appLinkAction) {
+            appLinkData?.also {
+                val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
+                val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
+                if (authEmail != null && authCode != null) presenter.onHandleAuthLink(authEmail, authCode)
+            }
+        }
+    }
+
+    override fun initWithAuth() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToAuthNavigation())
+
+    override fun initWithEventList() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToMainNavigation())
+
+    override fun initWithEvent() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToEventTabsNavigation())
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 

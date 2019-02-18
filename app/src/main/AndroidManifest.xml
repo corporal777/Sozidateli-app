@@ -24,6 +24,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter
+                android:autoVerify="true"
+                android:label="@string/app_default_url_sozidateli_name">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.sozidateli.ru"
+                    android:pathPrefix="/profile"
+                    android:scheme="https" />
+            </intent-filter>
+
             <nav-graph android:value="@navigation/start_navigation" />
         </activity>
 

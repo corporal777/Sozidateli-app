@@ -1,6 +1,9 @@
 package com.example.ui.auth.login
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -26,7 +29,14 @@ class LoginFragment : BaseFragment(), LoginContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flFbAuth.setOnClickListener { presenter.onClickFb() }
+        flFbAuth.setOnClickListener {
+            //            presenter.onClickFb()
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
         flVkAuth.setOnClickListener { presenter.onClickVk() }
         flOkAuth.setOnClickListener { presenter.onClickOk() }
         flEmailAuth.setOnClickListener { presenter.onClickEmail() }

@@ -59,8 +59,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.hideKeyboard()
     }
 
-    override fun hideKeyboard(view: View?) {
-        mActivity?.hideKeyboard(view)
+    override fun hideKeyboard(v: View?) {
+        mActivity?.hideKeyboard(v)
     }
 
     override fun showKeyboard() {

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Example</string>
     <string name="app_default_notification_channel_name">Уведомления</string>
+    <string name="app_default_url_sozidateli_name">Sozidateli.ru</string>
 
     <string name="sans_serif">sans-serif</string>
     <string name="sans_serif_light">sans-serif-light</string>
@@ -35,6 +36,8 @@
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
+    <string name="auth_register_confirm_email_title">Вы успешно зарегистрировались</string>
+    <string name="auth_register_confirm_email_message">На почтовый ящик %s отправлена инструкция по подтверждению Вашей учетной записи.</string>
 
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
@@ -125,9 +128,9 @@
 
     <string name="subevent_list_member">Список участников</string>
     <string name="suevent_u_speaker">Вы спикер</string>
-    
+
     <string name="write_message">Написать сообщение</string>
-    
+
     <string name="contacts_search_favorites">Избранные контакты</string>
     <string name="contacts_search_chats">Текущие чаты</string>
     <string name="contacts_search_another">Все контакты</string>
@@ -141,7 +144,7 @@
 
     <string name="enter_code_title">Ввода кода</string>
     <string name="enter_code_hint">XXXXX</string>
-    
+
     <string name="profile_educate_speciality">Специальность</string>
     <string name="profile_educate_name">Учебное заведение</string>
     <string name="profile_work_organization">Организация</string>
@@ -151,5 +154,8 @@
 
     <string name="contact_search_title">Поиск контактов</string>
     <string name="contact_search_hint">Ведите ФИО или ID</string>
+
+    <string name="ok">Ок</string>
+    <string name="cancel">Отмена</string>
 
 </resources>

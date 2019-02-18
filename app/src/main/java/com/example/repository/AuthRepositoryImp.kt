@@ -26,6 +26,10 @@ class AuthRepositoryImp
         return callAuthCompletable(api.registerEmail(email, password, name, name))
     }
 
+    override fun registerConfirm(email: String, code: String): Completable {
+        return callAuthCompletable(api.registerEmailConfirm(email, code))
+    }
+
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
         return call(authRequest).flatMapCompletable { Completable.complete() }
     }

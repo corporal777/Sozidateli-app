@@ -14,24 +14,25 @@ object AuthUtil {
     }
 
     fun isValidPassword(password: String): Boolean {
-        val regex = "^(?=.*[A-Z])(?=.*[@#\$%^&+=]).{6,}\$"
-        val pattern = Pattern.compile(regex)
-        val matcher = pattern.matcher(password)
-        return matcher.find()
+//        val regex = "^(?=.*[A-Z])(?=.*[@#\$%^&+=]).{6,}\$"
+//        val pattern = Pattern.compile(regex)
+//        val matcher = pattern.matcher(password)
+//        return matcher.find()
+        return password.length >= 5
     }
 
     fun isPasswordHasSix(password: String): Boolean {
         return password.length >= 6
     }
 
-    fun isPasswordHasOneCap(password: String):Boolean{
+    fun isPasswordHasOneCap(password: String): Boolean {
         val regex = "^(?=.*[A-Z])"
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(password)
         return matcher.find()
     }
 
-    fun isPasswordHasSymbol(password: String):Boolean{
+    fun isPasswordHasSymbol(password: String): Boolean {
         val regex = "^(?=.*[@#\$%^&+=])"
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(password)

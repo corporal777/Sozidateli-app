@@ -29,6 +29,10 @@ interface Api {
     @POST("/v1/user/register")
     fun registerEmail(@Field("user_email") email: String, @Field("user_pwd") password: String, @Field("user_name") name: String, @Field("user_last_name") lastName: String): Single<ApiResponse<AuthResponse>>
 
+    @FormUrlEncoded
+    @POST("/v1/user/register/confirm")
+    fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
+
     @GET("/v1/user/info")
     fun getUser(): Maybe<ApiResponse<User>>
 
