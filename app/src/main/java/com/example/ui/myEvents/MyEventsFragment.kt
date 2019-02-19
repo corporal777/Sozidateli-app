@@ -49,7 +49,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                         setOnClickListener { presenter.onEventClick(item) }
                     }
 
-                    Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
+                    Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
 
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name

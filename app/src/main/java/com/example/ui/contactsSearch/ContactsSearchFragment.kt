@@ -31,6 +31,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.ChatListFragmentDirections
 import com.example.util.CropCircleTransformation
 import com.example.util.PositionOffsetScrollListener
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_contacts_search.*
 import kotlinx.android.synthetic.main.item_search_contact.*
@@ -66,7 +67,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                 viewHolder.apply {
                     if (!item.user_avatar.isNullOrEmpty()) {
                         ivUserAvatar.visibility = View.VISIBLE
-                        Picasso.get().load(item.user_avatar).transform(CropCircleTransformation()).into(ivUserAvatar)
+                        Picasso.get().load(item.user_avatar).networkPolicy(NetworkPolicy.NO_CACHE).transform(CropCircleTransformation()).into(ivUserAvatar)
                     } else {
                         ivUserAvatar.visibility = View.INVISIBLE
                     }
@@ -183,7 +184,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
     override fun setData(contactSearch: PagedList<User>) {
         adapter.submitList(contactSearch)
         recyclerView.post {
-            scrollToPositionWithOffset(0,0)
+            scrollToPositionWithOffset(0, 0)
         }
         adapter.notifyDataSetChanged()
     }

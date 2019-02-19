@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Example</string>
+    <string name="app_name">Fond</string>
     <string name="app_default_notification_channel_name">Уведомления</string>
     <string name="app_default_url_sozidateli_name">Sozidateli.ru</string>
 

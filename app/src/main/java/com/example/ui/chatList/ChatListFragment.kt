@@ -15,6 +15,7 @@ import com.example.adapters.ViewHolder
 import com.example.data.models.UserChat
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import kotlinx.android.synthetic.main.item_chat.*
@@ -44,14 +45,16 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             override fun getItemLayout(itemView: Int) = R.layout.item_chat
 
             override fun onBindItem(viewHolder: ViewHolder, item: UserChat?, position: Int) {
+                Picasso.get().isLoggingEnabled = true
                 item!!
                 viewHolder.apply {
                     Picasso.get().load(item.user.user_avatar.let { if (it.isNullOrBlank()) null else it })
+                            .networkPolicy(NetworkPolicy.NO_CACHE)
                             .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher)
+                            .placeholder(R.drawable.ic_launcher_background)
                             .into(ivAvatar)
 
-                    tvName.text = item.user.user_name
+                    tvName.text = item.user.fullName
                     tvLastMessage.text = item.lastMessage ?: "-"
                     itemView.setOnClickListener { presenter.onChatClick(item) }
                 }

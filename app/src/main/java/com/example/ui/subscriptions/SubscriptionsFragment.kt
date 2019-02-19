@@ -46,7 +46,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
                     Picasso.get()
                             .load(item.logo)
                             .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher)
+                            .placeholder(R.drawable.ic_launcher_background)
                             .into(ivLogo)
 
                     tvLabel.text = item.name

@@ -28,7 +28,7 @@ class ChatListPresenter
         pagination.invalidate()
     }
 
-    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.user_name)
+    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)
 
     override fun onMenuAddChatClick() = viewState.openSearchContact()
 }

@@ -64,7 +64,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
     }
 
     override fun setEventData(event: Event) {
-        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
+        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
         tvOrganizationLabel.text = event.organizationName
         tvEventLabel.text = event.name
         tvEventDate.setDatesIntervalText(event.start, event.finish)

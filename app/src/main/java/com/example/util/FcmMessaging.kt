@@ -1,10 +1,12 @@
 package com.example.util
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import com.example.R
@@ -23,9 +25,9 @@ class FcmMessaging : FirebaseMessagingService() {
     }
 
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        val channel = getString(R.string.app_name)
+        val channelId = getString(R.string.app_name)
 
-        NotificationCompat.Builder(this, channel)
+        NotificationCompat.Builder(this, channelId)
                 .setDefaults(DEFAULT_ALL)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(remoteMessage.notification?.title)
@@ -35,6 +37,15 @@ class FcmMessaging : FirebaseMessagingService() {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .apply {
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                    // Since android Oreo notification channel is needed.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val channel = NotificationChannel(channelId,
+                                channelId,
+                                NotificationManager.IMPORTANCE_DEFAULT)
+                        notificationManager.createNotificationChannel(channel)
+                    }
+
                     notificationManager.notify(remoteMessage.data?.get(DATA_MESSAGE_ID)?.hashCode()
                             ?: 0, this.build())
                 }

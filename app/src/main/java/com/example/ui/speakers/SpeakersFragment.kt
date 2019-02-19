@@ -71,7 +71,7 @@ class SpeakersFragment : BaseFragment(), SpeakersContract.View {
                         Picasso.get()
                                 .load(item.user_avatar)
                                 .transform(CropCircleTransformation())
-                                .placeholder(R.drawable.ic_launcher)
+                                .placeholder(R.drawable.ic_launcher_background)
                                 .into(ivSpeakerAvatar)
                     }
                     tvSpeakerName.text = item.user_name

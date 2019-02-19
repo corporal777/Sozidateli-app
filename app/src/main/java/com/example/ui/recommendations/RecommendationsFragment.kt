@@ -55,7 +55,8 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
                         }
                     }
 
-                    Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
+                    Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+
                     tvOrganizationLabel.text = item.organizationName
                     tvEventLabel.text = item.name
                     tvEventDate.setDatesIntervalText(item.start, item.finish)
