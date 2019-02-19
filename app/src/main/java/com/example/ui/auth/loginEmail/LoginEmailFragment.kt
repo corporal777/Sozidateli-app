@@ -2,10 +2,9 @@ package com.example.ui.auth.loginEmail
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -26,7 +25,13 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     lateinit var presenterProvider: Provider<LoginEmailPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): LoginEmailPresenter = presenterProvider.get()
+    fun providePresenter(): LoginEmailPresenter = presenterProvider.get().apply {
+        arguments?.apply {
+            email = getString("email") ?: ""
+            password = getString("password") ?: ""
+            showConfirmationOnStart = getBoolean("confirm")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnRegister.setOnClickListener { presenter.onClickRegister() }
-        btnLogin.setOnClickListener { presenter.onClickLogin(etEmail.text.toString(), etPassword.text.toString()) }
+        btnLogin.setOnClickListener { presenter.onClickLogin() }
         ivClose.setOnClickListener { presenter.onClickBack() }
 
         etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
@@ -48,9 +53,17 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
         })
     }
 
+    override fun setEmailAndPassword(email: String, password: String) {
+        etEmail.setText(email)
+        etPassword.setText(password)
+    }
 
-    override fun showWelcome() {
-        findNavController().navigate(LoginEmailFragmentDirections.loginEmailToWelcomeAction())
+    override fun showEmailConfirmDialog(email: String) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.auth_register_confirm_email_title))
+                .setMessage(getString(R.string.auth_register_confirm_email_message).format(email))
+                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     override fun showRegister() {

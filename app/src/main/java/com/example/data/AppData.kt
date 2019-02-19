@@ -1,9 +1,11 @@
 package com.example.data
 
 import com.example.data.models.Event
+import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
 class AppData(
@@ -35,10 +37,11 @@ class AppData(
     private var user: User? = null
 
     private val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
-    val onUserChange = userChangeSubject.publish().autoConnect()
+    val onUserChange: Observable<Optional<User>> = userChangeSubject
 
     private val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
-    val onTokenChange = tokenChangeSubject.publish().autoConnect()
+    val onTokenChange: Observable<Optional<String>> = tokenChangeSubject
+
 
     fun setUser(user: User) {
         val changed = this.user != user

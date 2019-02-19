@@ -18,16 +18,16 @@ import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
+class EventListFragment : BaseFragment(), EventListContract.View {
 
     @InjectPresenter
-    lateinit var presenter: EventsTabsPresenter
+    lateinit var presenter: EventListPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<EventsTabsPresenter>
+    lateinit var presenterProvider: Provider<EventListPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): EventsTabsPresenter = presenterProvider.get()
+    fun providePresenter(): EventListPresenter = presenterProvider.get()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,15 +69,15 @@ class EventsTabsFragment : BaseFragment(), EventsTabsContract.View {
     }
 
     override fun showChat() {
-        findNavController().navigate(EventsTabsFragmentDirections.actionEventsTabsFragmentToChatNavigation())
+        findNavController().navigate(EventListFragmentDirections.actionEventsTabsFragmentToChatNavigation())
     }
 
     override fun showSearch() {
-        findNavController().navigate(EventsTabsFragmentDirections.mainToSearch())
+        findNavController().navigate(EventListFragmentDirections.mainToSearch())
     }
 
     override fun showAccount() {
-        findNavController().navigate(EventsTabsFragmentDirections.mainToProfile())
+        findNavController().navigate(EventListFragmentDirections.mainToProfile())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -13,7 +13,7 @@ import com.example.ui.chatList.ChatListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.eventTabs.EventTabsFragment
-import com.example.ui.eventsTabs.EventsTabsFragment
+import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
@@ -65,7 +65,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeWelcomeFragment(): WelcomeFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeEventsTabsFragment(): EventsTabsFragment
+    abstract fun contributeEventsTabsFragment(): EventListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRecommendationsFragment(): RecommendationsFragment

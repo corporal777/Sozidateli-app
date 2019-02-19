@@ -1,6 +1,5 @@
 package com.example.ui.base
 
-import android.view.View
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy

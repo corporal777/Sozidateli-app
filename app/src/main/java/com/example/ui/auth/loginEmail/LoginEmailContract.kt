@@ -6,8 +6,12 @@ import com.example.ui.base.BaseContract
 
 interface LoginEmailContract {
     interface View : BaseContract.View {
+
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showWelcome()
+        fun setEmailAndPassword(email: String, password: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEmailConfirmDialog(email: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRegister()
@@ -20,7 +24,7 @@ interface LoginEmailContract {
         fun onClickBack()
         fun onChangeEmailText(email: String)
         fun onChangePasswordText(password: String)
-        fun onClickLogin(email: String, password: String)
+        fun onClickLogin()
         fun onClickRegister()
     }
 }

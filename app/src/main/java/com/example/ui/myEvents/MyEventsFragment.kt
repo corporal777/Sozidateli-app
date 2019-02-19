@@ -111,7 +111,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
         findParentNavigation().apply {
             graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.events_tabs_fragment, true)
+                    .setPopUpTo(R.id.event_list_fragment, true)
                     .build()
             navigate(R.id.event_tabs_fragment, null, opts)
         }

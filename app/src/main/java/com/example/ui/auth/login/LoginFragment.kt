@@ -54,12 +54,8 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         SnAuthManager.startAuthOk(requireContext())
     }
 
-    override fun showWelcome() {
-        findNavController().navigate(LoginFragmentDirections.loginToWelcome())
-    }
-
     override fun showLogin() {
-        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction())
+        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction(null, null, false))
     }
 
     override fun layout() = R.layout.fragment_login

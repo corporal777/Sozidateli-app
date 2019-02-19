@@ -5,9 +5,9 @@ import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
-class EventsTabsPresenter
+class EventListPresenter
 @Inject constructor(
-) : BasePresenter<EventsTabsContract.View>(), EventsTabsContract.Presenter {
+) : BasePresenter<EventListContract.View>(), EventListContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

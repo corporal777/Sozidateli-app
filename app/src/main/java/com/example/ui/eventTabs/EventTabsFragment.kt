@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
@@ -16,7 +16,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.eventsTabs.EventsTabsFragmentDirections
 import com.example.util.BottomNavigationViewHelper
 import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
@@ -79,9 +78,9 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu,{
+        Utils.processMainMenu(menu, {
             presenter.onMenuChatClick()
-        },{
+        }, {
             presenter.onMenuAccountClick()
         })
     }
@@ -116,11 +115,11 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     override fun showEventList() {
         findNavController().apply {
-            graph.startDestination = R.id.events_tabs_fragment
+            graph.startDestination = R.id.event_list_fragment
             val opts = NavOptions.Builder()
                     .setPopUpTo(R.id.event_tabs_fragment, true)
                     .build()
-            navigate(R.id.events_tabs_fragment, null, opts)
+            navigate(R.id.event_list_fragment, null, opts)
         }
     }
 

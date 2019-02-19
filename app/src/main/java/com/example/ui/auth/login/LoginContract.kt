@@ -16,9 +16,6 @@ interface LoginContract {
         fun startOkAuthorization()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showWelcome()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showLogin()
     }
 

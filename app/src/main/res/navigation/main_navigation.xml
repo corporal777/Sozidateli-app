@@ -3,17 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/events_tabs_fragment">
+    app:startDestination="@id/splash_fragment">
 
     <fragment
-        android:id="@+id/events_tabs_fragment"
-        android:name="com.example.ui.eventsTabs.EventsTabsFragment"
+        android:id="@+id/splash_fragment"
+        android:name="com.example.ui.splash.SplashFragment"
+        tools:layout="@layout/fragment_splash" />
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.example.ui.auth.login.LoginFragment"
+        android:label="Login">
+
+        <action
+            android:id="@+id/login_to_login_email_action"
+            app:destination="@id/login_email_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_email_fragment"
+        android:name="com.example.ui.auth.loginEmail.LoginEmailFragment"
+        android:label="Login email">
+
+        <action
+            android:id="@+id/login_email_to_register_action"
+            app:destination="@id/register_fragment" />
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="password"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="confirm"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_fragment"
+        android:name="com.example.ui.auth.register.RegisterFragment"
+        android:label="Register">
+
+        <action
+            android:id="@+id/email_register_to_email_login"
+            app:destination="@id/login_email_fragment"
+            app:popUpTo="@id/login_email_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/welcome_fragment"
+        android:name="com.example.ui.auth.welcome.WelcomeFragment"
+        android:label="Welcome" />
+
+    <fragment
+        android:id="@+id/event_list_fragment"
+        android:name="com.example.ui.eventsTabs.EventListFragment"
         android:label="@string/events_tabs_title"
         tools:layout="@layout/fragment_events_tabs">
         <action
             android:id="@+id/action_events_tabs_fragment_to_about_event_navigation"
             app:destination="@id/about_event_navigation" />
-
         <action
             android:id="@+id/action_events_tabs_fragment_to_request_fragment"
             app:destination="@id/request_fragment" />
@@ -103,5 +158,4 @@
         android:name="com.example.ui.mySchedule.usersList.UserListFragment">
         <argument android:name="subevent_id" />
     </fragment>
-
 </navigation>

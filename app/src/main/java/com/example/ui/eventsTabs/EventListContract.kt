@@ -5,7 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
-interface EventsTabsContract {
+interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "TAB")
         fun selectRecommendedTab()

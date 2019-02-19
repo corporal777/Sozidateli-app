@@ -11,13 +11,16 @@ interface MainContract {
         fun showBackButton(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun initWithAuth()
+        fun showLogin()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun initWithEventList()
+        fun showEventList(popUpTo: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun initWithEvent()
+        fun showEvent()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showGreetings()
     }
 
     interface Presenter : BaseContract.Presenter {

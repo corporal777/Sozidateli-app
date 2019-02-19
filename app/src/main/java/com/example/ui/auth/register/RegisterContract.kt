@@ -13,7 +13,7 @@ interface RegisterContract {
         fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showConfirmEmailDialog(email: String)
+        fun goToLoginWithEmailConfirmation(email: String, password: String)
     }
 
     interface Presenter : BaseContract.Presenter {

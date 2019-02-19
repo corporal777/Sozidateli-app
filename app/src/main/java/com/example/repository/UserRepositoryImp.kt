@@ -18,8 +18,7 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUser(): Maybe<User> = call(api.getUser())
-            .doOnSuccess { appData.setUser(it) }
+    override fun getUser(): Maybe<User> = call(api.getUser()).doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())
 

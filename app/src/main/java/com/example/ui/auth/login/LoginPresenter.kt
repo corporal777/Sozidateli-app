@@ -55,7 +55,6 @@ class LoginPresenter
     private fun executeAuthorization(completable: Completable) {
         completable.performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.showWelcome()
                 }, { viewState.showToast(it.message ?: "") })
                 .call(compositeDisposable)
     }

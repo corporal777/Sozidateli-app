@@ -48,7 +48,7 @@ class RegisterPresenter
         authRepository.register(email, password, name)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.showConfirmEmailDialog(email)
+                    viewState.goToLoginWithEmailConfirmation(email, password)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)

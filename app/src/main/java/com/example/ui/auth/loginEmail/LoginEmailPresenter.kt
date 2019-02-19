@@ -13,29 +13,38 @@ class LoginEmailPresenter
 @Inject constructor(private val authRepository: AuthRepository
 ) : BasePresenter<LoginEmailContract.View>(), LoginEmailContract.Presenter {
 
-    private var isEmailValid = false
+    var email = ""
+    var password = ""
+    var showConfirmationOnStart = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState?.apply { enableLoginBtn(false) }
+        viewState?.apply {
+            setEmailAndPassword(email, password)
+            validateEmail()
+            if (showConfirmationOnStart) showEmailConfirmDialog(email)
+        }
     }
 
     override fun onClickBack() = viewState.navigateUp()
 
     override fun onChangeEmailText(email: String) {
-        isEmailValid = AuthUtil.isValidEmail(email)
-        viewState.enableLoginBtn(isEmailValid)
+        this.email = email
+        validateEmail()
     }
 
     override fun onChangePasswordText(password: String) {
-
+        this.password = password
     }
 
-    override fun onClickLogin(email: String, password: String) {
+    private fun validateEmail() {
+        viewState.enableLoginBtn(AuthUtil.isValidEmail(email))
+    }
+
+    override fun onClickLogin() {
         authRepository.authEmail(email, password)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.showWelcome()
                 }, {
                     viewState.showToast(it.message ?: it.localizedMessage)
                 })

@@ -5,12 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragmentActivity
-import com.example.ui.splash.SplashFragmentDirections
 import com.example.util.ARG_CUSTOM_LABEL
 import com.example.util.AUTH_CONFIRM_EMAIL_CODE
 import com.example.util.AUTH_CONFIRM_EMAIL_EMAIL
@@ -29,7 +29,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @ProvidePresenter
     fun providePresenter(): MainPresenter = presenterProvider.get()
 
-    private val startDestinations = arrayOf(R.id.events_tabs_fragment, R.id.event_tabs_fragment)
+    private val startDestinations = arrayOf(R.id.event_list_fragment, R.id.event_tabs_fragment)
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
@@ -65,11 +65,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun initWithAuth() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToAuthNavigation())
+    override fun showGreetings() = findNavController().navigate(R.id.welcome_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.login_fragment, true)
+            .build())
 
-    override fun initWithEventList() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToMainNavigation())
+    override fun showLogin() = findNavController().navigate(R.id.login_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.splash_fragment, true)
+            .build())
 
-    override fun initWithEvent() = findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToEventTabsNavigation())
+    override fun showEventList(popUpTo: Int) = findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
+            .setPopUpTo(popUpTo, true)
+            .build())
+
+    override fun showEvent() {
+    }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
