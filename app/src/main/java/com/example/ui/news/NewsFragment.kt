@@ -25,7 +25,7 @@ class NewsFragment : BaseFragment(), NewsContract.View {
     }
 
     override fun setData(news: News) {
-        Picasso.get().load(news.image).placeholder(R.drawable.ic_launcher).into(ivLogo)
+        Picasso.get().load(news.image).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
         tvInfo.text = news.text
     }
 

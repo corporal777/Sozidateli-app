@@ -37,6 +37,8 @@ class MainPresenter
 
                 })
                 .call(compositeDisposable)
+
+        viewState.initWithEventList()
     }
 
     override fun onHandleAuthLink(email: String, code: String) {

@@ -25,7 +25,7 @@ class AboutForumFragment : BaseFragment(), AboutForumContract.View {
     }
 
     override fun setData(event: Event) {
-        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher).into(ivLogo)
+        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
         tvInfo.text = event.info
     }
 
