@@ -1,7 +1,10 @@
 package com.example.ui.main
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
@@ -9,6 +12,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.App
 import com.example.R
 import com.example.ui.base.BaseFragmentActivity
 import com.example.util.ARG_CUSTOM_LABEL
@@ -34,6 +38,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
 
+        var chatId:String? = null
+        if(arguments!=null){
+            chatId = arguments.getString("chatId",null)
+        }
+
+        if(application is App){
+            (application as App).currentChatID =chatId
+        }
         presenter.apply {
             if (startDestinations.contains(destination.id)) onOpenStartDestination()
             else onOpenNotStartDestination()
@@ -45,6 +57,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
+        subscribeOnNotificationChanel()
         handleIntent(intent)
     }
 
@@ -62,6 +75,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 if (authEmail != null && authCode != null) presenter.onHandleAuthLink(authEmail, authCode)
             }
+        }
+        if(intent.getStringExtra("chatId")!=null){
+            showToast("Chat_check")
+        }
+    }
+
+
+    private fun subscribeOnNotificationChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            val channelId = getString(R.string.app_name)
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(NotificationChannel(channelId,
+                    channelId, NotificationManager.IMPORTANCE_HIGH))
         }
     }
 

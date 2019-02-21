@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 class UserChat(
         val id: String,
         @SerializedName("user_recepient")
-        val user: User,
+        var user: User,
         val created: String,
         @SerializedName("last_message")
         val lastMessage: String?,
