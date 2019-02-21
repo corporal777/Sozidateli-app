@@ -57,12 +57,12 @@ class ChatRepositoryImpl
                     .collection(COLLECTION_MESSAGES).document(messageId)
             val message = it.get(messageRef)
 
+            if (message.getBoolean(FIELD_IS_READ) == true) return@runTransaction null
+            it.update(messageRef, FIELD_IS_READ, true)
+
             val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
             val userUnreadMessageCount = it.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
                     ?: 0.0
-
-            if (message.getBoolean(FIELD_IS_READ) == true) return@runTransaction null
-            it.update(messageRef, FIELD_IS_READ, true)
 
             if (userUnreadMessageCount > 0) {
                 it.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadMessageCount.minus(1))
