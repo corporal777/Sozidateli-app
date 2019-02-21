@@ -2,6 +2,7 @@ package com.example.ui.chat
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
@@ -20,6 +21,9 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun scrollToLastPosition()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun openImageFullScreen(url:String)
     }
 
     interface Presenter : TakePhotoContract.Presenter {
@@ -27,5 +31,6 @@ interface ChatContract {
         fun onNewMessage(message: UserChatMessage)
         fun onChatScrollChange(isLastPosition: Boolean)
         fun onChatMessageOnScreen(message: UserChatMessage)
+        fun onImageClick(url: String)
     }
 }

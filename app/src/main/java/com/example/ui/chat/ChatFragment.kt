@@ -22,6 +22,10 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_chat.*
 import javax.inject.Inject
 import javax.inject.Provider
+import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
+import kotlinx.android.synthetic.main.item_chat_message_incoming.*
+import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
+
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
 
@@ -85,6 +89,12 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
                 super.onBindViewHolder(holder, position, model)
                 presenter.onChatMessageOnScreen(model)
+
+                holder.itemView.ivImage.setOnClickListener {
+                    model.message.image?.let { url ->
+                        presenter.onImageClick(url)
+                    }
+                }
             }
         }
 
@@ -97,6 +107,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         else rvChat.layoutManager?.scrollToPosition(position)
     }
 
+    override fun openImageFullScreen(url: String) {
+        val dialog = FullScreenImageDialogFragment.newInstance(url)
+        val ft = childFragmentManager!!.beginTransaction()
+        dialog.show(ft, FullScreenImageDialogFragment.TAG)
+    }
 
     override fun scrollToLastPosition() = scrollToPosition(chatAdapter.itemCount - 1, true)
 

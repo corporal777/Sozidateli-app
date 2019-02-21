@@ -96,6 +96,8 @@ dependencies {
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
     implementation 'org.sufficientlysecure:html-textview:3.6'
     implementation 'me.saket:better-link-movement-method:2.2.0'
+    implementation 'com.github.chuross:flinglayout:0.5.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

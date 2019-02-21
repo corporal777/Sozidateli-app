@@ -5,9 +5,5 @@
         android:bottomLeftRadius="@dimen/chat_message_corners_radius"
         android:topLeftRadius="@dimen/chat_message_corners_radius"
         android:topRightRadius="@dimen/chat_message_corners_radius" />
-    <padding
-        android:bottom="@dimen/chat_message_padding_vertical"
-        android:left="@dimen/chat_message_padding_horizontal"
-        android:right="@dimen/chat_message_padding_horizontal"
-        android:top="@dimen/chat_message_padding_vertical" />
+
 </shape>

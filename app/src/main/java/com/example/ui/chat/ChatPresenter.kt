@@ -50,6 +50,10 @@ class ChatPresenter
         sendMessage(message)
     }
 
+    override fun onImageClick(url: String) {
+        viewState.openImageFullScreen(url)
+    }
+
     private fun sendMessage(message: String, image: String? = null) {
         if (message.isBlank()) return
         viewState.apply { clearMessageInput() }

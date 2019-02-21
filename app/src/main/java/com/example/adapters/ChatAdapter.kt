@@ -3,12 +3,17 @@ package com.example.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.UserChatMessage
+import com.example.util.RoundedCornersTransformation
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
+import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
+import java.lang.Exception
 
 open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
 
@@ -22,15 +27,37 @@ open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : Fir
         holder.apply {
             tvChatMessage.text = model.message.text
             tvChatMessage.visibility = View.VISIBLE
-            ivImage.visibility = View.GONE
+            flImage.visibility = View.GONE
+
+            var padding = itemView.context.resources.getDimensionPixelSize(R.dimen.chat_message_padding_vertical)
+            var background = if (getItemViewType(position) == TYPE_INCOMING) ContextCompat.getDrawable(itemView.context,R.drawable.background_chat_message_incoming) else ContextCompat.getDrawable(itemView.context,R.drawable.background_chat_message_outgoing)
 
             if (!model.message.image.isNullOrBlank()) {
                 tvChatMessage.visibility = View.GONE
-                ivImage.visibility = View.VISIBLE
+                flImage.visibility = View.VISIBLE
+                padding = 0
+                val radius = itemView.context.resources.getDimensionPixelSize(R.dimen.chat_message_corners_radius)
 
-                Picasso.get().load(model.message.image).into(ivImage)
+                /*val listOfTransformations = listOf(
+                        RoundedCornersTransformation(radius, 0, RoundedCornersTransformation.CornerType.TOP),
+                        RoundedCornersTransformation(radius, 0,
+                                if (getItemViewType(position) == TYPE_INCOMING) RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
+                                else RoundedCornersTransformation.CornerType.BOTTOM_LEFT)
+
+                )*/
+
+                Picasso.get().load(model.message.image)/*.transform(listOfTransformations)*/.into(ivImage,object: Callback{
+                    override fun onSuccess() {
+                        root.background = null
+                    }
+
+                    override fun onError(e: Exception?) {
+                    }
+                })
             }
 
+            root.background = background
+            itemView.subRoot.setPadding(padding, padding, padding, padding)
         }
     }
 
