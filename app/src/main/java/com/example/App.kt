@@ -6,6 +6,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.squareup.leakcanary.LeakCanary
@@ -24,6 +29,8 @@ class App : Application(), HasActivityInjector {
 
     @Inject
     internal lateinit var calligraphyConfig: CalligraphyConfig
+
+    var currentChatID:String?=null
 
     override fun onCreate() {
         super.onCreate()
@@ -49,6 +56,8 @@ class App : Application(), HasActivityInjector {
         CalligraphyConfig.initDefault(calligraphyConfig)
         VKSdk.initialize(this)
     }
+
+
 
     override fun activityInjector() = dispatchingAndroidInjector
 

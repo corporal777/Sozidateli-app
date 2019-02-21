@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : TakePhotoFragment<ChatContract.View,ChatPresenter>(), ChatContract.View {
+class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
 
     @InjectPresenter
     override lateinit var presenter: ChatPresenter
@@ -36,7 +36,10 @@ class ChatFragment : TakePhotoFragment<ChatContract.View,ChatPresenter>(), ChatC
         val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
         userId = args.userId
+        this@ChatFragment.chatId = args.chatId
     }
+
+    lateinit var chatId: String
 
     private lateinit var chatAdapter: ChatAdapter
 
@@ -93,7 +96,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View,ChatPresenter>(), ChatC
         if (smooth) rvChat.smoothScrollToPosition(position)
         else rvChat.layoutManager?.scrollToPosition(position)
     }
-
 
 
     override fun scrollToLastPosition() = scrollToPosition(chatAdapter.itemCount - 1, true)
