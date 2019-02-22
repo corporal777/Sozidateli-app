@@ -83,6 +83,7 @@ class FcmMessaging : FirebaseMessagingService() {
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setLargeIcon(bitmap)
                 .setGroup(userChat?.id)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setGroupSummary(true)
                 .build()
 
