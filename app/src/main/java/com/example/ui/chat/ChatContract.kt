@@ -24,6 +24,9 @@ interface ChatContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun openImageFullScreen(url:String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun cancelNotificationByChatId(chatId: String)
     }
 
     interface Presenter : TakePhotoContract.Presenter {

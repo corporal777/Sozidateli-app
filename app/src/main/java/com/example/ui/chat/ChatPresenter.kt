@@ -46,6 +46,11 @@ class ChatPresenter
                 .call(compositeDisposable)
     }
 
+    override fun attachView(view: ChatContract.View?) {
+        super.attachView(view)
+        viewState.cancelNotificationByChatId(chatId)
+    }
+
     override fun onSendTextMessageClick(message: String) {
         sendMessage(message)
     }

@@ -21,11 +21,15 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showGreetings()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChat(userId:String,chatId:String,userName:String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onOpenStartDestination()
         fun onOpenNotStartDestination()
         fun onHandleAuthLink(email: String, code: String)
+        fun onHandleChat(userId:String,chatId:String,userName:String,notificationId:String)
     }
 }

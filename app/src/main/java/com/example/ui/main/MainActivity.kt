@@ -10,17 +10,19 @@ import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.ui.base.BaseFragmentActivity
-import com.example.util.ARG_CUSTOM_LABEL
-import com.example.util.AUTH_CONFIRM_EMAIL_CODE
-import com.example.util.AUTH_CONFIRM_EMAIL_EMAIL
+import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import javax.inject.Provider
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Context
+
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
@@ -38,13 +40,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
 
-        var chatId:String? = null
-        if(arguments!=null){
-            chatId = arguments.getString("chatId",null)
+        var chatId: String? = null
+        if (arguments != null) {
+            chatId = arguments.getString("chatId", null)
         }
 
-        if(application is App){
-            (application as App).currentChatID =chatId
+        if (application is App) {
+            (application as App).currentChatID = chatId
         }
         presenter.apply {
             if (startDestinations.contains(destination.id)) onOpenStartDestination()
@@ -76,11 +78,23 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (authEmail != null && authCode != null) presenter.onHandleAuthLink(authEmail, authCode)
             }
         }
-        if(intent.getStringExtra("chatId")!=null){
-            showToast("Chat_check")
+        val chatData = intent.getBundleExtra(FIELD_CHAT)
+        chatData?.let {
+            val userId = it.getString(FIELD_SENDER_ID, null)
+            val chatId = it.getString(FIELD_CHAT_ID, null)
+            val userName = it.getString(FIELD_LABEL, null)
+            val notifiactionId = it.getString(FIELD_NOTIFICATION_ID,null)
+            if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName,notifiactionId)
         }
     }
 
+    override fun showChat(userId: String, chatId: String, userName: String) {
+        findNavController().navigate(R.id.chat_fragment, bundleOf(
+                FIELD_LABEL to userName,
+                FIELD_CHAT_ID to chatId,
+                FIELD_USER_ID to userId
+        ))
+    }
 
     private fun subscribeOnNotificationChanel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

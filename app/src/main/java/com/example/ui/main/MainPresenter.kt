@@ -25,6 +25,11 @@ class MainPresenter
 
     private var isAuthRequired = false
 
+    private var userId: String? = null
+    private var chatId: String? = null
+    private var userName: String? = null
+    private var wasOpen = false
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.onTokenChange
@@ -48,14 +53,39 @@ class MainPresenter
                                 .subscribe({
                                     viewState.apply {
                                         showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
+                                        openChat()
+                                        wasOpen = true
                                     }
                                 }, {
                                     viewState.showLogin()
+                                    wasOpen = true
                                 })
                                 .call(compositeDisposable)
                     }
                 }
                 .call(compositeDisposable)
+    }
+
+    override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
+        if (appData.openedNotificationId === null || appData.openedNotificationId != notificationId) {
+            this.userId = userId
+            this.chatId = chatId
+            this.userName = userName
+            appData.openedNotificationId = notificationId
+            if (wasOpen) {
+                openChat()
+            }
+        }
+
+    }
+
+    private fun openChat() {
+        chatId?.let {
+            viewState.showChat(userId!!, chatId!!, userName!!)
+            userId = null
+            chatId = null
+            userName = null
+        }
     }
 
     override fun onHandleAuthLink(email: String, code: String) {
