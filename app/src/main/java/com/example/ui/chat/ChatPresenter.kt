@@ -92,7 +92,6 @@ class ChatPresenter
         if (message.isBlank()) return
         viewState.apply { clearMessageInput() }
         chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.getUser().user_id, image = image))
-                .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 

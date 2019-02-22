@@ -29,7 +29,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flFbAuth.setOnClickListener {
+        /*flFbAuth.setOnClickListener {
             //            presenter.onClickFb()
             val intent = Intent()
             intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -38,7 +38,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
             startActivity(intent)
         }
         flVkAuth.setOnClickListener { presenter.onClickVk() }
-        flOkAuth.setOnClickListener { presenter.onClickOk() }
+        flOkAuth.setOnClickListener { presenter.onClickOk() }*/
         flEmailAuth.setOnClickListener { presenter.onClickEmail() }
     }
 

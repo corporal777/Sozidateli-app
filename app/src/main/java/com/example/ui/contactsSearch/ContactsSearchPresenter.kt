@@ -17,6 +17,7 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.SimplePagination
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
@@ -53,7 +54,7 @@ class ContactsSearchPresenter
                     viewState.hideLoadingDialog()
                     it.printStackTrace()
                 })
-                .call(searchCompositeDisposable)
+                .call(compositeDisposable)
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
@@ -69,8 +70,14 @@ class ContactsSearchPresenter
 
     private fun search(text: String) {
         searchText = text
-        //searchCompositeDisposable.clear()
-        pagination.invalidate()
+        searchCompositeDisposable.clear()
+        Observable.timer(350,TimeUnit.MILLISECONDS)
+                .performOnBackgroundOutOnMain()
+                .subscribe {
+                    pagination.invalidate()
+                }
+                .call(searchCompositeDisposable)
+
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()
@@ -80,7 +87,7 @@ class ContactsSearchPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(it.chat_id.toString(), it.user_id.toString(), user.user_name)
+                    viewState.openChat(it.chat_id.toString(), it.user_id.toString(), user.fullName)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
