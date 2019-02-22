@@ -18,7 +18,7 @@ class AppData(
             field = value
             if (changed) {
                 appPrefs.userToken = value
-                performOnTokenChange()
+                tokenChangeSubject.onNext(value.asOptional())
             }
         }
 
@@ -34,6 +34,13 @@ class AppData(
             appPrefs.isFCMTokenSent = value
         }
 
+    var chatUnreadMessageCount = 0
+        set(value) {
+            val changed = field != value
+            field = value
+            if (changed) chatUnreadMessageCountSubject.onNext(value)
+        }
+
     private var user: User? = null
     var openedNotificationId:String?=null
 
@@ -43,21 +50,15 @@ class AppData(
     private val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val onTokenChange: Observable<Optional<String>> = tokenChangeSubject
 
+    private val chatUnreadMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
+    val onChatUnreadMessageCountChange: Observable<Int> = chatUnreadMessageCountSubject
 
     fun setUser(user: User) {
         val changed = this.user != user
         this.user = user
-        if (changed) performOnUserChange()
+        if (changed) userChangeSubject.onNext(user.asOptional())
     }
 
     fun getUser(): User = user
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
-
-    private fun performOnUserChange() {
-        userChangeSubject.onNext(user.asOptional())
-    }
-
-    private fun performOnTokenChange() {
-        tokenChangeSubject.onNext(token.asOptional())
-    }
 }

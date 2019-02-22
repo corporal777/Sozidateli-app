@@ -18,11 +18,11 @@ interface ChatRepository {
 
     fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 
-    fun setMessageRead(chatId: String, messageId: String): Completable
+    fun setMessagesRead(chatId: String, ids: List<String>): Completable
 
     fun subscribeChatUnreadMessageCount(): Flowable<Int>
 
     fun startChat(userId: Int): Single<ChatStartResponse>
 
-    fun uploadImage(chatId: String, image: String) : Single<ApiResponseUpload<UploadImage>>
+    fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>
 }

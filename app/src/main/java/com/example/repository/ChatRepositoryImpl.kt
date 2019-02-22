@@ -51,22 +51,27 @@ class ChatRepositoryImpl
         }.andThen(call(api.chatLastMessage(chatId, message.text ?: "")))
     }
 
-    override fun setMessageRead(chatId: String, messageId: String): Completable {
-        return RxFirestore.runTransaction(firestore) {
-            val messageRef = firestore.collection(COLLECTION_CHATS).document(chatId)
-                    .collection(COLLECTION_MESSAGES).document(messageId)
-            val message = it.get(messageRef)
+    override fun setMessagesRead(chatId: String, ids: List<String>): Completable {
+        return RxFirestore.runTransaction(firestore) { transaction ->
+            val messageCollectionRef = firestore.collection(COLLECTION_CHATS)
+                    .document(chatId)
+                    .collection(COLLECTION_MESSAGES)
 
             val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            val userUnreadMessageCount = it.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+            val userUnreadMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
                     ?: 0.0
+//
+//            var unreadCount = 0
+//            ids.forEach { id ->
+//                val message = transaction.get(messageCollectionRef.document(id))
+//                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
+//            }
 
-            if (message.getBoolean(FIELD_IS_READ) == true) return@runTransaction null
-            it.update(messageRef, FIELD_IS_READ, true)
+            ids.forEach { id -> transaction.update(messageCollectionRef.document(id), FIELD_IS_READ, true) }
 
-            if (userUnreadMessageCount > 0) {
-                it.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadMessageCount.minus(1))
-            }
+            val resultCount = userUnreadMessageCount - ids.size
+            transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
+
             null
         }
     }
