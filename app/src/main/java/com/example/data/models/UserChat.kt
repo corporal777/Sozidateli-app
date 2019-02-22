@@ -16,5 +16,10 @@ class UserChat(
         @SerializedName("last_message_datetime")
         val lastMessageDate: String?,
         @SerializedName("last_message_user_id")
-        val lastMessageSender: Int?
+        val lastMessageSender: Int?,
+        @SerializedName("user_sender")
+        var userSender: User?,
+
+        //for fcm push
+        var notifiactionId:String?
 ) : Parcelable

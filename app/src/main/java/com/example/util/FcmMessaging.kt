@@ -12,10 +12,7 @@ import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import bundleOf
 import com.example.App
 import com.example.R
-import com.example.data.AppData
 import com.example.data.models.UserChat
-import com.example.data.models.user.User
-import com.example.ui.chat.ChatFragment
 import com.example.ui.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -43,16 +40,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
         var userChat: UserChat? = null
 
-        var title = remoteMessage.notification?.title
-        var body = remoteMessage.notification?.body
-
-        //if (remoteMessage.data.containsKey("new-chat-msg")) {
         userChat = Gson().fromJson<UserChat>(remoteMessage.data.values.elementAt(0), UserChat::class.java)
-        //}
-
-        if(userChat?.user==null){
-            userChat?.user = User(user_id = 1606, user_avatar = "http://ha-slsp.ru/pics/users/1564.jpg", user_name = "Koala", user_last_name = "Big")
-        }
 
         if(this.application is App){
             val chatId = (application as App).currentChatID
@@ -60,12 +48,14 @@ class FcmMessaging : FirebaseMessagingService() {
                 if(it == userChat?.id) return
             }
         }
-
-
+        userChat?.notifiactionId = remoteMessage.messageId
 
         Observable.fromCallable {
-
-            Picasso.get().load(userChat?.user?.user_avatar.let { if (it.isNullOrEmpty()) null else it })
+            if (userChat?.userSender?.user_avatar.isNullOrEmpty()){
+                createChatNotifiaction(userChat, null)
+                return@fromCallable
+            }
+            Picasso.get().load(userChat?.userSender?.user_avatar.let { if (it.isNullOrEmpty()) null else it })
                     .networkPolicy(NetworkPolicy.NO_CACHE)
                     .transform(CropCircleTransformation())
                     .into(object : Target {
@@ -73,11 +63,11 @@ class FcmMessaging : FirebaseMessagingService() {
                         }
 
                         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                            createChatNotifiaction(userChat, null, remoteMessage)
+                            createChatNotifiaction(userChat, null)
                         }
 
                         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                            createChatNotifiaction(userChat, bitmap, remoteMessage)
+                            createChatNotifiaction(userChat, bitmap)
                         }
                     })
 
@@ -86,7 +76,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
     }
 
-    private fun createChatNotifiaction(userChat: UserChat?, bitmap: Bitmap?, remoteMessage: RemoteMessage) {
+    private fun createChatNotifiaction(userChat: UserChat?, bitmap: Bitmap?) {
         val channelId = getString(R.string.app_name)
 
         val summaryNotification = NotificationCompat.Builder(this, channelId)
@@ -99,13 +89,14 @@ class FcmMessaging : FirebaseMessagingService() {
         NotificationCompat.Builder(this, channelId)
                 .setDefaults(DEFAULT_ALL)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle(userChat?.user?.fullName)
+                .setContentTitle(userChat?.userSender?.fullName)
                 .setContentText(userChat?.lastMessage)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(createNotificationIntent(remoteMessage))
+                .setContentIntent(createNotificationIntent(userChat))
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setLargeIcon(bitmap)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(userChat?.lastMessage))
                 .setGroup(userChat?.id)
                 .apply {
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -115,14 +106,16 @@ class FcmMessaging : FirebaseMessagingService() {
                 }
     }
 
-    private fun createNotificationIntent(remoteMessage: RemoteMessage): PendingIntent {
+    private fun createNotificationIntent(userChat: UserChat?): PendingIntent {
         /* var chatId = remoteMessage.data["id"]
          var senderId = remoteMessage.data["last_message_user_id"]*/
 
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtras(bundleOf(
-                    "chatId" to remoteMessage.data["id"],
-                    "last_message_user_id" to remoteMessage.data["last_message_user_id"]
+            putExtra(FIELD_CHAT,bundleOf(
+                    FIELD_CHAT_ID to userChat?.id,
+                    FIELD_SENDER_ID to userChat?.userSender?.user_id.toString(),
+                    FIELD_LABEL to userChat?.userSender?.fullName,
+                    FIELD_NOTIFICATION_ID to userChat?.notifiactionId
             ))
         }
 

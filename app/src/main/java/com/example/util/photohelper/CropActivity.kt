@@ -134,7 +134,7 @@ class CropActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss")
         val title = dateFormat.format(today)
         val dirPath = getDirPath()
-        val fileName = "fredi" + title + "." + getMimeType(compressFormat)
+        val fileName = "fond" + title + "." + getMimeType(compressFormat)
         val path = "$dirPath/$fileName"
         val file = File(path)
         val values = ContentValues()

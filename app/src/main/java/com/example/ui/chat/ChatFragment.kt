@@ -1,5 +1,7 @@
 package com.example.ui.chat
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -111,6 +113,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         val dialog = FullScreenImageDialogFragment.newInstance(url)
         val ft = childFragmentManager!!.beginTransaction()
         dialog.show(ft, FullScreenImageDialogFragment.TAG)
+    }
+
+    override fun cancelNotificationByChatId(chatId: String) {
+        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(chatId.toInt())
     }
 
     override fun scrollToLastPosition() = scrollToPosition(chatAdapter.itemCount - 1, true)

@@ -62,6 +62,11 @@ class ChatPresenter
                 .call(compositeDisposable)
     }
 
+    override fun attachView(view: ChatContract.View?) {
+        super.attachView(view)
+        viewState.cancelNotificationByChatId(chatId)
+    }
+
     private fun createMessagesCollector(creatorEmitter: ObservableEmitter<Collector<ChatMessage>>): Collector<ChatMessage> {
         return Collector<ChatMessage>().apply {
             doOnRelease = Runnable { creatorEmitter.onNext(createMessagesCollector(creatorEmitter)) }
