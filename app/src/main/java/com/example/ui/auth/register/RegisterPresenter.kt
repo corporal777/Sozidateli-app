@@ -6,6 +6,7 @@ import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthUtil
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -49,6 +50,7 @@ class RegisterPresenter
     override fun onClickRegister(email: String, password: String, name: String, lastName: String) {
         authRepository.register(email, password, name, lastName)
                 .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.goToLoginWithEmailConfirmation(email, password)
                 }, {

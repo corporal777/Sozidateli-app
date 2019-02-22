@@ -36,11 +36,24 @@ class ContactsSearchPresenter
     private var searchText = ""
 
     private val searchCompositeDisposable = CompositeDisposable()
+    private val pagination = SimplePagination { limit, offset -> userRepository.searchUser(searchText, searchText, limit, offset) }
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showLoadingDialog()
-        search("")
+        pagination
+                .build()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.apply {
+                        viewState.hideLoadingDialog()
+                        setData(it)
+                    }
+                }, {
+                    viewState.hideLoadingDialog()
+                    it.printStackTrace()
+                })
+                .call(searchCompositeDisposable)
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
@@ -48,7 +61,7 @@ class ContactsSearchPresenter
         scrollOffset = offset
     }
 
-    override fun onQueryTextSubmit(text: String){
+    override fun onQueryTextSubmit(text: String) {
         viewState.hideKeyboard()
     }
 
@@ -56,17 +69,8 @@ class ContactsSearchPresenter
 
     private fun search(text: String) {
         searchText = text
-        searchCompositeDisposable.clear()
-        SimplePagination { limit, offset -> userRepository.searchUser(searchText,searchText,limit, offset) }
-                .build()
-                .subscribe({ viewState.apply {
-                    viewState.hideLoadingDialog()
-                    setData(it)
-                } }, {
-                    viewState.hideLoadingDialog()
-                    it.printStackTrace()
-                })
-                .call(searchCompositeDisposable)
+        //searchCompositeDisposable.clear()
+        pagination.invalidate()
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()
@@ -76,8 +80,8 @@ class ContactsSearchPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(it.chat_id.toString(),it.user_id.toString(),user.user_name)
-                },{
+                    viewState.openChat(it.chat_id.toString(), it.user_id.toString(), user.user_name)
+                }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
     }

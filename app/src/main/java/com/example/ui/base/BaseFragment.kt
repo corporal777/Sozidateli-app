@@ -70,4 +70,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     override fun navigateUp() {
         mActivity?.navigateUp()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideKeyboard()
+        hideLoadingDialog()
+    }
 }

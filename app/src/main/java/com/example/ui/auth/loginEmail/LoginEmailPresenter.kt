@@ -6,6 +6,7 @@ import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthUtil
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -44,6 +45,7 @@ class LoginEmailPresenter
     override fun onClickLogin() {
         authRepository.authEmail(email, password)
                 .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({
                 }, {
                     viewState.showToast(it.message ?: it.localizedMessage)

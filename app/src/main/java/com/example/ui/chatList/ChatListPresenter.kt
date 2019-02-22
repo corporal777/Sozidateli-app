@@ -8,6 +8,7 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -25,7 +26,13 @@ class ChatListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         pagination.build()
-                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.apply {
+                        setData(it)
+                        showEmptyView(it.size == 0)
+                    }
+                }, { it.printStackTrace() })
                 .call(compositeDisposable)
 
         appData.onChatUnreadMessageCountChange

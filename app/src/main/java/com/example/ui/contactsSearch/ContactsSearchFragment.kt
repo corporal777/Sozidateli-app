@@ -65,12 +65,12 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if (!item.user_avatar.isNullOrEmpty()) {
-                        ivUserAvatar.visibility = View.VISIBLE
-                        Picasso.get().load(item.user_avatar).networkPolicy(NetworkPolicy.NO_CACHE).transform(CropCircleTransformation()).into(ivUserAvatar)
-                    } else {
+                    //if (!item.user_avatar.isNullOrEmpty()) {
+                      //  ivUserAvatar.visibility = View.VISIBLE
+                        Picasso.get().load(item.user_avatar.let { if(it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).networkPolicy(NetworkPolicy.NO_CACHE).transform(CropCircleTransformation()).into(ivUserAvatar)
+                   /* } else {
                         ivUserAvatar.visibility = View.INVISIBLE
-                    }
+                    }*/
                     tvUserName.text = makeSectionOfTextBold(item.fullName, this@ContactsSearchFragment.etSearchText.text.toString())
 
                     val showTitle = false /*position == 0 || getItem(position - 1)?.contactType != item.contactType*/

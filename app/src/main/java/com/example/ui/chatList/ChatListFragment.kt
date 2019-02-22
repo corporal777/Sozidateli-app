@@ -69,6 +69,12 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             adapter = this@ChatListFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
+        btnCreateChat.setOnClickListener { presenter.onMenuAddChatClick() }
+    }
+
+
+    override fun showEmptyView(isShow: Boolean) {
+        emptyView.visibility = if(isShow) View.VISIBLE else View.GONE
     }
 
     override fun setData(data: PagedList<UserChat>) {

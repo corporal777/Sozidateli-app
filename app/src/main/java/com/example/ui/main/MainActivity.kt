@@ -152,5 +152,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onDestroy()
     }
 
+    override fun getLoadingView() = flLoading
+
     override fun layout() = R.layout.activity_main
 }

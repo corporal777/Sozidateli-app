@@ -112,8 +112,6 @@ class FcmMessaging : FirebaseMessagingService() {
     }
 
     private fun createNotificationIntent(userChat: UserChat?): PendingIntent {
-        /* var chatId = remoteMessage.data["id"]
-         var senderId = remoteMessage.data["last_message_user_id"]*/
 
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra(FIELD_CHAT,bundleOf(

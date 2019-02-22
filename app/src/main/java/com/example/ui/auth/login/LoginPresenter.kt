@@ -10,6 +10,7 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.snAuth.SnType
 import io.reactivex.Completable
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -54,6 +55,7 @@ class LoginPresenter
 
     private fun executeAuthorization(completable: Completable) {
         completable.performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({
                 }, { viewState.showToast(it.message ?: "") })
                 .call(compositeDisposable)

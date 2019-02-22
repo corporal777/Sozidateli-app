@@ -17,6 +17,9 @@ interface ChatListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun openSearchContact()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmptyView(isShow:Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

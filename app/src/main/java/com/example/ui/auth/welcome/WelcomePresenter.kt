@@ -13,6 +13,6 @@ class WelcomePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setUserName(appData.getUser().user_name)
+        viewState.setUserName(appData.getUser().fullName)
     }
 }
