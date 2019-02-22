@@ -51,7 +51,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                     Picasso.get().load(item.user.user_avatar.let { if (it.isNullOrBlank()) null else it })
                             .networkPolicy(NetworkPolicy.NO_CACHE)
                             .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher_background)
+                            .placeholder(R.drawable.avatar_placeholder)
                             .into(ivAvatar)
 
                     tvName.text = item.user.fullName

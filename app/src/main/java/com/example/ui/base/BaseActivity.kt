@@ -45,6 +45,13 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         }
     }
 
+    override fun hideAllLoadingDialogs() {
+        if (!isFinishing) runOnUiThread {
+                countVisibleLoading=0
+                getLoadingView().visibility = View.GONE
+            }
+    }
+
     override fun hideKeyboard() {
         hideKeyboard(currentFocus)
     }

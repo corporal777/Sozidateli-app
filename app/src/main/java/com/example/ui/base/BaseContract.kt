@@ -6,11 +6,9 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 interface BaseContract {
-    interface View : MvpView,LoadingView {
+    interface View : MvpView, LoadingView {
         @StateStrategyType(SkipStrategy::class)
         fun showToast(@StringRes message: Int)
-
-
 
         @StateStrategyType(SkipStrategy::class)
         fun navigateUp()
@@ -23,6 +21,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showKeyboard()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showToast(message: String)
     }
 
     interface LoadingView {
@@ -34,7 +35,7 @@ interface BaseContract {
         fun hideLoadingDialog()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showToast(message: String)
+        fun hideAllLoadingDialogs()
     }
 
     interface Presenter
