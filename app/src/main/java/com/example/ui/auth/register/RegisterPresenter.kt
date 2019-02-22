@@ -16,6 +16,7 @@ class RegisterPresenter
     private var isEmailValid = false
     private var isPasswordValid = false
     private var isNameValid = false
+    private var isLastNameValid = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -31,26 +32,31 @@ class RegisterPresenter
 
     override fun onChangePasswordText(password: String) {
         isPasswordValid = AuthUtil.isValidPassword(password)
-        viewState.passwordCheckColored(AuthUtil.isPasswordHasSix(password), AuthUtil.isPasswordHasOneCap(password), AuthUtil.isPasswordHasSymbol(password))
+        viewState.passwordCheckColored(isPasswordValid, true, isHasSymbol = true)
         setValidRegister()
     }
 
     override fun onChangeNameText(name: String) {
-        isNameValid = name.trim().isNotEmpty()
+        isNameValid = name.isNotBlank()
         setValidRegister()
     }
 
-    private fun setValidRegister() {
-        viewState.enableRegisterBtn(isEmailValid && isNameValid && isPasswordValid)
+    override fun onChangeLastNameText(lastName: String) {
+        isLastNameValid = lastName.isNotBlank()
+        setValidRegister()
     }
 
-    override fun onClickRegister(email: String, password: String, name: String) {
-        authRepository.register(email, password, name)
+    override fun onClickRegister(email: String, password: String, name: String, lastName: String) {
+        authRepository.register(email, password, name, lastName)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.goToLoginWithEmailConfirmation(email, password)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
+    }
+
+    private fun setValidRegister() {
+        viewState.enableRegisterBtn(isEmailValid && isNameValid && isPasswordValid && isLastNameValid)
     }
 }

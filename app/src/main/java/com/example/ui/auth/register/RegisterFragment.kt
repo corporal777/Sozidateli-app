@@ -49,11 +49,16 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
             presenter.onChangeNameText(charSequence.toString())
         })
 
+        etLastName.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            presenter.onChangeLastNameText(charSequence.toString())
+        })
+
         btnRegister.setOnClickListener {
             presenter.onClickRegister(
                     email = etEmail.text.toString(),
                     password = etPassword.text.toString(),
-                    name = etName.text.toString()
+                    name = etName.text.toString(),
+                    lastName = etLastName.text.toString()
             )
         }
     }
@@ -68,8 +73,8 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
 
     override fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean) {
         colorTextPasswordChecker(tvPasswordStrong1, isHasSix)
-        colorTextPasswordChecker(tvPasswordStrong2, isOneCap)
-        colorTextPasswordChecker(tvPasswordStrong3, isHasSymbol)
+//        colorTextPasswordChecker(tvPasswordStrong2, isOneCap)
+//        colorTextPasswordChecker(tvPasswordStrong3, isHasSymbol)
     }
 
     private fun colorTextPasswordChecker(textView: TextView, has: Boolean) {

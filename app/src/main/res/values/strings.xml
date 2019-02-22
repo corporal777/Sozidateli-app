@@ -33,6 +33,7 @@
     <string name="auth_register_btn">Регистрация</string>
     <string name="auth_create_account">Создать аккаунт</string>
     <string name="auth_hint_name">Ваше имя</string>
+    <string name="auth_hint_last_name">Ваша фамилия</string>
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>

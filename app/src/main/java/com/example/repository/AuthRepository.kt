@@ -9,6 +9,6 @@ interface AuthRepository {
     fun authOk(token: String): Completable
 
     fun authEmail(email: String, password: String): Completable
-    fun register(email: String, password: String, name: String): Completable
+    fun register(email: String, password: String, name: String, lastName: String): Completable
     fun registerConfirm(email: String, code: String): Completable
 }

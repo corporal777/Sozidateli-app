@@ -21,6 +21,7 @@ interface RegisterContract {
         fun onChangeEmailText(email: String)
         fun onChangePasswordText(password: String)
         fun onChangeNameText(name: String)
-        fun onClickRegister(email: String, password: String, name: String)
+        fun onChangeLastNameText(lastName: String)
+        fun onClickRegister(email: String, password: String, name: String, lastName: String)
     }
 }

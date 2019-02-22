@@ -37,8 +37,13 @@
 
                 <data
                     android:host="www.sozidateli.ru"
-                    android:pathPrefix="/profile"
+                    android:pathPrefix="/"
                     android:scheme="https" />
+
+                <data
+                    android:host="alpha.ha-slsp.ru"
+                    android:pathPrefix="/profile"
+                    android:scheme="http" />
             </intent-filter>
 
             <nav-graph android:value="@navigation/main_navigation" />
