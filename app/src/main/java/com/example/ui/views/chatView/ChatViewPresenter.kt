@@ -4,39 +4,21 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
-import com.example.repository.ChatRepository
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
 class ChatViewPresenter @Inject constructor(
-        private val chatRepository: ChatRepository,
         private val appData: AppData
 ) : MvpPresenter<ChatViewContract.View>(), ChatViewContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
-    private var chatUnreadCountDisposable: Disposable? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showCounter(false)
-        appData.onUserChange
-                .performOnBackgroundOutOnMain()
-                .subscribe(
-                        {
-                            unsubscribeChatUnreadCount()
-                            if (it.value != null) subscribeChatUnreadCount()
-                        },
-                        {
-                            unsubscribeChatUnreadCount()
-                        })
-                .call(compositeDisposable)
-    }
-
-    private fun subscribeChatUnreadCount() {
-        chatUnreadCountDisposable = chatRepository.subscribeChatUnreadMessageCount()
+        appData.onChatUnreadMessageCountChange
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.apply {
@@ -50,16 +32,8 @@ class ChatViewPresenter @Inject constructor(
                     }
                 }, {
                     viewState.showCounter(false)
-                }).apply {
-                    call(compositeDisposable)
-                }
-    }
-
-    private fun unsubscribeChatUnreadCount() {
-        chatUnreadCountDisposable?.apply {
-            dispose()
-            viewState.showCounter(false)
-        }
+                })
+                .call(compositeDisposable)
     }
 
     override fun onDestroy() {

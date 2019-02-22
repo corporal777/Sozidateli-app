@@ -5,11 +5,12 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.repository.AuthRepository
+import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import java.util.concurrent.TimeUnit
@@ -20,23 +21,33 @@ class MainPresenter
 @Inject constructor(
         private val appData: AppData,
         private val authRepository: AuthRepository,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val chatRepository: ChatRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     private var isAuthRequired = false
+
+    private var chatUnreadCountDisposable: Disposable? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.onTokenChange
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
+                    unsubscribeChatUnreadCount()
+
                     if (token.value == null) {
                         isAuthRequired = true
                         viewState.showLogin()
                     } else {
                         userRepository.getUser()
-                                .flatMapCompletable { subscribeToNotifications() }
-                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMapCompletable {
+                                    Completable.mergeArray(
+                                            subscribeToNotifications().onErrorComplete(),
+                                            chatRepository.singInFirebase().onErrorComplete()
+                                                    .doOnComplete { subscribeChatUnreadCount() }
+                                    )
+                                }
                                 .andThen(
                                         if (isAuthRequired) {
                                             isAuthRequired = false
@@ -73,6 +84,22 @@ class MainPresenter
                 .doOnComplete { appData.isSubscribedToPush = true }
                 .doOnError { appData.isSubscribedToPush = false }
                 .onErrorComplete()
+    }
+
+    private fun subscribeChatUnreadCount() {
+        chatUnreadCountDisposable = chatRepository.subscribeChatUnreadMessageCount()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.chatUnreadMessageCount = it
+                }, {
+                    appData.chatUnreadMessageCount = 0
+                }).apply {
+                    call(compositeDisposable)
+                }
+    }
+
+    private fun unsubscribeChatUnreadCount() {
+        chatUnreadCountDisposable?.dispose()
     }
 
     override fun onOpenStartDestination() = viewState.showBackButton(false)
