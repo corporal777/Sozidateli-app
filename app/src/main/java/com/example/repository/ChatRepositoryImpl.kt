@@ -9,6 +9,7 @@ import com.example.data.models.UploadImage
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
@@ -32,7 +33,7 @@ class ChatRepositoryImpl
     override fun getChatMessageQuery(chatId: String) = firestore.collection(COLLECTION_CHATS)
             .document(chatId)
             .collection(COLLECTION_MESSAGES)
-            .orderBy(FIELD_SEND_AT)
+            .orderBy(FIELD_SEND_AT, Query.Direction.DESCENDING)
 
     override fun sendChatMessage(chatId: String, userId: String, message: ChatMessage): Completable {
         return RxFirestore.runTransaction(firestore) {

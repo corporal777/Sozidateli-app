@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
@@ -14,19 +15,15 @@ import com.example.R
 import com.example.adapters.ChatAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.UserChatMessage
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.takePhoto.TakePhotoFragment
-import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
 import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.DocumentSnapshot
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
-import kotlinx.android.synthetic.main.item_chat_message_incoming.*
-import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
 
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
@@ -60,7 +57,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
 
         val layoutManager = LinearLayoutManager(context).apply {
-            stackFromEnd = true
+            stackFromEnd = false
+            reverseLayout = true
         }
         rvChat.apply {
             this.layoutManager = layoutManager
@@ -77,16 +75,24 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     override fun iniChatAdapter(query: Query, parser: SnapshotParser<UserChatMessage>) {
-        val options = FirestoreRecyclerOptions.Builder<UserChatMessage>()
+        val config = PagedList.Config.Builder()
+                .setInitialLoadSizeHint(20)
+                .setPageSize(20)
+                .setEnablePlaceholders(false)
+                .build()
+
+        val options = FirestorePagingOptions.Builder<UserChatMessage>()
                 .setLifecycleOwner(this)
-                .setQuery(query, parser)
+                .setQuery(query, config, parser)
                 .build()
 
         chatAdapter = object : ChatAdapter(options) {
-            override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
-                super.onChildChanged(type, snapshot, newIndex, oldIndex)
-                if (type == ChangeEventType.ADDED) presenter.onNewMessage(parser.parseSnapshot(snapshot))
-            }
+//            override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
+//                super.onChildChanged(type, snapshot, newIndex, oldIndex)
+//                if (type == ChangeEventType.ADDED) presenter.onNewMessage(parser.parseSnapshot(snapshot))
+//            }
+
+
 
             override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
                 super.onBindViewHolder(holder, position, model)
@@ -111,7 +117,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun openImageFullScreen(url: String) {
         val dialog = FullScreenImageDialogFragment.newInstance(url)
-        val ft = childFragmentManager!!.beginTransaction()
+        val ft = childFragmentManager.beginTransaction()
         dialog.show(ft, FullScreenImageDialogFragment.TAG)
     }
 

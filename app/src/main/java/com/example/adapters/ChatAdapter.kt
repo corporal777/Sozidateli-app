@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.UserChatMessage
-import com.example.util.RoundedCornersTransformation
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
 import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
-import java.lang.Exception
 
-open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : FirestoreRecyclerAdapter<UserChatMessage, ViewHolder>(options) {
+open class ChatAdapter(
+        private val options: FirestorePagingOptions<UserChatMessage>
+) : FirestorePagingAdapter<UserChatMessage, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -30,7 +30,7 @@ open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : Fir
             flImage.visibility = View.GONE
 
             var padding = itemView.context.resources.getDimensionPixelSize(R.dimen.chat_message_padding_vertical)
-            var background = if (getItemViewType(position) == TYPE_INCOMING) ContextCompat.getDrawable(itemView.context,R.drawable.background_chat_message_incoming) else ContextCompat.getDrawable(itemView.context,R.drawable.background_chat_message_outgoing)
+            var background = if (getItemViewType(position) == TYPE_INCOMING) ContextCompat.getDrawable(itemView.context, R.drawable.background_chat_message_incoming) else ContextCompat.getDrawable(itemView.context, R.drawable.background_chat_message_outgoing)
 
             if (!model.message.image.isNullOrBlank()) {
                 tvChatMessage.visibility = View.GONE
@@ -46,7 +46,7 @@ open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : Fir
 
                 )*/
 
-                Picasso.get().load(model.message.image)/*.transform(listOfTransformations)*/.into(ivImage,object: Callback{
+                Picasso.get().load(model.message.image)/*.transform(listOfTransformations)*/.into(ivImage, object : Callback {
                     override fun onSuccess() {
                         root.background = null
                     }
@@ -67,7 +67,8 @@ open class ChatAdapter(options: FirestoreRecyclerOptions<UserChatMessage>) : Fir
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (getItem(position).isMyMessage) TYPE_OUTGOING else TYPE_INCOMING
+        val userMessage = getItem(position)?.let { options.parser.parseSnapshot(it) }
+        return if (userMessage?.isMyMessage == true) TYPE_OUTGOING else TYPE_INCOMING
     }
 
     companion object {
