@@ -19,6 +19,7 @@ class ChatListPresenter
 
     private val pagination = SimplePagination { limit, offset -> chatRepository.loadChatList(mapOf(), limit, offset) }
 
+    private var firstLaunch = true
     private var lastChatUnreadCount: Int? = null
 
     override fun onFirstViewAttach() {
@@ -35,6 +36,12 @@ class ChatListPresenter
                     lastChatUnreadCount = it
                 }, {})
                 .call(compositeDisposable)
+    }
+
+    override fun attachView(view: ChatListContract.View?) {
+        super.attachView(view)
+        if (firstLaunch) firstLaunch = false
+        else pagination.invalidate()
     }
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)

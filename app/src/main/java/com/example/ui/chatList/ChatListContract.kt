@@ -9,7 +9,7 @@ import com.example.ui.base.BaseContract
 
 interface ChatListContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun setData(data: PagedList<UserChat>)
 
         @StateStrategyType(SkipStrategy::class)
