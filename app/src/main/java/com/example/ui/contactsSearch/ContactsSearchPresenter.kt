@@ -17,6 +17,7 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.SimplePagination
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
@@ -36,11 +37,24 @@ class ContactsSearchPresenter
     private var searchText = ""
 
     private val searchCompositeDisposable = CompositeDisposable()
+    private val pagination = SimplePagination { limit, offset -> userRepository.searchUser(searchText, searchText, limit, offset) }
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showLoadingDialog()
-        search("")
+        pagination
+                .build()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.apply {
+                        viewState.hideLoadingDialog()
+                        setData(it)
+                    }
+                }, {
+                    viewState.hideLoadingDialog()
+                    it.printStackTrace()
+                })
+                .call(compositeDisposable)
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
@@ -48,7 +62,7 @@ class ContactsSearchPresenter
         scrollOffset = offset
     }
 
-    override fun onQueryTextSubmit(text: String){
+    override fun onQueryTextSubmit(text: String) {
         viewState.hideKeyboard()
     }
 
@@ -57,16 +71,13 @@ class ContactsSearchPresenter
     private fun search(text: String) {
         searchText = text
         searchCompositeDisposable.clear()
-        SimplePagination { limit, offset -> userRepository.searchUser(searchText,searchText,limit, offset) }
-                .build()
-                .subscribe({ viewState.apply {
-                    viewState.hideLoadingDialog()
-                    setData(it)
-                } }, {
-                    viewState.hideLoadingDialog()
-                    it.printStackTrace()
-                })
+        Observable.timer(350,TimeUnit.MILLISECONDS)
+                .performOnBackgroundOutOnMain()
+                .subscribe {
+                    pagination.invalidate()
+                }
                 .call(searchCompositeDisposable)
+
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()
@@ -76,8 +87,8 @@ class ContactsSearchPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(it.chat_id.toString(),it.user_id.toString(),user.user_name)
-                },{
+                    viewState.openChat(it.chat_id.toString(), it.user_id.toString(), user.fullName)
+                }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
     }

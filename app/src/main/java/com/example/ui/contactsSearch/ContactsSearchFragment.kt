@@ -35,6 +35,7 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_contacts_search.*
 import kotlinx.android.synthetic.main.item_search_contact.*
+import timber.log.Timber
 import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
 import uk.co.chrisjenx.calligraphy.TypefaceUtils
 import javax.inject.Inject
@@ -65,12 +66,10 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    if (!item.user_avatar.isNullOrEmpty()) {
-                        ivUserAvatar.visibility = View.VISIBLE
-                        Picasso.get().load(item.user_avatar).networkPolicy(NetworkPolicy.NO_CACHE).transform(CropCircleTransformation()).into(ivUserAvatar)
-                    } else {
-                        ivUserAvatar.visibility = View.INVISIBLE
-                    }
+                        Picasso.get().load(item.user_avatar.let { if(it.isNullOrEmpty()) null else it })
+                                .placeholder(R.drawable.avatar_placeholder).networkPolicy(NetworkPolicy.NO_CACHE)
+                                .transform(CropCircleTransformation()).into(ivUserAvatar)
+
                     tvUserName.text = makeSectionOfTextBold(item.fullName, this@ContactsSearchFragment.etSearchText.text.toString())
 
                     val showTitle = false /*position == 0 || getItem(position - 1)?.contactType != item.contactType*/

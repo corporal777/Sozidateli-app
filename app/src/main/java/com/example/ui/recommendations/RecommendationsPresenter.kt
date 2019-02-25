@@ -8,6 +8,7 @@ import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -23,6 +24,7 @@ class RecommendationsPresenter
         super.onFirstViewAttach()
         SimplePagination { limit, offset -> eventRepository.getEventList(limit, offset) }
                 .build()
+                .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

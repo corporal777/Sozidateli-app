@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import bundleOf
@@ -81,9 +82,9 @@ class FcmMessaging : FirebaseMessagingService() {
 
         val summaryNotification = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setLargeIcon(bitmap)
                 .setGroup(userChat?.id)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setSound(null)
                 .setGroupSummary(true)
                 .build()
 
@@ -93,6 +94,7 @@ class FcmMessaging : FirebaseMessagingService() {
                 .setContentTitle(userChat?.userSender?.fullName)
                 .setContentText(userChat?.lastMessage)
                 .setAutoCancel(true)
+                .setTicker(userChat?.lastMessage)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(createNotificationIntent(userChat))
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -101,15 +103,15 @@ class FcmMessaging : FirebaseMessagingService() {
                 .setGroup(userChat?.id)
                 .apply {
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(userChat?.id!!.toInt(),summaryNotification)
-                    notificationManager.notify(userChat.lastMessageDate?.hashCode()
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        notificationManager.notify(userChat?.id!!.toInt(), summaryNotification)
+                    }
+                    notificationManager.notify(userChat?.lastMessageDate?.hashCode()
                             ?: 0, this.build())
                 }
     }
 
     private fun createNotificationIntent(userChat: UserChat?): PendingIntent {
-        /* var chatId = remoteMessage.data["id"]
-         var senderId = remoteMessage.data["last_message_user_id"]*/
 
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra(FIELD_CHAT,bundleOf(

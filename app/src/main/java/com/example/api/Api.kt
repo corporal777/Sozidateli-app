@@ -76,6 +76,6 @@ interface Api {
 
 
     @FormUrlEncoded
-    @POST("/v1/pgrants/search_users")
+    @POST("/v1/users/search")
     fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 }

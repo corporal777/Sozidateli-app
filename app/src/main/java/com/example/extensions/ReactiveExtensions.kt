@@ -3,7 +3,10 @@ import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Extension function to subscribe on the background thread and observe on the main thread for a [Completable]
@@ -80,38 +83,72 @@ fun <T> Observable<T>.performOnMain(): Observable<T> {
     return this.subscribeOn(AndroidSchedulers.mainThread())
 }
 
-/**
- * Extension function to show and hide loading dialog for Completable
- * */
-fun Completable.withLoadingDialog(viewState: BaseContract.View): Completable {
-    viewState.showLoadingDialog()
-    return this.observeOn(AndroidSchedulers.mainThread())
-            .doFinally { viewState.hideLoadingDialog() }
+fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completable {
+    val loadingDisposable = getLoadingDisposable(baseView)
+    return this.doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
+            .doFinally(getHideLoadingAction(baseView, loadingDisposable))
+            .doOnError(getHideLoadingConsumer(baseView,loadingDisposable))
+
+
 }
 
-/**
- * Extension function to show and hide loading dialog for Flowable
- * */
-fun <T> Flowable<T>.withLoadingDialog(viewState: BaseContract.View): Flowable<T> {
-    viewState.showLoadingDialog()
-    return this.observeOn(AndroidSchedulers.mainThread())
-            .doFinally { viewState.hideLoadingDialog() }
+fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
+    val loadingDisposable = getLoadingDisposable(baseView)
+    return this.doFinally(getHideLoadingAction(baseView, loadingDisposable))
+            .doOnDispose(getHideLoadingAction(baseView,loadingDisposable))
+            .doOnSuccess(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
+
 }
 
-/**
- * Extension function to show and hide loading dialog for Observable
- * */
-fun <T> Observable<T>.withLoadingDialog(viewState: BaseContract.View): Observable<T> {
-    viewState.showLoadingDialog()
-    return this.observeOn(AndroidSchedulers.mainThread())
-            .doFinally { viewState.hideLoadingDialog() }
+fun <T> Maybe<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
+    val loadingDisposable = getLoadingDisposable(baseView)
+    return this.doFinally(getHideLoadingAction(baseView, loadingDisposable))
+            .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
+            .doOnSuccess(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
 }
 
-/**
- * Extension function to show and hide loading dialog for Single
- * */
-fun <T> Single<T>.withLoadingDialog(viewState: BaseContract.View): Single<T> {
-    viewState.showLoadingDialog()
-    return this.observeOn(AndroidSchedulers.mainThread())
-            .doFinally { viewState.hideLoadingDialog() }
+fun <T> Flowable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Flowable<T> {
+    val loadingDisposable = getLoadingDisposable(baseView)
+    return this.doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnNext(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doFinally(getHideLoadingAction(baseView, loadingDisposable))
+            .toObservable()
+            .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
+            .toFlowable(BackpressureStrategy.LATEST)
+}
+
+fun <T> Observable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
+    val loadingDisposable = getLoadingDisposable(baseView)
+    return this.doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnNext(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doFinally(getHideLoadingAction(baseView, loadingDisposable))
+            .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
+}
+
+private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
+    return Completable.complete()
+            .delay(100, TimeUnit.MILLISECONDS, Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete {
+                baseView.showLoadingDialog()
+            }
+            .doOnDispose {
+                baseView.hideLoadingDialog()
+            }
+            .subscribe()
+}
+
+private fun getHideLoadingAction(baseView: BaseContract.LoadingView, loading: Disposable) = Action {
+    hideLoading(baseView, loading)
+}
+
+private fun <T> getHideLoadingConsumer(baseView: BaseContract.LoadingView, loading: Disposable) = Consumer<T> {
+    hideLoading(baseView, loading)
+}
+
+private fun hideLoading(baseView: BaseContract.LoadingView, loading: Disposable) {
+    if (loading.isDisposed) baseView.hideLoadingDialog()
+    else loading.dispose()
 }

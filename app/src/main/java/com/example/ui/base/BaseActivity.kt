@@ -13,14 +13,13 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
-
-    private lateinit var loadingDialog: LoadingDialog
+    private var countVisibleLoading = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(layout())
-        loadingDialog = LoadingDialog(this)
+        getLoadingView().setOnTouchListener { view, motionEvent -> return@setOnTouchListener true }
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -29,11 +28,28 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
 
     override fun showLoadingDialog() {
-        if (!isFinishing) runOnUiThread { loadingDialog.show() }
+        if (!isFinishing) runOnUiThread {
+            countVisibleLoading++
+            getLoadingView().visibility = View.VISIBLE
+        }
     }
 
     override fun hideLoadingDialog() {
-        if (!isFinishing) runOnUiThread { loadingDialog.dismiss() }
+        if (!isFinishing) runOnUiThread {
+            countVisibleLoading--
+            if (countVisibleLoading <= 0) {
+                countVisibleLoading=0
+                getLoadingView().visibility = View.GONE
+            }
+
+        }
+    }
+
+    override fun hideAllLoadingDialogs() {
+        if (!isFinishing) runOnUiThread {
+                countVisibleLoading=0
+                getLoadingView().visibility = View.GONE
+            }
     }
 
     override fun hideKeyboard() {
@@ -57,6 +73,8 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     @LayoutRes
     abstract fun layout(): Int
+
+    abstract fun getLoadingView(): View
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

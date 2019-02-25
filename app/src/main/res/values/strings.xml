@@ -168,4 +168,8 @@
     <string name="cancel">Отмена</string>
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
+
+    <string name="not_found_chats">У вас нет чатов</string>
+    <string name="create_chat">Создать чат</string>
+
 </resources>

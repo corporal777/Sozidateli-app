@@ -51,7 +51,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                     Picasso.get().load(item.user.user_avatar.let { if (it.isNullOrBlank()) null else it })
                             .networkPolicy(NetworkPolicy.NO_CACHE)
                             .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher_background)
+                            .placeholder(R.drawable.avatar_placeholder)
                             .into(ivAvatar)
 
                     tvName.text = item.user.fullName
@@ -69,6 +69,12 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             adapter = this@ChatListFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
+        btnCreateChat.setOnClickListener { presenter.onMenuAddChatClick() }
+    }
+
+
+    override fun showEmptyView(isShow: Boolean) {
+        emptyView.visibility = if(isShow) View.VISIBLE else View.GONE
     }
 
     override fun setData(data: PagedList<UserChat>) {

@@ -13,6 +13,7 @@ import io.reactivex.Maybe
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -60,6 +61,7 @@ class MainPresenter
                                                     .andThen(Maybe.just(true))
                                         } else Maybe.just(false))
                                 .performOnBackgroundOutOnMain()
+                                .withLoadingDialog(viewState)
                                 .subscribe({
                                     viewState.apply {
                                         showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)

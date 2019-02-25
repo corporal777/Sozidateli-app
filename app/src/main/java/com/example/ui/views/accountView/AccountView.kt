@@ -75,6 +75,10 @@ class AccountView : FrameLayout, AccountViewContract.View {
     override fun showKeyboard() {
     }
 
+    override fun hideAllLoadingDialogs() {
+
+    }
+
     override fun showToast(message: Int) {}
     override fun showToast(message: String) {}
     override fun navigateUp() {}
