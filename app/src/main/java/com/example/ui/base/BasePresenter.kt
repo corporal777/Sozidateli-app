@@ -1,6 +1,7 @@
 package com.example.ui.base
 
 import com.arellomobile.mvp.MvpPresenter
+import com.example.util.ApiErrorParser
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 

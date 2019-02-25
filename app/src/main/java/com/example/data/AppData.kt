@@ -1,12 +1,16 @@
 package com.example.data
 
+import com.example.data.models.ApiResponse
 import com.example.data.models.Event
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.internal.operators.observable.ObservableSubscribeOn
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
@@ -41,6 +45,12 @@ class AppData(
             if (changed) chatUnreadMessageCountSubject.onNext(value)
         }
 
+    var error: ApiResponse<*>? = null
+    set(value) {
+        field = value
+        onErrorHandler.onNext(value.asOptional())
+    }
+
     private var user: User? = null
     var openedNotificationId:String?=null
 
@@ -52,6 +62,9 @@ class AppData(
 
     private val chatUnreadMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val onChatUnreadMessageCountChange: Observable<Int> = chatUnreadMessageCountSubject
+
+    private val onErrorHandler = BehaviorSubject.createDefault(error.asOptional())
+    val onErrorHandlerListener: Observable<Optional<ApiResponse<*>>> = onErrorHandler
 
     fun setUser(user: User) {
         val changed = this.user != user

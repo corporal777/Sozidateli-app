@@ -47,9 +47,7 @@ class LoginEmailPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                }, {
-                    viewState.showToast(it.message ?: it.localizedMessage)
-                })
+                }, { })
                 .call(compositeDisposable)
     }
 
