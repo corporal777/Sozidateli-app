@@ -6,31 +6,44 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.takePhoto.TakePhotoContract
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.Query
+import com.example.util.chat.QueryList
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun iniChatAdapter(query: Query, parser: SnapshotParser<UserChatMessage>)
+        fun setQuery(queryList: QueryList<UserChatMessage>)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun notifyItemInserted(position: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun notifyItemChanged(position: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun notifyItemRemoved(position: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun notifyItemMoved(oldPosition: Int, newPosition: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollToLastPosition()
+        fun scrollToBottomPosition()
 
         @StateStrategyType(SkipStrategy::class)
         fun openImageFullScreen(url: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun getPhotoMessageText(onTextFound: (String) -> Unit)
     }
 
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
-        fun onNewMessage(message: UserChatMessage)
-        fun onChatScrollChange(isLastPosition: Boolean)
+        fun onChatScrollChange(isBottomPosition: Boolean)
         fun onChatMessageOnScreen(message: UserChatMessage)
         fun onImageClick(url: String)
     }

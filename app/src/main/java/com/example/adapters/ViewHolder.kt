@@ -1,6 +1,5 @@
 package com.example.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.extensions.LayoutContainer
 

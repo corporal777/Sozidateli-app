@@ -4,18 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.example.R
 import com.example.data.models.UserChatMessage
-import com.firebase.ui.firestore.paging.FirestorePagingAdapter
-import com.firebase.ui.firestore.paging.FirestorePagingOptions
+import com.example.util.chat.QueryList
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_chat_message_incoming.*
 import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
 
-open class ChatAdapter(
-        private val options: FirestorePagingOptions<UserChatMessage>
-) : FirestorePagingAdapter<UserChatMessage, ViewHolder>(options) {
+class ChatAdapter : RecyclerView.Adapter<ViewHolder>() {
+
+    var queryList: QueryList<UserChatMessage>? = null
+
+    var onItemClickListener: ((UserChatMessage) -> Unit)? = null
+    var onItemAttached: ((UserChatMessage) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,7 +26,15 @@ open class ChatAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, model: UserChatMessage) {
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        queryList?.get(holder.adapterPosition)?.apply {
+            onItemAttached?.invoke(this)
+        }
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val model = queryList?.get(position)!!
         holder.apply {
             tvChatMessage.text = model.message.text
             tvChatMessage.visibility = View.VISIBLE
@@ -58,8 +69,12 @@ open class ChatAdapter(
 
             root.background = background
             itemView.subRoot.setPadding(padding, padding, padding, padding)
+
+            root.setOnClickListener { onItemClickListener?.invoke(model) }
         }
     }
+
+    override fun getItemCount() = queryList?.size ?: 0
 
     private fun getItemLayout(itemView: Int): Int {
         return if (itemView == TYPE_OUTGOING) R.layout.item_chat_message_outgoing
@@ -67,7 +82,7 @@ open class ChatAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val userMessage = getItem(position)?.let { options.parser.parseSnapshot(it) }
+        val userMessage = queryList?.get(position)
         return if (userMessage?.isMyMessage == true) TYPE_OUTGOING else TYPE_INCOMING
     }
 

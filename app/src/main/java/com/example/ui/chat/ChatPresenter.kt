@@ -10,10 +10,17 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.Collector
 import com.example.util.FIELD_IS_READ
+import com.example.util.chat.QueryList
+import com.example.util.chat.QueryPageOptions
+import com.firebase.ui.common.ChangeEventType
+import com.firebase.ui.firestore.ChangeEventListener
 import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestoreException
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.Single
+import io.reactivex.SingleSource
 import io.reactivex.subjects.PublishSubject
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -27,12 +34,37 @@ class ChatPresenter
         private val chatRepository: ChatRepository
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
-    private var isChatScrolledToLastPosition = true
+    private var isChatScrolledToBottom = true
+    private var queryList: QueryList<UserChatMessage>? = null
 
     lateinit var chatId: String
     lateinit var userId: String
 
     private val messageToMarkReadPublisher = PublishSubject.create<ChatMessage>()
+    private val changeEventListener = object : ChangeEventListener {
+        override fun onDataChanged() {
+
+        }
+
+        override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
+            viewState.apply {
+                when (type) {
+                    ChangeEventType.ADDED -> {
+                        notifyItemInserted(newIndex)
+                        if (newIndex == 0 && isChatScrolledToBottom) viewState.scrollToBottomPosition()
+                    }
+                    ChangeEventType.CHANGED -> notifyItemChanged(newIndex)
+                    ChangeEventType.REMOVED -> notifyItemRemoved(oldIndex)
+                    ChangeEventType.MOVED -> notifyItemMoved(oldIndex, newIndex)
+                    else -> throw IllegalStateException("Incomplete when statement")
+                }
+            }
+        }
+
+        override fun onError(e: FirebaseFirestoreException) {
+            viewState.showToast(e.localizedMessage)
+        }
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -57,9 +89,18 @@ class ChatPresenter
                         }
                     }
 
-                    viewState.apply { iniChatAdapter(chatMessageQuery, chatMessageParser) }
+                    queryList = QueryList(QueryPageOptions(
+                            chatMessageQuery,
+                            chatMessageParser,
+                            20
+                    )).apply {
+                        addChangeEventListener(changeEventListener)
+                        viewState.setQuery(this)
+                    }
                 }, {})
                 .call(compositeDisposable)
+
+
     }
 
     override fun attachView(view: ChatContract.View?) {
@@ -81,20 +122,19 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
-        sendMessage(message)
+        sendMessage(ChatMessage(text = message, senderId = appData.getUser().user_id))
     }
 
     override fun onImageClick(url: String) {
         viewState.openImageFullScreen(url)
     }
 
-    private fun sendMessage(message: String, image: String? = null) {
-        if (message.isBlank()) return
+    private fun sendMessage(chatMessage: ChatMessage) {
+        if (chatMessage.text.isNullOrBlank()) return
         viewState.apply { clearMessageInput() }
-        chatRepository.sendChatMessage(chatId, userId, ChatMessage(text = message, senderId = appData.getUser().user_id, image = image))
+        chatRepository.sendChatMessage(chatId, userId, chatMessage)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-
                 }, {
                     it.printStackTrace()
                 })
@@ -106,22 +146,37 @@ class ChatPresenter
         messageToMarkReadPublisher.onNext(message.message)
     }
 
-    override fun onNewMessage(message: UserChatMessage) {
-        if (isChatScrolledToLastPosition) viewState.scrollToLastPosition()
-    }
-
-    override fun onChatScrollChange(isLastPosition: Boolean) {
-        isChatScrolledToLastPosition = isLastPosition
+    override fun onChatScrollChange(isBottomPosition: Boolean) {
+        isChatScrolledToBottom = isBottomPosition
     }
 
     override fun onImageTaken(path: String, uri: Uri) {
         chatRepository.uploadImage(chatId, path)
+                .flatMap { response ->
+                    SingleSource<ChatMessage> {
+                        val imageResponse = response.response[0]
+                        if (imageResponse.error || imageResponse.path.isNullOrEmpty()) {
+                            it.onError(RuntimeException("Image uploading error"))
+                            return@SingleSource
+                        }
+
+                        viewState.getPhotoMessageText { text ->
+                            val message = ChatMessage(text = text, senderId = appData.getUser().user_id, image = imageResponse.path)
+                            it.onSuccess(message)
+                        }
+                    }
+                }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    if (!it.response[0].error) sendMessage("Фото", it.response[0].path)
+                    sendMessage(it)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        queryList?.removeChangeEventListener(changeEventListener)
     }
 }
