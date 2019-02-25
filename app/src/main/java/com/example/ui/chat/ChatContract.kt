@@ -41,10 +41,10 @@ interface ChatContract {
         fun getPhotoMessageText(onTextFound: (String) -> Unit)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showCantSendHolder(isShow:Boolean)
+        fun showCantSendHolder(isShow: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAvatar(url:String?)
+        fun showAvatar(url: String?)
 
     }
 

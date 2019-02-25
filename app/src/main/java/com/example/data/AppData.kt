@@ -7,10 +7,7 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.internal.operators.observable.ObservableSubscribeOn
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
@@ -46,13 +43,13 @@ class AppData(
         }
 
     var error: ApiResponse<*>? = null
-    set(value) {
-        field = value
-        onErrorHandler.onNext(value.asOptional())
-    }
+        set(value) {
+            field = value
+            onErrorHandler.onNext(value.asOptional())
+        }
 
     private var user: User? = null
-    var openedNotificationId:String?=null
+    var openedNotificationId: String? = null
 
     private val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val onUserChange: Observable<Optional<User>> = userChangeSubject

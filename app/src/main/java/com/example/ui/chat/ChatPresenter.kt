@@ -106,7 +106,7 @@ class ChatPresenter
                 .subscribe({
                     viewState.showCantSendHolder(false)
                     viewState.showAvatar(it.user.user_avatar)
-                },{it.printStackTrace()}).call(compositeDisposable)
+                }, { it.printStackTrace() }).call(compositeDisposable)
     }
 
     override fun attachView(view: ChatContract.View?) {

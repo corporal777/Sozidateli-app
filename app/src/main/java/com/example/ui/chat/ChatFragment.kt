@@ -7,8 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
@@ -19,16 +17,13 @@ import com.example.adapters.ChatAdapter
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
+import com.example.util.CropCircleTransformation
 import com.example.util.chat.QueryList
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
-import com.example.util.CropCircleTransformation
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_chat_message_incoming.*
-import kotlinx.android.synthetic.main.item_chat_message_incoming.view.*
-import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
@@ -131,13 +126,13 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_chat, menu)
-       // val avatarMenu = menu.findItem(R.id.avatar)
+        // val avatarMenu = menu.findItem(R.id.avatar)
     }
 
     override fun showAvatar(url: String?) {
         val avatarView = activity?.findViewById<View>(R.id.avatar)
         avatarView?.let {
-            Picasso.get().load(url.let { if(it.isNullOrEmpty()) null else it })
+            Picasso.get().load(url.let { if (it.isNullOrEmpty()) null else it })
                     .transform(CropCircleTransformation())
                     .placeholder(R.drawable.avatar_placeholder)
                     .into(it.ivAvatar)
