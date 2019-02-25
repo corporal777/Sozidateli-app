@@ -171,5 +171,8 @@
 
     <string name="not_found_chats">У вас нет чатов</string>
     <string name="create_chat">Создать чат</string>
+    
+    <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\n отправить\n сообщение</string>
+    <string name="user_avatar">Аватар</string>
 
 </resources>

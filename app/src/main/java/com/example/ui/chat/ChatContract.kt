@@ -27,6 +27,13 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showCantSendHolder(isShow:Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAvatar(url:String?)
+
     }
 
     interface Presenter : TakePhotoContract.Presenter {

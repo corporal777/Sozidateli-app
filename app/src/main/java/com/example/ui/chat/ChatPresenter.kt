@@ -60,6 +60,14 @@ class ChatPresenter
                     viewState.apply { iniChatAdapter(chatMessageQuery, chatMessageParser) }
                 }, {})
                 .call(compositeDisposable)
+
+        viewState.showCantSendHolder(false)
+        chatRepository.getChat(chatId)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.showCantSendHolder(false)
+                    viewState.showAvatar(it.user.user_avatar)
+                },{it.printStackTrace()}).call(compositeDisposable)
     }
 
     override fun attachView(view: ChatContract.View?) {

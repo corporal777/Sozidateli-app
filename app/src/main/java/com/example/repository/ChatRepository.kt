@@ -25,4 +25,6 @@ interface ChatRepository {
     fun startChat(userId: Int): Single<ChatStartResponse>
 
     fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>
+
+    fun getChat(chatId: String): Single<UserChat>
 }
