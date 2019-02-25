@@ -76,6 +76,16 @@ class MainPresenter
                     }
                 }
                 .call(compositeDisposable)
+
+        appData.onErrorHandlerListener.
+                performOnBackgroundOutOnMain()
+                .subscribe {
+                    it.value?.let {
+                        it.errors?.let { messages->
+                            viewState.showToast(messages.joinToString(separator = "\n"))
+                        }
+                    }
+                }.call(compositeDisposable)
     }
 
     override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {

@@ -6,5 +6,5 @@ data class ApiResponse<T>(
         val response_detail: ResponseDetail? = null,
         val session: Session? = null,
         val code: Int = 0,
-        val errors: List<Any>? = null
+        val errors: List<String>? = null
 )

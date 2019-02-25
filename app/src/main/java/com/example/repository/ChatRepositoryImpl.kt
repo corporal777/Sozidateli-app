@@ -2,10 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.ApiResponseUpload
-import com.example.data.models.ChatMessage
-import com.example.data.models.ChatStartResponse
-import com.example.data.models.UploadImage
+import com.example.data.models.*
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -102,5 +99,9 @@ class ChatRepositoryImpl
                     val body = RequestBody.create(MediaType.parse("image/*"), imageFile)
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 })
+    }
+
+    override fun getChat(chatId: String): Single<UserChat> {
+        return call(api.getChat(chatId))
     }
 }

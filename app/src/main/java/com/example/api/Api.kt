@@ -78,4 +78,7 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/users/search")
     fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
+
+    @GET("/v1/user/chat/{chat}")
+    fun getChat(@Path("chat") chatId: String): Single<ApiResponse<UserChat>>
 }

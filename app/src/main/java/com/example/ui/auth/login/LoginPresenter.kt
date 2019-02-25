@@ -57,7 +57,7 @@ class LoginPresenter
         completable.performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                }, { viewState.showToast(it.message ?: "") })
+                }, { })
                 .call(compositeDisposable)
     }
 
