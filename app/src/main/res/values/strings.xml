@@ -176,4 +176,6 @@
     <string name="user_avatar">Аватар</string>
 
     <string name="chat_photo_message_text">Фото</string>
+
+    <string name="image_transition_name">image_open_transition</string>
 </resources>

@@ -7,6 +7,7 @@ import com.example.data.models.UserChat
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
+import io.reactivex.disposables.Disposable
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -22,6 +23,7 @@ class ChatListPresenter
 
     private var firstLaunch = true
     private var lastChatUnreadCount: Int? = null
+    private val arraySubscribers = ArrayList<Disposable>()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -54,4 +56,24 @@ class ChatListPresenter
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)
 
     override fun onMenuAddChatClick() = viewState.openSearchContact()
+
+    override fun subscribeCountUnreadMessage(chatId: String, position: Int, onChange: (count: Int) -> Unit) {
+        arraySubscribers.add(position,chatRepository.subscribeChatUnreadMessageCount(chatId)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    onChange(it)
+                }, {}))
+    }
+
+    override fun unsubscribeCountUnreadMessage(chatId: String, position: Int) {
+        arraySubscribers[position].dispose()
+        arraySubscribers.removeAt(position)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        arraySubscribers.forEach {
+            it.dispose()
+        }
+    }
 }

@@ -58,6 +58,11 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                     tvLastMessage.text = item.lastMessage ?: "-"
                     itemView.setOnClickListener { presenter.onChatClick(item) }
                 }
+
+                presenter.subscribeCountUnreadMessage(item.id,position,{
+                    viewHolder.tvBadge.text = it.toString()
+                    viewHolder.tvBadge.visibility = if(it==0)View.GONE else View.VISIBLE
+                })
             }
         }
     }

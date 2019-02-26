@@ -36,15 +36,28 @@ class ChatRepositoryImpl
         return RxFirestore.runTransaction(firestore) {
             val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(userId)
             val userUnreadMessageCount = it.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+
+            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(userId)
+            val userUnreadChatMessageCount = it.get(unreadChatMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+
             if (userUnreadMessageCount == null) {
                 it.set(unreadMessageCountRef, mapOf(FIELD_UNREAD_MESSAGE_COUNT to 1))
             } else {
                 it.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadMessageCount.plus(1))
             }
+
+            if (userUnreadChatMessageCount == null) {
+                it.set(unreadChatMessageCountRef, mapOf(FIELD_UNREAD_MESSAGE_COUNT to 1))
+            } else {
+                it.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadChatMessageCount.plus(1))
+            }
+
             it.set(firestore.collection(COLLECTION_CHATS)
                     .document(chatId)
                     .collection(COLLECTION_MESSAGES)
                     .document(), message.toMap())
+
+
             null
         }.andThen(call(api.chatLastMessage(chatId, message.text ?: "")))
     }
@@ -58,6 +71,11 @@ class ChatRepositoryImpl
             val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
             val userUnreadMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
                     ?: 0.0
+
+            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
+            val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)?: 0.0
+
+
 //
 //            var unreadCount = 0
 //            ids.forEach { id ->
@@ -69,6 +87,9 @@ class ChatRepositoryImpl
 
             val resultCount = userUnreadMessageCount - ids.size
             transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
+
+            val resultUnreadChatCount = userUnreadChatMessageCount - ids.size
+            transaction.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultUnreadChatCount < 0) 0 else resultUnreadChatCount)
 
             null
         }
@@ -82,6 +103,12 @@ class ChatRepositoryImpl
 
     override fun subscribeChatUnreadMessageCount(): Flowable<Int> {
         val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
+        return RxFirestore.observeDocumentRef(unreadMessageCountRef)
+                .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
+    }
+
+    override fun subscribeChatUnreadMessageCount(chatId: String): Flowable<Int> {
+        val unreadMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
         return RxFirestore.observeDocumentRef(unreadMessageCountRef)
                 .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
     }
