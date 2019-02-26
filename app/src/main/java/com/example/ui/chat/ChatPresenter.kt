@@ -1,6 +1,7 @@
 package com.example.ui.chat
 
 import android.net.Uri
+import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -71,7 +72,7 @@ class ChatPresenter
 
         Observable.create<Collector<ChatMessage>> { it.onNext(createMessagesCollector(it)) }
                 .flatMap { subscribeToMessageMarkRead(it) }
-                .map { messages -> messages.mapNotNull { it.id } }
+                .map { messages -> messages.mapNotNull { it.id }.distinct() }
                 .flatMapCompletable { chatRepository.setMessagesRead(chatId, it) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, { it.printStackTrace() })
@@ -131,8 +132,8 @@ class ChatPresenter
         sendMessage(ChatMessage(text = message, senderId = appData.getUser().user_id))
     }
 
-    override fun onImageClick(url: String) {
-        viewState.openImageFullScreen(url)
+    override fun onImageClick(url: String,imageView: ImageView) {
+        viewState.openImageFullScreen(url,imageView)
     }
 
     private fun sendMessage(chatMessage: ChatMessage) {

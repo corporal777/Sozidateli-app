@@ -22,6 +22,8 @@ interface ChatRepository {
 
     fun subscribeChatUnreadMessageCount(): Flowable<Int>
 
+    fun subscribeChatUnreadMessageCount(chatId:String): Flowable<Int>
+
     fun startChat(userId: Int): Single<ChatStartResponse>
 
     fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>

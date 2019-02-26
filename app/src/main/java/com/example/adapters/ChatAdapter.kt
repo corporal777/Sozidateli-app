@@ -3,6 +3,7 @@ package com.example.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.R
@@ -17,7 +18,7 @@ class ChatAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var queryList: QueryList<UserChatMessage>? = null
 
-    var onItemClickListener: ((UserChatMessage) -> Unit)? = null
+    var onItemClickListener: ((UserChatMessage,imageView: ImageView) -> Unit)? = null
     var onItemAttached: ((UserChatMessage) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -70,7 +71,7 @@ class ChatAdapter : RecyclerView.Adapter<ViewHolder>() {
             root.background = background
             itemView.subRoot.setPadding(padding, padding, padding, padding)
 
-            root.setOnClickListener { onItemClickListener?.invoke(model) }
+            root.setOnClickListener { onItemClickListener?.invoke(model,ivImage) }
         }
     }
 

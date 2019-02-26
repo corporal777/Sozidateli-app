@@ -19,11 +19,13 @@ interface ChatListContract {
         fun openSearchContact()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEmptyView(isShow:Boolean)
+        fun showEmptyView(isShow: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
         fun onMenuAddChatClick()
+        fun subscribeCountUnreadMessage(chatId: String, position: Int, onChange: (count:Int)->Unit)
+        fun unsubscribeCountUnreadMessage(chatId: String, position: Int)
     }
 }

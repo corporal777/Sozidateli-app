@@ -24,6 +24,10 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import javax.inject.Inject
 import javax.inject.Provider
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
+import androidx.transition.Fade
+import com.example.util.ImageOpenTransition
 
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
@@ -42,8 +46,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     private val chatAdapter = ChatAdapter().apply {
-        onItemClickListener = {
-            it.message.image?.apply { presenter.onImageClick(this) }
+        onItemClickListener = {model,imageView->
+            model.message.image?.apply { presenter.onImageClick(this,imageView) }
         }
         onItemAttached = {
             presenter.onChatMessageOnScreen(it)
@@ -100,9 +104,12 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         else rvChat.layoutManager?.scrollToPosition(position)
     }
 
-    override fun openImageFullScreen(url: String) {
+    override fun openImageFullScreen(url: String,imageView: ImageView) {
         val dialog = FullScreenImageDialogFragment.newInstance(url)
         val ft = childFragmentManager.beginTransaction()
+        ViewCompat.getTransitionName(imageView)?.let {
+            ft.addSharedElement(imageView,it)
+        }
         dialog.show(ft, FullScreenImageDialogFragment.TAG)
     }
 

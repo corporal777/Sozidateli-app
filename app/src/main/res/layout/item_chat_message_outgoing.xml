@@ -57,6 +57,7 @@
                     android:id="@+id/ivImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:transitionName="@string/image_transition_name"
                     android:scaleType="centerCrop" />
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

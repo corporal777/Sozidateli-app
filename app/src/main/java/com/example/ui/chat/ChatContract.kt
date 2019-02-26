@@ -1,5 +1,6 @@
 package com.example.ui.chat
 
+import android.widget.ImageView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -32,7 +33,7 @@ interface ChatContract {
         fun scrollToBottomPosition()
 
         @StateStrategyType(SkipStrategy::class)
-        fun openImageFullScreen(url: String)
+        fun openImageFullScreen(url: String,imageView:ImageView)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
@@ -52,6 +53,6 @@ interface ChatContract {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
         fun onChatMessageOnScreen(message: UserChatMessage)
-        fun onImageClick(url: String)
+        fun onImageClick(url: String,imageView:ImageView)
     }
 }

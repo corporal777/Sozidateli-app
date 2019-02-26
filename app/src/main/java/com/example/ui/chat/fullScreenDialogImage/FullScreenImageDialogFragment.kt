@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import androidx.transition.TransitionInflater
 import bundleOf
 import com.example.R
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_full_screen_dialog.view.*
+import java.lang.Exception
 
 
 class FullScreenImageDialogFragment : DialogFragment() {
@@ -17,6 +20,8 @@ class FullScreenImageDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialogStyle)
+        postponeEnterTransition()
+        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
     }
 
 
@@ -36,7 +41,16 @@ class FullScreenImageDialogFragment : DialogFragment() {
         }
 
         arguments?.let {
-            Picasso.get().load(it.getString(ARG_IMAGE,null)).into(view.ivImage)
+            Picasso.get().load(it.getString(ARG_IMAGE,null))
+                    .noFade().into(view.ivImage,object:Callback{
+                        override fun onSuccess() {
+                            startPostponedEnterTransition()
+                        }
+
+                        override fun onError(e: Exception?) {
+                            startPostponedEnterTransition()
+                        }
+                    })
         }
 
         return view
@@ -52,6 +66,7 @@ class FullScreenImageDialogFragment : DialogFragment() {
             }
         }
     }
+
 
     companion object {
 
