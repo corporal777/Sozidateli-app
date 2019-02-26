@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
@@ -27,10 +29,6 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-import android.widget.ImageView
-import androidx.core.view.ViewCompat
-import androidx.transition.Fade
-import com.example.util.ImageOpenTransition
 
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
@@ -50,9 +48,9 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     private val chatGroup = QueryPageListGroup<ChatMessageItem>()
     private val chatAdapter = GroupAdapter<ViewHolder>().apply {
-        setOnItemClickListener { item, _ ->
+        setOnItemClickListener { item, view ->
             when (item) {
-                is ChatMessageImageItem -> presenter.onImageClick(item.imageUrl)
+                is ChatMessageImageItem -> presenter.onImageClick(item.imageUrl, view.findViewById(R.id.ivChatImage))
             }
         }
         add(chatGroup)
@@ -103,11 +101,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         else rvChat.layoutManager?.scrollToPosition(position)
     }
 
-    override fun openImageFullScreen(url: String,imageView: ImageView) {
+    override fun openImageFullScreen(url: String, imageView: ImageView) {
         val dialog = FullScreenImageDialogFragment.newInstance(url)
         val ft = childFragmentManager.beginTransaction()
         ViewCompat.getTransitionName(imageView)?.let {
-            ft.addSharedElement(imageView,it)
+            ft.addSharedElement(imageView, it)
         }
         dialog.show(ft, FullScreenImageDialogFragment.TAG)
     }
