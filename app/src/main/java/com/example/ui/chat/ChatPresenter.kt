@@ -6,17 +6,16 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
+import com.example.holders.ChatMessageImageItem
+import com.example.holders.ChatMessageItem
+import com.example.holders.ChatMessageTextItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.Collector
 import com.example.util.FIELD_IS_READ
 import com.example.util.chat.QueryList
 import com.example.util.chat.QueryPageOptions
-import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.firestore.ChangeEventListener
 import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestoreException
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.Single
@@ -35,78 +34,39 @@ class ChatPresenter
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     private var isChatScrolledToBottom = true
-    private var queryList: QueryList<UserChatMessage>? = null
 
     lateinit var chatId: String
     lateinit var userId: String
 
     private val messageToMarkReadPublisher = PublishSubject.create<ChatMessage>()
-    private val changeEventListener = object : ChangeEventListener {
-        override fun onDataChanged() {
-
-        }
-
-        override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
-            viewState.apply {
-                when (type) {
-                    ChangeEventType.ADDED -> {
-                        notifyItemInserted(newIndex)
-                        if (newIndex == 0 && isChatScrolledToBottom) viewState.scrollToBottomPosition()
-                    }
-                    ChangeEventType.CHANGED -> notifyItemChanged(newIndex)
-                    ChangeEventType.REMOVED -> notifyItemRemoved(oldIndex)
-                    ChangeEventType.MOVED -> notifyItemMoved(oldIndex, newIndex)
-                    else -> throw IllegalStateException("Incomplete when statement")
-                }
-            }
-        }
-
-        override fun onError(e: FirebaseFirestoreException) {
-            viewState.showToast(e.localizedMessage)
-        }
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
         Observable.create<Collector<ChatMessage>> { it.onNext(createMessagesCollector(it)) }
                 .flatMap { subscribeToMessageMarkRead(it) }
-                .map { messages -> messages.mapNotNull { it.id } }
+                .map { messages -> messages.mapNotNull { it.id }.distinct() }
                 .flatMapCompletable { chatRepository.setMessagesRead(chatId, it) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, { it.printStackTrace() })
                 .call(compositeDisposable)
 
         chatRepository.singInFirebase()
+                .andThen(chatRepository.getChat(chatId))
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    val chatMessageQuery = chatRepository.getChatMessageQuery(chatId)
-                    val chatMessageParser = SnapshotParser { snapshot ->
-                        snapshot.toObject(ChatMessage::class.java)!!.let {
-                            it.id = snapshot.id
-                            it.isRead = snapshot.getBoolean(FIELD_IS_READ)
-                            UserChatMessage(it, appData.getUser().user_id == it.senderId)
-                        }
-                    }
-
-                    queryList = QueryList(QueryPageOptions(
-                            chatMessageQuery,
-                            chatMessageParser,
+                    val query = QueryList(QueryPageOptions(chatRepository.getChatMessageQuery(chatId),
+                            createChatMessageSnapshotParser(),
                             20
-                    )).apply {
-                        addChangeEventListener(changeEventListener)
-                        viewState.setQuery(this)
+                    ))
+
+                    viewState.apply {
+                        viewState.setQuery(query)
+                        showCantSendHolder(false)
+                        showAvatar(it.user.user_avatar)
                     }
                 }, {})
                 .call(compositeDisposable)
-
-        viewState.showCantSendHolder(false)
-        chatRepository.getChat(chatId)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.showCantSendHolder(false)
-                    viewState.showAvatar(it.user.user_avatar)
-                }, { it.printStackTrace() }).call(compositeDisposable)
     }
 
     override fun attachView(view: ChatContract.View?) {
@@ -181,8 +141,16 @@ class ChatPresenter
                 }).call(compositeDisposable)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        queryList?.removeChangeEventListener(changeEventListener)
+    private fun createChatMessageSnapshotParser(): SnapshotParser<ChatMessageItem> = SnapshotParser { snapshot ->
+        snapshot.toObject(ChatMessage::class.java)!!.let {
+            it.id = snapshot.id
+            it.isRead = snapshot.getBoolean(FIELD_IS_READ)
+            val userMessage = UserChatMessage(it, appData.getUser().user_id == it.senderId)
+            when {
+                !it.image.isNullOrBlank() -> ChatMessageImageItem(userMessage)
+                else -> ChatMessageTextItem(userMessage)
+            }
+
+        }
     }
 }

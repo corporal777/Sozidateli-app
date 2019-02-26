@@ -5,25 +5,14 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChatMessage
+import com.example.holders.ChatMessageItem
 import com.example.ui.base.takePhoto.TakePhotoContract
 import com.example.util.chat.QueryList
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setQuery(queryList: QueryList<UserChatMessage>)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun notifyItemInserted(position: Int)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun notifyItemChanged(position: Int)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun notifyItemRemoved(position: Int)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun notifyItemMoved(oldPosition: Int, newPosition: Int)
+        fun setQuery(queryList: QueryList<ChatMessageItem>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
@@ -45,7 +34,6 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAvatar(url: String?)
-
     }
 
     interface Presenter : TakePhotoContract.Presenter {
