@@ -18,6 +18,9 @@ interface LoginEmailContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableLoginBtn(isEnable: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRecoveryPassword(email: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -26,5 +29,6 @@ interface LoginEmailContract {
         fun onChangePasswordText(password: String)
         fun onClickLogin()
         fun onClickRegister()
+        fun onClickRecoverPassword()
     }
 }

@@ -22,6 +22,14 @@ import javax.inject.Inject
 import javax.inject.Provider
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Context
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.dialog_password_recovery.*
+import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
@@ -75,7 +83,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             appLinkData?.also {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
-                if (authEmail != null && authCode != null) presenter.onHandleAuthLink(authEmail, authCode)
+                val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
+                if (authEmail != null && authCode != null) {
+                    presenter.onHandleAuthLink(authEmail, authCode)
+                } else if (authCode != null && recoverEmail != null) {
+                    presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
+                }
             }
         }
         val chatData = intent.getBundleExtra(FIELD_CHAT)
@@ -83,9 +96,46 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             val userId = it.getString(FIELD_SENDER_ID, null)
             val chatId = it.getString(FIELD_CHAT_ID, null)
             val userName = it.getString(FIELD_LABEL, null)
-            val notifiactionId = it.getString(FIELD_NOTIFICATION_ID,null)
-            if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName,notifiactionId)
+            val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
+            if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName, notifiactionId)
         }
+    }
+
+    override fun showDialogRecoverPassword(email: String, code: String) {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_password_recovery, null, false)
+        val alert = AlertDialog.Builder(this)
+                .setTitle(R.string.recovery_set_password_title)
+                .setView(view)
+                .create()
+
+        var password = ""
+        var passwordConfirm = ""
+
+        validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+
+        view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            password = charSequence.toString()
+            validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+        })
+
+        view.etConfirmPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            passwordConfirm = charSequence.toString()
+            validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+        })
+
+        view.btnSave.setOnClickListener {
+            alert.dismiss()
+            presenter.onSetPassword(email, code, password)
+        }
+
+        alert.show()
+
+    }
+
+    private fun validPasswords(password: String, passwordConfirm: String, textView: TextView, button: Button) {
+        val validPassword = password == passwordConfirm && AuthUtil.isValidPassword(password)
+        AuthUtil.colorTextPasswordChecker(textView, validPassword)
+        AuthUtil.enableButton(button, validPassword)
     }
 
     override fun showChat(userId: String, chatId: String, userName: String) {

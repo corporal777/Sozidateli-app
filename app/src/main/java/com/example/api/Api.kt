@@ -81,4 +81,17 @@ interface Api {
 
     @GET("/v1/user/chat/{chat}")
     fun getChat(@Path("chat") chatId: String): Single<ApiResponse<UserChat>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/recovery_password")
+    fun sendEmailRecovery(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/recovery_password/check")
+    fun checkRecoveryCode(@Field("user_email") email: String, @Field("confirm_code") confirm: String): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/recovery_password/set_pwd")
+    fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
+
 }

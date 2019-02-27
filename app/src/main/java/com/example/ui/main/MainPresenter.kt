@@ -77,11 +77,10 @@ class MainPresenter
                 }
                 .call(compositeDisposable)
 
-        appData.onErrorHandlerListener.
-                performOnBackgroundOutOnMain()
+        appData.onErrorHandlerListener.performOnBackgroundOutOnMain()
                 .subscribe {
                     it.value?.let {
-                        it.errors?.let { messages->
+                        it.errors?.let { messages ->
                             viewState.showToast(messages.joinToString(separator = "\n"))
                         }
                     }
@@ -117,6 +116,22 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, { viewState.showLogin() })
                 .call(compositeDisposable)
+    }
+
+    override fun onHandleRecoverPasswordLink(email: String, code: String) {
+        authRepository.checkRecoveryCode(email, code)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe {
+                    viewState.showDialogRecoverPassword(email, code)
+                }.call(compositeDisposable)
+    }
+
+    override fun onSetPassword(email: String, code: String, password: String) {
+        authRepository.setPassword(email, code, password)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({}, { viewState.showDialogRecoverPassword(email, code) }).call(compositeDisposable)
     }
 
     private fun subscribeToNotifications(): Completable {

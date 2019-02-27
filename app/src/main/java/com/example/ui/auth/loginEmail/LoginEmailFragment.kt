@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.util.AuthUtil
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_login_email.*
 import javax.inject.Inject
@@ -51,6 +52,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
         etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             presenter.onChangePasswordText(charSequence.toString())
         })
+        tvRecoverPassword.setOnClickListener { presenter.onClickRecoverPassword() }
     }
 
     override fun setEmailAndPassword(email: String, password: String) {
@@ -66,27 +68,16 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
                 .show()
     }
 
+    override fun showRecoveryPassword(email: String) {
+        findNavController().navigate(LoginEmailFragmentDirections.loginEmailToRecoveryAction(email))
+    }
+
     override fun showRegister() {
         findNavController().navigate(LoginEmailFragmentDirections.loginEmailToRegisterAction())
     }
 
     override fun enableLoginBtn(isEnable: Boolean) {
-        btnLogin.apply {
-            isEnabled = isEnable
-
-            val background: Int
-            val textColor: Int
-            if (isEnable) {
-                background = R.drawable.background_btn_auth
-                textColor = Color.WHITE
-            } else {
-                background = R.drawable.background_disabled_btn_login
-                textColor = ContextCompat.getColor(context, R.color.disabled_color)
-            }
-
-            setBackgroundResource(background)
-            setTextColor(textColor)
-        }
+        AuthUtil.enableButton(btnLogin, isEnable)
     }
 
     override fun layout() = R.layout.fragment_login_email

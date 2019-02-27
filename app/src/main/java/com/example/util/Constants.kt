@@ -50,6 +50,9 @@ const val LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliq
 const val AUTH_CONFIRM_EMAIL_EMAIL = "email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 
+const val RECOVERY_EMAIL = "recover_email"
+
+
 const val FIELD_CHAT_ID = "chatId"
 const val FIELD_CHAT = "chat"
 const val FIELD_LABEL = "label"

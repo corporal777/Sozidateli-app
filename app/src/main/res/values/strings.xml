@@ -178,4 +178,12 @@
     <string name="chat_photo_message_text">Фото</string>
 
     <string name="image_transition_name">image_open_transition</string>
+
+    <string name="recovery_password_title">Восстановление пароля</string>
+    <string name="recovery_password_btn">Восстановить</string>
+    <string name="recovery_confirm_email_message">На почтовый ящик %s отправлена инструкция по восстановлению пароля.</string>
+    <string name="recovery_set_password_title">Укажите новый пароль</string>
+    <string name="recovery_confirm_password">Подтвердите пароль</string>
+
+
 </resources>

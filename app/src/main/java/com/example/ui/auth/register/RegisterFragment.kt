@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.util.AuthUtil
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_register.*
 import javax.inject.Inject
@@ -72,16 +73,9 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     }
 
     override fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean) {
-        colorTextPasswordChecker(tvPasswordStrong1, isHasSix)
+        AuthUtil.colorTextPasswordChecker(tvPasswordStrong1, isHasSix)
 //        colorTextPasswordChecker(tvPasswordStrong2, isOneCap)
 //        colorTextPasswordChecker(tvPasswordStrong3, isHasSymbol)
-    }
-
-    private fun colorTextPasswordChecker(textView: TextView, has: Boolean) {
-        val colorRed = Color.RED
-        val colorGreen = ContextCompat.getColor(requireContext(), R.color.auth_accept_green)
-
-        textView.setTextColor(if (has) colorGreen else colorRed)
     }
 
     override fun goToLoginWithEmailConfirmation(email: String, password: String) {

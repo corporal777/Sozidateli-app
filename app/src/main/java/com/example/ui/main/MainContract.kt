@@ -23,13 +23,18 @@ interface MainContract {
         fun showGreetings()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showChat(userId:String,chatId:String,userName:String)
+        fun showChat(userId: String, chatId: String, userName: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showDialogRecoverPassword(email: String, code: String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onOpenStartDestination()
         fun onOpenNotStartDestination()
         fun onHandleAuthLink(email: String, code: String)
-        fun onHandleChat(userId:String,chatId:String,userName:String,notificationId:String)
+        fun onHandleRecoverPasswordLink(email: String, code: String)
+        fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
+        fun onSetPassword(email: String, code: String, password: String)
     }
 }

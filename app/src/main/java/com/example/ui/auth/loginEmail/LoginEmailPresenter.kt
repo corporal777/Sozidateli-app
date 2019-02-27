@@ -42,6 +42,10 @@ class LoginEmailPresenter
         viewState.enableLoginBtn(AuthUtil.isValidEmail(email))
     }
 
+    override fun onClickRecoverPassword() {
+        viewState.showRecoveryPassword(email)
+    }
+
     override fun onClickLogin() {
         authRepository.authEmail(email, password)
                 .performOnBackgroundOutOnMain()

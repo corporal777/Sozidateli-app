@@ -29,6 +29,10 @@
             android:id="@+id/login_email_to_register_action"
             app:destination="@id/register_fragment" />
 
+        <action
+            android:id="@+id/login_email_to_recovery_action"
+            app:destination="@id/recovery_password_fragment" />
+
         <argument
             android:name="email"
             app:argType="string"
@@ -42,6 +46,17 @@
         <argument
             android:name="confirm"
             app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recovery_password_fragment"
+        android:name="com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment"
+        android:label="@string/recovery_password_title">
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
