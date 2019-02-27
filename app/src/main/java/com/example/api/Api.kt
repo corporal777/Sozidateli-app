@@ -67,6 +67,10 @@ interface Api {
     @POST("/v1/user/chat/{chat}/upload")
     fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
 
+    @Multipart
+    @POST("/v1/user/update/avatar")
+    fun uploadAvatar(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
+
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>
 

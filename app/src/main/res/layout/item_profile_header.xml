@@ -22,8 +22,15 @@
             android:layout_width="@dimen/profile_avatar_size"
             android:layout_height="@dimen/profile_avatar_size"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivEdit"
             android:src="@mipmap/ic_launcher" />
+        
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_edit"
+            android:id="@+id/ivEdit"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"/>
 
 
         <LinearLayout
@@ -32,7 +39,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivEdit"
             app:layout_constraintStart_toEndOf="@id/ivAvatar">
 
             <TextView
