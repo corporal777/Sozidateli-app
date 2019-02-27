@@ -23,20 +23,22 @@
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/backgrounds/scenic" />
 
+        <!--suppress AndroidUnknownAttribute -->
         <TextView
             android:id="@+id/tvScheme"
+            fontPath="fonts/OpenSans-Light.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/profile_padding_start"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/profile_padding_start"
             android:textSize="16sp"
-            fontPath="fonts/OpenSans-Light.ttf"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivScheme"
             app:layout_constraintVertical_bias="0.0"
+            tools:ignore="MissingPrefix"
             tools:text="@tools:sample/lorem" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

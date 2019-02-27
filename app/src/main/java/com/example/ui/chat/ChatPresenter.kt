@@ -7,15 +7,10 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
-import com.example.holders.ChatMessageImageItem
-import com.example.holders.ChatMessageItem
-import com.example.holders.ChatMessageTextItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.Collector
 import com.example.util.FIELD_IS_READ
-import com.example.util.chat.QueryList
-import com.example.util.chat.QueryPageOptions
 import com.firebase.ui.firestore.SnapshotParser
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -56,13 +51,20 @@ class ChatPresenter
                 .andThen(chatRepository.getChat(chatId))
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    val query = QueryList(QueryPageOptions(chatRepository.getChatMessageQuery(chatId),
-                            createChatMessageSnapshotParser(),
-                            20
-                    ))
 
                     viewState.apply {
-                        viewState.setQuery(query)
+                        val parser = SnapshotParser { snapshot ->
+                            snapshot.toObject(ChatMessage::class.java)!!.let {
+                                it.id = snapshot.id
+                                it.isRead = snapshot.getBoolean(FIELD_IS_READ)
+                                UserChatMessage(it, appData.getUser().user_id == it.senderId)
+                            }
+                        }
+                        viewState.setQuery(
+                                chatRepository.getChatMessageQuery(chatId),
+                                parser,
+                                CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT
+                        )
                         showCantSendHolder(false)
                         showAvatar(it.user.user_avatar)
                     }
@@ -92,8 +94,8 @@ class ChatPresenter
         sendMessage(ChatMessage(text = message, senderId = appData.getUser().user_id))
     }
 
-    override fun onImageClick(url: String,imageView: ImageView) {
-        viewState.openImageFullScreen(url,imageView)
+    override fun onImageClick(url: String, imageView: ImageView) {
+        viewState.openImageFullScreen(url, imageView)
     }
 
     private fun sendMessage(chatMessage: ChatMessage) {
@@ -142,16 +144,7 @@ class ChatPresenter
                 }).call(compositeDisposable)
     }
 
-    private fun createChatMessageSnapshotParser(): SnapshotParser<ChatMessageItem> = SnapshotParser { snapshot ->
-        snapshot.toObject(ChatMessage::class.java)!!.let {
-            it.id = snapshot.id
-            it.isRead = snapshot.getBoolean(FIELD_IS_READ)
-            val userMessage = UserChatMessage(it, appData.getUser().user_id == it.senderId)
-            when {
-                !it.image.isNullOrBlank() -> ChatMessageImageItem(userMessage)
-                else -> ChatMessageTextItem(userMessage)
-            }
-
-        }
+    companion object {
+        const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 20
     }
 }

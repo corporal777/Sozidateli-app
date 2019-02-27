@@ -1,19 +1,18 @@
 package com.example.ui.chat
 
 import android.widget.ImageView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChatMessage
-import com.example.holders.ChatMessageItem
 import com.example.ui.base.takePhoto.TakePhotoContract
-import com.example.util.chat.QueryList
+import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.Query
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setQuery(queryList: QueryList<ChatMessageItem>)
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setQuery(query: Query, parser: SnapshotParser<UserChatMessage>, pageSize: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
@@ -22,7 +21,7 @@ interface ChatContract {
         fun scrollToBottomPosition()
 
         @StateStrategyType(SkipStrategy::class)
-        fun openImageFullScreen(url: String,imageView:ImageView)
+        fun openImageFullScreen(url: String, imageView: ImageView)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
@@ -41,6 +40,6 @@ interface ChatContract {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
         fun onChatMessageOnScreen(message: UserChatMessage)
-        fun onImageClick(url: String,imageView:ImageView)
+        fun onImageClick(url: String, imageView: ImageView)
     }
 }

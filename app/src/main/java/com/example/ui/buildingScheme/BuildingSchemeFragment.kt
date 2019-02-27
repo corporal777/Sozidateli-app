@@ -55,7 +55,7 @@ class BuildingSchemeFragment : BaseNestedNavigationFragment(), BuildingSchemeCon
                 R.id.image_view_fragment,
                 bundleOf(ImageViewFragment.ARG_IMAGE_URL to url),
                 null,
-                FragmentNavigatorExtras(ivScheme to "image")
+                FragmentNavigatorExtras(ivScheme to getString(R.string.image_transition_name))
         )
     }
 

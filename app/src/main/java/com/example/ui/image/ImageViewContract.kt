@@ -7,6 +7,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface ImageViewContract {
     interface View : MvpView {
@@ -21,6 +22,12 @@ interface ImageViewContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun findImageBitmap(@DrawableRes resource: Int)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")
+        fun setCustomTransitionName(transitionName: String)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")
+        fun setDefaultTransitionName()
     }
 
     interface Presenter : BaseContract.Presenter {

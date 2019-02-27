@@ -132,6 +132,11 @@
             android:name="bitmap"
             app:argType="android.graphics.Bitmap"
             app:nullable="true" />
+
+        <argument
+            android:name="transition_name"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment

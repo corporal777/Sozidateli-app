@@ -3,11 +3,16 @@ package com.example.ui.image
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.annotation.DrawableRes
-import androidx.transition.*
-import androidx.transition.TransitionSet.ORDERING_TOGETHER
-import androidx.core.content.ContextCompat
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.ChangeTransform
+import androidx.transition.TransitionSet
+import androidx.transition.TransitionSet.ORDERING_TOGETHER
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -32,6 +37,7 @@ class ImageViewFragment : BaseFragment(), ImageViewContract.View {
         url = arguments?.getString(ARG_IMAGE_URL)
         resource = arguments?.getInt(ARG_IMAGE_RESOURCE)
         bitmap = arguments?.getParcelable(ARG_IMAGE_BITMAP)
+        customTransitionName = arguments?.getString(ARG_TRANSITION_NAME)
     }
 
     private val dummyTarget = object : Target {
@@ -58,12 +64,25 @@ class ImageViewFragment : BaseFragment(), ImageViewContract.View {
 
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
-        enterTransition = Fade()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postponeEnterTransition()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        flingLayout.dismissListener = { findNavController().navigateUp() }
+        photoView.setOnScaleChangeListener { scaleFactor, _, _ -> flingLayout.isDragEnabled = scaleFactor <= 1 }
+    }
+
+    override fun setCustomTransitionName(transitionName: String) {
+        photoView.transitionName = transitionName
+    }
+
+    override fun setDefaultTransitionName() {
+        photoView.transitionName = getString(R.string.image_transition_name)
     }
 
     override fun setImage(bitmap: Bitmap) {
@@ -90,6 +109,7 @@ class ImageViewFragment : BaseFragment(), ImageViewContract.View {
         const val ARG_IMAGE_URL = "image_url"
         const val ARG_IMAGE_RESOURCE = "image_resource"
         const val ARG_IMAGE_BITMAP = "image_bitmap"
+        const val ARG_TRANSITION_NAME = "transition_name"
 
         fun newInstance(url: String) = ImageViewFragment().apply {
             arguments = bundleOf(ARG_IMAGE_URL to url)

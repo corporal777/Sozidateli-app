@@ -16,12 +16,18 @@ class ImageViewPresenter
     var resource: Int? = null
     var bitmap: Bitmap? = null
 
+    var customTransitionName: String? = null
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val url = this.url
         val resource = this.resource
         val bitmap = this.bitmap
         viewState.apply {
+            val transitionName = customTransitionName
+            if (transitionName == null) setDefaultTransitionName()
+            else setCustomTransitionName(transitionName)
+
             when {
                 url != null -> findImageBitmap(url)
                 resource != null -> findImageBitmap(resource)

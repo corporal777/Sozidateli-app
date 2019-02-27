@@ -1,4 +1,6 @@
 import android.content.res.Resources
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
 import com.example.util.DATE_FORMAT_FULL_MONTH_NO_YEAR
@@ -34,3 +36,14 @@ val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 val Int.px: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+inline fun <T : View> T.afterOnGlobalLayout(crossinline onGlobalLayout: T.() -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            if (measuredWidth > 0 && measuredHeight > 0) {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                this@afterOnGlobalLayout.onGlobalLayout()
+            }
+        }
+    })
+}

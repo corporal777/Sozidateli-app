@@ -1,16 +1,19 @@
 package com.example.holders
 
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.Guideline
 import com.example.R
 import com.example.data.models.UserChatMessage
 import com.example.util.RoundedCornersTransformation
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_image.*
 
 class ChatMessageImageItem(
-        message: UserChatMessage
+        message: UserChatMessage,
+        private val onImageClick: (url: String, imageView: ImageView) -> Unit
 ) : ChatMessageItem(message) {
 
     val imageUrl = message.message.image!!
@@ -18,15 +21,28 @@ class ChatMessageImageItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
+            pbImageLoading.visibility = View.VISIBLE
             ivChatImage.apply {
+                transitionName = imageUrl
                 Picasso.get().load(imageUrl)
+                        .error(R.drawable.ic_broken_image)
                         .transform(RoundedCornersTransformation(
                                 (cornersRadius / 1.5).toInt(),
                                 0,
                                 if (message.isMyMessage) RoundedCornersTransformation.CornerType.OTHER_BOTTOM_RIGHT else
                                     RoundedCornersTransformation.CornerType.OTHER_BOTTOM_LEFT
                         ))
-                        .into(this)
+                        .into(this, object : Callback {
+                            override fun onSuccess() {
+                                pbImageLoading.visibility = View.GONE
+                            }
+
+                            override fun onError(e: Exception?) {
+                                pbImageLoading.visibility = View.GONE
+                            }
+                        })
+
+                setOnClickListener { onImageClick(imageUrl, ivChatImage) }
             }
         }
     }

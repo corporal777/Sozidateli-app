@@ -1,5 +1,6 @@
 package com.example.ui.chat
 
+import afterOnGlobalLayout
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
@@ -8,20 +9,28 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserChatMessage
 import com.example.holders.ChatMessageImageItem
 import com.example.holders.ChatMessageItem
+import com.example.holders.ChatMessageTextItem
 import com.example.holders.QueryPageListGroup
 import com.example.ui.base.takePhoto.TakePhotoFragment
-import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
+import com.example.ui.image.ImageViewFragment
 import com.example.util.CropCircleTransformation
+import com.example.util.SnapshotWrappedItemParser
 import com.example.util.chat.QueryList
+import com.example.util.chat.QueryPageOptions
+import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
@@ -47,14 +56,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     private val chatGroup = QueryPageListGroup<ChatMessageItem>()
-    private val chatAdapter = GroupAdapter<ViewHolder>().apply {
-        setOnItemClickListener { item, view ->
-            when (item) {
-                is ChatMessageImageItem -> presenter.onImageClick(item.imageUrl, view.findViewById(R.id.ivChatImage))
-            }
-        }
-        add(chatGroup)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +64,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
         setHasOptionsMenu(true)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
         btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
@@ -75,7 +77,9 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
         rvChat.apply {
             this.layoutManager = layoutManager
-            adapter = chatAdapter
+            adapter = GroupAdapter<ViewHolder>().apply {
+                add(chatGroup)
+            }
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     val isBottomPosition = if (newState == SCROLL_STATE_IDLE) {
@@ -88,10 +92,30 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                     presenter.onChatScrollChange(isBottomPosition)
                 }
             })
+
+            afterOnGlobalLayout {
+                startPostponedEnterTransition()
+            }
         }
     }
 
-    override fun setQuery(queryList: QueryList<ChatMessageItem>) {
+    override fun setQuery(query: Query, parser: SnapshotParser<UserChatMessage>, pageSize: Int) {
+        val imageClickListener = { url: String, imageView: ImageView ->
+            presenter.onImageClick(url, imageView)
+        }
+        val itemParser = SnapshotWrappedItemParser(parser) {
+            when {
+                !it.message.image.isNullOrBlank() -> ChatMessageImageItem(it, imageClickListener)
+                else -> ChatMessageTextItem(it)
+            }
+        }
+
+        val queryList = QueryList(QueryPageOptions(
+                query,
+                itemParser,
+                pageSize
+        ))
+
         chatGroup.setQueryList(queryList)
     }
 
@@ -102,12 +126,16 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     override fun openImageFullScreen(url: String, imageView: ImageView) {
-        val dialog = FullScreenImageDialogFragment.newInstance(url)
-        val ft = childFragmentManager.beginTransaction()
-        ViewCompat.getTransitionName(imageView)?.let {
-            ft.addSharedElement(imageView, it)
-        }
-        dialog.show(ft, FullScreenImageDialogFragment.TAG)
+        val transitionName = imageView.transitionName
+        findNavController().navigate(
+                R.id.image_view_fragment,
+                bundleOf(
+                        ImageViewFragment.ARG_IMAGE_URL to url,
+                        ImageViewFragment.ARG_TRANSITION_NAME to transitionName
+                ),
+                null,
+                FragmentNavigatorExtras(imageView to transitionName)
+        )
     }
 
     override fun cancelNotificationByChatId(chatId: String) {
