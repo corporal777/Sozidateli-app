@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class UserChat(
-        val id: String,
+        val id: Int,
         @SerializedName("user_recepient")
         var user: User,
         val created: String,
@@ -21,5 +21,5 @@ class UserChat(
         var userSender: User?,
 
         //for fcm push
-        var notifiactionId:String?
+        var notifiactionId: String?
 ) : Parcelable

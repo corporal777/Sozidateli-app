@@ -73,7 +73,8 @@ class ChatRepositoryImpl
                     ?: 0.0
 
             val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)?: 0.0
+            val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+                    ?: 0.0
 
 
 //

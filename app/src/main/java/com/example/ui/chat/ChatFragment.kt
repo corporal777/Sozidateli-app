@@ -107,6 +107,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             when {
                 !it.message.image.isNullOrBlank() -> ChatMessageImageItem(it, imageClickListener)
                 else -> ChatMessageTextItem(it)
+            }.apply {
+                onBindListener = { presenter.onChatMessageOnScreen(it) }
             }
         }
 

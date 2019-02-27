@@ -104,6 +104,7 @@ class ChatPresenter
         chatRepository.sendChatMessage(chatId, userId, chatMessage)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
+                    compositeDisposable
                 }, {
                     it.printStackTrace()
                 })

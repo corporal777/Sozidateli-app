@@ -12,11 +12,11 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.DataArgsSearchType
 import com.example.data.models.Event
+import com.example.holders.PagedListGroup
 import com.example.holders.SearchEventResultItem
 import com.example.holders.SearchHeaderItem
 import com.example.ui.base.BaseFragment
 import com.example.util.ARG_EVENT
-import com.example.util.PagedListGroup
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder

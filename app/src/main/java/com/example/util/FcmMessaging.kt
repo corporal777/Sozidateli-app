@@ -23,8 +23,6 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.Observable
 import performOnMain
-import java.lang.Exception
-
 
 
 class FcmMessaging : FirebaseMessagingService() {
@@ -43,17 +41,15 @@ class FcmMessaging : FirebaseMessagingService() {
 
         userChat = Gson().fromJson<UserChat>(remoteMessage.data.values.elementAt(0), UserChat::class.java)
 
-        if(this.application is App){
+        if (this.application is App) {
             val chatId = (application as App).currentChatID
-            chatId?.let {
-                if(it == userChat?.id) return
-            }
+            chatId?.let { if (it == userChat?.id?.toString()) return }
         }
         userChat?.notifiactionId = remoteMessage.messageId
 
         Observable.fromCallable {
-            if (userChat?.userSender?.user_avatar.isNullOrEmpty()){
-                createChatNotifiaction(userChat, null)
+            if (userChat?.userSender?.user_avatar.isNullOrEmpty()) {
+                createChatNotification(userChat, null)
                 return@fromCallable
             }
             Picasso.get().load(userChat?.userSender?.user_avatar.let { if (it.isNullOrEmpty()) null else it })
@@ -64,11 +60,11 @@ class FcmMessaging : FirebaseMessagingService() {
                         }
 
                         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                            createChatNotifiaction(userChat, null)
+                            createChatNotification(userChat, null)
                         }
 
                         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                            createChatNotifiaction(userChat, bitmap)
+                            createChatNotification(userChat, bitmap)
                         }
                     })
 
@@ -77,12 +73,13 @@ class FcmMessaging : FirebaseMessagingService() {
 
     }
 
-    private fun createChatNotifiaction(userChat: UserChat?, bitmap: Bitmap?) {
+    private fun createChatNotification(userChat: UserChat?, bitmap: Bitmap?) {
         val channelId = getString(R.string.app_name)
+        val groupId = userChat?.id?.toString()
 
         val summaryNotification = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setGroup(userChat?.id)
+                .setGroup(groupId)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setSound(null)
                 .setGroupSummary(true)
@@ -100,10 +97,10 @@ class FcmMessaging : FirebaseMessagingService() {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setLargeIcon(bitmap)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(userChat?.lastMessage))
-                .setGroup(userChat?.id)
+                .setGroup(groupId)
                 .apply {
                     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         notificationManager.notify(userChat?.id!!.toInt(), summaryNotification)
                     }
                     notificationManager.notify(userChat?.lastMessageDate?.hashCode()
@@ -114,7 +111,7 @@ class FcmMessaging : FirebaseMessagingService() {
     private fun createNotificationIntent(userChat: UserChat?): PendingIntent {
 
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra(FIELD_CHAT,bundleOf(
+            putExtra(FIELD_CHAT, bundleOf(
                     FIELD_CHAT_ID to userChat?.id,
                     FIELD_SENDER_ID to userChat?.userSender?.user_id.toString(),
                     FIELD_LABEL to userChat?.userSender?.fullName,

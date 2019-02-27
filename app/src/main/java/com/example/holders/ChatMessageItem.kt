@@ -28,8 +28,11 @@ abstract class ChatMessageItem(
 
     val cornersRadius = 20f.dp
 
+    var onBindListener: (() -> Unit)? = null
+
     @CallSuper
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        onBindListener?.invoke()
         viewHolder.apply {
             getGuidLineStart(this)
                     .setGuidelinePercent(
