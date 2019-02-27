@@ -33,4 +33,16 @@ class AuthRepositoryImp
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
         return call(authRequest).flatMapCompletable { Completable.complete() }
     }
+
+    override fun sendRecoveryEmail(email: String): Completable {
+        return callAuthCompletable(api.sendEmailRecovery(email))
+    }
+
+    override fun checkRecoveryCode(email: String, code: String): Completable {
+        return callAuthCompletable(api.checkRecoveryCode(email,code))
+    }
+
+    override fun setPassword(email: String, code: String, password: String): Completable {
+        return callAuthCompletable(api.setPassword(email,code,password))
+    }
 }

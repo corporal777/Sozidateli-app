@@ -1,0 +1,24 @@
+package com.example.ui.auth.recoveryPassword
+
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.ui.base.BaseContract
+
+interface RecoveryPasswordContract {
+    interface View : BaseContract.View {
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showHelpDialog(email: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun enableRecoveryBtn(isEnable: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEmail(email: String)
+    }
+
+    interface Presenter : BaseContract.Presenter {
+        fun onRecoveryClick()
+        fun onChangeEmailText(email: String)
+    }
+}

@@ -1,9 +1,42 @@
 package com.example.util
 
+import android.graphics.Color
+import android.widget.Button
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.example.R
+import kotlinx.android.synthetic.main.fragment_login_email.*
 import java.util.regex.Pattern
 
 
 object AuthUtil {
+
+
+    fun enableButton(button: Button,isEnable:Boolean){
+        button.apply {
+            isEnabled = isEnable
+
+            val background: Int
+            val textColor: Int
+            if (isEnable) {
+                background = R.drawable.background_btn_auth
+                textColor = Color.WHITE
+            } else {
+                background = R.drawable.background_disabled_btn_login
+                textColor = ContextCompat.getColor(context, R.color.disabled_color)
+            }
+
+            setBackgroundResource(background)
+            setTextColor(textColor)
+        }
+    }
+
+    fun colorTextPasswordChecker(textView: TextView, has: Boolean) {
+        val colorRed = Color.RED
+        val colorGreen = ContextCompat.getColor(textView.context, R.color.auth_accept_green)
+
+        textView.setTextColor(if (has) colorGreen else colorRed)
+    }
 
     fun isValidEmail(email: String): Boolean {
         val emailRegEx = "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,4}$"
