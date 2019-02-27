@@ -7,27 +7,28 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.ChatAdapter
-import com.example.data.models.UserChatMessage
+import com.example.holders.ChatMessageImageItem
+import com.example.holders.ChatMessageItem
+import com.example.holders.QueryPageListGroup
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.chat.fullScreenDialogImage.FullScreenImageDialogFragment
 import com.example.util.CropCircleTransformation
 import com.example.util.chat.QueryList
 import com.squareup.picasso.Picasso
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-import android.widget.ImageView
-import androidx.core.view.ViewCompat
-import androidx.transition.Fade
-import com.example.util.ImageOpenTransition
 
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
@@ -45,13 +46,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         userId = args.userId
     }
 
-    private val chatAdapter = ChatAdapter().apply {
-        onItemClickListener = {model,imageView->
-            model.message.image?.apply { presenter.onImageClick(this,imageView) }
+    private val chatGroup = QueryPageListGroup<ChatMessageItem>()
+    private val chatAdapter = GroupAdapter<ViewHolder>().apply {
+        setOnItemClickListener { item, view ->
+            when (item) {
+                is ChatMessageImageItem -> presenter.onImageClick(item.imageUrl, view.findViewById(R.id.ivChatImage))
+            }
         }
-        onItemAttached = {
-            presenter.onChatMessageOnScreen(it)
-        }
+        add(chatGroup)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +66,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         setHasOptionsMenu(true)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
         btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
-        flCantSendHolder.setOnTouchListener { view, motionEvent -> return@setOnTouchListener true }
+        flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
 
         val layoutManager = LinearLayoutManager(context).apply {
             stackFromEnd = false
@@ -89,14 +91,9 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
-    override fun setQuery(queryList: QueryList<UserChatMessage>) {
-        chatAdapter.queryList = queryList
+    override fun setQuery(queryList: QueryList<ChatMessageItem>) {
+        chatGroup.setQueryList(queryList)
     }
-
-    override fun notifyItemInserted(position: Int) = chatAdapter.notifyItemInserted(position)
-    override fun notifyItemChanged(position: Int) = chatAdapter.notifyItemChanged(position)
-    override fun notifyItemRemoved(position: Int) = chatAdapter.notifyItemRemoved(position)
-    override fun notifyItemMoved(oldPosition: Int, newPosition: Int) = chatAdapter.notifyItemMoved(oldPosition, newPosition)
 
     private fun scrollToPosition(position: Int, smooth: Boolean) {
         if (position < 0) return
@@ -104,11 +101,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         else rvChat.layoutManager?.scrollToPosition(position)
     }
 
-    override fun openImageFullScreen(url: String,imageView: ImageView) {
+    override fun openImageFullScreen(url: String, imageView: ImageView) {
         val dialog = FullScreenImageDialogFragment.newInstance(url)
         val ft = childFragmentManager.beginTransaction()
         ViewCompat.getTransitionName(imageView)?.let {
-            ft.addSharedElement(imageView,it)
+            ft.addSharedElement(imageView, it)
         }
         dialog.show(ft, FullScreenImageDialogFragment.TAG)
     }

@@ -17,6 +17,8 @@
 
     <color name="chat_message_background_outgoing">#C49A6C</color>
     <color name="chat_message_background_incoming">#E4E4E4</color>
+    <color name="chat_message_text_outgoing">#FFFFFF</color>
+    <color name="chat_message_text_incoming">#B2000000</color>
 
     <color name="event_item_background">#FFFFFF</color>
     <color name="event_item_border">#E4E4E4</color>
