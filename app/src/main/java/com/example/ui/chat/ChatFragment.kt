@@ -114,15 +114,17 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                 query,
                 itemParser,
                 pageSize
-        ))
+        )){
+            scrollToBottomPosition()
+        }
 
         chatGroup.setQueryList(queryList)
     }
 
     private fun scrollToPosition(position: Int, smooth: Boolean) {
         if (position < 0) return
-        if (smooth) rvChat.smoothScrollToPosition(position)
-        else rvChat.layoutManager?.scrollToPosition(position)
+        if (smooth) rvChat?.smoothScrollToPosition(position)
+        else rvChat?.layoutManager?.scrollToPosition(position)
     }
 
     override fun openImageFullScreen(url: String, imageView: ImageView) {

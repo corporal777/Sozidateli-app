@@ -32,6 +32,8 @@ class App : Application(), HasActivityInjector {
 
     var currentChatID:String?=null
 
+    var appIsRunning = false
+
     override fun onCreate() {
         super.onCreate()
 

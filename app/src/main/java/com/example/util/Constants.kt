@@ -9,6 +9,12 @@ const val FIELD_SEND_AT = "sendAt"
 const val FIELD_IMAGE = "image"
 const val FIELD_IS_READ = "isRead"
 const val FIELD_UNREAD_MESSAGE_COUNT = "unreadMessageCount"
+const val FIELD_USER_NAME = "userName"
+const val FIELD_AVATAR = "avatar"
+const val FIELD_IS_SHOWED = "isShowed"
+const val FIELD_MESSAGE_ID = "messageId"
+
+
 
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "d.MM.yyyy"
 const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"

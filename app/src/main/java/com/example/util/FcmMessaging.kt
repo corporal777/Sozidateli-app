@@ -1,31 +1,15 @@
 package com.example.util
 
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.media.RingtoneManager
-import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.DEFAULT_ALL
-import bundleOf
+import android.annotation.SuppressLint
 import com.example.App
-import com.example.R
 import com.example.data.models.UserChat
-import com.example.ui.main.MainActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import io.reactivex.Observable
-import performOnMain
-import java.lang.Exception
-
-
+import durdinapps.rxfirebase2.RxFirestore
+import io.reactivex.internal.operators.completable.CompletableFromAction
+import performOnBackgroundOutOnMain
 
 class FcmMessaging : FirebaseMessagingService() {
 
@@ -37,96 +21,44 @@ class FcmMessaging : FirebaseMessagingService() {
 
     }
 
+    @SuppressLint("CheckResult")
     private fun sendNotification(remoteMessage: RemoteMessage) {
+        if (this.application is App) {
+            if ((application as App).appIsRunning) return
+        }
 
         var userChat: UserChat? = null
 
         userChat = Gson().fromJson<UserChat>(remoteMessage.data.values.elementAt(0), UserChat::class.java)
 
-        if(this.application is App){
-            val chatId = (application as App).currentChatID
-            chatId?.let {
-                if(it == userChat?.id) return
-            }
-        }
-        userChat?.notifiactionId = remoteMessage.messageId
+        userChat?.messageId = remoteMessage.messageId
 
-        Observable.fromCallable {
-            if (userChat?.userSender?.user_avatar.isNullOrEmpty()){
-                createChatNotifiaction(userChat, null)
-                return@fromCallable
-            }
-            Picasso.get().load(userChat?.userSender?.user_avatar.let { if (it.isNullOrEmpty()) null else it })
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .transform(CropCircleTransformation())
-                    .into(object : Target {
-                        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+        val firestore = FirebaseFirestore.getInstance()
+
+        val msgRef = firestore.collection(COLLECTION_CHATS).document(userChat.id).collection(COLLECTION_MESSAGES).document(userChat.messageId!!)
+
+        RxFirestore.getDocument(msgRef)
+                .flatMapCompletable {
+                    val isShowed = it.getBoolean(FIELD_IS_SHOWED) ?: false
+                    if (!isShowed) {
+                        Utils.showPushChatNotification(this, userChat)
+                        RxFirestore.runTransaction(firestore) {
+                            it.update(msgRef, mapOf(
+                                    FIELD_IS_SHOWED to true
+                            ))
                         }
-
-                        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                            createChatNotifiaction(userChat, null)
-                        }
-
-                        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                            createChatNotifiaction(userChat, bitmap)
-                        }
-                    })
-
-        }.performOnMain().subscribe()
-
-
-    }
-
-    private fun createChatNotifiaction(userChat: UserChat?, bitmap: Bitmap?) {
-        val channelId = getString(R.string.app_name)
-
-        val summaryNotification = NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setGroup(userChat?.id)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setSound(null)
-                .setGroupSummary(true)
-                .build()
-
-        NotificationCompat.Builder(this, channelId)
-                .setDefaults(DEFAULT_ALL)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle(userChat?.userSender?.fullName)
-                .setContentText(userChat?.lastMessage)
-                .setAutoCancel(true)
-                .setTicker(userChat?.lastMessage)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(createNotificationIntent(userChat))
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setLargeIcon(bitmap)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(userChat?.lastMessage))
-                .setGroup(userChat?.id)
-                .apply {
-                    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        notificationManager.notify(userChat?.id!!.toInt(), summaryNotification)
+                    } else {
+                        CompletableFromAction.fromAction { }
                     }
-                    notificationManager.notify(userChat?.lastMessageDate?.hashCode()
-                            ?: 0, this.build())
                 }
-    }
+                .performOnBackgroundOutOnMain()
+                .subscribe({
 
-    private fun createNotificationIntent(userChat: UserChat?): PendingIntent {
+                }, {
+                    it.printStackTrace()
+                })
 
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra(FIELD_CHAT,bundleOf(
-                    FIELD_CHAT_ID to userChat?.id,
-                    FIELD_SENDER_ID to userChat?.userSender?.user_id.toString(),
-                    FIELD_LABEL to userChat?.userSender?.fullName,
-                    FIELD_NOTIFICATION_ID to userChat?.notifiactionId
-            ))
-        }
 
-        intent.apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-
-        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     companion object {
