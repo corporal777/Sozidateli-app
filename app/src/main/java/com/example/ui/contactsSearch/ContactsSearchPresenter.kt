@@ -87,7 +87,7 @@ class ContactsSearchPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(it.chat_id.toString(), it.user_id.toString(), user.fullName)
+                    viewState.openChat(it.chat_id.toString(), user.user_id.toString(), user.fullName)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)

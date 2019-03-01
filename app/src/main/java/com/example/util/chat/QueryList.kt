@@ -9,7 +9,7 @@ import com.google.firebase.firestore.Query
 
 class QueryList<T>(
         queryPageOptions: QueryPageOptions<T>
-) : ObservableSnapshotArray<T>(queryPageOptions.parser), QueryPageChangeEventListener<T> {
+,private val onChanged:()->Unit) : ObservableSnapshotArray<T>(queryPageOptions.parser), QueryPageChangeEventListener<T> {
 
     private val query = queryPageOptions.query
     private val pageSize = queryPageOptions.pageSize.toLong()
@@ -54,6 +54,7 @@ class QueryList<T>(
 
     override fun onDataChanged(queryPage: QueryPage<T>) {
         notifyOnDataChanged()
+        onChanged()
     }
 
     override fun onChildChanged(queryPage: QueryPage<T>, type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {

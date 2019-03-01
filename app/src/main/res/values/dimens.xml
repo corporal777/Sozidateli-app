@@ -22,4 +22,7 @@
     <dimen name="remove_from_schedule_height">35dp</dimen>
 
     <dimen name="profile_first_expand_margin_top">15dp</dimen>
+
+    <dimen name="chat_padding_read_icon">5dp</dimen>
+
 </resources>

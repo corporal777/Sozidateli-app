@@ -4,6 +4,7 @@ import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
+import com.example.data.prefs.AppPrefs
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

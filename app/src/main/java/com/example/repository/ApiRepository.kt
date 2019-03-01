@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
+import com.example.data.prefs.AppPrefs
 import com.example.util.ApiErrorParser
 import com.example.util.pagination.PaginationResponse
 import com.google.gson.Gson

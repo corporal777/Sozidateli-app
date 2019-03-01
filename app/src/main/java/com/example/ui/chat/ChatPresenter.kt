@@ -1,6 +1,7 @@
 package com.example.ui.chat
 
 import android.net.Uri
+import android.os.Build
 import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
@@ -50,6 +51,7 @@ class ChatPresenter
         chatRepository.singInFirebase()
                 .andThen(chatRepository.getChat(chatId))
                 .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({
 
                     viewState.apply {
@@ -57,7 +59,14 @@ class ChatPresenter
                             snapshot.toObject(ChatMessage::class.java)!!.let {
                                 it.id = snapshot.id
                                 it.isRead = snapshot.getBoolean(FIELD_IS_READ)
-                                UserChatMessage(it, appData.getUser().user_id == it.senderId)
+                                val msg = UserChatMessage(it, appData.getUser().user_id == it.senderId)
+                                onChatMessageOnScreen(msg)
+                                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                    it.id?.let {
+                                        viewState.cancelNotificationByChatId(it.hashCode().toString())
+                                    }
+                                }
+                                msg
                             }
                         }
                         viewState.setQuery(
@@ -104,7 +113,7 @@ class ChatPresenter
         chatRepository.sendChatMessage(chatId, userId, chatMessage)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    compositeDisposable
+
                 }, {
                     it.printStackTrace()
                 })

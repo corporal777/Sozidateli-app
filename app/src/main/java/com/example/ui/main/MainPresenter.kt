@@ -10,7 +10,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -32,7 +32,7 @@ class MainPresenter
     private var chatId: String? = null
     private var userName: String? = null
     private var wasOpen = false
-    private var chatUnreadCountDisposable: Disposable? = null
+    private var chatCompositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -50,7 +50,10 @@ class MainPresenter
                                     Completable.mergeArray(
                                             subscribeToNotifications().onErrorComplete(),
                                             chatRepository.singInFirebase().onErrorComplete()
-                                                    .doOnComplete { subscribeChatUnreadCount() }
+                                                    .doOnComplete {
+                                                        subscribeChatUnreadCount()
+                                                        subscribeChatLastMessage()
+                                                    }
                                     )
                                 }
                                 .andThen(
@@ -85,6 +88,8 @@ class MainPresenter
                         }
                     }
                 }.call(compositeDisposable)
+
+
     }
 
     override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
@@ -143,19 +148,41 @@ class MainPresenter
     }
 
     private fun subscribeChatUnreadCount() {
-        chatUnreadCountDisposable = chatRepository.subscribeChatUnreadMessageCount()
+        chatRepository.subscribeChatUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     appData.chatUnreadMessageCount = it
                 }, {
                     appData.chatUnreadMessageCount = 0
-                }).apply {
-                    call(compositeDisposable)
-                }
+                }).call(chatCompositeDisposable)
+    }
+
+    private fun subscribeChatLastMessage(){
+        chatRepository.subscribeChatLastMessage()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    if(it.isShowed || it.chatId==null) return@subscribe
+
+                    viewState.showLocalNotification(it)
+
+                    chatRepository.setLastMessageShowed(it.chatId,it.messageId)
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({},{
+                                it.printStackTrace()
+                            })
+                            .call(chatCompositeDisposable)
+                },{
+                    it.printStackTrace()
+                }).call(chatCompositeDisposable)
     }
 
     private fun unsubscribeChatUnreadCount() {
-        chatUnreadCountDisposable?.dispose()
+        chatCompositeDisposable.clear()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        chatCompositeDisposable.clear()
     }
 
     override fun onOpenStartDestination() = viewState.showBackButton(false)

@@ -66,6 +66,7 @@ class AppData(
     fun setUser(user: User) {
         val changed = this.user != user
         this.user = user
+        appPrefs.userId = user.user_id
         if (changed) userChangeSubject.onNext(user.asOptional())
     }
 

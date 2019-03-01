@@ -1,5 +1,6 @@
 package com.example.data.models.user
 
+import android.net.Uri
 import android.os.Parcelable
 import com.example.data.models.Event
 import kotlinx.android.parcel.Parcelize
@@ -31,6 +32,7 @@ data class User(
         var user_age: Int = -1,
         var user_birthday_show: Boolean = false,
         var user_avatar: String? = null,
+        var user_avatar_uri: Uri? = null, //for update user avatar
         var user_gender: String? = null,
         var passport_country_id: String? = null,
         var passport_serial: String? = null,

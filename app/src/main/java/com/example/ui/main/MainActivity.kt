@@ -20,15 +20,11 @@ import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import javax.inject.Provider
-import android.content.Context.NOTIFICATION_SERVICE
-import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.dialog_password_recovery.*
+import com.example.data.models.LocalNotification
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 
 
@@ -64,6 +60,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(application is App){
+            (application as App).appIsRunning = true
+        }
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
@@ -99,6 +98,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
             if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName, notifiactionId)
         }
+    }
+
+    override fun showLocalNotification(localNotification: LocalNotification) {
+        Utils.showLocalChatNotification(this,localNotification)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {
@@ -199,6 +202,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
+        if(application is App){
+            (application as App).appIsRunning = false
+        }
         super.onDestroy()
     }
 

@@ -13,6 +13,8 @@ import com.example.holders.ProfileExpandFieldItem
 import com.example.holders.ProfileFieldItem
 import com.example.holders.ProfileHeaderItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.takePhoto.TakePhotoFragment
+import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
@@ -22,10 +24,10 @@ import kotlinx.android.synthetic.main.fragment_profile_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
+class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View,ProfileEditPresenter>(), ProfileEditContract.View {
 
     @InjectPresenter
-    lateinit var presenter: ProfileEditPresenter
+   override lateinit var presenter: ProfileEditPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ProfileEditPresenter>
@@ -47,7 +49,9 @@ class ProfileEditFragment : BaseFragment(), ProfileEditContract.View {
 
         val listField = mutableListOf<Item>()
 
-        listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id))
+        listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id,true, View.OnClickListener {
+            presenter.onTakePhotoRequest()
+        },user.user_avatar_uri))
 
         listField.add(ProfileFieldItem(ProfileField("user_email","user_email_show",Type.EMAIL,getString(R.string.email),true,user.user_email_show,user.user_email)))
         listField.add(ProfileFieldItem(ProfileField("user_password",null,Type.PASSWORD,getString(R.string.auth_hint_password),false,false,null)))

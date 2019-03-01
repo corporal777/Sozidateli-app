@@ -20,6 +20,9 @@ class UserChat(
         @SerializedName("user_sender")
         var userSender: User?,
 
+        @SerializedName("last_message_id")
+        var messageId:String?,
+
         //for fcm push
         var notifiactionId: String?
 ) : Parcelable

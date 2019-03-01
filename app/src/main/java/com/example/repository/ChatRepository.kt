@@ -24,9 +24,13 @@ interface ChatRepository {
 
     fun subscribeChatUnreadMessageCount(chatId: String): Flowable<Int>
 
+    fun subscribeChatLastMessage(): Flowable<LocalNotification>
+
     fun startChat(userId: Int): Single<ChatStartResponse>
 
     fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>
 
     fun getChat(chatId: String): Single<UserChat>
+
+    fun setLastMessageShowed(chatId: String?, messageId: String?): Completable
 }

@@ -37,6 +37,7 @@ class CropActivity : AppCompatActivity() {
     private var rotation = 0
     private val compositeDisposable = CompositeDisposable()
     private val compressFormat = Bitmap.CompressFormat.PNG
+    private var isCircle = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +99,7 @@ class CropActivity : AppCompatActivity() {
     private fun readFromBundle(bundle: Bundle) {
         image = bundle.getParcelable(ARG_IMAGE_URI)!!
         rotation = bundle.getInt(ARG_IMAGE_ROTATION)
+        isCircle = bundle.getBoolean(ARG_CROP_CIRCLE, false)
     }
 
     private fun setupUi() {
@@ -106,6 +108,7 @@ class CropActivity : AppCompatActivity() {
         cropView.setCompressQuality(90)
         cropView.setCompressFormat(compressFormat)
         cropView.setCropEnabled(true)
+        cropView.setCropMode(if (isCircle) CropImageView.CropMode.CIRCLE else CropImageView.CropMode.CUSTOM)
 
         btnSave.setOnClickListener { crop() }
         btnCancel.setOnClickListener { finish() }
@@ -188,11 +191,13 @@ class CropActivity : AppCompatActivity() {
     companion object {
         private const val ARG_IMAGE_URI = "image_uri"
         private const val ARG_IMAGE_ROTATION = "image_rotation"
+        private const val ARG_CROP_CIRCLE = "crop_circle"
 
-        fun getStartIntent(context: Context, uri: Uri, orientation: Int): Intent {
+        fun getStartIntent(context: Context, uri: Uri, orientation: Int, isCircle: Boolean = false): Intent {
             val bundle = Bundle()
             bundle.putParcelable(ARG_IMAGE_URI, uri)
             bundle.putInt(ARG_IMAGE_ROTATION, orientation)
+            bundle.putBoolean(ARG_CROP_CIRCLE, isCircle)
             val intent = Intent(context, CropActivity::class.java)
             intent.putExtras(bundle)
             return intent

@@ -58,7 +58,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/{chat}/message")
-    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String): Completable
+    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String, @Field("message_id") messageId: String): Completable
 
     @POST("/v1/user/chat/start/{user}")
     fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
@@ -66,6 +66,10 @@ interface Api {
     @Multipart
     @POST("/v1/user/chat/{chat}/upload")
     fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
+
+    @Multipart
+    @POST("/v1/user/update/avatar")
+    fun uploadAvatar(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
 
     @POST("/v1/user/update")
     fun updateUser(@Body user: User): Single<ApiResponse<User>>
