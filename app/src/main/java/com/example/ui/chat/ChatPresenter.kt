@@ -61,7 +61,7 @@ class ChatPresenter
                                 it.isRead = snapshot.getBoolean(FIELD_IS_READ)
                                 val msg = UserChatMessage(it, appData.getUser().user_id == it.senderId)
                                 onChatMessageOnScreen(msg)
-                                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                                     it.id?.let {
                                         viewState.cancelNotificationByChatId(it.hashCode().toString())
                                     }
@@ -77,7 +77,7 @@ class ChatPresenter
                         showCantSendHolder(false)
                         showAvatar(it.user.user_avatar)
                     }
-                }, {})
+                }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
 

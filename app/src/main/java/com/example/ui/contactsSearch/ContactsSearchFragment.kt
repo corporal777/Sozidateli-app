@@ -19,6 +19,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -124,7 +126,16 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
+
+            adapter?.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    if(positionStart==0){
+                        layoutManager?.scrollToPosition(0)
+                    }
+                }
+            })
         }
+
         etSearchText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
@@ -182,10 +193,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     override fun setData(contactSearch: PagedList<User>) {
         adapter.submitList(contactSearch)
-        recyclerView.post {
-            scrollToPositionWithOffset(0, 0)
-        }
-        adapter.notifyDataSetChanged()
+
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {

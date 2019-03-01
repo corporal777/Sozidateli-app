@@ -8,6 +8,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -41,8 +42,18 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                 add(chatGroup)
             }
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+
+            adapter?.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                    if(positionStart==0){
+                        layoutManager?.scrollToPosition(0)
+                    }
+                }
+
+            })
         }
         btnCreateChat.setOnClickListener { presenter.onMenuAddChatClick() }
+
     }
 
     override fun setData(data: PagedList<UserChatItem>) {
