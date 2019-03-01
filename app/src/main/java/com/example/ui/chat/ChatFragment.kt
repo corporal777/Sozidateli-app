@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.SimpleItemAnimator
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -29,7 +30,10 @@ import com.example.util.CropCircleTransformation
 import com.example.util.SnapshotWrappedItemParser
 import com.example.util.chat.QueryList
 import com.example.util.chat.QueryPageOptions
+import com.example.util.chat.SimpleChangeEventListener
+import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.firestore.SnapshotParser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
@@ -56,6 +60,12 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     private val chatGroup = QueryPageListGroup<ChatMessageItem>()
+    private val queryListChangeListener = object : SimpleChangeEventListener() {
+        override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
+            if (type == ChangeEventType.ADDED) presenter.onNewMessage()
+        }
+    }
+    private var chatQueryList: QueryList<ChatMessageItem>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +103,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                 }
             })
 
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
             afterOnGlobalLayout {
                 startPostponedEnterTransition()
             }
@@ -103,6 +115,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         val imageClickListener = { url: String, imageView: ImageView ->
             presenter.onImageClick(url, imageView)
         }
+
         val itemParser = SnapshotWrappedItemParser(parser) {
             when {
                 !it.message.image.isNullOrBlank() -> ChatMessageImageItem(it, imageClickListener)
@@ -112,15 +125,15 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             }
         }
 
-        val queryList = QueryList(QueryPageOptions(
+        chatQueryList?.removeChangeEventListener(queryListChangeListener)
+        chatQueryList = QueryList(QueryPageOptions(
                 query,
                 itemParser,
                 pageSize
-        )){
-            scrollToBottomPosition()
+        )).apply {
+            addChangeEventListener(queryListChangeListener)
+            chatGroup.setQueryList(this)
         }
-
-        chatGroup.setQueryList(queryList)
     }
 
     private fun scrollToPosition(position: Int, smooth: Boolean) {
@@ -175,7 +188,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
-    override fun isShowToolbar() = true
+    override fun onDestroy() {
+        super.onDestroy()
+        chatQueryList?.removeChangeEventListener(queryListChangeListener)
+    }
 
+    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_chat
 }

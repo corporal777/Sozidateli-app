@@ -44,7 +44,8 @@ class ChatRepositoryImpl
         return RxFirestore.runTransaction(firestore) {
             it.set(refMsg, message.toMap())
 
-        }.andThen(call(api.chatLastMessage(chatId, message.text ?: "", messageId)))
+        }
+                .andThen(call(api.chatLastMessage(chatId, message.text ?: "", messageId)))
                 .andThen(
                         RxFirestore.runTransaction(firestore) {
                             val lastMsgRef = firestore.collection(COLLECTION_USERS).document(userId)
@@ -70,7 +71,7 @@ class ChatRepositoryImpl
                                     FIELD_AVATAR to appData.getUser().user_avatar,
                                     FIELD_IS_SHOWED to false,
                                     FIELD_UNREAD_MESSAGE_COUNT to userUnreadMessageCount.plus(1),
-                                    FIELD_MESSAGE_ID to refMsg.id
+                                    FIELD_MESSAGE_ID to messageId
                             )
 
                             it.set(lastMsgRef, lastMessage)
@@ -118,20 +119,18 @@ class ChatRepositoryImpl
             val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
                     ?: 0.0
 
-
-//
-//            var unreadCount = 0
-//            ids.forEach { id ->
-//                val message = transaction.get(messageCollectionRef.document(id))
-//                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
-//            }
+            var unreadCount = 0
+            ids.forEach { id ->
+                val message = transaction.get(messageCollectionRef.document(id))
+                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
+            }
 
             ids.forEach { id -> transaction.update(messageCollectionRef.document(id), FIELD_IS_READ, true) }
 
-            val resultCount = userUnreadMessageCount - ids.size
+            val resultCount = userUnreadMessageCount - unreadCount
             transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
 
-            val resultUnreadChatCount = userUnreadChatMessageCount - ids.size
+            val resultUnreadChatCount = userUnreadChatMessageCount - unreadCount
             transaction.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultUnreadChatCount < 0) 0 else resultUnreadChatCount)
 
             null

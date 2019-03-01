@@ -9,14 +9,17 @@ import com.google.firebase.firestore.Query
 
 class QueryList<T>(
         queryPageOptions: QueryPageOptions<T>
-,private val onChanged:()->Unit) : ObservableSnapshotArray<T>(queryPageOptions.parser), QueryPageChangeEventListener<T> {
+) : ObservableSnapshotArray<T>(queryPageOptions.parser), QueryPageChangeEventListener<T> {
 
     private val query = queryPageOptions.query
     private val pageSize = queryPageOptions.pageSize.toLong()
     private val parser = queryPageOptions.parser
 
-    private val data = mutableListOf<T>()
     private val queryPages = mutableListOf<QueryPage<T>>()
+    private val data = mutableListOf<T>()
+
+    override val size: Int
+        get() = data.size
 
     private var firstKey: DocumentSnapshot? = null
     private var lastKey: DocumentSnapshot? = null
@@ -54,7 +57,6 @@ class QueryList<T>(
 
     override fun onDataChanged(queryPage: QueryPage<T>) {
         notifyOnDataChanged()
-        onChanged()
     }
 
     override fun onChildChanged(queryPage: QueryPage<T>, type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
@@ -108,9 +110,6 @@ class QueryList<T>(
         }
     }
 
-    override val size: Int
-        get() = data.size
-
     override fun get(index: Int): T {
         val item = data[index]
         loadAround(index)
@@ -136,5 +135,14 @@ class QueryList<T>(
                 processQuery(query.startAfter(endKey))
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        firstKey = null
+        lastKey = null
+        initialPage = null
+        data.clear()
+        queryPages.clear()
     }
 }

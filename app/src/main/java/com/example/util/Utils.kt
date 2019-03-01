@@ -10,7 +10,9 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.view.Menu
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY
 import bundleOf
+import com.example.App
 import com.example.R
 import com.example.data.models.LocalNotification
 import com.example.data.models.UserChat
@@ -22,14 +24,10 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.Observable
 import performOnMain
-import java.lang.Exception
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.ComponentName
-import android.app.ActivityManager
-import com.example.App
 
 
 object Utils {
@@ -127,6 +125,7 @@ object Utils {
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setGroup(chatId)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
                 .setContentIntent(createNotificationIntent(context, chatId, senderId, senderName, notificationId))
                 .setSound(null)
                 .setGroupSummary(true)
