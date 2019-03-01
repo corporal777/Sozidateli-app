@@ -3,6 +3,7 @@ package com.example.util
 import android.annotation.SuppressLint
 import com.example.App
 import com.example.data.models.UserChat
+import com.example.data.prefs.AppPrefs
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -31,7 +32,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
         userChat = Gson().fromJson<UserChat>(remoteMessage.data.values.elementAt(0), UserChat::class.java)
 
-        userChat?.messageId = remoteMessage.messageId
+        //userChat?.messageId = remoteMessage.messageId
 
         val firestore = FirebaseFirestore.getInstance()
 
@@ -43,9 +44,21 @@ class FcmMessaging : FirebaseMessagingService() {
                     if (!isShowed) {
                         Utils.showPushChatNotification(this, userChat)
                         RxFirestore.runTransaction(firestore) {
+                            val refLastMsg = firestore.collection(COLLECTION_USERS).document(AppPrefs(this).userId.toString())
+                            val lastMsgId = it.get(refLastMsg).get(FIELD_MESSAGE_ID)
+
                             it.update(msgRef, mapOf(
                                     FIELD_IS_SHOWED to true
                             ))
+
+
+                            if (lastMsgId == userChat?.messageId) {
+                                it.update(refLastMsg, mapOf(
+                                        FIELD_IS_SHOWED to true
+                                ))
+                            }
+
+                            null
                         }
                     } else {
                         CompletableFromAction.fromAction { }

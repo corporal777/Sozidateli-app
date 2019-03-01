@@ -42,40 +42,41 @@ class ChatRepositoryImpl
         val messageId = refMsg.id
 
         return RxFirestore.runTransaction(firestore) {
-            val lastMsgRef = firestore.collection(COLLECTION_USERS).document(userId)
-            val userUnreadMessageCount = it.get(lastMsgRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-                    ?: 0.0
-
-            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(userId)
-            val userUnreadChatMessageCount = it.get(unreadChatMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-
-
-            if (userUnreadChatMessageCount == null) {
-                it.set(unreadChatMessageCountRef, mapOf(FIELD_UNREAD_MESSAGE_COUNT to 1))
-            } else {
-                it.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadChatMessageCount.plus(1))
-            }
-
-
             it.set(refMsg, message.toMap())
 
-            val lastMessage = mapOf(
-                    FIELD_CHAT_ID to chatId,
-                    FIELD_SENDER_ID to appData.getUser().user_id,
-                    FIELD_USER_NAME to appData.getUser().fullName,
-                    FIELD_TEXT to message.text,
-                    FIELD_SEND_AT to message.sendAt,
-                    FIELD_AVATAR to appData.getUser().user_avatar,
-                    FIELD_IS_SHOWED to false,
-                    FIELD_UNREAD_MESSAGE_COUNT to userUnreadMessageCount.plus(1),
-                    FIELD_MESSAGE_ID to refMsg.id
-            )
-
-            it.set(lastMsgRef, lastMessage)
-
-
-            refMsg.id
         }.andThen(call(api.chatLastMessage(chatId, message.text ?: "", messageId)))
+                .andThen(
+                        RxFirestore.runTransaction(firestore) {
+                            val lastMsgRef = firestore.collection(COLLECTION_USERS).document(userId)
+                            val userUnreadMessageCount = it.get(lastMsgRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+                                    ?: 0.0
+
+                            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(userId)
+                            val userUnreadChatMessageCount = it.get(unreadChatMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
+
+
+                            if (userUnreadChatMessageCount == null) {
+                                it.set(unreadChatMessageCountRef, mapOf(FIELD_UNREAD_MESSAGE_COUNT to 1))
+                            } else {
+                                it.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadChatMessageCount.plus(1))
+                            }
+
+                            val lastMessage = mapOf(
+                                    FIELD_CHAT_ID to chatId,
+                                    FIELD_SENDER_ID to appData.getUser().user_id,
+                                    FIELD_USER_NAME to appData.getUser().fullName,
+                                    FIELD_TEXT to message.text,
+                                    FIELD_SEND_AT to message.sendAt,
+                                    FIELD_AVATAR to appData.getUser().user_avatar,
+                                    FIELD_IS_SHOWED to false,
+                                    FIELD_UNREAD_MESSAGE_COUNT to userUnreadMessageCount.plus(1),
+                                    FIELD_MESSAGE_ID to refMsg.id
+                            )
+
+                            it.set(lastMsgRef, lastMessage)
+                            null
+                        }
+                )
     }
 
     override fun setLastMessageShowed(chatId: String?, messageId: String?): Completable {
