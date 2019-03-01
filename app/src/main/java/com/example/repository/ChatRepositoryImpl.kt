@@ -119,18 +119,18 @@ class ChatRepositoryImpl
             val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
                     ?: 0.0
 
-            var unreadCount = 0
-            ids.forEach { id ->
-                val message = transaction.get(messageCollectionRef.document(id))
-                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
-            }
+//            var unreadCount = 0
+//            ids.forEach { id ->
+//                val message = transaction.get(messageCollectionRef.document(id))
+//                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
+//            }
 
             ids.forEach { id -> transaction.update(messageCollectionRef.document(id), FIELD_IS_READ, true) }
 
-            val resultCount = userUnreadMessageCount - unreadCount
+            val resultCount = userUnreadMessageCount - ids.size
             transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
 
-            val resultUnreadChatCount = userUnreadChatMessageCount - unreadCount
+            val resultUnreadChatCount = userUnreadChatMessageCount - ids.size
             transaction.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultUnreadChatCount < 0) 0 else resultUnreadChatCount)
 
             null
