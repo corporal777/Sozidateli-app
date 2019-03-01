@@ -85,7 +85,9 @@ class ChatListPresenter
     override fun onChatOnScreen(chat: UserChatItem) {
         val chatId = chat.userChat.id
         val oldSubscription = chatUnreadMessageSubscriptions[chatId]
-        if (oldSubscription != null && !oldSubscription.isDisposed) return
+        if (oldSubscription != null && !oldSubscription.isDisposed) {
+            oldSubscription.dispose()
+        }
 
         val changeAccept = createChatMessageCountConsumer(chat)
         val subscription = chatRepository.subscribeChatUnreadMessageCount(chatId.toString())
@@ -96,7 +98,7 @@ class ChatListPresenter
     }
 
     override fun onChatGoneFromScreen(chat: UserChatItem) {
-//        chatUnreadMessageSubscriptions[chat.userChat.id]?.dispose()
+       // chatUnreadMessageSubscriptions[chat.userChat.id]?.dispose()
     }
 
     private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<Int> {
