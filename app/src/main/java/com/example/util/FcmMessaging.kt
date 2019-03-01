@@ -36,7 +36,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
         val firestore = FirebaseFirestore.getInstance()
 
-        val msgRef = firestore.collection(COLLECTION_CHATS).document(userChat.id).collection(COLLECTION_MESSAGES).document(userChat.messageId!!)
+        val msgRef = firestore.collection(COLLECTION_CHATS).document(userChat.id.toString()).collection(COLLECTION_MESSAGES).document(userChat.messageId!!)
 
         RxFirestore.getDocument(msgRef)
                 .flatMapCompletable {
