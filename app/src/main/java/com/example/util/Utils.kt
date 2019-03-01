@@ -83,7 +83,7 @@ object Utils {
     }
 
     fun showPushChatNotification(context: Context, userChat: UserChat?) {
-        showNotification(context, userChat?.userSender?.user_avatar, userChat?.id, userChat?.lastMessage, userChat?.userSender?.user_id
+        showNotification(context, userChat?.userSender?.user_avatar, userChat?.id?.toString(), userChat?.lastMessage, userChat?.userSender?.user_id
                 ?: 0, userChat?.userSender?.fullName, userChat?.messageId)
     }
 
