@@ -39,6 +39,7 @@ interface ChatContract {
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
+        fun onNewMessage()
         fun onChatMessageOnScreen(message: UserChatMessage)
         fun onImageClick(url: String, imageView: ImageView)
     }

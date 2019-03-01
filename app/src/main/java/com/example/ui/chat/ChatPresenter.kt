@@ -35,7 +35,7 @@ class ChatPresenter
     lateinit var chatId: String
     lateinit var userId: String
 
-    private val messageToMarkReadPublisher = PublishSubject.create<ChatMessage>()
+    private lateinit var messageToMarkReadPublisher: PublishSubject<ChatMessage>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -60,7 +60,6 @@ class ChatPresenter
                                 it.id = snapshot.id
                                 it.isRead = snapshot.getBoolean(FIELD_IS_READ)
                                 val msg = UserChatMessage(it, appData.getUser().user_id == it.senderId)
-                                onChatMessageOnScreen(msg)
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                                     it.id?.let {
                                         viewState.cancelNotificationByChatId(it.hashCode().toString())
@@ -93,7 +92,7 @@ class ChatPresenter
     }
 
     private fun subscribeToMessageMarkRead(collector: Collector<ChatMessage>): Observable<List<ChatMessage>> {
-        return messageToMarkReadPublisher
+        return PublishSubject.create<ChatMessage>().apply { messageToMarkReadPublisher = this }
                 .doOnNext { collector.add(it) }
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .flatMapSingle { Single.just(collector.release()) }
@@ -123,6 +122,10 @@ class ChatPresenter
     override fun onChatMessageOnScreen(message: UserChatMessage) {
         if (message.isMyMessage || message.message.isRead == true) return
         messageToMarkReadPublisher.onNext(message.message)
+    }
+
+    override fun onNewMessage() {
+        if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
