@@ -2,6 +2,7 @@ package com.example.ui.contactsSearch
 
 import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatStartResponse
@@ -10,7 +11,7 @@ import com.example.ui.base.BaseContract
 
 interface ContactsSearchContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(contactSearch: PagedList<User>)
 
         @StateStrategyType(SkipStrategy::class)

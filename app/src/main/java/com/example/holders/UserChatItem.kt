@@ -50,6 +50,7 @@ class UserChatItem(
         }
     }
 
+
     override fun unbind(holder: ViewHolder) {
         super.unbind(holder)
         onUnBind(this)

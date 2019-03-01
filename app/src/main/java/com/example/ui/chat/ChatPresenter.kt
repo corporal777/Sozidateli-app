@@ -76,7 +76,7 @@ class ChatPresenter
                         showCantSendHolder(false)
                         showAvatar(it.user.user_avatar)
                     }
-                }, {})
+                }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
 

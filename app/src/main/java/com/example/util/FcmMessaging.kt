@@ -9,6 +9,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import durdinapps.rxfirebase2.RxFirestore
+import io.reactivex.Completable
 import io.reactivex.internal.operators.completable.CompletableFromAction
 import performOnBackgroundOutOnMain
 
@@ -61,7 +62,7 @@ class FcmMessaging : FirebaseMessagingService() {
                             null
                         }
                     } else {
-                        CompletableFromAction.fromAction { }
+                        Completable.complete()
                     }
                 }
                 .performOnBackgroundOutOnMain()
