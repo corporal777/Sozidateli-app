@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.ComponentName
 import android.app.ActivityManager
+import androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY
 import com.example.App
 
 
@@ -129,6 +130,7 @@ object Utils {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setContentIntent(createNotificationIntent(context, chatId, senderId, senderName, notificationId))
                 .setSound(null)
+                .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
                 .setGroupSummary(true)
                 .build()
 
