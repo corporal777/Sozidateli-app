@@ -1,7 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Notification(
         val id: String,
         @SerializedName("user_id")
@@ -16,4 +19,4 @@ data class Notification(
         val status: String,
         val extra: String,
         val time: String
-)
+):Parcelable

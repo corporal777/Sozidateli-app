@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.models.ApiResponse
 import com.example.data.models.ApiResponseUpload
 import com.example.data.models.Notification
 import com.example.data.models.UploadImage
@@ -25,7 +26,8 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUser(): Maybe<User> = call(api.getUser()).doOnSuccess { appData.setUser(it) }
+    override fun getUserShort(): Maybe<User> = call(api.getUserShort()).doOnSuccess { appData.setUser(it) }
+    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())
 
@@ -47,7 +49,7 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
-    override fun updateUser(user: User) = call(api.updateUser(user)
+    override fun updateUser(map: Map<String, Any?>) = call(api.updateUser(map)
             .doOnSuccess { appData.setUser(it.response) })
 
     override fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
@@ -60,6 +62,15 @@ class UserRepositoryImp
                     val imageFile = File(it)
                     val body = RequestBody.create(MediaType.parse("image/*"), imageFile)
                     MultipartBody.Part.createFormData("file", imageFile.name, body)
+                }))
+    }
+
+    override fun uploadRecommendationFile(file: String): Single<User> {
+        return call(api.uploadDocument(
+                file.let {
+                    val imageFile = File(it)
+                    val body = RequestBody.create(MediaType.parse("application/pdf"), imageFile)
+                    MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
     }
 }

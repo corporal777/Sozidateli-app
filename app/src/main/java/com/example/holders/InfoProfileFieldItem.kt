@@ -1,5 +1,7 @@
 package com.example.holders
 
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.example.R
@@ -37,6 +39,11 @@ class InfoProfileFieldItem(private val title: String, private val data: ArrayLis
             }
         }
         view.tvText.text = text
+
+        view.tvText.linksClickable = true
+        view.tvText.autoLinkMask = Linkify.WEB_URLS
+        view.tvText.movementMethod = LinkMovementMethod.getInstance()
+
         linearLayout.addView(view)
     }
 

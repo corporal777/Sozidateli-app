@@ -3,13 +3,16 @@ package com.example.ui.profile.profileEdit
 import android.net.Uri
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ProfileField
-import com.example.holders.ProfileExpandFieldItem
-import com.example.holders.ProfileFieldItem
+import com.example.data.models.ProfileFieldExpand
+import com.example.data.models.user.SocialRoles
+import com.example.holders.profile.ProfileBaseFieldItem
+import com.example.holders.profile.ProfileExpandFieldItem
 import com.example.repository.UserRepository
-import com.example.ui.base.BasePresenter
 import com.example.ui.base.takePhoto.TakePhotoPresenter
+import com.example.util.photohelper.RealPathUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import performOnBackgroundOutOnMain
@@ -38,58 +41,39 @@ class ProfileEditPresenter
         viewState.setUser(appData.getUser())
     }
 
-    override fun onSaveClick(groupAdapter: GroupAdapter<ViewHolder>) {
-        /* val arrayField = mutableListOf<ProfileField>()
-         for (i in 0 until groupAdapter.itemCount) {
-             val item = groupAdapter.getItem(i)
+    override fun onSaveClick(fields:List<ProfileField>,expandFields:List<ProfileFieldExpand>) {
 
-             item.let {
-                 when (it) {
-                     is ProfileFieldItem -> {
-                         arrayField.add(it.getField())
-                     }
-                     is ProfileExpandFieldItem -> {
-                         it.getFieldItems().forEach { profileItem ->
-                             arrayField.add(profileItem.getField())
-                         }
-                     }
-                     else -> {
-                     }
-                 }
-             }
-         }
+        val mapUser = HashMap<String, Any?>()
 
-         var user = appData.getUser()
+        fields.forEach {
+            mapUser.put(it.nameField, it.data)
+        }
 
+        expandFields.forEach {
+            val arr = mutableListOf<HashMap<String, Any?>>()
+            it.listOfField.forEach { arrayField ->
+                val map = HashMap<String, Any?>()
+                arrayField.forEach {
+                    map.put(it.nameField, it.data)
+                }
 
+                arr.add(map)
+            }
+            mapUser.put(it.nameField, arr)
+        }
 
-         arrayField.forEach {
-             try {
-                 val field = user::class.java.getDeclaredField(it.nameField)
-                 field.isAccessible = true
-                 field.set(user, it.data)
+        userRepository.updateUser(mapUser)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.navigateUp()
 
-                 it.nameFieldIsShowOnlyProfile?.let { nameField ->
-                     val fieldShow = user::class.java.getDeclaredField(nameField)
-                     fieldShow.isAccessible = true
-                     fieldShow.set(user, it.isOnlyProfile)
-                 }
-             } catch (e: NoSuchFieldException) {
-                 e.printStackTrace()
-             }
-         }
-
-         userRepository.updateUser(user)
-                 .performOnBackgroundOutOnMain()
-                 .subscribe({
-                     viewState.navigateUp()
-
-                 }, {
-                     it.printStackTrace()
-                 }).call(compositeDisposable)*/
+                }, {
+                    it.printStackTrace()
+                }).call(compositeDisposable)
 
         if (photo == null) {
-            viewState.navigateUp()
+            // viewState.navigateUp()
         } else {
             userRepository.uploadAvatar(photo!!)
                     .performOnBackgroundOutOnMain()
@@ -100,7 +84,40 @@ class ProfileEditPresenter
                     }, {})
                     .call(compositeDisposable)
         }
+    }
 
+    override fun onChangePasswordShowDialogClick() {
+        viewState.showChangePasswordDialog()
+    }
+
+    override fun onChangePasswordClick(oldPassword: String, newPassword: String) {
+        val mapUser = HashMap<String, Any?>()
+        mapUser.put("user_old_password",oldPassword)
+        mapUser.put("user_new_pwd",newPassword)
+
+        userRepository.updateUser(mapUser)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.showToast(R.string.profile_password_success_change)
+                }, {
+                    it.printStackTrace()
+                }).call(compositeDisposable)
+    }
+
+    override fun onUploadDocumentClick() {
+        viewState.showPdfSelector()
+    }
+
+    override fun onPdfSelected(path:String) {
+        userRepository.uploadRecommendationFile(path)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.setUser(it)
+                },{
+                    it.printStackTrace()
+                }).call(compositeDisposable)
     }
 
     override fun onImageTaken(path: String, uri: Uri) {

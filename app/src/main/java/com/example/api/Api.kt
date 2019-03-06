@@ -34,8 +34,11 @@ interface Api {
     @POST("/v1/user/register/confirm")
     fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
+    @GET("/v1/user/info/short")
+    fun getUserShort(): Maybe<ApiResponse<User>>
+
     @GET("/v1/user/info")
-    fun getUser(): Maybe<ApiResponse<User>>
+    fun getUserFull(): Maybe<ApiResponse<User>>
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>
@@ -68,11 +71,16 @@ interface Api {
     fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
 
     @Multipart
+    @POST("/v1/user/update/recomend_file")
+    fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
+
+    @Multipart
     @POST("/v1/user/update/avatar")
     fun uploadAvatar(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
 
+    @Headers("Content-Type: application/json")
     @POST("/v1/user/update")
-    fun updateUser(@Body user: User): Single<ApiResponse<User>>
+    fun updateUser(@Body map:Map<String,@JvmSuppressWildcards Any?>): Single<ApiResponse<User>>
 
     @FormUrlEncoded
     @POST("/v1/events")

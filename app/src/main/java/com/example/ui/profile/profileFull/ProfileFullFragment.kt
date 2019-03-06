@@ -97,35 +97,54 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         }
 
         user.education?.let {
+            val list = mutableListOf<HashMap<String,String?>>()
             for (item in it) {
-                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_institution), hashMapOf(
+                list.add(hashMapOf(
                         "" to Utils.getDatesInterval(item.begin, item.end),
                         getString(R.string.profile_educate_speciality) to item.specialty,
                         getString(R.string.profile_educate_name) to item.organization
-                ), it.indexOf(item) == 0))
+                ))
             }
+            addToList(listField,list,getString(R.string.profile_institution))
         }
 
         user.work?.let {
+            val list = mutableListOf<HashMap<String,String?>>()
+
             for (item in it) {
-                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_work_experience), hashMapOf(
+                list.add(hashMapOf(
                         "" to Utils.getDatesInterval(item.begin, item.end),
                         getString(R.string.profile_work_organization) to item.organization,
                         getString(R.string.profile_work_position) to item.position,
                         getString(R.string.profile_work_description) to item.description
-                )))
+                ))
             }
+            addToList(listField,list,getString(R.string.profile_work_experience))
         }
 
         user.social_projects?.let {
+            val list = mutableListOf<HashMap<String,String?>>()
             for (item in it) {
-                listField.add(InfoProfileExpandFieldItem(getString(R.string.profile_social_project), hashMapOf(
+                list.add( hashMapOf(
                         "" to Utils.getDatesInterval(item.begin, item.end),
                         getString(R.string.profile_social_project_name) to item.name,
                         getString(R.string.profile_work_position) to item.role,
                         getString(R.string.profile_work_description) to item.description
-                )))
+                ))
             }
+            addToList(listField,list,getString(R.string.profile_social_project))
+        }
+
+        user.attached_recomendation_files?.let {
+            val list = mutableListOf<HashMap<String,String?>>()
+            for (item in it) {
+                list.add( hashMapOf(
+                        getString(R.string.profile_attached_file_name) to item.name,
+                        getString(R.string.profile_attached_file_desc) to item.desc,
+                        getString(R.string.profile_attached_file_url) to item.url
+                ))
+            }
+            addToList(listField,list,getString(R.string.profile_attached_file))
         }
 
         adapter.clear()
@@ -135,6 +154,12 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
             this.adapter = this@ProfileFullFragment.adapter
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
+        }
+    }
+
+    private fun addToList(mainList:MutableList<Item>,child:MutableList<HashMap<String,String?>>,label:String){
+        if(!child.isEmpty()){
+            mainList.add(InfoProfileExpandFieldItem(label,child))
         }
     }
 

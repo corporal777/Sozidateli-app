@@ -5,51 +5,51 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
+import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.App
 import com.example.R
+import com.example.data.AppData
+import com.example.data.prefs.AppPrefs
 import com.example.repository.DummyRepositoryImpl
+import com.example.ui.views.chatView.ChatView
 import kotlinx.android.synthetic.main.image_with_badge.view.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class AccountView : FrameLayout, AccountViewContract.View {
 
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
-        private const val CHAT_VIEW_TAG = "account_view_tag"
+        private const val ACCOUNT_TAG_VIEW = "account_view_tag"
     }
+    private val mvpDelegate by lazy { MvpDelegate<AccountView>(this) }
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
+    @InjectPresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
     lateinit var presenter: AccountViewPresenter
 
-    /*@Inject
-    lateinit var presenterProvider: Provider<ChatViewPresenter>
+    @Inject
+    lateinit var presenterProvider: Provider<AccountViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
-    fun providePresenter(): ChatViewPresenter = presenterProvider.get()*/
+    @ProvidePresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
+    fun providePresenter(): AccountViewPresenter = presenterProvider.get()
 
-    private lateinit var view: View
-
-    constructor(context: Context) : super(context) {
-        init()
+    private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
+        ivImage.setImageResource(R.drawable.ic_account)
     }
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-
-    private fun init() {
-        view = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true)
-        view.ivImage.setImageResource(R.drawable.ic_account)
-        presenter = AccountViewPresenter(DummyRepositoryImpl())
-        presenter.attachView(this)
-    }
 
     override fun setChatCount(count: Int) {
         var result = count
         val visibility: Int
         if (count > 99) result = 99
-        if (count == 0) {
+        if (count <= 0) {
             visibility = View.GONE
         } else {
             visibility = View.VISIBLE
@@ -58,29 +58,23 @@ class AccountView : FrameLayout, AccountViewContract.View {
         view.tvBadge.text = result.toString()
     }
 
-    override fun showLoadingDialog() {
 
+    init {
+        (context.applicationContext as App).appComponent.inject(this)
     }
 
-    override fun hideLoadingDialog() {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        mvpDelegate.onCreate()
+        mvpDelegate.onAttach()
     }
 
-    override fun hideKeyboard() {
-
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mvpDelegate.onSaveInstanceState()
+        mvpDelegate.onDetach()
+        mvpDelegate.onDestroyView()
+        mvpDelegate.onDestroy()
     }
-
-    override fun hideKeyboard(view: View?) {
-    }
-
-    override fun showKeyboard() {
-    }
-
-    override fun hideAllLoadingDialogs() {
-
-    }
-
-    override fun showToast(message: Int) {}
-    override fun showToast(message: String) {}
-    override fun navigateUp() {}
 
 }

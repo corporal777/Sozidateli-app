@@ -1,4 +1,4 @@
-package com.example.holders
+package com.example.holders.profile
 
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
@@ -8,28 +8,21 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.example.R
 import com.example.data.models.ProfileField
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.brown_button.view.*
-import kotlinx.android.synthetic.main.field_expand_profile.view.*
 
-class BrownButtonItem(private val text:String,private val clickListener: View.OnClickListener,private val marginTop:Int = -1) : Item() {
+class MarginItem(private val margin:Int) : Item() {
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            btn.text = text
-            btn.setOnClickListener(clickListener)
-            if(marginTop>=0) {
-                (btn.layoutParams as LinearLayout.LayoutParams).topMargin = marginTop
-            }
+            setPadding(0,margin,0,0)
         }
     }
 
-    override fun getLayout() = R.layout.brown_button
+    override fun getLayout() = R.layout.item_margin
 }

@@ -152,6 +152,8 @@
     <string name="profile_work_position">Должность</string>
     <string name="profile_work_description">Описание</string>
     <string name="profile_social_project_name">Проект</string>
+    <string name="profile_social_project_role">Должность</string>
+    <string name="profile_social_project_description">Описание</string>
 
     <string name="contact_search_title">Поиск контактов</string>
     <string name="contact_search_hint">Ведите ФИО или ID</string>
@@ -184,6 +186,21 @@
     <string name="recovery_confirm_email_message">На почтовый ящик %s отправлена инструкция по восстановлению пароля.</string>
     <string name="recovery_set_password_title">Укажите новый пароль</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
+
+    <string name="profile_date_start_educate">Дата начала обучения</string>
+    <string name="profile_date_end_educate">Дата окончания обучения</string>
+    <string name="profile_sn_label">Ссылка на профиль</string>
+    <string name="profile_date_start">Дата начала </string>
+    <string name="profile_date_end">Дата окончания </string>
+    <string name="profile_old_password">Старый пароль</string>
+    <string name="profile_new_password">Новый пароль</string>
+    <string name="profile_confirm_new_password">Подтвердите новый пароль</string>
+    <string name="profile_password_success_change">Пароль успешно изменен</string>
+    <string name="profile_attached_file">Файлы рекоммендаций</string>
+    <string name="profile_attached_file_name">Название</string>
+    <string name="profile_attached_file_desc">Описание</string>
+    <string name="profile_attached_file_url">Ссылка</string>
+    <string name="profile_upload_document">Загрузить документ</string>
 
 
 </resources>

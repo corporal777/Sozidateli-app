@@ -1,33 +1,42 @@
 package com.example.ui.profile.profileEdit
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ProfileField
+import com.example.data.models.ProfileFieldExpand
 import com.example.data.models.Type
 import com.example.data.models.user.User
 import com.example.holders.BrownButtonItem
-import com.example.holders.ProfileExpandFieldItem
-import com.example.holders.ProfileFieldItem
 import com.example.holders.ProfileHeaderItem
-import com.example.ui.base.BaseFragment
+import com.example.holders.profile.*
 import com.example.ui.base.takePhoto.TakePhotoFragment
-import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.CropCircleTransformation
-import com.squareup.picasso.Picasso
+import com.example.util.AuthUtil
+import com.example.util.SimpleTextWatcher
+import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import kotlinx.android.synthetic.main.fragment_profile_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
+import android.content.Intent
+import com.example.util.REQUEST_CODE_SELECT_PDF
+import android.app.Activity.RESULT_OK
+import com.example.util.photohelper.RealPathUtil
 
-class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View,ProfileEditPresenter>(), ProfileEditContract.View {
+
+class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileEditPresenter>(), ProfileEditContract.View {
 
     @InjectPresenter
-   override lateinit var presenter: ProfileEditPresenter
+    override lateinit var presenter: ProfileEditPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ProfileEditPresenter>
@@ -49,40 +58,170 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View,ProfileEd
 
         val listField = mutableListOf<Item>()
 
-        listField.add(ProfileHeaderItem(user.fullName,user.user_avatar,user.user_id,true, View.OnClickListener {
+        listField.add(ProfileHeaderItem(user.fullName, user.user_avatar, user.user_id, true, View.OnClickListener {
             presenter.onTakePhotoRequest()
-        },user.user_avatar_uri))
+        }, user.user_avatar_uri))
 
-        listField.add(ProfileFieldItem(ProfileField("user_email","user_email_show",Type.EMAIL,getString(R.string.email),true,user.user_email_show,user.user_email)))
-        listField.add(ProfileFieldItem(ProfileField("user_password",null,Type.PASSWORD,getString(R.string.auth_hint_password),false,false,null)))
-        listField.add(ProfileFieldItem(ProfileField("password_one_more",null,Type.PASSWORD,"Повторите пароль",false,false,null)))
-        listField.add(ProfileFieldItem(ProfileField("user_phone","user_phone_show",Type.PHONE,getString(R.string.profile_phone),true,user.user_phone_show,user.user_phone)))
-        listField.add(ProfileFieldItem(ProfileField("user_birthday","user_birthday_show",Type.DATE,getString(R.string.profile_birthday),true,user.user_birthday_show,user.user_birthday)))
-        listField.add(ProfileFieldItem(ProfileField("user_address_country",null,Type.TEXT,getString(R.string.profile_country),false,false,user.user_address_country)))
-        listField.add(ProfileFieldItem(ProfileField("user_address_city",null,Type.TEXT,getString(R.string.profile_city),false,false,user.user_address_city)))
-        //listField.add(ProfileFieldItem(ProfileField("social_links",Type.TEXT,getString(R.string.profile_sn),false,user.social_links)))
-        //listField.add(ProfileFieldItem(ProfileField("education",Type.TEXT,getString(R.string.profile_education),false,user.education)))
+        listField.add(ProfileFieldItem(ProfileField(Type.EMAIL, "user_email", getString(R.string.email), user.user_email)))
+        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_email_show", null, user.user_email_show)))
+        listField.add(ProfileFieldPasswordChangeItem(presenter))
+        listField.add(ProfileFieldItem(ProfileField(Type.PHONE, "user_phone", getString(R.string.profile_phone), user.user_phone)))
+        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_phone_show", null, user.user_phone_show)))
+        listField.add(ProfileFieldItem(ProfileField(Type.DATE, "user_birthday", getString(R.string.profile_birthday), user.user_birthday)))
+        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_birthday_show", null, user.user_birthday_show)))
+        listField.add(ProfileFieldItem(ProfileField(Type.TEXT, "user_address_city", getString(R.string.profile_city), user.user_address_city)))
 
-        /*user.education?.let {
-            for(education in it){
-                val listFirstExpandField = mutableListOf<ProfileFieldItem>()
-                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.begin",Type.DATE,"Дата начала обучение",false,education.begin)))
-                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.end",Type.DATE,"Дата окончания",false,education.end)))
-                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.specialty",Type.DATE,"Спиальность",false,education.specialty)))
-                listFirstExpandField.add(ProfileFieldItem(ProfileField("education.organization",Type.TEXT,getString(R.string.profile_institution),false,education.organization)))
+        listField.add(MarginItem(resources.getDimensionPixelSize(R.dimen.profile_margin_between_field)))
 
-                listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution),listFirstExpandField,true))
-            }
-        }*/
+        val socialNetworks = createFieldExpand("social_links", mutableListOf(
+                ProfileField(Type.SUPPORT, "id", null),
+                ProfileField(Type.TEXT, "value", getString(R.string.profile_sn_label))
+        ), user.social_links)
 
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_sn), socialNetworks, false))
 
+        val educationExpand = createFieldExpand("education", mutableListOf(
+                ProfileField(Type.SUPPORT, "id", null),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start_educate)),
+                ProfileField(Type.DATE, "end", getString(R.string.profile_date_end_educate)),
+                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization)),
+                ProfileField(Type.TEXT, "specialty", getString(R.string.profile_educate_speciality))
+        ), user.education)
+
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution), educationExpand, false))
+
+        val workExpand = createFieldExpand("work", mutableListOf(
+                ProfileField(Type.SUPPORT, "id", null),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start)),
+                ProfileField(Type.DATE, "end", getString(R.string.profile_date_end)),
+                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization)),
+                ProfileField(Type.TEXT, "position", getString(R.string.profile_work_position)),
+                ProfileField(Type.TEXT, "description", getString(R.string.profile_work_description))
+        ), user.work)
+
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_work_experience), workExpand, false))
+
+        val socialProject = createFieldExpand("social_projects", mutableListOf(
+                ProfileField(Type.SUPPORT, "id", null),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start)),
+                ProfileField(Type.DATE, "end", getString(R.string.profile_date_end)),
+                ProfileField(Type.TEXT, "name", getString(R.string.profile_social_project_name)),
+                ProfileField(Type.TEXT, "role", getString(R.string.profile_social_project_role)),
+                ProfileField(Type.TEXT, "description", getString(R.string.profile_social_project_description))
+        ), user.social_projects)
+
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_social_project), socialProject, false))
+
+        val attachedFiles = createFieldExpand("attached_recomendation_files", mutableListOf(
+                ProfileField(Type.SUPPORT, "id", null),
+                ProfileField(Type.SUPPORT, "type", null),
+                ProfileField(Type.TEXT, "name", getString(R.string.profile_attached_file_name)),
+                ProfileField(Type.TEXT, "desc", getString(R.string.profile_attached_file_desc)),
+                ProfileField(Type.TEXT, "url", getString(R.string.profile_attached_file_url))
+        ), user.attached_recomendation_files)
+
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true,presenter))
 
         listField.add(BrownButtonItem(getString(R.string.save), View.OnClickListener {
-            presenter.onSaveClick(adapter)
+            val fieldList = mutableListOf<ProfileField>()
+            val expandFieldList = mutableListOf<ProfileFieldExpand>()
+
+            for (i in 0 until adapter.itemCount) {
+                val item = adapter.getItem(i)
+                when (item) {
+                    is ProfileBaseFieldItem -> {
+                        fieldList.add(item.field)
+                    }
+                    is ProfileExpandFieldItem -> {
+                        item.let {
+                            expandFieldList.add(item.getFieldExpand())
+                        }
+                    }
+                }
+            }
+
+            presenter.onSaveClick(fieldList, expandFieldList)
         }))
 
         adapter.update(listField)
 
+    }
+
+
+    override fun showPdfSelector() {
+        val intent = Intent()
+        intent.type = "application/pdf"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select PDF"), REQUEST_CODE_SELECT_PDF)
+    }
+
+    override fun showChangePasswordDialog() {
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_password_recovery, null, false)
+        val alert = AlertDialog.Builder(context!!)
+                .setTitle(R.string.recovery_set_password_title)
+                .setView(view)
+                .create()
+
+        var password = ""
+        var passwordConfirm = ""
+        var oldPassword = ""
+
+        view.etOldPassword.visibility = View.VISIBLE
+        view.etPassword.setHint(R.string.profile_new_password)
+        view.etConfirmPassword.setHint(R.string.profile_confirm_new_password)
+
+        validPasswords(password, passwordConfirm, oldPassword, view.tvPasswordStrong1, view.btnSave)
+
+        view.etOldPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            oldPassword = charSequence.toString()
+            validPasswords(password, passwordConfirm, oldPassword, view.tvPasswordStrong1, view.btnSave)
+        })
+
+        view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            password = charSequence.toString()
+            validPasswords(password, passwordConfirm, oldPassword, view.tvPasswordStrong1, view.btnSave)
+        })
+
+        view.etConfirmPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+            passwordConfirm = charSequence.toString()
+            validPasswords(password, passwordConfirm, oldPassword, view.tvPasswordStrong1, view.btnSave)
+        })
+
+        view.btnSave.setOnClickListener {
+            alert.dismiss()
+            presenter.onChangePasswordClick(oldPassword, password)
+        }
+
+        alert.show()
+    }
+
+    private fun validPasswords(password: String, passwordConfirm: String, oldPassword: String, textView: TextView, button: Button) {
+        val validPassword = password == passwordConfirm && AuthUtil.isValidPassword(password) && oldPassword.isNotEmpty()
+        AuthUtil.colorTextPasswordChecker(textView, validPassword)
+        AuthUtil.enableButton(button, validPassword)
+    }
+
+    private fun createFieldExpand(nameField: String, defaultList: MutableList<ProfileField>, array: ArrayList<*>?): ProfileFieldExpand {
+        val fieldExpand = ProfileFieldExpand(nameField, mutableListOf(), defaultList)
+
+        array?.let {
+            for (item in it) {
+                fieldExpand.listOfField.add(Utils.getListFieldValueByMapDefault(item, fieldExpand.defaultFields))
+            }
+        }
+        return fieldExpand
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_SELECT_PDF) {
+                result?.let {
+                    it.data?.let { uri ->
+                        presenter.onPdfSelected(RealPathUtil.getPath(context, uri))
+                    }
+                }
+            }
+        }
     }
 
     override fun isShowToolbar() = true

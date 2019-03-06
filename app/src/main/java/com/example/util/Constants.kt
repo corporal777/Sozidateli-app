@@ -64,3 +64,6 @@ const val FIELD_CHAT = "chat"
 const val FIELD_LABEL = "label"
 const val FIELD_USER_ID = "userId"
 const val FIELD_NOTIFICATION_ID = "notification_id"
+
+const val REQUEST_CODE_SELECT_PDF = 12
+

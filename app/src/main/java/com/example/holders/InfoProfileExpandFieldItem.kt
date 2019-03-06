@@ -16,7 +16,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_info_profile_expand.view.*
 
-class InfoProfileExpandFieldItem(private val title:String,private val data: HashMap<String, String?>,private val isFirst:Boolean = false) : Item() {
+class InfoProfileExpandFieldItem(private val title:String,private val data: MutableList<HashMap<String, String?>>,private val isFirst:Boolean = false) : Item() {
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {

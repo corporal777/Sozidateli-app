@@ -1,13 +1,13 @@
 package com.example.data.models
 
+import java.util.*
+
 data class ProfileField(
+        var type:Type,
         var nameField: String,
-        var nameFieldIsShowOnlyProfile:String?=null,
-        var type: Type,
         var label: String? = null,
-        var isShowOnlyProfile: Boolean = false,
-        var isOnlyProfile:Boolean = false,
-        var data: Any?
+        var data: Any?=null,
+        var id:String = UUID.randomUUID().toString()
 )
 
 enum class Type(val code: Int) {
@@ -15,5 +15,7 @@ enum class Type(val code: Int) {
     TEXT(2),
     PASSWORD(3),
     PHONE(4),
-    DATE(5)
+    DATE(5),
+    SWITCH(6),
+    SUPPORT(7)
 }

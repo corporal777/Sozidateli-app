@@ -3,6 +3,7 @@ package com.example.data.models.user
 import android.net.Uri
 import android.os.Parcelable
 import com.example.data.models.Event
+import com.example.data.models.Notification
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -63,8 +64,14 @@ data class User(
         var education: ArrayList<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
-        var default_event: Event? = null
+        var default_event: Event? = null,
         //var web: ArrayList<Value>? = null
+        var attached_recomendation_files: ArrayList<RecommendationFiles>? = null,
+        var last_notification: Notification? = null,
+        var notification_total: Int = -1,
+        var notification_unread: Int = -1,
+        var event_status: String? = null
+
 ) : Parcelable {
     var fullName: String = ""
         get() = "$user_name $user_last_name"

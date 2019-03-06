@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/profile_padding_start"
     android:paddingEnd="@dimen/profile_padding_start"
-    android:paddingBottom="25dp"
+    android:paddingTop="@dimen/profile_margin_between_field"
     android:orientation="vertical">
 
     <TextView
@@ -24,11 +24,4 @@
         android:id="@+id/editText"
         android:background="@drawable/background_edittext_login"/>
 
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@+id/switchView"
-        android:textSize="16sp"
-        android:text="@string/profile_show_in_profile"/>
 </LinearLayout>

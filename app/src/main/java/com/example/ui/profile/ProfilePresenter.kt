@@ -21,23 +21,15 @@ class ProfilePresenter
         super.onFirstViewAttach()
 
         viewState.hideLastNotification()
-        userRepository.getLastNotification()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    if (it.isNotEmpty()) {
-                        it[0].text?.let {
-                            viewState.showLastNotification(it, 20)
-                        }
-                    }
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
 
-        userRepository.getUser()
+        userRepository.getUserShort()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState?.apply {
                         setUser(appData.getUser())
+                        it.last_notification?.let {notification->
+                            viewState.showLastNotification(notification.text,it.notification_unread)
+                        }
                     }
                 },{
                     it.printStackTrace()

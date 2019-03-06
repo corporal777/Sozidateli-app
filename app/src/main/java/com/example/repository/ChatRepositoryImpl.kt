@@ -43,7 +43,6 @@ class ChatRepositoryImpl
 
         return RxFirestore.runTransaction(firestore) {
             it.set(refMsg, message.toMap())
-
         }
                 .andThen(call(api.chatLastMessage(chatId, message.text ?: "", messageId)))
                 .andThen(

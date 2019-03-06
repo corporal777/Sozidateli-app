@@ -2,6 +2,7 @@ package com.example.di
 
 import android.app.Application
 import com.example.App
+import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import dagger.BindsInstance
 import dagger.Component
@@ -27,4 +28,7 @@ interface AppComponent {
     fun inject(examApp: App)
 
     fun inject(view: ChatView)
+
+    fun inject(view: AccountView)
+
 }

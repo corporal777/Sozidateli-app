@@ -25,4 +25,9 @@
 
     <dimen name="chat_padding_read_icon">5dp</dimen>
 
+    <dimen name="profile_margin_between_field">25dp</dimen>
+
+    <dimen name="profile_full_padding_top">10dp</dimen>
+    <dimen name="profile_full_height_divider">1dp</dimen>
+
 </resources>

@@ -82,7 +82,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         tvName.text = user.fullName
         //TODO: need status
         //tvStatus.text = String.format(getString(R.string.profile_status), user.status)
-       Picasso.get().load(user.user_avatar.let { if(it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
+        Picasso.get().load(user.user_avatar.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
         val visibleCurrentEvent = if (user.default_event == null) View.GONE else View.VISIBLE
         llCurrentEvent.visibility = visibleCurrentEvent
 
@@ -97,6 +97,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         notification.visibility = View.VISIBLE
         tvLastNotificationText.setHtml(text)
         tvNotificationCount.text = notificationCount.toString()
+        tvNotificationCount.visibility = if (notificationCount <= 0) View.GONE else View.VISIBLE
     }
 
     override fun hideLastNotification() {

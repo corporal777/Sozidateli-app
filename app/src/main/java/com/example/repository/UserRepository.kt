@@ -12,13 +12,15 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface UserRepository {
-    fun getUser(): Maybe<User>
+    fun getUserShort(): Maybe<User>
+    fun getUserFull(): Maybe<User>
     fun getLastNotification(): Single<List<Notification>>
     fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
     fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
-    fun updateUser(user:User): Single<User>
-    fun searchUser(name:String, email:String,limit: Int, offset: Int): Maybe<PaginationResponse<User>>
-    fun uploadAvatar(photo:String): Single<User>
+    fun updateUser(user: Map<String,Any?>): Single<User>
+    fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun uploadAvatar(photo: String): Single<User>
+    fun uploadRecommendationFile(file: String): Single<User>
 }

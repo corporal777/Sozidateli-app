@@ -2,6 +2,8 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
@@ -30,7 +32,8 @@ class ExpandedInfo : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
-    lateinit var typeface:Typeface
+
+    lateinit var typeface: Typeface
 
     private fun init() {
         view = LayoutInflater.from(context).inflate(R.layout.expended_info_view, this, true)
@@ -51,27 +54,47 @@ class ExpandedInfo : FrameLayout {
         }
     }
 
-    fun setDataInfo(info: HashMap<String, String?>) {
+    fun setDataInfo(arrayInfo: MutableList<HashMap<String, String?>>) {
         if (view.llContainerInfo.childCount == 0) {
-            info.forEach { (key, value) ->
-                val ll = LinearLayout(ContextThemeWrapper(context, R.style.ProfileInfoField))
-                // val layParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-                if (key.isNotEmpty()) {
-                    val label = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Label))
-                    label.typeface = typeface
-                    label.text = key
-                    ll.addView(label)
-                }
-
-                val text = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Text))
-                text.text = value
-                ll.addView(text)
-
-                val layParamsLL = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                view.llContainerInfo.addView(ll, layParamsLL)
+            arrayInfo.forEach {
+                createField(it, arrayInfo.indexOf(it) == arrayInfo.size - 1)
             }
         }
+    }
+
+    private fun createField(info: HashMap<String, String?>, isLast: Boolean) {
+        info.forEach { (key, value) ->
+            val ll = LinearLayout(ContextThemeWrapper(context, R.style.ProfileInfoField))
+            // val layParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+            if (key.isNotEmpty() && !value.isNullOrEmpty()) {
+                val label = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Label))
+                label.typeface = typeface
+                label.text = key
+                ll.addView(label)
+            }
+
+            if (!value.isNullOrEmpty()) {
+                val text = TextView(ContextThemeWrapper(context, R.style.ProfileInfoField_Text))
+                text.text = value
+                text.linksClickable = true
+                text.autoLinkMask = Linkify.WEB_URLS
+                text.movementMethod = LinkMovementMethod.getInstance()
+                ll.addView(text)
+            }
+
+            val layParamsLL = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            view.llContainerInfo.addView(ll, layParamsLL)
+        }
+
+        if (!isLast) {
+            val dividerParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.resources.getDimensionPixelSize(R.dimen.profile_full_height_divider))
+            val divider = View(context)
+            dividerParams.topMargin = context.resources.getDimensionPixelSize(R.dimen.profile_full_padding_top)
+            divider.setBackgroundResource(R.color.colorDivider)
+            view.llContainerInfo.addView(divider, dividerParams)
+        }
+
     }
 
     fun setisFirstExpand(isFirst: Boolean) {

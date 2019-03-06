@@ -10,6 +10,7 @@
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowReturnTransition">@android:transition/explode</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -69,7 +70,7 @@
     <style name="ProfileInfoField">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingTop">@dimen/profile_full_padding_top</item>
         <item name="android:orientation">vertical</item>
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">10dp</item>
@@ -91,6 +92,12 @@
 
     <style name="ViewDivider">
         <item name="android:background">@drawable/divider</item>
+    </style>
+
+    <style name="ViewDivider.Horizontal.Profile_Full" parent="ViewDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:paddingTop">10dp</item>
     </style>
 
     <style name="ViewDivider.Horizontal">

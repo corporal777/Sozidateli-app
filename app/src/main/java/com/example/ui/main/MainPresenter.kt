@@ -45,7 +45,7 @@ class MainPresenter
                         isAuthRequired = true
                         viewState.showLogin()
                     } else {
-                        userRepository.getUser()
+                        userRepository.getUserShort()
                                 .flatMapCompletable {
                                     Completable.mergeArray(
                                             subscribeToNotifications().onErrorComplete(),
@@ -53,6 +53,7 @@ class MainPresenter
                                                     .doOnComplete {
                                                         subscribeChatUnreadCount()
                                                         subscribeChatLastMessage()
+                                                        subscribeNotificationUnreadCount()
                                                     }
                                     )
                                 }
@@ -155,6 +156,14 @@ class MainPresenter
                 }, {
                     appData.chatUnreadMessageCount = 0
                 }).call(chatCompositeDisposable)
+    }
+
+    private fun subscribeNotificationUnreadCount() {
+        appData.onUserChange.
+                performOnBackgroundOutOnMain()
+                .subscribe {
+
+                }.call(chatCompositeDisposable)
     }
 
     private fun subscribeChatLastMessage(){

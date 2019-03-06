@@ -29,8 +29,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.ComponentName
 import android.app.ActivityManager
+import android.content.res.Resources
 import androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY
 import com.example.App
+import com.example.data.models.ProfileField
+import com.example.data.models.Type
 
 
 object Utils {
@@ -173,5 +176,32 @@ object Utils {
         }
 
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+
+    public fun getDataByName(obj: Any?, fieldName: String): Any? {
+        if (obj == null) return null
+        try {
+            val field = obj.javaClass.getDeclaredField(fieldName)
+            field.setAccessible(true)
+            val value = field.get(obj)
+            return value
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+
+    }
+
+    public fun getListFieldValueByMapDefault(obj: Any?, default: MutableList<ProfileField>): MutableList<ProfileField> {
+        val result = mutableListOf<ProfileField>()
+        default.forEach { default ->
+            result.add(ProfileField(default.type, default.nameField, default.label, getDataByName(obj, default.nameField)))
+        }
+        return result
+    }
+
+    fun dpToPx(dp:Int):Int{
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 }
