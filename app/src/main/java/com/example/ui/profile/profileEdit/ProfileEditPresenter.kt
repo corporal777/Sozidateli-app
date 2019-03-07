@@ -7,14 +7,9 @@ import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
-import com.example.data.models.user.SocialRoles
-import com.example.holders.profile.ProfileBaseFieldItem
-import com.example.holders.profile.ProfileExpandFieldItem
 import com.example.repository.UserRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.photohelper.RealPathUtil
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
+import com.example.util.FIELD_ATTACH_RECOMMENDATION_FILE
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -34,11 +29,11 @@ class ProfileEditPresenter
                     it.value?.let { viewState::setUser }
                 }, {})
                 .call(compositeDisposable)
+        viewState.setUser(appData.getUser())
     }
 
     override fun attachView(view: ProfileEditContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.getUser())
     }
 
     override fun onSaveClick(fields:List<ProfileField>,expandFields:List<ProfileFieldExpand>) {
@@ -114,7 +109,7 @@ class ProfileEditPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.setUser(it)
+                    viewState.updateExpandFieldByName(FIELD_ATTACH_RECOMMENDATION_FILE,it.attached_recomendation_files)
                 },{
                     it.printStackTrace()
                 }).call(compositeDisposable)

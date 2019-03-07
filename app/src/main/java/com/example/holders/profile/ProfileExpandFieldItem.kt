@@ -15,6 +15,7 @@ import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
 import com.example.holders.BrownButtonItem
 import com.example.ui.profile.profileEdit.ProfileEditPresenter
+import com.example.util.FIELD_ATTACH_RECOMMENDATION_FILE
 import com.example.util.Utils
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -26,7 +27,7 @@ import okhttp3.internal.Util
 import kotlin.math.exp
 
 
-class ProfileExpandFieldItem(private val name: String, private val expandField: ProfileFieldExpand, private val isLast: Boolean, private val presenter: ProfileEditPresenter? = null) : Item() {
+class ProfileExpandFieldItem(private val name: String, private var expandField: ProfileFieldExpand, private val isLast: Boolean, private val presenter: ProfileEditPresenter? = null) : Item() {
 
 
     private val DP_MARGIN = 25
@@ -87,6 +88,11 @@ class ProfileExpandFieldItem(private val name: String, private val expandField: 
         }
     }
 
+    fun updateExpandField(expandField: ProfileFieldExpand){
+        this@ProfileExpandFieldItem.expandField = expandField
+        update()
+    }
+
     private fun update() {
         val listOfField = mutableListOf<Group>()
 
@@ -121,7 +127,7 @@ class ProfileExpandFieldItem(private val name: String, private val expandField: 
         val section = Section()
 
         section.add(BrownButtonItem("Добавить", View.OnClickListener {
-            if(expandField.nameField == "attached_recomendation_files"){
+            if(expandField.nameField == FIELD_ATTACH_RECOMMENDATION_FILE){
                 presenter?.let {
                     it.onUploadDocumentClick()
                 }

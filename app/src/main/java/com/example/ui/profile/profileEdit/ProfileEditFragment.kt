@@ -17,9 +17,6 @@ import com.example.holders.BrownButtonItem
 import com.example.holders.ProfileHeaderItem
 import com.example.holders.profile.*
 import com.example.ui.base.takePhoto.TakePhotoFragment
-import com.example.util.AuthUtil
-import com.example.util.SimpleTextWatcher
-import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -28,8 +25,10 @@ import kotlinx.android.synthetic.main.fragment_profile_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
 import android.content.Intent
-import com.example.util.REQUEST_CODE_SELECT_PDF
 import android.app.Activity.RESULT_OK
+import android.os.Parcelable
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.util.*
 import com.example.util.photohelper.RealPathUtil
 
 
@@ -47,9 +46,13 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
 
     private var adapter = GroupAdapter<ViewHolder>()
 
+    private var linearLayoutManager = LinearLayoutManager(context)
+
+    private var recyclerState: Parcelable? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fieldRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        fieldRecyclerView.layoutManager = linearLayoutManager
         fieldRecyclerView.adapter = adapter
     }
 
@@ -112,7 +115,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
 
         listField.add(ProfileExpandFieldItem(getString(R.string.profile_social_project), socialProject, false))
 
-        val attachedFiles = createFieldExpand("attached_recomendation_files", mutableListOf(
+        val attachedFiles = createFieldExpand(FIELD_ATTACH_RECOMMENDATION_FILE, mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
                 ProfileField(Type.SUPPORT, "type", null),
                 ProfileField(Type.TEXT, "name", getString(R.string.profile_attached_file_name)),
@@ -120,7 +123,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "url", getString(R.string.profile_attached_file_url))
         ), user.attached_recomendation_files)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true,presenter))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true, presenter))
 
         listField.add(BrownButtonItem(getString(R.string.save), View.OnClickListener {
             val fieldList = mutableListOf<ProfileField>()
@@ -147,6 +150,15 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
 
     }
 
+    override fun updateExpandFieldByName(name: String, array:ArrayList<*>?) {
+        for (i in 0 until adapter.itemCount) {
+            val item = adapter.getItem(i)
+            if(item is ProfileExpandFieldItem){
+                val attachedFiles =  createFieldExpand(name,(item as ProfileExpandFieldItem).getFieldExpand().defaultFields,array)
+                (item as ProfileExpandFieldItem).updateExpandField(attachedFiles)
+            }
+        }
+    }
 
     override fun showPdfSelector() {
         val intent = Intent()
@@ -221,6 +233,18 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                     }
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+       recyclerState = linearLayoutManager.onSaveInstanceState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recyclerState?.let {
+            linearLayoutManager.onRestoreInstanceState(it)
         }
     }
 

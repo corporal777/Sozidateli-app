@@ -21,6 +21,9 @@ interface ProfileEditContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showPdfSelector()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateExpandFieldByName(name:String, array:ArrayList<*>?)
     }
 
     interface Presenter : BaseContract.Presenter{
