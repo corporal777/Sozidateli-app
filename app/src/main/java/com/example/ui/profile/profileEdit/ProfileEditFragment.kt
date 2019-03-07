@@ -65,14 +65,14 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
             presenter.onTakePhotoRequest()
         }, user.user_avatar_uri))
 
-        listField.add(ProfileFieldItem(ProfileField(Type.EMAIL, "user_email", getString(R.string.email), user.user_email)))
-        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_email_show", null, user.user_email_show)))
+        listField.add(ProfileEmailItem(ProfileField("user_email", getString(R.string.email), user.user_email)))
+        listField.add(ProfileSwitchItem(ProfileField( "user_email_show", null, user.user_email_show)))
         listField.add(ProfileFieldPasswordChangeItem(presenter))
-        listField.add(ProfileFieldItem(ProfileField(Type.PHONE, "user_phone", getString(R.string.profile_phone), user.user_phone)))
-        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_phone_show", null, user.user_phone_show)))
-        listField.add(ProfileFieldItem(ProfileField(Type.DATE, "user_birthday", getString(R.string.profile_birthday), user.user_birthday)))
-        listField.add(ProfileSwitchItem(ProfileField(Type.SWITCH, "user_birthday_show", null, user.user_birthday_show)))
-        listField.add(ProfileFieldItem(ProfileField(Type.TEXT, "user_address_city", getString(R.string.profile_city), user.user_address_city)))
+        listField.add(ProfilePhoneItem(ProfileField( "user_phone", getString(R.string.profile_phone), user.user_phone)))
+        listField.add(ProfileSwitchItem(ProfileField("user_phone_show", null, user.user_phone_show)))
+        listField.add(ProfileDatetItem(ProfileField( "user_birthday", getString(R.string.profile_birthday), user.user_birthday)))
+        listField.add(ProfileSwitchItem(ProfileField( "user_birthday_show", null, user.user_birthday_show)))
+        listField.add(ProfileTextItem(ProfileField("user_address_city", getString(R.string.profile_city), user.user_address_city)))
 
         listField.add(MarginItem(resources.getDimensionPixelSize(R.dimen.profile_margin_between_field)))
 

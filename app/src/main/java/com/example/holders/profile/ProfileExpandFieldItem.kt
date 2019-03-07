@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
+import com.example.data.models.Type
 import com.example.holders.BrownButtonItem
 import com.example.ui.profile.profileEdit.ProfileEditPresenter
 import com.example.util.FIELD_ATTACH_RECOMMENDATION_FILE
@@ -88,7 +89,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
         }
     }
 
-    fun updateExpandField(expandField: ProfileFieldExpand){
+    fun updateExpandField(expandField: ProfileFieldExpand) {
         this@ProfileExpandFieldItem.expandField = expandField
         update()
     }
@@ -106,7 +107,31 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
     private fun createSection(list: MutableList<ProfileField>, position: Int): Section {
         val section = Section()
         list.forEach {
-            section.add(ProfileFieldItem(it))
+
+            val baseFieldItem: ProfileBaseFieldItem
+
+            when (it.type) {
+                Type.DATE -> {
+                    baseFieldItem = ProfileDatetItem(it)
+                }
+                Type.EMAIL -> {
+                    baseFieldItem = ProfileEmailItem(it)
+                }
+                Type.PASSWORD -> {
+                    baseFieldItem = ProfilePasswordItem(it)
+                }
+                Type.PHONE -> {
+                    baseFieldItem = ProfilePhoneItem(it)
+                }
+                Type.SUPPORT -> {
+                    baseFieldItem = ProfileSupportItem(it)
+                }
+                else -> {
+                    baseFieldItem = ProfileTextItem(it)
+                }
+            }
+
+            section.add(baseFieldItem)
 
             if (list.size / 2 == list.indexOf(it)) {
                 section.add(TrashItem(View.OnClickListener {
@@ -127,7 +152,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
         val section = Section()
 
         section.add(BrownButtonItem("Добавить", View.OnClickListener {
-            if(expandField.nameField == FIELD_ATTACH_RECOMMENDATION_FILE){
+            if (expandField.nameField == FIELD_ATTACH_RECOMMENDATION_FILE) {
                 presenter?.let {
                     it.onUploadDocumentClick()
                 }
