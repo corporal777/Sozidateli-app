@@ -21,4 +21,7 @@ class RepositoryModule {
 
     @Provides
     fun eventRepository(repository: EventRepositoryImp): EventRepository = repository
+
+    @Provides
+    fun organizationRepository(repository: OrganizationRepositoryImp): OrganizationRepository = repository
 }

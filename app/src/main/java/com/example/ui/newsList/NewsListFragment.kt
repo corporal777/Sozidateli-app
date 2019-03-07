@@ -42,7 +42,9 @@ class NewsListFragment : BaseFragment(), NewsListContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: News?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    tvDate.setDateCheckYearText(item.date)
+                    item.public_date?.let {
+                        tvDate.setDateCheckYearText(it)
+                    }
                     tvNewsTitle.text = item.title
                     tvNewsText.text = item.text
 

@@ -86,7 +86,6 @@ interface Api {
     @POST("/v1/events")
     fun getEventList(@Field("name") name: String?, @Field("date_start") dateStart: String?, @Field("date_end") dateEnd: String?, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Event>>>
 
-
     @FormUrlEncoded
     @POST("/v1/users/search")
     fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
@@ -105,5 +104,27 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/recovery_password/set_pwd")
     fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/news")
+    fun getEventNewsList(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<News>>>
+
+    @GET("/v1/events/{eventId}/news/{newsId}")
+    fun getNewsById(@Path("eventId") eventId: Int, @Path("newsId") newsId: Int): Single<ApiResponse<News>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/docs")
+    fun getEventDocs(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
+
+    @POST("/v1/organisations/{organizationId}/subscribe")
+    fun subscribeOrganization(@Path("organizationId") orgId: Int): Single<ApiResponse<AuthResponse>>
+
+    @POST("/v1/organisations/{organizationId}/unsubscribe")
+    fun unsubscribeOrganization(@Path("organizationId") orgId: Int): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/subscribed/organisations")
+    fun getOrganizationSubscribers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
+
 
 }

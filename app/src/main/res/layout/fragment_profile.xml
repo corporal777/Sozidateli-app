@@ -52,12 +52,12 @@
 
             <TextView
                 android:id="@+id/tvLastNotification"
+                fontPath="fonts/Helvetica-Bold.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                fontPath="fonts/Helvetica-Bold.ttf"
                 android:text="@string/profile_last_notification"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/tvLastNotificationText"
@@ -68,6 +68,7 @@
 
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/tvLastNotificationText"
+                fontPath="fonts/Helvetica-Light.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -75,7 +76,6 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
-                fontPath="fonts/Helvetica-Light.ttf"
                 android:maxLines="2"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -145,12 +145,12 @@
 
                 <TextView
                     android:id="@+id/tvAboutStatus"
+                    fontPath="fonts/OpenSans-Bold.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/profile_status_more"
                     android:textAllCaps="true"
-                    fontPath="fonts/OpenSans-Bold.ttf"
                     android:textColor="@color/auth_email_color"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -229,80 +229,85 @@
             android:layout_height="1dp"
             android:background="@color/profile_divider" />
 
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:paddingStart="@dimen/profile_padding_start"
-            android:paddingEnd="@dimen/profile_padding_start">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_current_event"
-                android:textAllCaps="true"
-                fontPath="fonts/OpenSans-Bold.ttf"
-                />
-
-            <TextView
-                android:id="@+id/tvChangeCurrentEvent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/change"
-                android:textAllCaps="true"
-                android:textColor="@color/auth_email_color"
-                fontPath="fonts/OpenSans-Bold.ttf" />
-        </FrameLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/profile_divider" />
-
         <LinearLayout
-            android:id="@+id/llCurrentEvent"
+            android:id="@+id/llCurrentEventRoot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:padding="@dimen/profile_padding_start">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvOrganizationName"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                fontPath="fonts/OpenSans-Bold.ttf"
-                tools:text="Fond temp" />
+                android:layout_marginTop="25dp"
+                android:paddingStart="@dimen/profile_padding_start"
+                android:paddingEnd="@dimen/profile_padding_start">
 
-            <TextView
-                android:id="@+id/tvEventName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <TextView
+                    fontPath="fonts/OpenSans-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_current_event"
+                    android:textAllCaps="true" />
+
+                <TextView
+                    android:id="@+id/tvChangeCurrentEvent"
+                    fontPath="fonts/OpenSans-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@string/change"
+                    android:textAllCaps="true"
+                    android:textColor="@color/auth_email_color" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                tools:text="Российский инвестиционный форум" />
+                android:background="@color/profile_divider" />
 
-            <TextView
-                android:id="@+id/tvEventDate"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llCurrentEvent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                fontPath="fonts/OpenSans-Light.ttf"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                tools:text="5.02 - 30.09.18" />
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/profile_padding_start">
 
+                <TextView
+                    android:id="@+id/tvOrganizationName"
+                    fontPath="fonts/OpenSans-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    tools:text="Fond temp" />
+
+                <TextView
+                    android:id="@+id/tvEventName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    tools:text="Российский инвестиционный форум" />
+
+                <TextView
+                    android:id="@+id/tvEventDate"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    tools:text="5.02 - 30.09.18" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/profile_divider" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/profile_divider" />
 
         <View
             android:layout_width="match_parent"

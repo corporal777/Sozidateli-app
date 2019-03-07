@@ -20,7 +20,7 @@ class SpeakersPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-       /* SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.id, limit, offset) }
+       /* SimplePagination { limit, offset -> if(onlyFavorite) dummyRepository.loadFavoriteSpeakers(limit, offset) else dummyRepository.loadEventSpeakers(event!!.event_id, limit, offset) }
                 .build()
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)*/

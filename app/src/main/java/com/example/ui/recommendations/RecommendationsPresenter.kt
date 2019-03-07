@@ -20,9 +20,11 @@ class RecommendationsPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
+    private var pagination = SimplePagination { limit, offset -> eventRepository.getEventList(limit, offset) }
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        SimplePagination { limit, offset -> eventRepository.getEventList(limit, offset) }
+        pagination
                 .build()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
@@ -32,6 +34,7 @@ class RecommendationsPresenter
     override fun attachView(view: RecommendationsContract.View?) {
         super.attachView(view)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
+        pagination.invalidate()
     }
 
     override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {

@@ -27,6 +27,15 @@ fun TextView.setDateCheckYearText(date: Long) {
     this.text = formatted
 }
 
+fun TextView.setDateCheckYearText(date: String) {
+    try {
+        val dateLong = Utils.defaultServerDateFormatter.parse(date).time
+        setDateCheckYearText(dateLong)
+    } catch (e:Exception){
+        e.printStackTrace()
+    }
+}
+
 val Float.dp: Float
     get() = (this * Resources.getSystem().displayMetrics.density)
 val Float.px: Float

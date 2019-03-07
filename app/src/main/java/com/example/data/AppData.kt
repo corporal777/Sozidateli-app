@@ -26,7 +26,7 @@ class AppData(
     var event: Event? = null
         set(value) {
             field = value
-            appPrefs.selectedEvent = value?.id
+            appPrefs.selectedEvent = value?.event_id
         }
 
     var isSubscribedToPush: Boolean = appPrefs.isFCMTokenSent

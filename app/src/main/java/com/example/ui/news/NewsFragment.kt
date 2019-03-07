@@ -6,7 +6,7 @@ import com.example.R
 import com.example.data.models.News
 import com.example.ui.base.BaseFragment
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_about_forum.*
+import kotlinx.android.synthetic.main.fragment_news.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -25,8 +25,10 @@ class NewsFragment : BaseFragment(), NewsContract.View {
     }
 
     override fun setData(news: News) {
-        Picasso.get().load(news.image).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
-        tvInfo.text = news.text
+        Picasso.get().load(news.picture.let { if(it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+        news.text?.let {
+            tvInfo.setHtml(it)
+        }
     }
 
     override fun isShowToolbar() = true

@@ -9,8 +9,6 @@ interface DummyRepository {
 
     fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
     fun loadSubscriptions(limit: Int, offset: Int): Maybe<PaginationResponse<Subscription>>
-    fun loadNews(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<News>>
-    fun loadDocuments(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
     // fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     //fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
@@ -19,5 +17,5 @@ interface DummyRepository {
     fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>>
     fun loadTags(): Single<List<String>>
     fun getEvent(): Event
-    //fun getUser(id: Int): User
+    //fun getUser(event_id: Int): User
 }

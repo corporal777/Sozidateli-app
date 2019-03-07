@@ -35,7 +35,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
     private val adapter: SimplePagingRecyclerViewAdapter<Event> by lazy {
         object : SimplePagingRecyclerViewAdapter<Event>(
-                { oldItem, newItem -> oldItem.id == newItem.id },
+                { oldItem, newItem -> oldItem.event_id == newItem.event_id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_event

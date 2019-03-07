@@ -84,7 +84,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         //tvStatus.text = String.format(getString(R.string.profile_status), user.status)
         Picasso.get().load(user.user_avatar.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
         val visibleCurrentEvent = if (user.default_event == null) View.GONE else View.VISIBLE
-        llCurrentEvent.visibility = visibleCurrentEvent
+        llCurrentEventRoot.visibility = visibleCurrentEvent
 
         user.default_event?.let {
             tvEventName.text = it.name

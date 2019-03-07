@@ -16,6 +16,9 @@ import kotlinx.android.synthetic.main.fragment_documents_list.*
 import kotlinx.android.synthetic.main.item_document.*
 import javax.inject.Inject
 import javax.inject.Provider
+import android.content.Intent
+import android.net.Uri
+
 
 class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
 
@@ -42,7 +45,7 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
                 item!!
                 viewHolder.apply {
                     itemView.setOnClickListener { presenter.onDocumentClick(item) }
-                    tvDocumentName.text = item.name
+                    tvDocumentName.text = item.description
                 }
             }
         }
@@ -58,6 +61,12 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
 
     override fun setData(documents: PagedList<Document>) {
         adapter.submitList(documents)
+    }
+
+    override fun openLinkInBrowser(link: String) {
+       /* val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        startActivity(browserIntent)*/
+        showToast(link)
     }
 
     override fun isShowToolbar() = true

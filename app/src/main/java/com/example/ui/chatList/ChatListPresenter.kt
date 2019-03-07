@@ -98,7 +98,7 @@ class ChatListPresenter
     }
 
     override fun onChatGoneFromScreen(chat: UserChatItem) {
-       // chatUnreadMessageSubscriptions[chat.userChat.id]?.dispose()
+       // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
     }
 
     private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<Int> {

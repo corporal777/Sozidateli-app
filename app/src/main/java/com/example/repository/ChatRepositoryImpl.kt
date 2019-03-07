@@ -119,8 +119,8 @@ class ChatRepositoryImpl
                     ?: 0.0
 
 //            var unreadCount = 0
-//            ids.forEach { id ->
-//                val message = transaction.get(messageCollectionRef.document(id))
+//            ids.forEach { event_id ->
+//                val message = transaction.get(messageCollectionRef.document(event_id))
 //                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
 //            }
 

@@ -175,7 +175,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_chat, menu)
-        // val avatarMenu = menu.findItem(R.id.avatar)
+        // val avatarMenu = menu.findItem(R.event_id.avatar)
     }
 
     override fun showAvatar(url: String?) {

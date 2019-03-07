@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
+import com.example.data.models.Organization
 import com.example.data.models.Subscription
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
@@ -33,14 +34,14 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
     @ProvidePresenter(type = PresenterType.WEAK, tag = "FavoriteSpeakersPresenter")
     fun providePresenter(): SubscriptionsPresenter = presenterProvider.get()
 
-    private val adapter: SimplePagingRecyclerViewAdapter<Subscription> by lazy {
-        object : SimplePagingRecyclerViewAdapter<Subscription>(
+    private val adapter: SimplePagingRecyclerViewAdapter<Organization> by lazy {
+        object : SimplePagingRecyclerViewAdapter<Organization>(
                 { oldItem, newItem -> oldItem.id == newItem.id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_subscription
 
-            override fun onBindItem(viewHolder: ViewHolder, item: Subscription?, position: Int) {
+            override fun onBindItem(viewHolder: ViewHolder, item: Organization?, position: Int) {
                 item!!
                 viewHolder.apply {
                     Picasso.get()
@@ -50,7 +51,6 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
                             .into(ivLogo)
 
                     tvLabel.text = item.name
-                    itemView.setOnClickListener { presenter.onSubscriptionClick(item) }
                     btnUnsubscribe.setOnClickListener { presenter.onUnsubscribeClick(item) }
                 }
             }
@@ -70,7 +70,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
         }
     }
 
-    override fun setData(data: PagedList<Subscription>) {
+    override fun setData(data: PagedList<Organization>) {
         adapter.submitList(data)
     }
 

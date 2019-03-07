@@ -5,9 +5,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class News(
-        val id: String,
-        val title: String,
-        val text: String,
-        val image: String,
-        val date: Long
+        val id: Int,
+        val title: String?,
+        val text: String?,
+        val picture: String?,
+        val public_date: String?,
+        val event_id:Int
 ) : Parcelable

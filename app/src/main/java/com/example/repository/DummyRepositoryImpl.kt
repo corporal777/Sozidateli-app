@@ -136,27 +136,6 @@ class DummyRepositoryImpl
         }
     }
 
-    private fun generateNews(limit: Int, offset: Int): List<News> {
-        return (1..limit).map { index ->
-            News(
-                    "${offset + index}",
-                    "Заголовок новсти Российский инвестиционный форум ${offset + index}",
-                    getRandomText(),
-                    logos.random(),
-                    getRandomDate()
-            )
-        }
-    }
-
-    private fun generateDocuments(limit: Int, offset: Int): List<Document> {
-        return (1..limit).map { index ->
-            Document(
-                    "${offset + index}",
-                    "РРТ Название презентации ${offset + index}\nв две строки"
-            )
-        }
-    }
-
     /* private fun generateSpeakers(limit: Int, offset: Int, onlyFavorite: Boolean = false): List<User> {
          return (1..limit).map { index ->
              User(
@@ -239,14 +218,6 @@ class DummyRepositoryImpl
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSubscriptions(limit, offset)) }
     }
 
-    override fun loadNews(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
-        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateNews(limit, offset)) }
-    }
-
-    override fun loadDocuments(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
-        return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateDocuments(limit, offset)) }
-    }
-
     /* override fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
          return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset)) }
      }*/
@@ -261,5 +232,5 @@ class DummyRepositoryImpl
 
     override fun getEvent() = generateEvents(1, 0).first()
 
-    //override fun getUser(id: Int) = generateUser(id)
+    //override fun getUser(event_id: Int) = generateUser(event_id)
 }
