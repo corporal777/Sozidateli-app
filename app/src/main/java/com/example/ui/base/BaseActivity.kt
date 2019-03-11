@@ -4,10 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import android.widget.Toast
-import com.example.ui.views.LoadingDialog
 import dagger.android.AndroidInjection
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -19,7 +18,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(layout())
-        getLoadingView().setOnTouchListener { view, motionEvent -> return@setOnTouchListener true }
+        getLoadingView().setOnTouchListener { _, _ -> return@setOnTouchListener true }
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -38,7 +37,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading--
             if (countVisibleLoading <= 0) {
-                countVisibleLoading=0
+                countVisibleLoading = 0
                 getLoadingView().visibility = View.GONE
             }
 
@@ -47,9 +46,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     override fun hideAllLoadingDialogs() {
         if (!isFinishing) runOnUiThread {
-                countVisibleLoading=0
-                getLoadingView().visibility = View.GONE
-            }
+            countVisibleLoading = 0
+            getLoadingView().visibility = View.GONE
+        }
     }
 
     override fun hideKeyboard() {

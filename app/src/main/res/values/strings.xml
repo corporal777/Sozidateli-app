@@ -65,7 +65,6 @@
 
     <string name="notifications_label">Уведомления</string>
 
-
     <string name="menu_item_chat_label">Чат</string>
     <string name="menu_item_search_label">Поиск</string>
     <string name="menu_item_account_label">Аккаунт</string>
@@ -173,7 +172,7 @@
 
     <string name="not_found_chats">У вас нет чатов</string>
     <string name="create_chat">Создать чат</string>
-    
+
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\n отправить\n сообщение</string>
     <string name="user_avatar">Аватар</string>
 
