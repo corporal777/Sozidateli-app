@@ -11,7 +11,7 @@ class SpeakerRepositoryImp
         appData: AppData
 ) : ApiRepository(appData), SpeakerRepository {
 
-    override fun addToFavorite(speakerId: Int): Completable = api.speakerAddToFavorite(speakerId)
+    override fun addToFavorite(speakerId: Int): Completable = call(api.speakerAddToFavorite(speakerId))
 
-    override fun removeFromFavorite(speakerId: Int): Completable = api.speakerRemoveFromFavorite(speakerId)
+    override fun removeFromFavorite(speakerId: Int): Completable = call(api.speakerRemoveFromFavorite(speakerId))
 }

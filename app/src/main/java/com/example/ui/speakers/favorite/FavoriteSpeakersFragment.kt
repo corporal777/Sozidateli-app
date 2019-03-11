@@ -15,6 +15,7 @@ import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Speaker
 import com.example.ui.base.BaseFragment
+import com.example.util.ARG_SPEAKER
 import com.example.util.ARG_USER
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_speaker.*
@@ -52,7 +53,7 @@ class FavoriteSpeakersFragment : BaseFragment(), FavoriteSpeakersContract.View {
                     val btnFavoriteTextColor: Int
                     val btnFavoriteText: String
 
-                    if (item.isInFavorite == true) {
+                    if (item.isInFavorite) {
                         btnFavoriteBackground = R.drawable.background_corners_border
                         btnFavoriteTextColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                         btnFavoriteText = getString(R.string.remove_from_favorites)
@@ -89,7 +90,7 @@ class FavoriteSpeakersFragment : BaseFragment(), FavoriteSpeakersContract.View {
 
     override fun showSpeaker(speaker: Speaker) {
         findNavController().navigate(R.id.speaker_fragment, bundleOf(
-                ARG_USER to speaker
+                ARG_SPEAKER to speaker
         ))
     }
 

@@ -35,6 +35,7 @@ const val TYPE_SCHEDULE_ALL = "all_schedule"
 
 const val ARG_USER = "user"
 const val ARG_EVENT = "event"
+const val ARG_SPEAKER = "speaker"
 
 const val SETTING_TYPE_CHAT_ALL = "all_users"
 const val SETTING_TYPE_CHAT_FAVORITE = "favorite_users"
