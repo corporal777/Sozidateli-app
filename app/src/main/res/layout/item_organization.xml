@@ -32,14 +32,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnUnsubscribe"
+        app:layout_constraintBottom_toTopOf="@+id/btnAction"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintStart_toEndOf="@+id/ivLogo"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem" />
 
     <Button
-        android:id="@+id/btnUnsubscribe"
+        android:id="@+id/btnAction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -54,7 +54,6 @@
         android:paddingTop="8dp"
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
-        android:text="@string/unsubscribe"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
         android:textSize="14sp"
@@ -64,7 +63,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/ivLogo"
         app:layout_constraintTop_toBottomOf="@+id/tvLabel"
-        app:layout_constraintWidth_default="wrap" />
+        app:layout_constraintWidth_default="wrap"
+        tools:text="@string/unsubscribe" />
 
     <ImageView
         android:id="@+id/ivNext"

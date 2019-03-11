@@ -6,7 +6,7 @@ import com.example.data.models.UserChat
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
-import setAvatar
+import setCircleImageWithPlaceholder
 
 class UserChatItem(
         val userChat: UserChat,
@@ -27,7 +27,7 @@ class UserChatItem(
         this.viewHolder = viewHolder
         onBind(this)
         viewHolder.apply {
-            ivAvatar.setAvatar(userChat.user.user_avatar)
+            ivAvatar.setCircleImageWithPlaceholder(userChat.user.user_avatar, R.drawable.avatar_placeholder)
 
             tvName.text = userChat.user.fullName
             tvLastMessage.text = userChat.lastMessage ?: "-"

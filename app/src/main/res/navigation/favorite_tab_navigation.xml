@@ -7,6 +7,6 @@
 
     <fragment
         android:id="@+id/favorite_organization_fragment"
-        android:name="com.example.ui.subscriptions.SubscriptionsFragment" />
+        android:name="com.example.ui.organizations.OrganizationsFragment" />
 
 </navigation>

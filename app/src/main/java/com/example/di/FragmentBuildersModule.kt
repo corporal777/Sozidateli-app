@@ -25,6 +25,9 @@ import com.example.ui.mySchedule.usersList.UserListFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
+import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
+import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
+import com.example.ui.organizations.subscribe.SubscribeOrganizationsPresenter
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
@@ -39,7 +42,6 @@ import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.splash.SplashFragment
-import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -72,9 +74,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeRecommendationsFragment(): RecommendationsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSubscriptionsFragment(): SubscriptionsFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeMyEventsFragment(): MyEventsFragment
 
     @ContributesAndroidInjector
@@ -102,7 +101,13 @@ abstract class FragmentBuildersModule {
     abstract fun contributeDocumentsListFragment(): DocumentsListFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSpeakersFragment(): FavoriteSpeakersFragment
+    abstract fun contributeFavoriteSpeakersFragment(): FavoriteSpeakersFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSubscribeOrganizationsFragment(): SubscribeOrganizationsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteFragment

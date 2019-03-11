@@ -1,12 +1,16 @@
 package com.example.data.models
 
+import com.google.gson.annotations.SerializedName
+
 data class Organization(
-        var id: Int,
-        var name: String?,
-        var description: String?,
-        var logo: String?,
-        var bg_image: String?,
-        var status: String?,
-        var is_user_subscribed: Boolean = false,
-        var is_user_in_favorite: Boolean = false
+        val id: Int,
+        val name: String?,
+        val description: String?,
+        val logo: String?,
+        val bg_image: String?,
+        val status: String?,
+        @SerializedName("is_user_subscribed")
+        val isSubscribed: Boolean?,
+        @SerializedName("is_user_in_favorite")
+        val isInFavorite: Boolean?
 )

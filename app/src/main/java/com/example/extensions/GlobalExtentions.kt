@@ -3,12 +3,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.R
 import com.example.util.CropCircleTransformation
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
 import com.example.util.DATE_FORMAT_FULL_MONTH_NO_YEAR
 import com.example.util.Utils
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,10 +60,9 @@ inline fun <T : View> T.afterOnGlobalLayout(crossinline onGlobalLayout: T.() -> 
     })
 }
 
-fun ImageView.setAvatar(url: String?) {
+fun ImageView.setCircleImageWithPlaceholder(url: String?, placeholder: Int) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
-            .networkPolicy(NetworkPolicy.NO_CACHE)
             .transform(CropCircleTransformation())
-            .placeholder(R.drawable.avatar_placeholder)
+            .placeholder(placeholder)
             .into(this)
 }

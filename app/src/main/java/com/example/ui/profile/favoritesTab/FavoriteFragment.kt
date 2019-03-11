@@ -6,8 +6,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
-import com.example.ui.subscriptions.SubscriptionsFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import java.util.*
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
 
         val fragments = ArrayList<androidx.fragment.app.Fragment>()
         fragments.add(FavoriteSpeakersFragment())
-        fragments.add(SubscriptionsFragment())
+        fragments.add(FavoriteOrganizationsFragment())
 
         viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {
             override fun getItem(position: Int) = fragments[position]
