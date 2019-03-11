@@ -6,10 +6,11 @@ data class ProfileField(
         var nameField: String,
         var label: String? = null,
         var data: Any? = null,
+        var required: Boolean = false,
         var type: Type = Type.TEXT,
         var id: String = UUID.randomUUID().toString()
 ) {
-    constructor(type: Type, nameField: String, label: String? = null, data: Any? = null) : this(nameField, label, data, type)
+    constructor(type: Type, nameField: String, label: String? = null, required: Boolean = false, data: Any? = null) : this(nameField, label, data, required, type)
 }
 
 enum class Type(val code: Int) {

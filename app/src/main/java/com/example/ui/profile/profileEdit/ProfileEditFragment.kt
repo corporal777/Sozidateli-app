@@ -65,12 +65,12 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
             presenter.onTakePhotoRequest()
         }, user.user_avatar_uri))
 
-        listField.add(ProfileEmailItem(ProfileField("user_email", getString(R.string.email), user.user_email)))
+        listField.add(ProfileEmailItem(ProfileField("user_email", getString(R.string.email), user.user_email,true)))
         listField.add(ProfileSwitchItem(ProfileField( "user_email_show", null, user.user_email_show)))
         listField.add(ProfileFieldPasswordChangeItem(presenter))
-        listField.add(ProfilePhoneItem(ProfileField( "user_phone", getString(R.string.profile_phone), user.user_phone)))
+        listField.add(ProfilePhoneItem(ProfileField( "user_phone", getString(R.string.profile_phone), user.user_phone,true)))
         listField.add(ProfileSwitchItem(ProfileField("user_phone_show", null, user.user_phone_show)))
-        listField.add(ProfileDatetItem(ProfileField( "user_birthday", getString(R.string.profile_birthday), user.user_birthday)))
+        listField.add(ProfileDatetItem(ProfileField( "user_birthday", getString(R.string.profile_birthday), user.user_birthday,true)))
         listField.add(ProfileSwitchItem(ProfileField( "user_birthday_show", null, user.user_birthday_show)))
         listField.add(ProfileTextItem(ProfileField("user_address_city", getString(R.string.profile_city), user.user_address_city)))
 
@@ -78,27 +78,27 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
 
         val socialNetworks = createFieldExpand("social_links", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
-                ProfileField(Type.TEXT, "value", getString(R.string.profile_sn_label))
+                ProfileField(Type.TEXT, "value", getString(R.string.profile_sn_label),true)
         ), user.social_links)
 
         listField.add(ProfileExpandFieldItem(getString(R.string.profile_sn), socialNetworks, false))
 
         val educationExpand = createFieldExpand("education", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
-                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start_educate)),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start_educate),true),
                 ProfileField(Type.DATE, "end", getString(R.string.profile_date_end_educate)),
-                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization)),
-                ProfileField(Type.TEXT, "specialty", getString(R.string.profile_educate_speciality))
+                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization),true),
+                ProfileField(Type.TEXT, "specialty", getString(R.string.profile_educate_speciality),true)
         ), user.education)
 
         listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution), educationExpand, false))
 
         val workExpand = createFieldExpand("work", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
-                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start)),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start),true),
                 ProfileField(Type.DATE, "end", getString(R.string.profile_date_end)),
-                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization)),
-                ProfileField(Type.TEXT, "position", getString(R.string.profile_work_position)),
+                ProfileField(Type.TEXT, "organization", getString(R.string.profile_work_organization),true),
+                ProfileField(Type.TEXT, "position", getString(R.string.profile_work_position),true),
                 ProfileField(Type.TEXT, "description", getString(R.string.profile_work_description))
         ), user.work)
 
@@ -106,10 +106,10 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
 
         val socialProject = createFieldExpand("social_projects", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
-                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start)),
+                ProfileField(Type.DATE, "begin", getString(R.string.profile_date_start),true),
                 ProfileField(Type.DATE, "end", getString(R.string.profile_date_end)),
-                ProfileField(Type.TEXT, "name", getString(R.string.profile_social_project_name)),
-                ProfileField(Type.TEXT, "role", getString(R.string.profile_social_project_role)),
+                ProfileField(Type.TEXT, "name", getString(R.string.profile_social_project_name),true),
+                ProfileField(Type.TEXT, "role", getString(R.string.profile_social_project_role),true),
                 ProfileField(Type.TEXT, "description", getString(R.string.profile_social_project_description))
         ), user.social_projects)
 
@@ -118,9 +118,9 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         val attachedFiles = createFieldExpand(FIELD_ATTACH_RECOMMENDATION_FILE, mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
                 ProfileField(Type.SUPPORT, "type", null),
-                ProfileField(Type.TEXT, "name", getString(R.string.profile_attached_file_name)),
+                ProfileField(Type.TEXT, "name", getString(R.string.profile_attached_file_name),true),
                 ProfileField(Type.TEXT, "desc", getString(R.string.profile_attached_file_desc)),
-                ProfileField(Type.TEXT, "url", getString(R.string.profile_attached_file_url))
+                ProfileField(Type.TEXT, "url", getString(R.string.profile_attached_file_url),true)
         ), user.attached_recomendation_files)
 
         listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true, presenter))
@@ -147,7 +147,10 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         }))
 
         adapter.update(listField)
+    }
 
+    override fun showRequiredError(fieldName: String) {
+        showToast(getString(R.string.profile_save_required_error).format(fieldName))
     }
 
     override fun updateExpandFieldByName(name: String, array:ArrayList<*>?) {
