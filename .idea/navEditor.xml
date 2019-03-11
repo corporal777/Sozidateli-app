@@ -454,6 +454,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="login_email_to_recovery_action">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="login_email_to_register_action">
                               <value>
                                 <LayoutPositions />
@@ -492,6 +497,18 @@
                           <Point>
                             <option name="x" value="656" />
                             <option name="y" value="935" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="recovery_password_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>

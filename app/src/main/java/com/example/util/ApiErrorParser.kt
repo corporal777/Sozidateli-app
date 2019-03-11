@@ -2,18 +2,19 @@ package com.example.util
 
 import com.example.data.models.ApiResponse
 import com.example.data.models.user.User
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.ConnectException
-import com.google.gson.GsonBuilder
-
 
 
 class ApiErrorParser {
 
     companion object {
+
+        private const val API_CONNECTION_ERROR = "No internet connection, please try again later"
+
         fun parse(throwable: Throwable?): ApiResponse<*>? {
             if (throwable == null) return null
             if (throwable is HttpException) {
@@ -32,19 +33,16 @@ class ApiErrorParser {
                         val gson = GsonBuilder()
                                 .setLenient()
                                 .create()
-                        var err = gson.fromJson(body, ApiResponse::class.java)
-                        err
+                        gson.fromJson(body, ApiResponse::class.java)
                     } catch (e: JsonSyntaxException) {
-                        return ApiResponse(null, User(),null,null,0, listOf(throwable.message()))
+                        return ApiResponse(null, Any(), null, null, 0, listOf(throwable.message()))
                     }
                 }
-            } else if(throwable is ConnectException){
-                return ApiResponse(null, User(),null,null,0, listOf(API_CONNECTION_ERROR))
+            } else if (throwable is ConnectException) {
+                return ApiResponse(null, User(), null, null, 0, listOf(API_CONNECTION_ERROR))
             }
 
             return null
         }
-
-        const val API_CONNECTION_ERROR = "No internet connection, please try again later"
     }
 }

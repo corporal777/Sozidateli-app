@@ -37,7 +37,7 @@ import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speaker.SpeakerFragment
-import com.example.ui.speakers.SpeakersFragment
+import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import dagger.Module
@@ -102,7 +102,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeDocumentsListFragment(): DocumentsListFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSpeakersFragment(): SpeakersFragment
+    abstract fun contributeSpeakersFragment(): FavoriteSpeakersFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteFragment

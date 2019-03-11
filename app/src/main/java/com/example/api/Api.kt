@@ -56,7 +56,11 @@ interface Api {
     fun notificationsUnregister(@Field("token") token: String): Completable
 
     @FormUrlEncoded
-    @POST("http://api.ha-slsp.ru/v1/user/chat/search")
+    @POST("/v1/user/favorites/speakers")
+    fun getUserFavoriteSpeakers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/chat/search")
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<UserChat>>>
 
     @FormUrlEncoded
@@ -80,7 +84,7 @@ interface Api {
 
     @Headers("Content-Type: application/json")
     @POST("/v1/user/update")
-    fun updateUser(@Body map:Map<String,@JvmSuppressWildcards Any?>): Single<ApiResponse<User>>
+    fun updateUser(@Body map: Map<String, @JvmSuppressWildcards Any?>): Single<ApiResponse<User>>
 
     @FormUrlEncoded
     @POST("/v1/events")
@@ -126,5 +130,9 @@ interface Api {
     @POST("/v1/user/subscribed/organisations")
     fun getOrganizationSubscribers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
 
+    @POST("/v1/speakers/{id}/favorite")
+    fun speakerAddToFavorite(@Path("id") speakerId: Int): Completable
 
+    @POST("/v1/speakers/{id}/unfavorite")
+    fun speakerRemoveFromFavorite(@Path("id") speakerId: Int): Completable
 }

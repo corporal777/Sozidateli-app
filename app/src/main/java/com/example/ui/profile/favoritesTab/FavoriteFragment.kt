@@ -1,18 +1,15 @@
 package com.example.ui.profile.favoritesTab
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.speakers.SpeakersFragment
+import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.subscriptions.SubscriptionsFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -31,7 +28,7 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         val fragments = ArrayList<androidx.fragment.app.Fragment>()
-        fragments.add(SpeakersFragment.newInstance(true))
+        fragments.add(FavoriteSpeakersFragment())
         fragments.add(SubscriptionsFragment())
 
         viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {

@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/speakers_list_fragment"
-        android:name="com.example.ui.speakers.SpeakersFragment"
+        android:name="com.example.ui.speakers.favorite.FavoriteSpeakersFragment"
         android:label="@string/speakers"
         tools:layout="@layout/fragment_speakers">
         <argument

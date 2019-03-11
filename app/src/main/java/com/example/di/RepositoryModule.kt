@@ -24,4 +24,7 @@ class RepositoryModule {
 
     @Provides
     fun organizationRepository(repository: OrganizationRepositoryImp): OrganizationRepository = repository
+
+    @Provides
+    fun speakerRepository(repository: SpeakerRepositoryImp): SpeakerRepository = repository
 }

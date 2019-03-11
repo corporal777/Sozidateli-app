@@ -2,10 +2,8 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.ApiResponse
-import com.example.data.models.ApiResponseUpload
 import com.example.data.models.Notification
-import com.example.data.models.UploadImage
+import com.example.data.models.Speaker
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
@@ -72,5 +70,9 @@ class UserRepositoryImp
                     val body = RequestBody.create(MediaType.parse("application/pdf"), imageFile)
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
+    }
+
+    override fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
+        return callPagination(api.getUserFavoriteSpeakers(limit, offset))
     }
 }

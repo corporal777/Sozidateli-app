@@ -1,22 +1,23 @@
-package com.example.ui.speakers
+package com.example.ui.speakers.favorite
 
 import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.user.User
+import com.example.data.models.Speaker
 import com.example.ui.base.BaseContract
 
-interface SpeakersContract {
+interface FavoriteSpeakersContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(data: PagedList<User>)
+        fun setData(data: PagedList<Speaker>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSpeaker(user: User)
+        fun showSpeaker(speaker: Speaker)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onSpeakerClick(user: User)
+        fun onSpeakerClick(speaker: Speaker)
+        fun onSpeakerFavoriteChangeClick(speaker: Speaker)
     }
 }

@@ -3,12 +3,10 @@ package com.example.holders
 import android.view.View
 import com.example.R
 import com.example.data.models.UserChat
-import com.example.util.CropCircleTransformation
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
+import setAvatar
 
 class UserChatItem(
         val userChat: UserChat,
@@ -29,11 +27,7 @@ class UserChatItem(
         this.viewHolder = viewHolder
         onBind(this)
         viewHolder.apply {
-            Picasso.get().load(userChat.user.user_avatar.let { if (it.isNullOrBlank()) null else it })
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .transform(CropCircleTransformation())
-                    .placeholder(R.drawable.avatar_placeholder)
-                    .into(ivAvatar)
+            ivAvatar.setAvatar(userChat.user.user_avatar)
 
             tvName.text = userChat.user.fullName
             tvLastMessage.text = userChat.lastMessage ?: "-"
