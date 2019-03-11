@@ -53,7 +53,6 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-
                     viewState.apply {
                         val parser = SnapshotParser { snapshot ->
                             snapshot.toObject(ChatMessage::class.java)!!.let {
@@ -61,9 +60,7 @@ class ChatPresenter
                                 it.isRead = snapshot.getBoolean(FIELD_IS_READ)
                                 val msg = UserChatMessage(it, appData.getUser().user_id == it.senderId)
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                                    it.id?.let {
-                                        viewState.cancelNotificationByChatId(it.hashCode().toString())
-                                    }
+                                    it.id?.let { id -> viewState.cancelNotificationByChatId(id.hashCode().toString()) }
                                 }
                                 msg
                             }

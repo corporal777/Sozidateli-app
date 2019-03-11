@@ -59,6 +59,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     private val chatGroup = QueryPageListGroup<ChatMessageItem>()
+    private val chatAdapter = GroupAdapter<ViewHolder>().apply { add(chatGroup) }
     private val queryListChangeListener = object : SimpleChangeEventListener() {
         override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
             if (type == ChangeEventType.ADDED) presenter.onNewMessage()
@@ -86,9 +87,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
         rvChat.apply {
             this.layoutManager = layoutManager
-            adapter = GroupAdapter<ViewHolder>().apply {
-                add(chatGroup)
-            }
+            adapter = chatAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     val isBottomPosition = if (newState == SCROLL_STATE_IDLE) {
@@ -185,6 +184,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun onDestroy() {
         super.onDestroy()
         chatQueryList?.removeChangeEventListener(queryListChangeListener)
+        chatGroup.unregisterGroupDataObserver(chatAdapter)
     }
 
     override fun isShowToolbar() = true
