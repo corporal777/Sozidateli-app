@@ -26,7 +26,6 @@ import com.example.holders.ChatMessageTextItem
 import com.example.holders.QueryPageListGroup
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
-import com.example.util.CropCircleTransformation
 import com.example.util.SnapshotWrappedItemParser
 import com.example.util.chat.QueryList
 import com.example.util.chat.QueryPageOptions
@@ -35,11 +34,11 @@ import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.firestore.SnapshotParser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
+import setCircleImageWithPlaceholder
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -180,12 +179,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun showAvatar(url: String?) {
         val avatarView = activity?.findViewById<View>(R.id.avatar)
-        avatarView?.let {
-            Picasso.get().load(url.let { if (it.isNullOrEmpty()) null else it })
-                    .transform(CropCircleTransformation())
-                    .placeholder(R.drawable.avatar_placeholder)
-                    .into(it.ivAvatar)
-        }
+        avatarView?.ivAvatar?.setCircleImageWithPlaceholder(url, R.drawable.avatar_placeholder)
     }
 
     override fun onDestroy() {

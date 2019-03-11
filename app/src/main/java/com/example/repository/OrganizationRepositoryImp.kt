@@ -2,30 +2,40 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.*
-import com.example.data.models.user.User
+import com.example.data.models.Organization
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import javax.inject.Inject
 
 class OrganizationRepositoryImp
 @Inject constructor(
         private val api: Api,
-        private val appData: AppData
+        appData: AppData
 ) : ApiRepository(appData), OrganizationRepository {
 
 
-    override fun subscribeOrganization(orgId: Int): Single<AuthResponse> {
-        return call(api.subscribeOrganization(orgId))
+    override fun subscribe(orgId: Int): Completable {
+        return call(api.organizationSubscribe(orgId))
     }
 
-    override fun unsubscribeOrganization(orgId: Int): Single<AuthResponse> {
-        return call(api.unsubscribeOrganization(orgId))
+    override fun unsubscribe(orgId: Int): Completable {
+        return call(api.organizationUnsubscribe(orgId))
     }
 
-    override fun getOrganizationSubscribers(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>> {
-        return callPagination(api.getOrganizationSubscribers(limit,offset))
+    override fun subscribeList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>> {
+        return callPagination(api.organizationSubscribeList(limit, offset))
+    }
+
+    override fun addToFavorite(orgId: Int): Completable {
+        return call(api.organizationAddToFavorite(orgId))
+    }
+
+    override fun removeFromFavorite(orgId: Int): Completable {
+        return call(api.organizationRemoveFromFavorite(orgId))
+    }
+
+    override fun favoriteList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>> {
+        return callPagination(api.organizationFavoriteList(limit, offset))
     }
 }

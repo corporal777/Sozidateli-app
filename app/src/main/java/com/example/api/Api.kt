@@ -120,19 +120,29 @@ interface Api {
     @POST("/v1/events/{eventId}/docs")
     fun getEventDocs(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
 
-    @POST("/v1/organisations/{organizationId}/subscribe")
-    fun subscribeOrganization(@Path("organizationId") orgId: Int): Single<ApiResponse<AuthResponse>>
-
-    @POST("/v1/organisations/{organizationId}/unsubscribe")
-    fun unsubscribeOrganization(@Path("organizationId") orgId: Int): Single<ApiResponse<AuthResponse>>
-
-    @FormUrlEncoded
-    @POST("/v1/user/subscribed/organisations")
-    fun getOrganizationSubscribers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
-
     @POST("/v1/speakers/{id}/favorite")
     fun speakerAddToFavorite(@Path("id") speakerId: Int): Completable
 
     @POST("/v1/speakers/{id}/unfavorite")
     fun speakerRemoveFromFavorite(@Path("id") speakerId: Int): Completable
+
+    @POST("/v1/organisations/{organizationId}/subscribe")
+    fun organizationSubscribe(@Path("organizationId") orgId: Int): Completable
+
+    @POST("/v1/organisations/{organizationId}/unsubscribe")
+    fun organizationUnsubscribe(@Path("organizationId") orgId: Int): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/user/subscribed/organisations")
+    fun organizationSubscribeList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
+
+    @POST("/v1/organisations/{organizationId}/favorite")
+    fun organizationAddToFavorite(@Path("organizationId") orgId: Int): Completable
+
+    @POST("/v1/organisations/{organizationId}/unfavorite")
+    fun organizationRemoveFromFavorite(@Path("organizationId") orgId: Int): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/user/favorites/organisations")
+    fun organizationFavoriteList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
 }

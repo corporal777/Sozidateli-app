@@ -18,7 +18,7 @@ import com.example.ui.base.BaseFragment
 import com.example.util.ARG_USER
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_speaker.*
-import setAvatar
+import setCircleImageWithPlaceholder
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -43,7 +43,7 @@ class FavoriteSpeakersFragment : BaseFragment(), FavoriteSpeakersContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: Speaker?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    ivSpeakerAvatar.setAvatar(item.photo)
+                    ivSpeakerAvatar.setCircleImageWithPlaceholder(item.photo, R.drawable.avatar_placeholder)
 
                     tvSpeakerName.text = item.name
                     tvSpeakerInfo.text = item.description

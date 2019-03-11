@@ -1,57 +1,40 @@
-package com.example.ui.subscriptions
+package com.example.ui.organizations
 
-import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Organization
-import com.example.data.models.Subscription
 import com.example.ui.base.BaseFragment
-import com.example.util.CropCircleTransformation
 import com.example.util.PositionOffsetScrollListener
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
-import kotlinx.android.synthetic.main.item_subscription.*
-import javax.inject.Inject
-import javax.inject.Provider
+import kotlinx.android.synthetic.main.item_organization.*
+import setCircleImageWithPlaceholder
 
-class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
+abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(), OrganizationsContract.View {
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = "FavoriteSpeakersPresenter")
-    lateinit var presenter: SubscriptionsPresenter
-
-    @Inject
-    lateinit var presenterProvider: Provider<SubscriptionsPresenter>
-
-    @ProvidePresenter(type = PresenterType.WEAK, tag = "FavoriteSpeakersPresenter")
-    fun providePresenter(): SubscriptionsPresenter = presenterProvider.get()
+    open lateinit var presenter: P
 
     private val adapter: SimplePagingRecyclerViewAdapter<Organization> by lazy {
         object : SimplePagingRecyclerViewAdapter<Organization>(
                 { oldItem, newItem -> oldItem.id == newItem.id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
-            override fun getItemLayout(itemView: Int) = R.layout.item_subscription
+            override fun getItemLayout(itemView: Int) = R.layout.item_organization
 
             override fun onBindItem(viewHolder: ViewHolder, item: Organization?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    Picasso.get()
-                            .load(item.logo)
-                            .transform(CropCircleTransformation())
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .into(ivLogo)
+                    ivLogo.setCircleImageWithPlaceholder(item.logo, R.drawable.ic_launcher_background)
 
                     tvLabel.text = item.name
-                    btnUnsubscribe.setOnClickListener { presenter.onUnsubscribeClick(item) }
+                    btnAction.apply {
+                        text = getActionText(item)
+                        setOnClickListener { onItemActionClick(item) }
+                    }
                 }
             }
         }
@@ -60,7 +43,7 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            adapter = this@SubscriptionsFragment.adapter
+            adapter = this@OrganizationsFragment.adapter
             if (itemDecorationCount == 0) {
                 addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
             }
@@ -80,5 +63,8 @@ class SubscriptionsFragment : BaseFragment(), SubscriptionsContract.View {
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_events_list
+    override fun layout() = R.layout.fragment_organizations_list
+
+    abstract fun onItemActionClick(organization: Organization)
+    abstract fun getActionText(organization: Organization): String
 }

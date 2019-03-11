@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/subscriptions_fragment"
-        android:name="com.example.ui.subscriptions.SubscriptionsFragment"
+        android:name="com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment"
         tools:layout="@layout/fragment_events_list" />
 
     <fragment
