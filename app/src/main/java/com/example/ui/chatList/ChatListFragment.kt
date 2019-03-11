@@ -38,9 +38,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         recyclerView.apply {
-            adapter = GroupAdapter<ViewHolder>().apply {
-                add(chatGroup)
-            }
+            adapter = GroupAdapter<ViewHolder>().apply { add(chatGroup) }
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
         btnCreateChat.setOnClickListener { presenter.onMenuAddChatClick() }

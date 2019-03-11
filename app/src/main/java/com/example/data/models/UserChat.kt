@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class UserChat(
+data class UserChat(
         val id: Int,
         @SerializedName("user_recepient")
         var user: User,
@@ -19,10 +19,6 @@ class UserChat(
         val lastMessageSender: Int?,
         @SerializedName("user_sender")
         var userSender: User?,
-
         @SerializedName("last_message_id")
-        var messageId:String?,
-
-        //for fcm push
-        var notifiactionId: String?
+        var messageId: String?
 ) : Parcelable

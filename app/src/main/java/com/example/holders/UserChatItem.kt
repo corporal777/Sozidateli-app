@@ -51,4 +51,23 @@ class UserChatItem(
     }
 
     override fun getLayout() = R.layout.item_chat
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UserChatItem
+
+        if (userChat != other.userChat) return false
+        if (unreadMessageCount != other.unreadMessageCount) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = userChat.hashCode()
+        result = 31 * result + unreadMessageCount
+        return result
+    }
+
 }
