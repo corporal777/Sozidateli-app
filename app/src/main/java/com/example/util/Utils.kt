@@ -196,7 +196,7 @@ object Utils {
     public fun getListFieldValueByMapDefault(obj: Any?, default: MutableList<ProfileField>): MutableList<ProfileField> {
         val result = mutableListOf<ProfileField>()
         default.forEach { default ->
-            result.add(ProfileField(default.type, default.nameField, default.label, getDataByName(obj, default.nameField)))
+            result.add(ProfileField(default.type, default.nameField, default.label,default.required, getDataByName(obj, default.nameField)))
         }
         return result
     }

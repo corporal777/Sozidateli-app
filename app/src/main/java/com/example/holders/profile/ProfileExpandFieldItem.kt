@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
 import com.example.data.models.Type
@@ -26,31 +25,43 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_expand_profile.view.*
 import okhttp3.internal.Util
 import kotlin.math.exp
+import android.view.animation.LinearInterpolator
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
+import android.widget.ImageView
+import com.example.R
 
 
-class ProfileExpandFieldItem(private val name: String, private var expandField: ProfileFieldExpand, private val isLast: Boolean, private val presenter: ProfileEditPresenter? = null) : Item() {
+class ProfileExpandFieldItem(private val name: String, private var expandField: ProfileFieldExpand,
+                             private val isLast: Boolean, private val presenter: ProfileEditPresenter? = null) : Item() {
 
 
     private val DP_MARGIN = 25
 
     private var isAnimationInProcess = false
     private var isExpanded = false
+
     private var globalSection = Section().apply {
         setFooter(getAddButton())
     }
+
     private var groupAdapter = GroupAdapter<ViewHolder>().apply {
         add(globalSection)
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            tvName.setOnTouchListener { view, motionEvent ->
+            setOnTouchListener { view, motionEvent ->
                 if (isAnimationInProcess) return@setOnTouchListener true
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
                     if (isExpanded) {
                         animCollapse(fieldRecyclerView)
+                        animArrowRotation(ivArrow,90f)
+                        //ivArrow.rotation = 90f
                     } else {
                         animExpand(fieldRecyclerView)
+                        animArrowRotation(ivArrow,270f)
+                        //ivArrow.rotation = 270f
                     }
                 }
                 return@setOnTouchListener true
@@ -87,6 +98,10 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
                 bottomDivider.visibility = View.GONE
             }
         }
+    }
+
+    private fun animArrowRotation(arrow: ImageView,setRotation:Float){
+        arrow.animate().rotation(setRotation).setDuration(400).start()
     }
 
     fun updateExpandField(expandField: ProfileFieldExpand) {
@@ -191,6 +206,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
                     override fun onTransitionEnd(transition: Transition) {
                         isExpanded = false
                         isAnimationInProcess = false
+
                     }
                 }
         ))

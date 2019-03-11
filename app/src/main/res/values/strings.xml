@@ -202,5 +202,7 @@
     <string name="profile_attached_file_url">Ссылка</string>
     <string name="profile_upload_document">Загрузить документ</string>
 
+    <string name="profile_save_required_error">Вы не заполнили поле "%s"</string>
+
 
 </resources>

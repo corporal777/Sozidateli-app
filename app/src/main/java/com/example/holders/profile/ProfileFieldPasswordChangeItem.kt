@@ -16,7 +16,7 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_profile.view.*
 import java.util.*
 
-class ProfileFieldPasswordChangeItem(private val presenter:ProfileEditPresenter) : ProfileFieldItem(ProfileField(Type.PASSWORD,"_","Пароль","********")) {
+class ProfileFieldPasswordChangeItem(private val presenter:ProfileEditPresenter) : ProfileFieldItem(ProfileField(Type.PASSWORD,"_","Пароль",false,"********")) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)

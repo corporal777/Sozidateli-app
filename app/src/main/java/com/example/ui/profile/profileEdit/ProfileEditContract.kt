@@ -24,6 +24,9 @@ interface ProfileEditContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateExpandFieldByName(name:String, array:ArrayList<*>?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRequiredError(fieldName:String)
     }
 
     interface Presenter : BaseContract.Presenter{

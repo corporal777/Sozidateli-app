@@ -36,12 +36,19 @@ class ProfileEditPresenter
         super.attachView(view)
     }
 
-    override fun onSaveClick(fields:List<ProfileField>,expandFields:List<ProfileFieldExpand>) {
+    override fun onSaveClick(fields: List<ProfileField>, expandFields: List<ProfileFieldExpand>) {
 
         val mapUser = HashMap<String, Any?>()
 
         fields.forEach {
-            mapUser.put(it.nameField, it.data)
+            if (isRequiredValid(it)) {
+                mapUser.put(it.nameField, it.data)
+            } else {
+                it.label?.let { name ->
+                    viewState.showRequiredError(name)
+                }
+                return
+            }
         }
 
         expandFields.forEach {
@@ -49,7 +56,14 @@ class ProfileEditPresenter
             it.listOfField.forEach { arrayField ->
                 val map = HashMap<String, Any?>()
                 arrayField.forEach {
-                    map.put(it.nameField, it.data)
+                    if (isRequiredValid(it)) {
+                        map.put(it.nameField, it.data)
+                    } else {
+                        it.label?.let { name ->
+                            viewState.showRequiredError(name)
+                        }
+                        return
+                    }
                 }
 
                 arr.add(map)
@@ -81,14 +95,18 @@ class ProfileEditPresenter
         }
     }
 
+    private fun isRequiredValid(field: ProfileField): Boolean {
+        return (field.required && !field.data?.toString().isNullOrEmpty()) || !field.required
+    }
+
     override fun onChangePasswordShowDialogClick() {
         viewState.showChangePasswordDialog()
     }
 
     override fun onChangePasswordClick(oldPassword: String, newPassword: String) {
         val mapUser = HashMap<String, Any?>()
-        mapUser.put("user_old_password",oldPassword)
-        mapUser.put("user_new_pwd",newPassword)
+        mapUser.put("user_old_password", oldPassword)
+        mapUser.put("user_new_pwd", newPassword)
 
         userRepository.updateUser(mapUser)
                 .performOnBackgroundOutOnMain()
@@ -104,13 +122,13 @@ class ProfileEditPresenter
         viewState.showPdfSelector()
     }
 
-    override fun onPdfSelected(path:String) {
+    override fun onPdfSelected(path: String) {
         userRepository.uploadRecommendationFile(path)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.updateExpandFieldByName(FIELD_ATTACH_RECOMMENDATION_FILE,it.attached_recomendation_files)
-                },{
+                    viewState.updateExpandFieldByName(FIELD_ATTACH_RECOMMENDATION_FILE, it.attached_recomendation_files)
+                }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
     }
