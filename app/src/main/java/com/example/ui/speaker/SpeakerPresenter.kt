@@ -34,7 +34,7 @@ class SpeakerPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(speaker.name, it.user_id.toString(), it.chat_id.toString())
+                    viewState.openChat(speaker.name, speaker.uid.toString(), it.chat_id.toString())
                 }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }
