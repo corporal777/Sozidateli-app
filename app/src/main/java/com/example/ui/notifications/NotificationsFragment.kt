@@ -63,7 +63,6 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@NotificationsFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
     }
 

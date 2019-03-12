@@ -95,21 +95,6 @@ class QueryList<T>(
         }
     }
 
-    override fun addChangeEventListener(listener: ChangeEventListener): ChangeEventListener {
-        super.addChangeEventListener(listener)
-        initialPage?.startListening()
-        queryPages.forEach { it.startListening() }
-        return listener
-    }
-
-    override fun removeChangeEventListener(listener: ChangeEventListener) {
-        super.removeChangeEventListener(listener)
-        if (!isListening) {
-            initialPage?.stopListening()
-            queryPages.forEach { it.stopListening() }
-        }
-    }
-
     override fun get(index: Int): T {
         val item = data[index]
         loadAround(index)
@@ -137,12 +122,21 @@ class QueryList<T>(
         }
     }
 
+    override fun addChangeEventListener(listener: ChangeEventListener): ChangeEventListener {
+        super.addChangeEventListener(listener)
+        initialPage?.startListening()
+        queryPages.forEach { it.startListening() }
+        return listener
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         firstKey = null
         lastKey = null
+        initialPage?.stopListening()
         initialPage = null
-        data.clear()
+        queryPages.forEach { it.stopListening() }
         queryPages.clear()
+        data.clear()
     }
 }

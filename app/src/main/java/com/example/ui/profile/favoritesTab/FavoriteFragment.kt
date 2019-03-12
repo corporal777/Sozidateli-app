@@ -39,22 +39,8 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
 
         viewPager.run {
             offscreenPageLimit = fragments.size
-            addOnPageChangeListener(pageChangeListener)
             tabLayout.setupWithViewPager(this)
         }
-    }
-
-    private val pageChangeListener: androidx.viewpager.widget.ViewPager.OnPageChangeListener = object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-        override fun onPageSelected(position: Int) {
-            presenter.setSelectedTab(position)
-        }
-    }
-
-
-    override fun selectTab(position: Int) {
-        viewPager.setCurrentItem(position, false)
     }
 
     override fun isShowToolbar() = true

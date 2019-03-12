@@ -5,15 +5,15 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.myEvents.MyEventsFragment
+import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
+import com.example.ui.recommendations.RecommendationsFragment
 import com.example.util.Utils
-import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,43 +29,28 @@ class EventListFragment : BaseFragment(), EventListContract.View {
     @ProvidePresenter
     fun providePresenter(): EventListPresenter = presenterProvider.get()
 
+    private val tabsContent by lazy {
+        listOf(
+                getString(R.string.tab_recommended_title) to RecommendationsFragment(),
+                getString(R.string.tab_subscriptions_title) to SubscribeOrganizationsFragment(),
+                getString(R.string.tab_events_title) to MyEventsFragment()
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        tabLayout.apply {
-            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    when (tab?.position) {
-                        0 -> presenter.onRecommendedTabClick()
-                        1 -> presenter.onSubscriptionsClick()
-                        2 -> presenter.onEventsClick()
-                    }
-                }
-            })
-
-            addTab(newTab().apply { setText(R.string.tab_recommended_title) }, false)
-            addTab(newTab().apply { setText(R.string.tab_subscriptions_title) }, false)
-            addTab(newTab().apply { setText(R.string.tab_events_title) }, false)
+        viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {
+            override fun getPageTitle(position: Int) = tabsContent[position].first
+            override fun getItem(position: Int) = tabsContent[position].second
+            override fun getCount() = tabsContent.size
         }
-    }
 
-    override fun selectRecommendedTab() {
-        tabLayout.setScrollPosition(0, 0f, true)
-        findNestedNavController().navigate(R.id.recommendations_fragment)
-    }
-
-    override fun selectSubscriptionsTab() {
-        tabLayout.setScrollPosition(1, 0f, true)
-        findNestedNavController().navigate(R.id.subscriptions_fragment)
-    }
-
-    override fun selectEventsTab() {
-        tabLayout.setScrollPosition(2, 0f, true)
-        findNestedNavController().navigate(R.id.my_events_fragment)
+        viewPager.run {
+            offscreenPageLimit = tabsContent.size
+            tabLayout.setupWithViewPager(this)
+        }
     }
 
     override fun showChat() {
@@ -97,8 +82,6 @@ class EventListFragment : BaseFragment(), EventListContract.View {
         }
         return true
     }
-
-    private fun findNestedNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
 
     override fun isShowToolbar() = true
 

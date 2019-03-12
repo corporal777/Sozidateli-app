@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -15,17 +17,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
+import com.example.data.models.LocalNotification
 import com.example.ui.base.BaseFragmentActivity
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import com.example.data.models.LocalNotification
-import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
@@ -44,10 +42,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
 
-        var chatId: String? = null
-        if (arguments != null) {
-            chatId = arguments.getString("chatId", null)
-        }
+        val chatId = arguments?.getString("chatId", null)
 
         if (application is App) {
             (application as App).currentChatID = chatId
@@ -60,7 +55,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(application is App){
+        if (application is App) {
             (application as App).appIsRunning = true
         }
         setSupportActionBar(toolbar)
@@ -101,7 +96,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showLocalNotification(localNotification: LocalNotification) {
-        Utils.showLocalChatNotification(this,localNotification)
+        Utils.showLocalChatNotification(this, localNotification)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {
@@ -114,16 +109,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         var password = ""
         var passwordConfirm = ""
 
-        validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+        val validatePassword = {
+            val isPasswordValid = password == passwordConfirm && AuthUtil.isValidPassword(password)
+            AuthUtil.colorTextPasswordChecker(view.tvPasswordStrong1, isPasswordValid)
+            AuthUtil.enableButton(view.btnSave, isPasswordValid)
+        }
+
+        validatePassword()
 
         view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             password = charSequence.toString()
-            validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+            validatePassword()
         })
 
         view.etConfirmPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             passwordConfirm = charSequence.toString()
-            validPasswords(password, passwordConfirm, view.tvPasswordStrong1, view.btnSave)
+            validatePassword()
         })
 
         view.btnSave.setOnClickListener {
@@ -132,13 +133,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
 
         alert.show()
-
-    }
-
-    private fun validPasswords(password: String, passwordConfirm: String, textView: TextView, button: Button) {
-        val validPassword = password == passwordConfirm && AuthUtil.isValidPassword(password)
-        AuthUtil.colorTextPasswordChecker(textView, validPassword)
-        AuthUtil.enableButton(button, validPassword)
     }
 
     override fun showChat(userId: String, chatId: String, userName: String) {
@@ -202,13 +196,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
-        if(application is App){
+        if (application is App) {
             (application as App).appIsRunning = false
         }
         super.onDestroy()
     }
 
-    override fun getLoadingView() = flLoading
+    override fun getLoadingView(): View = flLoading
 
     override fun layout() = R.layout.activity_main
 }
