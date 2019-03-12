@@ -26,10 +26,16 @@ import javax.inject.Inject
 import javax.inject.Provider
 import android.content.Intent
 import android.app.Activity.RESULT_OK
+import android.net.Uri
 import android.os.Parcelable
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.*
 import com.example.util.photohelper.RealPathUtil
+import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
+import com.vincent.filepicker.Constant.MAX_NUMBER
+import com.vincent.filepicker.Constant
+import com.vincent.filepicker.activity.PDFFilePickActivity
+import com.vincent.filepicker.filter.entity.NormalFile
 
 
 class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileEditPresenter>(), ProfileEditContract.View {
@@ -174,10 +180,8 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
     }
 
     override fun showPdfSelector() {
-        val intent = Intent()
-        intent.type = "application/pdf"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select PDF"), REQUEST_CODE_SELECT_PDF)
+        val intent = Intent(context, PDFFilePickActivity::class.java)
+        startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
     }
 
     override fun showChangePasswordDialog() {
@@ -240,11 +244,10 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         super.onActivityResult(requestCode, resultCode, result)
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_SELECT_PDF) {
-                result?.let {
-                    it.data?.let { uri ->
-                        presenter.onPdfSelected(RealPathUtil.getPath(context, uri))
-                    }
+            if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
+                val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
+                file?.let {
+                    presenter.onPdfSelected(it.path)
                 }
             }
         }

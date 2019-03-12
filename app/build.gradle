@@ -43,6 +43,8 @@ androidExtensions {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(':filepicker')
+
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -122,7 +124,6 @@ dependencies {
     implementation 'com.vk:androidsdk:1.6.7'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.6'
-
 
 
     // tests

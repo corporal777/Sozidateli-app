@@ -67,7 +67,7 @@ const val FIELD_USER_ID = "userId"
 const val FIELD_NOTIFICATION_ID = "notification_id"
 
 const val REQUEST_CODE_SELECT_PDF = 12
-
+const val REQUEST_CODE_PERMISSION_READ_FILE = 13
 
 const val FIELD_ATTACH_RECOMMENDATION_FILE="attached_recomendation_files"
 
