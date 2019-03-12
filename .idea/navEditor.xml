@@ -316,17 +316,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_events_tabs_fragment_to_about_event_navigation">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_events_tabs_fragment_to_chat_navigation">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_events_tabs_fragment_to_request_fragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -456,6 +446,15 @@
                             <option name="x" value="900" />
                             <option name="y" value="301" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="recovery_passwor_to_email_login">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

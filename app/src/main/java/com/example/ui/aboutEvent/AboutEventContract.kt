@@ -1,7 +1,6 @@
 package com.example.ui.aboutEvent
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
@@ -41,5 +40,7 @@ interface AboutEventContract {
         fun onContactsClick()
         fun onTransferClick()
         fun onGoToEventClick()
+        fun onImageLoad()
+        fun onImageLoadError()
     }
 }
