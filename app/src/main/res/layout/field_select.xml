@@ -14,15 +14,14 @@
         android:textColor="@color/text_title"
         android:id="@+id/tvFieldLabel"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatSpinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="40dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:textSize="16sp"
         android:layout_marginTop="4dp"
-        android:id="@+id/editText"
+        android:id="@+id/spinner"
         android:background="@drawable/background_edittext_login"/>
 
 </LinearLayout>

@@ -13,16 +13,33 @@ import com.example.data.models.ProfileField
 import com.example.data.models.Type
 import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.field_profile.view.*
+import kotlinx.android.synthetic.main.field_profile_phone.view.*
 import java.util.*
+import com.hbb20.CountryCodePicker
+import com.hbb20.InternationalPhoneTextWatcher
 
-class ProfilePhoneItem(private val profileField: ProfileField) : ProfileFieldItem(profileField) {
+
+class ProfilePhoneItem(private val profileField: ProfileField) : ProfileBaseFieldItem(profileField) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        super.bind(viewHolder, position)
+        viewHolder.itemView.apply {
+            ccp.registerCarrierNumberEditText(editText)
+            ccp.setPhoneNumberValidityChangeListener(CountryCodePicker.PhoneNumberValidityChangeListener {
+                 profileField.isValid = it
+                if(it){
+                    profileField.data = ccp.fullNumberWithPlus
+                }
+            })
+
+            profileField.data?.let {
+                ccp.fullNumber = it.toString()
+            }
+
+            profileField.label?.let {
+                tvFieldLabel.text = it
+            }
+        }
     }
 
-    override fun getInputType() = InputType.TYPE_CLASS_PHONE
-
-    override fun getLayout() = R.layout.field_profile
+    override fun getLayout() = R.layout.field_profile_phone
 }

@@ -19,7 +19,7 @@ interface UserRepository {
     fun notificationsUnregister(token: String): Completable
     fun updateUser(user: Map<String, Any?>): Single<User>
     fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
-    fun uploadAvatar(photo: String): Single<User>
+    fun uploadAvatar(photo: String?): Completable
     fun uploadRecommendationFile(file: String): Single<User>
     fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
 }

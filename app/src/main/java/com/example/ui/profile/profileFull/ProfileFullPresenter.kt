@@ -14,28 +14,27 @@ class ProfileFullPresenter
 @Inject constructor(private val appData: AppData,
                     private val userRepository: UserRepository
 ) : BasePresenter<ProfileFullContract.View>(), ProfileFullContract.Presenter {
+
+    private var isFirstAttach = true
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        appData.onUserChange
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    it.value?.let { viewState::setUser }
-                }, {})
-                .call(compositeDisposable)
 
         userRepository.getUserFull()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.setUser(it)
-                },{})
+                }, {})
                 .call(compositeDisposable)
     }
 
     override fun attachView(view: ProfileFullContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.getUser())
+        if (!isFirstAttach) {
+            viewState.setUser(appData.getUser())
+        }
+        isFirstAttach = false
     }
 
     override fun onEditClick() {

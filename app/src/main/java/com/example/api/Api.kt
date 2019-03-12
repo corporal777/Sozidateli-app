@@ -80,7 +80,7 @@ interface Api {
 
     @Multipart
     @POST("/v1/user/update/avatar")
-    fun uploadAvatar(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
+    fun uploadAvatar(@Part image: MultipartBody.Part): Completable
 
     @Headers("Content-Type: application/json")
     @POST("/v1/user/update")

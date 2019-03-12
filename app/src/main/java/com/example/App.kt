@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
+import com.splunk.mint.Mint
 import com.squareup.leakcanary.LeakCanary
 import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
@@ -57,6 +58,8 @@ class App : Application(), HasActivityInjector {
 
         CalligraphyConfig.initDefault(calligraphyConfig)
         VKSdk.initialize(this)
+
+        Mint.initAndStartSession(this, "d2da4f20")
     }
 
 

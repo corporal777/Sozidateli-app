@@ -54,7 +54,8 @@ class UserRepositoryImp
         return callPagination(api.userSearch(if (name.isEmpty()) " " else name, limit, offset))
     }
 
-    override fun uploadAvatar(photo: String): Single<User> {
+    override fun uploadAvatar(photo: String?): Completable {
+        if(photo.isNullOrEmpty())return Completable.complete()
         return call(api.uploadAvatar(
                 photo.let {
                     val imageFile = File(it)

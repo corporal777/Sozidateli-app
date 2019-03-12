@@ -8,7 +8,8 @@ data class ProfileField(
         var data: Any? = null,
         var required: Boolean = false,
         var type: Type = Type.TEXT,
-        var id: String = UUID.randomUUID().toString()
+        var id: String = UUID.randomUUID().toString(),
+        var isValid:Boolean = true
 ) {
     constructor(type: Type, nameField: String, label: String? = null, required: Boolean = false, data: Any? = null) : this(nameField, label, data, required, type)
 }

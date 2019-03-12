@@ -71,28 +71,15 @@ class ProfileEditPresenter
             mapUser.put(it.nameField, arr)
         }
 
-        userRepository.updateUser(mapUser)
+        userRepository.uploadAvatar(photo)
+                .andThen(userRepository.updateUser(mapUser))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
+                    appData.setUser(it)
                     viewState.navigateUp()
-
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
-
-        if (photo == null) {
-            // viewState.navigateUp()
-        } else {
-            userRepository.uploadAvatar(photo!!)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        appData.setUser(it)
-                        viewState.navigateUp()
-                    }, {})
-                    .call(compositeDisposable)
-        }
+                }, {})
+                .call(compositeDisposable)
     }
 
     private fun isRequiredValid(field: ProfileField): Boolean {

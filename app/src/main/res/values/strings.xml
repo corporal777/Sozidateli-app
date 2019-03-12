@@ -51,6 +51,7 @@
     <string name="profile_setting_chat">Настройки чата</string>
 
     <string name="profile_phone">Телефон</string>
+    <string name="profile_phone_work">Рабочий телефон</string>
     <string name="profile_birthday">Дата рождения</string>
     <string name="profile_country">Страна</string>
     <string name="profile_city">Город</string>
@@ -203,6 +204,10 @@
     <string name="profile_upload_document">Загрузить документ</string>
 
     <string name="profile_save_required_error">Вы не заполнили поле "%s"</string>
+    <string name="profile_gender">Пол</string>
+    <string name="profile_gender_male">Мужской</string>
+    <string name="profile_gender_female">Женский</string>
+    <string name="profile_gender_not_selected">Не выбрано</string>
 
 
 </resources>

@@ -71,3 +71,5 @@ const val REQUEST_CODE_SELECT_PDF = 12
 
 const val FIELD_ATTACH_RECOMMENDATION_FILE="attached_recomendation_files"
 
+const val GENDER_MALE="male"
+const val GENDER_FEMALE="female"

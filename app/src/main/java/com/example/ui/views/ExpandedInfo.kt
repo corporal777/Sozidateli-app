@@ -14,11 +14,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.R
 import kotlinx.android.synthetic.main.expended_info_view.view.*
-
 class ExpandedInfo : FrameLayout {
 
     private lateinit var view: View
@@ -41,8 +41,10 @@ class ExpandedInfo : FrameLayout {
             if (isAnimationInProcess) return@setOnClickListener
             if (isExpanded) {
                 animCollapse(view.llContainerInfo)
+                animArrowRotation(ivArrow,90f)
             } else {
                 animExpand(view.llContainerInfo)
+                animArrowRotation(ivArrow,270f)
             }
         }
         typeface = Typeface.createFromAsset(context.assets, "fonts/OpenSans-Light.ttf")
@@ -103,6 +105,9 @@ class ExpandedInfo : FrameLayout {
         (view.root.layoutParams as FrameLayout.LayoutParams).topMargin = marginTop
     }
 
+    private fun animArrowRotation(arrow: ImageView, setRotation:Float){
+        arrow.animate().rotation(setRotation).setDuration(400).start()
+    }
 
     fun animExpand(v: View) {
         isAnimationInProcess = true
