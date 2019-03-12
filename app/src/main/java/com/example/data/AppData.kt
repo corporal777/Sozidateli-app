@@ -8,6 +8,7 @@ import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
@@ -60,7 +61,7 @@ class AppData(
     private val chatUnreadMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val onChatUnreadMessageCountChange: Observable<Int> = chatUnreadMessageCountSubject
 
-    private val onErrorHandler = BehaviorSubject.createDefault(error.asOptional())
+    private val onErrorHandler = PublishSubject.create<Optional<ApiResponse<*>>>()
     val onErrorHandlerListener: Observable<Optional<ApiResponse<*>>> = onErrorHandler
 
     fun setUser(user: User) {

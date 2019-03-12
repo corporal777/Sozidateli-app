@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -79,7 +78,7 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     }
 
     override fun goToLoginWithEmailConfirmation(email: String, password: String) {
-        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailLogin(email, password, true))
+        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailLogin(email, password, true, false))
     }
 
     override fun layout() = R.layout.fragment_register

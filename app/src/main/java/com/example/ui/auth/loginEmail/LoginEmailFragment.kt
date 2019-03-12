@@ -1,11 +1,9 @@
 package com.example.ui.auth.loginEmail
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -31,6 +29,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
             email = getString("email") ?: ""
             password = getString("password") ?: ""
             showConfirmationOnStart = getBoolean("confirm")
+            showRecoveryOnStart = getBoolean("recovery")
         }
     }
 
@@ -61,9 +60,17 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     }
 
     override fun showEmailConfirmDialog(email: String) {
+        showDialog(getString(R.string.auth_register_confirm_email_title), getString(R.string.auth_register_confirm_email_message).format(email))
+    }
+
+    override fun showEmailRecoveryDialog(email: String) {
+        showDialog(null, getString(R.string.recovery_confirm_email_message).format(email))
+    }
+
+    private fun showDialog(title: String?, message: String?) {
         AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.auth_register_confirm_email_title))
-                .setMessage(getString(R.string.auth_register_confirm_email_message).format(email))
+                .setTitle(title)
+                .setMessage(message)
                 .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
                 .show()
     }

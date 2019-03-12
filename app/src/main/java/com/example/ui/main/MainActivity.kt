@@ -37,13 +37,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @ProvidePresenter
     fun providePresenter(): MainPresenter = presenterProvider.get()
 
-    private val startDestinations = arrayOf(R.id.event_list_fragment, R.id.event_tabs_fragment)
+    private val startDestinations = arrayOf(
+            R.id.event_list_fragment,
+            R.id.event_tabs_fragment,
+            R.id.login_fragment,
+            R.id.splash_fragment
+    )
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
         (application as? App)?.currentChatID = arguments?.getString("chatId", null)
         presenter.apply {
-            if (startDestinations.contains(destination.id)) onOpenStartDestination()
+            if (isStartDestination(destination.id)) onOpenStartDestination()
             else onOpenNotStartDestination()
         }
     }
@@ -177,7 +182,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onSupportNavigateUp() = findNavController().run {
-        if (currentDestination?.parent?.startDestination == R.id.splash_fragment) {
+        if (currentDestination?.id?.let { isStartDestination(it) } == true) {
             finish()
             false
         } else navigateUp()
@@ -197,6 +202,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         (application as? App)?.appIsRunning = false
         super.onDestroy()
     }
+
+    private fun isStartDestination(destination: Int) = startDestinations.contains(destination)
 
     override fun getLoadingView(): View = flLoading
 
