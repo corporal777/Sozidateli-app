@@ -24,6 +24,7 @@ import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_profile_full.*
+import java.lang.reflect.InvocationTargetException
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -76,13 +77,26 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         }
 
         user.user_phone?.let {
-            val phone = phoneUtill.parse(it, "RU")
-            listField.add(InfoProfileFieldItem(getString(R.string.profile_phone), arrayListOf(phoneUtill.format(phone, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL))))
+            if (it.isNotEmpty()) {
+                try {
+                    val phone = phoneUtill.parse(it, "RU")
+                    listField.add(InfoProfileFieldItem(getString(R.string.profile_phone), arrayListOf(phoneUtill.format(phone, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL))))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
         }
 
         user.user_phone_work?.let {
-            val phone = phoneUtill.parse(it, "RU")
-            listField.add(InfoProfileFieldItem(getString(R.string.profile_phone_work), arrayListOf(phoneUtill.format(phone, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL))))
+            if (it.isNotEmpty()) {
+                try {
+                    val phone = phoneUtill.parse(it, "RU")
+                    listField.add(InfoProfileFieldItem(getString(R.string.profile_phone_work), arrayListOf(phoneUtill.format(phone, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL))))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
 
         user.user_birthday?.let {
@@ -102,62 +116,74 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         }
 
         user.social_links?.let {
-            listField.add(InfoProfileFieldItem(getString(R.string.profile_sn), it))
+            if (it.isNotEmpty()) {
+                listField.add(InfoProfileFieldItem(getString(R.string.profile_sn), it))
+            }
         }
 
         user.academic_degree?.let {
-            listField.add(InfoProfileFieldItem(getString(R.string.profile_education), it))
+            if (it.isNotEmpty()) {
+                listField.add(InfoProfileFieldItem(getString(R.string.profile_education), it))
+            }
         }
 
         user.education?.let {
-            val list = mutableListOf<HashMap<String, String?>>()
-            for (item in it) {
-                list.add(hashMapOf(
-                        "" to Utils.getDatesInterval(item.begin, item.end),
-                        getString(R.string.profile_educate_speciality) to item.specialty,
-                        getString(R.string.profile_educate_name) to item.organization
-                ))
+            if (it.isNotEmpty()) {
+                val list = mutableListOf<HashMap<String, String?>>()
+                for (item in it) {
+                    list.add(hashMapOf(
+                            "" to Utils.getDatesInterval(item.begin, item.end),
+                            getString(R.string.profile_educate_speciality) to item.specialty,
+                            getString(R.string.profile_educate_name) to item.organization
+                    ))
+                }
+                addToList(listField, list, getString(R.string.profile_institution))
             }
-            addToList(listField, list, getString(R.string.profile_institution))
         }
 
         user.work?.let {
-            val list = mutableListOf<HashMap<String, String?>>()
+            if (it.isNotEmpty()) {
+                val list = mutableListOf<HashMap<String, String?>>()
 
-            for (item in it) {
-                list.add(hashMapOf(
-                        "" to Utils.getDatesInterval(item.begin, item.end),
-                        getString(R.string.profile_work_organization) to item.organization,
-                        getString(R.string.profile_work_position) to item.position,
-                        getString(R.string.profile_work_description) to item.description
-                ))
+                for (item in it) {
+                    list.add(hashMapOf(
+                            "" to Utils.getDatesInterval(item.begin, item.end),
+                            getString(R.string.profile_work_organization) to item.organization,
+                            getString(R.string.profile_work_position) to item.position,
+                            getString(R.string.profile_work_description) to item.description
+                    ))
+                }
+                addToList(listField, list, getString(R.string.profile_work_experience))
             }
-            addToList(listField, list, getString(R.string.profile_work_experience))
         }
 
         user.social_projects?.let {
-            val list = mutableListOf<HashMap<String, String?>>()
-            for (item in it) {
-                list.add(hashMapOf(
-                        "" to Utils.getDatesInterval(item.begin, item.end),
-                        getString(R.string.profile_social_project_name) to item.name,
-                        getString(R.string.profile_work_position) to item.role,
-                        getString(R.string.profile_work_description) to item.description
-                ))
+            if (it.isNotEmpty()) {
+                val list = mutableListOf<HashMap<String, String?>>()
+                for (item in it) {
+                    list.add(hashMapOf(
+                            "" to Utils.getDatesInterval(item.begin, item.end),
+                            getString(R.string.profile_social_project_name) to item.name,
+                            getString(R.string.profile_work_position) to item.role,
+                            getString(R.string.profile_work_description) to item.description
+                    ))
+                }
+                addToList(listField, list, getString(R.string.profile_social_project))
             }
-            addToList(listField, list, getString(R.string.profile_social_project))
         }
 
         user.attached_recomendation_files?.let {
-            val list = mutableListOf<HashMap<String, String?>>()
-            for (item in it) {
-                list.add(hashMapOf(
-                        getString(R.string.profile_attached_file_name) to item.name,
-                        getString(R.string.profile_attached_file_desc) to item.desc,
-                        getString(R.string.profile_attached_file_url) to item.url
-                ))
+            if (it.isNotEmpty()) {
+                val list = mutableListOf<HashMap<String, String?>>()
+                for (item in it) {
+                    list.add(hashMapOf(
+                            getString(R.string.profile_attached_file_name) to item.name,
+                            getString(R.string.profile_attached_file_desc) to item.desc,
+                            getString(R.string.profile_attached_file_url) to item.url
+                    ))
+                }
+                addToList(listField, list, getString(R.string.profile_attached_file))
             }
-            addToList(listField, list, getString(R.string.profile_attached_file))
         }
 
         adapter.clear()

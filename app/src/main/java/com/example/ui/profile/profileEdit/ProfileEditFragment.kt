@@ -165,8 +165,10 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         for (i in 0 until adapter.itemCount) {
             val item = adapter.getItem(i)
             if (item is ProfileExpandFieldItem) {
-                val attachedFiles = createFieldExpand(name, (item as ProfileExpandFieldItem).getFieldExpand().defaultFields, array)
-                (item as ProfileExpandFieldItem).updateExpandField(attachedFiles)
+                if(item.getFieldExpand().nameField == FIELD_ATTACH_RECOMMENDATION_FILE) {
+                    val attachedFiles = createFieldExpand(name, (item as ProfileExpandFieldItem).getFieldExpand().defaultFields, array)
+                    (item as ProfileExpandFieldItem).updateExpandField(attachedFiles)
+                }
             }
         }
     }
