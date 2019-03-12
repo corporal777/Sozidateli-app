@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.Type
+import com.example.util.SimpleTextWatcher
 import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_profile_phone.view.*
@@ -29,6 +30,10 @@ class ProfilePhoneItem(private val profileField: ProfileField) : ProfileBaseFiel
                 if(it){
                     profileField.data = ccp.fullNumberWithPlus
                 }
+            })
+
+            editText.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable {
+                profileField.data = ccp.fullNumberWithPlus
             })
 
             profileField.data?.let {

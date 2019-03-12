@@ -83,7 +83,7 @@ class ProfileEditPresenter
     }
 
     private fun isRequiredValid(field: ProfileField): Boolean {
-        return (field.required && !field.data?.toString().isNullOrEmpty()) || !field.required
+        return ((field.required && !field.data?.toString().isNullOrEmpty()) || !field.required) && field.isValid
     }
 
     override fun onChangePasswordShowDialogClick() {
