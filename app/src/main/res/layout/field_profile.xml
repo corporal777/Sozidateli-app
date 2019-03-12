@@ -21,6 +21,7 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textSize="16sp"
+        android:imeOptions="actionDone"
         android:layout_marginTop="4dp"
         android:id="@+id/editText"
         android:background="@drawable/background_edittext_login"/>

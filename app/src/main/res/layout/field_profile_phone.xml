@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:maxLines="1"
+            android:imeOptions="actionDone"
             android:background="@android:color/white"
             android:textCursorDrawable="@null"
             android:layout_centerVertical="true"

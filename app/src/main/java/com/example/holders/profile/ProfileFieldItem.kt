@@ -19,6 +19,8 @@ import java.util.*
 
 abstract class ProfileFieldItem(private val profileField: ProfileField) : ProfileBaseFieldItem(profileField) {
 
+    protected open var maxLines: Int? = null
+
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
 
@@ -38,6 +40,9 @@ abstract class ProfileFieldItem(private val profileField: ProfileField) : Profil
                 editText.addTextChangedListener(it)
             }
 
+            maxLines?.let {
+                editText.maxLines = it
+            }
         }
     }
 
