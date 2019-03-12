@@ -19,9 +19,18 @@ class AboutEventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
+            showLoadingDialog()
             setEventData(event)
             setLabel(event.name)
         }
+    }
+
+    override fun onImageLoad() {
+        viewState.hideLoadingDialog()
+    }
+
+    override fun onImageLoadError() {
+        viewState.hideLoadingDialog()
     }
 
     override fun onAboutForumClick() = viewState.showAboutForum(event)

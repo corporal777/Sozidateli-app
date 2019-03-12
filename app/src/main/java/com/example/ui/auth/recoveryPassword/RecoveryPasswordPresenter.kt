@@ -4,12 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthError
-import com.example.ui.snAuth.SnAuthManager
-import com.example.ui.snAuth.SnType
 import com.example.util.AuthUtil
-import io.reactivex.Completable
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -34,9 +29,10 @@ class RecoveryPasswordPresenter
         authRepository.sendRecoveryEmail(email)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe{
-                    viewState.showHelpDialog(email)
-                }
+                .subscribe({
+                    viewState.goToLoginWithEmailRecovery(email)
+                }, {
+                })
                 .call(compositeDisposable)
     }
 

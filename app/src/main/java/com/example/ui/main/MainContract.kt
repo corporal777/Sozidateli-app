@@ -1,6 +1,5 @@
 package com.example.ui.main
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.LocalNotification
@@ -11,25 +10,25 @@ interface MainContract {
         @StateStrategyType(SkipStrategy::class)
         fun showBackButton(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showLogin()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showEventList(popUpTo: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showEvent()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showGreetings()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showChat(userId: String, chatId: String, userName: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showLocalNotification(localNotification: LocalNotification)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
     }
 

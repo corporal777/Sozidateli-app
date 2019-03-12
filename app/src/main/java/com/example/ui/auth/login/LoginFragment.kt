@@ -1,9 +1,6 @@
 package com.example.ui.auth.login
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -55,7 +52,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     }
 
     override fun showLogin() {
-        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction(null, null, false))
+        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction(null, null, false, false))
     }
 
     override fun layout() = R.layout.fragment_login

@@ -17,6 +17,7 @@ class LoginEmailPresenter
     var email = ""
     var password = ""
     var showConfirmationOnStart = false
+    var showRecoveryOnStart = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -24,6 +25,7 @@ class LoginEmailPresenter
             setEmailAndPassword(email, password)
             validateEmail()
             if (showConfirmationOnStart) showEmailConfirmDialog(email)
+            if (showRecoveryOnStart) showEmailRecoveryDialog(email)
         }
     }
 

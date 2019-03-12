@@ -1,14 +1,19 @@
 package com.example.ui.aboutEvent
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.ChangeTransform
+import androidx.transition.TransitionSet
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.ui.base.BaseFragment
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.item_about_event.view.*
@@ -31,6 +36,23 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
             if (it == null) setupWithUserEvent()
             else setEvent(it)
         }
+    }
+
+    init {
+        val transition = TransitionSet().apply {
+            ordering = TransitionSet.ORDERING_TOGETHER
+            addTransition(ChangeBounds())
+            addTransition(ChangeTransform())
+            addTransition(ChangeImageTransform())
+        }
+
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        postponeEnterTransition()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,14 +86,22 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
     }
 
     override fun setEventData(event: Event) {
-        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
         tvOrganizationLabel.text = event.organizationName
         tvEventLabel.text = event.name
         tvEventDate.setDatesIntervalText(event.start, event.finish)
+        btnGoToEvent.visibility = View.VISIBLE
 
-        btnGoToEvent.apply {
-            visibility = View.VISIBLE
-        }
+        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo, object : Callback {
+            override fun onSuccess() {
+                presenter.onImageLoad()
+                startPostponedEnterTransition()
+            }
+
+            override fun onError(e: Exception?) {
+                presenter.onImageLoadError()
+                startPostponedEnterTransition()
+            }
+        })
     }
 
     override fun showAboutForum(event: Event) {

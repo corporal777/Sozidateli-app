@@ -3,12 +3,12 @@ package com.example.ui.auth.recoveryPassword
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.ui.auth.register.RegisterFragmentDirections
 import com.example.ui.base.BaseFragment
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_recovery_password.*
@@ -42,13 +42,6 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         etEmail.setText(email)
     }
 
-    override fun showHelpDialog(email: String) {
-        AlertDialog.Builder(requireContext())
-                .setMessage(getString(R.string.recovery_confirm_email_message).format(email))
-                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
     override fun enableRecoveryBtn(isEnable: Boolean) {
         btnRecovery.apply {
             isEnabled = isEnable
@@ -68,9 +61,10 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         }
     }
 
+    override fun goToLoginWithEmailRecovery(email: String) {
+        findNavController().navigate(RecoveryPasswordFragmentDirections.recoveryPassworToEmailLogin(email, null, false, true))
+    }
+
     override fun isShowToolbar() = true
-
-
-
     override fun layout() = R.layout.fragment_recovery_password
 }

@@ -6,15 +6,14 @@ import com.example.ui.base.BaseContract
 
 interface RecoveryPasswordContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showHelpDialog(email: String)
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableRecoveryBtn(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEmail(email: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun goToLoginWithEmailRecovery(email: String)
     }
 
     interface Presenter : BaseContract.Presenter {

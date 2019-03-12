@@ -10,7 +10,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
-import io.reactivex.internal.operators.completable.CompletableFromAction
 import performOnBackgroundOutOnMain
 
 class FcmMessaging : FirebaseMessagingService() {
@@ -25,9 +24,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
     @SuppressLint("CheckResult")
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        if (this.application is App) {
-            if ((application as App).appIsRunning) return
-        }
+        if ((application as? App)?.appIsRunning == true) return
 
         var userChat: UserChat? = null
 

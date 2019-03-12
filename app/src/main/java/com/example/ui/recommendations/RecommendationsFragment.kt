@@ -1,9 +1,9 @@
 package com.example.ui.recommendations
 
-import androidx.paging.PagedList
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.paging.PagedList
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -92,7 +92,12 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
 
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
         val extras = FragmentNavigatorExtras(*sharedElements)
-        findParentNavigation().navigate(R.id.about_event_navigation, bundleOf("event" to event), null, extras)
+        findParentNavigation().navigate(
+                R.id.about_event_navigation,
+                bundleOf("event" to event),
+                null,
+                extras
+        )
     }
 
     override fun showEventRequest(event: Event) {

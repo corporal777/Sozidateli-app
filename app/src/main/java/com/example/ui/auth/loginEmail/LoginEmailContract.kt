@@ -14,6 +14,9 @@ interface LoginEmailContract {
         fun showEmailConfirmDialog(email: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEmailRecoveryDialog(email: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRegister()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
