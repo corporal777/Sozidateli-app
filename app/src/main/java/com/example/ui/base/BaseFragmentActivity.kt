@@ -1,7 +1,5 @@
 package com.example.ui.base
 
-import androidx.fragment.app.Fragment
-import com.example.ui.base.BaseActivity
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject

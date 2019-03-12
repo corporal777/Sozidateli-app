@@ -41,12 +41,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
-
-        val chatId = arguments?.getString("chatId", null)
-
-        if (application is App) {
-            (application as App).currentChatID = chatId
-        }
+        (application as? App)?.currentChatID = arguments?.getString("chatId", null)
         presenter.apply {
             if (startDestinations.contains(destination.id)) onOpenStartDestination()
             else onOpenNotStartDestination()
@@ -55,9 +50,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (application is App) {
-            (application as App).appIsRunning = true
-        }
+        (application as? App)?.appIsRunning = true
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
@@ -176,14 +169,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onBackPressed() {
-        if (!onSupportNavigateUp()) finish()
+        onSupportNavigateUp()
     }
 
     override fun navigateUp() {
         onSupportNavigateUp()
     }
 
-    override fun onSupportNavigateUp() = findNavController().navigateUp()
+    override fun onSupportNavigateUp() = findNavController().run {
+        if (currentDestination?.parent?.startDestination == R.id.splash_fragment) {
+            finish()
+            false
+        } else navigateUp()
+    }
 
     override fun showToolbar() {
         supportActionBar?.show()
@@ -196,9 +194,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
-        if (application is App) {
-            (application as App).appIsRunning = false
-        }
+        (application as? App)?.appIsRunning = false
         super.onDestroy()
     }
 
