@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.Speaker
 import com.example.data.models.user.User
@@ -75,5 +76,9 @@ class UserRepositoryImp
 
     override fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
         return callPagination(api.getUserFavoriteSpeakers(limit, offset))
+    }
+
+    override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
+        return call(api.changeEmailConfirm(email,code))
     }
 }

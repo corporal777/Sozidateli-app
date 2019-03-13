@@ -30,6 +30,12 @@ interface MainContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialogChangeEmailSuccess()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialogChangeEmailError()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -37,6 +43,7 @@ interface MainContract {
         fun onOpenNotStartDestination()
         fun onHandleAuthLink(email: String, code: String)
         fun onHandleRecoverPasswordLink(email: String, code: String)
+        fun onHandleChangeEmailCofirm(email: String, code: String)
         fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
         fun onSetPassword(email: String, code: String, password: String)
     }

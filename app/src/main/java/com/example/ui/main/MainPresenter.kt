@@ -133,6 +133,18 @@ class MainPresenter
                 }.call(compositeDisposable)
     }
 
+    override fun onHandleChangeEmailCofirm(email: String, code: String) {
+        userRepository.changeEmailConfirm(email,code)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.showDialogChangeEmailSuccess()
+                },{
+                    viewState.showDialogChangeEmailError()
+                })
+                .call(compositeDisposable)
+    }
+
     override fun onSetPassword(email: String, code: String, password: String) {
         authRepository.setPassword(email, code, password)
                 .performOnBackgroundOutOnMain()

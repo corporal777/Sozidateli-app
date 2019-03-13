@@ -76,7 +76,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
-                if (authEmail != null && authCode != null) {
+                val change = it.getQueryParameter(CHANGE_EMAIL)
+
+                if(change!=null) {
+                    if (authEmail != null && authCode != null){
+                        presenter.onHandleChangeEmailCofirm(authEmail,authCode)
+                    }
+                } else if (authEmail != null && authCode != null) {
                     presenter.onHandleAuthLink(authEmail, authCode)
                 } else if (authCode != null && recoverEmail != null) {
                     presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
@@ -131,6 +137,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
 
         alert.show()
+    }
+
+    override fun showDialogChangeEmailSuccess() {
+        showDialog(getString(R.string.email_change_confirm_success))
+    }
+
+    override fun showDialogChangeEmailError() {
+        showDialog(getString(R.string.email_change_confirm_error))
+    }
+
+    private fun showDialog(message: String?) {
+        AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     override fun showChat(userId: String, chatId: String, userName: String) {

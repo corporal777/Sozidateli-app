@@ -23,12 +23,6 @@ class ProfileEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.onUserChange
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    it.value?.let { viewState::setUser }
-                }, {})
-                .call(compositeDisposable)
         viewState.setUser(appData.getUser())
     }
 
@@ -71,11 +65,24 @@ class ProfileEditPresenter
             mapUser.put(it.nameField, arr)
         }
 
+        var isEmailChange = false
+
+        if (mapUser["user_email"] != appData.getUser().user_email) {
+            isEmailChange = true
+        }
+
+
         userRepository.uploadAvatar(photo)
                 .andThen(userRepository.updateUser(mapUser))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
+
+                    it.isEmailChanged = isEmailChange
+                    if(isEmailChange){
+                        it.new_email = mapUser["user_email"].toString()
+                    }
+
                     appData.setUser(it)
                     viewState.navigateUp()
                 }, {})

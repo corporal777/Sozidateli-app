@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -200,6 +201,14 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         if (!child.isEmpty()) {
             mainList.add(InfoProfileExpandFieldItem(label, child))
         }
+    }
+
+    override fun showChangeEmailDialog(newEmail: String) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.email_change_title)
+                .setMessage(getString(R.string.email_change_msg).format(newEmail))
+                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     override fun isShowToolbar() = true

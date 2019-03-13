@@ -1,5 +1,7 @@
 package com.example.repository
 
+import com.example.data.models.ApiResponse
+import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.Speaker
 import com.example.data.models.user.User
@@ -22,4 +24,6 @@ interface UserRepository {
     fun uploadAvatar(photo: String?): Completable
     fun uploadRecommendationFile(file: String): Single<User>
     fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
+
+    fun changeEmailConfirm(email:String, code:String): Single<AuthResponse>
 }

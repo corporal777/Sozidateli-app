@@ -6,14 +6,18 @@ import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface ProfileFullContract {
-    interface View : BaseContract.View{
+    interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: User)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEditProfile()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChangeEmailDialog(newEmail:String)
     }
 
-    interface Presenter : BaseContract.Presenter{
+    interface Presenter : BaseContract.Presenter {
         fun onEditClick()
     }
 }
