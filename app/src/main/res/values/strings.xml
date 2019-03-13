@@ -209,7 +209,7 @@
     <string name="profile_gender_not_selected">Не выбрано</string>
 
     <string name="email_change_title">Email изменен</string>
-    <string name="email_change_msg">Email был изменен. На почтовый ящик %s отправлено письмо со ссылка для подтверждения.</string>
+    <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>
 
     <string name="email_change_confirm_success">Email успешно изменен</string>
     <string name="email_change_confirm_error">Ошибка при подтверждении email</string>
