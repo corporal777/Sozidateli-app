@@ -16,7 +16,7 @@ fun TextView.setDatesIntervalText(startDate: Long, finishDate: Long) {
     this.text = Utils.getDatesInterval(startDate, finishDate)
 }
 
-fun TextView.setDatesIntervalText(startDate: String, finishDate: String) {
+fun TextView.setDatesIntervalText(startDate: String?, finishDate: String?) {
     this.text = Utils.getDatesInterval(startDate, finishDate)
 }
 
