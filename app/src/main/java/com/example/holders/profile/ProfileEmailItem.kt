@@ -1,22 +1,12 @@
 package com.example.holders.profile
 
-import android.app.ActionBar
-import android.app.DatePickerDialog
-import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import com.example.R
 import com.example.data.models.ProfileField
-import com.example.data.models.Type
-import com.example.util.AuthUtil
+import com.example.util.AuthValidateUtil
 import com.example.util.SimpleTextWatcher
-import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.field_profile.view.*
-import java.util.*
 
 class ProfileEmailItem(private val profileField: ProfileField) : ProfileFieldItem(profileField) {
 
@@ -30,7 +20,7 @@ class ProfileEmailItem(private val profileField: ProfileField) : ProfileFieldIte
     override fun getTextChangeListener(): TextWatcher? {
             return SimpleTextWatcher().setAfterTextChangeRunnable {
                 profileField.data = it.toString()
-                profileField.isValid = AuthUtil.isValidEmail(it.toString())
+                profileField.isValid = AuthValidateUtil.isValidEmail(it.toString())
             }
         }
 

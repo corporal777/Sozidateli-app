@@ -15,6 +15,11 @@
 
     <color name="disabled_color">#d1d3d4</color>
 
+    <color name="action_button_enabled_background_color">#bd9b72</color>
+    <color name="action_button_disabled_background_color">#d1d3d4</color>
+    <color name="action_button_enabled_text_color">#FFFFFF</color>
+    <color name="action_button_disabled_text_color">#d1d3d4</color>
+
     <color name="chat_message_background_outgoing">#C49A6C</color>
     <color name="chat_message_background_incoming">#E4E4E4</color>
     <color name="chat_message_text_outgoing">#FFFFFF</color>
@@ -35,7 +40,8 @@
     <color name="auth_vk_color">#5376a3</color>
     <color name="auth_ok_color">#ed812b</color>
     <color name="auth_email_color">#bd9b72</color>
-    <color name="auth_accept_green">#2bb673</color>
+    <color name="password_hint_correct_text">#2bb673</color>
+    <color name="password_hint_invalid_text">#F44336</color>
 
     <color name="profile_divider">#eaeaea</color>
     <color name="profile_notification_background">#C49A6C</color>

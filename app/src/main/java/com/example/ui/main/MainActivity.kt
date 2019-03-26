@@ -78,9 +78,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
                 val change = it.getQueryParameter(CHANGE_EMAIL)
 
-                if(change!=null) {
-                    if (authEmail != null && authCode != null){
-                        presenter.onHandleChangeEmailCofirm(authEmail,authCode)
+                if (change != null) {
+                    if (authEmail != null && authCode != null) {
+                        presenter.onHandleChangeEmailCofirm(authEmail, authCode)
                     }
                 } else if (authEmail != null && authCode != null) {
                     presenter.onHandleAuthLink(authEmail, authCode)
@@ -114,12 +114,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         var passwordConfirm = ""
 
         val validatePassword = {
-            val isPasswordValid = password == passwordConfirm && AuthUtil.isValidPassword(password)
-            AuthUtil.colorTextPasswordChecker(view.tvPasswordStrong1, isPasswordValid)
-            AuthUtil.enableButton(view.btnSave, isPasswordValid)
+            val isPasswordValid = AuthValidateUtil.isValidPassword(password)
+            val isPasswordsMatch = password == passwordConfirm
+            view.tvPasswordHintLength.apply {
+                if (isPasswordValid) highlightCorrect()
+                else highlightError()
+            }
+            view.btnSave.isEnabled = isPasswordValid && isPasswordsMatch
         }
 
-        validatePassword()
+        view.btnSave.isEnabled = false
 
         view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             password = charSequence.toString()

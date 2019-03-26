@@ -8,12 +8,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
 import com.example.data.models.Type
-import com.example.holders.BrownButtonItem
+import com.example.holders.ActionButtonItem
 import com.example.ui.profile.profileEdit.ProfileEditPresenter
 import com.example.util.FIELD_ATTACH_RECOMMENDATION_FILE
 import com.example.util.Utils
@@ -23,11 +21,6 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_expand_profile.view.*
-import okhttp3.internal.Util
-import kotlin.math.exp
-import android.view.animation.LinearInterpolator
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import com.example.R
 
@@ -166,7 +159,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
     private fun getAddButton(): Section {
         val section = Section()
 
-        section.add(BrownButtonItem("Добавить", View.OnClickListener {
+        section.add(ActionButtonItem("Добавить", View.OnClickListener {
             if (expandField.nameField == FIELD_ATTACH_RECOMMENDATION_FILE) {
                 presenter?.let {
                     it.onUploadDocumentClick()

@@ -13,7 +13,7 @@ import com.example.ui.mySchedule.MySchedulePresenter
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.brown_button.view.*
+import kotlinx.android.synthetic.main.item_action_button.view.*
 import kotlinx.android.synthetic.main.item_sub_event.view.*
 
 open class SubEventItem(private val subEvent: Subevent, private val isInMySchedule: Boolean, private val presenter: MySchedulePresenter) : Item() {

@@ -4,7 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.AuthUtil
+import com.example.util.AuthValidateUtil
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class RecoveryPasswordPresenter
     }
 
     private fun validateEmail() {
-        viewState.enableRecoveryBtn(AuthUtil.isValidEmail(email))
+        viewState.enableRecoveryBtn(AuthValidateUtil.isValidEmail(email))
     }
 
     override fun onChangeEmailText(email: String) {
