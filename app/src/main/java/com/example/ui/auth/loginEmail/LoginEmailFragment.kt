@@ -9,7 +9,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.util.AuthUtil
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_login_email.*
 import javax.inject.Inject
@@ -84,7 +83,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     }
 
     override fun enableLoginBtn(isEnable: Boolean) {
-        AuthUtil.enableButton(btnLogin, isEnable)
+        btnLogin.isEnabled = isEnable
     }
 
     override fun layout() = R.layout.fragment_login_email

@@ -1,16 +1,13 @@
 package com.example.ui.auth.register
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.util.AuthUtil
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_register.*
 import javax.inject.Inject
@@ -64,17 +61,14 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        btnRegister.apply {
-            isEnabled = isEnable
-            setBackgroundResource(if (isEnable) R.drawable.background_btn_auth else R.drawable.background_disabled_btn_login)
-            setTextColor(if (isEnable) Color.WHITE else ContextCompat.getColor(requireContext(), R.color.disabled_color))
-        }
+        btnRegister.apply { isEnabled = isEnable }
     }
 
     override fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean) {
-        AuthUtil.colorTextPasswordChecker(tvPasswordStrong1, isHasSix)
-//        colorTextPasswordChecker(tvPasswordStrong2, isOneCap)
-//        colorTextPasswordChecker(tvPasswordStrong3, isHasSymbol)
+        tvPasswordHintLength.apply {
+            if (isHasSix) highlightCorrect()
+            else highlightError()
+        }
     }
 
     override fun goToLoginWithEmailConfirmation(email: String, password: String) {

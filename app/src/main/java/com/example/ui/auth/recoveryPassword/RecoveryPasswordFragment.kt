@@ -1,14 +1,11 @@
 package com.example.ui.auth.recoveryPassword
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.ui.auth.register.RegisterFragmentDirections
 import com.example.ui.base.BaseFragment
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.fragment_recovery_password.*
@@ -43,22 +40,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
     }
 
     override fun enableRecoveryBtn(isEnable: Boolean) {
-        btnRecovery.apply {
-            isEnabled = isEnable
-
-            val background: Int
-            val textColor: Int
-            if (isEnable) {
-                background = R.drawable.background_btn_auth
-                textColor = Color.WHITE
-            } else {
-                background = R.drawable.background_disabled_btn_login
-                textColor = ContextCompat.getColor(context, R.color.disabled_color)
-            }
-
-            setBackgroundResource(background)
-            setTextColor(textColor)
-        }
+        btnRecovery.apply { isEnabled = isEnable }
     }
 
     override fun goToLoginWithEmailRecovery(email: String) {

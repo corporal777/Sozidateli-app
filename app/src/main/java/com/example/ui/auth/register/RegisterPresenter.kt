@@ -4,7 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.AuthUtil
+import com.example.util.AuthValidateUtil
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -27,12 +27,12 @@ class RegisterPresenter
     override fun onClickBack() = viewState.navigateUp()
 
     override fun onChangeEmailText(email: String) {
-        isEmailValid = AuthUtil.isValidEmail(email)
+        isEmailValid = AuthValidateUtil.isValidEmail(email)
         setValidRegister()
     }
 
     override fun onChangePasswordText(password: String) {
-        isPasswordValid = AuthUtil.isValidPassword(password)
+        isPasswordValid = AuthValidateUtil.isValidPassword(password)
         viewState.passwordCheckColored(isPasswordValid, true, isHasSymbol = true)
         setValidRegister()
     }

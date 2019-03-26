@@ -42,10 +42,10 @@
             tools:ignore="UnusedAttribute" />
 
         <TextView
+            android:id="@+id/tvRecoverPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:id="@+id/tvRecoverPassword"
             android:gravity="end"
             android:text="@string/auth_forgot_password"
             android:textColor="@color/hint_gray"
@@ -59,10 +59,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btnRegister"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/background_btn_auth"
+        android:background="@drawable/background_action_button_selector"
         android:text="@string/auth_login_btn"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/text_color_action_button" />
 
+    <!--suppress AndroidUnknownAttribute -->
     <Button
         android:id="@+id/btnRegister"
         fontPath="fonts/OpenSans-Bold.ttf"
@@ -73,7 +74,8 @@
         android:background="@android:color/transparent"
         android:text="@string/auth_register_btn"
         android:textColor="@color/auth_email_color"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="MissingPrefix" />
 
     <ImageView
         android:id="@+id/ivClose"
@@ -81,6 +83,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
-        android:src="@drawable/ic_close_black_24dp" />
-
+        android:src="@drawable/ic_close_black_24dp"
+        tools:ignore="ContentDescription" />
 </RelativeLayout>

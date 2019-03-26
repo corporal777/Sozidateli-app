@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="viewBackground" format="reference" />
+
+    <declare-styleable name="food">
+        <attr name="password_hint_state_correct" format="boolean" />
+        <attr name="password_hint_state_incorrect" format="boolean" />
+    </declare-styleable>
 </resources>
