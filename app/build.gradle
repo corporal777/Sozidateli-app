@@ -49,7 +49,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // support
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
@@ -70,8 +70,9 @@ dependencies {
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
     // rx
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
     // dagger 2
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -89,7 +90,6 @@ dependencies {
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
     implementation 'com.splunk:mint-android-sdk:5.2.4'
-
 
     //ui
     implementation "com.xwray:groupie:2.3.0"
@@ -118,13 +118,12 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
 
     // sn
     implementation 'com.vk:androidsdk:1.6.7'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.6'
-
 
     // tests
     testImplementation 'junit:junit:4.12'
