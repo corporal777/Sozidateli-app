@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatSpinner xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/spinner"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/background_edittext_login"
+    android:importantForAutofill="no"
+    android:paddingStart="10dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="8dp"
+    android:prompt="@string/register_event_select_category_hint"
+    android:textColorHint="@color/hint_gray"
+    android:textSize="16sp"
+    tools:ignore="LabelFor,TextFields,UnusedAttribute"
+    tools:text="@tools:sample/full_names" />

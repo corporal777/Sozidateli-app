@@ -16,7 +16,9 @@ class BuildingSchemePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setPlaceData(place)
+        place?.let {
+            viewState.setPlaceData(it)
+        }
     }
 
     override fun attachView(view: BuildingSchemeContract.View?) {
@@ -24,7 +26,11 @@ class BuildingSchemePresenter
         viewState.changeScrollY(scroll)
     }
 
-    override fun onImageClick() = viewState.showImage(place.schemeImage)
+    override fun onImageClick(){
+        place?.schemeImage?.let {
+            viewState.showImage(it)
+        }
+    }
 
     override fun onScrollPositionChange(scroll: Int) {
         this.scroll = scroll

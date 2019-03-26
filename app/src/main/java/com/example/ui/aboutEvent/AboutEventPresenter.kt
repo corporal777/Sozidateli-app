@@ -21,7 +21,9 @@ class AboutEventPresenter
         viewState.apply {
             showLoadingDialog()
             setEventData(event)
-            setLabel(event.name)
+            event.name?.let {
+                setLabel(it)
+            }
         }
     }
 

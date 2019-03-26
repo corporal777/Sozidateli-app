@@ -2,15 +2,15 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.Document
-import com.example.data.models.Event
-import com.example.data.models.News
-import com.example.data.models.Notification
-import com.example.data.models.user.User
+import com.example.data.models.EventRegisterResponse
+import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Part
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -33,5 +33,18 @@ class EventRepositoryImp
 
     override fun getEventDocuments(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
         return callPagination(api.getEventDocs(eventId,limit,offset))
+    }
+
+
+    override fun getEventRegisterField(eventId: Int): Single<RegisterFieldResponse> {
+       return call(api.getEventRegisterField(eventId))
+    }
+
+    override fun eventRegister(eventId: Int,fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
+        return call(api.eventRegister(eventId,fields,files))
+    }
+
+    override fun getEventRegister(eventId: Int): Single<EventRegisterResponse> {
+        return call(api.getEventRegister(eventId))
     }
 }

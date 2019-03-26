@@ -6,14 +6,14 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Event(
         val event_id: String,
-        val name: String,
-        val logo: String,
-        val info: String,
-        val start: String,
-        val finish: String,
-        val organizationName: String,
-        val status: Status,
-        val place: Place
+        val name: String?,
+        val logo: String?,
+        val info: String?,
+        val start: String?,
+        val finish: String?,
+        val organizationName: String?,
+        val status: String?,
+        val place: Place?
 ) : Parcelable
 
 enum class Status(val code: String) {

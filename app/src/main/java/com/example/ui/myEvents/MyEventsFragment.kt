@@ -45,7 +45,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                 viewHolder.apply {
                     itemContainer.apply {
                         clipToOutline = true
-                        alpha = if (item.status === Status.FINISHED) 0.5f else 1f
+                        alpha = if (item.status === Status.FINISHED.code) 0.5f else 1f
                         setOnClickListener { presenter.onEventClick(item) }
                     }
 
@@ -63,12 +63,12 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                         val textBackground: Int
                         val textRes: Int
                         when (item.status) {
-                            Status.APPROVED -> {
+                            Status.APPROVED.code -> {
                                 textColor = R.color.event_status_approved_text
                                 textBackground = R.color.event_status_approved_background
                                 textRes = R.string.event_status_approved
                             }
-                            Status.CONFIRMATION_EXPECTED -> {
+                            Status.CONFIRMATION_EXPECTED.code -> {
                                 textColor = R.color.event_status_wait_confirmation_text
                                 textBackground = R.color.event_status_wait_confirmation_background
                                 textRes = R.string.event_status_wait_confirmation

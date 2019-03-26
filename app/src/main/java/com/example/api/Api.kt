@@ -1,11 +1,13 @@
 package com.example.api
 
+import com.example.data.models.EventRegisterResponse
 import com.example.data.models.*
 import com.example.data.models.user.User
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface Api {
@@ -150,4 +152,14 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/favorites/organisations")
     fun organizationFavoriteList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
+
+    @GET("/v1/events/{eventId}/register/fields")
+    fun getEventRegisterField(@Path("eventId") eventId: Int): Single<ApiResponse<RegisterFieldResponse>>
+
+    @Multipart
+    @POST("/v1/events/{eventId}/register/save")
+    fun eventRegister(@Path("eventId") eventId: Int,@PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
+
+    @GET("/v1/events/{eventId}/register")
+    fun getEventRegister(@Path("eventId") eventId: Int): Single<ApiResponse<EventRegisterResponse>>
 }

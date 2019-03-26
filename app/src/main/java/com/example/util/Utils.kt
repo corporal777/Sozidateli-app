@@ -44,6 +44,9 @@ object Utils {
     val defaultServerDateFormatter: DateFormat
         get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
+    val defaultServerDateFormatterWithTime: DateFormat
+        get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP_WITH_TIME, Locale.getDefault())
+
     fun formatToDefaultDate(serverTimestamp: String): String? {
         val serverDate = try {
             defaultServerDateFormatter.parse(serverTimestamp)

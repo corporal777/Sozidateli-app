@@ -103,7 +103,8 @@ dependencies {
     implementation 'com.github.chuross:flinglayout:0.5.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.hbb20:ccp:2.2.4'
-
+    implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
+    implementation 'me.srodrigo:androidhintspinner:1.0.0'
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"

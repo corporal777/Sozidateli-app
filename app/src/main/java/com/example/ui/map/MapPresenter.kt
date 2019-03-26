@@ -14,8 +14,13 @@ class MapPresenter
     private val place = appData.event!!.place
 
     override fun onMapReady() {
-        val coordinates = place.coordinates
-        viewState.setMarker(coordinates.first(), coordinates.last())
-        viewState.setDescription(place.howToGet)
+        val coordinates = place?.coordinates
+        coordinates?.let {
+            viewState.setMarker(coordinates.first(), coordinates.last())
+        }
+        place?.let {
+            viewState.setDescription(it.howToGet)
+        }
+
     }
 }

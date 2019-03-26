@@ -115,7 +115,7 @@ class DummyRepositoryImpl
                     "2019-01-01",
                     "2019-02-28",
                     "Форум $index",
-                    Status.values().random(),
+                    Status.values().random().code,
                     Place(
                             coordinates.random(),
                             getRandomText(),

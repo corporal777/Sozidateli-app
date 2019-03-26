@@ -22,7 +22,7 @@ class ProfileTextItem(private val profileField: ProfileField) : ProfileFieldItem
         super.bind(viewHolder, position)
     }
 
-    override fun getInputType() = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+    override fun getInputType() = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
 
     override fun getLayout() = R.layout.field_profile
 }

@@ -24,10 +24,12 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showToast(message: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialog(message: String?)
     }
 
     interface LoadingView {
-
         @StateStrategyType(SkipStrategy::class)
         fun showLoadingDialog()
 

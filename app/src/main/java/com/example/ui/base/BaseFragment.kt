@@ -75,6 +75,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.navigateUp()
     }
 
+    override fun showDialog(message: String?) {
+        mActivity?.showDialog(message)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         hideKeyboard()

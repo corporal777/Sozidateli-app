@@ -7,6 +7,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import com.example.R
 import dagger.android.AndroidInjection
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -65,6 +67,14 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun showKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+    }
+
+    override fun showDialog(message: String?) {
+        AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton(R.string.ok,null)
+                .create()
+                .show()
     }
 
     abstract fun hideToolbar()

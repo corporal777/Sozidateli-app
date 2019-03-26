@@ -101,7 +101,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     }
 
     override fun showEventRequest(event: Event) {
-        findParentNavigation().navigate(R.id.request_fragment)
+        findParentNavigation().navigate(R.id.request_fragment,bundleOf("event" to event))
     }
 
     override fun isShowToolbar() = true

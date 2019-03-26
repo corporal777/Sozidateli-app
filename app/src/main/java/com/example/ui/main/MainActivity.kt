@@ -147,13 +147,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         showDialog(getString(R.string.email_change_confirm_error))
     }
 
-    private fun showDialog(message: String?) {
-        AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
     override fun showChat(userId: String, chatId: String, userName: String) {
         findNavController().navigate(R.id.chat_fragment, bundleOf(
                 FIELD_LABEL to userName,

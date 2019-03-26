@@ -8,6 +8,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.ChangeImageTransform
 import androidx.transition.ChangeTransform
 import androidx.transition.TransitionSet
+import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -125,7 +126,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment)
+        findNavController().navigate(R.id.request_fragment,bundleOf("event" to event))
     }
 
     override fun setLabel(label: String) {
