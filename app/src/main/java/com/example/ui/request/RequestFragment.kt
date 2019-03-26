@@ -14,7 +14,6 @@ import com.example.R
 import com.example.data.models.FieldType
 import com.example.data.models.RegisterEventField
 import com.example.data.models.RegisterFieldResponse
-import com.example.holders.BrownButtonItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
 import com.example.util.REQUEST_CODE_SELECT_PDF
@@ -31,6 +30,7 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Provider
 import android.provider.DocumentsContract
+import com.example.holders.ActionButtonItem
 
 
 class RequestFragment : BaseFragment(), RequestContract.View {
@@ -57,7 +57,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply { adapter = this@RequestFragment.adapter }
         section.setHeader(RegisterEventHeaderItem(presenter))
-        section.setFooter(BrownButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
+        section.setFooter(ActionButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
     }
 
     override fun setFields(fieldResponse: RegisterFieldResponse) {
