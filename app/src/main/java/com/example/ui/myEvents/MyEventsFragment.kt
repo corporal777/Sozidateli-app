@@ -51,9 +51,9 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
                     Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
 
-                    tvOrganizationLabel.text = item.organizationName
+                    tvOrganizationLabel.text = item.organization?.name
                     tvEventLabel.text = item.name
-                    tvEventDate.setDatesIntervalText(item.start, item.finish)
+                    tvEventDate.setDatesIntervalText(item.conference_start, item.conference_finish)
 
                     btnGoToEvent.apply { visibility = View.GONE }
                     tvStatus.apply {

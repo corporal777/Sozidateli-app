@@ -12,9 +12,9 @@ open class SearchEventResultItem(private val event: Event, private val presenter
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            tvOrganizationName.text = event.organizationName
+            tvOrganizationName.text = event.organization?.name
             tvEventName.text = event.name
-            tvEventDate.text = Utils.getDatesInterval(event.start, event.finish)
+            tvEventDate.text = Utils.getDatesInterval(event.conference_start, event.conference_finish)
 
             setOnClickListener { presenter.onEventClick(event) }
         }

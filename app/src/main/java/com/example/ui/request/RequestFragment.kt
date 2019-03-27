@@ -1,5 +1,6 @@
 package com.example.ui.request
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.ACTION_OPEN_DOCUMENT
@@ -31,6 +32,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 import android.provider.DocumentsContract
 import com.example.holders.ActionButtonItem
+import com.nabinbhandari.android.permissions.PermissionHandler
+import android.Manifest.permission
+import com.nabinbhandari.android.permissions.Permissions
 
 
 class RequestFragment : BaseFragment(), RequestContract.View {
@@ -56,8 +60,6 @@ class RequestFragment : BaseFragment(), RequestContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply { adapter = this@RequestFragment.adapter }
-        section.setHeader(RegisterEventHeaderItem(presenter))
-        section.setFooter(ActionButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
     }
 
     override fun setFields(fieldResponse: RegisterFieldResponse) {
@@ -82,16 +84,23 @@ class RequestFragment : BaseFragment(), RequestContract.View {
 
         listFields.add(RegisterEventDropDownCategoryItem(fieldResponse.categories, presenter,fieldResponse.selectedCategory))
 
+        section.setHeader(RegisterEventHeaderItem(presenter))
+        section.setFooter(ActionButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
         section.update(listFields)
     }
 
     override fun openFileSelector() {
-        val intent = Intent()
-                .setType("*/*")
-                .setAction(Intent.ACTION_OPEN_DOCUMENT)
-                .addCategory(Intent.CATEGORY_OPENABLE)
+        Permissions.check(context, Manifest.permission.READ_EXTERNAL_STORAGE, null, object : PermissionHandler() {
+            override fun onGranted() {
+                val intent = Intent()
+                        .setType("*/*")
+                        .setAction(Intent.ACTION_OPEN_DOCUMENT)
+                        .addCategory(Intent.CATEGORY_OPENABLE)
 
-        startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_SELECT_PDF)
+                startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_SELECT_PDF)
+            }
+        })
+
     }
 
     override fun updateFileField(position: Int, path: String) {

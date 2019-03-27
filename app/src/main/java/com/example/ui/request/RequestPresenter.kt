@@ -104,7 +104,9 @@ class RequestPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.navigateUp()
-                }, {}).call(compositeDisposable)
+                }, {
+                    it.printStackTrace()
+                }).call(compositeDisposable)
     }
 
     override fun onCloseClick() = viewState.navigateUp()

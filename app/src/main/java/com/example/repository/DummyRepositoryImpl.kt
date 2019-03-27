@@ -116,12 +116,16 @@ class DummyRepositoryImpl
                     "2019-02-28",
                     "Форум $index",
                     Status.values().random().code,
+                    getRandomText(),
                     Place(
                             coordinates.random(),
                             getRandomText(),
                             buildingSchemas.random(),
                             getRandomText()
-                    )
+                    ),
+                    null,
+                    null,
+                    getRandomText()
             )
         }
     }

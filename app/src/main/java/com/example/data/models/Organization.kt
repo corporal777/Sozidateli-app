@@ -1,7 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Organization(
         val id: Int,
         val name: String?,
@@ -13,4 +16,4 @@ data class Organization(
         val isSubscribed: Boolean?,
         @SerializedName("is_user_in_favorite")
         val isInFavorite: Boolean?
-)
+):Parcelable

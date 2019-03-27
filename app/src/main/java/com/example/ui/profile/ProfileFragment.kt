@@ -88,8 +88,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
 
         user.default_event?.let {
             tvEventName.text = it.name
-            tvOrganizationName.text = it.organizationName
-            tvEventDate.text = it.start
+            tvOrganizationName.text = it.organization?.name
+            tvEventDate.text = it.conference_start
         }
     }
 
