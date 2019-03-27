@@ -162,4 +162,12 @@ interface Api {
 
     @GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: Int): Single<ApiResponse<EventRegisterResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/events/registrations")
+    fun getEventRegisterList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<EventRegisterResponse>>>
+
+
+    @POST("v1/user/set_dafault_event/{eventId}")
+    fun setDefaultEvent(@Path("eventId")eventId:String):Completable
 }

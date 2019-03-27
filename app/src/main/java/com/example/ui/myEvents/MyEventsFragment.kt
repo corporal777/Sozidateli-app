@@ -12,6 +12,7 @@ import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
+import com.example.data.models.EventRegisterResponse
 import com.example.data.models.Status
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.PositionOffsetScrollListener
@@ -33,27 +34,27 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
     @ProvidePresenter(type = PresenterType.WEAK, tag = "MyEventsPresenter")
     fun providePresenter(): MyEventsPresenter = presenterProvider.get()
 
-    private val adapter: SimplePagingRecyclerViewAdapter<Event> by lazy {
-        object : SimplePagingRecyclerViewAdapter<Event>(
+    private val adapter: SimplePagingRecyclerViewAdapter<EventRegisterResponse> by lazy {
+        object : SimplePagingRecyclerViewAdapter<EventRegisterResponse>(
                 { oldItem, newItem -> oldItem.event_id == newItem.event_id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_event
 
-            override fun onBindItem(viewHolder: ViewHolder, item: Event?, position: Int) {
-                item!!
+            override fun onBindItem(viewHolder: ViewHolder, registerItem: EventRegisterResponse?, position: Int) {
+                val event = registerItem?.event!!
                 viewHolder.apply {
                     itemContainer.apply {
                         clipToOutline = true
-                        alpha = if (item.status === Status.FINISHED.code) 0.5f else 1f
-                        setOnClickListener { presenter.onEventClick(item) }
+                        alpha = if (event.status === Status.CONFERENCE_ENDS.code) 0.5f else 1f
+                        setOnClickListener { presenter.onEventClick(event) }
                     }
 
-                    Picasso.get().load(item.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+                    Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
 
-                    tvOrganizationLabel.text = item.organization?.name
-                    tvEventLabel.text = item.name
-                    tvEventDate.setDatesIntervalText(item.conference_start, item.conference_finish)
+                    tvOrganizationLabel.text = event.organization?.name
+                    tvEventLabel.text = event.name
+                    tvEventDate.setDatesIntervalText(event.conference_start, event.conference_finish)
 
                     btnGoToEvent.apply { visibility = View.GONE }
                     tvStatus.apply {
@@ -62,7 +63,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                         val textColor: Int
                         val textBackground: Int
                         val textRes: Int
-                        when (item.status) {
+                        when (event.status) {
                             Status.APPROVED.code -> {
                                 textColor = R.color.event_status_approved_text
                                 textBackground = R.color.event_status_approved_background
@@ -99,7 +100,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
         }
     }
 
-    override fun setData(events: PagedList<Event>) {
+    override fun setData(events: PagedList<EventRegisterResponse>) {
         adapter.submitList(events)
     }
 

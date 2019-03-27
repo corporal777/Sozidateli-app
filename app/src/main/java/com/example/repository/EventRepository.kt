@@ -19,4 +19,7 @@ interface EventRepository {
     fun getEventRegisterField(eventId:Int): Single<RegisterFieldResponse>
     fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
     fun getEventRegister(eventId: Int): Single<EventRegisterResponse>
+    fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventRegisterResponse>>
+    fun setDefaultEvent(eventId:String):Completable
+
 }

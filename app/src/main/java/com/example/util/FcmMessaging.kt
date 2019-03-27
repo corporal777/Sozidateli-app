@@ -40,7 +40,7 @@ class FcmMessaging : FirebaseMessagingService() {
                 .flatMapCompletable {
                     val isShowed = it.getBoolean(FIELD_IS_SHOWED) ?: false
                     if (!isShowed) {
-                        Utils.showPushChatNotification(this, userChat)
+                        NotificationUtill.showPushChatNotification(this, userChat)
                         RxFirestore.runTransaction(firestore) {
                             val refLastMsg = firestore.collection(COLLECTION_USERS).document(AppPrefs(this).userId.toString())
                             val lastMsgId = it.get(refLastMsg).get(FIELD_MESSAGE_ID)

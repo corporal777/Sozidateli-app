@@ -5,12 +5,13 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
+import com.example.data.models.EventRegisterResponse
 import com.example.ui.base.BaseContract
 
 interface MyEventsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(events: PagedList<Event>)
+        fun setData(events: PagedList<EventRegisterResponse>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
