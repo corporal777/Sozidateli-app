@@ -34,7 +34,6 @@ class RecommendationsPresenter
     override fun attachView(view: RecommendationsContract.View?) {
         super.attachView(view)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
-        pagination.invalidate()
     }
 
     override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {

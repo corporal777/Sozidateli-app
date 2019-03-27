@@ -17,9 +17,11 @@ import android.webkit.MimeTypeMap
 import android.content.ContentResolver
 import com.example.data.models.EventRegisterResponse
 import com.example.data.models.RegisterFieldResponse
+import com.example.events.OnUpdateMyEventsEvent
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import okhttp3.MultipartBody
+import org.greenrobot.eventbus.EventBus
 
 
 @InjectViewState
@@ -104,6 +106,7 @@ class RequestPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.navigateUp()
+                    EventBus.getDefault().postSticky(OnUpdateMyEventsEvent())
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)

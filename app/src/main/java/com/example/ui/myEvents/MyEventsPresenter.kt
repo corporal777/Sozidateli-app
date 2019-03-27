@@ -5,10 +5,14 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Event
 import com.example.data.models.Status
+import com.example.events.OnUpdateMyEventsEvent
 import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -28,6 +32,7 @@ class MyEventsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        EventBus.getDefault().register(this)
         pagination
                 .build()
                 .withLoadingDialog(viewState)
@@ -38,6 +43,11 @@ class MyEventsPresenter
     override fun attachView(view: MyEventsContract.View?) {
         super.attachView(view)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    fun onUpdateList(event:OnUpdateMyEventsEvent){
+        EventBus.getDefault().removeStickyEvent(event)
         pagination.invalidate()
     }
 
@@ -56,7 +66,6 @@ class MyEventsPresenter
             appData.event = event
             viewState.selectEvent(event)
         }
-
     }
 
     private fun isCanSetDefault(event: Event):Boolean{
@@ -66,5 +75,10 @@ class MyEventsPresenter
     override fun onScrollChange(position: Int, offset: Int) {
         scrollPosition = position
         scrollOffset = offset
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }
