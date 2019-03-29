@@ -168,4 +168,11 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
     fun getEventDaySchedule(@Path("eventId") eventId: Int, @FieldMap map: Map<String, @JvmSuppressWildcards Any?>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<SubEvent>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/events/registrations")
+    fun getEventRegisterList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<EventRegisterResponse>>>
+
+    @POST("v1/user/set_dafault_event/{eventId}")
+    fun setDefaultEvent(@Path("eventId")eventId:String):Completable
 }

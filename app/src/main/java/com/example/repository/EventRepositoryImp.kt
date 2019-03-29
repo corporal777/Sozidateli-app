@@ -53,4 +53,12 @@ class EventRepositoryImp
     override fun getEventInfo(eventId: Int): Maybe<EventInfo> {
         return call(api.getEventInfo(eventId))
     }
+
+    override fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventRegisterResponse>> {
+        return callPagination(api.getEventRegisterList(limit,offset))
+    }
+
+    override fun setDefaultEvent(eventId: String): Completable {
+        return call(api.setDefaultEvent(eventId))
+    }
 }

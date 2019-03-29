@@ -49,11 +49,11 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
                     if (isExpanded) {
                         animCollapse(fieldRecyclerView)
-                        animArrowRotation(ivArrow,90f)
+                        animArrowRotation(ivArrow, 90f)
                         //ivArrow.rotation = 90f
                     } else {
                         animExpand(fieldRecyclerView)
-                        animArrowRotation(ivArrow,270f)
+                        animArrowRotation(ivArrow, 270f)
                         //ivArrow.rotation = 270f
                     }
                 }
@@ -93,7 +93,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
         }
     }
 
-    private fun animArrowRotation(arrow: ImageView,setRotation:Float){
+    private fun animArrowRotation(arrow: ImageView, setRotation: Float) {
         arrow.animate().rotation(setRotation).setDuration(400).start()
     }
 
@@ -143,8 +143,10 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
 
             if (list.size / 2 == list.indexOf(it)) {
                 section.add(TrashItem(View.OnClickListener {
-                    expandField.listOfField.removeAt(position)
-                    update()
+                    if (position < expandField.listOfField.size && position != -1) {
+                        expandField.listOfField.removeAt(position)
+                        update()
+                    }
                 }))
             }
         }

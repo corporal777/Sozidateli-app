@@ -18,4 +18,7 @@ interface EventRepository {
     fun getEventRegister(eventId: Int): Single<EventRegisterResponse>
     fun getEventDaySchedule(eventId: Int, body: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<SubEvent>>
     fun getEventInfo(eventId: Int): Maybe<EventInfo>
+    fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventRegisterResponse>>
+    fun setDefaultEvent(eventId:String):Completable
+
 }

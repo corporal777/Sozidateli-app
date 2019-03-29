@@ -100,7 +100,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showLocalNotification(localNotification: LocalNotification) {
-        Utils.showLocalChatNotification(this, localNotification)
+        NotificationUtill.showLocalChatNotification(this, localNotification)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {
