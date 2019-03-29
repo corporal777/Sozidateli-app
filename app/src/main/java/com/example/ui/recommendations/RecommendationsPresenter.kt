@@ -3,6 +3,7 @@ package com.example.ui.recommendations
 import android.view.View
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @InjectViewState
 class RecommendationsPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
+        private val eventRepository: EventRepository,
+        private val userEventData: UserEventData
 ) : BasePresenter<RecommendationsContract.View>(), RecommendationsContract.Presenter {
 
     private var scrollPosition = 0
@@ -38,6 +40,7 @@ class RecommendationsPresenter
     }
 
     override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {
+        userEventData.event = event
         viewState.showAboutEvent(event, *sharedElements)
     }
 

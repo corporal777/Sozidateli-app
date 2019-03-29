@@ -1,6 +1,5 @@
 package com.example.api
 
-import com.example.data.models.EventRegisterResponse
 import com.example.data.models.*
 import com.example.data.models.user.User
 import io.reactivex.Completable
@@ -158,8 +157,15 @@ interface Api {
 
     @Multipart
     @POST("/v1/events/{eventId}/register/save")
-    fun eventRegister(@Path("eventId") eventId: Int,@PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
+    fun eventRegister(@Path("eventId") eventId: Int, @PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
 
     @GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: Int): Single<ApiResponse<EventRegisterResponse>>
+
+    @GET("/v1/events/{eventId}")
+    fun getEventInfo(@Path("eventId") eventId: Int): Maybe<ApiResponse<EventInfo>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/activity")
+    fun getEventDaySchedule(@Path("eventId") eventId: Int, @FieldMap map: Map<String, @JvmSuppressWildcards Any?>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<SubEvent>>>
 }

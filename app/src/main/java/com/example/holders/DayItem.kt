@@ -1,38 +1,35 @@
 package com.example.holders
 
-import android.graphics.Color
-import android.widget.TextView
 import com.example.R
+import com.example.data.models.EventScheduleCalendarDay
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_day.view.*
+import kotlinx.android.synthetic.main.item_day.*
 
-open class DayItem(private val dayNumber: Int, private val dayString: String,private val date:Long, var selectedPosition:Int, private val onSelectItem: (positionSelected: Int,date:Long) -> Unit) : Item() {
+open class DayItem(
+        val day: EventScheduleCalendarDay,
+        private val onDaySelect: (date: EventScheduleCalendarDay) -> Unit
+) : Item() {
 
     var isSelected = false
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.apply {
-            this@DayItem.isSelected  = selectedPosition == position
-            tvDayName.text = dayString
-            tvDayNumber.text = dayNumber.toString()
-            select(tvDayNumber)
-            tvDayNumber.setOnClickListener {
-                onSelectItem(position,date)
-                this@DayItem.isSelected = !this@DayItem.isSelected
-                select(tvDayNumber)
+        viewHolder.apply {
+            root.alpha = if (day.hasEvents) 1f else 0.3f
+            tvDayName.text = day.dayOfWeek
+            tvDayNumber.apply {
+                isSelected = this@DayItem.isSelected
+                text = day.dayOfMonth.toString()
+                setOnClickListener { performSelectClick() }
             }
         }
     }
 
-    private fun select(textView: TextView) {
-        if (isSelected) {
-            textView.setBackgroundResource(R.drawable.background_selected_date)
-            textView.setTextColor(Color.WHITE)
-        } else {
-            textView.background = null
-            textView.setTextColor(Color.BLACK)
-        }
+    private fun performSelectClick() {
+        if (!day.hasEvents || isSelected) return
+        isSelected = true
+        onDaySelect.invoke(day)
+        notifyChanged()
     }
 
     override fun getLayout() = R.layout.item_day

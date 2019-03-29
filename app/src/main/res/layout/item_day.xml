@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
-    android:layout_marginEnd="@dimen/profile_padding_start">
+    android:layout_marginStart="14dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginBottom="14dp"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tvDayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAllCaps="true"
         android:layout_gravity="center"
-        android:textSize="12sp"
         android:gravity="center"
-        android:id="@+id/tvDayName"/>
+        android:textAllCaps="true"
+        android:textSize="13sp"
+        tools:text="SUN" />
 
     <TextView
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="5dp"
+        android:id="@+id/tvDayNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="14sp"
-        android:id="@+id/tvDayNumber"/>
-
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_calendar_date_selector"
+        android:gravity="center"
+        android:minWidth="28dp"
+        android:minHeight="28dp"
+        android:textColor="@color/text_color_calendar_day"
+        android:textSize="15sp"
+        tools:text="26" />
 </LinearLayout>

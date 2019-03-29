@@ -2,6 +2,7 @@ package com.example.ui.recommendations
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedList
 import bundleOf
@@ -34,7 +35,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
 
     private val adapter: SimplePagingRecyclerViewAdapter<Event> by lazy {
         object : SimplePagingRecyclerViewAdapter<Event>(
-                { oldItem, newItem -> oldItem.event_id == newItem.event_id },
+                { oldItem, newItem -> oldItem.id == newItem.id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_event
@@ -91,13 +92,22 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     }
 
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
-        val extras = FragmentNavigatorExtras(*sharedElements)
-        findParentNavigation().navigate(
-                R.id.about_event_navigation,
-                bundleOf("event" to event),
-                null,
-                extras
-        )
+//        val extras = FragmentNavigatorExtras(*sharedElements)
+//        findParentNavigation().navigate(
+//                R.id.about_event_navigation,
+//                bundleOf("event" to event),
+//                null,
+//                extras
+//        )
+
+
+        findParentNavigation().apply {
+            graph.startDestination = R.id.event_tabs_fragment
+            val opts = NavOptions.Builder()
+                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .build()
+            navigate(R.id.event_tabs_fragment, null, opts)
+        }
     }
 
     override fun showEventRequest(event: Event) {

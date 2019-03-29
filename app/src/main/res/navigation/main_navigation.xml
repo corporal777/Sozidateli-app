@@ -159,17 +159,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/subevent_fragment"
-        android:name="com.example.ui.mySchedule.subevent.SubeventFragment">
-        <argument
-            android:name="subevent"
-            app:argType="com.example.data.models.Subevent" />
-        <action
-            android:id="@+id/subevent_to_user_list"
-            app:destination="@id/subevent_users_list_fragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/speaker_fragment"
         android:name="com.example.ui.speaker.SpeakerFragment">
         <argument
@@ -178,12 +167,6 @@
         <action
             android:id="@+id/speaker_fragment_to_chat"
             app:destination="@id/chat_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/subevent_users_list_fragment"
-        android:name="com.example.ui.mySchedule.usersList.UserListFragment">
-        <argument android:name="subevent_id" />
     </fragment>
 
     <fragment

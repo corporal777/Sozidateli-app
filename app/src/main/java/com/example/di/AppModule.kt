@@ -1,10 +1,10 @@
 package com.example.di
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import com.example.R
 import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.data.prefs.AppPrefs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,10 +26,14 @@ class AppModule {
     @Provides
     fun provideFirebaseAuth() = FirebaseAuth.getInstance()
 
-    @SuppressLint("HardwareIds")
     @Provides
     @Singleton
     fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
+
+
+    @Provides
+    @Singleton
+    fun provideUserEventata(): UserEventData = UserEventData()
 
     @Provides
     @Singleton

@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

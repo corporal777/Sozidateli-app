@@ -57,4 +57,10 @@
     <color name="search_edit_text_bg">#f8f8f8</color>
 
     <color name="red">#ed1c24</color>
+
+    <color name="tag_selected_background">#404041</color>
+    <color name="tag_background">#00404041</color>
+    <color name="tag_selected_text">#FFFFFF</color>
+    <color name="tag_text">#000000</color>
+    <color name="tag_border">#000000</color>
 </resources>

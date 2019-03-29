@@ -49,7 +49,7 @@
                 android:textColor="@color/hint_gray"
                 android:textSize="14sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAddToFavorite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnWriteMsg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -40,8 +40,8 @@ class RequestPresenter
         super.onFirstViewAttach()
         viewState.enableActionButton(true)
 
-        val loadCustField = eventRepository.getEventRegisterField(event.event_id.toInt())
-        val loadRegister = eventRepository.getEventRegister(event.event_id.toInt())
+        val loadCustField = eventRepository.getEventRegisterField(event.id)
+        val loadRegister = eventRepository.getEventRegister(event.id)
 
 
         Single.zip(loadCustField, loadRegister, BiFunction<RegisterFieldResponse, EventRegisterResponse, Pair<RegisterFieldResponse, EventRegisterResponse>> { t1, t2 ->
@@ -99,7 +99,7 @@ class RequestPresenter
     }
 
     override fun onRegisterClick() {
-        eventRepository.eventRegister(event.event_id.toInt(), data, files.map { it.value })
+        eventRepository.eventRegister(event.id, data, files.map { it.value })
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

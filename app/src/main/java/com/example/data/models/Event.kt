@@ -1,11 +1,13 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Event(
-        val event_id: String,
+        @SerializedName("event_id")
+        val id: Int,
         val name: String?,
         val logo: String?,
         val info: String?,
@@ -17,9 +19,9 @@ data class Event(
         val place: Place?,
         val organization: Organization?,
         val organization_id: String?,
-        val event_code:String?
+        val event_code: String?
 
-        ) : Parcelable
+) : Parcelable
 
 enum class Status(val code: String) {
     APPROVED("APPROVED"),

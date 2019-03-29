@@ -14,7 +14,6 @@ interface DummyRepository {
     fun loadUserChats(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
     fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
     fun loadSearchType(): Single<List<SearchTypeEvent>>
-    fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>>
     fun loadTags(): Single<List<String>>
     fun getEvent(): Event
     //fun getUser(event_id: Int): User

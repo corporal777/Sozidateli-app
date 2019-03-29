@@ -2,16 +2,17 @@ package com.example.ui.buildingScheme
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class BuildingSchemePresenter
 @Inject constructor(
-        appData: AppData
+        userEventData: UserEventData
 ) : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
 
-    private val place = appData.event!!.place
+    private val place = userEventData.event!!.place
     private var scroll = 0
 
     override fun onFirstViewAttach() {

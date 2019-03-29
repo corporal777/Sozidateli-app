@@ -4,95 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="15dp"
     android:background="@android:color/white">
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/profile_padding_start"
-        android:paddingTop="15dp"
-        android:textSize="18sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textSize="20sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/tvIsSpeaker"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="9:00 - 10:00" />
 
     <TextView
+        android:id="@+id/tvIsSpeaker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:id="@+id/tvIsSpeaker"
-        app:layout_constraintEnd_toStartOf="@id/ivStar"
-        app:layout_constraintBottom_toBottomOf="@id/ivStar"
         android:layout_marginEnd="10dp"
         android:text="@string/suevent_u_speaker"
         android:textColor="@color/event_status_approved_background"
-        />
-    
+        android:textSize="14sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvTime"
+        app:layout_constraintEnd_toStartOf="@id/ivStar" />
+
     <ImageView
-        android:layout_width="20dp"
         android:id="@+id/ivStar"
+        android:layout_width="20dp"
         android:layout_height="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/tvTime"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_marginEnd="24dp"
         android:src="@drawable/ic_star"
+        app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvIsSpeaker"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/profile_padding_start"
+        android:layout_marginStart="24dp"
         android:paddingTop="7dp"
-        android:text="@string/sub_event_register_users"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tvTime" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTime"
+        tools:text="@string/sub_event_register_users" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTags"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/tagGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:chipSpacingHorizontal="16dp"
+        app:chipSpacingVertical="8dp"
         app:layout_constraintEnd_toStartOf="@id/ivArrow"
-        android:paddingStart="@dimen/profile_padding_start"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvStatus" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/background_corners"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:textSize="14sp"
         android:text="@string/sub_event_add_to_schedule"
         android:textColor="@android:color/white"
+        android:textSize="14sp"
         android:theme="@style/ViewBackgroundAccent"
-        android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvTags" />
-
+        app:layout_constraintTop_toBottomOf="@id/tagGroup" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/ivArrow"
-        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_keyboard_arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

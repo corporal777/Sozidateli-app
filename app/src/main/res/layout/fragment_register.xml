@@ -73,7 +73,7 @@
                 android:textColor="@color/text_color_password_hint"
                 tools:ignore="MissingPrefix" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

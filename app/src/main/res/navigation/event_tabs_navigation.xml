@@ -7,21 +7,13 @@
 
     <fragment
         android:id="@+id/my_schedule_fragment"
-        android:name="com.example.ui.mySchedule.MyScheduleFragment"
-        tools:layout="@layout/fragment_my_schedule">
-        <argument
-            android:name="type"
-            android:defaultValue="my_schedule" />
-    </fragment>
+        android:name="com.example.ui.event.schedule.EventScheduleFragment"
+        tools:layout="@layout/fragment_event_activity" />
 
     <fragment
         android:id="@+id/schedule_fragment"
-        android:name="com.example.ui.mySchedule.MyScheduleFragment"
-        tools:layout="@layout/fragment_my_schedule">
-        <argument
-            android:name="type"
-            android:defaultValue="all_schedule" />
-    </fragment>
+        android:name="com.example.ui.event.schedule.EventScheduleFragment"
+        tools:layout="@layout/fragment_event_activity" />
 
     <fragment
         android:id="@+id/map_tabs_fragment"

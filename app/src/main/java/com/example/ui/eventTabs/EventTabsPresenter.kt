@@ -2,13 +2,14 @@ package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class EventTabsPresenter
 @Inject constructor(
-        private val appData: AppData
+        private val eventData: UserEventData
 ) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
 
     override fun onFirstViewAttach() {
@@ -27,7 +28,7 @@ class EventTabsPresenter
     override fun onMapTabsSelected() = viewState.showMapTab()
 
     override fun onToListSelected() {
-        appData.event = null
+        eventData.event = null
         viewState.showEventList()
     }
 

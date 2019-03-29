@@ -1,21 +1,21 @@
 package com.example.ui.mapTabs
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class MapTabsPresenter
 @Inject constructor(
-        private val appData: AppData
+        private val userEventData: UserEventData
 ) : BasePresenter<MapTabsContract.View>(), MapTabsContract.Presenter {
 
     private var selectedPagePosition = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.initPagesWithEvent(appData.event!!)
+        viewState.initPagesWithEvent(userEventData.event!!)
     }
 
     override fun attachView(view: MapTabsContract.View?) {

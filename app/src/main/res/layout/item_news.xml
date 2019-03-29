@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvNewsTitle"
         tools:text="@tools:sample/date/ddmmyy" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReadMore"
         fontPath="fonts/OpenSans-Bold.ttf"
         android:layout_width="0dp"

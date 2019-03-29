@@ -20,7 +20,7 @@ class NewsListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showLoadingDialog()
-        SimplePagination { limit, offset -> eventRepository.getEventNewsList(event.event_id.toInt(), limit, offset) }
+        SimplePagination { limit, offset -> eventRepository.getEventNewsList(event.id, limit, offset) }
                 .build()
                 .subscribe({
                     viewState.apply { setData(it) } }, { it.printStackTrace() })

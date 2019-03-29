@@ -4,7 +4,6 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Document
 import com.example.data.models.Event
-import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
@@ -21,7 +20,7 @@ class DocumentsListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showLoadingDialog()
-        SimplePagination { limit, offset -> eventRepository.getEventDocuments(event.event_id.toInt(), limit, offset) }
+        SimplePagination { limit, offset -> eventRepository.getEventDocuments(event.id, limit, offset) }
                 .build()
                 .subscribe({ viewState.apply { setData(it) } }, {
                     it.printStackTrace()

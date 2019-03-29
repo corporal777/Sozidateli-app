@@ -66,3 +66,7 @@ fun ImageView.setCircleImageWithPlaceholder(url: String?, placeholder: Int) {
             .placeholder(placeholder)
             .into(this)
 }
+
+fun SimpleDateFormat.parseTimestamp(source: String): Long {
+    return this.parse(source).time
+}

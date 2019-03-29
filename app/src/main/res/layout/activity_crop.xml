@@ -48,7 +48,7 @@
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnCancel"
                     android:layout_width="0dp"
                     android:layout_height="43dp"
@@ -62,7 +62,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSave"
                     style="@style/MessengerButton"
                     android:layout_width="0dp"

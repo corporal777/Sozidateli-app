@@ -1,7 +1,6 @@
 package com.example.data
 
 import com.example.data.models.ApiResponse
-import com.example.data.models.Event
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
@@ -22,12 +21,6 @@ class AppData(
                 appPrefs.userToken = value
                 tokenChangeSubject.onNext(value.asOptional())
             }
-        }
-
-    var event: Event? = null
-        set(value) {
-            field = value
-            appPrefs.selectedEvent = value?.event_id
         }
 
     var isSubscribedToPush: Boolean = appPrefs.isFCMTokenSent

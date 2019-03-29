@@ -13,21 +13,18 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
+import com.example.ui.event.schedule.EventScheduleFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.myEvents.MyEventsFragment
-import com.example.ui.mySchedule.MyScheduleFragment
-import com.example.ui.mySchedule.subevent.SubeventFragment
-import com.example.ui.mySchedule.usersList.UserListFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
-import com.example.ui.organizations.subscribe.SubscribeOrganizationsPresenter
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
@@ -128,7 +125,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeEventTabsFragment(): EventTabsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeMyScheduleFragment(): MyScheduleFragment
+    abstract fun contributeMyScheduleFragment(): EventScheduleFragment
 
     @ContributesAndroidInjector
     abstract fun contributeMapTabsFragment(): MapTabsFragment
@@ -143,16 +140,10 @@ abstract class FragmentBuildersModule {
     abstract fun contributeImageViewFragment(): ImageViewFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSubeventFragment(): SubeventFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeSpeakerFragment(): SpeakerFragment
 
     @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeUserListFragment(): UserListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSettingChatFragment(): SettingChatFragment

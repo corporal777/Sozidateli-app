@@ -108,7 +108,7 @@ class DummyRepositoryImpl
         return (1..limit).map { index ->
             val dates = arrayOf(getRandomDate(), getRandomDate())
             Event(
-                    "${offset + index}",
+                    offset + index,
                     "Российский инвестиционный форум ${offset + index}",
                     logos.random(),
                     getRandomText(),
@@ -190,16 +190,6 @@ class DummyRepositoryImpl
 
     override fun loadTags(): Single<List<String>> {
         return Single.fromCallable { return@fromCallable tags }
-    }
-
-    override fun loadSubevent(inSchedule: Boolean): Single<List<Subevent>> {
-        return Single.fromCallable {
-            return@fromCallable (0..7).map {
-                Subevent(it.toString(), "9:00 - 14:00", (0..Random(System.currentTimeMillis()).nextInt(0, 4)).map {
-                    tags.random()
-                }, Random.nextBoolean(), inSchedule, tags.random())
-            }
-        }
     }
 
     override fun loadSearchType(): Single<List<SearchTypeEvent>> {

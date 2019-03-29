@@ -7,8 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R

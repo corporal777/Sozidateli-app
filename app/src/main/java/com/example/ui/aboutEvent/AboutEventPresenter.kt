@@ -2,6 +2,7 @@ package com.example.ui.aboutEvent
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
@@ -9,7 +10,8 @@ import javax.inject.Inject
 @InjectViewState
 class AboutEventPresenter
 @Inject constructor(
-        private val appData: AppData
+        private val appData: AppData,
+        private val userEventData: UserEventData
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     private lateinit var event: Event
@@ -53,6 +55,6 @@ class AboutEventPresenter
 
     fun setupWithUserEvent() {
         isUserEvent = true
-        setEvent(appData.event!!)
+        setEvent(userEventData.event!!)
     }
 }
