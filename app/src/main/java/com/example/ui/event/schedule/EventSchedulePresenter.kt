@@ -2,6 +2,7 @@ package com.example.ui.event.schedule
 
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
+import calendar
 import call
 import com.example.data.UserEventData
 import com.example.data.models.EventScheduleCalendarDay
@@ -97,7 +98,7 @@ constructor(
     }
 
     private fun loadEventScheduleStaticData(): Completable {
-        return if (userEventData.isDataLoaded) Completable.complete()
+        return if (userEventData.isStaticDataLoaded) Completable.complete()
         else eventRepository.getEventInfo(event.id)
                 .flatMapCompletable {
                     Completable.fromAction {
@@ -105,7 +106,7 @@ constructor(
                             days = createCalendarDays(it.dates.map { serverDateFormat.parseTimestamp(it.date) })
                             tags = it.tags
                             categories = it.categories
-                            isDataLoaded = true
+                            isStaticDataLoaded = true
                         }
                     }
                 }
@@ -114,8 +115,8 @@ constructor(
     private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
         if (dates.isEmpty()) return emptyList()
         val sortedDates = dates.sorted()
-        val firsDate = sortedDates.first().let { Calendar.getInstance().apply { timeInMillis = it } }
-        val lastDate = sortedDates.last().let { Calendar.getInstance().apply { timeInMillis = it } }
+        val firsDate = sortedDates.first().calendar()
+        val lastDate = sortedDates.last().calendar()
         val inDatesCalendar = Calendar.getInstance()
 
         val datesInRange = mutableListOf<EventScheduleCalendarDay>()
@@ -160,6 +161,7 @@ constructor(
 
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
+        viewState.selectDay(day)
         invalidateDay()
     }
 
@@ -168,7 +170,12 @@ constructor(
         invalidateDay()
     }
 
-    private fun processChangeEventInCalendarStatusRequest(request: Completable) {
+    override fun onDayChanged(date: Long) {
+        val currentDayDate = currentDay?.millis ?: return
+        if (isSameDay(date.calendar(), currentDayDate.calendar())) invalidateDay()
+    }
+
+    protected open fun processChangeEventInCalendarStatusRequest(request: Completable) {
         request.performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ invalidateDay() }, { invalidateDay() })

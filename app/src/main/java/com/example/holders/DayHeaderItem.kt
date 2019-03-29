@@ -10,7 +10,7 @@ import java.util.*
 
 open class DayHeaderItem(
         val date: EventScheduleCalendarDay
-) : Item() {
+) : Item(date.millis) {
 
     private val dateFormat = SimpleDateFormat("EE dd.MM", Locale.getDefault())
 

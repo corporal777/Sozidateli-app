@@ -49,6 +49,8 @@ val Int.dp: Int
 val Int.px: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
+fun Long.calendar() = Calendar.getInstance().apply { timeInMillis = this@calendar }
+
 inline fun <T : View> T.afterOnGlobalLayout(crossinline onGlobalLayout: T.() -> Unit) {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {

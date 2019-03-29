@@ -22,10 +22,14 @@ interface EventScheduleContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSubEvents(subEvents: PagedList<SubEventItem>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun sendDayChangeEvent(date: Long)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onDaySelected(day: EventScheduleCalendarDay)
         fun onTagSelectedListChange(tags: List<Tag>)
+        fun onDayChanged(date: Long)
     }
 }
