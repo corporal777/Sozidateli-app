@@ -5,17 +5,17 @@
     android:id="@+id/event_tabs_navigation"
     app:startDestination="@id/my_schedule_fragment">
 
-    <fragment
+    <keep_state_fragment_back_stack
         android:id="@+id/my_schedule_fragment"
-        android:name="com.example.ui.event.schedule.EventScheduleFragment"
-        tools:layout="@layout/fragment_event_activity" />
+        android:name="com.example.ui.event.schedule.my.EventMyScheduleFragment"
+        tools:layout="@layout/fragment_event_schedule" />
 
-    <fragment
+    <keep_state_fragment_back_stack
         android:id="@+id/schedule_fragment"
-        android:name="com.example.ui.event.schedule.EventScheduleFragment"
-        tools:layout="@layout/fragment_event_activity" />
+        android:name="com.example.ui.event.schedule.complete.EventCompleteScheduleFragment"
+        tools:layout="@layout/fragment_event_schedule" />
 
-    <fragment
+    <keep_state_fragment_back_stack
         android:id="@+id/map_tabs_fragment"
         android:name="com.example.ui.mapTabs.MapTabsFragment"
         tools:layout="@layout/fragment_map_tabs" />

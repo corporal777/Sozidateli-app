@@ -22,8 +22,15 @@ class TagChip : Chip {
         setChipStrokeColorResource(R.color.tag_border)
         chipStrokeWidth = 1f.dp
         checkedIcon = null
-        super.setOnCheckedChangeListener { _, _ -> processCheckedState() }
+        super.setOnCheckedChangeListener { _, _ ->
+            processCheckedState()
+            checkedChangeListener?.onCheckedChanged(this, isChecked)
+        }
         processCheckedState()
+    }
+
+    override fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        this.checkedChangeListener = listener
     }
 
     private fun processCheckedState() {
@@ -34,11 +41,5 @@ class TagChip : Chip {
             setTextColor(textColor)
             setChipBackgroundColorResource(R.color.tag_background)
         }
-
-        checkedChangeListener?.onCheckedChanged(this, isChecked)
-    }
-
-    override fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
-        this.checkedChangeListener = listener
     }
 }

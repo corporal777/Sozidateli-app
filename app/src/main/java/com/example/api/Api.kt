@@ -174,5 +174,11 @@ interface Api {
     fun getEventRegisterList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<EventRegisterResponse>>>
 
     @POST("v1/user/set_dafault_event/{eventId}")
-    fun setDefaultEvent(@Path("eventId")eventId:String):Completable
+    fun setDefaultEvent(@Path("eventId") eventId: Int): Completable
+
+    @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
+    fun addEventToCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+
+    @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
+    fun removeEventFromCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
 }

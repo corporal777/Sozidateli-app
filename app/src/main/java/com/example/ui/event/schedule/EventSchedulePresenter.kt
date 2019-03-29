@@ -3,10 +3,10 @@ package com.example.ui.event.schedule
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import call
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
+import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
 import com.example.holders.SubEventItem
 import com.example.repository.EventRepository
@@ -23,20 +23,19 @@ import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
-
-@InjectViewState
-class EventSchedulePresenter
-@Inject constructor(
+abstract class EventSchedulePresenter
+constructor(
         private val eventRepository: EventRepository,
         private val userEventData: UserEventData
 ) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter {
 
-    private val event = userEventData.event!!
     private val serverDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    private var selectedTags: List<Tag> = emptyList()
+    protected val event = userEventData.event!!
+
+    protected var currentDay: EventScheduleCalendarDay? = null
+    protected var selectedTags: List<Tag> = emptyList()
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
         override fun onSubEventClick(event: SubEvent) {
@@ -44,23 +43,25 @@ class EventSchedulePresenter
         }
 
         override fun onAddToScheduleClick(event: SubEvent) {
-
+            processChangeEventInCalendarStatusRequest(eventRepository.addEventToCalendar(this@EventSchedulePresenter.event.id, event.id))
         }
 
         override fun onRemoveToScheduleClick(event: SubEvent) {
-
+            processChangeEventInCalendarStatusRequest(eventRepository.removeEventFromCalendar(this@EventSchedulePresenter.event.id, event.id))
         }
     }
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         val day = currentDay?.let { serverDateFormat.format(it.millis) }
                 ?: return@PaginationDataSourceFactory Maybe.empty<PaginationResponse<SubEvent>>()
-        eventRepository.getEventDaySchedule(event.id, mapOf(
-                "date_start" to "$day $DAY_START",
-                "date_end" to "$day $DAY_END"
-        ), limit, offset)
-    }.map { subEvent ->
-        SubEventItem(subEvent, selectedTags, onSubEventClickListener)
+        val filter = createRequestFilter().toMutableMap().apply {
+            put("date_start", "$day $DAY_START")
+            put("date_end", "$day $DAY_END")
+        }.toMap()
+
+        eventRepository.getEventDaySchedule(event.id, filter, limit, offset)
+    }.mapIndexedTotal { item, index, total ->
+        SubEventItem(SubEventCheckLast(item, index == total?.minus(1)), selectedTags, onSubEventClickListener)
     }
 
     private val paginationConfig = PagedList.Config.Builder()
@@ -68,8 +69,6 @@ class EventSchedulePresenter
             .setPageSize(20)
             .setEnablePlaceholders(false)
             .build()
-
-    private var currentDay: EventScheduleCalendarDay? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -98,13 +97,15 @@ class EventSchedulePresenter
     }
 
     private fun loadEventScheduleStaticData(): Completable {
-        return eventRepository.getEventInfo(event.id)
+        return if (userEventData.isDataLoaded) Completable.complete()
+        else eventRepository.getEventInfo(event.id)
                 .flatMapCompletable {
                     Completable.fromAction {
                         userEventData.apply {
                             days = createCalendarDays(it.dates.map { serverDateFormat.parseTimestamp(it.date) })
-                            tags = it.tags + it.tags
-                            categories = it.categories + it.categories
+                            tags = it.tags
+                            categories = it.categories
+                            isDataLoaded = true
                         }
                     }
                 }
@@ -166,6 +167,15 @@ class EventSchedulePresenter
         selectedTags = tags
         invalidateDay()
     }
+
+    private fun processChangeEventInCalendarStatusRequest(request: Completable) {
+        request.performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ invalidateDay() }, { invalidateDay() })
+                .call(compositeDisposable)
+    }
+
+    abstract fun createRequestFilter(): Map<String, Any>
 
     companion object {
         private const val DAY_START = "0:00"

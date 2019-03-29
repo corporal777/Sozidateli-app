@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/background_corners"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
@@ -82,7 +82,7 @@
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:theme="@style/ViewBackgroundAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tagGroup" />
 
@@ -96,4 +96,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
+
+    <FrameLayout
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background"
+        android:paddingBottom="@dimen/event_schedule_sub_event_divider_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAdd">
+
+        <View style="@style/ViewDivider.Horizontal" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

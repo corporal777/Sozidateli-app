@@ -14,6 +14,8 @@ import com.example.ui.chatList.ChatListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.event.schedule.EventScheduleFragment
+import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
+import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.image.ImageViewFragment
@@ -125,7 +127,10 @@ abstract class FragmentBuildersModule {
     abstract fun contributeEventTabsFragment(): EventTabsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeMyScheduleFragment(): EventScheduleFragment
+    abstract fun contributeEventMyScheduleFragment(): EventMyScheduleFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventCompleteScheduleFragment(): EventCompleteScheduleFragment
 
     @ContributesAndroidInjector
     abstract fun contributeMapTabsFragment(): MapTabsFragment

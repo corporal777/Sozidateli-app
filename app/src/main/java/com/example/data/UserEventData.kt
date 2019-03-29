@@ -12,10 +12,13 @@ class UserEventData {
     var tags: List<EventTag>? = null
     var categories: List<EventCategory>? = null
 
+    var isDataLoaded = false
+
     fun clear() {
         event = null
         days = null
         tags = null
         categories = null
+        isDataLoaded = false
     }
 }

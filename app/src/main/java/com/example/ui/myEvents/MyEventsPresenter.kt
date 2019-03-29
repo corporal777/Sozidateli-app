@@ -2,11 +2,10 @@ package com.example.ui.myEvents
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.Status
 import com.example.events.OnUpdateMyEventsEvent
-import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.SimplePagination
@@ -20,7 +19,7 @@ import javax.inject.Inject
 @InjectViewState
 class MyEventsPresenter
 @Inject constructor(
-        private val appData: AppData,
+        private val eventData: UserEventData,
         private val eventRepository: EventRepository
 ) : BasePresenter<MyEventsContract.View>(), MyEventsContract.Presenter {
 
@@ -46,30 +45,30 @@ class MyEventsPresenter
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun onUpdateList(event:OnUpdateMyEventsEvent){
+    fun onUpdateList(event: OnUpdateMyEventsEvent) {
         EventBus.getDefault().removeStickyEvent(event)
         pagination.invalidate()
     }
 
     override fun onEventClick(event: Event) {
-        if(isCanSetDefault(event)) {
-            eventRepository.setDefaultEvent(event.event_id)
+        if (isCanSetDefault(event)) {
+            eventRepository.setDefaultEvent(event.id)
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribe({
-                        appData.event = event
+                        eventData.event = event
                         viewState.selectEvent(event)
                     }, {
                         it.printStackTrace()
                     }).call(compositeDisposable)
-        } else{
-            appData.event = event
+        } else {
+            eventData.event = event
             viewState.selectEvent(event)
         }
     }
 
-    private fun isCanSetDefault(event: Event):Boolean{
-        return  event.status == Status.APPROVED.code || event.status == Status.CONFERENCE_IN_PROGRESS.code
+    private fun isCanSetDefault(event: Event): Boolean {
+        return event.status == Status.APPROVED.code || event.status == Status.CONFERENCE_IN_PROGRESS.code
     }
 
     override fun onScrollChange(position: Int, offset: Int) {

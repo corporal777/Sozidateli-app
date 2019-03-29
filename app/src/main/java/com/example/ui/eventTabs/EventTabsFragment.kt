@@ -7,10 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
+import androidx.navigation.*
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -18,6 +15,7 @@ import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.util.BottomNavigationViewHelper
 import com.example.util.Utils
+import com.example.util.navigator.KeepStateBackStackNavigator
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -37,7 +35,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val controller = findNestedNavController()
         bottomNavigationViewHelper = BottomNavigationViewHelper(bottomNavigation)
         bottomNavigationViewHelper.removeShiftMode()
         setHasOptionsMenu(true)
@@ -57,6 +54,12 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
                 return@setOnNavigationItemSelectedListener true
             }
         }
+
+        val controller = findNestedNavController()
+        val navHostFragment = childFragmentManager.findFragmentById(R.id.tabsNavHostFragment)!!
+        val navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment)
+        controller.navigatorProvider += navigator
+        controller.setGraph(R.navigation.event_tabs_navigation)
 
         controller.addOnDestinationChangedListener { _, destination, _ ->
             val itemId = when (destination.id) {
@@ -78,11 +81,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu, {
-            presenter.onMenuChatClick()
-        }, {
-            presenter.onMenuAccountClick()
-        })
+        Utils.processMainMenu(menu, { presenter.onMenuChatClick() }, { presenter.onMenuAccountClick() })
     }
 
     override fun showMyScheduleTab() = findNestedNavController().navigate(R.id.my_schedule_fragment, null, buildNavOptions())
@@ -125,12 +124,12 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     private fun buildNavOptions(popupTo: Int = R.id.my_schedule_fragment): NavOptions {
         return NavOptions.Builder()
-                .setLaunchSingleTop(true)
+//                .setLaunchSingleTop(true)
                 .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
                 .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
                 .setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim)
                 .setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim)
-                .setPopUpTo(popupTo, false)
+//                .setPopUpTo(popupTo, false)
                 .build()
     }
 

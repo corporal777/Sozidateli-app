@@ -30,4 +30,5 @@
     <dimen name="profile_full_padding_top">10dp</dimen>
     <dimen name="profile_full_height_divider">1dp</dimen>
 
+    <dimen name="event_schedule_sub_event_divider_height">24dp</dimen>
 </resources>

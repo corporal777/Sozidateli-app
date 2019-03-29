@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.SubEvent
+import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
 import com.example.ui.views.TagChip
 import com.example.util.weak
@@ -16,10 +17,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 open class SubEventItem(
-        private val subEvent: SubEvent,
+        subEventCheckLast: SubEventCheckLast,
         private val selectedTags: List<Tag>,
         clickListener: OnSubEventClickListener
-) : Item() {
+) : Item(subEventCheckLast.subEvent.id.toLong()) {
+
+    private val subEvent = subEventCheckLast.subEvent
+    private val isLastInList = subEventCheckLast.isLastInList
 
     private val clickListener by weak(clickListener)
     private val serverDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -64,8 +68,9 @@ open class SubEventItem(
                 val createChip: (Tag) -> Chip = {
                     TagChip(context).apply {
                         text = it.getTagName()
-                        isCheckable = false
+                        isCheckable = true
                         isChecked = selectedTags.contains(it)
+                        isClickable = false
                     }
                 }
 
@@ -75,6 +80,8 @@ open class SubEventItem(
                 categories.forEach { addView(createChip(it)) }
                 tags.forEach { addView(createChip(it)) }
             }
+
+            divider.visibility = if (isLastInList) View.GONE else View.VISIBLE
         }
     }
 

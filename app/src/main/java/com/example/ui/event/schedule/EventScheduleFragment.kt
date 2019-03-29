@@ -5,7 +5,6 @@ import android.view.View
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
@@ -15,20 +14,13 @@ import com.example.ui.base.BaseNestedNavigationFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.fragment_event_activity.*
+import kotlinx.android.synthetic.main.fragment_event_schedule.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventScheduleFragment : BaseNestedNavigationFragment(), EventScheduleContract.View {
+abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNavigationFragment(), EventScheduleContract.View {
 
-    @InjectPresenter
-    lateinit var presenter: EventSchedulePresenter
-
-    @Inject
-    lateinit var presenterProvider: Provider<EventSchedulePresenter>
-
-    @ProvidePresenter
-    fun providePresenter(): EventSchedulePresenter = presenterProvider.get()
+    abstract var presenter: P
 
     private val tagsSection = Section()
     private val calendarSection = Section()
@@ -84,5 +76,5 @@ class EventScheduleFragment : BaseNestedNavigationFragment(), EventScheduleContr
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_event_activity
+    override fun layout() = R.layout.fragment_event_schedule
 }
