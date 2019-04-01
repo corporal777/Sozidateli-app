@@ -56,7 +56,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as? App)?.appIsRunning = true
+        //(application as? App)?.appIsRunning = true
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
@@ -102,6 +102,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showLocalNotification(localNotification: LocalNotification) {
         NotificationUtill.showLocalChatNotification(this, localNotification)
+        presenter.setLastMessageShowed(localNotification)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {
@@ -219,7 +220,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
-        (application as? App)?.appIsRunning = false
+        //(application as? App)?.appIsRunning = false
         super.onDestroy()
     }
 

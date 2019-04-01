@@ -11,6 +11,12 @@ import com.google.gson.Gson
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import performOnBackgroundOutOnMain
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
+import androidx.core.content.ContextCompat.getSystemService
+
+
 
 class FcmMessaging : FirebaseMessagingService() {
 
@@ -24,7 +30,7 @@ class FcmMessaging : FirebaseMessagingService() {
 
     @SuppressLint("CheckResult")
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        if ((application as? App)?.appIsRunning == true) return
+        if (appInForeground()) return
 
         var userChat: UserChat? = null
 
@@ -70,6 +76,12 @@ class FcmMessaging : FirebaseMessagingService() {
                 })
 
 
+    }
+
+    fun appInForeground(): Boolean {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningAppProcesses = activityManager.runningAppProcesses ?: return false
+        return runningAppProcesses.any { it.processName == packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
     }
 
     companion object {

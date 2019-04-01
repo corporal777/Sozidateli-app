@@ -4,6 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
+import com.example.data.models.LocalNotification
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
@@ -183,18 +184,19 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     if(it.isShowed || it.chatId==null) return@subscribe
-
                     viewState.showLocalNotification(it)
-
-                    chatRepository.setLastMessageShowed(it.chatId,it.messageId)
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({},{
-                                it.printStackTrace()
-                            })
-                            .call(chatCompositeDisposable)
                 },{
                     it.printStackTrace()
                 }).call(chatCompositeDisposable)
+    }
+
+    override fun setLastMessageShowed(notification: LocalNotification) {
+        chatRepository.setLastMessageShowed(notification.chatId,notification.messageId)
+                .performOnBackgroundOutOnMain()
+                .subscribe({},{
+                    it.printStackTrace()
+                })
+                .call(chatCompositeDisposable)
     }
 
     private fun unsubscribeChatUnreadCount() {
