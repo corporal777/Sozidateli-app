@@ -12,11 +12,14 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.events.OnBackPressEvent
 import com.example.ui.base.BaseFragment
 import com.example.util.BottomNavigationViewHelper
 import com.example.util.Utils
 import com.example.util.navigator.KeepStateBackStackNavigator
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -35,6 +38,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
         bottomNavigationViewHelper = BottomNavigationViewHelper(bottomNavigation)
         bottomNavigationViewHelper.removeShiftMode()
         setHasOptionsMenu(true)
@@ -57,9 +61,11 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
         val controller = findNestedNavController()
         val navHostFragment = childFragmentManager.findFragmentById(R.id.tabsNavHostFragment)!!
-        val navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment)
+        val navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment,
+                arrayListOf(R.id.my_schedule_fragment, R.id.schedule_fragment, R.id.about_event_fragment, R.id.map_tabs_fragment),bottomNavigation)
         controller.navigatorProvider += navigator
         controller.setGraph(R.navigation.event_tabs_navigation)
+        //bottomNavigation.setupWithNavController(controller,navigator)
 
         controller.addOnDestinationChangedListener { _, destination, _ ->
             val itemId = when (destination.id) {
@@ -88,7 +94,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     override fun showScheduleTab() = findNestedNavController().navigate(R.id.schedule_fragment, null, buildNavOptions())
 
-    override fun showAboutTab() = findNestedNavController().navigate(R.id.about_event_navigation, null, buildNavOptions())
+    override fun showAboutTab() = findNestedNavController().navigate(R.id.about_event_navigation_state, null, buildNavOptions())
 
     override fun showMapTab() = findNestedNavController().navigate(R.id.map_tabs_fragment, null, buildNavOptions())
 
@@ -110,6 +116,13 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    @Subscribe
+    fun onBackPress(event: OnBackPressEvent) {
+        if (!findNestedNavController().popBackStack()) {
+            activity?.finish()
+        }
     }
 
     override fun showEventList() {
@@ -151,4 +164,9 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_event_tabs
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        EventBus.getDefault().unregister(this)
+    }
 }

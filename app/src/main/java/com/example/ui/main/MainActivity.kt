@@ -18,10 +18,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.data.models.LocalNotification
+import com.example.events.OnBackPressEvent
 import com.example.ui.base.BaseFragmentActivity
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -39,7 +41,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val startDestinations = arrayOf(
             R.id.event_list_fragment,
-            R.id.event_tabs_fragment,
             R.id.login_fragment,
             R.id.splash_fragment
     )
@@ -193,6 +194,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onBackPressed() {
         onSupportNavigateUp()
+        EventBus.getDefault().post(OnBackPressEvent())
     }
 
     override fun navigateUp() {
