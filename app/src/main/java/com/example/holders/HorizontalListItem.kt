@@ -14,9 +14,7 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
     private var scrollPosition = 0
     private var scrollOffset = 0
     protected var recyclerView: RecyclerView? = null
-        private set(value){
-            field = value
-        }
+        private set
 
     private val scrollListener = PositionOffsetScrollListener(LinearLayoutManager.HORIZONTAL) { position, offset ->
         scrollPosition = position

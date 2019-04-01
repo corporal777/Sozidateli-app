@@ -4,6 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
+import com.example.data.UserEventData
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class MainPresenter
 @Inject constructor(
         private val appData: AppData,
+        private val eventData: UserEventData,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
         private val chatRepository: ChatRepository
@@ -68,7 +70,13 @@ class MainPresenter
                                 .withLoadingDialog(viewState)
                                 .subscribe({
                                     viewState.apply {
-                                        showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
+                                        val event = appData.getUser().default_event
+                                        if (event != null) {
+                                            eventData.event = event
+                                            showEvent()
+                                        } else {
+                                            showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
+                                        }
                                         openChat()
                                         wasOpen = true
                                     }
@@ -134,12 +142,12 @@ class MainPresenter
     }
 
     override fun onHandleChangeEmailCofirm(email: String, code: String) {
-        userRepository.changeEmailConfirm(email,code)
+        userRepository.changeEmailConfirm(email, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.showDialogChangeEmailSuccess()
-                },{
+                }, {
                     viewState.showDialogChangeEmailError()
                 })
                 .call(compositeDisposable)
@@ -171,28 +179,27 @@ class MainPresenter
     }
 
     private fun subscribeNotificationUnreadCount() {
-        appData.onUserChange.
-                performOnBackgroundOutOnMain()
+        appData.onUserChange.performOnBackgroundOutOnMain()
                 .subscribe {
 
                 }.call(chatCompositeDisposable)
     }
 
-    private fun subscribeChatLastMessage(){
+    private fun subscribeChatLastMessage() {
         chatRepository.subscribeChatLastMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    if(it.isShowed || it.chatId==null) return@subscribe
+                    if (it.isShowed || it.chatId == null) return@subscribe
 
                     viewState.showLocalNotification(it)
 
-                    chatRepository.setLastMessageShowed(it.chatId,it.messageId)
+                    chatRepository.setLastMessageShowed(it.chatId, it.messageId)
                             .performOnBackgroundOutOnMain()
-                            .subscribe({},{
+                            .subscribe({}, {
                                 it.printStackTrace()
                             })
                             .call(chatCompositeDisposable)
-                },{
+                }, {
                     it.printStackTrace()
                 }).call(chatCompositeDisposable)
     }

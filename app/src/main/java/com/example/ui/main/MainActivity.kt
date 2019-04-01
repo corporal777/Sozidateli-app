@@ -182,6 +182,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showEvent() {
+        findNavController().apply {
+            graph.startDestination = R.id.event_tabs_fragment
+            val opts = NavOptions.Builder()
+                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .build()
+            navigate(R.id.event_tabs_fragment, null, opts)
+        }
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)

@@ -41,8 +41,8 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_event
 
-            override fun onBindItem(viewHolder: ViewHolder, registerItem: EventRegisterResponse?, position: Int) {
-                val event = registerItem?.event!!
+            override fun onBindItem(viewHolder: ViewHolder, item: EventRegisterResponse?, position: Int) {
+                val event = item?.event!!
                 viewHolder.apply {
                     itemContainer.apply {
                         clipToOutline = true

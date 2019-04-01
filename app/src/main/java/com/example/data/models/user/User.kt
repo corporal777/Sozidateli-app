@@ -70,7 +70,7 @@ data class User(
         var last_notification: Notification? = null,
         var notification_total: Int = -1,
         var notification_unread: Int = -1,
-        var event_status: String? = null,
+//        var event_status: String? = null,
 
         //support field
         var isEmailChanged:Boolean = false,

@@ -63,4 +63,7 @@
     <color name="tag_selected_text">#FFFFFF</color>
     <color name="tag_text">#000000</color>
     <color name="tag_border">#000000</color>
+
+    <color name="tab_text">#282b3e</color>
+    <color name="tab_text_selected">#282b3e</color>
 </resources>
