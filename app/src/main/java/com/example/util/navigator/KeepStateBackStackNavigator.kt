@@ -76,7 +76,7 @@ class KeepStateBackStackNavigator(
             transaction.addToBackStack(tag)
         }
 
-        commitTransactionWithAnimation(transaction,fragment,navOptions)
+        commitTransactionWithAnimation(transaction, fragment, navOptions)
 
         saveIdNavigate(destinationId)
 
@@ -96,35 +96,36 @@ class KeepStateBackStackNavigator(
         }
     }
 
-    private fun getIdForNavigate(id:Int):Int{
+    private fun getIdForNavigate(id: Int): Int {
         if (arrayMainFragments.contains(currentFragmentId)) {
-            if(childBackStack[id].isNullOrEmpty()){
+            if (childBackStack[id].isNullOrEmpty()) {
                 return id
-            } else{
+            } else {
                 return childBackStack[id]?.peek()!!
             }
-        } else{
+        } else {
             return id
         }
     }
 
-    private fun customPopBackStack():Boolean {
+    private fun customPopBackStack(): Boolean {
         if (arrayMainFragments.contains(currentFragmentId)) {
+            if (backStack.size == 1) return false
             backStack.pop()
             val fragmentForNavigate = backStack.peek()
-            if(childBackStack[fragmentForNavigate].isNullOrEmpty()) {
-                return navigateById(fragmentForNavigate,fragmentForNavigate)
-            } else{
-                return navigateById(childBackStack[fragmentForNavigate]?.peek(),fragmentForNavigate)
+            if (childBackStack[fragmentForNavigate].isNullOrEmpty()) {
+                return navigateById(fragmentForNavigate, fragmentForNavigate)
+            } else {
+                return navigateById(childBackStack[fragmentForNavigate]?.peek(), fragmentForNavigate)
             }
         } else {
             childBackStack[lastMainFragment]?.pop()
-            val fragmentForNavigate = if(childBackStack[lastMainFragment].isNullOrEmpty()) backStack.peek() else childBackStack[lastMainFragment]?.peek()
-           return navigateById(fragmentForNavigate,lastMainFragment)
+            val fragmentForNavigate = if (childBackStack[lastMainFragment].isNullOrEmpty()) backStack.peek() else childBackStack[lastMainFragment]?.peek()
+            return navigateById(fragmentForNavigate, lastMainFragment)
         }
     }
 
-    private fun navigateById(id: Int?,mainFragment:Int?=null): Boolean {
+    private fun navigateById(id: Int?, mainFragment: Int? = null): Boolean {
         if (id == null) return false
 
         val tag = id.toString()
@@ -145,7 +146,7 @@ class KeepStateBackStackNavigator(
         }
 
 
-        commitTransactionWithAnimation(transaction,fragment,getNavOptions())
+        commitTransactionWithAnimation(transaction, fragment, getNavOptions())
 
 
         currentFragmentId = id
@@ -160,7 +161,7 @@ class KeepStateBackStackNavigator(
         return true
     }
 
-    private fun commitTransactionWithAnimation(transaction: FragmentTransaction,fragment: Fragment,navOptions: NavOptions?){
+    private fun commitTransactionWithAnimation(transaction: FragmentTransaction, fragment: Fragment, navOptions: NavOptions?) {
         var enterAnim = navOptions?.enterAnim ?: -1
         var exitAnim = navOptions?.exitAnim ?: -1
         var popEnterAnim = navOptions?.popEnterAnim ?: -1
@@ -181,7 +182,7 @@ class KeepStateBackStackNavigator(
     override fun onSaveState(): Bundle? {
         val bundle = super.onSaveState() ?: Bundle()
         bundle.putIntArray(KEY_BACK_STACK_IDS, backStack.toIntArray())
-        bundle.putSerializable(KEY_CHILD_BACK_STACK_IDS,childBackStack)
+        bundle.putSerializable(KEY_CHILD_BACK_STACK_IDS, childBackStack)
         return bundle
     }
 
@@ -191,9 +192,9 @@ class KeepStateBackStackNavigator(
             backStack.push(it)
         }
         savedState?.getSerializable(KEY_CHILD_BACK_STACK_IDS)?.let {
-            if(it is HashMap<*,*>){
+            if (it is HashMap<*, *>) {
                 it.forEach { (key, value) ->
-                    if(key is Int && value is Stack<*>) {
+                    if (key is Int && value is Stack<*>) {
                         childBackStack[key] = (value as Stack<Int>)
                     }
                 }
@@ -210,16 +211,16 @@ class KeepStateBackStackNavigator(
                 .build()
     }
 
-    private fun selectBottomNavItem(idNavigate:Int?){
-        if(idNavigate==null) return
+    private fun selectBottomNavItem(idNavigate: Int?) {
+        if (idNavigate == null) return
         val menu = bottomNavigationView.menu
         val aboutAlias = R.id.about_event_navigation
         val about = R.id.about_event_fragment
-        val id:Int
+        val id: Int
 
-        if(idNavigate==about){
+        if (idNavigate == about) {
             id = aboutAlias
-        } else{
+        } else {
             id = idNavigate
         }
 
