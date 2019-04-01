@@ -224,12 +224,8 @@ class KeepStateBackStackNavigator(
             id = idNavigate
         }
 
-        (0 until menu.size()).forEach {
-            val item = menu.getItem(it)
-            val menuId = item.itemId
-            if (menuId == id) {
-                item.isChecked = true
-            }
+        menu.findItem(id)?.let {
+            it.isChecked = true
         }
     }
 

@@ -65,23 +65,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
                 arrayListOf(R.id.my_schedule_fragment, R.id.schedule_fragment, R.id.about_event_fragment, R.id.map_tabs_fragment),bottomNavigation)
         controller.navigatorProvider += navigator
         controller.setGraph(R.navigation.event_tabs_navigation)
-        //bottomNavigation.setupWithNavController(controller,navigator)
-
-        controller.addOnDestinationChangedListener { _, destination, _ ->
-            val itemId = when (destination.id) {
-                R.id.my_schedule_fragment -> R.id.my_schedule_fragment
-                R.id.schedule_fragment -> R.id.schedule_fragment
-                R.id.about_event_fragment -> R.id.about_event_navigation
-                R.id.map_tabs_fragment -> R.id.map_tabs_fragment
-                else -> null
-            }
-
-            itemId?.let { id ->
-                if (matchDestination(destination, id)) {
-                    bottomNavigation.menu.findItem(id)?.let { it.isChecked = true }
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
