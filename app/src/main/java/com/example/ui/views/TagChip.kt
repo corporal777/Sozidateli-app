@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import com.example.R
+import com.example.extensions.dp
 import com.google.android.material.chip.Chip
-import dp
 
 class TagChip : Chip {
 

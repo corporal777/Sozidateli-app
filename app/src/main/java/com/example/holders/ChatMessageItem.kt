@@ -10,9 +10,9 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.UserChatMessage
+import com.example.extensions.dp
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import dp
 
 abstract class ChatMessageItem(
         val message: UserChatMessage

@@ -2,11 +2,13 @@ package com.example.ui.event.schedule
 
 import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.Tag
 import com.example.holders.SubEventItem
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventScheduleContract {
 
@@ -20,11 +22,26 @@ interface EventScheduleContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun selectDay(day: EventScheduleCalendarDay)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun scrollToDay(day: EventScheduleCalendarDay)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSubEvents(subEvents: PagedList<SubEventItem>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun sendDayChangeEvent(date: Long)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
+        fun showEmptyEventPlaceholder()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
+        fun showEmptyDayPlaceholder()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
+        fun hidePlaceholder()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
+        fun showCurrentDay(day: EventScheduleCalendarDay)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
+        fun hideCurrentDay()
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.graphics.Color
+import androidx.recyclerview.widget.RecyclerView
 import com.example.data.models.EventScheduleCalendarDay
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -11,10 +12,7 @@ class CalendarHorizontalListItem(
 ) : HorizontalListItem<ViewHolder>() {
 
     private val items = days.map { day ->
-        DayItem(day) {
-            this@CalendarHorizontalListItem.onDaySelect(it)
-            deselectAllExcept(it)
-        }
+        DayItem(day, onDaySelect)
     }
 
     init {
@@ -28,11 +26,15 @@ class CalendarHorizontalListItem(
                 it.isSelected = true
                 it.notifyChanged()
             }
-
-            scrollToPositionWithOffset(items.indexOf(it), 0)
         }
 
         deselectAllExcept(day)
+    }
+
+    fun scrollToDay(day: EventScheduleCalendarDay) {
+        val position = items.indexOfFirst { it.day == day }
+        if (position == RecyclerView.NO_POSITION) return
+        scrollToPositionWithOffset(position, 0)
     }
 
     private fun deselectAllExcept(except: EventScheduleCalendarDay) {

@@ -217,4 +217,7 @@
     <string name="register_event_select_category_hint">Выберите категорию</string>
     <string name="select_file_error">Возможно файл не существует или вы выбрали его из облака. Для загрузки используйте файлы хранящиеся на устройстве.</string>
 
+    <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
+    <string name="schedule_my_empty_day_placeholder">У вас нет событий добавьте их из списка</string>
+    <string name="schedule_complete_empty_day_placeholder">В этот день нет событий</string>
 </resources>

@@ -13,7 +13,15 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
 
     private var scrollPosition = 0
     private var scrollOffset = 0
-    private var recyclerView: RecyclerView? = null
+    protected var recyclerView: RecyclerView? = null
+        private set(value){
+            field = value
+        }
+
+    private val scrollListener = PositionOffsetScrollListener(LinearLayoutManager.HORIZONTAL) { position, offset ->
+        scrollPosition = position
+        scrollOffset = offset
+    }
 
     var adapter: RecyclerView.Adapter<VH>? = null
 
@@ -21,13 +29,10 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.recyclerView.apply {
+            recyclerView = this
             adapter = this@HorizontalListItem.adapter
-            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(scrollPosition, scrollOffset)
-            addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-                scrollPosition = position
-                scrollOffset = offset
-            })
-
+            scrollToPositionWithOffset(scrollPosition, scrollOffset)
+            addOnScrollListener(scrollListener)
             setBackgroundColor(backgroundColor)
         }
     }
@@ -54,6 +59,9 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
 
     override fun unbind(holder: ViewHolder) {
         super.unbind(holder)
+        recyclerView?.apply {
+            removeOnScrollListener(scrollListener)
+        }
         recyclerView = null
     }
 

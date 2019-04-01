@@ -1,7 +1,6 @@
 package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
@@ -15,7 +14,7 @@ class EventTabsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            //  setLabel(appData.event!!.name)
+            setLabel(eventData.event!!.name ?: "")
         }
     }
 
@@ -28,7 +27,6 @@ class EventTabsPresenter
     override fun onMapTabsSelected() = viewState.showMapTab()
 
     override fun onToListSelected() {
-        eventData.event = null
         viewState.showEventList()
     }
 
@@ -37,4 +35,9 @@ class EventTabsPresenter
     override fun onMenuSearchClick() = viewState.showSearch()
 
     override fun onMenuAccountClick() = viewState.showAccount()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        eventData.clear()
+    }
 }

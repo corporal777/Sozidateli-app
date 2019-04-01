@@ -5,7 +5,6 @@ import android.view.View
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.Tag
@@ -15,8 +14,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_event_schedule.*
-import javax.inject.Inject
-import javax.inject.Provider
 
 abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNavigationFragment(), EventScheduleContract.View {
 
@@ -67,14 +64,41 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNav
 
     override fun selectDay(day: EventScheduleCalendarDay) {
         calendarItem?.selectDay(day)
-        daySection.update(listOf(DayHeaderItem(day)))
+    }
+
+    override fun scrollToDay(day: EventScheduleCalendarDay) {
+        calendarItem?.scrollToDay(day)
     }
 
     override fun setSubEvents(subEvents: PagedList<SubEventItem>) {
         eventsSection.submitList(subEvents)
     }
 
+    override fun showEmptyEventPlaceholder() {
+        tvMessage.text = getString(R.string.schedule_empty_event_placeholder)
+        placeholder.visibility = View.VISIBLE
+    }
+
+    override fun showEmptyDayPlaceholder() {
+        tvMessage.text = getEmptyDayPlaceholderText()
+        placeholder.visibility = View.VISIBLE
+    }
+
+    override fun hidePlaceholder() {
+        placeholder.visibility = View.GONE
+    }
+
+    override fun showCurrentDay(day: EventScheduleCalendarDay) {
+        daySection.update(listOf(DayHeaderItem(day)))
+    }
+
+    override fun hideCurrentDay() {
+        daySection.update(emptyList())
+    }
+
     override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_event_schedule
+
+    abstract fun getEmptyDayPlaceholderText(): String
 }

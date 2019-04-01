@@ -2,13 +2,13 @@ package com.example.ui.event.schedule
 
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
-import calendar
 import call
 import com.example.data.UserEventData
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
+import com.example.extensions.calendar
 import com.example.holders.SubEventItem
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -79,10 +79,22 @@ constructor(
                 .doOnComplete {
                     viewState.apply {
                         userEventData.apply {
-                            setDays(days)
-                            setTags(categories as List<Tag> + tags as List<Tag>)
+                            if (days.isNullOrEmpty()) {
+                                throw IllegalArgumentException("Event has empty days")
+                            } else {
+                                setDays(days)
+                                setTags(categories as List<Tag> + tags as List<Tag>)
+                                currentDay?.let { day ->
+                                    selectDay(day)
+                                    scrollToDay(day)
+                                }
+                            }
                         }
-                        currentDay?.let { day -> selectDay(day) }
+                    }
+                }
+                .doOnError {
+                    viewState.apply {
+                        showEmptyEventPlaceholder()
                     }
                 }
                 .observeOn(Schedulers.io())
@@ -90,7 +102,18 @@ constructor(
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.apply { setSubEvents(it) }
+                    viewState.apply {
+                        setSubEvents(it)
+                        viewState.apply {
+                            if (it.isEmpty()) {
+                                showEmptyDayPlaceholder()
+                                hideCurrentDay()
+                            } else {
+                                currentDay?.let { day -> showCurrentDay(day) }
+                                hidePlaceholder()
+                            }
+                        }
+                    }
                 }, {
                     it.printStackTrace()
                 })
@@ -161,7 +184,7 @@ constructor(
 
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
-        viewState.selectDay(day)
+        viewState.apply { selectDay(day) }
         invalidateDay()
     }
 

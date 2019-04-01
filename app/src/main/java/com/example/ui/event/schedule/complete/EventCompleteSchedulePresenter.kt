@@ -2,8 +2,14 @@ package com.example.ui.event.schedule.complete
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
+import com.example.events.OnDayChangeFromCompleteSchedule
+import com.example.events.OnDayChangeFromMySchedule
 import com.example.repository.EventRepository
 import com.example.ui.event.schedule.EventSchedulePresenter
+import io.reactivex.Completable
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 @InjectViewState
@@ -13,5 +19,27 @@ class EventCompleteSchedulePresenter
         userEventData: UserEventData
 ) : EventSchedulePresenter(eventRepository, userEventData) {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        EventBus.getDefault().register(this)
+    }
+
     override fun createRequestFilter(): Map<String, Any> = emptyMap()
+
+    override fun processChangeEventInCalendarStatusRequest(request: Completable) {
+        super.processChangeEventInCalendarStatusRequest(request.doFinally {
+            val millis = currentDay?.millis ?: return@doFinally
+            EventBus.getDefault().post(OnDayChangeFromCompleteSchedule(millis))
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(event: OnDayChangeFromMySchedule) {
+        onDayChanged(event.dayDate)
+    }
 }
