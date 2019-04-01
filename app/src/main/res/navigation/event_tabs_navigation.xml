@@ -20,6 +20,6 @@
         android:name="com.example.ui.mapTabs.MapTabsFragment"
         tools:layout="@layout/fragment_map_tabs" />
 
-    <include app:graph="@navigation/about_event_navigation" />
+    <include app:graph="@navigation/about_event_navigation_state" />
 
 </navigation>

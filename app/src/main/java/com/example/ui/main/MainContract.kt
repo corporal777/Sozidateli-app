@@ -46,5 +46,6 @@ interface MainContract {
         fun onHandleChangeEmailCofirm(email: String, code: String)
         fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
         fun onSetPassword(email: String, code: String, password: String)
+        fun setLastMessageShowed(notification: LocalNotification)
     }
 }
