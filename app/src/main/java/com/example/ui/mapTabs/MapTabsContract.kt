@@ -10,7 +10,7 @@ import com.example.ui.base.BaseContract
 interface MapTabsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun initPagesWithEvent(event: Event)
+        fun initPages()
 
         @StateStrategyType(SkipStrategy::class)
         fun selectPageAtPosition(position: Int)

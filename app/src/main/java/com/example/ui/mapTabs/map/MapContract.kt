@@ -1,4 +1,4 @@
-package com.example.ui.map
+package com.example.ui.mapTabs.map
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy

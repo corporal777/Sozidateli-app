@@ -1,4 +1,4 @@
-package com.example.ui.map
+package com.example.ui.mapTabs.map
 
 import android.os.Bundle
 import android.view.View

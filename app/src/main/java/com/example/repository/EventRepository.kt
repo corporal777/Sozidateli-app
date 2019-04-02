@@ -22,4 +22,5 @@ interface EventRepository {
     fun setDefaultEvent(eventId: Int): Completable
     fun addEventToCalendar(eventId: Int, subEventId: Int): Completable
     fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable
+    fun getEventMapInfo(eventId: Int): Single<MapInfo>
 }

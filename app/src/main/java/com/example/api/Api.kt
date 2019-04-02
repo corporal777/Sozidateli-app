@@ -181,4 +181,7 @@ interface Api {
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
     fun removeEventFromCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+
+    @GET("/v1/events/{eventId}/map")
+    fun getEventMapInfo(@Path("eventId") eventId: Int): Single<ApiResponse<MapInfo>>
 }

@@ -1,19 +1,14 @@
 package com.example.ui.mapTabs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Event
 import com.example.ui.base.BaseNestedNavigationFragment
-import com.example.ui.buildingScheme.BuildingSchemeFragment
-import com.example.ui.map.MapFragment
+import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
+import com.example.ui.mapTabs.map.MapFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -43,7 +38,7 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
         }
     }
 
-    override fun initPagesWithEvent(event: Event) {
+    override fun initPages() {
         val fragments by lazy {
             listOf<Pair<androidx.fragment.app.Fragment, String>>(
                     MapFragment() to getString(R.string.event_map_tab_how_to_get),

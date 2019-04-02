@@ -1,4 +1,4 @@
-package com.example.ui.buildingScheme
+package com.example.ui.mapTabs.buildingScheme
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -10,7 +10,7 @@ interface BuildingSchemeContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setPlaceData(place: Place)
+        fun setSchemeData(image:String?,description:String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showImage(url: String)

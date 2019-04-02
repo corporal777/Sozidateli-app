@@ -1,4 +1,4 @@
-package com.example.ui.buildingScheme
+package com.example.ui.mapTabs.buildingScheme
 
 import android.os.Bundle
 import androidx.transition.Fade
@@ -39,14 +39,14 @@ class BuildingSchemeFragment : BaseNestedNavigationFragment(), BuildingSchemeCon
         }
     }
 
-    override fun setPlaceData(place: Place) {
+    override fun setSchemeData(image:String?,description:String?) {
         ivScheme.apply {
-            Picasso.get().load(place.schemeImage).into(this)
+            Picasso.get().load(image.let { if(it.isNullOrEmpty()) null else it }).into(this)
             setOnClickListener { presenter.onImageClick() }
         }
 
         tvScheme.apply {
-            text = place.scheme
+            text = description
         }
     }
 

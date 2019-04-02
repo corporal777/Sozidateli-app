@@ -1,9 +1,6 @@
 package com.example.data
 
-import com.example.data.models.Event
-import com.example.data.models.EventCategory
-import com.example.data.models.EventScheduleCalendarDay
-import com.example.data.models.EventTag
+import com.example.data.models.*
 
 class UserEventData {
 
@@ -11,6 +8,7 @@ class UserEventData {
     var days: List<EventScheduleCalendarDay>? = null
     var tags: List<EventTag>? = null
     var categories: List<EventCategory>? = null
+    var mapInfo:MapInfo?=null
 
     var isStaticDataLoaded = false
 
@@ -20,5 +18,6 @@ class UserEventData {
         tags = null
         categories = null
         isStaticDataLoaded = false
+        mapInfo = null
     }
 }

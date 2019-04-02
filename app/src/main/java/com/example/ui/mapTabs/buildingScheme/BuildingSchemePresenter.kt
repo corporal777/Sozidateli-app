@@ -1,7 +1,6 @@
-package com.example.ui.buildingScheme
+package com.example.ui.mapTabs.buildingScheme
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
@@ -12,13 +11,13 @@ class BuildingSchemePresenter
         userEventData: UserEventData
 ) : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
 
-    private val place = userEventData.event!!.place
+    private val mapInfo = userEventData.mapInfo
     private var scroll = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        place?.let {
-            viewState.setPlaceData(it)
+        mapInfo?.let {
+            viewState.setSchemeData(it.int_scheme,it.int_scheme_descriptions)
         }
     }
 
@@ -28,7 +27,7 @@ class BuildingSchemePresenter
     }
 
     override fun onImageClick(){
-        place?.schemeImage?.let {
+        mapInfo?.int_scheme?.let {
             viewState.showImage(it)
         }
     }

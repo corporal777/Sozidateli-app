@@ -69,4 +69,8 @@ class EventRepositoryImp
     override fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable {
         return call(api.removeEventFromCalendar(eventId, subEventId))
     }
+
+    override fun getEventMapInfo(eventId: Int): Single<MapInfo> {
+        return call(api.getEventMapInfo(eventId))
+    }
 }
