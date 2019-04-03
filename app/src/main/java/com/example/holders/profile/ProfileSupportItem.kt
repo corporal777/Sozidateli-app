@@ -19,6 +19,7 @@ import java.util.*
 class ProfileSupportItem(private val profileField: ProfileField) : ProfileFieldItem(profileField) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
         viewHolder.itemView.apply {
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             setPadding( paddingLeft,context.resources.getDimensionPixelSize(R.dimen.profile_margin_between_field),paddingRight,paddingBottom)

@@ -21,6 +21,7 @@ class ProfileSwitchItem(private val profileField: ProfileField, private val onCh
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
         viewHolder.itemView.apply {
             switchView.text = profileField.label ?: context.getString(R.string.profile_show_in_profile)
             var isChecked = false

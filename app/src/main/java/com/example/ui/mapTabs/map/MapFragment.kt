@@ -32,18 +32,11 @@ class MapFragment : BaseNestedNavigationFragment(), MapContract.View, OnMapReady
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.apply {
-            getMapAsync(this@MapFragment)
-        }
-
-        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                mapFragment.view?.layoutParams?.height = (view.height * 0.6).toInt()
+            val mapFragment = childFragmentManager
+                    .findFragmentById(R.id.map) as SupportMapFragment
+            mapFragment.apply {
+                getMapAsync(this@MapFragment)
             }
-        })
     }
 
     override fun setDescription(description: String) {

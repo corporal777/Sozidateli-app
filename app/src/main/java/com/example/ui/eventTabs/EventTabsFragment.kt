@@ -36,6 +36,13 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
 
     private lateinit var bottomNavigationViewHelper: BottomNavigationViewHelper
 
+    private var navigator: KeepStateBackStackNavigator?=null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
@@ -59,12 +66,15 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
             }
         }
 
-        val controller = findNestedNavController()
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.tabsNavHostFragment)!!
-        val navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment,
-                arrayListOf(R.id.my_schedule_fragment, R.id.schedule_fragment, R.id.about_event_fragment, R.id.map_tabs_fragment),bottomNavigation)
-        controller.navigatorProvider += navigator
-        controller.setGraph(R.navigation.event_tabs_navigation)
+        if (navigator == null) {
+            val controller = findNestedNavController()
+            val navHostFragment = childFragmentManager.findFragmentById(R.id.tabsNavHostFragment)!!
+            navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment,
+                    arrayListOf(R.id.my_schedule_fragment, R.id.schedule_fragment, R.id.about_event_fragment, R.id.map_tabs_fragment))
+            controller.navigatorProvider += navigator!!
+            controller.setGraph(R.navigation.event_tabs_navigation)
+        }
+        navigator?.setBottomNavigationView(bottomNavigation)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

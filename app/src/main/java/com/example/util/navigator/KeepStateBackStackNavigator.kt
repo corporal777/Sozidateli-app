@@ -21,8 +21,7 @@ class KeepStateBackStackNavigator(
         private val context: Context,
         private val manager: FragmentManager, // Should pass childFragmentManager.
         private val containerId: Int,
-        private val arrayMainFragments: ArrayList<Int>,
-        private val bottomNavigationView: BottomNavigationView
+        private val arrayMainFragments: ArrayList<Int>
 ) : FragmentNavigator(context, manager, containerId) {
 
     private val backStack = Stack<Int>()
@@ -31,6 +30,11 @@ class KeepStateBackStackNavigator(
         arrayMainFragments.forEach {
             put(it, Stack())
         }
+    }
+    private var bottomNavigationView: BottomNavigationView?=null
+
+    fun setBottomNavigationView(bottomNavigationView: BottomNavigationView){
+        this.bottomNavigationView = bottomNavigationView
     }
 
     private var currentFragmentId = -1
@@ -78,21 +82,26 @@ class KeepStateBackStackNavigator(
 
         commitTransactionWithAnimation(transaction, fragment, navOptions)
 
-        saveIdNavigate(destinationId)
+        saveIdNavigate(destinationId, destination.id)
 
 
         return destination
     }
 
-    private fun saveIdNavigate(id: Int) {
-        currentFragmentId = id
+    private fun saveIdNavigate(correctedId: Int, originalId: Int) {
+        currentFragmentId = correctedId
 
-        if (arrayMainFragments.contains(currentFragmentId)) {
-            lastMainFragment = currentFragmentId
-            selectBottomNavItem(lastMainFragment)
-            backStack.push(id)
+        if (arrayMainFragments.contains(originalId)) {
+            backStack.push(originalId)
+            lastMainFragment = originalId
+        }
+
+        if (arrayMainFragments.contains(correctedId)) {
+            selectBottomNavItem(correctedId)
         } else {
-            childBackStack[lastMainFragment]?.push(currentFragmentId)
+            if (!childBackStack[lastMainFragment]?.contains(correctedId)!!) {
+                childBackStack[lastMainFragment]?.push(correctedId)
+            }
         }
     }
 
@@ -110,8 +119,8 @@ class KeepStateBackStackNavigator(
 
     private fun customPopBackStack(): Boolean {
         if (arrayMainFragments.contains(currentFragmentId)) {
-            if (backStack.size == 1) return false
             backStack.pop()
+            if (backStack.isEmpty()) return false
             val fragmentForNavigate = backStack.peek()
             if (childBackStack[fragmentForNavigate].isNullOrEmpty()) {
                 return navigateById(fragmentForNavigate, fragmentForNavigate)
@@ -152,11 +161,12 @@ class KeepStateBackStackNavigator(
         currentFragmentId = id
         if (arrayMainFragments.contains(currentFragmentId)) {
             lastMainFragment = currentFragmentId
+        } else {
+            mainFragment?.let {
+                lastMainFragment = it
+            }
         }
-        mainFragment?.let {
-            lastMainFragment = it
-            selectBottomNavItem(it)
-        }
+        selectBottomNavItem(lastMainFragment)
 
         return true
     }
@@ -213,7 +223,7 @@ class KeepStateBackStackNavigator(
 
     private fun selectBottomNavItem(idNavigate: Int?) {
         if (idNavigate == null) return
-        val menu = bottomNavigationView.menu
+        val menu = bottomNavigationView?.menu
         val aboutAlias = R.id.about_event_navigation
         val about = R.id.about_event_fragment
         val id: Int
@@ -224,7 +234,7 @@ class KeepStateBackStackNavigator(
             id = idNavigate
         }
 
-        menu.findItem(id)?.let {
+        menu?.findItem(id)?.let {
             it.isChecked = true
         }
     }

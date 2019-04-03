@@ -201,7 +201,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onBackPressed() {
         onSupportNavigateUp()
-        EventBus.getDefault().post(OnBackPressEvent())
     }
 
     override fun navigateUp() {
@@ -212,7 +211,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (currentDestination?.id?.let { isStartDestination(it) } == true) {
             finish()
             false
-        } else navigateUp()
+        } else {
+            val tabs = R.id.event_tabs_fragment
+            if(currentDestination?.id == tabs){
+                EventBus.getDefault().post(OnBackPressEvent())
+            } else{
+                navigateUp()
+            }
+            true
+        }
     }
 
     override fun showToolbar() {

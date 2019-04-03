@@ -19,6 +19,7 @@ class TrashItem(private val clickListener: View.OnClickListener) : Item() {
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.setIsRecyclable(false)
         viewHolder.itemView.apply {
             setOnClickListener(clickListener)
         }
