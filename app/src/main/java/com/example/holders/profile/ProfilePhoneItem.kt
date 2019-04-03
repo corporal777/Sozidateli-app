@@ -23,6 +23,7 @@ import com.hbb20.InternationalPhoneTextWatcher
 class ProfilePhoneItem(private val profileField: ProfileField) : ProfileBaseFieldItem(profileField) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
         viewHolder.itemView.apply {
             ccp.registerCarrierNumberEditText(editText)
             ccp.setPhoneNumberValidityChangeListener(CountryCodePicker.PhoneNumberValidityChangeListener {

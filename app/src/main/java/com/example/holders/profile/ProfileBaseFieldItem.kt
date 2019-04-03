@@ -8,7 +8,7 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 abstract class ProfileBaseFieldItem(var field:ProfileField): Item(field.id.hashCode().toLong()) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-
+        viewHolder.setIsRecyclable(false)
     }
 
     override fun getLayout() = R.layout.field_profile

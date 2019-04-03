@@ -19,6 +19,7 @@ class MarginItem(private val margin:Int) : Item() {
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.setIsRecyclable(false)
         viewHolder.itemView.apply {
             setPadding(0,margin,0,0)
         }

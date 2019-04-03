@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.Type
+import com.example.util.GENDER_FEMALE
+import com.example.util.GENDER_MALE
 import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_select.view.*
@@ -24,35 +26,39 @@ class ProfileSelectItem(private val profileField: ProfileField, private val data
 
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var showArray: Array<String>
-
+    private var selected: String? = null
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
         viewHolder.itemView.apply {
             profileField.label?.let {
                 tvFieldLabel.text = it
             }
 
-            if (spinner.adapter == null) {
-                showArray = data.map { it.key }.toTypedArray()
-                adapter = ArrayAdapter(context, R.layout.spinner_item, showArray)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinner.adapter = adapter
+            if(profileField.data!= GENDER_FEMALE && profileField.data!= GENDER_MALE){
+                selected = profileField.data.toString()
+            }
 
-                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(p0: AdapterView<*>?) {
+            showArray = data.map { it.key }.toTypedArray()
+            adapter = ArrayAdapter(context, R.layout.spinner_item, showArray)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
 
-                    }
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
 
-                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, id: Long) {
-                        profileField.data = data[showArray[pos]]
-                    }
                 }
 
-                profileField.data?.let {
-                    val indexSelection = showArray.indexOf(it.toString().capitalize())
-                    if (indexSelection != -1) {
-                        spinner.setSelection(indexSelection)
-                    }
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, id: Long) {
+                    profileField.data = data[showArray[pos]]
+                    selected = showArray[pos]
+                }
+            }
+
+            selected?.let {
+                val indexSelection = showArray.indexOf(it.capitalize())
+                if (indexSelection != -1) {
+                    spinner.setSelection(indexSelection)
                 }
             }
 

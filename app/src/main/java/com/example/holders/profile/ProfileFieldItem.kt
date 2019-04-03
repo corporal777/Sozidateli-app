@@ -22,6 +22,7 @@ abstract class ProfileFieldItem(private val profileField: ProfileField) : Profil
     protected open var maxLines: Int? = null
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
         viewHolder.itemView.apply {
 
             profileField.data?.let {

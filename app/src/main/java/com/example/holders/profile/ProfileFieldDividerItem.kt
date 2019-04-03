@@ -10,6 +10,7 @@ class ProfileFieldDividerItem(): Item() {
 
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.setIsRecyclable(false)
     }
 
     override fun getLayout(): Int {
