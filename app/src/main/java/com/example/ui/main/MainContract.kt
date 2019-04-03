@@ -1,5 +1,6 @@
 package com.example.ui.main
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
@@ -21,7 +22,7 @@ interface MainContract {
         @StateStrategyType(SkipStrategy::class)
         fun showGreetings()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showChat(userId: String, chatId: String, userName: String)
 
         @StateStrategyType(SkipStrategy::class)
@@ -32,6 +33,9 @@ interface MainContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogChangeEmailError()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun checkIntent()
     }
 
     interface Presenter : BaseContract.Presenter {

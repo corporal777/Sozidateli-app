@@ -1,8 +1,6 @@
 package com.example.util
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.content.Context
 import com.example.data.models.UserChat
 import com.example.data.prefs.AppPrefs
 import com.example.repository.ChatRepository
@@ -41,12 +39,14 @@ class FcmMessagingService : FirebaseMessagingService() {
 
     @SuppressLint("CheckResult")
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        if (chatNotificationHelper.isConnectingToLastMessageDatabase/* && isAppInForeground()*/) return
+        if (chatNotificationHelper.isConnectingToLastMessageDatabase) return
 
         val chatData = remoteMessage.data[DATA_CHAT_OBJECT] ?: return
         val userChat = Gson().fromJson(chatData, UserChat::class.java) ?: return
         val chatId = userChat.id.toString()
         val messageId = userChat.messageId ?: return
+
+        if (!chatNotificationHelper.isCanSendMessage(chatId, messageId)) return
 
         chatRepository.getMessage(chatId, messageId)
                 .map { it.isShowed ?: false }
@@ -76,12 +76,6 @@ class FcmMessagingService : FirebaseMessagingService() {
                 }, {
                     it.printStackTrace()
                 })
-    }
-
-    private fun isAppInForeground(): Boolean {
-        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningAppProcesses = activityManager.runningAppProcesses ?: return false
-        return runningAppProcesses.any { it.processName == packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
     }
 
     companion object {

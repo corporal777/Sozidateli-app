@@ -13,6 +13,8 @@ class ChatNotificationHelper(private val context: Context) {
     var currentChatId: String? = null
     var isConnectingToLastMessageDatabase = false
 
+    val showedMessages = HashSet<String>()
+
     fun showNotificationIfCan(
             chatId: String,
             messageId: String,
@@ -21,8 +23,14 @@ class ChatNotificationHelper(private val context: Context) {
             senderName: String,
             avatarUrl: String?
     ) {
-        if (currentChatId == chatId) return
-        showNotification(context, chatId, messageId, message, senderId, senderName, avatarUrl)
+        if (isCanSendMessage(chatId, messageId) && showedMessages.add(messageId)) {
+            showNotification(context, chatId, messageId, message, senderId, senderName, avatarUrl)
+        }
+    }
+
+    fun isCanSendMessage(chatId: String, messageId: String): Boolean {
+        return !showedMessages.contains(messageId)
+                && currentChatId != chatId
     }
 
     companion object {

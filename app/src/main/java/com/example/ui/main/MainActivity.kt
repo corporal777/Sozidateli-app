@@ -56,12 +56,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //(application as? App)?.appIsRunning = true
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
         subscribeOnNotificationChanel()
-        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -89,15 +87,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
                 }
             }
+        } else {
+            val chatData = intent.getBundleExtra(FIELD_CHAT)
+            chatData?.let {
+                val userId = it.getString(FIELD_SENDER_ID, null)
+                val chatId = it.getString(FIELD_CHAT_ID, null)
+                val userName = it.getString(FIELD_LABEL, null)
+                val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
+                if (userId != null && chatId != null && userName != null)
+                    presenter.onHandleChat(userId, chatId, userName, notifiactionId)
+            }
         }
-        val chatData = intent.getBundleExtra(FIELD_CHAT)
-        chatData?.let {
-            val userId = it.getString(FIELD_SENDER_ID, null)
-            val chatId = it.getString(FIELD_CHAT_ID, null)
-            val userName = it.getString(FIELD_LABEL, null)
-            val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
-            if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName, notifiactionId)
-        }
+    }
+
+    override fun checkIntent() {
+        handleIntent(intent)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {

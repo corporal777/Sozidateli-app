@@ -24,6 +24,8 @@ interface ChatRepository {
 
     fun subscribeChatUnreadMessageCount(chatId: String): Flowable<Int>
 
+    fun loadChatLastMessage(): Maybe<LocalNotification>
+
     fun subscribeChatLastMessage(): Flowable<LocalNotification>
 
     fun startChat(userId: Int): Single<ChatStartResponse>

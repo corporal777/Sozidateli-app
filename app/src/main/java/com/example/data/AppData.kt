@@ -43,7 +43,6 @@ class AppData(
         }
 
     private var user: User? = null
-    var openedNotificationId: String? = null
 
     private val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val onUserChange: Observable<Optional<User>> = userChangeSubject

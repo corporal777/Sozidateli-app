@@ -126,7 +126,12 @@ class ChatRepositoryImpl
 //                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
 //            }
 
-            ids.forEach { id -> transaction.update(messageCollectionRef.document(id), FIELD_IS_READ, true) }
+            ids.forEach { id ->
+                transaction.update(messageCollectionRef.document(id), mapOf(
+                        FIELD_IS_READ to true,
+                        FIELD_IS_SHOWED to true
+                ))
+            }
 
             val resultCount = userUnreadMessageCount - ids.size
             transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
@@ -156,9 +161,13 @@ class ChatRepositoryImpl
                 .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
     }
 
+    override fun loadChatLastMessage(): Maybe<LocalNotification> {
+        return RxFirestore.getDocument(getLastMessageRef())
+                .map { it.toObject(LocalNotification::class.java) }
+    }
+
     override fun subscribeChatLastMessage(): Flowable<LocalNotification> {
-        val lastMsgRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-        return RxFirestore.observeDocumentRef(lastMsgRef)
+        return RxFirestore.observeDocumentRef(getLastMessageRef())
                 .map { it.toObject(LocalNotification::class.java) }
 
     }
@@ -166,7 +175,6 @@ class ChatRepositoryImpl
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.startChat(userId))
     }
-
 
     override fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>> {
         return api.uploadChatImage(
@@ -181,4 +189,6 @@ class ChatRepositoryImpl
     override fun getChat(chatId: String): Single<UserChat> {
         return call(api.getChat(chatId))
     }
+
+    private fun getLastMessageRef() = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
 }

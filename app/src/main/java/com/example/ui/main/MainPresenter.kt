@@ -17,7 +17,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
-import timber.log.Timber
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -36,11 +35,6 @@ class MainPresenter
     private val chatCompositeDisposable = CompositeDisposable()
 
     private var isAuthRequired = false
-
-    private var userId: String? = null
-    private var chatId: String? = null
-    private var userName: String? = null
-    private var wasOpen = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -78,12 +72,15 @@ class MainPresenter
                                         } else {
                                             showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
                                         }
-                                        openChat()
-                                        wasOpen = true
+                                        checkIntent()
                                     }
+
                                 }, {
-                                    viewState.showLogin()
-                                    wasOpen = true
+                                    isAuthRequired = true
+                                    viewState.apply {
+                                        showLogin()
+                                        checkIntent()
+                                    }
                                 })
                                 .call(compositeDisposable)
                     }
@@ -103,25 +100,8 @@ class MainPresenter
     }
 
     override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
-        if (appData.openedNotificationId === null || appData.openedNotificationId != notificationId) {
-            this.userId = userId
-            this.chatId = chatId
-            this.userName = userName
-            appData.openedNotificationId = notificationId
-            if (wasOpen) {
-                openChat()
-            }
-        }
-
-    }
-
-    private fun openChat() {
-        chatId?.let {
-            viewState.showChat(userId!!, chatId!!, userName!!)
-            userId = null
-            chatId = null
-            userName = null
-        }
+        if (isAuthRequired) return
+        viewState.showChat(userId, chatId, userName)
     }
 
     override fun onHandleAuthLink(email: String, code: String) {
@@ -188,7 +168,10 @@ class MainPresenter
     }
 
     private fun subscribeChatLastMessage() {
-        chatCompositeDisposable += chatRepository.subscribeChatLastMessage()
+        chatCompositeDisposable += chatRepository.loadChatLastMessage()
+                .flatMapCompletable { setMessageShowed(it.chatId, it.messageId) }
+                .onErrorComplete()
+                .andThen(chatRepository.subscribeChatLastMessage())
                 .doOnNext { chatNotificationHelper.isConnectingToLastMessageDatabase = true }
                 .doFinally { chatNotificationHelper.isConnectingToLastMessageDatabase = false }
                 .performOnBackgroundOutOnMain()
@@ -200,12 +183,11 @@ class MainPresenter
     }
 
     private fun processLastChatMessageUpdate(localMessage: LocalNotification) {
-        Timber.tag("APP_T").d("message: ${localMessage.messageId}, isShowed: ${localMessage.isShowed}")
         if (localMessage.isShowed) return
         val chatId = localMessage.chatId ?: return
         val messageId = localMessage.messageId ?: return
 
-        chatCompositeDisposable += chatRepository.setMessageShowed(appData.getUser().user_id.toString(), chatId, messageId)
+        chatCompositeDisposable += setMessageShowed(chatId, messageId)
                 .mergeWith(Completable.fromAction {
                     val message = localMessage.text ?: return@fromAction
                     val senderId = localMessage.senderId
@@ -223,6 +205,15 @@ class MainPresenter
                 .subscribe({}, {
                     it.printStackTrace()
                 })
+    }
+
+    private fun setMessageShowed(chatId: String?, messageId: String?): Completable {
+        return if (chatId != null && messageId != null) {
+            chatRepository.setMessageShowed(appData.getUser().user_id.toString(), chatId, messageId)
+        } else {
+            val message = "Can not update message with null parameters: chatId: $chatId, messageId: $messageId"
+            Completable.error(NullPointerException(message))
+        }
     }
 
     private fun unsubscribeChat() {
