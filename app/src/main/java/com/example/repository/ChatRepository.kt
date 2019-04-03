@@ -32,5 +32,7 @@ interface ChatRepository {
 
     fun getChat(chatId: String): Single<UserChat>
 
-    fun setLastMessageShowed(chatId: String?, messageId: String?): Completable
+    fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage>
+
+    fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable
 }

@@ -1,16 +1,8 @@
 package com.example
 
-import android.app.Activity
-import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.splunk.mint.Mint
@@ -18,22 +10,24 @@ import com.squareup.leakcanary.LeakCanary
 import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
+import dagger.android.HasServiceInjector
 import timber.log.Timber
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector {
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+class App : Application(), HasActivityInjector, HasServiceInjector {
 
-    lateinit var appComponent: AppComponent
+    @Inject
+    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var serviceInjector: DispatchingAndroidInjector<Service>
 
     @Inject
     internal lateinit var calligraphyConfig: CalligraphyConfig
 
-    var currentChatID:String?=null
-
-    //var appIsRunning = false
+    lateinit var appComponent: AppComponent
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -63,8 +57,9 @@ class App : Application(), HasActivityInjector {
     }
 
 
+    override fun activityInjector() = activityInjector
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun serviceInjector() = serviceInjector
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return

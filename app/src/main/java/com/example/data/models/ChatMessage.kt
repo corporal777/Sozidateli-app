@@ -13,7 +13,8 @@ data class ChatMessage(
         val senderId: Int = -1,
         val sendAt: Date = Date(),
         val image: String? = null,
-        var isRead: Boolean? = false
+        var isRead: Boolean? = false,
+        val isShowed: Boolean? = false
 ) {
     fun toMap() = mapOf(
             FIELD_TEXT to text,

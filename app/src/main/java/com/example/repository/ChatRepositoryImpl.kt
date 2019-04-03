@@ -5,13 +5,13 @@ import com.example.data.AppData
 import com.example.data.models.*
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -79,27 +79,29 @@ class ChatRepositoryImpl
                 )
     }
 
-    override fun setLastMessageShowed(chatId: String?, messageId: String?): Completable {
-        return RxFirestore.runTransaction(firestore) {
-            val lastMsgRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            var msgRef: DocumentReference? = null
+    override fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage> {
+        val messageRef = firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(COLLECTION_MESSAGES)
+                .document(messageId)
 
-            if (chatId != null && messageId != null) {
-                msgRef = firestore.collection(COLLECTION_CHATS)
-                        .document(chatId)
-                        .collection(COLLECTION_MESSAGES)
-                        .document(messageId)
-            }
+        return RxFirestore.getDocument(messageRef)
+                .map { it.toObject(ChatMessage::class.java) }
+    }
 
-            it.update(lastMsgRef, mapOf(
-                    FIELD_IS_SHOWED to true
-            ))
+    override fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable {
+        val userLastMessageRef = userId?.let { firestore.collection(COLLECTION_USERS).document(userId) }
+        val messageRef = firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(COLLECTION_MESSAGES)
+                .document(messageId)
 
-            msgRef?.let { doc ->
-                it.update(doc, mapOf(
-                        FIELD_IS_SHOWED to true
-                ))
-            }
+        return RxFirestore.runTransaction(firestore) { transition ->
+            val lastMessageId = userLastMessageRef?.let { transition.get(userLastMessageRef).getString(FIELD_MESSAGE_ID) }
+            transition.update(messageRef, mapOf(FIELD_IS_SHOWED to true))
+            if (messageId == lastMessageId)
+                transition.update(userLastMessageRef, mapOf(FIELD_IS_SHOWED to true))
+
             null
         }
     }

@@ -6,6 +6,7 @@ import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.prefs.AppPrefs
+import com.example.util.chat.ChatNotificationHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -24,16 +25,19 @@ class AppModule {
     fun provideFireStore() = FirebaseFirestore.getInstance()
 
     @Provides
-    fun provideFirebaseAuth() = FirebaseAuth.getInstance()
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
     fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
 
+    @Provides
+    @Singleton
+    fun provideUserEventData(): UserEventData = UserEventData()
 
     @Provides
     @Singleton
-    fun provideUserEventata(): UserEventData = UserEventData()
+    fun provideChatData(context: Context): ChatNotificationHelper = ChatNotificationHelper(context)
 
     @Provides
     @Singleton
