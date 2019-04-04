@@ -155,7 +155,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun cancelNotificationByChatId(chatId: String) {
         val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(chatId.toInt())
+        notificationManager.cancel(chatId.hashCode())
     }
 
     override fun showCantSendHolder(isShow: Boolean) {

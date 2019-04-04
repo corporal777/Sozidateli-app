@@ -45,9 +45,10 @@ object NotificationUtil {
                     .setGroup(groupId)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
                     .setSound(null)
-                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                     .setGroupSummary(true)
                     .setContentIntent(intent)
+
             notificationManager.notify(groupId.hashCode(), summaryNotificationBuilder.build())
         }
 
