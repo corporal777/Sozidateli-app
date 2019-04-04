@@ -15,10 +15,10 @@ class EnterCodePresenter
     }
 
     override fun onSearchClick(code: String) {
-        dummyRepository.loadRecommendations(1,0)
+        /*dummyRepository.loadRecommendations(1,0)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.openEvent(it.data[0])
-                },{}).call(compositeDisposable)
+                },{}).call(compositeDisposable)*/
     }
 }

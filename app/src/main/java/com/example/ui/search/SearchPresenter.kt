@@ -35,11 +35,11 @@ class SearchPresenter
             .setEnablePlaceholders(false)
             .build()
 
-    val factory = PaginationDataSourceFactory { limit, offset ->
+    /*val factory = PaginationDataSourceFactory { limit, offset ->
         dummyRepository.loadRecommendations(limit, offset)
     }.mapIndexedTotal { item, index, total ->
         SearchEventResultItem(item, this@SearchPresenter)
-    }
+    }*/
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -82,7 +82,7 @@ class SearchPresenter
     }
 
     private fun search() {
-        RxPagedListBuilder(factory, config)
+       /* RxPagedListBuilder(factory, config)
                 .buildFlowable(BackpressureStrategy.LATEST)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -90,7 +90,7 @@ class SearchPresenter
                 }, {
                     it.printStackTrace()
                 })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

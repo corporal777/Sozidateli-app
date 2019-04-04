@@ -23,4 +23,6 @@ interface EventRepository {
     fun addEventToCalendar(eventId: Int, subEventId: Int): Completable
     fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable
     fun getEventMapInfo(eventId: Int): Single<MapInfo>
+    fun getPartnerListByEvent(eventId: Int):Single<List<Partner>>
+    fun getPartnerById(partnerId: Int):Single<Partner>
 }

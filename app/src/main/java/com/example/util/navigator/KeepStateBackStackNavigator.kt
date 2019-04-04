@@ -73,6 +73,7 @@ class KeepStateBackStackNavigator(
             fragment = instantiateFragment(context, manager, className, args)
             transaction.add(containerId, fragment, tag)
         } else {
+            fragment.arguments = args
             transaction.attach(fragment)
         }
 

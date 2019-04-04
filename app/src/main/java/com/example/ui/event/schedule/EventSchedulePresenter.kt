@@ -129,6 +129,7 @@ constructor(
                             days = createCalendarDays(it.dates.map { serverDateFormat.parseTimestamp(it.date) })
                             tags = it.tags
                             categories = it.categories
+                            partners = it.partners
                             isStaticDataLoaded = true
                         }
                     }

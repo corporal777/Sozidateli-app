@@ -223,4 +223,6 @@
 
     <string name="auth_sn_set_email_title">Установите email</string>
 
+    <string name="partners_label">Партнеры</string>
+
 </resources>

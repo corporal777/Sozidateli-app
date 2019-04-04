@@ -4,6 +4,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
+import com.example.data.models.Partner
 import com.example.ui.base.BaseContract
 
 interface AboutEventContract {
@@ -26,11 +27,20 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showTransfer(event: Event)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showPartner(partner:Partner)
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setLabel(label: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setVisibleButtonGoToEvent(isVisible:Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setPartners(partners:List<Partner>)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -40,6 +50,7 @@ interface AboutEventContract {
         fun onContactsClick()
         fun onTransferClick()
         fun onGoToEventClick()
+        fun onPartnerClick(partner: Partner)
         fun onImageLoad()
         fun onImageLoadError()
     }

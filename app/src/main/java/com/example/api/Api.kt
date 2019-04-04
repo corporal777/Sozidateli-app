@@ -184,4 +184,11 @@ interface Api {
 
     @GET("/v1/events/{eventId}/map")
     fun getEventMapInfo(@Path("eventId") eventId: Int): Single<ApiResponse<MapInfo>>
+
+    @POST("/v1/events/{eventId}/partners")
+    fun getPartnerListByEvent(@Path("eventId") eventId: Int): Single<ApiResponse<List<Partner>>>
+
+    @GET("/v1/partners/{partnerId}")
+    fun getPartnerById(@Path("partnerId") partnerId: Int): Single<ApiResponse<Partner>>
+
 }
