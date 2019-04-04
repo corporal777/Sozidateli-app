@@ -26,6 +26,7 @@ abstract class ApiRepository(
                 .map { it.response }
     }
 
+
     fun <T> call(request: Maybe<ApiResponse<T>>): Maybe<T> {
         return request
                 .doOnError { processError(it) }
@@ -59,11 +60,11 @@ abstract class ApiRepository(
                 }
     }
 
-    private fun saveSession(response: ApiResponse<*>?) {
+    protected fun saveSession(response: ApiResponse<*>?) {
         response?.session?.run { appData.token = token }
     }
 
-    private fun processError(throwable: Throwable){
+    protected fun processError(throwable: Throwable){
         val response  = ApiErrorParser.parse(throwable)
         saveSession(response)
         appData.error = response

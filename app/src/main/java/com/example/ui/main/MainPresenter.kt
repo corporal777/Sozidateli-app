@@ -12,6 +12,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
@@ -64,6 +65,7 @@ class MainPresenter
                                         if (isAuthRequired) {
                                             isAuthRequired = false
                                             Completable.fromAction { viewState.showGreetings() }
+                                                    .subscribeOn(AndroidSchedulers.mainThread())
                                                     .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
                                                     .andThen(Maybe.just(true))
                                         } else Maybe.just(false))
@@ -152,6 +154,13 @@ class MainPresenter
                     viewState.showDialogChangeEmailError()
                 })
                 .call(compositeDisposable)
+    }
+
+    override fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String) {
+        authRepository.confirmEmailSocialNetwork(snType,id,code)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({},{}).call(compositeDisposable)
     }
 
     override fun onSetPassword(email: String, code: String, password: String) {

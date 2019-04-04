@@ -12,16 +12,16 @@ import retrofit2.http.*
 interface Api {
 
     @FormUrlEncoded
-    @POST("/v1/user/auth/vk")
-    fun authVk(@Field("token") token: String, @Field("email") email: String?): Single<ApiResponse<AuthResponse>>
+    @POST("/v1/user/auth/{sn}")
+    fun authSocialNetwork(@Path("sn")sn:String, @Field("token") token: String,@Field("email") email: String?): Single<ApiResponse<AuthSNResponse>>
 
     @FormUrlEncoded
-    @POST("/v1/user/auth/ok")
-    fun authOk(@Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    @POST("/v1/user/auth/{sn}/set_email")
+    fun setEmailSocialNetwork(@Path("sn")sn:String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
-    @POST("/v1/user/auth/fb")
-    fun authFb(@Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    @POST("/v1/user/auth/{sn}/confirm_email")
+    fun confirmEmailSocialNetwork(@Path("sn")sn:String, @Field("id") id: String,@Field("code") code: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth")

@@ -45,6 +45,7 @@ interface MainContract {
         fun onHandleRecoverPasswordLink(email: String, code: String)
         fun onHandleChangeEmailCofirm(email: String, code: String)
         fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
+        fun onHandleSocialNetworkConfirm(snType:String,id:String,code:String)
         fun onSetPassword(email: String, code: String, password: String)
         fun setLastMessageShowed(notification: LocalNotification)
     }

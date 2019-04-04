@@ -23,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="30dp"
-        android:alpha="0.5"
         android:background="@color/auth_fb_color"
         android:foreground="?attr/selectableItemBackground">
 
@@ -40,7 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:alpha="0.5"
         android:background="@color/auth_vk_color"
         android:foreground="?attr/selectableItemBackground">
 
@@ -57,7 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:alpha="0.5"
         android:background="@color/auth_ok_color"
         android:foreground="?attr/selectableItemBackground">
 

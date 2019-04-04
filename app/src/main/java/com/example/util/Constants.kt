@@ -15,7 +15,6 @@ const val FIELD_IS_SHOWED = "isShowed"
 const val FIELD_MESSAGE_ID = "messageId"
 
 
-
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "d.MM.yyyy"
 const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"
 const val DATE_FORMAT_FULL_MONTH_NO_YEAR = "d MMMM"
@@ -72,7 +71,15 @@ const val FIELD_NOTIFICATION_ID = "notification_id"
 const val REQUEST_CODE_SELECT_PDF = 12
 const val REQUEST_CODE_PERMISSION_READ_FILE = 13
 
-const val FIELD_ATTACH_RECOMMENDATION_FILE="attached_recomendation_files"
+const val FIELD_ATTACH_RECOMMENDATION_FILE = "attached_recomendation_files"
 
-const val GENDER_MALE="male"
-const val GENDER_FEMALE="female"
+const val GENDER_MALE = "male"
+const val GENDER_FEMALE = "female"
+
+const val SN_VK = "vk"
+const val SN_OK = "ok"
+const val SN_FB = "fb"
+
+const val ID = "id"
+const val SET_EMAIL_USER_SOCIAL = "set_email_user_social"
+const val SN_PROVIDER = "provider"
