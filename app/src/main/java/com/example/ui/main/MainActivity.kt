@@ -85,6 +85,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     presenter.onHandleAuthLink(authEmail, authCode)
                 } else if (authCode != null && recoverEmail != null) {
                     presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
+                } else if (it.getQueryParameter(SET_EMAIL_USER_SOCIAL) != null) {
+                    val id = it.getQueryParameter(ID)
+                    val snType = it.getQueryParameter(SN_PROVIDER)
+                    if (snType != null && id != null && authCode != null)
+                        presenter.onHandleSocialNetworkConfirm(snType, id, authCode)
                 }
             }
         } else {
@@ -213,9 +218,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             false
         } else {
             val tabs = R.id.event_tabs_fragment
-            if(currentDestination?.id == tabs){
+            if (currentDestination?.id == tabs) {
                 EventBus.getDefault().post(OnBackPressEvent())
-            } else{
+            } else {
                 navigateUp()
             }
             true

@@ -75,3 +75,12 @@ const val FIELD_ATTACH_RECOMMENDATION_FILE = "attached_recomendation_files"
 
 const val GENDER_MALE = "male"
 const val GENDER_FEMALE = "female"
+
+const val SN_VK = "vk"
+const val SN_OK = "ok"
+const val SN_FB = "fb"
+
+const val ID = "id"
+const val SET_EMAIL_USER_SOCIAL = "set_email_user_social"
+const val SN_PROVIDER = "provider"
+
