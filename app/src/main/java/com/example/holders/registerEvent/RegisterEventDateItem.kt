@@ -6,8 +6,9 @@ import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.RegisterEventField
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.ui.request.RequestPresenter
-import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -56,7 +57,7 @@ open class RegisterEventDateItem(private val fieldRegister:RegisterEventField,
             }
 
             timePicker.setOnCancelListener {
-                changeDateTime(Utils.defaultServerDateFormatterWithTime)
+                changeDateTime(defaultServerDateTimeFormatter)
             }
             if(isFirstBind){
                 fieldRegister.dataFromServer?.let {
@@ -77,7 +78,7 @@ open class RegisterEventDateItem(private val fieldRegister:RegisterEventField,
         if(isNeedTime){
             timePicker.show(fragmentManager,"time")
         } else{
-            changeDateTime(Utils.defaultServerDateFormatter)
+            changeDateTime(defaultServerDateFormatter)
         }
     }
 
@@ -85,7 +86,7 @@ open class RegisterEventDateItem(private val fieldRegister:RegisterEventField,
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
         calendar.set(Calendar.MINUTE,minute)
         calendar.set(Calendar.SECOND, second)
-        changeDateTime(Utils.defaultServerDateFormatterWithTime)
+        changeDateTime(defaultServerDateTimeFormatter)
     }
 
 

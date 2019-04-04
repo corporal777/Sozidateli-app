@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.SubEvent
 import com.example.data.models.Tag
 import com.example.holders.SubEventItem
 import com.example.ui.base.BaseContract
@@ -42,6 +43,9 @@ interface EventScheduleContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
         fun hideCurrentDay()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSubEvent(eventId: Int, subeventId: Int)
     }
 
     interface Presenter : BaseContract.Presenter {

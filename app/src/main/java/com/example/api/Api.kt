@@ -2,6 +2,7 @@ package com.example.api
 
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.data.models.SubeventInfo
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -13,15 +14,15 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}")
-    fun authSocialNetwork(@Path("sn")sn:String, @Field("token") token: String,@Field("email") email: String?): Single<ApiResponse<AuthSNResponse>>
+    fun authSocialNetwork(@Path("sn") sn: String, @Field("token") token: String, @Field("email") email: String?): Single<ApiResponse<AuthSNResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}/set_email")
-    fun setEmailSocialNetwork(@Path("sn")sn:String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    fun setEmailSocialNetwork(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}/confirm_email")
-    fun confirmEmailSocialNetwork(@Path("sn")sn:String, @Field("id") id: String,@Field("code") code: String): Single<ApiResponse<AuthResponse>>
+    fun confirmEmailSocialNetwork(@Path("sn") sn: String, @Field("id") id: String, @Field("code") code: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth")
@@ -176,11 +177,14 @@ interface Api {
     @POST("v1/user/set_default_event/{eventId}")
     fun setDefaultEvent(@Path("eventId") eventId: Int): Completable
 
+    @GET("/v1/events/{eventId}/activity/{subEventId}")
+    fun getSubEvent(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Single<ApiResponse<SubeventInfo>>
+
     @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
-    fun addEventToCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+    fun addSubEventToCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
-    fun removeEventFromCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+    fun removeSubEventFromCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
 
     @GET("/v1/events/{eventId}/map")
     fun getEventMapInfo(@Path("eventId") eventId: Int): Single<ApiResponse<MapInfo>>

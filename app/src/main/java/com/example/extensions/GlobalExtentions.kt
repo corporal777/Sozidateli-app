@@ -2,6 +2,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.extensions.defaultServerDateFormatter
 import com.example.util.CropCircleTransformation
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
 import com.example.util.DATE_FORMAT_FULL_MONTH_NO_YEAR
@@ -31,7 +32,7 @@ fun TextView.setDateCheckYearText(date: Long) {
 
 fun TextView.setDateCheckYearText(date: String) {
     try {
-        val dateLong = Utils.defaultServerDateFormatter.parse(date).time
+        val dateLong = defaultServerDateFormatter.parse(date).time
         setDateCheckYearText(dateLong)
     } catch (e: Exception) {
         e.printStackTrace()

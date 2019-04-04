@@ -6,15 +6,14 @@ import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Notification
+import com.example.extensions.formatToDefaultDate
 import com.example.ui.base.BaseFragment
-import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -53,7 +52,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
                         BetterLinkMovementMethod.linkify(Linkify.ALL, this)
                                 .setOnLinkClickListener(linkClickListener)
                     }
-                    tvDate.text = item?.time?.let { Utils.formatToDefaultDate(it) } ?: "-"
+                    tvDate.text = item?.time?.formatToDefaultDate() ?: "-"
                 }
             }
         }

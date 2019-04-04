@@ -1,39 +1,15 @@
 package com.example.util
 
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.media.RingtoneManager
-import android.os.Build
+import android.content.res.Resources
 import android.view.Menu
-import androidx.core.app.NotificationCompat
-import bundleOf
 import com.example.R
-import com.example.data.models.LocalNotification
-import com.example.data.models.UserChat
-import com.example.ui.main.MainActivity
+import com.example.data.models.ProfileField
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import io.reactivex.Observable
-import performOnMain
-import java.lang.Exception
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.ComponentName
-import android.app.ActivityManager
-import android.content.res.Resources
-import androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY
-import com.example.App
-import com.example.data.models.ProfileField
-import com.example.data.models.Type
 
 
 object Utils {
@@ -45,7 +21,7 @@ object Utils {
         get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
     val defaultServerDateFormatterWithTime: DateFormat
-        get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP_WITH_TIME, Locale.getDefault())
+        get() = SimpleDateFormat(DATE_TIME_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
     fun formatToDefaultDate(serverTimestamp: String): String? {
         val serverDate = try {
@@ -102,12 +78,12 @@ object Utils {
     public fun getListFieldValueByMapDefault(obj: Any?, default: MutableList<ProfileField>): MutableList<ProfileField> {
         val result = mutableListOf<ProfileField>()
         default.forEach { default ->
-            result.add(ProfileField(default.type, default.nameField, default.label,default.required, getDataByName(obj, default.nameField)))
+            result.add(ProfileField(default.type, default.nameField, default.label, default.required, getDataByName(obj, default.nameField)))
         }
         return result
     }
 
-    fun dpToPx(dp:Int):Int{
+    fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 }

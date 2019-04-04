@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_background"
+    android:orientation="vertical">
+
+    <!--suppress AndroidUnknownAttribute -->
+    <TextView
+        android:id="@+id/tvTime"
+        fontPath="fonts/OpenSans-Light.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/text_title"
+        android:textSize="18sp"
+        tools:ignore="MissingPrefix"
+        tools:text="9:00-10:00" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:textColor="@color/text_title"
+        android:textSize="18sp"
+        tools:text="Прикладная че то там сессия" />
+
+
+    <!--suppress AndroidUnknownAttribute -->
+    <TextView
+        android:id="@+id/tvDescription"
+        fontPath="fonts/OpenSans-Light.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:textColor="@color/text_title"
+        android:textSize="16sp"
+        tools:ignore="MissingPrefix"
+        tools:text="Прикладная че то там сессия" />
+
+    <LinearLayout
+        android:id="@+id/llLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher"
+            tools:ignore="ContentDescription" />
+
+        <!--suppress AndroidUnknownAttribute -->
+        <TextView
+            android:id="@+id/tvLocation"
+            fontPath="fonts/OpenSans-Bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:textAllCaps="true"
+            android:textColor="@color/text_title"
+            android:textSize="12sp"
+            tools:ignore="MissingPrefix"
+            tools:text="Павильон 1" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/white">
+
+        <RelativeLayout
+            android:id="@+id/llListMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="horizontal">
+
+            <View style="@style/ViewDivider.Horizontal" />
+
+            <ImageView
+                android:id="@+id/ivStart"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_star"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_toEndOf="@id/ivStart"
+                android:text="@string/subevent_list_member"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_keyboard_arrow_right"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>
