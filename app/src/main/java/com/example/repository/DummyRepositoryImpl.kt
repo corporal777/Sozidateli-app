@@ -104,32 +104,6 @@ class DummyRepositoryImpl
         return text.trim()
     }
 
-    private fun generateEvents(limit: Int, offset: Int): List<Event> {
-        return (1..limit).map { index ->
-            val dates = arrayOf(getRandomDate(), getRandomDate())
-            Event(
-                    offset + index,
-                    "Российский инвестиционный форум ${offset + index}",
-                    logos.random(),
-                    getRandomText(),
-                    "2019-01-01",
-                    "2019-02-28",
-                    "Форум $index",
-                    Status.values().random().code,
-                    getRandomText(),
-                    Place(
-                            coordinates.random(),
-                            getRandomText(),
-                            buildingSchemas.random(),
-                            getRandomText()
-                    ),
-                    null,
-                    null,
-                    getRandomText()
-            )
-        }
-    }
-
     private fun generateSubscriptions(limit: Int, offset: Int): List<Subscription> {
         return (1..limit).map { index ->
             Subscription(
@@ -204,9 +178,9 @@ class DummyRepositoryImpl
          return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSpeakers(limit, offset, true)) }
      }*/
 
-    override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
+    /*override fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateEvents(limit, offset)) }
-    }
+    }*/
 
     override fun loadSubscriptions(limit: Int, offset: Int): Maybe<PaginationResponse<Subscription>> {
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = generateSubscriptions(limit, offset)) }
@@ -224,7 +198,7 @@ class DummyRepositoryImpl
         return Maybe.fromCallable { PaginationResponse(totalCount = null, data = listOf<Notification>()) }
     }
 
-    override fun getEvent() = generateEvents(1, 0).first()
+   // override fun getEvent() = generateEvents(1, 0).first()
 
     //override fun getUser(event_id: Int) = generateUser(event_id)
 }

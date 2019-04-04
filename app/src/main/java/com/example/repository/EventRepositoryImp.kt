@@ -75,6 +75,14 @@ class EventRepositoryImp
         return call(api.getEventMapInfo(eventId))
     }
 
+    override fun getPartnerListByEvent(eventId: Int): Single<List<Partner>> {
+        return call(api.getPartnerListByEvent(eventId))
+    }
+
+    override fun getPartnerById(partnerId: Int): Single<Partner> {
+        return call(api.getPartnerById(partnerId))
+    }
+
     override fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo> {
         return call(api.getSubEvent(eventId, subEventId))
     }

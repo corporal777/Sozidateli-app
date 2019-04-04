@@ -1,17 +1,23 @@
 package com.example.ui.aboutEvent
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.Event
+import com.example.data.models.Partner
+import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class AboutEventPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val userEventData: UserEventData
+        private val userEventData: UserEventData,
+        private val eventRepository: EventRepository
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     private lateinit var event: Event
@@ -23,10 +29,19 @@ class AboutEventPresenter
         viewState.apply {
             showLoadingDialog()
             setEventData(event)
+            setVisibleButtonGoToEvent(!isUserEvent)
             event.name?.let {
                 setLabel(it)
             }
+
+            if (isUserEvent) {
+                userEventData.partners?.let {
+                    setPartners(it)
+                }
+            }
         }
+
+
     }
 
     override fun onImageLoad() {
@@ -35,6 +50,10 @@ class AboutEventPresenter
 
     override fun onImageLoadError() {
         viewState.hideLoadingDialog()
+    }
+
+    override fun onPartnerClick(partner: Partner) {
+        viewState.showPartner(partner)
     }
 
     override fun onAboutForumClick() = viewState.showAboutForum(event)

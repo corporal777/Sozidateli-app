@@ -31,4 +31,6 @@
     <dimen name="profile_full_height_divider">1dp</dimen>
 
     <dimen name="event_schedule_sub_event_divider_height">24dp</dimen>
+
+    <dimen name="max_height_image">200dp</dimen>
 </resources>

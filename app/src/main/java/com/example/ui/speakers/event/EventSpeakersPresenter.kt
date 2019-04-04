@@ -1,4 +1,4 @@
-package com.example.ui.speakers.favorite
+package com.example.ui.speakers.event
 
 import call
 import com.arellomobile.mvp.InjectViewState
@@ -13,11 +13,11 @@ import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
-class FavoriteSpeakersPresenter
+class EventSpeakersPresenter
 @Inject constructor(
         private val userRepository: UserRepository,
         private val speakerRepository: SpeakerRepository
-) : BaseSpeakersPresenter<FavoriteSpeakersContract.View>(userRepository,speakerRepository), FavoriteSpeakersContract.Presenter {
+) : BaseSpeakersPresenter<EventSpeakersContract.View>(userRepository,speakerRepository), EventSpeakersContract.Presenter {
 
 
 }

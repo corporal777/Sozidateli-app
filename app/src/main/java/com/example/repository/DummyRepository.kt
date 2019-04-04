@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 interface DummyRepository {
 
-    fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
+   // fun loadRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
     fun loadSubscriptions(limit: Int, offset: Int): Maybe<PaginationResponse<Subscription>>
     // fun loadEventSpeakers(event: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     //fun loadFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
@@ -15,6 +15,6 @@ interface DummyRepository {
     fun loadUserNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
     fun loadSearchType(): Single<List<SearchTypeEvent>>
     fun loadTags(): Single<List<String>>
-    fun getEvent(): Event
+   // fun getEvent(): Event
     //fun getUser(event_id: Int): User
 }

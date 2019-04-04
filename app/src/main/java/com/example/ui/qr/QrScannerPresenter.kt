@@ -24,7 +24,7 @@ class QrScannerPresenter
     override fun onCameraPermissionGranted() = viewState.startPreview()
 
     override fun onDecodeQrCode(code: String) {
-        val event = dummyRepository.getEvent()
-        viewState.showEvent(event)
+       // val event = dummyRepository.getEvent()
+       // viewState.showEvent(event)
     }
 }

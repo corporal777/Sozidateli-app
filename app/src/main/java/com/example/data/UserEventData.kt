@@ -8,7 +8,8 @@ class UserEventData {
     var days: List<EventScheduleCalendarDay>? = null
     var tags: List<EventTag>? = null
     var categories: List<EventCategory>? = null
-    var mapInfo:MapInfo?=null
+    var mapInfo: MapInfo? = null
+    var partners: List<Partner>? = null
 
     var isStaticDataLoaded = false
 
@@ -19,5 +20,6 @@ class UserEventData {
         categories = null
         isStaticDataLoaded = false
         mapInfo = null
+        partners = null
     }
 }

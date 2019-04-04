@@ -11,6 +11,12 @@
                   <entry key="about_event_fragment">
                     <value>
                       <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="97" />
+                          </Point>
+                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_about_event_fragment_to_about_forum_fragment">
@@ -28,6 +34,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_about_event_fragment_to_partner_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_about_event_fragment_to_speakers_list_fragment">
                               <value>
                                 <LayoutPositions />
@@ -40,22 +51,49 @@
                   </entry>
                   <entry key="about_forum_fragment">
                     <value>
-                      <LayoutPositions />
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="368" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
                     </value>
                   </entry>
                   <entry key="documents_list_fragment">
                     <value>
-                      <LayoutPositions />
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
                     </value>
                   </entry>
                   <entry key="news_fragment">
                     <value>
-                      <LayoutPositions />
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="500" />
+                            <option name="y" value="1080" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
                     </value>
                   </entry>
                   <entry key="news_list_fragment">
                     <value>
                       <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="1080" />
+                          </Point>
+                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_news_list_fragment_to_news_fragment">
@@ -68,9 +106,28 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="partner_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="724" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="speakers_list_fragment">
                     <value>
-                      <LayoutPositions />
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="1436" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
                     </value>
                   </entry>
                 </map>
@@ -103,6 +160,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_about_event_fragment_to_partner_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_about_event_fragment_to_speakers_list_fragment">
                               <value>
                                 <LayoutPositions />
@@ -141,6 +203,11 @@
                           </map>
                         </option>
                       </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="partner_fragment">
+                    <value>
+                      <LayoutPositions />
                     </value>
                   </entry>
                   <entry key="speakers_list_fragment">

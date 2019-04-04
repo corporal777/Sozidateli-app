@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_about_event_fragment_to_speakers_list_fragment"
             app:destination="@id/speakers_list_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_partner_fragment"
+            app:destination="@id/partner_fragment" />
     </fragment>
 
     <fragment
@@ -72,11 +75,21 @@
 
     <fragment
         android:id="@+id/speakers_list_fragment"
-        android:name="com.example.ui.speakers.favorite.FavoriteSpeakersFragment"
+        android:name="com.example.ui.speakers.event.EventSpeakersFragment"
         android:label="@string/speakers"
         tools:layout="@layout/fragment_speakers">
         <argument
             android:name="event"
             app:argType="com.example.data.models.Event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/partner_fragment"
+        android:name="com.example.ui.partner.PartnerFragment"
+        android:label="@string/partners_label"
+        tools:layout="@layout/fragment_partner">
+        <argument
+            android:name="partner"
+            app:argType="com.example.data.models.Partner" />
     </fragment>
 </navigation>

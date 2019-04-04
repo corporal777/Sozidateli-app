@@ -26,6 +26,7 @@ import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
+import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
@@ -38,6 +39,7 @@ import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speaker.SpeakerFragment
+import com.example.ui.speakers.event.EventSpeakersFragment
 import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.subevent.SubeventFragment
@@ -167,6 +169,12 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeRecoveryFragment(): RecoveryPasswordFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePartnerFragment(): PartnerFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventSpeakersFragment(): EventSpeakersFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSubeventFragment(): SubeventFragment
