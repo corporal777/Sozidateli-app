@@ -10,6 +10,7 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.Tag
 import com.example.holders.*
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -94,6 +95,11 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNav
 
     override fun hideCurrentDay() {
         daySection.update(emptyList())
+    }
+
+    override fun showSubEvent(eventId: Int, subeventId: Int) {
+        val args = SubeventFragmentArgs.Builder(eventId, subeventId).build().toBundle()
+        findParentNavigation().navigate(R.id.subevent_fragment, args)
     }
 
     override fun isShowToolbar() = true

@@ -8,7 +8,6 @@ import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
-import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
@@ -18,8 +17,9 @@ import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.image.ImageViewFragment
-import com.example.ui.mapTabs.map.MapFragment
 import com.example.ui.mapTabs.MapTabsFragment
+import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
+import com.example.ui.mapTabs.map.MapFragment
 import com.example.ui.myEvents.MyEventsFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
@@ -42,6 +42,7 @@ import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
 import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.splash.SplashFragment
+import com.example.ui.subevent.SubeventFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -174,4 +175,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEventSpeakersFragment(): EventSpeakersFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSubeventFragment(): SubeventFragment
 }

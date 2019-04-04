@@ -6,12 +6,12 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
+import com.example.extensions.defaultDateFormatter
 import com.example.ui.search.SearchContract
 import com.example.ui.search.SearchHolder
 import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
-import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -79,15 +79,15 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
                     etSearchText.setSelection(it.length)
                 }
                 if (searchHolder.date != 0L) {
-                    tvDate.text = Utils.defaultDateFormatter.format(searchHolder.date)
+                    tvDate.text = defaultDateFormatter.format(searchHolder.date)
                 }
 
                 if (searchHolder.dateFrom != 0L) {
-                    tvPeriodFrom.text = Utils.defaultDateFormatter.format(searchHolder.dateFrom)
+                    tvPeriodFrom.text = defaultDateFormatter.format(searchHolder.dateFrom)
                 }
 
                 if (searchHolder.dateTo != 0L) {
-                    tvPeriodTo.text = Utils.defaultDateFormatter.format(searchHolder.dateTo)
+                    tvPeriodTo.text = defaultDateFormatter.format(searchHolder.dateTo)
                 }
             }
         }

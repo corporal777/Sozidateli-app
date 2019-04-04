@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
+import com.example.data.models.SubeventInfo
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -63,11 +64,11 @@ class EventRepositoryImp
     }
 
     override fun addEventToCalendar(eventId: Int, subEventId: Int): Completable {
-        return call(api.addEventToCalendar(eventId, subEventId))
+        return call(api.addSubEventToCalendar(eventId, subEventId))
     }
 
     override fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable {
-        return call(api.removeEventFromCalendar(eventId, subEventId))
+        return call(api.removeSubEventFromCalendar(eventId, subEventId))
     }
 
     override fun getEventMapInfo(eventId: Int): Single<MapInfo> {
@@ -80,5 +81,9 @@ class EventRepositoryImp
 
     override fun getPartnerById(partnerId: Int): Single<Partner> {
         return call(api.getPartnerById(partnerId))
+    }
+
+    override fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo> {
+        return call(api.getSubEvent(eventId, subEventId))
     }
 }

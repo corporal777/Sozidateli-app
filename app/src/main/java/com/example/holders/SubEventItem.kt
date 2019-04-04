@@ -7,14 +7,13 @@ import com.example.R
 import com.example.data.models.SubEvent
 import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
+import com.example.extensions.formatDefaultServerTimeToDefaultTimeInterval
 import com.example.ui.views.TagChip
 import com.example.util.weak
 import com.google.android.material.chip.Chip
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_sub_event.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 open class SubEventItem(
         subEventCheckLast: SubEventCheckLast,
@@ -26,15 +25,10 @@ open class SubEventItem(
     private val isLastInList = subEventCheckLast.isLastInList
 
     private val clickListener by weak(clickListener)
-    private val serverDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
-            val startDate = serverDateFormat.parse(subEvent.start)
-            val finishDate = serverDateFormat.parse(subEvent.finish)
-            val eventDatesDiapason = "${timeFormat.format(startDate)} - ${timeFormat.format(finishDate)}"
-            tvTime.text = eventDatesDiapason
+            tvTime.text = subEvent.start.formatDefaultServerTimeToDefaultTimeInterval(subEvent.finish)
             tvStatus.text = subEvent.title
 
             val visibilityIsSpeaker: Int = if (subEvent.isSpeaker) View.VISIBLE else View.GONE
@@ -88,8 +82,8 @@ open class SubEventItem(
     override fun getLayout() = R.layout.item_sub_event
 
     interface OnSubEventClickListener {
-        fun onSubEventClick(event: SubEvent)
-        fun onAddToScheduleClick(event: SubEvent)
-        fun onRemoveToScheduleClick(event: SubEvent)
+        fun onSubEventClick(subevent: SubEvent)
+        fun onAddToScheduleClick(subevent: SubEvent)
+        fun onRemoveToScheduleClick(subevent: SubEvent)
     }
 }

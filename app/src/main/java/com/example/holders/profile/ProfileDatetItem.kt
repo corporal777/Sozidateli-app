@@ -1,17 +1,12 @@
 package com.example.holders.profile
 
-import android.app.ActionBar
 import android.app.DatePickerDialog
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import com.example.R
 import com.example.data.models.ProfileField
-import com.example.data.models.Type
-import com.example.util.Utils
+import com.example.extensions.defaultDateFormatter
+import com.example.extensions.defaultServerDateFormatter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_profile.view.*
 import java.util.*
@@ -26,8 +21,8 @@ class ProfileDatetItem(private val profileField: ProfileField) : ProfileFieldIte
         super.bind(viewHolder, position)
         viewHolder.itemView.apply {
             profileField.data?.let {
-                if(it is Long){
-                    editText.setText(Utils.defaultDateFormatter.format(it))
+                if (it is Long) {
+                    editText.setText(defaultDateFormatter.format(it))
                     calendar.timeInMillis = it
                 }
             }
@@ -35,8 +30,8 @@ class ProfileDatetItem(private val profileField: ProfileField) : ProfileFieldIte
             datePickerDialog = DatePickerDialog(editText.context, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
                 val calendar = Calendar.getInstance()
                 calendar.set(year, monthOfYear, dayOfMonth)
-                profileField.data = Utils.defaultServerDateFormatter.format(calendar.timeInMillis)
-                editText.setText(Utils.defaultServerDateFormatter.format(calendar.timeInMillis))
+                profileField.data = defaultServerDateFormatter.format(calendar.timeInMillis)
+                editText.setText(defaultServerDateFormatter.format(calendar.timeInMillis))
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
             editText.setOnTouchListener { view, motionEvent ->

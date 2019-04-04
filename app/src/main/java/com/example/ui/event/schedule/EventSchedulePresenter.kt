@@ -9,9 +9,11 @@ import com.example.data.models.SubEvent
 import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
 import com.example.extensions.calendar
+import com.example.extensions.isSameDay
 import com.example.holders.SubEventItem
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.BackpressureStrategy
@@ -31,7 +33,7 @@ constructor(
         private val userEventData: UserEventData
 ) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter {
 
-    private val serverDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val serverDateFormat = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
     protected val event = userEventData.event!!
 
@@ -39,16 +41,16 @@ constructor(
     protected var selectedTags: List<Tag> = emptyList()
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(event: SubEvent) {
-
+        override fun onSubEventClick(subevent: SubEvent) {
+            viewState.showSubEvent(event.id, subevent.id)
         }
 
-        override fun onAddToScheduleClick(event: SubEvent) {
-            processChangeEventInCalendarStatusRequest(eventRepository.addEventToCalendar(this@EventSchedulePresenter.event.id, event.id))
+        override fun onAddToScheduleClick(subevent: SubEvent) {
+            processChangeEventInCalendarStatusRequest(eventRepository.addEventToCalendar(event.id, subevent.id))
         }
 
-        override fun onRemoveToScheduleClick(event: SubEvent) {
-            processChangeEventInCalendarStatusRequest(eventRepository.removeEventFromCalendar(this@EventSchedulePresenter.event.id, event.id))
+        override fun onRemoveToScheduleClick(subevent: SubEvent) {
+            processChangeEventInCalendarStatusRequest(eventRepository.removeEventFromCalendar(event.id, subevent.id))
         }
     }
 
@@ -144,8 +146,8 @@ constructor(
         val inDatesCalendar = Calendar.getInstance()
 
         val datesInRange = mutableListOf<EventScheduleCalendarDay>()
-        while (firsDate.before(lastDate) || isSameDay(firsDate, lastDate)) {
-            val dateInDates = sortedDates.find { isSameDay(inDatesCalendar.apply { timeInMillis = it }, firsDate) }
+        while (firsDate.before(lastDate) || firsDate.isSameDay(lastDate)) {
+            val dateInDates = sortedDates.find { firsDate.isSameDay(inDatesCalendar.apply { timeInMillis = it }) }
 
             val eventDay = EventScheduleCalendarDay(
                     firsDate.timeInMillis,
@@ -169,14 +171,9 @@ constructor(
             val other = Calendar.getInstance()
             currentDay = days.find {
                 it.hasEvents &&
-                        (isSameDay(dateCalendar, other.apply { timeInMillis = it.millis }) || it.millis - date > 0)
+                        (dateCalendar.isSameDay(other.apply { timeInMillis = it.millis }) || it.millis - date > 0)
             }
         }
-    }
-
-    private fun isSameDay(calendar: Calendar, other: Calendar): Boolean {
-        return calendar.get(Calendar.DAY_OF_YEAR) == other.get(Calendar.DAY_OF_YEAR) &&
-                calendar.get(Calendar.YEAR) == other.get(Calendar.YEAR)
     }
 
     private fun invalidateDay() {
@@ -196,7 +193,7 @@ constructor(
 
     override fun onDayChanged(date: Long) {
         val currentDayDate = currentDay?.millis ?: return
-        if (isSameDay(date.calendar(), currentDayDate.calendar())) invalidateDay()
+        if (date.calendar().isSameDay(currentDayDate.calendar())) invalidateDay()
     }
 
     protected open fun processChangeEventInCalendarStatusRequest(request: Completable) {

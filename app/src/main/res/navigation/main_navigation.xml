@@ -184,4 +184,15 @@
             android:name="userId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/subevent_fragment"
+        android:name="com.example.ui.subevent.SubeventFragment">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+        <argument
+            android:name="subeventId"
+            app:argType="integer" />
+    </fragment>
 </navigation>
