@@ -1,8 +1,8 @@
 package com.example.ui.main
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.LocalNotification
 import com.example.ui.base.BaseContract
 
 interface MainContract {
@@ -22,11 +22,8 @@ interface MainContract {
         @StateStrategyType(SkipStrategy::class)
         fun showGreetings()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showChat(userId: String, chatId: String, userName: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showLocalNotification(localNotification: LocalNotification)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
@@ -36,17 +33,20 @@ interface MainContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogChangeEmailError()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun checkIntent()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onOpenStartDestination()
         fun onOpenNotStartDestination()
+        fun onOpenChatDestination(chatId: String?)
         fun onHandleAuthLink(email: String, code: String)
         fun onHandleRecoverPasswordLink(email: String, code: String)
-        fun onHandleChangeEmailCofirm(email: String, code: String)
+        fun onHandleChangeEmailConfirm(email: String, code: String)
         fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
         fun onHandleSocialNetworkConfirm(snType:String,id:String,code:String)
         fun onSetPassword(email: String, code: String, password: String)
-        fun setLastMessageShowed(notification: LocalNotification)
     }
 }

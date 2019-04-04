@@ -15,9 +15,7 @@ import androidx.navigation.findNavController
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.App
 import com.example.R
-import com.example.data.models.LocalNotification
 import com.example.events.OnBackPressEvent
 import com.example.ui.base.BaseFragmentActivity
 import com.example.util.*
@@ -47,21 +45,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
         supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
-        (application as? App)?.currentChatID = arguments?.getString("chatId", null)
         presenter.apply {
-            if (isStartDestination(destination.id)) onOpenStartDestination()
-            else onOpenNotStartDestination()
+            when {
+                destination.id == R.id.chat_fragment -> presenter.onOpenChatDestination(arguments?.getString("chatId", null))
+                isStartDestination(destination.id) -> onOpenStartDestination()
+                else -> onOpenNotStartDestination()
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //(application as? App)?.appIsRunning = true
         setSupportActionBar(toolbar)
         val navController = findNavController()
         navController.addOnDestinationChangedListener(navigatedListener)
         subscribeOnNotificationChanel()
-        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -81,7 +79,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 if (change != null) {
                     if (authEmail != null && authCode != null) {
-                        presenter.onHandleChangeEmailCofirm(authEmail, authCode)
+                        presenter.onHandleChangeEmailConfirm(authEmail, authCode)
                     }
                 } else if (authEmail != null && authCode != null) {
                     presenter.onHandleAuthLink(authEmail, authCode)
@@ -94,20 +92,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         presenter.onHandleSocialNetworkConfirm(snType, id, authCode)
                 }
             }
-        }
-        val chatData = intent.getBundleExtra(FIELD_CHAT)
-        chatData?.let {
-            val userId = it.getString(FIELD_SENDER_ID, null)
-            val chatId = it.getString(FIELD_CHAT_ID, null)
-            val userName = it.getString(FIELD_LABEL, null)
-            val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
-            if (userId != null && chatId != null && userName != null) presenter.onHandleChat(userId, chatId, userName, notifiactionId)
+        } else {
+            val chatData = intent.getBundleExtra(FIELD_CHAT)
+            chatData?.let {
+                val userId = it.getString(FIELD_SENDER_ID, null)
+                val chatId = it.getString(FIELD_CHAT_ID, null)
+                val userName = it.getString(FIELD_LABEL, null)
+                val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
+                if (userId != null && chatId != null && userName != null)
+                    presenter.onHandleChat(userId, chatId, userName, notifiactionId)
+            }
         }
     }
 
-    override fun showLocalNotification(localNotification: LocalNotification) {
-        NotificationUtill.showLocalChatNotification(this, localNotification)
-        presenter.setLastMessageShowed(localNotification)
+    override fun checkIntent() {
+        handleIntent(intent)
     }
 
     override fun showDialogRecoverPassword(email: String, code: String) {

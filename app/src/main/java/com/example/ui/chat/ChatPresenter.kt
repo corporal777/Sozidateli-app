@@ -12,6 +12,7 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.Collector
 import com.example.util.FIELD_IS_READ
+import com.example.util.chat.ChatNotificationHelper
 import com.firebase.ui.firestore.SnapshotParser
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class ChatPresenter
 @Inject constructor(
         private val appData: AppData,
+        private val chatNotificationHelper: ChatNotificationHelper,
         private val chatRepository: ChatRepository
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
@@ -80,6 +82,12 @@ class ChatPresenter
     override fun attachView(view: ChatContract.View?) {
         super.attachView(view)
         viewState.cancelNotificationByChatId(chatId)
+        chatNotificationHelper.currentChatId = chatId
+    }
+
+    override fun detachView(view: ChatContract.View?) {
+        super.detachView(view)
+        chatNotificationHelper.currentChatId = null
     }
 
     private fun createMessagesCollector(creatorEmitter: ObservableEmitter<Collector<ChatMessage>>): Collector<ChatMessage> {
@@ -117,6 +125,8 @@ class ChatPresenter
     }
 
     override fun onChatMessageOnScreen(message: UserChatMessage) {
+        if (!message.isMyMessage && message.message.isShowed != true)
+            message.message.id?.also { chatNotificationHelper.showedMessages.add(it) }
         if (message.isMyMessage || message.message.isRead == true) return
         messageToMarkReadPublisher.onNext(message.message)
     }

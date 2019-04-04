@@ -10,10 +10,12 @@ import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.chat.ChatNotificationHelper
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -25,25 +27,22 @@ class MainPresenter
 @Inject constructor(
         private val appData: AppData,
         private val eventData: UserEventData,
+        private val chatNotificationHelper: ChatNotificationHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
         private val chatRepository: ChatRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
-    private var isAuthRequired = false
+    private val chatCompositeDisposable = CompositeDisposable()
 
-    private var userId: String? = null
-    private var chatId: String? = null
-    private var userName: String? = null
-    private var wasOpen = false
-    private var chatCompositeDisposable = CompositeDisposable()
+    private var isAuthRequired = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.onTokenChange
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
-                    unsubscribeChatUnreadCount()
+                    unsubscribeChat()
 
                     if (token.value == null) {
                         isAuthRequired = true
@@ -53,12 +52,7 @@ class MainPresenter
                                 .flatMapCompletable {
                                     Completable.mergeArray(
                                             subscribeToNotifications().onErrorComplete(),
-                                            chatRepository.singInFirebase().onErrorComplete()
-                                                    .doOnComplete {
-                                                        subscribeChatUnreadCount()
-                                                        subscribeChatLastMessage()
-                                                        subscribeNotificationUnreadCount()
-                                                    }
+                                            subscribeToChat()
                                     )
                                 }
                                 .andThen(
@@ -80,12 +74,15 @@ class MainPresenter
                                         } else {
                                             showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
                                         }
-                                        openChat()
-                                        wasOpen = true
+                                        checkIntent()
                                     }
+
                                 }, {
-                                    viewState.showLogin()
-                                    wasOpen = true
+                                    isAuthRequired = true
+                                    viewState.apply {
+                                        showLogin()
+                                        checkIntent()
+                                    }
                                 })
                                 .call(compositeDisposable)
                     }
@@ -105,25 +102,8 @@ class MainPresenter
     }
 
     override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
-        if (appData.openedNotificationId === null || appData.openedNotificationId != notificationId) {
-            this.userId = userId
-            this.chatId = chatId
-            this.userName = userName
-            appData.openedNotificationId = notificationId
-            if (wasOpen) {
-                openChat()
-            }
-        }
-
-    }
-
-    private fun openChat() {
-        chatId?.let {
-            viewState.showChat(userId!!, chatId!!, userName!!)
-            userId = null
-            chatId = null
-            userName = null
-        }
+        if (isAuthRequired) return
+        viewState.showChat(userId, chatId, userName)
     }
 
     override fun onHandleAuthLink(email: String, code: String) {
@@ -144,7 +124,7 @@ class MainPresenter
                 }.call(compositeDisposable)
     }
 
-    override fun onHandleChangeEmailCofirm(email: String, code: String) {
+    override fun onHandleChangeEmailConfirm(email: String, code: String) {
         userRepository.changeEmailConfirm(email, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -178,6 +158,14 @@ class MainPresenter
                 .onErrorComplete()
     }
 
+    private fun subscribeToChat(): Completable {
+        return chatRepository.singInFirebase().onErrorComplete()
+                .doOnComplete {
+                    subscribeChatUnreadCount()
+                    subscribeChatLastMessage()
+                }
+    }
+
     private fun subscribeChatUnreadCount() {
         chatRepository.subscribeChatUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
@@ -188,43 +176,77 @@ class MainPresenter
                 }).call(chatCompositeDisposable)
     }
 
-    private fun subscribeNotificationUnreadCount() {
-        appData.onUserChange.performOnBackgroundOutOnMain()
-                .subscribe {
-
-                }.call(chatCompositeDisposable)
-    }
-
     private fun subscribeChatLastMessage() {
-        chatRepository.subscribeChatLastMessage()
+        chatCompositeDisposable += chatRepository.loadChatLastMessage()
+                .flatMapCompletable { setMessageShowed(it.chatId, it.messageId) }
+                .onErrorComplete()
+                .andThen(chatRepository.subscribeChatLastMessage())
+                .doOnNext { chatNotificationHelper.isConnectingToLastMessageDatabase = true }
+                .doFinally { chatNotificationHelper.isConnectingToLastMessageDatabase = false }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    if(it.isShowed || it.chatId==null) return@subscribe
-                    viewState.showLocalNotification(it)
-                },{
-                    it.printStackTrace()
-                }).call(chatCompositeDisposable)
-    }
-
-    override fun setLastMessageShowed(notification: LocalNotification) {
-        chatRepository.setLastMessageShowed(notification.chatId,notification.messageId)
-                .performOnBackgroundOutOnMain()
-                .subscribe({},{
+                    processLastChatMessageUpdate(it)
+                }, {
                     it.printStackTrace()
                 })
-                .call(chatCompositeDisposable)
     }
 
-    private fun unsubscribeChatUnreadCount() {
+    private fun processLastChatMessageUpdate(localMessage: LocalNotification) {
+        if (localMessage.isShowed) return
+        val chatId = localMessage.chatId ?: return
+        val messageId = localMessage.messageId ?: return
+
+        chatCompositeDisposable += setMessageShowed(chatId, messageId)
+                .mergeWith(Completable.fromAction {
+                    val message = localMessage.text ?: return@fromAction
+                    val senderId = localMessage.senderId
+                    val senderName = localMessage.userName ?: return@fromAction
+                    chatNotificationHelper.showNotificationIfCan(
+                            chatId = chatId,
+                            messageId = messageId,
+                            message = message,
+                            senderId = senderId,
+                            senderName = senderName,
+                            avatarUrl = localMessage.avatar
+                    )
+                })
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, {
+                    it.printStackTrace()
+                })
+    }
+
+    private fun setMessageShowed(chatId: String?, messageId: String?): Completable {
+        return if (chatId != null && messageId != null) {
+            chatRepository.setMessageShowed(appData.getUser().user_id.toString(), chatId, messageId)
+        } else {
+            val message = "Can not update message with null parameters: chatId: $chatId, messageId: $messageId"
+            Completable.error(NullPointerException(message))
+        }
+    }
+
+    private fun unsubscribeChat() {
         chatCompositeDisposable.clear()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        chatCompositeDisposable.clear()
+        unsubscribeChat()
+        chatNotificationHelper.currentChatId = null
     }
 
-    override fun onOpenStartDestination() = viewState.showBackButton(false)
+    override fun onOpenStartDestination() {
+        viewState.showBackButton(false)
+        chatNotificationHelper.currentChatId = null
+    }
 
-    override fun onOpenNotStartDestination() = viewState.showBackButton(true)
+    override fun onOpenNotStartDestination() {
+        viewState.showBackButton(true)
+        chatNotificationHelper.currentChatId = null
+    }
+
+    override fun onOpenChatDestination(chatId: String?) {
+        viewState.showBackButton(true)
+        chatNotificationHelper.currentChatId = chatId
+    }
 }

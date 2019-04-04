@@ -5,13 +5,13 @@ import com.example.data.AppData
 import com.example.data.models.*
 import com.example.util.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -79,27 +79,29 @@ class ChatRepositoryImpl
                 )
     }
 
-    override fun setLastMessageShowed(chatId: String?, messageId: String?): Completable {
-        return RxFirestore.runTransaction(firestore) {
-            val lastMsgRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            var msgRef: DocumentReference? = null
+    override fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage> {
+        val messageRef = firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(COLLECTION_MESSAGES)
+                .document(messageId)
 
-            if (chatId != null && messageId != null) {
-                msgRef = firestore.collection(COLLECTION_CHATS)
-                        .document(chatId)
-                        .collection(COLLECTION_MESSAGES)
-                        .document(messageId)
-            }
+        return RxFirestore.getDocument(messageRef)
+                .map { it.toObject(ChatMessage::class.java) }
+    }
 
-            it.update(lastMsgRef, mapOf(
-                    FIELD_IS_SHOWED to true
-            ))
+    override fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable {
+        val userLastMessageRef = userId?.let { firestore.collection(COLLECTION_USERS).document(userId) }
+        val messageRef = firestore.collection(COLLECTION_CHATS)
+                .document(chatId)
+                .collection(COLLECTION_MESSAGES)
+                .document(messageId)
 
-            msgRef?.let { doc ->
-                it.update(doc, mapOf(
-                        FIELD_IS_SHOWED to true
-                ))
-            }
+        return RxFirestore.runTransaction(firestore) { transition ->
+            val lastMessageId = userLastMessageRef?.let { transition.get(userLastMessageRef).getString(FIELD_MESSAGE_ID) }
+            transition.update(messageRef, mapOf(FIELD_IS_SHOWED to true))
+            if (messageId == lastMessageId)
+                transition.update(userLastMessageRef, mapOf(FIELD_IS_SHOWED to true))
+
             null
         }
     }
@@ -124,7 +126,12 @@ class ChatRepositoryImpl
 //                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
 //            }
 
-            ids.forEach { id -> transaction.update(messageCollectionRef.document(id), FIELD_IS_READ, true) }
+            ids.forEach { id ->
+                transaction.update(messageCollectionRef.document(id), mapOf(
+                        FIELD_IS_READ to true,
+                        FIELD_IS_SHOWED to true
+                ))
+            }
 
             val resultCount = userUnreadMessageCount - ids.size
             transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
@@ -154,9 +161,13 @@ class ChatRepositoryImpl
                 .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
     }
 
+    override fun loadChatLastMessage(): Maybe<LocalNotification> {
+        return RxFirestore.getDocument(getLastMessageRef())
+                .map { it.toObject(LocalNotification::class.java) }
+    }
+
     override fun subscribeChatLastMessage(): Flowable<LocalNotification> {
-        val lastMsgRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-        return RxFirestore.observeDocumentRef(lastMsgRef)
+        return RxFirestore.observeDocumentRef(getLastMessageRef())
                 .map { it.toObject(LocalNotification::class.java) }
 
     }
@@ -164,7 +175,6 @@ class ChatRepositoryImpl
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.startChat(userId))
     }
-
 
     override fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>> {
         return api.uploadChatImage(
@@ -179,4 +189,6 @@ class ChatRepositoryImpl
     override fun getChat(chatId: String): Single<UserChat> {
         return call(api.getChat(chatId))
     }
+
+    private fun getLastMessageRef() = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
 }
