@@ -57,6 +57,7 @@ class FcmMessagingService : FirebaseMessagingService() {
                     }, chatId, messageId)
                     else Completable.complete()
                 }
+                .performOnBackgroundOutOnMain()
                 .andThen(Completable.fromAction {
                     val message = userChat.lastMessage ?: return@fromAction
                     val senderId = userChat.userSender?.user_id ?: return@fromAction
@@ -70,7 +71,6 @@ class FcmMessagingService : FirebaseMessagingService() {
                             avatarUrl = userChat.userSender?.user_avatar
                     )
                 })
-                .performOnBackgroundOutOnMain()
                 .subscribe({
 
                 }, {
