@@ -89,6 +89,6 @@ class EventRepositoryImp
     }
 
     override fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return callPagination(api.getSubEventUsers(eventId, subEventId, limit, offset))
     }
 }

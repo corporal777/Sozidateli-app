@@ -195,4 +195,19 @@
             android:name="subeventId"
             app:argType="integer" />
     </fragment>
+
+    <fragment
+        android:id="@+id/subevent_user_list_fragment"
+        android:name="com.example.ui.subevent.users.SubeventUserListFragment">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+        <argument
+            android:name="subeventId"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/subevent_user_list_fragment_to_chat"
+            app:destination="@id/chat_fragment" />
+    </fragment>
 </navigation>

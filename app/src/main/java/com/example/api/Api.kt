@@ -2,7 +2,6 @@ package com.example.api
 
 import com.example.data.models.*
 import com.example.data.models.user.User
-import com.example.data.models.SubeventInfo
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -179,6 +178,10 @@ interface Api {
 
     @GET("/v1/events/{eventId}/activity/{subEventId}")
     fun getSubEvent(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Single<ApiResponse<SubeventInfo>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/activity/{subEventId}/contacts")
+    fun getSubEventUsers(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
     fun addSubEventToCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable

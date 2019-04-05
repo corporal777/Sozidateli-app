@@ -12,6 +12,7 @@ import com.example.holders.SpeakersListHeaderItem
 import com.example.holders.SubeventInfoItem
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.ui.speaker.SpeakerFragmentArgs
+import com.example.ui.subevent.users.SubeventUserListFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -72,7 +73,8 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
     }
 
     override fun openUserList(eventId: Int, subEventId: Int) {
-
+        val args = SubeventUserListFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+        findParentNavigation().navigate(R.id.subevent_user_list_fragment, args)
     }
 
     override fun updateSpeaker(speaker: Speaker) {
