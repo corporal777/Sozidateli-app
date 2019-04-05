@@ -3,7 +3,7 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
-import com.example.data.models.SubeventInfo
+import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -85,5 +85,9 @@ class EventRepositoryImp
 
     override fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo> {
         return call(api.getSubEvent(eventId, subEventId))
+    }
+
+    override fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return callPagination(api.getSubEventUsers(eventId, subEventId, limit, offset))
     }
 }

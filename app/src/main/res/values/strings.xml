@@ -225,4 +225,5 @@
 
     <string name="partners_label">Партнеры</string>
 
+    <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 </resources>
