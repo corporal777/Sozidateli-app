@@ -3,9 +3,10 @@ package com.example.ui.organizations
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Organization
+import com.example.extensions.build
 import com.example.ui.base.BasePresenter
+import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.SimplePagination
 import io.reactivex.Maybe
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -15,7 +16,7 @@ abstract class OrganizationsPresenter : BasePresenter<OrganizationsContract.View
 
     private var scrollPosition = 0
     private var scrollOffset = 0
-    protected val pagination = SimplePagination { limit, offset -> loadOrganizations(limit, offset) }
+    protected val pagination = PaginationDataSourceFactory { limit, offset -> loadOrganizations(limit, offset) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

@@ -5,10 +5,10 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.Event
-import com.example.repository.DummyRepository
+import com.example.extensions.build
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.SimplePagination
+import com.example.util.pagination.PaginationDataSourceFactory
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -22,12 +22,11 @@ class RecommendationsPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private var pagination = SimplePagination { limit, offset -> eventRepository.getEventList(limit, offset) }
+    private var pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventList(limit, offset) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        pagination
-                .build()
+        pagination.build()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)

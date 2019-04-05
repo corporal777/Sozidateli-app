@@ -22,14 +22,14 @@ open class SpeakerItem(
             tvSpeakerInfo.text = speaker.position
 
             btnSubscribe.apply {
-                text = if (!speaker.isInFavorite) {
+                text = if (speaker.isInFavorite) {
                     setBackgroundResource(R.drawable.background_corners_border)
                     setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    context.getString(R.string.add_to_favorites)
+                    context.getString(R.string.remove_from_favorites)
                 } else {
                     setBackgroundResource(R.drawable.background_corners)
                     setTextColor(Color.WHITE)
-                    context.getString(R.string.remove_from_favorites)
+                    context.getString(R.string.add_to_favorites)
                 }
 
                 setOnClickListener { onFavoriteChangeClick(speaker) }

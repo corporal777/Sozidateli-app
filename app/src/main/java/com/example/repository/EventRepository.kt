@@ -1,7 +1,7 @@
 package com.example.repository
 
 import com.example.data.models.*
-import com.example.data.models.SubeventInfo
+import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -24,7 +24,8 @@ interface EventRepository {
     fun addEventToCalendar(eventId: Int, subEventId: Int): Completable
     fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable
     fun getEventMapInfo(eventId: Int): Single<MapInfo>
-    fun getPartnerListByEvent(eventId: Int):Single<List<Partner>>
-    fun getPartnerById(partnerId: Int):Single<Partner>
+    fun getPartnerListByEvent(eventId: Int): Single<List<Partner>>
+    fun getPartnerById(partnerId: Int): Single<Partner>
     fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo>
+    fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 }

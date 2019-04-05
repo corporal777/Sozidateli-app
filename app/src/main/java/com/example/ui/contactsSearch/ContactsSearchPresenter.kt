@@ -1,25 +1,15 @@
 package com.example.ui.contactsSearch
 
-import androidx.paging.DataSource
-import androidx.paging.PageKeyedDataSource
-import androidx.paging.PagedList
-import androidx.paging.RxPagedListBuilder
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
+import com.example.extensions.build
 import com.example.repository.ChatRepository
-import com.example.repository.DummyRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.SimplePagination
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -37,13 +27,11 @@ class ContactsSearchPresenter
     private var searchText = ""
 
     private val searchCompositeDisposable = CompositeDisposable()
-    private val pagination = SimplePagination { limit, offset -> userRepository.searchUser(searchText, searchText, limit, offset) }
-
+    private val pagination = PaginationDataSourceFactory { limit, offset -> userRepository.searchUser(searchText, searchText, limit, offset) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        pagination
-                .build()
+        pagination.build()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.apply {
@@ -71,7 +59,7 @@ class ContactsSearchPresenter
     private fun search(text: String) {
         searchText = text
         searchCompositeDisposable.clear()
-        Observable.timer(350,TimeUnit.MILLISECONDS)
+        Observable.timer(350, TimeUnit.MILLISECONDS)
                 .performOnBackgroundOutOnMain()
                 .subscribe {
                     pagination.invalidate()

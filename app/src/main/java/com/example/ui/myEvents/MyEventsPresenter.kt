@@ -6,9 +6,10 @@ import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.Status
 import com.example.events.OnUpdateMyEventsEvent
+import com.example.extensions.build
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.SimplePagination
+import com.example.util.pagination.PaginationDataSourceFactory
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,14 +27,13 @@ class MyEventsPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private var pagination = SimplePagination { limit, offset -> eventRepository.getEventRegisterList(limit, offset) }
+    private var pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventRegisterList(limit, offset) }
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
-        pagination
-                .build()
+        pagination.build()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
                 .call(compositeDisposable)

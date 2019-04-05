@@ -69,7 +69,6 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
     override fun showSpeakerProfile(speaker: Speaker) {
         val args = SpeakerFragmentArgs.Builder(speaker).build().toBundle()
         findParentNavigation().navigate(R.id.speaker_fragment, args)
-
     }
 
     override fun openUserList(eventId: Int, subEventId: Int) {
