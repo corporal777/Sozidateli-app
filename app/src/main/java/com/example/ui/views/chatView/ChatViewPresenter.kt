@@ -9,9 +9,7 @@ import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
-class ChatViewPresenter @Inject constructor(
-        private val appData: AppData
-) : MvpPresenter<ChatViewContract.View>(), ChatViewContract.Presenter {
+class ChatViewPresenter @Inject constructor(private val appData: AppData) : MvpPresenter<ChatViewContract.View>(), ChatViewContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -39,5 +37,9 @@ class ChatViewPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
+    }
+
+    override fun onError(errors: List<String>) {
+
     }
 }

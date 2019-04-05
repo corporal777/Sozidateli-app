@@ -1,0 +1,5 @@
+package com.example.data.models
+
+enum class ErrorEnum{
+    REQUEST_EVENT_REGISTER_END, REQUEST_EVENT_ERROR_REQUIRED_FIELD, REQUEST_EVENT_ERROR_FILE
+}

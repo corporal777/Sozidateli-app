@@ -27,7 +27,6 @@ import javax.inject.Inject
 @InjectViewState
 class ChatPresenter
 @Inject constructor(
-        private val appData: AppData,
         private val chatNotificationHelper: ChatNotificationHelper,
         private val chatRepository: ChatRepository
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {

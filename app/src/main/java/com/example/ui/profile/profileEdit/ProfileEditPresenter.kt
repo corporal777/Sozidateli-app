@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class ProfileEditPresenter
-@Inject constructor(private val appData: AppData, private val userRepository: UserRepository) : TakePhotoPresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
+@Inject constructor(private val userRepository: UserRepository) : TakePhotoPresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
 
 
     var photo: String? = null

@@ -37,6 +37,10 @@ class ImageViewPresenter
         }
     }
 
+    override fun onError(errors: List<String>) {
+
+    }
+
     override fun onBitmapFound(bitmap: Bitmap) {
         this.bitmap = bitmap
         viewState.setImage(bitmap)

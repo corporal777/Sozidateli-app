@@ -20,7 +20,6 @@ import com.example.ui.speakers.base.BaseSpeakersFragment
 import com.example.ui.speakers.favorite.FavoriteSpeakersPresenter
 import com.example.util.ARG_SPEAKER
 import com.example.util.ARG_USER
-import com.example.util.SpeakersUtil
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_speaker.*
 import setCircleImageWithPlaceholder

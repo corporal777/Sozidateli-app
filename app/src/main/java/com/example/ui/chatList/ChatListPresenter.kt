@@ -22,8 +22,7 @@ import javax.inject.Inject
 @InjectViewState
 class ChatListPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository,
-        private val appData: AppData
+        private val chatRepository: ChatRepository
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.loadChatList(mapOf(), limit, offset) }.map { chat ->

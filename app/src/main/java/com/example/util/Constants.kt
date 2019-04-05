@@ -86,3 +86,7 @@ const val ID = "id"
 const val SET_EMAIL_USER_SOCIAL = "set_email_user_social"
 const val SN_PROVIDER = "provider"
 
+
+const val PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED="is required"
+const val PART_ERROR_REQUEST_EVENT_REGISTER_END="registration is not carried out"
+const val PART_ERROR_REQUEST_EVENT_FILE_ERROR="is not uploaded by current user"

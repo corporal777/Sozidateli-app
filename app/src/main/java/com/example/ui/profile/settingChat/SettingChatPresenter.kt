@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class SettingChatPresenter
-@Inject constructor(private val appData: AppData
-) : BasePresenter<SettingChatContract.View>(), SettingChatContract.Presenter {
+@Inject constructor() : BasePresenter<SettingChatContract.View>(), SettingChatContract.Presenter {
 
     override fun attachView(view: SettingChatContract.View?) {
         super.attachView(view)

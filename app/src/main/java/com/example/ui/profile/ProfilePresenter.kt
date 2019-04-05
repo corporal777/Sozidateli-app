@@ -14,7 +14,7 @@ import javax.inject.Inject
 @InjectViewState
 class ProfilePresenter
 @Inject constructor(
-        private val appData: AppData,
+
         private val userRepository: UserRepository
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
     override fun onFirstViewAttach() {

@@ -225,4 +225,9 @@
 
     <string name="partners_label">Партнеры</string>
 
+    <string name="error_title">Ошибка</string>
+    <string name="request_event_required_field">Заполните все поля</string>
+    <string name="request_event_register_end">Регистрация на мероприятие окончено</string>
+    <string name="request_event_file_error">Ошибка прикрипления файла</string>
+
 </resources>

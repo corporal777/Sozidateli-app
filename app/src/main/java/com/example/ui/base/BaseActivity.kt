@@ -1,6 +1,7 @@
 package com.example.ui.base
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -70,9 +71,39 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     override fun showDialog(message: String?) {
+        showDialog(null,message,null)
+    }
+
+    override fun showDialog(message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
+        showDialog(null,message,onOkClickListener)
+    }
+
+    override fun showDialog(title: String?, message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
         AlertDialog.Builder(this)
+                .setTitle(title)
                 .setMessage(message)
+                .setPositiveButton(R.string.ok,onOkClickListener)
+                .create()
+                .show()
+    }
+
+    override fun showDialog(title: String?, message: String?) {
+        showDialog(title,message,null)
+    }
+
+    override fun showToast(messagesIds: List<Int>) {
+        val messages = messagesIds.map { getString(it) }
+        showToast(messages.joinToString(separator = "\n"))
+    }
+
+    override fun showErrorDialog(messageIds: List<Int>, onDismissListener: DialogInterface.OnDismissListener?) {
+        val messages = messageIds.map { getString(it) }
+
+        AlertDialog.Builder(this)
+                .setTitle(R.string.error_title)
+                .setMessage(messages.joinToString(separator = "\n"))
                 .setPositiveButton(R.string.ok,null)
+                .setOnDismissListener(onDismissListener)
                 .create()
                 .show()
     }
