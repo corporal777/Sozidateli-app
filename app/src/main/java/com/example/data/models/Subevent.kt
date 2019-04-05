@@ -3,7 +3,7 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class SubEvent(
-        val id: String,
+        val id: Int,
         val title: String,
         val start: String,
         val finish: String,
