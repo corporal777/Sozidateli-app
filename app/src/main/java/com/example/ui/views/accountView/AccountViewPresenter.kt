@@ -35,4 +35,8 @@ class AccountViewPresenter @Inject constructor(
         super.onDestroy()
         compositeDisposable.clear()
     }
+
+    override fun onError(errors: List<String>) {
+
+    }
 }

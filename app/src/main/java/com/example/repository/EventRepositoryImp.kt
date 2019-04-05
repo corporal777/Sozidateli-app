@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
+import com.example.data.models.SubeventInfo
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable

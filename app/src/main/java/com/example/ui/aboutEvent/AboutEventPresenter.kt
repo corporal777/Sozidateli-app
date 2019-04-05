@@ -14,11 +14,8 @@ import javax.inject.Inject
 
 @InjectViewState
 class AboutEventPresenter
-@Inject constructor(
-        private val appData: AppData,
-        private val userEventData: UserEventData,
-        private val eventRepository: EventRepository
-) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
+@Inject constructor(private val userEventData: UserEventData,
+        private val eventRepository: EventRepository) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     private lateinit var event: Event
 

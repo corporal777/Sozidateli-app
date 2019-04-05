@@ -8,6 +8,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Speaker
 import com.example.ui.speakers.base.BaseSpeakersFragment
+import com.example.ui.speakers.favorite.FavoriteSpeakersPresenter
+import com.example.util.ARG_SPEAKER
+import com.example.util.ARG_USER
+import kotlinx.android.synthetic.main.fragment_news_list.*
+import kotlinx.android.synthetic.main.item_speaker.*
+import setCircleImageWithPlaceholder
 import javax.inject.Inject
 import javax.inject.Provider
 

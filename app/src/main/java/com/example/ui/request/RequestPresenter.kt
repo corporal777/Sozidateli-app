@@ -13,11 +13,14 @@ import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.io.File
 import javax.inject.Inject
-import android.webkit.MimeTypeMap
-import android.content.ContentResolver
+import android.content.DialogInterface
+import com.example.R
 import com.example.data.models.EventRegisterResponse
 import com.example.data.models.RegisterFieldResponse
 import com.example.events.OnUpdateMyEventsEvent
+import com.example.util.PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED
+import com.example.util.PART_ERROR_REQUEST_EVENT_FILE_ERROR
+import com.example.util.PART_ERROR_REQUEST_EVENT_REGISTER_END
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import okhttp3.MultipartBody
@@ -48,16 +51,16 @@ class RequestPresenter
 
         Single.zip(loadCustField, loadRegister, BiFunction<RegisterFieldResponse, EventRegisterResponse, Pair<RegisterFieldResponse, EventRegisterResponse>> { t1, t2 ->
             Pair(t1, t2)
-        })      .map {
-                       it.second.custom_fields?.let {hashFields->
-                           it.first.fields?.let {arrayFields->
-                               arrayFields.forEach {
-                                   it.dataFromServer = hashFields[it.field_id]
-                               }
-                           }
-                           it.first.selectedCategory=it.second.group
-                       }
-                    return@map it.first
+        }).map {
+            it.second.custom_fields?.let { hashFields ->
+                it.first.fields?.let { arrayFields ->
+                    arrayFields.forEach {
+                        it.dataFromServer = hashFields[it.field_id]
+                    }
+                }
+                it.first.selectedCategory = it.second.group
+            }
+            return@map it.first
         }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -68,13 +71,14 @@ class RequestPresenter
                 }).call(compositeDisposable)
     }
 
-    override fun onDataChange(field: String, value: Any?) {
+    override fun onDataChange(field: String, value: Any?, fieldForRemove: String?) {
         val requestBody: RequestBody
 
         if (value != null) {
             if (value is File) {
                 requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), value)
                 files[field] = MultipartBody.Part.createFormData(field, value.name, requestBody)
+                //data.remove(fieldForRemove)
             } else {
                 requestBody = RequestBody.create(MediaType.parse("text/plain"), value.toString())
                 data[field] = requestBody
@@ -110,6 +114,26 @@ class RequestPresenter
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
+    }
+
+    override fun onError(errors: List<String>) {
+        val messageIds = linkedSetOf<Int>()
+        var hasImportantError = false
+        errors.forEach {
+            if (it.contains(PART_ERROR_REQUEST_EVENT_REGISTER_END)) {
+                hasImportantError = true
+                messageIds.add(R.string.request_event_register_end)
+            } else if (it.contains(PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED)) {
+                messageIds.add(R.string.request_event_required_field)
+            } else if(it.contains(PART_ERROR_REQUEST_EVENT_FILE_ERROR)){
+                messageIds.add(R.string.request_event_file_error)
+            }
+        }
+        if(hasImportantError){
+            viewState.showErrorDialog(messageIds.toList(), DialogInterface.OnDismissListener { viewState.navigateUp() })
+        } else{
+            viewState.showToast(messageIds.toList())
+        }
     }
 
     override fun onCloseClick() = viewState.navigateUp()

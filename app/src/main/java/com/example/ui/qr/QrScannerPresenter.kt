@@ -27,4 +27,8 @@ class QrScannerPresenter
        // val event = dummyRepository.getEvent()
        // viewState.showEvent(event)
     }
+
+    override fun onError(errors: List<String>) {
+
+    }
 }

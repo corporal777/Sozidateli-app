@@ -25,7 +25,7 @@ interface RequestContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onCloseClick()
-        fun onDataChange(field:String,value:Any?)
+        fun onDataChange(field:String,value:Any?,fieldForRemove:String?=null)
         fun onRegisterClick()
         fun onClickOpenFileSelector(position:Int)
         fun onFileSelected(path:String)

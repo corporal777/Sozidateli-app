@@ -66,14 +66,6 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
         showDialog(null, getString(R.string.recovery_confirm_email_message).format(email))
     }
 
-    private fun showDialog(title: String?, message: String?) {
-        AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
     override fun showRecoveryPassword(email: String) {
         findNavController().navigate(LoginEmailFragmentDirections.loginEmailToRecoveryAction(email))
     }

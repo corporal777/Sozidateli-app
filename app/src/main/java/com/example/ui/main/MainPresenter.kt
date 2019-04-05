@@ -25,7 +25,6 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter
 @Inject constructor(
-        private val appData: AppData,
         private val eventData: UserEventData,
         private val chatNotificationHelper: ChatNotificationHelper,
         private val authRepository: AuthRepository,
@@ -88,16 +87,6 @@ class MainPresenter
                     }
                 }
                 .call(compositeDisposable)
-
-        appData.onErrorHandlerListener.performOnBackgroundOutOnMain()
-                .subscribe {
-                    it.value?.let {
-                        it.errors?.let { messages ->
-                            viewState.showToast(messages.joinToString(separator = "\n"))
-                        }
-                    }
-                }.call(compositeDisposable)
-
 
     }
 

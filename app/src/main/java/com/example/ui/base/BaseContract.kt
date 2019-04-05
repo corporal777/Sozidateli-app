@@ -1,5 +1,6 @@
 package com.example.ui.base
 
+import android.content.DialogInterface
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -27,6 +28,21 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialog(message: String?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialog(message: String?,onOkClickListener: DialogInterface.OnClickListener?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialog(title: String?,message: String?,onOkClickListener: DialogInterface.OnClickListener?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialog(title: String?,message: String?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showToast(messagesIds: List<Int>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showErrorDialog(messageIds:List<Int>,onDismissListener: DialogInterface.OnDismissListener?)
     }
 
     interface LoadingView {
@@ -40,5 +56,8 @@ interface BaseContract {
         fun hideAllLoadingDialogs()
     }
 
-    interface Presenter
+    interface Presenter{
+        @StateStrategyType(SkipStrategy::class)
+        fun onError(errors:List<String>)
+    }
 }
