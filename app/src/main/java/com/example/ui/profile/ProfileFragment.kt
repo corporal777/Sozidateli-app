@@ -39,6 +39,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         flFavorite.setOnClickListener { presenter.clickFavorite() }
         flChatSetting.setOnClickListener { presenter.clickChatSetting() }
         notification.setOnClickListener { presenter.onNotificationClick() }
+        tvLastNotificationText.setOnClickListener { presenter.onNotificationClick() }
     }
 
     override fun showAboutStatus() {
