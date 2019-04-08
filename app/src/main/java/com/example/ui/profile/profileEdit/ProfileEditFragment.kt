@@ -78,7 +78,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         listField.add(ProfileSwitchItem(ProfileField("user_phone_show", null, user.user_phone_show)))
         listField.add(ProfilePhoneItem(ProfileField("user_phone_work", getString(R.string.profile_phone_work), user.user_phone_work)))
         listField.add(ProfileSwitchItem(ProfileField("user_phone_work_show", null, user.user_phone_work_show)))
-        listField.add(ProfileDatetItem(ProfileField("user_birthday", getString(R.string.profile_birthday), user.user_birthday)))
+        listField.add(ProfileDatetItem(ProfileField("user_birthday", getString(R.string.profile_birthday), user.user_birthday), childFragmentManager))
         listField.add(ProfileSwitchItem(ProfileField("user_birthday_show", null, user.user_birthday_show)))
         listField.add(ProfileSelectItem(ProfileField("user_gender", getString(R.string.profile_gender), user.user_gender), genderData))
         listField.add(ProfileTextItem(ProfileField("user_address_city", getString(R.string.profile_city), user.user_address_city)))
@@ -90,7 +90,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "value", getString(R.string.profile_sn_label), true)
         ), user.social_links)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_sn), socialNetworks, false))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_sn), socialNetworks, false, fragmentManager = childFragmentManager))
 
         val educationExpand = createFieldExpand("education", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
@@ -100,7 +100,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "specialty", getString(R.string.profile_educate_speciality), true)
         ), user.education)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution), educationExpand, false))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_institution), educationExpand, false, fragmentManager = childFragmentManager))
 
         val workExpand = createFieldExpand("work", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
@@ -111,7 +111,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "description", getString(R.string.profile_work_description))
         ), user.work)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_work_experience), workExpand, false))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_work_experience), workExpand, false, fragmentManager = childFragmentManager))
 
         val socialProject = createFieldExpand("social_projects", mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
@@ -122,7 +122,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "description", getString(R.string.profile_social_project_description))
         ), user.social_projects)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_social_project), socialProject, false))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_social_project), socialProject, false, fragmentManager = childFragmentManager))
 
         val attachedFiles = createFieldExpand(FIELD_ATTACH_RECOMMENDATION_FILE, mutableListOf(
                 ProfileField(Type.SUPPORT, "id", null),
@@ -132,7 +132,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
                 ProfileField(Type.TEXT, "url", getString(R.string.profile_attached_file_url), true)
         ), user.attached_recomendation_files)
 
-        listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true, presenter))
+        listField.add(ProfileExpandFieldItem(getString(R.string.profile_attached_file), attachedFiles, true, presenter, fragmentManager = childFragmentManager))
 
         listField.add(ActionButtonItem(getString(R.string.save), View.OnClickListener {
             val fieldList = mutableListOf<ProfileField>()

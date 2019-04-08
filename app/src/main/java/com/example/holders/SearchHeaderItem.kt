@@ -1,9 +1,9 @@
 package com.example.holders
 
-import android.app.DatePickerDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
 import com.example.extensions.defaultDateFormatter
@@ -12,18 +12,20 @@ import com.example.ui.search.SearchHolder
 import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_search_header.view.*
 import java.util.*
 
-open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : Item() {
-
+open class SearchHeaderItem(
+        private val fragmentManager: FragmentManager,
+        private val presenter: SearchContract.Presenter
+) : Item() {
 
     private var placesAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
     private var typeEventsAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
-    private lateinit var datePickerDialogDate: DatePickerDialog
 
     private var viewHolder: ViewHolder? = null
 
@@ -64,10 +66,6 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
             tvDate.setOnClickListener { presenter.onClickDate(TYPE_DATE) }
             tvPeriodFrom.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_FROM) }
             tvPeriodTo.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_TO) }
-
-            datePickerDialogDate = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
-
-            }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
         }
     }
 
@@ -117,17 +115,14 @@ open class SearchHeaderItem(private val presenter: SearchContract.Presenter) : I
             calendar.timeInMillis = date
         }
         viewHolder?.let {
-            datePickerDialogDate = DatePickerDialog(it.itemView.context, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
+            DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 presenter.onDateSelected(calendar.timeInMillis, type)
-
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-
-            datePickerDialogDate.show()
+            }, calendar)
+                    .show(fragmentManager, type)
         }
-
     }
 
     fun showResultHeader(isShow: Boolean) {
