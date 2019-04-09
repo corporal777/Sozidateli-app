@@ -6,6 +6,7 @@ import com.example.data.models.Organization
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import javax.inject.Inject
 
 class OrganizationRepositoryImp
@@ -37,5 +38,9 @@ class OrganizationRepositoryImp
 
     override fun favoriteList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>> {
         return callPagination(api.organizationFavoriteList(limit, offset))
+    }
+
+    override fun getOrganizationList(): Single<List<Organization>> {
+        return call(api.getOrganizationList())
     }
 }

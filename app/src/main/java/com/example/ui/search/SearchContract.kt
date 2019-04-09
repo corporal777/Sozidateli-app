@@ -1,6 +1,7 @@
 package com.example.ui.search
 
 import androidx.paging.PagedList
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -25,31 +26,38 @@ interface SearchContract {
         fun showDateDialog(date: Long, type: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updatePlacesList(searchHolder: SearchHolder)
+        fun updateOrganizationList(searchHolder: SearchHolder)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateTypeEventsList(searchHolder: SearchHolder)
+        fun updateCategoryList(searchHolder: SearchHolder)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSearchResult(data: PagedList<SearchEventResultItem>)
+        fun showSearchResult(data: PagedList<SearchEventResultItem>,totalCount:Int?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEvent(event: Event)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideSearchResultLabel()
+
         @StateStrategyType(SkipStrategy::class)
         fun showQrScan()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRequest(event: Event)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun removePlacesItem(searchTypeEvent: SearchTypeEvent)
-        fun removeTypeEventItem(searchTypeEvent: SearchTypeEvent)
+        fun removeOrganizationItem(searchTypeEvent: SearchTypeEvent)
+        fun removeCategoryItem(searchTypeEvent: SearchTypeEvent)
         fun onSearchTextChange(text: String)
-        fun onPlacesClick()
-        fun onTypeEventsClick()
+        fun onOrganizationClick()
+        fun onCategoryClick()
         fun onClickDate(type: String)
         fun onDateSelected(date: Long, type: String)
-        fun onSearchClick()
+        fun onGoToEventClick(event: Event)
         fun onEventClick(event: Event)
         fun onQrScanClick()
+        fun clearFilter()
     }
 }

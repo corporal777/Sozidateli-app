@@ -103,7 +103,7 @@
     <string name="search_hint">Введите название</string>
     <string name="search_date">Дата мероприятия</string>
     <string name="search_period_date">Период мероприятия</string>
-    <string name="search_places">Площадки</string>
+    <string name="search_organizations">Организации</string>
     <string name="search_type_event">Типы мероприятий</string>
     <string name="search_select">Выбрать</string>
     <string name="search_date_hint">DD/MM/YYYY</string>
@@ -231,4 +231,10 @@
     <string name="request_event_file_error">Ошибка прикрипления файла</string>
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
+
+    <string name="clear">Очистить</string>
+
+    <string name="by_qr_not_found_event">По этому коду не найдено ни одного мероприятия</string>
+
+
 </resources>

@@ -13,7 +13,7 @@ open class SearchTypeItem(private val searchTypeEvent: SearchTypeEvent, private 
             tvName.text = searchTypeEvent.name
 
             selected(ivSelected)
-            ivSelected.setOnClickListener {
+            setOnClickListener {
                 itemClick(searchTypeEvent,!searchTypeEvent.selected)
                 searchTypeEvent.selected = !searchTypeEvent.selected
                 selected(ivSelected)
@@ -23,9 +23,9 @@ open class SearchTypeItem(private val searchTypeEvent: SearchTypeEvent, private 
 
     private fun selected(imageView: ImageView) {
         if (searchTypeEvent.selected) {
-            imageView.setImageResource(R.drawable.ic_close_black_24dp)
+            imageView.setImageResource(R.drawable.search_type_check)
         } else {
-            imageView.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp)
+            imageView.setImageResource(R.drawable.search_type_uncheck)
         }
     }
 

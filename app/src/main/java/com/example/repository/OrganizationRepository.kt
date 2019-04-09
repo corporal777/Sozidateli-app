@@ -4,6 +4,7 @@ import com.example.data.models.Organization
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 
 interface OrganizationRepository {
     fun subscribe(orgId: Int): Completable
@@ -12,4 +13,5 @@ interface OrganizationRepository {
     fun addToFavorite(orgId: Int): Completable
     fun removeFromFavorite(orgId: Int): Completable
     fun favoriteList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>>
+    fun getOrganizationList(): Single<List<Organization>>
 }

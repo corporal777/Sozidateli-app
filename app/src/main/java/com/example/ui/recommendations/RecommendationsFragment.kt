@@ -14,6 +14,7 @@ import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.util.ARG_EVENT
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_events_list.*
@@ -102,7 +103,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     }
 
     override fun showEventRequest(event: Event) {
-        findParentNavigation().navigate(R.id.request_fragment, bundleOf("event" to event))
+        findParentNavigation().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
     }
 
     override fun isShowToolbar() = true

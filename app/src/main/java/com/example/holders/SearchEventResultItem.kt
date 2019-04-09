@@ -17,6 +17,8 @@ open class SearchEventResultItem(private val event: Event, private val presenter
             tvEventDate.text = Utils.getDatesInterval(event.conference_start, event.conference_finish)
 
             setOnClickListener { presenter.onEventClick(event) }
+
+            btnEvent.setOnClickListener { presenter.onGoToEventClick(event) }
         }
     }
 

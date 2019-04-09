@@ -1,6 +1,9 @@
 package com.example.ui.search
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
@@ -52,6 +55,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = groupAdapter
@@ -69,19 +73,26 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     override fun setSearchData(searchHolder: SearchHolder) {
         header.setSearchData(searchHolder)
+        section.notifyItemChanged(0)
     }
 
-    override fun updatePlacesList(searchHolder: SearchHolder) {
+    override fun updateOrganizationList(searchHolder: SearchHolder) {
         header.updatePlacesList(searchHolder)
     }
 
-    override fun updateTypeEventsList(searchHolder: SearchHolder) {
+    override fun updateCategoryList(searchHolder: SearchHolder) {
         header.updateTypeEventsList(searchHolder)
     }
 
-    override fun showSearchResult(data: PagedList<SearchEventResultItem>) {
+    override fun showSearchResult(data: PagedList<SearchEventResultItem>, totalCount: Int?) {
         pagedList.submitList(data)
-        header.showResultHeader(true)
+        header.showResultHeader(true, totalCount)
+        section.notifyItemChanged(0)
+    }
+
+    override fun hideSearchResultLabel() {
+        header.showResultHeader(false, null)
+        pagedList.submitList(null)
     }
 
     override fun showEvent(event: Event) {
@@ -91,11 +102,28 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     }
 
     override fun showDateDialog(date: Long, type: String) {
-        header.showDateDialog(date, type)
+        header.showDateDialog(date, type,requireContext())
     }
 
     override fun showQrScan() {
         findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToQrScannerFragment())
+    }
+
+    override fun showEventRequest(event: Event) {
+        findNavController().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_search_clear, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.clear -> presenter.clearFilter()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
     override fun isShowToolbar() = true
