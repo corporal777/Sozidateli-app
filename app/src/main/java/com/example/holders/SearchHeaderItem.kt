@@ -9,6 +9,7 @@ import com.example.R
 import com.example.extensions.defaultDateFormatter
 import com.example.ui.search.SearchContract
 import com.example.ui.search.SearchHolder
+import com.example.util.SimpleTextWatcher
 import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
@@ -27,23 +28,50 @@ open class SearchHeaderItem(
     private var placesAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
     private var typeEventsAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
 
-    private var viewHolder: ViewHolder? = null
+    private var searchHolder: SearchHolder? = null
+    private var isShowResultLabel = false
+
+    private var simpleTextWatcher = SimpleTextWatcher().setAfterTextChangeRunnable {
+        presenter.onSearchTextChange(it.toString())
+    }
+
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        this.viewHolder = viewHolder
         viewHolder.itemView.apply {
+            etSearchText.removeTextChangedListener(simpleTextWatcher)
+            if (searchHolder != null) {
+                searchHolder?.text?.let {
+                    etSearchText.setText(it)
+                    etSearchText.setSelection(it.length)
+                }
+                /*if (searchHolder?.date != 0L) {
+                    tvDate.text = defaultDateFormatter.format(searchHolder?.date)
+                }*/
+
+                if (searchHolder?.dateFrom != 0L) {
+                    tvPeriodFrom.text = defaultDateFormatter.format(searchHolder?.dateFrom)
+                } else {
+                    tvPeriodFrom.text = ""
+                }
+
+                if (searchHolder?.dateTo != 0L) {
+                    tvPeriodTo.text = defaultDateFormatter.format(searchHolder?.dateTo)
+                } else {
+                    tvPeriodTo.text = ""
+                }
+
+                if (isShowResultLabel) {
+                    llSearchResultTitle.visibility = View.VISIBLE
+                } else {
+                    llSearchResultTitle.visibility = View.GONE
+                }
+                tvSearchResultCount.visibility = if (searchHolder?.totalCountSearchResult == null) View.GONE else View.VISIBLE
+                tvSearchResultCount.text = searchHolder?.totalCountSearchResult.let { if (it == null) "0" else it.toString() }
+            }
 
             btnQr.setOnClickListener { presenter.onQrScanClick() }
 
-            etSearchText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(p0: Editable?) {
-                    presenter.onSearchTextChange(p0.toString())
-                }
-
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            })
+            etSearchText.addTextChangedListener(simpleTextWatcher)
 
             recyclerViewPlaces.apply {
                 layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -56,54 +84,35 @@ open class SearchHeaderItem(
             }
 
             tvPlaces.setOnClickListener {
-                presenter.onPlacesClick()
+                presenter.onOrganizationClick()
             }
 
             tvTypeEvents.setOnClickListener {
-                presenter.onTypeEventsClick()
+                presenter.onCategoryClick()
             }
 
-            tvDate.setOnClickListener { presenter.onClickDate(TYPE_DATE) }
+            //tvDate.setOnClickListener { presenter.onClickDate(TYPE_DATE) }
             tvPeriodFrom.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_FROM) }
             tvPeriodTo.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_TO) }
         }
     }
 
     fun setSearchData(searchHolder: SearchHolder) {
-        viewHolder?.let {
-            it.itemView.apply {
-                searchHolder.text?.let {
-                    etSearchText.setText(it)
-                    etSearchText.setSelection(it.length)
-                }
-                if (searchHolder.date != 0L) {
-                    tvDate.text = defaultDateFormatter.format(searchHolder.date)
-                }
-
-                if (searchHolder.dateFrom != 0L) {
-                    tvPeriodFrom.text = defaultDateFormatter.format(searchHolder.dateFrom)
-                }
-
-                if (searchHolder.dateTo != 0L) {
-                    tvPeriodTo.text = defaultDateFormatter.format(searchHolder.dateTo)
-                }
-            }
-        }
-
+        this.searchHolder = searchHolder
     }
 
     fun updatePlacesList(searchHolder: SearchHolder) {
-        placesAdapter.update(searchHolder.places.map {
+        placesAdapter.update(searchHolder.organizations.map {
             SelectedSearchTypeItem(it) { type ->
-                presenter.removePlacesItem(type)
+                presenter.removeOrganizationItem(type)
             }
         })
     }
 
     fun updateTypeEventsList(searchHolder: SearchHolder) {
-        typeEventsAdapter.update(searchHolder.typeEvents.map {
+        typeEventsAdapter.update(searchHolder.categories.map {
             SelectedSearchTypeItem(it) { type ->
-                presenter.removeTypeEventItem(type)
+                presenter.removeCategoryItem(type)
             }
         })
     }
@@ -114,29 +123,18 @@ open class SearchHeaderItem(
         if (date != 0L) {
             calendar.timeInMillis = date
         }
-        viewHolder?.let {
-            DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, monthOfYear)
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                presenter.onDateSelected(calendar.timeInMillis, type)
-            }, calendar)
-                    .show(fragmentManager, type)
-        }
+        DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, monthOfYear)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            presenter.onDateSelected(calendar.timeInMillis, type)
+        }, calendar)
+                .show(fragmentManager, type)
     }
 
-    fun showResultHeader(isShow: Boolean) {
-        viewHolder?.let {
-            it.itemView.apply {
-                if (isShow) {
-                    llSearchResultTitle.visibility = View.VISIBLE
-                } else {
-                    llSearchResultTitle.visibility = View.GONE
-                }
-            }
-
-        }
-
+    fun showResultHeader(isShow: Boolean, totalCount: Int? = null) {
+        isShowResultLabel = isShow
+        this.searchHolder?.totalCountSearchResult = totalCount
     }
 
     override fun getLayout() = R.layout.item_search_header

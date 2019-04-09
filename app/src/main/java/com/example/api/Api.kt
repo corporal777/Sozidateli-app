@@ -8,6 +8,7 @@ import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
+import java.time.format.SignStyle
 
 interface Api {
 
@@ -94,7 +95,11 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events")
-    fun getEventList(@Field("name") name: String?, @Field("date_start") dateStart: String?, @Field("date_end") dateEnd: String?, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Event>>>
+    fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int,
+                     @Field("name") name: String?=null, @Field("date_start") dateStart: String?=null,
+                     @Field("date_end") dateEnd: String?=null, @Field("category") category: List<String>?=null,
+                     @Field("organisation") organisation: List<String>?=null,
+                     @Field("qr") qr: String?=null): Maybe<ApiResponse<List<Event>>>
 
     @FormUrlEncoded
     @POST("/v1/users/search")
@@ -197,5 +202,11 @@ interface Api {
 
     @GET("/v1/partners/{partnerId}")
     fun getPartnerById(@Path("partnerId") partnerId: Int): Single<ApiResponse<Partner>>
+
+    @POST("/v1/organisations")
+    fun getOrganizationList(): Single<ApiResponse<List<Organization>>>
+
+    @GET("/v1/events/categories")
+    fun getCategoriesList(): Single<ApiResponse<List<Category>>>
 
 }

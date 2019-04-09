@@ -19,8 +19,10 @@ class EventRepositoryImp
         appData: AppData
 ) : ApiRepository(appData), EventRepository {
 
-    override fun getEventList(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
-        return callPagination(api.getEventList(null, null, null, limit, offset))
+    override fun getEventList(limit: Int, offset: Int, name: String?, dateStart: String?,
+                              dateEnd: String?, category: List<String>?,
+                              organisation: List<String>?, qr: String?): Maybe<PaginationResponse<Event>> {
+        return callPagination(api.getEventList(limit,offset,name,dateStart,dateEnd,category,organisation,qr))
     }
 
     override fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
@@ -90,5 +92,9 @@ class EventRepositoryImp
 
     override fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.getSubEventUsers(eventId, subEventId, limit, offset))
+    }
+
+    override fun getCategoriesList(): Single<List<Category>> {
+        return call(api.getCategoriesList())
     }
 }

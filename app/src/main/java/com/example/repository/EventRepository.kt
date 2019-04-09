@@ -10,7 +10,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface EventRepository {
-    fun getEventList(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
+    fun getEventList(limit: Int, offset: Int,
+                     name: String? = null, dateStart: String? = null,
+                     dateEnd: String? = null, category: List<String>? = null,
+                     organisation: List<String>? = null,
+                     qr: String? = null): Maybe<PaginationResponse<Event>>
+
     fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
     fun getEventDocuments(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
@@ -28,4 +33,5 @@ interface EventRepository {
     fun getPartnerById(partnerId: Int): Single<Partner>
     fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo>
     fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun getCategoriesList(): Single<List<Category>>
 }

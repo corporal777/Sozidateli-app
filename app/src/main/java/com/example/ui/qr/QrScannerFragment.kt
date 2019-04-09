@@ -14,6 +14,7 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.example.R
 import com.example.data.models.Event
 import com.example.ui.base.BaseFragment
+import com.example.util.ARG_EVENT
 import kotlinx.android.synthetic.main.fragment_qr_scanner.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -66,7 +67,7 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View {
     }
 
     override fun showEvent(event: Event) {
-        findNavController().navigate(R.id.about_event_navigation, bundleOf("event" to event))
+        findNavController().navigate(R.id.about_event_navigation, bundleOf(ARG_EVENT to event))
     }
 
     override fun isShowToolbar() = true

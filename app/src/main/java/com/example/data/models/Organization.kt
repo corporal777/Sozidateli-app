@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Organization(
         val id: Int,
-        val name: String?,
+        val name: String,
         val description: String?,
         val logo: String?,
         val bg_image: String?,

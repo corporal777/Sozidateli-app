@@ -7,6 +7,17 @@ data class SearchHolder(
         var date: Long = 0,
         var dateFrom: Long = 0,
         var dateTo: Long = 0,
-        var places: ArrayList<SearchTypeEvent> = ArrayList(),
-        var typeEvents: ArrayList<SearchTypeEvent> = ArrayList()
-)
+        var organizations: ArrayList<SearchTypeEvent> = ArrayList(),
+        var categories: ArrayList<SearchTypeEvent> = ArrayList(),
+        var totalCountSearchResult:Int? = null
+){
+    fun clear(){
+        text = ""
+        date = 0
+        dateFrom = 0
+        dateTo = 0
+        organizations = ArrayList()
+        categories = ArrayList()
+        totalCountSearchResult = null
+    }
+}

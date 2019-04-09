@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/profile_height_field"
+    android:paddingTop="15dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:orientation="horizontal">
 
-    <View style="@style/ViewDivider.Horizontal" />
+    <!--<View style="@style/ViewDivider.Horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/divider"
+        />-->
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingStart="@dimen/profile_padding_start"
+        android:paddingEnd="@dimen/profile_padding_start"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivSelected"
         android:textSize="16sp"
         tools:text="Example 1" />
 
@@ -23,6 +34,10 @@
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:id="@+id/ivSelected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="ContentDescription" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

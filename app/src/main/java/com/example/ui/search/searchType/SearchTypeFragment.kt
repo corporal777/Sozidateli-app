@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -14,7 +15,6 @@ import com.example.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_search_type.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -29,7 +29,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
     @ProvidePresenter
     fun providePresenter(): SearchTypePresenter = presenterProvider.get().apply {
         val args = SearchTypeFragmentArgs.fromBundle(arguments!!)
-        this.setData(args.data.array, args.data.isPlaces)
+        this.setData(args.data.array, args.data.isOrganization)
     }
 
     private var groupAdapter = GroupAdapter<ViewHolder>()
@@ -40,6 +40,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
         recyclerView.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             adapter = groupAdapter
+            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 
