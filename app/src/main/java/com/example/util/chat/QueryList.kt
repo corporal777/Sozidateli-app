@@ -6,6 +6,7 @@ import com.firebase.ui.firestore.ObservableSnapshotArray
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import java.util.Collections.swap
 
 class QueryList<T>(
         queryPageOptions: QueryPageOptions<T>
@@ -70,10 +71,10 @@ class QueryList<T>(
         when (type) {
             ChangeEventType.ADDED -> data.add(itemsCountBeforePage + newIndex, parser.parseSnapshot(snapshot))
             ChangeEventType.CHANGED -> data[itemsCountBeforePage + newIndex] = parser.parseSnapshot(snapshot)
-//            ChangeEventType.REMOVED -> data.removeAt(oldIndex)
-//            ChangeEventType.MOVED -> swap(data, oldIndex, newIndex)
-            ChangeEventType.REMOVED -> throw UnsupportedOperationException("Can not remove items")
-            ChangeEventType.MOVED -> throw UnsupportedOperationException("Can not move items")
+            ChangeEventType.REMOVED -> data.removeAt(oldIndex)
+            ChangeEventType.MOVED -> swap(data, oldIndex, newIndex)
+//            ChangeEventType.REMOVED -> throw UnsupportedOperationException("Can not remove items")
+//            ChangeEventType.MOVED -> throw UnsupportedOperationException("Can not move items")
             else -> throw IllegalStateException("Incomplete when statement")
         }
 
