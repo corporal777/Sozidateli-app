@@ -66,6 +66,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
+            <!--suppress AndroidUnknownAttribute -->
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/tvLastNotificationText"
                 fontPath="fonts/Helvetica-Light.ttf"

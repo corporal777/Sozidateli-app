@@ -1,17 +1,21 @@
 package com.example.holders.profile
 
-import android.app.DatePickerDialog
 import android.text.InputType
 import android.view.MotionEvent
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.data.models.ProfileField
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_profile.view.*
 import java.util.*
 
-class ProfileDatetItem(private val profileField: ProfileField) : ProfileFieldItem(profileField) {
+class ProfileDatetItem(
+        private val profileField: ProfileField,
+        private val fragmentManager: FragmentManager
+) : ProfileFieldItem(profileField) {
 
     private lateinit var datePickerDialog: DatePickerDialog
 
@@ -27,16 +31,16 @@ class ProfileDatetItem(private val profileField: ProfileField) : ProfileFieldIte
                 }
             }
 
-            datePickerDialog = DatePickerDialog(editText.context, DatePickerDialog.OnDateSetListener { datePicker, year, monthOfYear, dayOfMonth ->
+            datePickerDialog = DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
                 val calendar = Calendar.getInstance()
                 calendar.set(year, monthOfYear, dayOfMonth)
                 profileField.data = defaultServerDateFormatter.format(calendar.timeInMillis)
                 editText.setText(defaultServerDateFormatter.format(calendar.timeInMillis))
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            }, calendar)
 
             editText.setOnTouchListener { view, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    datePickerDialog.show()
+                    datePickerDialog.show(fragmentManager, null)
                 }
                 return@setOnTouchListener true
             }

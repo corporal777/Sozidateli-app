@@ -186,6 +186,7 @@ class MainPresenter
         val messageId = localMessage.messageId ?: return
 
         chatCompositeDisposable += setMessageShowed(chatId, messageId)
+                .performOnBackgroundOutOnMain()
                 .mergeWith(Completable.fromAction {
                     val message = localMessage.text ?: return@fromAction
                     val senderId = localMessage.senderId
@@ -199,7 +200,6 @@ class MainPresenter
                             avatarUrl = localMessage.avatar
                     )
                 })
-                .performOnBackgroundOutOnMain()
                 .subscribe({}, {
                     it.printStackTrace()
                 })

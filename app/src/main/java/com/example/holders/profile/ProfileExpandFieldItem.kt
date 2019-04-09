@@ -1,13 +1,16 @@
 package com.example.holders.profile
 
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
 import androidx.transition.TransitionManager
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import com.example.R
 import com.example.data.models.ProfileField
 import com.example.data.models.ProfileFieldExpand
 import com.example.data.models.Type
@@ -21,12 +24,15 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.field_expand_profile.view.*
-import android.widget.ImageView
-import com.example.R
 
 
-class ProfileExpandFieldItem(private val name: String, private var expandField: ProfileFieldExpand,
-                             private val isLast: Boolean, private val presenter: ProfileEditPresenter? = null) : Item() {
+class ProfileExpandFieldItem(
+        private val name: String,
+        private var expandField: ProfileFieldExpand,
+        private val isLast: Boolean,
+        private val presenter: ProfileEditPresenter? = null,
+        private val fragmentManager: FragmentManager
+) : Item() {
 
 
     private val DP_MARGIN = 25
@@ -120,7 +126,7 @@ class ProfileExpandFieldItem(private val name: String, private var expandField: 
 
             when (it.type) {
                 Type.DATE -> {
-                    baseFieldItem = ProfileDatetItem(it)
+                    baseFieldItem = ProfileDatetItem(it, fragmentManager)
                 }
                 Type.EMAIL -> {
                     baseFieldItem = ProfileEmailItem(it)

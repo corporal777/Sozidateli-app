@@ -37,7 +37,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SearchPresenter = presenterProvider.get().apply {
-        header = SearchHeaderItem(this)
+        header = SearchHeaderItem(childFragmentManager, this)
         section.setHeader(header)
         groupAdapter.add(section)
     }
