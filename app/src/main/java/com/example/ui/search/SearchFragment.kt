@@ -102,7 +102,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     }
 
     override fun showDateDialog(date: Long, type: String) {
-        header.showDateDialog(date, type,requireContext())
+        header.showDateDialog(date, type)
     }
 
     override fun showQrScan() {
