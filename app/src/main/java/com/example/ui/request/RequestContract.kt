@@ -21,6 +21,9 @@ interface RequestContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun updateFileField(position: Int,path:String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSuccessRegister()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -29,5 +32,6 @@ interface RequestContract {
         fun onRegisterClick()
         fun onClickOpenFileSelector(position:Int)
         fun onFileSelected(path:String)
+        fun onGoTeEventListClick()
     }
 }

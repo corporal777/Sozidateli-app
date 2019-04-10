@@ -236,5 +236,9 @@
 
     <string name="by_qr_not_found_event">По этому коду не найдено ни одного мероприятия</string>
 
+    <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
+    <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
+    <string name="success_register_event_btn">К списку мероприятий</string>
+
 
 </resources>

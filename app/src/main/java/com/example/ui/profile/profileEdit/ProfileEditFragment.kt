@@ -155,6 +155,8 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
             presenter.onSaveClick(fieldList, expandFieldList)
         }))
 
+        adapter.clear()
+
         adapter.update(listField)
     }
 

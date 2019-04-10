@@ -26,7 +26,11 @@ class EventSpeakersFragment : BaseSpeakersFragment(), EventSpeakersContract.View
     lateinit var presenterProvider: Provider<EventSpeakersPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): EventSpeakersPresenter = presenterProvider.get()
+    fun providePresenter(): EventSpeakersPresenter = presenterProvider.get().apply {
+        arguments?.let {
+            event = EventSpeakersFragmentArgs.fromBundle(it).event
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

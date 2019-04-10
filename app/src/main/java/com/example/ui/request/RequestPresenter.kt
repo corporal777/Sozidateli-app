@@ -109,7 +109,7 @@ class RequestPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.navigateUp()
+                    viewState.showSuccessRegister()
                     EventBus.getDefault().postSticky(OnUpdateMyEventsEvent())
                 }, {
                     it.printStackTrace()
@@ -134,6 +134,10 @@ class RequestPresenter
         } else{
             viewState.showToast(messageIds.toList())
         }
+    }
+
+    override fun onGoTeEventListClick() {
+        viewState.navigateUp()
     }
 
     override fun onCloseClick() = viewState.navigateUp()
