@@ -34,4 +34,5 @@ interface EventRepository {
     fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo>
     fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun getCategoriesList(): Single<List<Category>>
+    fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
 }

@@ -97,8 +97,8 @@ interface Api {
     @POST("/v1/events")
     fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int,
                      @Field("name") name: String?=null, @Field("date_start") dateStart: String?=null,
-                     @Field("date_end") dateEnd: String?=null, @Field("category") category: List<String>?=null,
-                     @Field("organisation") organisation: List<String>?=null,
+                     @Field("date_end") dateEnd: String?=null, @Field("category[]") category: List<String>?=null,
+                     @Field("organisation[]") organisation: List<String>?=null,
                      @Field("qr") qr: String?=null): Maybe<ApiResponse<List<Event>>>
 
     @FormUrlEncoded
@@ -208,5 +208,10 @@ interface Api {
 
     @GET("/v1/events/categories")
     fun getCategoriesList(): Single<ApiResponse<List<Category>>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/speakers")
+    fun getEventSpeakers(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
+
 
 }

@@ -9,6 +9,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -43,7 +44,7 @@ class EventRepositoryImp
     }
 
     override fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
-        return call(api.eventRegister(eventId, fields, files))
+        return call(api.eventRegister(eventId, fields.let { if(it.isNullOrEmpty()) hashMapOf("_" to RequestBody.create(MediaType.parse("text/plain"), "_")) else it }, files.let { if(it.isNullOrEmpty()) null else it }))
     }
 
     override fun getEventRegister(eventId: Int): Single<EventRegisterResponse> {
@@ -96,5 +97,9 @@ class EventRepositoryImp
 
     override fun getCategoriesList(): Single<List<Category>> {
         return call(api.getCategoriesList())
+    }
+
+    override fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
+        return callPagination(api.getEventSpeakers(eventId,limit,offset))
     }
 }

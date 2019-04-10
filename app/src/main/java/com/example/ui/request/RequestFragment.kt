@@ -82,7 +82,9 @@ class RequestFragment : BaseFragment(), RequestContract.View {
             }
         }
 
-        listFields.add(RegisterEventDropDownCategoryItem(fieldResponse.categories, presenter,fieldResponse.selectedCategory))
+        if(fieldResponse.categories.isNotEmpty()) {
+            listFields.add(RegisterEventDropDownCategoryItem(fieldResponse.categories, presenter, fieldResponse.selectedCategory))
+        }
 
         section.setHeader(RegisterEventHeaderItem(presenter))
         section.setFooter(ActionButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
@@ -126,6 +128,13 @@ class RequestFragment : BaseFragment(), RequestContract.View {
                 }
             }
         }
+    }
+
+    override fun showSuccessRegister() {
+        recyclerView.visibility = View.GONE
+        rlSuccess.visibility = View.VISIBLE
+        btnToEvents.setOnClickListener { presenter.onGoTeEventListClick() }
+        btnClose.setOnClickListener { presenter.onCloseClick() }
     }
 
     override fun enableActionButton(enable: Boolean) {
