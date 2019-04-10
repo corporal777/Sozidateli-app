@@ -1,4 +1,4 @@
-package com.example.ui.qr
+package com.example.ui.search.qr
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,6 +16,7 @@ import com.example.data.models.Event
 import com.example.ui.base.BaseFragment
 import com.example.util.ARG_EVENT
 import kotlinx.android.synthetic.main.fragment_qr_scanner.*
+import kotlinx.android.synthetic.main.item_action_button.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -39,6 +40,7 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View {
                 activity?.runOnUiThread { presenter.onDecodeQrCode(it.text) }
             }
         }
+        btnToEnterCode.setOnClickListener { presenter.onEnterCodeClick() }
     }
 
     override fun checkCameraPermission(grantedResult: (Boolean) -> Unit) {
@@ -68,6 +70,10 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View {
 
     override fun showEvent(event: Event) {
         findNavController().navigate(R.id.about_event_navigation, bundleOf(ARG_EVENT to event))
+    }
+
+    override fun showEnterCode() {
+        findNavController().navigate(QrScannerFragmentDirections.actionQrFragmentToEnterCodeFragment())
     }
 
     override fun isShowToolbar() = true

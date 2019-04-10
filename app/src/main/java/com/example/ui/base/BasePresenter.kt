@@ -13,22 +13,35 @@ open class BasePresenter<V : BaseContract.View>
     : MvpPresenter<V>(), BaseContract.Presenter {
 
     protected val compositeDisposable = CompositeDisposable()
+    private val errorCompositeDisposable = CompositeDisposable()
+    open var isNeedErrorHandler = true
 
     @Inject
     lateinit var appData: AppData
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.onErrorHandlerListener.performOnBackgroundOutOnMain()
-                .subscribe {
-                    it.value?.let {
-                        it.errors?.let { messages ->
-                            onError(messages)
-                        }
-                    }
-                }.call(compositeDisposable)
     }
 
+    override fun attachView(view: V?) {
+        super.attachView(view)
+        if(isNeedErrorHandler) {
+            appData.onErrorHandlerListener
+                    .performOnBackgroundOutOnMain()
+                    .subscribe {
+                        it.value?.let {
+                            it.errors?.let { messages ->
+                                onError(messages)
+                            }
+                        }
+                    }.call(errorCompositeDisposable)
+        }
+    }
+
+    override fun destroyView(view: V) {
+        super.destroyView(view)
+        errorCompositeDisposable.clear()
+    }
 
     override fun onError(errors: List<String>) {
         viewState.showToast(errors.joinToString(separator = "\n"))

@@ -144,7 +144,8 @@
     <string name="search_result">Результат поиска</string>
 
     <string name="enter_code_title">Ввода кода</string>
-    <string name="enter_code_hint">XXXXX</string>
+    <string name="enter_code_hint">XXXXXXXXXX</string>
+    <string name="enter_code_btn_text">Введите код</string>
 
     <string name="profile_educate_speciality">Специальность</string>
     <string name="profile_educate_name">Учебное заведение</string>
@@ -227,7 +228,7 @@
 
     <string name="error_title">Ошибка</string>
     <string name="request_event_required_field">Заполните все поля</string>
-    <string name="request_event_register_end">Регистрация на мероприятие окончено</string>
+    <string name="request_event_register_end">Регистрация на мероприятие окончена</string>
     <string name="request_event_file_error">Ошибка прикрипления файла</string>
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>

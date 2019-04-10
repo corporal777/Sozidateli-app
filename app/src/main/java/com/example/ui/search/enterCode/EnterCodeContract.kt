@@ -12,7 +12,7 @@ import com.google.firebase.firestore.Query
 interface EnterCodeContract {
     interface View : BaseContract.View{
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun openEvent(event:Event)
+        fun showEvent(event:Event)
     }
 
     interface Presenter : BaseContract.Presenter{

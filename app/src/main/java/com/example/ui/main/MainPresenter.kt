@@ -36,6 +36,10 @@ class MainPresenter
 
     private var isAuthRequired = false
 
+    override var isNeedErrorHandler: Boolean
+        get() = false
+        set(value) {}
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.onTokenChange

@@ -32,7 +32,7 @@ import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
-import com.example.ui.qr.QrScannerFragment
+import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment

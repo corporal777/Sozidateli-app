@@ -1,11 +1,9 @@
-package com.example.ui.qr
+package com.example.ui.search.qr
 
 import android.content.DialogInterface
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.R
-import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -46,7 +44,7 @@ class QrScannerPresenter
                 .call(compositeDisposable)
     }
 
-    override fun onError(errors: List<String>) {
-
+    override fun onEnterCodeClick() {
+        viewState.showEnterCode()
     }
 }

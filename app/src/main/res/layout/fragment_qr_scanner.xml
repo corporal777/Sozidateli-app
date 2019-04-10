@@ -20,4 +20,19 @@
         app:frameSize="0.75"
         app:frameThickness="2dp"
         app:maskColor="#77000000" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnToEnterCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="14sp"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:background="@drawable/background_corners_border"
+        android:text="@string/enter_code_btn_text"
+        android:theme="@style/ViewBackgroundAccent"
+        android:textColor="@color/colorAccent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

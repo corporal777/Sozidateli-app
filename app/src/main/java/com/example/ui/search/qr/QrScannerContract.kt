@@ -1,4 +1,4 @@
-package com.example.ui.qr
+package com.example.ui.search.qr
 
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -19,10 +19,14 @@ interface QrScannerContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEvent(event: Event)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEnterCode()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onCameraPermissionGranted()
         fun onDecodeQrCode(code: String)
+        fun onEnterCodeClick()
     }
 }

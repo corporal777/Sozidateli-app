@@ -49,6 +49,12 @@
 
     <fragment
         android:id="@+id/qr_scanner_fragment"
-        android:name="com.example.ui.qr.QrScannerFragment"
-        tools:layout="@layout/fragment_qr_scanner" />
+        android:name="com.example.ui.search.qr.QrScannerFragment"
+        tools:layout="@layout/fragment_qr_scanner">
+
+        <action
+            android:id="@+id/action_qr_fragment_to_enter_code_fragment"
+            app:destination="@id/enter_code_fragment" />
+
+    </fragment>
 </navigation>

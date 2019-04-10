@@ -35,7 +35,7 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View {
         btnSearch.setOnClickListener { presenter.onSearchClick(etCode.text.toString()) }
     }
 
-    override fun openEvent(event: Event) {
+    override fun showEvent(event: Event) {
         findNavController().navigate(R.id.enter_code_to_event,bundleOf(
                 ARG_EVENT to event
         ))
