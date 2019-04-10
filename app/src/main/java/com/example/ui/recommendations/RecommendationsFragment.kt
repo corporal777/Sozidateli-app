@@ -2,7 +2,6 @@ package com.example.ui.recommendations
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedList
 import bundleOf
@@ -13,12 +12,14 @@ import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
+import com.example.extensions.dp
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.ARG_EVENT
+import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_event.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import setDatesIntervalText
 import javax.inject.Inject
 import javax.inject.Provider
@@ -33,6 +34,8 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = "RecommendationsPresenter")
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get()
+
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val adapter: SimplePagingRecyclerViewAdapter<Event> by lazy {
         object : SimplePagingRecyclerViewAdapter<Event>(
@@ -81,11 +84,17 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
+
+            clipToPadding = false
+            setPadding(0, 16.dp, 0, 0)
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
     override fun setData(events: PagedList<Event>) {
         adapter.submitList(events)
+        placeholderUtil.isDataLoad = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
@@ -108,5 +117,5 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_events_list
+    override fun layout() = R.layout.layout_list_with_placeholder
 }

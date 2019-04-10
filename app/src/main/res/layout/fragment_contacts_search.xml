@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <FrameLayout
+        android:id="@+id/flSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:id="@+id/flSearch"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="@dimen/profile_padding_start">
+        android:padding="@dimen/profile_padding_start"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etSearchText"
@@ -20,29 +20,31 @@
             android:background="@drawable/background_search_edittext"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp"
-            android:paddingEnd="15dp"
             android:hint="@string/contact_search_hint"
-            android:paddingStart="15dp"
             android:imeOptions="actionDone"
             android:inputType="text|textCapSentences"
             android:maxLines="1"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:textColor="@android:color/black"
             android:textColorHint="@color/hint_gray"
             android:textSize="16sp"
             tools:ignore="Autofill,TextFields" />
 
     </FrameLayout>
-    <View style="@style/ViewDivider.Horizontal"
-        app:layout_constraintTop_toBottomOf="@id/flSearch"
-        android:id="@+id/divider"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flSearch" />
+
+    <include
+        layout="@layout/layout_list_with_placeholder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/colorPrimary"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         tools:listitem="@layout/item_search_contact" />
 </androidx.constraintlayout.widget.ConstraintLayout>
