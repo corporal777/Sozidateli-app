@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/chat"
-        app:actionLayout="@layout/chat_view_layout"
         android:title="@string/menu_item_chat_label"
+        app:actionLayout="@layout/chat_view_layout"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/search"
@@ -13,7 +13,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/account"
-        app:actionLayout="@layout/account_view_layout"
         android:title="@string/menu_item_account_label"
+        app:actionLayout="@layout/account_view_layout"
         app:showAsAction="ifRoom" />
 </menu>
