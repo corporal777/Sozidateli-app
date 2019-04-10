@@ -108,6 +108,7 @@
     <string name="search_select">Выбрать</string>
     <string name="search_date_hint">DD/MM/YYYY</string>
     <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
+    <string name="search_empty_list">Ничего не найдено</string>
 
     <string name="event_tab_my_schedule">Расписание</string>
     <string name="event_tab_schedule">События</string>
@@ -237,6 +238,7 @@
 
     <string name="by_qr_not_found_event">По этому коду не найдено ни одного мероприятия</string>
 
+    <string name="empty_list_placeholder_message">Список пуст</string>
     <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
     <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
     <string name="success_register_event_btn">К списку мероприятий</string>

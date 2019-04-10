@@ -1,45 +1,33 @@
 package com.example.ui.contactsSearch
 
-import android.content.Context
-import androidx.paging.PagedList
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.SearchView
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.style.StyleSpan
-import android.text.style.TypefaceSpan
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
-import com.example.data.models.ChatStartResponse
-import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
-import com.example.ui.chatList.ChatListFragmentDirections
 import com.example.util.CropCircleTransformation
+import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_contacts_search.*
 import kotlinx.android.synthetic.main.item_search_contact.*
-import timber.log.Timber
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
-import uk.co.chrisjenx.calligraphy.TypefaceUtils
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -55,6 +43,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
     @ProvidePresenter
     fun providePresenter(): ContactsSearchPresenter = presenterProvider.get()
 
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private lateinit var typefaceBold: CalligraphyTypefaceSpan
 
@@ -68,9 +57,9 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
                 item!!
                 viewHolder.apply {
-                        Picasso.get().load(item.user_avatar.let { if(it.isNullOrEmpty()) null else it })
-                                .placeholder(R.drawable.avatar_placeholder).networkPolicy(NetworkPolicy.NO_CACHE)
-                                .transform(CropCircleTransformation()).into(ivUserAvatar)
+                    Picasso.get().load(item.user_avatar.let { if (it.isNullOrEmpty()) null else it })
+                            .placeholder(R.drawable.avatar_placeholder).networkPolicy(NetworkPolicy.NO_CACHE)
+                            .transform(CropCircleTransformation()).into(ivUserAvatar)
 
                     tvUserName.text = makeSectionOfTextBold(item.fullName, this@ContactsSearchFragment.etSearchText.text.toString())
 
@@ -127,9 +116,9 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                 presenter.onScrollChange(position, offset)
             })
 
-            adapter?.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+            adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    if(positionStart==0){
+                    if (positionStart == 0) {
                         layoutManager?.scrollToPosition(0)
                     }
                 }
@@ -166,6 +155,12 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             }
             return@OnEditorActionListener false
         })
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
+            doNotShowUntilDataLoad = true
+            setMessage(getString(R.string.search_empty_list))
+            setImage(R.drawable.ic_neutral_face)
+        }
     }
 
     private fun setTouchListener(isSetTouchListener: Boolean) {
@@ -193,13 +188,12 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     override fun setData(contactSearch: PagedList<User>) {
         adapter.submitList(contactSearch)
-
+        placeholderUtil.isDataLoad = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
-
 
     override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_contacts_search

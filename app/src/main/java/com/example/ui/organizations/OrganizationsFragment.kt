@@ -8,15 +8,19 @@ import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Organization
+import com.example.extensions.dp
 import com.example.ui.base.BaseFragment
+import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
-import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_organization.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import setCircleImageWithPlaceholder
 
 abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(), OrganizationsContract.View {
 
     open lateinit var presenter: P
+
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val adapter: SimplePagingRecyclerViewAdapter<Organization> by lazy {
         object : SimplePagingRecyclerViewAdapter<Organization>(
@@ -50,11 +54,17 @@ abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
+
+            clipToPadding = false
+            setPadding(0, 16.dp, 0, 0)
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
     override fun setData(data: PagedList<Organization>) {
         adapter.submitList(data)
+        placeholderUtil.isDataLoad = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
@@ -63,7 +73,7 @@ abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_organizations_list
+    override fun layout() = R.layout.layout_list_with_placeholder
 
     abstract fun onItemActionClick(organization: Organization)
     abstract fun getActionText(organization: Organization): String

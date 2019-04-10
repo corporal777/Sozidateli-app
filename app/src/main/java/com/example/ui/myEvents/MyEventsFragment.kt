@@ -1,10 +1,10 @@
 package com.example.ui.myEvents
 
-import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
+import androidx.paging.PagedList
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -14,11 +14,13 @@ import com.example.adapters.ViewHolder
 import com.example.data.models.Event
 import com.example.data.models.EventRegisterResponse
 import com.example.data.models.Status
+import com.example.extensions.dp
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.android.synthetic.main.item_event.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import setDatesIntervalText
 import javax.inject.Inject
 import javax.inject.Provider
@@ -33,6 +35,8 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = "MyEventsPresenter")
     fun providePresenter(): MyEventsPresenter = presenterProvider.get()
+
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val adapter: SimplePagingRecyclerViewAdapter<EventRegisterResponse> by lazy {
         object : SimplePagingRecyclerViewAdapter<EventRegisterResponse>(
@@ -97,11 +101,17 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
+
+            clipToPadding = false
+            setPadding(0, 16.dp, 0, 0)
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
     override fun setData(events: PagedList<EventRegisterResponse>) {
         adapter.submitList(events)
+        placeholderUtil.isDataLoad = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
@@ -120,5 +130,5 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_events_list
+    override fun layout() = R.layout.layout_list_with_placeholder
 }
