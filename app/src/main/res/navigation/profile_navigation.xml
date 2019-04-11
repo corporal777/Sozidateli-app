@@ -71,6 +71,5 @@
     <fragment
         android:id="@+id/notifications_fragment"
         android:name="com.example.ui.notifications.NotificationsFragment"
-        android:label="@string/notifications_label"
-        tools:layout="@layout/fragment_notifications" />
+        android:label="@string/notifications_label" />
 </navigation>

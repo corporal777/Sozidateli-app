@@ -5,17 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
-import com.example.data.AppData
-import com.example.data.prefs.AppPrefs
-import com.example.repository.DummyRepositoryImpl
-import com.example.ui.views.chatView.ChatView
 import kotlinx.android.synthetic.main.image_with_badge.view.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,6 +24,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     companion object {
         private const val ACCOUNT_TAG_VIEW = "account_view_tag"
     }
+
     private val mvpDelegate by lazy { MvpDelegate<AccountView>(this) }
 
     @InjectPresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
@@ -44,20 +40,13 @@ class AccountView : FrameLayout, AccountViewContract.View {
         ivImage.setImageResource(R.drawable.ic_account)
     }
 
-
-    override fun setChatCount(count: Int) {
-        var result = count
-        val visibility: Int
-        if (count > 99) result = 99
-        if (count <= 0) {
-            visibility = View.GONE
-        } else {
-            visibility = View.VISIBLE
-        }
-        view.tvBadge.visibility = visibility
-        view.tvBadge.text = result.toString()
+    override fun setCount(count: String) {
+        view.tvBadge.text = count
     }
 
+    override fun showCounter(show: Boolean) {
+        view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
+    }
 
     init {
         (context.applicationContext as App).appComponent.inject(this)

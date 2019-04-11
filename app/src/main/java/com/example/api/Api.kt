@@ -8,7 +8,6 @@ import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
-import java.time.format.SignStyle
 
 interface Api {
 
@@ -53,6 +52,10 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/notifications")
     fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Notification>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/notifications/mark_as_read")
+    fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<MarkedResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/register")

@@ -1,15 +1,19 @@
 package com.example.ui.views.accountView
 
 import com.arellomobile.mvp.MvpView
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 
 class AccountViewContract {
 
     interface View : MvpView {
-        fun setChatCount(count:Int)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setCount(count: String)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun showCounter(show: Boolean)
     }
 
-    interface Presenter : BaseContract.Presenter {
-
-    }
+    interface Presenter : BaseContract.Presenter
 }

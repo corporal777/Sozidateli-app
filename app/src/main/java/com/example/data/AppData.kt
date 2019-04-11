@@ -36,6 +36,13 @@ class AppData(
             if (changed) chatUnreadMessageCountSubject.onNext(value)
         }
 
+    var notificationsCount = 0
+        set(value) {
+            val changed = field != value
+            field = value
+            if (changed) notificationsCountSubject.onNext(value)
+        }
+
     var error: ApiResponse<*>? = null
         set(value) {
             field = value
@@ -54,6 +61,9 @@ class AppData(
     private val chatUnreadMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val onChatUnreadMessageCountChange: Observable<Int> = chatUnreadMessageCountSubject
 
+    private val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
+    val onNotificationsCountChange: Observable<Int> = notificationsCountSubject
+
     private val onErrorHandler = PublishSubject.create<Optional<ApiResponse<*>>>()
     val onErrorHandlerListener: Observable<Optional<ApiResponse<*>>> = onErrorHandler
 
@@ -62,6 +72,7 @@ class AppData(
         this.user = user
         appPrefs.userId = user.user_id
         if (changed) userChangeSubject.onNext(user.asOptional())
+        notificationsCount = user.notification_unread
     }
 
     fun getUser(): User = user

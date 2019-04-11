@@ -2,10 +2,7 @@ package com.example.ui.profile
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
 import com.example.data.models.Event
-import com.example.data.models.user.User
-import com.example.repository.DummyRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -21,14 +18,17 @@ class ProfilePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
+        viewState.hideLastNotification()
+        appData.onNotificationsCountChange.performOnBackgroundOutOnMain()
+                .subscribe({
+                    val user = appData.getUser()
+                    val notification = user.last_notification
+                    if (notification != null) viewState.showLastNotification(notification.text, it)
+                    else viewState.hideLastNotification()
+                }, {
 
-        if (appData.getUser().last_notification != null) {
-            appData.getUser().last_notification?.let {
-                viewState.showLastNotification(it.text, appData.getUser().notification_unread)
-            }
-        } else {
-            viewState.hideLastNotification()
-        }
+                }).call(compositeDisposable)
+
 
         userRepository.getUserShort()
                 .performOnBackgroundOutOnMain()
@@ -65,7 +65,7 @@ class ProfilePresenter
 
     override fun clickCurrentEvent(event: Event) {
         appData.getUser().default_event?.let {
-             viewState.showCurrentEvent(it)
+            viewState.showCurrentEvent(it)
         }
     }
 

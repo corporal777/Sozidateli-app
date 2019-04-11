@@ -14,8 +14,9 @@ import com.example.adapters.ViewHolder
 import com.example.data.models.Notification
 import com.example.extensions.formatToDefaultDate
 import com.example.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_news_list.*
+import com.example.util.LayoutListWithPlaceholderUtil
 import kotlinx.android.synthetic.main.item_notification.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
@@ -32,6 +33,8 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
     @ProvidePresenter
     fun providePresenter(): NotificationsPresenter = presenterProvider.get()
 
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
+
     private val adapter: SimplePagingRecyclerViewAdapter<Notification> by lazy {
         object : SimplePagingRecyclerViewAdapter<Notification>(
                 { oldItem, newItem -> oldItem.id == newItem.id },
@@ -46,14 +49,17 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
             override fun getItemLayout(itemView: Int) = R.layout.item_notification
 
             override fun onBindItem(viewHolder: ViewHolder, item: Notification?, position: Int) {
+                item!!
                 viewHolder.apply {
                     tvMessage.apply {
-                        setHtml(item?.text ?: "-")
+                        setHtml(item.text)
                         BetterLinkMovementMethod.linkify(Linkify.ALL, this)
                                 .setOnLinkClickListener(linkClickListener)
                     }
-                    tvDate.text = item?.time?.formatToDefaultDate() ?: "-"
+                    tvDate.text = item.time.formatToDefaultDate() ?: "-"
                 }
+
+                presenter.onNotificationOnScreen(item)
             }
         }
     }
@@ -63,10 +69,13 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
         recyclerView.apply {
             adapter = this@NotificationsFragment.adapter
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
     override fun setData(notifications: PagedList<Notification>) {
         adapter.submitList(notifications)
+        placeholderUtil.isDataLoad = true
     }
 
     override fun showUrl(url: String) {
@@ -77,5 +86,5 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
 
     override fun isShowToolbar() = true
 
-    override fun layout() = R.layout.fragment_notifications
+    override fun layout() = R.layout.layout_list_with_placeholder
 }

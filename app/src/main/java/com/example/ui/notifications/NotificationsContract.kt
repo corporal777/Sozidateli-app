@@ -18,5 +18,6 @@ interface NotificationsContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
+        fun onNotificationOnScreen(notification: Notification)
     }
 }

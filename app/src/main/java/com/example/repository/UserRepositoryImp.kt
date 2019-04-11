@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.AuthResponse
+import com.example.data.models.MarkedResponse
 import com.example.data.models.Notification
 import com.example.data.models.Speaker
 import com.example.data.models.user.User
@@ -34,6 +35,10 @@ class UserRepositoryImp
         return callPagination(api.getUserNotifications(limit, offset))
     }
 
+    override fun markNotificationsAsRead(ids: List<Int>): Maybe<MarkedResponse> {
+        return call(api.markNotificationsAsRead(ids))
+    }
+
     override fun getFcmToken(): Maybe<InstanceIdResult> {
         return Maybe.create<InstanceIdResult> { emitter ->
             RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
@@ -56,7 +61,7 @@ class UserRepositoryImp
     }
 
     override fun uploadAvatar(photo: String?): Completable {
-        if(photo.isNullOrEmpty())return Completable.complete()
+        if (photo.isNullOrEmpty()) return Completable.complete()
         return call(api.uploadAvatar(
                 photo.let {
                     val imageFile = File(it)
@@ -79,6 +84,6 @@ class UserRepositoryImp
     }
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
-        return call(api.changeEmailConfirm(email,code))
+        return call(api.changeEmailConfirm(email, code))
     }
 }

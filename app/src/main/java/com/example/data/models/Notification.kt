@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Notification(
-        val id: String,
+        val id: Int,
         @SerializedName("user_id")
         val userId: Int,
         @SerializedName("organization_id")
@@ -19,4 +19,4 @@ data class Notification(
         val status: String,
         val extra: String,
         val time: String
-):Parcelable
+) : Parcelable

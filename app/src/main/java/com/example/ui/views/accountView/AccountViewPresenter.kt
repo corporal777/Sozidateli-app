@@ -4,31 +4,37 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
-import com.example.repository.DummyRepository
-import com.example.ui.base.BasePresenter
 import io.reactivex.disposables.CompositeDisposable
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
 class AccountViewPresenter @Inject constructor(
-        private val appData:AppData
+        private val appData: AppData
 ) : MvpPresenter<AccountViewContract.View>(), AccountViewContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setChatCount(0)
-        appData.onUserChange.
-                performOnBackgroundOutOnMain()
-                .subscribe({
-                    it.value?.let {
-                        viewState.setChatCount(it.notification_unread)
-                    }
-                },{
 
-                }).call(compositeDisposable)
+        viewState.showCounter(false)
+        appData.onNotificationsCountChange
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.apply {
+                        if (it > 0) {
+                            setCount(if (it > 99) "99+" else it.toString())
+                            showCounter(true)
+                        } else {
+                            setCount("")
+                            showCounter(false)
+                        }
+                    }
+                }, {
+                    viewState.showCounter(false)
+                })
+                .call(compositeDisposable)
     }
 
     override fun onDestroy() {

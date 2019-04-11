@@ -9,7 +9,9 @@ import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
-class ChatViewPresenter @Inject constructor(private val appData: AppData) : MvpPresenter<ChatViewContract.View>(), ChatViewContract.Presenter {
+class ChatViewPresenter @Inject constructor(
+        private val appData: AppData
+) : MvpPresenter<ChatViewContract.View>(), ChatViewContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 
