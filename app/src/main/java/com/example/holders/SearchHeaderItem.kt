@@ -30,6 +30,7 @@ open class SearchHeaderItem(
 
     private var searchHolder: SearchHolder? = null
     private var isShowResultLabel = false
+    private var isShowEmptyResult = false
 
     private var simpleTextWatcher = SimpleTextWatcher().setAfterTextChangeRunnable {
         presenter.onSearchTextChange(it.toString())
@@ -65,6 +66,7 @@ open class SearchHeaderItem(
                 } else {
                     llSearchResultTitle.visibility = View.GONE
                 }
+                llSearchEmpty.visibility = if (isShowEmptyResult) View.VISIBLE else View.GONE
                 tvSearchResultCount.visibility = if (searchHolder?.totalCountSearchResult == null) View.GONE else View.VISIBLE
                 tvSearchResultCount.text = searchHolder?.totalCountSearchResult.let { if (it == null) "0" else it.toString() }
             }
@@ -90,6 +92,7 @@ open class SearchHeaderItem(
             tvTypeEvents.setOnClickListener {
                 presenter.onCategoryClick()
             }
+
 
             //tvDate.setOnClickListener { presenter.onClickDate(TYPE_DATE) }
             tvPeriodFrom.setOnClickListener { presenter.onClickDate(TYPE_DATE_PERIOD_FROM) }
@@ -117,6 +120,9 @@ open class SearchHeaderItem(
         })
     }
 
+    fun showEmptyResult(isShow: Boolean){
+        isShowEmptyResult = isShow
+    }
 
     fun showDateDialog(date: Long, type: String) {
         val calendar = Calendar.getInstance()
