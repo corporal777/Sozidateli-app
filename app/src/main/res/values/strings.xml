@@ -243,5 +243,6 @@
     <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
     <string name="success_register_event_btn">К списку мероприятий</string>
 
+    <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>
 
 </resources>

@@ -86,13 +86,20 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     override fun showSearchResult(data: PagedList<SearchEventResultItem>, totalCount: Int?) {
         pagedList.submitList(data)
-        header.showResultHeader(true, totalCount)
+        if(totalCount == null || totalCount==0){
+            header.showResultHeader(false, totalCount)
+            header.showEmptyResult(true)
+        } else {
+            header.showResultHeader(true, totalCount)
+            header.showEmptyResult(false)
+        }
         section.notifyItemChanged(0)
     }
 
     override fun hideSearchResultLabel() {
         header.showResultHeader(false, null)
         pagedList.submitList(null)
+        header.showEmptyResult(false)
     }
 
     override fun showEvent(event: Event) {
