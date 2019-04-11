@@ -23,7 +23,9 @@ class ProfileEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setUser(appData.getUser())
+        appData.fullUser?.let {
+            viewState.setUser(it)
+        }
     }
 
     override fun attachView(view: ProfileEditContract.View?) {
@@ -67,7 +69,7 @@ class ProfileEditPresenter
 
         var isEmailChange = false
 
-        if (mapUser["user_email"] != appData.getUser().user_email) {
+        if (mapUser["user_email"] != appData.fullUser?.user_email) {
             isEmailChange = true
         }
 
@@ -83,7 +85,7 @@ class ProfileEditPresenter
                         it.new_email = mapUser["user_email"].toString()
                     }
 
-                    appData.setUser(it)
+                    appData.fullUser = it
                     viewState.navigateUp()
                 }, {})
                 .call(compositeDisposable)
@@ -129,8 +131,10 @@ class ProfileEditPresenter
 
     override fun onImageTaken(path: String, uri: Uri) {
         photo = path
-        val user = appData.getUser()
-        user.user_avatar_uri = uri
-        viewState.setUser(user)
+        val user = appData.fullUser
+        user?.let {
+            it.user_avatar_uri = uri
+            viewState.setUser(it)
+        }
     }
 }

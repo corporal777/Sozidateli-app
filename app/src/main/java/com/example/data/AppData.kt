@@ -43,6 +43,7 @@ class AppData(
         }
 
     private var user: User? = null
+    var fullUser: User? = null
 
     private val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val onUserChange: Observable<Optional<User>> = userChangeSubject

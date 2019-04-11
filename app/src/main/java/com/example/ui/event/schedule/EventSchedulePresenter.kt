@@ -62,7 +62,7 @@ constructor(
             put("date_end", "$day $DAY_END")
         }.toMap()
 
-        eventRepository.getEventDaySchedule(event.id, filter, limit, offset)
+        eventRepository.getEventDaySchedule(event.id, filter, limit, offset,selectedTags.map { it.getTagId().toString() })
     }.mapIndexedTotal { item, index, total ->
         SubEventItem(SubEventCheckLast(item, index == total?.minus(1)), selectedTags, onSubEventClickListener)
     }

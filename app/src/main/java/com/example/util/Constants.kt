@@ -39,8 +39,8 @@ const val ARG_USER = "user"
 const val ARG_EVENT = "event"
 const val ARG_SPEAKER = "speaker"
 
-const val SETTING_TYPE_CHAT_ALL = "all_users"
-const val SETTING_TYPE_CHAT_FAVORITE = "favorite_users"
+const val SETTING_TYPE_CHAT_ALL = "settings_chat_allow_msg_from_all"
+const val SETTING_TYPE_CHAT_FAVORITE = "settings_chat_allow_msg_from_fav"
 
 const val APP_DATA_DIR_NAME = "Fond"
 const val APP_IMAGE_DIR_NAME = "image"

@@ -65,6 +65,7 @@ open class SubEventItem(
                         isCheckable = true
                         isChecked = selectedTags.contains(it)
                         isClickable = false
+                        isEnabled = false
                     }
                 }
 

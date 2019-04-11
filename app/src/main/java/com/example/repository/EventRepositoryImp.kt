@@ -51,8 +51,8 @@ class EventRepositoryImp
         return call(api.getEventRegister(eventId))
     }
 
-    override fun getEventDaySchedule(eventId: Int, body: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<SubEvent>> {
-        return callPagination(api.getEventDaySchedule(eventId, body, limit, offset))
+    override fun getEventDaySchedule(eventId: Int, body: Map<String, Any>, limit: Int, offset: Int,tags: List<String>): Maybe<PaginationResponse<SubEvent>> {
+        return callPagination(api.getEventDaySchedule(eventId, body, limit, offset,tags))
     }
 
     override fun getEventInfo(eventId: Int): Maybe<EventInfo> {

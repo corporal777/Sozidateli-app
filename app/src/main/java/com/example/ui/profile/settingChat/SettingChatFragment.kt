@@ -27,18 +27,18 @@ class SettingChatFragment : BaseFragment(), SettingChatContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        switchOnlyFavorite.setOnCheckedChangeListener { compoundButton, b ->
-            presenter.onChangeSetting(SETTING_TYPE_CHAT_FAVORITE,b)
-        }
-
-        switchAllUsers.setOnCheckedChangeListener { compoundButton, b ->
-            presenter.onChangeSetting(SETTING_TYPE_CHAT_ALL,b)
-        }
     }
 
     override fun setSetting(user: User) {
         switchAllUsers.isChecked = user.settings_chat_allow_msg_from_all
         switchOnlyFavorite.isChecked = user.settings_chat_allow_msg_from_fav
+
+        switchAllUsers.setOnCheckedChangeListener { compoundButton, b ->
+            presenter.onChangeSetting(SETTING_TYPE_CHAT_ALL,b)
+        }
+        switchOnlyFavorite.setOnCheckedChangeListener { compoundButton, b ->
+            presenter.onChangeSetting(SETTING_TYPE_CHAT_FAVORITE,b)
+        }
     }
 
     override fun isShowToolbar() = true

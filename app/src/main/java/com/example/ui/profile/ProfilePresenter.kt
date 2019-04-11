@@ -9,6 +9,7 @@ import com.example.repository.DummyRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -20,18 +21,26 @@ class ProfilePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        viewState.hideLastNotification()
+
+        if (appData.getUser().last_notification != null) {
+            appData.getUser().last_notification?.let {
+                viewState.showLastNotification(it.text, appData.getUser().notification_unread)
+            }
+        } else {
+            viewState.hideLastNotification()
+        }
 
         userRepository.getUserShort()
                 .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({
                     viewState?.apply {
                         setUser(appData.getUser())
-                        it.last_notification?.let {notification->
-                            viewState.showLastNotification(notification.text,it.notification_unread)
+                        it.last_notification?.let { notification ->
+                            viewState.showLastNotification(notification.text, it.notification_unread)
                         }
                     }
-                },{
+                }, {
                     it.printStackTrace()
                 })
                 .call(compositeDisposable)
@@ -56,7 +65,7 @@ class ProfilePresenter
 
     override fun clickCurrentEvent(event: Event) {
         appData.getUser().default_event?.let {
-            // viewState.showCurrentEvent(it)
+             viewState.showCurrentEvent(it)
         }
     }
 

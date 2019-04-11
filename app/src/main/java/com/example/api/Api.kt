@@ -96,10 +96,10 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/events")
     fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int,
-                     @Field("name") name: String?=null, @Field("date_start") dateStart: String?=null,
-                     @Field("date_end") dateEnd: String?=null, @Field("category[]") category: List<String>?=null,
-                     @Field("organisation[]") organisation: List<String>?=null,
-                     @Field("qr") qr: String?=null): Maybe<ApiResponse<List<Event>>>
+                     @Field("name") name: String? = null, @Field("date_start") dateStart: String? = null,
+                     @Field("date_end") dateEnd: String? = null, @Field("category[]") category: List<String>? = null,
+                     @Field("organisation[]") organisation: List<String>? = null,
+                     @Field("qr") qr: String? = null): Maybe<ApiResponse<List<Event>>>
 
     @FormUrlEncoded
     @POST("/v1/users/search")
@@ -172,7 +172,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
-    fun getEventDaySchedule(@Path("eventId") eventId: Int, @FieldMap map: Map<String, @JvmSuppressWildcards Any?>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<SubEvent>>>
+    fun getEventDaySchedule(@Path("eventId") eventId: Int, @FieldMap map: Map<String, @JvmSuppressWildcards Any?>, @Field("limit") limit: Int, @Field("start") offset: Int, @Field("tag[]") tags: List<String>): Maybe<ApiResponse<List<SubEvent>>>
 
     @FormUrlEncoded
     @POST("/v1/user/events/registrations")

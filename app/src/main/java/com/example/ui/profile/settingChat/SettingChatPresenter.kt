@@ -1,16 +1,20 @@
 package com.example.ui.profile.settingChat
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.ChatRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.SETTING_TYPE_CHAT_ALL
 import com.example.util.SETTING_TYPE_CHAT_FAVORITE
+import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class SettingChatPresenter
-@Inject constructor() : BasePresenter<SettingChatContract.View>(), SettingChatContract.Presenter {
+@Inject constructor(private val userRepository: UserRepository) : BasePresenter<SettingChatContract.View>(), SettingChatContract.Presenter {
 
     override fun attachView(view: SettingChatContract.View?) {
         super.attachView(view)
@@ -22,5 +26,12 @@ class SettingChatPresenter
             SETTING_TYPE_CHAT_ALL -> appData.getUser().settings_chat_allow_msg_from_all = isEnabled
             SETTING_TYPE_CHAT_FAVORITE -> appData.getUser().settings_chat_allow_msg_from_fav = isEnabled
         }
+
+        userRepository.updateUser(mapOf(
+                type to isEnabled
+        )).performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe()
+                .call(compositeDisposable)
     }
 }

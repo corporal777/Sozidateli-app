@@ -26,7 +26,7 @@ class UserRepositoryImp
 ) : ApiRepository(appData), UserRepository {
 
     override fun getUserShort(): Maybe<User> = call(api.getUserShort()).doOnSuccess { appData.setUser(it) }
-    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
+    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.fullUser = it }
 
     override fun getLastNotification() = call(api.getLastNotification())
 

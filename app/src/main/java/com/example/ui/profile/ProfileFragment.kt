@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -63,7 +64,13 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun showCurrentEvent(event: Event) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        findNavController().apply {
+            graph.startDestination = R.id.profile_fragment
+            val opts = NavOptions.Builder()
+                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .build()
+            navigate(R.id.profile_fragment, null, opts)
+        }
     }
 
     override fun showAboutApp() {
@@ -71,12 +78,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     }
 
     override fun showChatSetting() {
-//        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts("package", requireContext().packageName, null)
-        intent.data = uri
-        startActivity(intent)
+        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
     }
 
     override fun setUser(user: User) {

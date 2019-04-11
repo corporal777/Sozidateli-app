@@ -31,15 +31,18 @@ class ProfileFullPresenter
     override fun attachView(view: ProfileFullContract.View?) {
         super.attachView(view)
         if (!isFirstAttach) {
-            val user = appData.getUser()
+            val user = appData.fullUser
 
-            viewState.setUser(user)
-
-            if (user.isEmailChanged) {
-                user.new_email?.let {
-                    viewState.showChangeEmailDialog(it)
+            user?.let {
+                viewState.setUser(it)
+                if (it.isEmailChanged) {
+                    it.new_email?.let {
+                        viewState.showChangeEmailDialog(it)
+                    }
                 }
             }
+
+
         }
         isFirstAttach = false
     }
