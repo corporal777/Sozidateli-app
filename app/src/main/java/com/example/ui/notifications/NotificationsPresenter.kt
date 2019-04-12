@@ -61,6 +61,12 @@ class NotificationsPresenter
     }
 
     override fun onNotificationOnScreen(notification: Notification) {
-        notificationsToReadPublisher.onNext(notification)
+        when (notification.status) {
+            "",
+            "none" -> {
+                notification.status = "acknowledged"
+                notificationsToReadPublisher.onNext(notification)
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ data class Notification(
         val code: Int?,
         val type: String,
         val text: String,
-        val status: String,
+        var status: String,
         val extra: String,
         val time: String
 ) : Parcelable
