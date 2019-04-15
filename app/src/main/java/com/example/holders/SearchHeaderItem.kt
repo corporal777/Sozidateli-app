@@ -120,7 +120,7 @@ open class SearchHeaderItem(
         })
     }
 
-    fun showEmptyResult(isShow: Boolean){
+    fun showEmptyResult(isShow: Boolean) {
         isShowEmptyResult = isShow
     }
 
@@ -129,13 +129,22 @@ open class SearchHeaderItem(
         if (date != 0L) {
             calendar.timeInMillis = date
         }
-        DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
+        val dateDialog = DatePickerDialog.newInstance({ _, year, monthOfYear, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, monthOfYear)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             presenter.onDateSelected(calendar.timeInMillis, type)
         }, calendar)
-                .show(fragmentManager, type)
+
+        searchHolder?.dateFrom?.let {
+            if (type == TYPE_DATE_PERIOD_TO) {
+                val calendarMin = Calendar.getInstance()
+                calendarMin.timeInMillis = it
+                dateDialog.minDate = calendarMin
+            }
+        }
+        dateDialog.show(fragmentManager, type)
+
     }
 
     fun showResultHeader(isShow: Boolean, totalCount: Int? = null) {
