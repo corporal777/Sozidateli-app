@@ -21,6 +21,7 @@ import com.example.events.OnUpdateMyEventsEvent
 import com.example.util.PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED
 import com.example.util.PART_ERROR_REQUEST_EVENT_FILE_ERROR
 import com.example.util.PART_ERROR_REQUEST_EVENT_REGISTER_END
+import com.google.gson.Gson
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import okhttp3.MultipartBody
@@ -52,11 +53,17 @@ class RequestPresenter
         Single.zip(loadCustField, loadRegister, BiFunction<RegisterFieldResponse, EventRegisterResponse, Pair<RegisterFieldResponse, EventRegisterResponse>> { t1, t2 ->
             Pair(t1, t2)
         }).map {
-            it.second.custom_fields?.let { hashFields ->
-                it.first.fields?.let { arrayFields ->
-                    arrayFields.forEach {
-                        it.dataFromServer = hashFields[it.field_id]
+            it.second.custom_fields?.let { fillingFieldArray ->
+                fillingFieldArray.forEach { fillingField->
+
+                    it.first.fields?.let { arrayFields ->
+                        arrayFields.forEach {
+                            if (fillingField.field_id == it.field_id) {
+                                it.dataFromServer = fillingField
+                            }
+                        }
                     }
+
                 }
                 it.first.selectedCategory = it.second.group
             }
@@ -125,13 +132,13 @@ class RequestPresenter
                 messageIds.add(R.string.request_event_register_end)
             } else if (it.contains(PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED)) {
                 messageIds.add(R.string.request_event_required_field)
-            } else if(it.contains(PART_ERROR_REQUEST_EVENT_FILE_ERROR)){
+            } else if (it.contains(PART_ERROR_REQUEST_EVENT_FILE_ERROR)) {
                 messageIds.add(R.string.request_event_file_error)
             }
         }
-        if(hasImportantError){
+        if (hasImportantError) {
             viewState.showErrorDialog(messageIds.toList(), DialogInterface.OnDismissListener { viewState.navigateUp() })
-        } else{
+        } else {
             viewState.showToast(messageIds.toList())
         }
     }

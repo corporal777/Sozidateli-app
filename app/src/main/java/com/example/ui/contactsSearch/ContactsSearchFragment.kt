@@ -12,11 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
+import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
@@ -49,8 +51,8 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     private val adapter: SimplePagingRecyclerViewAdapter<User> by lazy {
         object : SimplePagingRecyclerViewAdapter<User>(
-                { oldItem, newItem -> oldItem.user_id == newItem.user_id },
-                { oldItem, newItem -> oldItem == newItem }
+                { oldItem, newItem -> false },
+                { oldItem, newItem -> false }
         ) {
             override fun getItemLayout(itemView: Int) = R.layout.item_search_contact
 
@@ -63,17 +65,18 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
                     tvUserName.text = makeSectionOfTextBold(item.fullName, this@ContactsSearchFragment.etSearchText.text.toString())
 
-                    val showTitle = false /*position == 0 || getItem(position - 1)?.contactType != item.contactType*/
+                    val showTitle = position == 0 || getItem(position - 1)?.contactType != item.contactType
 
                     val visibility: Int
                     val textRes: Int?
                     if (showTitle) {
                         visibility = View.VISIBLE
-                        /*  textRes = when (item.contactType) {
+                          textRes = when (item.contactType) {
                               ContactSearch.Type.FAVORITE -> R.string.contacts_search_favorites
                               ContactSearch.Type.CHAT -> R.string.contacts_search_chats
                               ContactSearch.Type.CONTACT -> R.string.contacts_search_another
-                          }*/
+                          }
+
                     } else {
                         visibility = View.GONE
                         textRes = null
@@ -81,7 +84,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
                     tvContactType.apply {
                         this.visibility = visibility
-                        //text = textRes?.let { getString(it) }
+                        text = textRes?.let { getString(it) }
                     }
 
                     typeDivider.apply { this.visibility = visibility }
@@ -123,6 +126,8 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
                     }
                 }
             })
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            itemAnimator = null
         }
 
         etSearchText.addTextChangedListener(object : TextWatcher {

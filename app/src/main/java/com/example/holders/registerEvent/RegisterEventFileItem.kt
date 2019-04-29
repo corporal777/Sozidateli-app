@@ -7,9 +7,13 @@ import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.RegisterEventField
 import com.example.data.models.user.RecommendationFiles
 import com.example.ui.request.RequestPresenter
+import com.example.util.ID
+import com.example.util.NAME
+import com.google.gson.internal.LinkedTreeMap
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 import java.io.File
+
 
 open class RegisterEventFileItem(private val fieldRegister:RegisterEventField, private val presenter: RequestPresenter) : BaseRegisterItem(presenter) {
 
@@ -32,9 +36,12 @@ open class RegisterEventFileItem(private val fieldRegister:RegisterEventField, p
 
             if (isFirstBind) {
                 fieldRegister.dataFromServer?.let {
-                    val data = parseField(it, RecommendationFiles::class.java)
-                    etInput.setText(data.name)
-                    onDataChange(fieldRegister.field_id,data.id)
+                    it.value?.let { data->
+                        if(data is LinkedTreeMap<*,*>){
+                            etInput.setText(data[NAME].toString())
+                            onDataChange(fieldRegister.field_id, data[ID])
+                        }
+                    }
                 }
                 isFirstBind = false
             }

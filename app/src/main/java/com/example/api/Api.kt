@@ -70,8 +70,12 @@ interface Api {
     fun getUserFavoriteSpeakers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
 
     @FormUrlEncoded
+    @POST("/v1/user/chat/list")
+    fun chatList(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<UserChat>>>
+
+    @FormUrlEncoded
     @POST("/v1/user/chat/search")
-    fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<UserChat>>>
+    fun chatSearch(@Field("user_fio")fio:String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/{chat}/message")

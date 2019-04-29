@@ -3,7 +3,9 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
+import com.example.data.models.user.User
 import com.example.util.*
+import com.example.util.pagination.PaginationResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -147,7 +149,7 @@ class ChatRepositoryImpl
         return RxFirebaseAuth.signInAnonymously(firebaseAuth).flatMapCompletable { Completable.complete() }
     }
 
-    override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatSearch(searchMap, limit, offset))
+    override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
 
     override fun subscribeChatUnreadMessageCount(): Flowable<Int> {
         val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
@@ -191,4 +193,8 @@ class ChatRepositoryImpl
     }
 
     private fun getLastMessageRef() = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
+
+    override fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return callPagination(api.chatSearch(if (name.isEmpty()) " " else name,limit,offset))
+    }
 }

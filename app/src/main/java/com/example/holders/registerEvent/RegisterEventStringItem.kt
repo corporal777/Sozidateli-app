@@ -22,14 +22,12 @@ open class RegisterEventStringItem(private val fieldRegister:RegisterEventField,
 
             if (isFirstBind) {
                 fieldRegister.dataFromServer?.let {
-                    val data = parseField(it, EventRegisterResponseField::class.java)
-
-                    if (data.value is String || data.value is Number) {
+                    if (it.value is String || it.value is Number) {
                         val text:String
-                        if(data.value is Number){
-                            text = (data.value as Number).toInt().toString()
+                        if(it.value is Number){
+                            text = (it.value as Number).toInt().toString()
                         } else{
-                            text = data.value.toString()
+                            text = it.value.toString()
                         }
                         setText(text)
                     }

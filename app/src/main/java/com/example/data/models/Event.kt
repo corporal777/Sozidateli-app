@@ -23,7 +23,8 @@ data class Event(
 
 ) : Parcelable
 
-enum class Status(val code: String) {
+
+enum class StatusEvent(val code: String) {
     APPROVED("APPROVED"),
     CONFIRMATION_EXPECTED("CONFIRMATION_EXPECTED"),
     CONFERENCE_ENDS("CONFERENCE_ENDS"),

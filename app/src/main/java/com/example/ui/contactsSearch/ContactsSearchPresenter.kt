@@ -18,7 +18,6 @@ import javax.inject.Inject
 @InjectViewState
 class ContactsSearchPresenter
 @Inject constructor(
-        private val userRepository: UserRepository,
         private val chatRepository: ChatRepository
 ) : BasePresenter<ContactsSearchContract.View>(), ContactsSearchContract.Presenter {
 
@@ -27,7 +26,7 @@ class ContactsSearchPresenter
     private var searchText = ""
 
     private val searchCompositeDisposable = CompositeDisposable()
-    private val pagination = PaginationDataSourceFactory { limit, offset -> userRepository.searchUser(searchText, searchText, limit, offset) }
+    private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.searchUser(searchText, searchText, limit, offset) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

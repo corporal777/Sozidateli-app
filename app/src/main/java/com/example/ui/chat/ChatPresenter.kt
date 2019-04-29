@@ -54,7 +54,20 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
+
+                    var canSendMsg = true
+
+                    if(it.inFavorite && !it.user.settings_chat_allow_msg_from_fav){
+                        canSendMsg = false
+                    } else if(!it.user.settings_chat_allow_msg_from_all && !(it.inFavorite && it.user.settings_chat_allow_msg_from_fav)){
+                        canSendMsg = false
+                    }
+
                     viewState.apply {
+
+                        showAvatar(it.user.user_avatar)
+                        showCantSendHolder(!canSendMsg)
+
                         val parser = SnapshotParser { snapshot ->
                             snapshot.toObject(ChatMessage::class.java)!!.let {
                                 it.id = snapshot.id
@@ -71,8 +84,6 @@ class ChatPresenter
                                 parser,
                                 CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT
                         )
-                        showCantSendHolder(false)
-                        showAvatar(it.user.user_avatar)
                     }
                 }, { it.printStackTrace() })
                 .call(compositeDisposable)

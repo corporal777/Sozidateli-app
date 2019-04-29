@@ -3,25 +3,17 @@ package com.example.ui.request
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.ACTION_OPEN_DOCUMENT
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.FieldType
-import com.example.data.models.RegisterEventField
 import com.example.data.models.RegisterFieldResponse
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
 import com.example.util.REQUEST_CODE_SELECT_PDF
 import com.example.util.photohelper.RealPathUtil
-import com.vincent.filepicker.Constant
-import com.vincent.filepicker.activity.PDFFilePickActivity
-import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -30,10 +22,8 @@ import kotlinx.android.synthetic.main.fragment_request.*
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Provider
-import android.provider.DocumentsContract
 import com.example.holders.ActionButtonItem
 import com.nabinbhandari.android.permissions.PermissionHandler
-import android.Manifest.permission
 import com.nabinbhandari.android.permissions.Permissions
 
 
@@ -73,9 +63,10 @@ class RequestFragment : BaseFragment(), RequestContract.View {
                     FieldType.NUMBER.code -> baseItem = RegisterEventNumberItem(it, presenter)
                     FieldType.DATE.code -> baseItem = RegisterEventDateItem(it, false, presenter, fragmentManager!!)
                     FieldType.DATETIME.code -> baseItem = RegisterEventDateItem(it, true, presenter, fragmentManager!!)
-                    FieldType.SELECTBOX.code -> baseItem = RegisterEventSelectBoxItem(it, presenter)
-                    FieldType.RADIOBOX.code -> baseItem = RegisterEventRadioBoxItem(it, presenter)
+                    FieldType.CHECKBOX.code -> baseItem = RegisterEventSelectBoxItem(it, presenter)
+                    FieldType.SELECTBOX.code -> baseItem = RegisterEventRadioBoxItem(it, presenter)
                     FieldType.FILE.code -> baseItem = RegisterEventFileItem(it, presenter)
+                    FieldType.SELECTGEO.code -> baseItem = RegisterEventNumberItem(it, presenter)
                     else -> baseItem = RegisterEventStringItem(it, presenter)
                 }
                 listFields.add(baseItem)
