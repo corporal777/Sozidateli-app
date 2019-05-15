@@ -61,9 +61,6 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
-# Google Services (e.g. APIs or Firebase)
-app/google-services.json
-
 # Freeline
 freeline.py
 freeline/
@@ -136,4 +133,3 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
-
