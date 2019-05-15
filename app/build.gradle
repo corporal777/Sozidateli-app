@@ -10,6 +10,10 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'com.google.gms.google-services'
 
+apply plugin: 'io.fabric'
+
+apply plugin: 'jacoco-android'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -20,10 +24,32 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    lintOptions {
+        abortOnError false
+        lintConfig file("../lint.xml")
+    }
+
+    signingConfigs {
+        def localFile = rootProject.file("release.properties")
+        def propertiesFile = localFile.exists() ? localFile : new File("/home/service/keystore/heinz/release.properties")
+        if (propertiesFile.exists()) {
+            def properties = new Properties()
+            properties.load(new FileInputStream(propertiesFile))
+            release {
+                keyAlias properties.keyAlias
+                keyPassword properties.keyAliasPassword
+                storePassword properties.keyStorePassword
+                storeFile rootProject.file(properties.keyStorePath)
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
         }
         debug {
             buildConfigField "String", "API_URL", "\"http://api.ha-slsp.ru/\""
@@ -42,6 +68,21 @@ android {
 
 androidExtensions {
     experimental = true
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.28.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -132,11 +173,20 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.6'
 
+    // crashlytics
+    compile('com.crashlytics.sdk.android:crashlytics:2.10.0@aar') {
+        transitive = true
+    }
+
     // tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
-repositories {
-    mavenCentral()
+
+sonarqube {
+    properties {
+        property "sonar.jacoco.reportPaths", "build/jacoco/testDebugUnitTest.exec"
+        property "sonar.junit.reportsPaths", "build/test-results/*/*.xml"
+    }
 }
