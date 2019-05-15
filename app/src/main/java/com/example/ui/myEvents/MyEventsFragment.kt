@@ -14,6 +14,7 @@ import com.example.adapters.ViewHolder
 import com.example.data.models.Event
 import com.example.data.models.EventRegisterResponse
 import com.example.data.models.Status
+import com.example.data.models.StatusEvent
 import com.example.extensions.dp
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.LayoutListWithPlaceholderUtil
@@ -50,7 +51,7 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                 viewHolder.apply {
                     itemContainer.apply {
                         clipToOutline = true
-                        alpha = if (event.status === Status.CONFERENCE_ENDS.code) 0.5f else 1f
+                        alpha = if (event.status === StatusEvent.CONFERENCE_ENDS.code) 0.5f else 1f
                         setOnClickListener { presenter.onEventClick(event) }
                     }
 
@@ -64,26 +65,34 @@ class MyEventsFragment : BaseNestedNavigationFragment(), MyEventsContract.View {
                     tvStatus.apply {
                         visibility = View.VISIBLE
 
-                        val textColor: Int
-                        val textBackground: Int
-                        val textRes: Int
-                        when (event.status) {
+                        var textColor: Int
+                        var textBackground: Int
+                        var textRes: Int
+                        when (item.status) {
                             Status.APPROVED.code -> {
                                 textColor = R.color.event_status_approved_text
                                 textBackground = R.color.event_status_approved_background
                                 textRes = R.string.event_status_approved
                             }
-                            Status.CONFIRMATION_EXPECTED.code -> {
+                            Status.DECLINED.code->{
+                                textColor = R.color.event_status_wait_confirmation_text
+                                textBackground = R.color.red
+                                textRes = R.string.event_status_decline
+                            }
+                            else -> {
                                 textColor = R.color.event_status_wait_confirmation_text
                                 textBackground = R.color.event_status_wait_confirmation_background
                                 textRes = R.string.event_status_wait_confirmation
                             }
-                            else -> {
-                                textColor = R.color.event_status_finished_text
-                                textBackground = R.color.event_status_finished_background
-                                textRes = R.string.event_status_finished
-                            }
+
+
                         }
+                        if (event.status === StatusEvent.CONFERENCE_ENDS.code) {
+                            textColor = R.color.event_status_finished_text
+                            textBackground = R.color.event_status_finished_background
+                            textRes = R.string.event_status_finished
+                        }
+
 
                         text = getString(textRes)
                         setTextColor(ContextCompat.getColor(context, textColor))

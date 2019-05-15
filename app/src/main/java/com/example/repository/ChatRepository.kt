@@ -1,6 +1,7 @@
 package com.example.repository
 
 import com.example.data.models.*
+import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.firestore.Query
 import io.reactivex.Completable
@@ -37,4 +38,6 @@ interface ChatRepository {
     fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage>
 
     fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable
+
+    fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 }

@@ -22,6 +22,7 @@
     <string name="event_status_approved">Одобрено</string>
     <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
     <string name="event_status_finished">Завершено</string>
+    <string name="event_status_decline">Отклонено</string>
 
     <string name="auth_title_login">Сообщество лидеров социальных проектов</string>
     <string name="auth_label_choose_login">Войти с помощью</string>
@@ -176,7 +177,7 @@
     <string name="not_found_chats">У вас нет чатов</string>
     <string name="create_chat">Создать чат</string>
 
-    <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\n отправить\n сообщение</string>
+    <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="user_avatar">Аватар</string>
 
     <string name="chat_photo_message_text">Фото</string>

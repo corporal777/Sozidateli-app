@@ -17,10 +17,10 @@ open class RegisterEventRadioBoxItem(private val fieldRegister: RegisterEventFie
     override fun bind(viewHolder: ViewHolder, position: Int) {
         if (isFirstBind) {
             fieldRegister.dataFromServer?.let {
-                val data = parseField(it, EventRegisterResponseField::class.java)
+                //val data = parseField(it, EventRegisterResponseField::class.java)
 
-                if (data.value is String) {
-                    selected = data.value as String
+                if (it.value is String) {
+                    selected = it.value as String
                 }
 
             }

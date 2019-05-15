@@ -18,10 +18,9 @@ open class RegisterEventSelectBoxItem(private val fieldRegister:RegisterEventFie
 
         if (isFirstBind) {
             fieldRegister.dataFromServer?.let {
-                val data = parseField(it, EventRegisterResponseField::class.java)
 
-                if (data.value is LinkedTreeMap<*,*>) {
-                    selected = data.value as LinkedTreeMap<String,String>
+                if (it.value is LinkedTreeMap<*,*>) {
+                    selected = it.value as LinkedTreeMap<String,String>
                 }
 
             }

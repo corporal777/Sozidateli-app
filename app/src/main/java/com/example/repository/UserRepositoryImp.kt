@@ -56,10 +56,6 @@ class UserRepositoryImp
     override fun updateUser(map: Map<String, Any?>) = call(api.updateUser(map)
             .doOnSuccess { appData.setUser(it.response) })
 
-    override fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return callPagination(api.userSearch(if (name.isEmpty()) " " else name, limit, offset))
-    }
-
     override fun uploadAvatar(photo: String?): Completable {
         if (photo.isNullOrEmpty()) return Completable.complete()
         return call(api.uploadAvatar(

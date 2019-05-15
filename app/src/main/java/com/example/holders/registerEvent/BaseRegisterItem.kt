@@ -2,7 +2,9 @@ package com.example.holders.registerEvent
 
 import android.text.InputType
 import com.example.R
+import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.RegisterEventField
+import com.example.data.models.RegisterFieldResponse
 import com.example.ui.request.RequestPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonElement
@@ -14,10 +16,6 @@ import java.io.File
 abstract class BaseRegisterItem(private val presenter: RequestPresenter) : Item() {
 
     protected var isFirstBind = true
-
-    protected fun <T>parseField(data:JsonElement?,clazz: Class<T>):T{
-        return Gson().fromJson(data,clazz)
-    }
 
     fun onDataChange(id: String, data: Any?, subId: String? = null) {
         var field = "field[$id]"

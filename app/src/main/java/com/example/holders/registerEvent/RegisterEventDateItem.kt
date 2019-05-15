@@ -61,10 +61,10 @@ open class RegisterEventDateItem(private val fieldRegister:RegisterEventField,
             }
             if(isFirstBind){
                 fieldRegister.dataFromServer?.let {
-                    val data = parseField(it,EventRegisterResponseField::class.java)
-                    if(data.value is String) {
-                        etInput.setText(data.value as String)
-                        onDataChange(fieldRegister.field_id,data.value as String)
+                    //val data = parseField(it,EventRegisterResponseField::class.java)
+                    if(it.value is String) {
+                        etInput.setText(it.value as String)
+                        onDataChange(fieldRegister.field_id,it.value as String)
                     }
                 }
                 isFirstBind = false

@@ -9,7 +9,7 @@ data class RegisterEventField(
         var type: String,
         var description: String?,
         var values: ArrayList<String>?,
-        var dataFromServer: JsonElement?
+        var dataFromServer: EventRegisterResponseField?
 )
 
 enum class FieldType(val code: String) {
@@ -17,9 +17,9 @@ enum class FieldType(val code: String) {
     NUMBER("number"),
     DATE("date"),
     DATETIME("datetime"),
+    CHECKBOX("checkbox"),
     SELECTBOX("selectbox"),
-    RADIOBOX("radiobox"),
-    FILE("file")
-
+    FILE("file"),
+    SELECTGEO("selectgeo")
 
 }

@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.Status
+import com.example.data.models.StatusEvent
 import com.example.events.OnUpdateMyEventsEvent
 import com.example.extensions.build
 import com.example.repository.EventRepository
@@ -68,7 +69,7 @@ class MyEventsPresenter
     }
 
     private fun isCanSetDefault(event: Event): Boolean {
-        return event.status == Status.APPROVED.code || event.status == Status.CONFERENCE_IN_PROGRESS.code
+        return event.status == Status.APPROVED.code || event.status == StatusEvent.CONFERENCE_IN_PROGRESS.code
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
