@@ -18,6 +18,8 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackground
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.models.NewMessage
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -29,7 +31,8 @@ class MainPresenter
         private val chatNotificationHelper: ChatNotificationHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
-        private val chatRepository: ChatRepository
+        private val chatRepository: ChatRepository,
+        private val socketRepository: SocketRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     private val chatCompositeDisposable = CompositeDisposable()
@@ -53,9 +56,8 @@ class MainPresenter
                     } else {
                         userRepository.getUserShort()
                                 .flatMapCompletable {
-                                    Completable.mergeArray(
-                                            subscribeToNotifications().onErrorComplete()
-                                    )
+                                    connectToSocket(it.user_id)
+                                    subscribeToNotifications()
                                 }
                                 .andThen(
                                         if (isAuthRequired) {
@@ -144,6 +146,19 @@ class MainPresenter
                 .subscribe({}, { viewState.showDialogRecoverPassword(email, code) }).call(compositeDisposable)
     }
 
+
+    private fun connectToSocket(userId: Int) {
+        socketRepository.connect(userId.toString())
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    subscribeChatNewMessage()
+                    subscribeChatUnreadCount()
+                    chatNotificationHelper.isConnectingToSocket = true
+                }, {
+                    it.printStackTrace()
+                }).call(compositeDisposable)
+    }
+
     private fun subscribeToNotifications(): Completable {
         return userRepository.getFcmToken()
                 .flatMapCompletable { userRepository.notificationsRegister(it.token) }
@@ -152,76 +167,54 @@ class MainPresenter
                 .onErrorComplete()
     }
 
-    private fun subscribeToChat(uid: Int) {
-        compositeDisposable += chatRepository.connect(uid.toString())
-                .performOnBackground()
-                .subscribe {
-//                    subscribeChatUnreadCount()
-//                    subscribeChatLastMessage()
-                }
-    }
-
     private fun subscribeChatUnreadCount() {
-        chatRepository.subscribeChatUnreadMessageCount()
+        socketRepository.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     appData.chatUnreadMessageCount = it
                 }, {
+                    it.printStackTrace()
                     appData.chatUnreadMessageCount = 0
-                }).call(chatCompositeDisposable)
+                }).call(compositeDisposable)
     }
 
-    private fun subscribeChatLastMessage() {
-        chatCompositeDisposable += chatRepository.loadChatLastMessage()
-                .flatMapCompletable { setMessageShowed(it.chatId, it.messageId) }
-                .onErrorComplete()
-                .andThen(chatRepository.subscribeChatLastMessage())
-                .doOnNext { chatNotificationHelper.isConnectingToLastMessageDatabase = true }
-                .doFinally { chatNotificationHelper.isConnectingToLastMessageDatabase = false }
+    private fun subscribeChatNewMessage() {
+        chatCompositeDisposable += socketRepository.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    processLastChatMessageUpdate(it)
+                    processNewMessageMessage(it)
                 }, {
                     it.printStackTrace()
                 })
     }
 
-    private fun processLastChatMessageUpdate(localMessage: LocalNotification) {
-        if (localMessage.isShowed) return
-        val chatId = localMessage.chatId ?: return
-        val messageId = localMessage.messageId ?: return
+    private fun processNewMessageMessage(newMessage: NewMessage) {
+        val chatId = newMessage.room
+        val messageId = newMessage.message._id
+        val message = newMessage.message.message ?: ""
+        val senderId = newMessage.message.senderKey.toInt()
 
-        chatCompositeDisposable += setMessageShowed(chatId, messageId)
+        userRepository.getUserById(senderId)
                 .performOnBackgroundOutOnMain()
-                .mergeWith(Completable.fromAction {
-                    val message = localMessage.text ?: return@fromAction
-                    val senderId = localMessage.senderId
-                    val senderName = localMessage.userName ?: return@fromAction
+                .subscribe({
                     chatNotificationHelper.showNotificationIfCan(
                             chatId = chatId,
                             messageId = messageId,
                             message = message,
                             senderId = senderId,
-                            senderName = senderName,
-                            avatarUrl = localMessage.avatar
-                    )
-                })
-                .subscribe({}, {
+                            senderName = it.fullName,
+                            avatarUrl = it.user_avatar)
+                }, {
                     it.printStackTrace()
-                })
-    }
-
-    private fun setMessageShowed(chatId: String?, messageId: String?): Completable {
-        return if (chatId != null && messageId != null) {
-            chatRepository.setMessageShowed(appData.getUser().user_id.toString(), chatId, messageId)
-        } else {
-            val message = "Can not update message with null parameters: chatId: $chatId, messageId: $messageId"
-            Completable.error(NullPointerException(message))
-        }
+                }).call(compositeDisposable)
     }
 
     private fun unsubscribeChat() {
         chatCompositeDisposable.clear()
+        if(socketRepository.isConnected()) {
+            socketRepository.disconnect()
+            chatNotificationHelper.isConnectingToSocket = false
+        }
     }
 
     override fun onDestroy() {

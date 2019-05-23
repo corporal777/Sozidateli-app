@@ -2,10 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.AuthResponse
-import com.example.data.models.MarkedResponse
-import com.example.data.models.Notification
-import com.example.data.models.Speaker
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
@@ -17,6 +14,7 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Path
 import java.io.File
 import javax.inject.Inject
 
@@ -81,5 +79,9 @@ class UserRepositoryImp
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
         return call(api.changeEmailConfirm(email, code))
+    }
+
+    override fun getUserById(id: Int): Single<User> {
+        return call(api.getUserById(id))
     }
 }

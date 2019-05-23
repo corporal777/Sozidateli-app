@@ -16,13 +16,16 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.models.UnreadMessageCount
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class ChatListPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository
+        private val chatRepository: ChatRepository,
+        private val socketRepository: SocketRepository
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.loadChatList(mapOf(), limit, offset) }.map { chat ->
@@ -88,22 +91,25 @@ class ChatListPresenter
             oldSubscription.dispose()
         }
 
-//        val changeAccept = createChatMessageCountConsumer(chat)
-//        val subscription = chatRepository.subscribeChatUnreadMessageCount(chatId.toString())
-//                .performOnBackgroundOutOnMain()
-//                .subscribe(changeAccept, Consumer { changeAccept.accept(0) })
-//        chatUnreadMessageSubscriptions.put(chatId, subscription)
-//        compositeDisposable.add(subscription)
+        val changeAccept = createChatMessageCountConsumer(chat)
+        val subscription = socketRepository.subscribeToUnreadMessageCountForRooms()
+                .performOnBackgroundOutOnMain()
+                .subscribe(changeAccept, Consumer { changeAccept.accept(UnreadMessageCount(chatId.toString(),0)) })
+
+        chatUnreadMessageSubscriptions.put(chatId, subscription)
+        compositeDisposable.add(subscription)
     }
 
     override fun onChatGoneFromScreen(chat: UserChatItem) {
        // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
     }
 
-    private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<Int> {
+    private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<UnreadMessageCount> {
         return Consumer {
-            chatUnreadMessageCount.put(chat.userChat.id, it)
-            if (chat.unreadMessageCount != it) chat.unreadMessageCount = it
+            if(it.room==chat.userChat.id.toString()) {
+                chatUnreadMessageCount.put(chat.userChat.id, it.count)
+                if (chat.unreadMessageCount != it.count) chat.unreadMessageCount = it.count
+            }
         }
     }
 }

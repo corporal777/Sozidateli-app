@@ -11,7 +11,7 @@ import com.example.util.*
 class ChatNotificationHelper(private val context: Context) {
 
     var currentChatId: String? = null
-    var isConnectingToLastMessageDatabase = false
+    var isConnectingToSocket = false
 
     val showedMessages = HashSet<String>()
 
