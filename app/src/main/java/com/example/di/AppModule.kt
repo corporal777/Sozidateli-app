@@ -30,12 +30,6 @@ class AppModule {
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
-    fun provideSocket(context: Context): SocketRepository = SocketRepository.getInstance(context)
-
-    @Provides
-    fun provideChatSocketRepository(context: Context): ChatRepository = ChatRepository(context)
-
-    @Provides
     @Singleton
     fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
 
