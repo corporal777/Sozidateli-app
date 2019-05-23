@@ -12,6 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
+import ru.houseofapps.chat.ChatRepository
+import ru.houseofapps.chat.SocketRepository
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
 
@@ -26,6 +28,12 @@ class AppModule {
 
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    fun provideSocket(context: Context): SocketRepository = SocketRepository.getInstance(context)
+
+    @Provides
+    fun provideChatSocketRepository(context: Context): ChatRepository = ChatRepository(context)
 
     @Provides
     @Singleton

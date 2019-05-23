@@ -86,5 +86,13 @@
             android:name="io.fabric.ApiKey"
             android:value="9fdfec82c767116900dd58d4599d1c6eef2a5699"
             />
+
+        <meta-data
+            android:name="api_url"
+            android:value="http://194.58.123.180/chat/"/>
+
+        <meta-data
+            android:name="chat_project_key"
+            android:value="AskfWi3o31sA"/>
     </application>
 </manifest>

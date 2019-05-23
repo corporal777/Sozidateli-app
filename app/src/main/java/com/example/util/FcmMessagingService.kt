@@ -39,7 +39,7 @@ class FcmMessagingService : FirebaseMessagingService() {
 
     @SuppressLint("CheckResult")
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        if (chatNotificationHelper.isConnectingToLastMessageDatabase) return
+        if (chatNotificationHelper.isConnectingToSocket) return
 
         val chatData = remoteMessage.data[DATA_CHAT_OBJECT] ?: return
         val userChat = Gson().fromJson(chatData, UserChat::class.java) ?: return
@@ -48,34 +48,18 @@ class FcmMessagingService : FirebaseMessagingService() {
 
         if (!chatNotificationHelper.isCanSendMessage(chatId, messageId)) return
 
-        chatRepository.getMessage(chatId, messageId)
-                .map { it.isShowed ?: false }
-                .onErrorReturn { false }
-                .flatMapCompletable {
-                    if (!it) chatRepository.setMessageShowed(appPrefs.userId.let { uid ->
-                        if (uid == -1) null else uid.toString()
-                    }, chatId, messageId)
-                    else Completable.complete()
-                }
-                .performOnBackgroundOutOnMain()
-                .andThen(Completable.fromAction {
-                    val message = userChat.lastMessage ?: return@fromAction
-                    val senderId = userChat.userSender?.user_id ?: return@fromAction
-                    val senderName = userChat.userSender?.fullName ?: return@fromAction
-                    chatNotificationHelper.showNotificationIfCan(
-                            chatId = chatId,
-                            messageId = messageId,
-                            message = message,
-                            senderId = senderId,
-                            senderName = senderName,
-                            avatarUrl = userChat.userSender?.user_avatar
-                    )
-                })
-                .subscribe({
+        val message = userChat.lastMessage ?: return
+        val senderId = userChat.userSender?.user_id ?: return
+        val senderName = userChat.userSender?.fullName ?: return
 
-                }, {
-                    it.printStackTrace()
-                })
+        chatNotificationHelper.showNotificationIfCan(
+                chatId = chatId,
+                messageId = messageId,
+                message = message,
+                senderId = senderId,
+                senderName = senderName,
+                avatarUrl = userChat.userSender?.user_avatar
+        )
     }
 
     companion object {

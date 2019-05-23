@@ -26,4 +26,6 @@ interface UserRepository {
     fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
+
+    fun getUserById(id: Int): Single<User>
 }
