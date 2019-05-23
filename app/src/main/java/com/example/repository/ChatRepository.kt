@@ -8,14 +8,23 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import ru.houseofapps.chat.models.Message
+import ru.houseofapps.chat.models.MessageResponse
 
 interface ChatRepository {
 
+    fun connect(userId: String): Flowable<Any>
+
+    fun joinChat(chatId: String, users: Array<String>): Completable
+
+    fun loadChatMessages(chatId: String, startAfter: String, limit: Int): Maybe<MessageResponse>
+
+    fun subscribeNewMessage(): Flowable<Message>
+
+    fun sendChatMessage(chatId: String, message: String, type: String): Completable
+
+
     fun getChatMessageQuery(chatId: String): Query
-
-    fun sendChatMessage(chatId: String, userId: String, message: ChatMessage): Completable
-
-    fun singInFirebase(): Completable
 
     fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 

@@ -1,27 +1,17 @@
 package com.example.ui.chat
 
 import android.net.Uri
-import android.os.Build
 import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
-import com.example.data.models.ChatMessage
 import com.example.data.models.UserChatMessage
+import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.Collector
-import com.example.util.FIELD_IS_READ
 import com.example.util.chat.ChatNotificationHelper
-import com.firebase.ui.firestore.SnapshotParser
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.Single
-import io.reactivex.SingleSource
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -36,57 +26,35 @@ class ChatPresenter
     lateinit var chatId: String
     lateinit var userId: String
 
-    private lateinit var messageToMarkReadPublisher: PublishSubject<ChatMessage>
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        Observable.create<Collector<ChatMessage>> { it.onNext(createMessagesCollector(it)) }
-                .flatMap { subscribeToMessageMarkRead(it) }
-                .map { messages -> messages.mapNotNull { it.id }.distinct() }
-                .flatMapCompletable { chatRepository.setMessagesRead(chatId, it) }
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
-                .call(compositeDisposable)
-
-        chatRepository.singInFirebase()
-                .andThen(chatRepository.getChat(chatId))
+        chatRepository.getChat(chatId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-
-                    var canSendMsg = true
-
-                    if(it.inFavorite && !it.user.settings_chat_allow_msg_from_fav){
-                        canSendMsg = false
-                    } else if(!it.user.settings_chat_allow_msg_from_all && !(it.inFavorite && it.user.settings_chat_allow_msg_from_fav)){
-                        canSendMsg = false
-                    }
+                    val canSendMsg = if (it.inFavorite && !it.user.settings_chat_allow_msg_from_fav) false
+                    else !(!it.user.settings_chat_allow_msg_from_all && !(it.inFavorite && it.user.settings_chat_allow_msg_from_fav))
 
                     viewState.apply {
-
                         showAvatar(it.user.user_avatar)
                         showCantSendHolder(!canSendMsg)
-
-                        val parser = SnapshotParser { snapshot ->
-                            snapshot.toObject(ChatMessage::class.java)!!.let {
-                                it.id = snapshot.id
-                                it.isRead = snapshot.getBoolean(FIELD_IS_READ)
-                                val msg = UserChatMessage(it, appData.getUser().user_id == it.senderId)
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                                    it.id?.let { id -> viewState.cancelNotificationByChatId(id.hashCode().toString()) }
-                                }
-                                msg
-                            }
-                        }
-                        viewState.setQuery(
-                                chatRepository.getChatMessageQuery(chatId),
-                                parser,
-                                CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT
-                        )
                     }
+
+                    if (canSendMsg) joinChat(it.user)
                 }, { it.printStackTrace() })
                 .call(compositeDisposable)
+    }
+
+    private fun joinChat(withUser: User) {
+        compositeDisposable += chatRepository.joinChat(chatId, arrayOf(withUser.user_id.toString()))
+                .andThen(chatRepository.subscribeNewMessage())
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.insertMessage(UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())))
+                    if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     override fun attachView(view: ChatContract.View?) {
@@ -100,31 +68,17 @@ class ChatPresenter
         chatNotificationHelper.currentChatId = null
     }
 
-    private fun createMessagesCollector(creatorEmitter: ObservableEmitter<Collector<ChatMessage>>): Collector<ChatMessage> {
-        return Collector<ChatMessage>().apply {
-            doOnRelease = Runnable { creatorEmitter.onNext(createMessagesCollector(creatorEmitter)) }
-        }
-    }
-
-    private fun subscribeToMessageMarkRead(collector: Collector<ChatMessage>): Observable<List<ChatMessage>> {
-        return PublishSubject.create<ChatMessage>().apply { messageToMarkReadPublisher = this }
-                .doOnNext { collector.add(it) }
-                .debounce(200, TimeUnit.MILLISECONDS)
-                .flatMapSingle { Single.just(collector.release()) }
-    }
-
     override fun onSendTextMessageClick(message: String) {
-        sendMessage(ChatMessage(text = message, senderId = appData.getUser().user_id))
+        sendMessage(message, "text")
     }
 
     override fun onImageClick(url: String, imageView: ImageView) {
         viewState.openImageFullScreen(url, imageView)
     }
 
-    private fun sendMessage(chatMessage: ChatMessage) {
-        if (chatMessage.text.isNullOrBlank()) return
+    private fun sendMessage(message: String, type: String) {
         viewState.apply { clearMessageInput() }
-        chatRepository.sendChatMessage(chatId, userId, chatMessage)
+        chatRepository.sendChatMessage(chatId, message, type)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 
@@ -135,14 +89,10 @@ class ChatPresenter
     }
 
     override fun onChatMessageOnScreen(message: UserChatMessage) {
-        if (!message.isMyMessage && message.message.isShowed != true)
-            message.message.id?.also { chatNotificationHelper.showedMessages.add(it) }
-        if (message.isMyMessage || message.message.isRead == true) return
-        messageToMarkReadPublisher.onNext(message.message)
-    }
-
-    override fun onNewMessage() {
-        if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
+//        if (!message.isMyMessage && message.message.isShowed != true)
+//            message.message.id?.also { chatNotificationHelper.showedMessages.add(it) }
+//        if (message.isMyMessage || message.message.isRead == true) return
+//        messageToMarkReadPublisher.onNext(message.message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -150,28 +100,28 @@ class ChatPresenter
     }
 
     override fun onImageTaken(path: String, uri: Uri) {
-        chatRepository.uploadImage(chatId, path)
-                .flatMap { response ->
-                    SingleSource<ChatMessage> {
-                        val imageResponse = response.response[0]
-                        if (imageResponse.error || imageResponse.path.isNullOrEmpty()) {
-                            it.onError(RuntimeException("Image uploading error"))
-                            return@SingleSource
-                        }
-
-                        viewState.getPhotoMessageText { text ->
-                            val message = ChatMessage(text = text, senderId = appData.getUser().user_id, image = imageResponse.path)
-                            it.onSuccess(message)
-                        }
-                    }
-                }
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    sendMessage(it)
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
+//        chatRepository.uploadImage(chatId, path)
+//                .flatMap { response ->
+//                    SingleSource<ChatMessage> {
+//                        val imageResponse = response.response[0]
+//                        if (imageResponse.error || imageResponse.path.isNullOrEmpty()) {
+//                            it.onError(RuntimeException("Image uploading error"))
+//                            return@SingleSource
+//                        }
+//
+//                        viewState.getPhotoMessageText { text ->
+//                            val message = ChatMessage(text = text, senderId = appData.getUser().user_id, image = imageResponse.path)
+//                            it.onSuccess(message)
+//                        }
+//                    }
+//                }
+//                .performOnBackgroundOutOnMain()
+//                .withLoadingDialog(viewState)
+//                .subscribe({
+//                    sendMessage(it)
+//                }, {
+//                    it.printStackTrace()
+//                }).call(compositeDisposable)
     }
 
     companion object {

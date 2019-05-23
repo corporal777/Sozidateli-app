@@ -16,11 +16,11 @@ class ChatMessageTextItem(
         super.bind(viewHolder, position)
         viewHolder.apply {
             tvChatMessage.apply {
-                text = message.message.text
+                text = message.message.message
                 setTextColor(ContextCompat.getColor(context, if (message.isMyMessage) R.color.chat_message_text_outgoing
                 else R.color.chat_message_text_incoming))
 
-                setCompoundDrawablesWithIntrinsicBounds(0, 0, if (message.message.isRead!=null && message.message.isRead!! && message.isMyMessage) R.drawable.ic_read_msg else 0, 0)
+                setCompoundDrawablesWithIntrinsicBounds(0, 0, if (message.message.isRead && message.isMyMessage) R.drawable.ic_read_msg else 0, 0)
                 compoundDrawablePadding = context.resources.getDimensionPixelSize(R.dimen.chat_padding_read_icon)
             }
         }

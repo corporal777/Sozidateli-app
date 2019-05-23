@@ -3,7 +3,6 @@ package com.example.ui.main
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
-import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.LocalNotification
 import com.example.repository.AuthRepository
@@ -17,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import performOnBackground
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -54,8 +54,7 @@ class MainPresenter
                         userRepository.getUserShort()
                                 .flatMapCompletable {
                                     Completable.mergeArray(
-                                            subscribeToNotifications().onErrorComplete(),
-                                            subscribeToChat()
+                                            subscribeToNotifications().onErrorComplete()
                                     )
                                 }
                                 .andThen(
@@ -79,6 +78,8 @@ class MainPresenter
                                         }
                                         checkIntent()
                                     }
+
+                                    subscribeToChat(appData.getUser().user_id)
 
                                 }, {
                                     isAuthRequired = true
@@ -130,10 +131,10 @@ class MainPresenter
     }
 
     override fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String) {
-        authRepository.confirmEmailSocialNetwork(snType,id,code)
+        authRepository.confirmEmailSocialNetwork(snType, id, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({},{}).call(compositeDisposable)
+                .subscribe({}, {}).call(compositeDisposable)
     }
 
     override fun onSetPassword(email: String, code: String, password: String) {
@@ -151,11 +152,12 @@ class MainPresenter
                 .onErrorComplete()
     }
 
-    private fun subscribeToChat(): Completable {
-        return chatRepository.singInFirebase().onErrorComplete()
-                .doOnComplete {
-                    subscribeChatUnreadCount()
-                    subscribeChatLastMessage()
+    private fun subscribeToChat(uid: Int) {
+        compositeDisposable += chatRepository.connect(uid.toString())
+                .performOnBackground()
+                .subscribe {
+//                    subscribeChatUnreadCount()
+//                    subscribeChatLastMessage()
                 }
     }
 

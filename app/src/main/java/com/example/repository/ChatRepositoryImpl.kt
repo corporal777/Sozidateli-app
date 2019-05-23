@@ -4,13 +4,8 @@ import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.user.User
-import com.example.util.*
 import com.example.util.pagination.PaginationResponse
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import durdinapps.rxfirebase2.RxFirebaseAuth
-import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -18,161 +13,68 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.models.MessageResponse
 import java.io.File
 import javax.inject.Inject
 
 
 class ChatRepositoryImpl
 @Inject constructor(
-        private val firestore: FirebaseFirestore,
-        private val firebaseAuth: FirebaseAuth,
         private val appData: AppData,
-        private val api: Api
+        private val api: Api,
+        private val socketRepository: SocketRepository,
+        private val chatRepository: ru.houseofapps.chat.ChatRepository
 ) : ApiRepository(appData), ChatRepository {
 
-    override fun getChatMessageQuery(chatId: String) = firestore.collection(COLLECTION_CHATS)
-            .document(chatId)
-            .collection(COLLECTION_MESSAGES)
-            .orderBy(FIELD_SEND_AT, Query.Direction.DESCENDING)
+    override fun connect(userId: String) = socketRepository.connect(userId)
 
-    override fun sendChatMessage(chatId: String, userId: String, message: ChatMessage): Completable {
-        val refMsg = firestore.collection(COLLECTION_CHATS)
-                .document(chatId)
-                .collection(COLLECTION_MESSAGES)
-                .document()
+    override fun joinChat(chatId: String, users: Array<String>) = socketRepository.joinToRoom(chatId, users)
 
-        val messageId = refMsg.id
-
-        return RxFirestore.runTransaction(firestore) {
-            it.set(refMsg, message.toMap())
-        }
-                .andThen(call(api.chatLastMessage(chatId, message.text ?: "", messageId)))
-                .andThen(
-                        RxFirestore.runTransaction(firestore) {
-                            val lastMsgRef = firestore.collection(COLLECTION_USERS).document(userId)
-                            val userUnreadMessageCount = it.get(lastMsgRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-                                    ?: 0.0
-
-                            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(userId)
-                            val userUnreadChatMessageCount = it.get(unreadChatMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-
-
-                            if (userUnreadChatMessageCount == null) {
-                                it.set(unreadChatMessageCountRef, mapOf(FIELD_UNREAD_MESSAGE_COUNT to 1))
-                            } else {
-                                it.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, userUnreadChatMessageCount.plus(1))
-                            }
-
-                            val lastMessage = mapOf(
-                                    FIELD_CHAT_ID to chatId,
-                                    FIELD_SENDER_ID to appData.getUser().user_id,
-                                    FIELD_USER_NAME to appData.getUser().fullName,
-                                    FIELD_TEXT to message.text,
-                                    FIELD_SEND_AT to message.sendAt,
-                                    FIELD_AVATAR to appData.getUser().user_avatar,
-                                    FIELD_IS_SHOWED to false,
-                                    FIELD_UNREAD_MESSAGE_COUNT to userUnreadMessageCount.plus(1),
-                                    FIELD_MESSAGE_ID to messageId
-                            )
-
-                            it.set(lastMsgRef, lastMessage)
-                            null
-                        }
-                )
+    override fun loadChatMessages(chatId: String, startAfter: String, limit: Int): Maybe<MessageResponse> {
+        return chatRepository.getMessages(chatId, limit, startAfter).toMaybe()
     }
 
-    override fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage> {
-        val messageRef = firestore.collection(COLLECTION_CHATS)
-                .document(chatId)
-                .collection(COLLECTION_MESSAGES)
-                .document(messageId)
+    override fun subscribeNewMessage() = socketRepository.subscribeToMessageInRoom()
 
-        return RxFirestore.getDocument(messageRef)
-                .map { it.toObject(ChatMessage::class.java) }
+    override fun sendChatMessage(chatId: String, message: String, type: String): Completable {
+        return socketRepository.sendMessage(type, message)
+                .flatMapCompletable { call(api.chatLastMessage(chatId, message, it._id)) }
     }
 
-    override fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable {
-        val userLastMessageRef = userId?.let { firestore.collection(COLLECTION_USERS).document(userId) }
-        val messageRef = firestore.collection(COLLECTION_CHATS)
-                .document(chatId)
-                .collection(COLLECTION_MESSAGES)
-                .document(messageId)
-
-        return RxFirestore.runTransaction(firestore) { transition ->
-            val lastMessageId = userLastMessageRef?.let { transition.get(userLastMessageRef).getString(FIELD_MESSAGE_ID) }
-            transition.update(messageRef, mapOf(FIELD_IS_SHOWED to true))
-            if (messageId == lastMessageId)
-                transition.update(userLastMessageRef, mapOf(FIELD_IS_SHOWED to true))
-
-            null
-        }
+    override fun getChatMessageQuery(chatId: String): Query {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun setMessagesRead(chatId: String, ids: List<String>): Completable {
-        return RxFirestore.runTransaction(firestore) { transaction ->
-            val messageCollectionRef = firestore.collection(COLLECTION_CHATS)
-                    .document(chatId)
-                    .collection(COLLECTION_MESSAGES)
-
-            val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            val userUnreadMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-                    ?: 0.0
-
-            val unreadChatMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-            val userUnreadChatMessageCount = transaction.get(unreadMessageCountRef).getDouble(FIELD_UNREAD_MESSAGE_COUNT)
-                    ?: 0.0
-
-//            var unreadCount = 0
-//            ids.forEach { event_id ->
-//                val message = transaction.get(messageCollectionRef.document(event_id))
-//                if (message.getBoolean(FIELD_IS_READ) != true) unreadCount++
-//            }
-
-            ids.forEach { id ->
-                transaction.update(messageCollectionRef.document(id), mapOf(
-                        FIELD_IS_READ to true,
-                        FIELD_IS_SHOWED to true
-                ))
-            }
-
-            val resultCount = userUnreadMessageCount - ids.size
-            transaction.update(unreadMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultCount < 0) 0 else resultCount)
-
-            val resultUnreadChatCount = userUnreadChatMessageCount - ids.size
-            transaction.update(unreadChatMessageCountRef, FIELD_UNREAD_MESSAGE_COUNT, if (resultUnreadChatCount < 0) 0 else resultUnreadChatCount)
-
-            null
-        }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-    override fun singInFirebase(): Completable {
-        return RxFirebaseAuth.signInAnonymously(firebaseAuth).flatMapCompletable { Completable.complete() }
-    }
-
-    override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
 
     override fun subscribeChatUnreadMessageCount(): Flowable<Int> {
-        val unreadMessageCountRef = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-        return RxFirestore.observeDocumentRef(unreadMessageCountRef)
-                .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun subscribeChatUnreadMessageCount(chatId: String): Flowable<Int> {
-        val unreadMessageCountRef = firestore.collection(COLLECTION_CHATS).document(chatId).collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-        return RxFirestore.observeDocumentRef(unreadMessageCountRef)
-                .map { it.getDouble(FIELD_UNREAD_MESSAGE_COUNT)?.toInt() ?: 0 }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun loadChatLastMessage(): Maybe<LocalNotification> {
-        return RxFirestore.getDocument(getLastMessageRef())
-                .map { it.toObject(LocalNotification::class.java) }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun subscribeChatLastMessage(): Flowable<LocalNotification> {
-        return RxFirestore.observeDocumentRef(getLastMessageRef())
-                .map { it.toObject(LocalNotification::class.java) }
-
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun getMessage(chatId: String, messageId: String): Maybe<ChatMessage> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun setMessageShowed(userId: String?, chatId: String, messageId: String): Completable {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
 
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.startChat(userId))
@@ -192,9 +94,7 @@ class ChatRepositoryImpl
         return call(api.getChat(chatId))
     }
 
-    private fun getLastMessageRef() = firestore.collection(COLLECTION_USERS).document(appData.getUser().user_id.toString())
-
     override fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return callPagination(api.chatSearch(if (name.isEmpty()) " " else name,limit,offset))
+        return callPagination(api.chatSearch(if (name.isEmpty()) " " else name, limit, offset))
     }
 }

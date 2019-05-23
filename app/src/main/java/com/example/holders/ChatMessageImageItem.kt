@@ -16,7 +16,7 @@ class ChatMessageImageItem(
         private val onImageClick: (url: String, imageView: ImageView) -> Unit
 ) : ChatMessageItem(message) {
 
-    val imageUrl = message.message.image!!
+    val imageUrl = message.message.message!!
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)

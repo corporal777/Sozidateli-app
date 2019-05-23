@@ -17,7 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name="com.example.ui.main.MainActivity"
             android:screenOrientation="portrait"
@@ -84,7 +87,14 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="9fdfec82c767116900dd58d4599d1c6eef2a5699"
-            />
+            android:value="9fdfec82c767116900dd58d4599d1c6eef2a5699" />
+
+        <meta-data
+            android:name="api_url"
+            android:value="http://192.168.1.24:3000/" />
+
+        <meta-data
+            android:name="chat_project_key"
+            android:value="test" />
     </application>
 </manifest>

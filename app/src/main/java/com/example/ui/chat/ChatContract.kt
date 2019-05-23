@@ -6,13 +6,11 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChatMessage
 import com.example.ui.base.takePhoto.TakePhotoContract
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.Query
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setQuery(query: Query, parser: SnapshotParser<UserChatMessage>, pageSize: Int)
+        fun insertMessage(message: UserChatMessage)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
@@ -39,7 +37,6 @@ interface ChatContract {
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
-        fun onNewMessage()
         fun onChatMessageOnScreen(message: UserChatMessage)
         fun onImageClick(url: String, imageView: ImageView)
     }

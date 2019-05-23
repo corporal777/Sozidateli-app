@@ -20,20 +20,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChatMessage
-import com.example.holders.ChatMessageImageItem
-import com.example.holders.ChatMessageItem
 import com.example.holders.ChatMessageTextItem
-import com.example.holders.QueryPageListGroup
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
-import com.example.util.SnapshotWrappedItemParser
-import com.example.util.chat.QueryList
-import com.example.util.chat.QueryPageOptions
-import com.example.util.chat.SimpleChangeEventListener
-import com.firebase.ui.common.ChangeEventType
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -41,7 +30,6 @@ import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import setCircleImageWithPlaceholder
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
 
@@ -58,14 +46,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         userId = args.userId
     }
 
-    private val chatGroup = QueryPageListGroup<ChatMessageItem>()
-    private val chatAdapter = GroupAdapter<ViewHolder>().apply { add(chatGroup) }
-    private val queryListChangeListener = object : SimpleChangeEventListener() {
-        override fun onChildChanged(type: ChangeEventType, snapshot: DocumentSnapshot, newIndex: Int, oldIndex: Int) {
-            if (type == ChangeEventType.ADDED) presenter.onNewMessage()
-        }
-    }
-    private var chatQueryList: QueryList<ChatMessageItem>? = null
+    private val chatAdapter = GroupAdapter<ViewHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,35 +90,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
-    override fun setQuery(query: Query, parser: SnapshotParser<UserChatMessage>, pageSize: Int) {
-        val imageClickListener = { url: String, imageView: ImageView ->
-            presenter.onImageClick(url, imageView)
-        }
-
-        val itemParser = SnapshotWrappedItemParser(parser) {
-            when {
-                !it.message.image.isNullOrBlank() -> ChatMessageImageItem(it, imageClickListener)
-                else -> ChatMessageTextItem(it)
-            }.apply {
-                onBindListener = { presenter.onChatMessageOnScreen(it) }
-            }
-        }
-
-        chatQueryList?.removeChangeEventListener(queryListChangeListener)
-        chatQueryList = QueryList(QueryPageOptions(
-                query,
-                itemParser,
-                pageSize
-        )).apply {
-            addChangeEventListener(queryListChangeListener)
-            chatGroup.setQueryList(this)
-        }
-    }
-
     private fun scrollToPosition(position: Int, smooth: Boolean) {
         if (position < 0) return
         if (smooth) rvChat?.smoothScrollToPosition(position)
         else rvChat?.layoutManager?.scrollToPosition(position)
+    }
+
+    override fun insertMessage(message: UserChatMessage) {
+        chatAdapter.add(0, ChatMessageTextItem(message))
     }
 
     override fun openImageFullScreen(url: String, imageView: ImageView) {
@@ -179,12 +139,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun showAvatar(url: String?) {
         val avatarView = activity?.findViewById<View>(R.id.avatar)
         avatarView?.ivAvatar?.setCircleImageWithPlaceholder(url, R.drawable.avatar_placeholder)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        chatQueryList?.removeChangeEventListener(queryListChangeListener)
-        chatGroup.unregisterGroupDataObserver(chatAdapter)
     }
 
     override fun isShowToolbar() = true

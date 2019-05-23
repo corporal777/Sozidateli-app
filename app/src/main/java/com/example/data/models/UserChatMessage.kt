@@ -1,6 +1,8 @@
 package com.example.data.models
 
+import ru.houseofapps.chat.models.Message
+
 class UserChatMessage(
-        val message: ChatMessage,
+        val message: Message,
         val isMyMessage: Boolean
 )
