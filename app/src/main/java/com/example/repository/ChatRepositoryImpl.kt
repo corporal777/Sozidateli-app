@@ -31,7 +31,7 @@ class ChatRepositoryImpl
 
     override fun joinChat(chatId: String, users: Array<String>) = socketRepository.joinToRoom(chatId, users)
 
-    override fun loadChatMessages(chatId: String, startAfter: String, limit: Int): Maybe<MessageResponse> {
+    override fun loadChatMessages(chatId: String, startAfter: String?, limit: Int): Maybe<MessageResponse> {
         return chatRepository.getMessages(chatId, limit, startAfter).toMaybe()
     }
 

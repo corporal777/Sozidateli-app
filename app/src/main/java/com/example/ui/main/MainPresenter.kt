@@ -80,9 +80,6 @@ class MainPresenter
                                         }
                                         checkIntent()
                                     }
-
-                                    subscribeToChat(appData.getUser().user_id)
-
                                 }, {
                                     isAuthRequired = true
                                     viewState.apply {

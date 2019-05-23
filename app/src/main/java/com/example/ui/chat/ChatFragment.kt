@@ -23,6 +23,7 @@ import com.example.data.models.UserChatMessage
 import com.example.holders.ChatMessageTextItem
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
+import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
@@ -87,6 +88,10 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             afterOnGlobalLayout {
                 startPostponedEnterTransition()
             }
+
+            addOnScrollListener(PaginationScrollListener(2) {
+                presenter.onLoadMoreMessagesRequest()
+            })
         }
     }
 
@@ -96,8 +101,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         else rvChat?.layoutManager?.scrollToPosition(position)
     }
 
-    override fun insertMessage(message: UserChatMessage) {
-        chatAdapter.add(0, ChatMessageTextItem(message))
+    override fun updateMessages(messages: List<UserChatMessage>) {
+        chatAdapter.update(messages.map { ChatMessageTextItem(it) })
     }
 
     override fun openImageFullScreen(url: String, imageView: ImageView) {

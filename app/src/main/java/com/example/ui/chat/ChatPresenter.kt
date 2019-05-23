@@ -8,9 +8,12 @@ import com.example.data.models.UserChatMessage
 import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
+import com.example.util.chat.ChatMessagesDataProvider
 import com.example.util.chat.ChatNotificationHelper
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.SocketRepository
+import timber.log.Timber
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -18,7 +21,9 @@ import javax.inject.Inject
 class ChatPresenter
 @Inject constructor(
         private val chatNotificationHelper: ChatNotificationHelper,
-        private val chatRepository: ChatRepository
+        private val chatRepository: ChatRepository,
+        private val socketRepository: SocketRepository,
+        private val chatApiRepository: ru.houseofapps.chat.ChatRepository
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     private var isChatScrolledToBottom = true
@@ -47,10 +52,11 @@ class ChatPresenter
 
     private fun joinChat(withUser: User) {
         compositeDisposable += chatRepository.joinChat(chatId, arrayOf(withUser.user_id.toString()))
-                .andThen(chatRepository.subscribeNewMessage())
+                .andThen(ChatMessagesDataProvider.provideFor(chatId, socketRepository, chatApiRepository).subscribeToChatMessageUpdates())
+                .doOnSubscribe { Timber.tag("CHAT_T").d("SUBSCRIBE") }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.insertMessage(UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())))
+                    viewState.updateMessages(it)
                     if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
                 }, {
                     it.printStackTrace()
@@ -86,6 +92,10 @@ class ChatPresenter
                     it.printStackTrace()
                 })
                 .call(compositeDisposable)
+    }
+
+    override fun onLoadMoreMessagesRequest() {
+        ChatMessagesDataProvider.provideFor(chatId, socketRepository, chatApiRepository).loadNextMessageHistory()
     }
 
     override fun onChatMessageOnScreen(message: UserChatMessage) {

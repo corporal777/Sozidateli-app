@@ -17,7 +17,7 @@ interface ChatRepository {
 
     fun joinChat(chatId: String, users: Array<String>): Completable
 
-    fun loadChatMessages(chatId: String, startAfter: String, limit: Int): Maybe<MessageResponse>
+    fun loadChatMessages(chatId: String, startAfter: String?, limit: Int): Maybe<MessageResponse>
 
     fun subscribeNewMessage(): Flowable<Message>
 
