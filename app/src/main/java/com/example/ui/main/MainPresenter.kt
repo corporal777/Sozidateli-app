@@ -4,9 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.UserEventData
-import com.example.data.models.LocalNotification
 import com.example.repository.AuthRepository
-import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.chat.ChatNotificationHelper
@@ -16,9 +14,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
-import performOnBackground
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.HAChat
+import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.NewMessage
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -31,8 +29,7 @@ class MainPresenter
         private val chatNotificationHelper: ChatNotificationHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
-        private val chatRepository: ChatRepository,
-        private val socketRepository: SocketRepository
+        private val haChat: HAChat
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     private val chatCompositeDisposable = CompositeDisposable()
@@ -145,12 +142,15 @@ class MainPresenter
 
 
     private fun connectToSocket(userId: Int) {
-        chatCompositeDisposable += socketRepository.connect(userId.toString())
+        chatCompositeDisposable += haChat.connect(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    subscribeChatNewMessage()
-                    subscribeChatUnreadCount()
-                    chatNotificationHelper.isConnectingToSocket = true
+                    val connected = it == ChatConnectionStatus.CONNECTED
+                    chatNotificationHelper.isConnectingToSocket = connected
+                    if (connected) {
+                        subscribeChatNewMessage()
+                        subscribeChatUnreadCount()
+                    }
                 }, {
                     it.printStackTrace()
                 })
@@ -165,7 +165,7 @@ class MainPresenter
     }
 
     private fun subscribeChatUnreadCount() {
-        chatCompositeDisposable += socketRepository.subscribeToAllUnreadMessageCount()
+        chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     appData.chatUnreadMessageCount = it
@@ -176,7 +176,7 @@ class MainPresenter
     }
 
     private fun subscribeChatNewMessage() {
-        chatCompositeDisposable += socketRepository.subscribeToNewMessage()
+        chatCompositeDisposable += haChat.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     processNewMessageMessage(it)
@@ -207,11 +207,8 @@ class MainPresenter
     }
 
     private fun unsubscribeChat() {
+        haChat.disconnect()
         chatCompositeDisposable.clear()
-        if(socketRepository.isConnected()) {
-            socketRepository.disconnect()
-            chatNotificationHelper.isConnectingToSocket = false
-        }
     }
 
     override fun onDestroy() {

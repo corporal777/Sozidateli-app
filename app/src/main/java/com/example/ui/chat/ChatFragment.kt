@@ -20,6 +20,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChatMessage
+import com.example.holders.ChatMessageImageItem
 import com.example.holders.ChatMessageTextItem
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
@@ -28,6 +29,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
+import ru.houseofapps.chat.models.Message
 import setCircleImageWithPlaceholder
 import javax.inject.Inject
 import javax.inject.Provider
@@ -45,9 +47,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
         userId = args.userId
+        photoMessageTitle = getString(R.string.chat_photo_message_text)
     }
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
+
+    private val imageClickListener = { url: String, imageView: ImageView ->
+        presenter.onImageClick(url, imageView)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,15 +90,15 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                 }
             })
 
+            addOnScrollListener(PaginationScrollListener(10) {
+                presenter.onLoadMoreMessagesRequest()
+            })
+
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             afterOnGlobalLayout {
                 startPostponedEnterTransition()
             }
-
-            addOnScrollListener(PaginationScrollListener(2) {
-                presenter.onLoadMoreMessagesRequest()
-            })
         }
     }
 
@@ -102,7 +109,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     override fun updateMessages(messages: List<UserChatMessage>) {
-        chatAdapter.update(messages.map { ChatMessageTextItem(it) })
+        chatAdapter.update(messages.map {
+            val item = when (it.message.type) {
+                Message.Type.IMAGE -> ChatMessageImageItem(it, imageClickListener)
+                else -> ChatMessageTextItem(it)
+            }
+
+            item.apply { onBindListener = { presenter.onChatMessageOnScreen(message) } }
+        })
     }
 
     override fun openImageFullScreen(url: String, imageView: ImageView) {
@@ -125,10 +139,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun showCantSendHolder(isShow: Boolean) {
         flCantSendHolder.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
-
-    override fun getPhotoMessageText(onTextFound: (String) -> Unit) {
-        onTextFound(getString(R.string.chat_photo_message_text))
     }
 
     override fun scrollToBottomPosition() = scrollToPosition(0, true)

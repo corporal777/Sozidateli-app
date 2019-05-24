@@ -24,9 +24,6 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun getPhotoMessageText(onTextFound: (String) -> Unit)
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showCantSendHolder(isShow: Boolean)
 

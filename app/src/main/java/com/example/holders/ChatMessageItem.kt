@@ -16,7 +16,7 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 
 abstract class ChatMessageItem(
         val message: UserChatMessage
-) : Item() {
+) : Item(message.message._id.hashCode().toLong()) {
 
     val incomingMessageGuildLineStartPercent = INCOMING_MESSAGE_GUID_LINE_START
     val incomingMessageGuildLineEndPercent = INCOMING_MESSAGE_GUID_LINE_END

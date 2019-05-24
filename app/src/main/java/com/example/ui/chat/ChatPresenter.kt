@@ -8,11 +8,11 @@ import com.example.data.models.UserChatMessage
 import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.chat.ChatMessagesDataProvider
 import com.example.util.chat.ChatNotificationHelper
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.HAChat
+import ru.houseofapps.chat.models.Message
 import timber.log.Timber
 import withLoadingDialog
 import javax.inject.Inject
@@ -22,14 +22,14 @@ class ChatPresenter
 @Inject constructor(
         private val chatNotificationHelper: ChatNotificationHelper,
         private val chatRepository: ChatRepository,
-        private val socketRepository: SocketRepository,
-        private val chatApiRepository: ru.houseofapps.chat.ChatRepository
+        private val haChat: HAChat
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     private var isChatScrolledToBottom = true
 
     lateinit var chatId: String
     lateinit var userId: String
+    lateinit var photoMessageTitle: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -51,12 +51,11 @@ class ChatPresenter
     }
 
     private fun joinChat(withUser: User) {
-        compositeDisposable += chatRepository.joinChat(chatId, arrayOf(withUser.user_id.toString()))
-                .andThen(ChatMessagesDataProvider.provideFor(chatId, socketRepository, chatApiRepository).subscribeToChatMessageUpdates())
-                .doOnSubscribe { Timber.tag("CHAT_T").d("SUBSCRIBE") }
+        compositeDisposable += haChat.joinToRoom(chatId, listOf(withUser.user_id.toString()))
+                .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.updateMessages(it)
+                .subscribe({ messages ->
+                    viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(userId)) })
                     if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
                 }, {
                     it.printStackTrace()
@@ -75,16 +74,17 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
-        sendMessage(message, "text")
+        sendMessage(message, message, Message.Type.TEXT)
     }
 
     override fun onImageClick(url: String, imageView: ImageView) {
         viewState.openImageFullScreen(url, imageView)
     }
 
-    private fun sendMessage(message: String, type: String) {
+    private fun sendMessage(message: String, lastMessageText: String, type: Message.Type) {
         viewState.apply { clearMessageInput() }
-        chatRepository.sendChatMessage(chatId, message, type)
+        haChat.sendMessage(type, message)
+                .flatMapCompletable { chatRepository.sendChatMessage(chatId, lastMessageText, it._id) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 
@@ -95,14 +95,11 @@ class ChatPresenter
     }
 
     override fun onLoadMoreMessagesRequest() {
-        ChatMessagesDataProvider.provideFor(chatId, socketRepository, chatApiRepository).loadNextMessageHistory()
+        haChat.loadNextMessageHistory(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
     override fun onChatMessageOnScreen(message: UserChatMessage) {
-//        if (!message.isMyMessage && message.message.isShowed != true)
-//            message.message.id?.also { chatNotificationHelper.showedMessages.add(it) }
-//        if (message.isMyMessage || message.message.isRead == true) return
-//        messageToMarkReadPublisher.onNext(message.message)
+        haChat.readMessage(chatId, message.message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -110,31 +107,23 @@ class ChatPresenter
     }
 
     override fun onImageTaken(path: String, uri: Uri) {
-//        chatRepository.uploadImage(chatId, path)
-//                .flatMap { response ->
-//                    SingleSource<ChatMessage> {
-//                        val imageResponse = response.response[0]
-//                        if (imageResponse.error || imageResponse.path.isNullOrEmpty()) {
-//                            it.onError(RuntimeException("Image uploading error"))
-//                            return@SingleSource
-//                        }
-//
-//                        viewState.getPhotoMessageText { text ->
-//                            val message = ChatMessage(text = text, senderId = appData.getUser().user_id, image = imageResponse.path)
-//                            it.onSuccess(message)
-//                        }
-//                    }
-//                }
-//                .performOnBackgroundOutOnMain()
-//                .withLoadingDialog(viewState)
-//                .subscribe({
-//                    sendMessage(it)
-//                }, {
-//                    it.printStackTrace()
-//                }).call(compositeDisposable)
+        compositeDisposable += chatRepository.uploadImage(chatId, path)
+                .map {
+                    it.response.firstOrNull()?.let { image ->
+                        if (image.error || image.path.isNullOrEmpty()) null
+                        else image.path
+                    } ?: throw RuntimeException("Image uploading error")
+                }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    sendMessage(it, photoMessageTitle, Message.Type.IMAGE)
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     companion object {
-        const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 20
+        const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 40
     }
 }

@@ -6,7 +6,6 @@ import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.AppData
 import com.example.data.models.UserChat
 import com.example.holders.UserChatItem
 import com.example.repository.ChatRepository
@@ -16,7 +15,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.UnreadMessageCount
 import withLoadingDialog
 import javax.inject.Inject
@@ -25,7 +24,7 @@ import javax.inject.Inject
 class ChatListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
-        private val socketRepository: SocketRepository
+        private val haChat: HAChat
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.loadChatList(mapOf(), limit, offset) }.map { chat ->
@@ -92,21 +91,21 @@ class ChatListPresenter
         }
 
         val changeAccept = createChatMessageCountConsumer(chat)
-        val subscription = socketRepository.subscribeToUnreadMessageCountForRooms(chat.id.toString())
+        val subscription = haChat.subscribeToUnreadMessageCountForRoom(chat.id.toString())
                 .performOnBackgroundOutOnMain()
-                .subscribe(changeAccept, Consumer { changeAccept.accept(UnreadMessageCount(chatId.toString(),0)) })
+                .subscribe(changeAccept, Consumer { changeAccept.accept(UnreadMessageCount(chatId.toString(), 0)) })
 
         chatUnreadMessageSubscriptions.put(chatId, subscription)
         compositeDisposable.add(subscription)
     }
 
     override fun onChatGoneFromScreen(chat: UserChatItem) {
-       // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
+        // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
     }
 
     private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<UnreadMessageCount> {
         return Consumer {
-            if(it.room==chat.userChat.id.toString()) {
+            if (it.room == chat.userChat.id.toString()) {
                 chatUnreadMessageCount.put(chat.userChat.id, it.count)
                 if (chat.unreadMessageCount != it.count) chat.unreadMessageCount = it.count
             }

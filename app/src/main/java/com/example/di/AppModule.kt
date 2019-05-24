@@ -7,13 +7,11 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.prefs.AppPrefs
 import com.example.util.chat.ChatNotificationHelper
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
-import ru.houseofapps.chat.ChatRepository
-import ru.houseofapps.chat.SocketRepository
+import ru.houseofapps.chat.HAChat
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
 
@@ -25,9 +23,6 @@ class AppModule {
 
     @Provides
     fun provideFireStore() = FirebaseFirestore.getInstance()
-
-    @Provides
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
@@ -43,11 +38,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSocketRepository(context: Context): SocketRepository = SocketRepository.getInstance(context)
-
-    @Provides
-    @Singleton
-    fun provideChatRepository(context: Context): ChatRepository = ChatRepository(context)
+    fun provideHAChat(context: Context): HAChat = HAChat.getInstance(context)
 
     @Provides
     @Singleton
