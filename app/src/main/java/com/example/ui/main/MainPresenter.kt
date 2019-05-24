@@ -80,8 +80,6 @@ class MainPresenter
                                         }
                                         checkIntent()
                                     }
-
-
                                 }, {
                                     isAuthRequired = true
                                     viewState.apply {

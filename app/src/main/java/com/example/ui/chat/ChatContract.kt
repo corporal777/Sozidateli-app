@@ -10,7 +10,7 @@ import com.example.ui.base.takePhoto.TakePhotoContract
 interface ChatContract {
     interface View : TakePhotoContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun insertMessage(message: UserChatMessage)
+        fun updateMessages(messages: List<UserChatMessage>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
@@ -39,5 +39,6 @@ interface ChatContract {
         fun onChatScrollChange(isBottomPosition: Boolean)
         fun onChatMessageOnScreen(message: UserChatMessage)
         fun onImageClick(url: String, imageView: ImageView)
+        fun onLoadMoreMessagesRequest()
     }
 }
