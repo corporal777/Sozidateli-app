@@ -81,7 +81,6 @@ class MainPresenter
                                         checkIntent()
                                     }
 
-                                    subscribeToChat(appData.getUser().user_id)
 
                                 }, {
                                     isAuthRequired = true
@@ -148,7 +147,7 @@ class MainPresenter
 
 
     private fun connectToSocket(userId: Int) {
-        socketRepository.connect(userId.toString())
+        chatCompositeDisposable += socketRepository.connect(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     subscribeChatNewMessage()
@@ -156,7 +155,7 @@ class MainPresenter
                     chatNotificationHelper.isConnectingToSocket = true
                 }, {
                     it.printStackTrace()
-                }).call(compositeDisposable)
+                })
     }
 
     private fun subscribeToNotifications(): Completable {
@@ -168,14 +167,14 @@ class MainPresenter
     }
 
     private fun subscribeChatUnreadCount() {
-        socketRepository.subscribeToAllUnreadMessageCount()
+        chatCompositeDisposable += socketRepository.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     appData.chatUnreadMessageCount = it
                 }, {
                     it.printStackTrace()
                     appData.chatUnreadMessageCount = 0
-                }).call(compositeDisposable)
+                })
     }
 
     private fun subscribeChatNewMessage() {

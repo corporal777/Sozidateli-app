@@ -92,10 +92,10 @@
 
         <meta-data
             android:name="api_url"
-            android:value="http://194.58.123.180/chat/"/>
+            android:value="http://192.168.1.71:3000/"/>
 
         <meta-data
             android:name="chat_project_key"
-            android:value="AskfWi3o31sA"/>
+            android:value="test"/>
     </application>
 </manifest>

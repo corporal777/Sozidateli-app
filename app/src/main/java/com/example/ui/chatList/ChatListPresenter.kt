@@ -92,7 +92,7 @@ class ChatListPresenter
         }
 
         val changeAccept = createChatMessageCountConsumer(chat)
-        val subscription = socketRepository.subscribeToUnreadMessageCountForRooms()
+        val subscription = socketRepository.subscribeToUnreadMessageCountForRooms(chat.id.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe(changeAccept, Consumer { changeAccept.accept(UnreadMessageCount(chatId.toString(),0)) })
 
