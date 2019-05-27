@@ -3,6 +3,7 @@ package com.example.util.chat
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.MainThread
 import bundleOf
 import com.example.R
 import com.example.ui.main.MainActivity
@@ -15,6 +16,7 @@ class ChatNotificationHelper(private val context: Context) {
 
     private val showedMessages = HashSet<String>()
 
+    @MainThread
     fun showNotificationIfCan(
             chatId: String,
             messageId: String,
@@ -28,6 +30,7 @@ class ChatNotificationHelper(private val context: Context) {
         }
     }
 
+    @MainThread
     fun isCanSendMessage(chatId: String, messageId: String): Boolean {
         return !showedMessages.contains(messageId)
                 && currentChatId != chatId

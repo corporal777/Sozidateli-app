@@ -81,6 +81,7 @@ class MainPresenter
                                         checkIntent()
                                     }
                                 }, {
+                                    it.printStackTrace()
                                     isAuthRequired = true
                                     viewState.apply {
                                         showLogin()
