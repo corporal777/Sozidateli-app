@@ -13,7 +13,6 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.Message
-import timber.log.Timber
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -55,7 +54,7 @@ class ChatPresenter
                 .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
                 .performOnBackgroundOutOnMain()
                 .subscribe({ messages ->
-                    viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(userId)) })
+                    viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())) })
                     if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
                 }, {
                     it.printStackTrace()

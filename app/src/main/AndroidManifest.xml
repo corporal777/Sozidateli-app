@@ -87,15 +87,18 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="9fdfec82c767116900dd58d4599d1c6eef2a5699"
-            />
+            android:value="9fdfec82c767116900dd58d4599d1c6eef2a5699" />
 
         <meta-data
             android:name="api_url"
-            android:value="http://192.168.1.24:3000/"/>
+            android:value="http://194.58.123.180/chat/" />
+
+        <meta-data
+            android:name="socket_url"
+            android:value="http://194.58.123.180:4100" />
 
         <meta-data
             android:name="chat_project_key"
-            android:value="test"/>
+            android:value="AskfWi3o31sA" />
     </application>
 </manifest>
