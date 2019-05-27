@@ -73,7 +73,7 @@ class ChatListPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val lastCount = lastChatUnreadCount
-                    if (lastCount != null) pagination.source?.invalidate()
+                    if (lastCount != null && lastCount < it) pagination.source?.invalidate()
                     lastChatUnreadCount = it
                 }, {})
                 .call(compositeDisposable)
@@ -119,7 +119,7 @@ class ChatListPresenter
     }
 
     @Subscribe
-    fun onSocketConnect(event: OnSocketConnectEvent){
+    fun onSocketConnect(event: OnSocketConnectEvent) {
         pagination.source?.invalidate()
     }
 
