@@ -1,6 +1,7 @@
 package com.example.util
 
 import android.annotation.SuppressLint
+import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.prefs.AppPrefs
 import com.example.repository.ChatRepository
@@ -12,6 +13,7 @@ import dagger.android.AndroidInjection
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.models.Message
 import javax.inject.Inject
 
 class FcmMessagingService : FirebaseMessagingService() {
@@ -49,7 +51,11 @@ class FcmMessagingService : FirebaseMessagingService() {
 
         if (!chatNotificationHelper.isCanSendMessage(chatId, messageId)) return
 
-        val message = userChat.lastMessage ?: return
+        val message = when (userChat.lastMessageType) {
+            Message.Type.IMAGE -> getString(R.string.chat_photo_message_text)
+            else -> userChat.lastMessage
+        } ?: return
+
         val senderId = userChat.userSender?.user_id ?: return
         val senderName = userChat.userSender?.fullName ?: return
 

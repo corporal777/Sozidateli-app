@@ -35,7 +35,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     lateinit var presenterProvider: Provider<MainPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): MainPresenter = presenterProvider.get()
+    fun providePresenter(): MainPresenter = presenterProvider.get().apply {
+        photoMessageText = getString(R.string.chat_photo_message_text)
+    }
 
     private val startDestinations = arrayOf(
             R.id.event_list_fragment,

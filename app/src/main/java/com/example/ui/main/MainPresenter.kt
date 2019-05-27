@@ -17,6 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
+import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -31,6 +32,8 @@ class MainPresenter
         private val userRepository: UserRepository,
         private val haChat: HAChat
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
+
+    lateinit var photoMessageText: String
 
     private val chatCompositeDisposable = CompositeDisposable()
 
@@ -188,7 +191,10 @@ class MainPresenter
     private fun processNewMessageMessage(newMessage: NewMessage) {
         val chatId = newMessage.room
         val messageId = newMessage.message._id
-        val message = newMessage.message.message ?: ""
+        val message = when (newMessage.message.type) {
+            Message.Type.IMAGE -> photoMessageText
+            else -> newMessage.message.message
+        }
         val senderId = newMessage.message.senderKey.toInt()
 
         userRepository.getUserById(senderId)

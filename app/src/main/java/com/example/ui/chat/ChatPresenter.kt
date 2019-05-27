@@ -30,7 +30,6 @@ class ChatPresenter
 
     lateinit var chatId: String
     lateinit var userId: String
-    lateinit var photoMessageTitle: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -78,17 +77,17 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
-        sendMessage(message, message, Message.Type.TEXT)
+        sendMessage(message, Message.Type.TEXT)
     }
 
     override fun onImageClick(url: String, imageView: ImageView) {
         viewState.openImageFullScreen(url, imageView)
     }
 
-    private fun sendMessage(message: String, lastMessageText: String, type: Message.Type) {
+    private fun sendMessage(message: String, type: Message.Type) {
         viewState.apply { clearMessageInput() }
         haChat.sendMessage(type, message)
-                .flatMapCompletable { chatRepository.sendChatMessage(chatId, lastMessageText, it._id) }
+                .flatMapCompletable { chatRepository.sendChatMessage(chatId, message, it._id, type.value) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 
@@ -124,7 +123,7 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    sendMessage(it, photoMessageTitle, Message.Type.IMAGE)
+                    sendMessage(it, Message.Type.IMAGE)
                 }, {
                     it.printStackTrace()
                 })

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.example.data.models.user.User
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import ru.houseofapps.chat.models.Message
 
 @Parcelize
 data class UserChat(
@@ -15,6 +16,8 @@ data class UserChat(
         val lastMessage: String?,
         @SerializedName("last_message_datetime")
         val lastMessageDate: String?,
+        @SerializedName("last_message_type")
+        val lastMessageType: Message.Type?,
         @SerializedName("last_message_user_id")
         val lastMessageSender: Int?,
         @SerializedName("user_sender")
@@ -22,5 +25,5 @@ data class UserChat(
         @SerializedName("last_message_id")
         var messageId: String?,
         @SerializedName("user_recepient_in_favorite")
-        var inFavorite:Boolean
+        var inFavorite: Boolean
 ) : Parcelable

@@ -47,7 +47,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
         userId = args.userId
-        photoMessageTitle = getString(R.string.chat_photo_message_text)
     }
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
