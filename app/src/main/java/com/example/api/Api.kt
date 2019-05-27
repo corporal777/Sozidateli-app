@@ -82,7 +82,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/{chat}/message")
-    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String, @Field("message_id") messageId: String): Completable
+    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String, @Field("message_id") messageId: String, @Field("message_type") messageType: String): Completable
 
     @POST("/v1/user/chat/start/{user}")
     fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>

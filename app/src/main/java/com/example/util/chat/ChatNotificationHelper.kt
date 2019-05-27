@@ -13,7 +13,7 @@ class ChatNotificationHelper(private val context: Context) {
     var currentChatId: String? = null
     var isConnectingToSocket = false
 
-    val showedMessages = HashSet<String>()
+    private val showedMessages = HashSet<String>()
 
     fun showNotificationIfCan(
             chatId: String,

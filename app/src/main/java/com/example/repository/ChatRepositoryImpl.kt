@@ -24,8 +24,8 @@ class ChatRepositoryImpl
         private val api: Api
 ) : ApiRepository(appData), ChatRepository {
 
-    override fun sendChatMessage(chatId: String, message: String, messageId: String): Completable {
-        return api.chatLastMessage(chatId, message, messageId)
+    override fun sendChatMessage(chatId: String, message: String, messageId: String, messageType: String): Completable {
+        return api.chatLastMessage(chatId, message, messageId, messageType)
     }
 
     override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
