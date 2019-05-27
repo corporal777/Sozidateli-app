@@ -7,10 +7,13 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.models.UserChatMessage
 import com.example.data.models.user.User
+import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.chat.ChatNotificationHelper
 import io.reactivex.rxkotlin.plusAssign
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
@@ -33,6 +36,9 @@ class ChatPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
+        EventBus.getDefault().register(this)
+
         chatRepository.getChat(chatId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -127,6 +133,16 @@ class ChatPresenter
                 }, {
                     it.printStackTrace()
                 })
+    }
+
+    @Subscribe
+    fun onSocketConnect(event:OnSocketConnectEvent){
+        haChat.loadMessagesAfterLast(chatId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().register(this)
     }
 
     companion object {

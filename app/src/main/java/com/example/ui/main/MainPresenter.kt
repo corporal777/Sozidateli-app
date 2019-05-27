@@ -4,6 +4,7 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.UserEventData
+import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -14,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
@@ -151,6 +153,9 @@ class MainPresenter
                 .subscribe({
                     val connected = it == ChatConnectionStatus.CONNECTED
                     chatNotificationHelper.isConnectingToSocket = connected
+                    if(connected){
+                        EventBus.getDefault().post(OnSocketConnectEvent())
+                    }
                     if (connected && chatCompositeDisposable.size() == 1) {
                         subscribeChatNewMessage()
                         subscribeChatUnreadCount()
