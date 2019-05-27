@@ -6,6 +6,7 @@ import com.example.data.models.UserChat
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
+import ru.houseofapps.chat.models.Message
 import setCircleImageWithPlaceholder
 
 class UserChatItem(
@@ -30,7 +31,14 @@ class UserChatItem(
             ivAvatar.setCircleImageWithPlaceholder(userChat.user.user_avatar, R.drawable.avatar_placeholder)
 
             tvName.text = userChat.user.fullName
-            tvLastMessage.text = userChat.lastMessage ?: "-"
+
+            tvLastMessage.apply {
+                text = when (userChat.lastMessageType) {
+                    Message.Type.IMAGE -> context.getString(R.string.chat_photo_message_text)
+                    else -> userChat.lastMessage
+                }
+            }
+
             itemView.setOnClickListener { onClick(userChat) }
 
             updateBadge()
