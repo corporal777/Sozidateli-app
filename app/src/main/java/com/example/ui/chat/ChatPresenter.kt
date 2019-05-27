@@ -59,6 +59,7 @@ class ChatPresenter
     private fun joinChat(withUser: User) {
         compositeDisposable += haChat.joinToRoom(chatId, listOf(withUser.user_id.toString()))
                 .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
+                .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ messages ->
                     viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())) })
@@ -142,7 +143,7 @@ class ChatPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().register(this)
+        EventBus.getDefault().unregister(this)
     }
 
     companion object {
