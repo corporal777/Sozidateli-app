@@ -150,7 +150,7 @@ class MainPresenter
                 .subscribe({
                     val connected = it == ChatConnectionStatus.CONNECTED
                     chatNotificationHelper.isConnectingToSocket = connected
-                    if (connected) {
+                    if (connected && chatCompositeDisposable.size() == 1) {
                         subscribeChatNewMessage()
                         subscribeChatUnreadCount()
                     }
