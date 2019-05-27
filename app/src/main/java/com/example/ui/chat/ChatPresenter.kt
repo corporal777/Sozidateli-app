@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.R
 import com.example.data.models.UserChatMessage
 import com.example.data.models.user.User
 import com.example.repository.ChatRepository
@@ -12,6 +13,7 @@ import com.example.util.chat.ChatNotificationHelper
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
+import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
 import withLoadingDialog
 import javax.inject.Inject
@@ -56,6 +58,9 @@ class ChatPresenter
                     viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())) })
                     if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
                 }, {
+                    if(it is NoConnectionException){
+                        viewState.showErrorDialog(listOf(R.string.not_connection_error),null)
+                    }
                     it.printStackTrace()
                 })
     }
@@ -87,6 +92,9 @@ class ChatPresenter
                 .subscribe({
 
                 }, {
+                    if(it is NoConnectionException){
+                        viewState.showErrorDialog(listOf(R.string.not_connection_error),null)
+                    }
                     it.printStackTrace()
                 })
                 .call(compositeDisposable)

@@ -10,6 +10,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import dagger.android.AndroidInjection
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.models.Message
 import javax.inject.Inject
 
@@ -56,14 +59,17 @@ class FcmMessagingService : FirebaseMessagingService() {
         val senderId = userChat.userSender?.user_id ?: return
         val senderName = userChat.userSender?.fullName ?: return
 
-        chatNotificationHelper.showNotificationIfCan(
-                chatId = chatId,
-                messageId = messageId,
-                message = message,
-                senderId = senderId,
-                senderName = senderName,
-                avatarUrl = userChat.userSender?.user_avatar
-        )
+        Completable.fromAction {
+            chatNotificationHelper.showNotificationIfCan(
+                    chatId = chatId,
+                    messageId = messageId,
+                    message = message,
+                    senderId = senderId,
+                    senderName = senderName,
+                    avatarUrl = userChat.userSender?.user_avatar
+            )
+        }.subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe()
     }
 
     companion object {
