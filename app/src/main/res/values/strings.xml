@@ -246,4 +246,6 @@
 
     <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>
 
+    <string name="not_connection_error">Не удалось устновить соединение</string>
+
 </resources>
