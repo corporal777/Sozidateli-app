@@ -155,6 +155,7 @@ class MainPresenter
                     chatHelper.isConnectingToSocket = connected
                     if(connected){
                         EventBus.getDefault().post(OnSocketConnectEvent())
+
                     }
                     if (connected && chatCompositeDisposable.size() == 1) {
                         subscribeChatNewMessage()

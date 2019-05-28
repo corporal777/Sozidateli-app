@@ -7,6 +7,7 @@ import androidx.paging.RxPagedListBuilder
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.UserChat
+import com.example.events.OnSocketConnectEvent
 import com.example.holders.UserChatItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
@@ -14,6 +15,8 @@ import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.UnreadMessageCount
@@ -46,6 +49,9 @@ class ChatListPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        EventBus.getDefault().register(this)
+
+
         val config = PagedList.Config.Builder()
                 .setInitialLoadSizeHint(20)
                 .setPageSize(20)
@@ -110,5 +116,15 @@ class ChatListPresenter
                 if (chat.unreadMessageCount != it.count) chat.unreadMessageCount = it.count
             }
         }
+    }
+
+    @Subscribe
+    fun onSocketConnect(event: OnSocketConnectEvent) {
+        pagination.source?.invalidate()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }
