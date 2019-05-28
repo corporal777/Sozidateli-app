@@ -8,7 +8,7 @@ import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.chat.ChatNotificationHelper
+import com.example.util.chat.ChatHelper
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class MainPresenter
 @Inject constructor(
         private val eventData: UserEventData,
-        private val chatNotificationHelper: ChatNotificationHelper,
+        private val chatHelper: ChatHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
         private val haChat: HAChat
@@ -152,7 +152,7 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val connected = it == ChatConnectionStatus.CONNECTED
-                    chatNotificationHelper.isConnectingToSocket = connected
+                    chatHelper.isConnectingToSocket = connected
                     if(connected){
                         EventBus.getDefault().post(OnSocketConnectEvent())
                     }
@@ -206,7 +206,7 @@ class MainPresenter
         userRepository.getUserById(senderId)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    chatNotificationHelper.showNotificationIfCan(
+                    chatHelper.showNotificationIfCan(
                             chatId = chatId,
                             messageId = messageId,
                             message = message,
@@ -226,21 +226,21 @@ class MainPresenter
     override fun onDestroy() {
         super.onDestroy()
         unsubscribeChat()
-        chatNotificationHelper.currentChatId = null
+        chatHelper.currentChatId = null
     }
 
     override fun onOpenStartDestination() {
         viewState.showBackButton(false)
-        chatNotificationHelper.currentChatId = null
+        chatHelper.currentChatId = null
     }
 
     override fun onOpenNotStartDestination() {
         viewState.showBackButton(true)
-        chatNotificationHelper.currentChatId = null
+        chatHelper.currentChatId = null
     }
 
     override fun onOpenChatDestination(chatId: String?) {
         viewState.showBackButton(true)
-        chatNotificationHelper.currentChatId = chatId
+        chatHelper.currentChatId = chatId
     }
 }
