@@ -112,7 +112,7 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
             listField.add(InfoProfileFieldItem(getString(R.string.profile_country), arrayListOf(it)))
         }
 
-        user.user_address_city?.let {
+        user.user_address?.let {
             listField.add(InfoProfileFieldItem(getString(R.string.profile_city), arrayListOf(it)))
         }
 

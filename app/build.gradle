@@ -53,6 +53,7 @@ android {
         }
         debug {
             buildConfigField "String", "API_URL", "\"http://api.ha-slsp.ru/\""
+            buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
     }
 

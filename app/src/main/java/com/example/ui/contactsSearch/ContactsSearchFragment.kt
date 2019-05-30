@@ -187,8 +187,8 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         }
     }
 
-    override fun openChat(chatId: String, userId: String, userName: String) {
-        findNavController().navigate(ContactsSearchFragmentDirections.userListToChat(userName, chatId, userId))
+    override fun openUserInfo(userId: String) {
+        findNavController().navigate(ContactsSearchFragmentDirections.openUser(userId))
     }
 
     override fun setData(contactSearch: PagedList<User>) {

@@ -44,6 +44,7 @@ import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
+import com.example.ui.user.UserFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -182,4 +183,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserListFragment(): SubeventUserListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserFragment(): UserFragment
 }

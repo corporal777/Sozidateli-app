@@ -17,7 +17,7 @@ import ru.houseofapps.chat.HAChat
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class])
+@Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class,DataDataRetrofitModule::class])
 class AppModule {
 
     @Provides

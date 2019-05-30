@@ -18,7 +18,7 @@ interface ContactsSearchContract {
         fun scrollToPositionWithOffset(position: Int, offset: Int)
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(chatId: String, userId: String, userName: String)
+        fun openUserInfo(userId: String)
     }
 
     interface Presenter : BaseContract.Presenter {

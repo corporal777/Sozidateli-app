@@ -70,14 +70,7 @@ class ContactsSearchPresenter
     override fun onSearchCollapsed() = viewState.navigateUp()
 
     override fun onUserClick(user: User) {
-        chatRepository.startChat(user.user_id)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.openChat(it.chat_id.toString(), user.user_id.toString(), user.fullName)
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
+        viewState.openUserInfo(user.user_id.toString())
     }
 
     override fun onDestroy() {
