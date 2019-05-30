@@ -131,6 +131,12 @@ dependencies {
     implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
     kapt "com.arello-mobile:moxy-compiler:$moxy_version"
 
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
     implementation 'com.splunk:mint-android-sdk:5.2.4'

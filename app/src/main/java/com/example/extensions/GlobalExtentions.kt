@@ -1,3 +1,5 @@
+import android.content.Context
+import android.net.ConnectivityManager
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
@@ -59,4 +61,10 @@ fun ImageView.setCircleImageWithPlaceholder(url: String?, placeholder: Int) {
 
 fun SimpleDateFormat.parseTimestamp(source: String): Long {
     return this.parse(source).time
+}
+
+
+fun Context.isConnectedToNetwork(): Boolean {
+    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    return connectivityManager?.activeNetworkInfo?.isConnected ?: false
 }

@@ -1,5 +1,6 @@
 package com.example.di
 
+import android.content.Context
 import com.example.BuildConfig
 import com.example.api.Api
 import com.example.api.AuthInterceptor
@@ -18,6 +19,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import com.facebook.FacebookSdk.getCacheDir
+import okhttp3.Cache
+import java.io.File
+import isConnectedToNetwork
+import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
+import okhttp3.CacheControl
+import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
+
+
+
 
 @Module
 class RetrofitModule {
@@ -43,11 +54,12 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun provideHttpClient(authInterceptor: AuthInterceptor,context: Context): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.MINUTES)
                 .writeTimeout(1, TimeUnit.MINUTES)
+                .cache(Cache(File(context.cacheDir,"http-cache"), 10 * 1024 * 1024))
 
         clientBuilder.addInterceptor(authInterceptor)
 
@@ -55,6 +67,42 @@ class RetrofitModule {
             val logInterceptor = HttpLoggingInterceptor { message -> Timber.tag("API_T").d(message) }
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
+        }
+
+        clientBuilder.addNetworkInterceptor {
+            val response = it.proceed(it.request())
+            val cacheControl: CacheControl
+            if (context.isConnectedToNetwork()) {
+                cacheControl = CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
+            } else {
+                cacheControl = CacheControl.Builder()
+                        .maxStale(7, TimeUnit.DAYS)
+                        .build()
+            }
+
+            return@addNetworkInterceptor response.newBuilder()
+                    .removeHeader("Pragma")
+                    .removeHeader(HEADER_CACHE_CONTROL)
+                    .header(HEADER_CACHE_CONTROL, cacheControl.toString())
+                    .build()
+        }
+
+        clientBuilder.addInterceptor {
+            var request = it.request()
+
+            if (!context.isConnectedToNetwork()) {
+                val cacheControl = CacheControl.Builder()
+                        .maxStale(7, TimeUnit.DAYS)
+                        .build()
+
+                request = request.newBuilder()
+                        .removeHeader("Pragma")
+                        .removeHeader(HEADER_CACHE_CONTROL)
+                        .cacheControl(cacheControl)
+                        .build()
+            }
+
+            return@addInterceptor it.proceed(request)
         }
 
         return clientBuilder.build()

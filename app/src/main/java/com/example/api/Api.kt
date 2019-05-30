@@ -35,7 +35,6 @@ interface Api {
     @POST("/v1/user/register/confirm")
     fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
-
     @FormUrlEncoded
     @POST("/v1/user/update/change_email_confirm")
     fun changeEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>

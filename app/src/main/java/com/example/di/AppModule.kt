@@ -5,7 +5,9 @@ import android.content.Context
 import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
+import com.example.util.ConnnectivityHelper
 import com.example.util.chat.ChatNotificationHelper
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -27,6 +29,14 @@ class AppModule {
     @Provides
     @Singleton
     fun provideAppData(appPrefs: AppPrefs): AppData = AppData(appPrefs)
+
+    @Provides
+    @Singleton
+    fun provideDB(context: Context): Db = Db.getInstance(context)
+
+    @Provides
+    @Singleton
+    fun provideConnnectivityHelper(context: Context): ConnnectivityHelper = ConnnectivityHelper(context)
 
     @Provides
     @Singleton
