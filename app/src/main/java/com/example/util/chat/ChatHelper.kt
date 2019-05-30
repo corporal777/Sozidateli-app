@@ -9,7 +9,7 @@ import com.example.R
 import com.example.ui.main.MainActivity
 import com.example.util.*
 
-class ChatNotificationHelper(private val context: Context) {
+class ChatHelper(private val context: Context) {
 
     var currentChatId: String? = null
     var isConnectingToSocket = false
@@ -32,8 +32,7 @@ class ChatNotificationHelper(private val context: Context) {
 
     @MainThread
     fun isCanSendMessage(chatId: String, messageId: String): Boolean {
-        return !showedMessages.contains(messageId)
-                && currentChatId != chatId
+        return !showedMessages.contains(messageId) && currentChatId != chatId
     }
 
     companion object {

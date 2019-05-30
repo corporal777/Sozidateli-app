@@ -10,7 +10,7 @@ import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.chat.ChatNotificationHelper
+import com.example.util.chat.ChatHelper
 import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @InjectViewState
 class ChatPresenter
 @Inject constructor(
-        private val chatNotificationHelper: ChatNotificationHelper,
+        private val chatHelper: ChatHelper,
         private val chatRepository: ChatRepository,
         private val haChat: HAChat
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
@@ -65,8 +65,8 @@ class ChatPresenter
                     viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())) })
                     if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
                 }, {
-                    if(it is NoConnectionException){
-                        viewState.showErrorDialog(listOf(R.string.not_connection_error),null)
+                    if (it is NoConnectionException) {
+                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })
@@ -75,12 +75,12 @@ class ChatPresenter
     override fun attachView(view: ChatContract.View?) {
         super.attachView(view)
         viewState.cancelNotificationByChatId(chatId)
-        chatNotificationHelper.currentChatId = chatId
+        chatHelper.currentChatId = chatId
     }
 
     override fun detachView(view: ChatContract.View?) {
         super.detachView(view)
-        chatNotificationHelper.currentChatId = null
+        chatHelper.currentChatId = null
     }
 
     override fun onSendTextMessageClick(message: String) {
@@ -93,14 +93,15 @@ class ChatPresenter
 
     private fun sendMessage(message: String, type: Message.Type) {
         viewState.apply { clearMessageInput() }
-        haChat.sendMessage(type, message)
-                .flatMapCompletable { chatRepository.sendChatMessage(chatId, message, it._id, type.value) }
+        haChat.sendMessage(type, message) {
+            chatRepository.sendChatMessage(chatId, message, it._id, type.value)
+        }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
 
                 }, {
-                    if(it is NoConnectionException){
-                        viewState.showErrorDialog(listOf(R.string.not_connection_error),null)
+                    if (it is NoConnectionException) {
+                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })
@@ -137,7 +138,7 @@ class ChatPresenter
     }
 
     @Subscribe
-    fun onSocketConnect(event:OnSocketConnectEvent){
+    fun onSocketConnect(event: OnSocketConnectEvent) {
         haChat.loadMessagesAfterLast(chatId)
     }
 

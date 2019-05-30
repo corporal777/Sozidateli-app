@@ -8,7 +8,7 @@ import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
 import com.example.util.ConnnectivityHelper
-import com.example.util.chat.ChatNotificationHelper
+import com.example.util.chat.ChatHelper
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -44,7 +44,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideChatData(context: Context): ChatNotificationHelper = ChatNotificationHelper(context)
+    fun provideChatData(context: Context): ChatHelper = ChatHelper(context)
 
     @Provides
     @Singleton
