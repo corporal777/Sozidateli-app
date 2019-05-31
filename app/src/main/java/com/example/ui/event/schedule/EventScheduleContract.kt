@@ -1,12 +1,11 @@
 package com.example.ui.event.schedule
 
-import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.SubEvent
 import com.example.data.models.Tag
-import com.example.holders.SubEventItem
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
@@ -26,7 +25,7 @@ interface EventScheduleContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: PagedList<SubEventItem>)
+        fun setSubEvents(subEvents: List<SubEvent>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
@@ -44,12 +43,22 @@ interface EventScheduleContract {
         fun hideCurrentDay()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSubEvent(eventId: Int, subeventId: Int)
+        fun showSubEvent(eventId: Int, subEventId: Int)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
+        fun showDataFormCacheMessage(cacheDate: String)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
+        fun hideDataFormCacheMessage()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onDaySelected(day: EventScheduleCalendarDay)
         fun onTagSelectedListChange(tags: List<Tag>)
         fun onDayChanged(date: Long)
+
+        fun onSubEventClick(subEvent: SubEvent)
+        fun onAddToScheduleClick(subEvent: SubEvent)
+        fun onRemoveFromScheduleClick(subEvent: SubEvent)
     }
 }

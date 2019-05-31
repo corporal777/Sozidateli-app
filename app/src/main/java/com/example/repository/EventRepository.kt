@@ -22,7 +22,7 @@ interface EventRepository {
     fun getEventRegisterField(eventId: Int): Single<RegisterFieldResponse>
     fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
     fun getEventRegister(eventId: Int): Single<EventRegisterResponse>
-    fun getEventDaySchedule(eventId: Int, body: Map<String, Any>, limit: Int, offset: Int,tags: List<String>): Maybe<PaginationResponse<SubEvent>>
+    fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>
     fun getEventInfo(eventId: Int): Maybe<EventInfo>
     fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventRegisterResponse>>
     fun setDefaultEvent(eventId: Int): Completable

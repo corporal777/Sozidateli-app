@@ -69,7 +69,7 @@ class MyEventsPresenter
     }
 
     private fun isCanSetDefault(event: Event): Boolean {
-        return event.status == Status.APPROVED.code || event.status == StatusEvent.CONFERENCE_IN_PROGRESS.code
+        return event.status == Status.APPROVED.code
     }
 
     override fun onScrollChange(position: Int, offset: Int) {

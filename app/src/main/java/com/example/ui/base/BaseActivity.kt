@@ -71,24 +71,24 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     override fun showDialog(message: String?) {
-        showDialog(null,message,null)
+        showDialog(null, message, null)
     }
 
     override fun showDialog(message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
-        showDialog(null,message,onOkClickListener)
+        showDialog(null, message, onOkClickListener)
     }
 
     override fun showDialog(title: String?, message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
         AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(R.string.ok,onOkClickListener)
+                .setPositiveButton(R.string.ok, onOkClickListener)
                 .create()
                 .show()
     }
 
     override fun showDialog(title: String?, message: String?) {
-        showDialog(title,message,null)
+        showDialog(title, message, null)
     }
 
     override fun showToast(messagesIds: List<Int>) {
@@ -102,9 +102,17 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         AlertDialog.Builder(this)
                 .setTitle(R.string.error_title)
                 .setMessage(messages.joinToString(separator = "\n"))
-                .setPositiveButton(R.string.ok,null)
+                .setPositiveButton(R.string.ok, null)
                 .setOnDismissListener(onDismissListener)
                 .create()
+                .show()
+    }
+
+    override fun showNoInternetDialog() {
+        AlertDialog.Builder(this)
+                .setTitle(R.string.no_internet_dialog_title)
+                .setMessage(R.string.no_internet_dialog_message)
+                .setPositiveButton(R.string.ok, null)
                 .show()
     }
 

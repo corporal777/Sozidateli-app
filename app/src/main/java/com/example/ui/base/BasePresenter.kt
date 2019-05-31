@@ -14,7 +14,7 @@ open class BasePresenter<V : BaseContract.View>
 
     protected val compositeDisposable = CompositeDisposable()
     private val errorCompositeDisposable = CompositeDisposable()
-    open var isNeedErrorHandler = true
+    protected open val isNeedErrorHandler = true
 
     @Inject
     lateinit var appData: AppData

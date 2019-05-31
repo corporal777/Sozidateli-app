@@ -4,10 +4,13 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.UserEventData
+import com.example.data.database.Db
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
+import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.UserEventLoadingHelper
 import com.example.util.chat.ChatHelper
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -28,11 +31,13 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter
 @Inject constructor(
-        private val eventData: UserEventData,
+        private val userEventData: UserEventData,
         private val chatHelper: ChatHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
-        private val haChat: HAChat
+        private val haChat: HAChat,
+        private val eventRepository: EventRepository,
+        private val db: Db
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -41,9 +46,7 @@ class MainPresenter
 
     private var isAuthRequired = false
 
-    override var isNeedErrorHandler: Boolean
-        get() = false
-        set(value) {}
+    override var isNeedErrorHandler = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -51,35 +54,26 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
                     unsubscribeChat()
-
                     if (token.value == null) {
                         isAuthRequired = true
                         viewState.showLogin()
                     } else {
                         userRepository.getUserShort()
-                                .flatMapCompletable {
-                                    connectToSocket(it.user_id)
-                                    subscribeToNotifications()
-                                }
-                                .andThen(
-                                        if (isAuthRequired) {
-                                            isAuthRequired = false
-                                            Completable.fromAction { viewState.showGreetings() }
-                                                    .subscribeOn(AndroidSchedulers.mainThread())
-                                                    .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
-                                                    .andThen(Maybe.just(true))
-                                        } else Maybe.just(false))
+                                .flatMapCompletable { subscribeToNotifications() }
+                                .andThen(checkShowGreetings())
+                                .flatMap { checkUserEvent(it) }
                                 .performOnBackgroundOutOnMain()
                                 .withLoadingDialog(viewState)
-                                .subscribe({
+                                .subscribe({ showAction ->
                                     viewState.apply {
-                                        val event = appData.getUser().default_event
-                                        if (event != null) {
-                                            eventData.event = event
-                                            showEvent()
-                                        } else {
-                                            showEventList(if (it) R.id.welcome_fragment else R.id.splash_fragment)
+                                        connectToSocket(appData.getUser().user_id)
+
+                                        when (showAction) {
+                                            SHOW_EVENT_LIST -> showEventList(R.id.splash_fragment)
+                                            SHOW_EVENT_LIST_AFTER_GREETINGS -> showEventList(R.id.welcome_fragment)
+                                            SHOW_USER_EVENT -> showEvent()
                                         }
+
                                         checkIntent()
                                     }
                                 }, {
@@ -95,6 +89,29 @@ class MainPresenter
                 }
                 .call(compositeDisposable)
 
+    }
+
+    private fun checkShowGreetings(): Maybe<Boolean> {
+        return if (isAuthRequired) {
+            isAuthRequired = false
+            Completable.fromAction { viewState.showGreetings() }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
+                    .andThen(Maybe.just(true))
+        } else {
+            Maybe.just(false)
+        }
+    }
+
+    private fun checkUserEvent(isGreetingShown: Boolean): Maybe<Int> {
+        return appData.getUser().default_event?.let { event ->
+            UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
+                    .doOnSuccess { if (it) userEventData.event = event }
+                    .flatMap {
+                        if (it) Maybe.just(if (isGreetingShown) SHOW_USER_EVENT_AFTER_GREETINGS else SHOW_USER_EVENT)
+                        else Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
+                    }
+        } ?: Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
     }
 
     override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
@@ -153,7 +170,7 @@ class MainPresenter
                 .subscribe({
                     val connected = it == ChatConnectionStatus.CONNECTED
                     chatHelper.isConnectingToSocket = connected
-                    if(connected){
+                    if (connected) {
                         EventBus.getDefault().post(OnSocketConnectEvent())
 
                     }
@@ -243,5 +260,12 @@ class MainPresenter
     override fun onOpenChatDestination(chatId: String?) {
         viewState.showBackButton(true)
         chatHelper.currentChatId = chatId
+    }
+
+    companion object {
+        private const val SHOW_EVENT_LIST = 0
+        private const val SHOW_EVENT_LIST_AFTER_GREETINGS = 1
+        private const val SHOW_USER_EVENT = 2
+        private const val SHOW_USER_EVENT_AFTER_GREETINGS = 3
     }
 }

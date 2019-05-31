@@ -13,7 +13,7 @@ data class SubEvent(
         @SerializedName("is_speaker")
         val isSpeaker: Boolean,
         @SerializedName("is_in_calendar")
-        val isInCalendar: Boolean,
+        var isInCalendar: Boolean,
         val categories: List<EventCategory>,
         val tags: List<EventTag>
 )

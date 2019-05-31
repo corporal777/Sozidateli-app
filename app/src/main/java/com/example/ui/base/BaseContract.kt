@@ -30,19 +30,22 @@ interface BaseContract {
         fun showDialog(message: String?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDialog(message: String?,onOkClickListener: DialogInterface.OnClickListener?)
+        fun showDialog(message: String?, onOkClickListener: DialogInterface.OnClickListener?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDialog(title: String?,message: String?,onOkClickListener: DialogInterface.OnClickListener?)
+        fun showDialog(title: String?, message: String?, onOkClickListener: DialogInterface.OnClickListener?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDialog(title: String?,message: String?)
+        fun showDialog(title: String?, message: String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showToast(messagesIds: List<Int>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showErrorDialog(messageIds:List<Int>,onDismissListener: DialogInterface.OnDismissListener?)
+        fun showErrorDialog(messageIds: List<Int>, onDismissListener: DialogInterface.OnDismissListener?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNoInternetDialog()
     }
 
     interface LoadingView {
@@ -56,8 +59,8 @@ interface BaseContract {
         fun hideAllLoadingDialogs()
     }
 
-    interface Presenter{
+    interface Presenter {
         @StateStrategyType(SkipStrategy::class)
-        fun onError(errors:List<String>)
+        fun onError(errors: List<String>)
     }
 }

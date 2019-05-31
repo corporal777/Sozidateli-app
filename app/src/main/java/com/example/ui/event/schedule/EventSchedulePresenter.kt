@@ -1,167 +1,75 @@
 package com.example.ui.event.schedule
 
-import androidx.paging.PagedList
-import androidx.paging.RxPagedListBuilder
-import call
 import com.example.data.UserEventData
+import com.example.data.database.Db
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
-import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
-import com.example.extensions.calendar
-import com.example.extensions.isSameDay
-import com.example.holders.SubEventItem
+import com.example.extensions.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationResponse
-import io.reactivex.BackpressureStrategy
+import com.example.util.UserEventLoadingHelper
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import parseTimestamp
+import io.reactivex.Observable
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import timber.log.Timber
 import withLoadingDialog
-import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class EventSchedulePresenter
 constructor(
         private val eventRepository: EventRepository,
-        private val userEventData: UserEventData
+        private val userEventData: UserEventData,
+        private val db: Db,
+        private val connectivity: Observable<Boolean>
 ) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter {
-
-    private val serverDateFormat = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
     protected val event = userEventData.event!!
 
     protected var currentDay: EventScheduleCalendarDay? = null
     protected var selectedTags: List<Tag> = emptyList()
 
-    private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(subevent: SubEvent) {
-            viewState.showSubEvent(event.id, subevent.id)
+    private val loadingCompleteAction = Action {
+        viewState.apply {
+            userEventData.apply {
+                setDays(days)
+                setTags(tags as List<Tag>)
+                currentDay?.let { day ->
+                    selectDay(day)
+                    scrollToDay(day)
+                }
+            }
         }
 
-        override fun onAddToScheduleClick(subevent: SubEvent) {
-            processChangeEventInCalendarStatusRequest(eventRepository.addEventToCalendar(event.id, subevent.id))
-        }
-
-        override fun onRemoveToScheduleClick(subevent: SubEvent) {
-            processChangeEventInCalendarStatusRequest(eventRepository.removeEventFromCalendar(event.id, subevent.id))
-        }
+        invalidateDay()
     }
 
-    private val pagination = PaginationDataSourceFactory { limit, offset ->
-        val day = currentDay?.let { serverDateFormat.format(it.millis) }
-                ?: return@PaginationDataSourceFactory Maybe.empty<PaginationResponse<SubEvent>>()
-        val filter = createRequestFilter().toMutableMap().apply {
-            put("date_start", "$day $DAY_START")
-            put("date_end", "$day $DAY_END")
-        }.toMap()
-
-        eventRepository.getEventDaySchedule(event.id, filter, limit, offset,selectedTags.map { it.getTagId().toString() })
-    }.mapIndexedTotal { item, index, total ->
-        SubEventItem(SubEventCheckLast(item, index == total?.minus(1)), selectedTags, onSubEventClickListener)
+    private val loadingErrorConsumer = Consumer<Throwable> {
+        it.printStackTrace()
+        viewState.apply { showEmptyEventPlaceholder() }
     }
-
-    private val paginationConfig = PagedList.Config.Builder()
-            .setInitialLoadSizeHint(20)
-            .setPageSize(20)
-            .setEnablePlaceholders(false)
-            .build()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadEventScheduleStaticData()
-                .andThen(findNearestDayFromEventDays(System.currentTimeMillis()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete {
-                    viewState.apply {
-                        userEventData.apply {
-                            if (days.isNullOrEmpty()) {
-                                throw IllegalArgumentException("Event has empty days")
-                            } else {
-                                setDays(days)
-                                setTags(categories as List<Tag> + tags as List<Tag>)
-                                currentDay?.let { day ->
-                                    selectDay(day)
-                                    scrollToDay(day)
-                                }
-                            }
-                        }
-                    }
-                }
-                .doOnError {
-                    viewState.apply {
-                        showEmptyEventPlaceholder()
-                    }
-                }
-                .observeOn(Schedulers.io())
-                .andThen(RxPagedListBuilder(pagination, paginationConfig).buildFlowable(BackpressureStrategy.LATEST))
+        compositeDisposable += loadData(userEventData.isDataFromLocalStorage)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.apply {
-                        setSubEvents(it)
-                        viewState.apply {
-                            if (it.isEmpty()) {
-                                showEmptyDayPlaceholder()
-                                hideCurrentDay()
-                            } else {
-                                currentDay?.let { day -> showCurrentDay(day) }
-                                hidePlaceholder()
-                            }
-                        }
-                    }
-                }, {
-                    it.printStackTrace()
-                })
-                .call(compositeDisposable)
+                .subscribe(loadingCompleteAction, loadingErrorConsumer)
     }
 
-    private fun loadEventScheduleStaticData(): Completable {
-        return if (userEventData.isStaticDataLoaded) Completable.complete()
-        else eventRepository.getEventInfo(event.id)
-                .flatMapCompletable {
-                    Completable.fromAction {
-                        userEventData.apply {
-                            days = createCalendarDays(it.dates.map { serverDateFormat.parseTimestamp(it.date) })
-                            tags = it.tags
-                            categories = it.categories
-                            partners = it.partners
-                            isStaticDataLoaded = true
-                        }
-                    }
-                }
+    private fun loadData(forceLoading: Boolean = false): Completable {
+        return loadEventScheduleStaticData(forceLoading)
+                .andThen(findNearestDayFromEventDays(System.currentTimeMillis()))
     }
 
-    private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
-        if (dates.isEmpty()) return emptyList()
-        val sortedDates = dates.sorted()
-        val firsDate = sortedDates.first().calendar()
-        val lastDate = sortedDates.last().calendar()
-        val inDatesCalendar = Calendar.getInstance()
-
-        val datesInRange = mutableListOf<EventScheduleCalendarDay>()
-        while (firsDate.before(lastDate) || firsDate.isSameDay(lastDate)) {
-            val dateInDates = sortedDates.find { firsDate.isSameDay(inDatesCalendar.apply { timeInMillis = it }) }
-
-            val eventDay = EventScheduleCalendarDay(
-                    firsDate.timeInMillis,
-                    firsDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                            ?: "",
-                    firsDate.get(Calendar.DAY_OF_MONTH),
-                    dateInDates != null
-            )
-
-            datesInRange.add(eventDay)
-            firsDate.add(Calendar.DATE, 1)
-        }
-
-        return datesInRange
+    private fun loadEventScheduleStaticData(forceLoading: Boolean): Completable {
+        return if (forceLoading || userEventData.isStaticDataLoaded) Completable.complete()
+        else UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
+                .flatMapCompletable { Completable.complete() }
     }
 
     private fun findNearestDayFromEventDays(date: Long): Completable {
@@ -177,7 +85,36 @@ constructor(
     }
 
     private fun invalidateDay() {
-        currentDay?.also { pagination.source?.invalidate() }
+        val day = currentDay ?: return daySubEventsError()
+        val subEvents = userEventData.subEvents?.let {
+            it.filter { event ->
+                val date = defaultServerDateTimeFormatter.parse(event.start)
+                filterSubEvent(event)
+                        && (if (selectedTags.isNotEmpty()) event.tags.any { tag -> selectedTags.contains(tag) } else true)
+                        && date.time > day.millis.startOfDay() && date.time < day.millis.endOfDay()
+            }
+        } ?: return daySubEventsError()
+
+        viewState.apply {
+            if (userEventData.isDataFromLocalStorage) showDataFormCacheMessage(userEventData.dataLoadingDate.calendar().formatToDefaultTime())
+            else hideDataFormCacheMessage()
+
+            setSubEvents(subEvents, selectedTags)
+            if (subEvents.isEmpty()) {
+                showEmptyDayPlaceholder()
+                hideCurrentDay()
+            } else {
+                currentDay?.let { day -> showCurrentDay(day) }
+                hidePlaceholder()
+            }
+        }
+    }
+
+    private fun daySubEventsError() {
+        viewState.apply {
+            hideCurrentDay()
+            showEmptyEventPlaceholder()
+        }
     }
 
     override fun onDaySelected(day: EventScheduleCalendarDay) {
@@ -197,16 +134,52 @@ constructor(
     }
 
     protected open fun processChangeEventInCalendarStatusRequest(request: Completable) {
-        request.performOnBackgroundOutOnMain()
+        compositeDisposable += ReactiveNetwork.checkInternetConnectivity()
+                .flatMapCompletable {
+                    if (it) request
+                    else Completable.error(NO_NETWORK_CONNECTION_ERROR)
+                }
+                .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ invalidateDay() }, { invalidateDay() })
-                .call(compositeDisposable)
+                .subscribe({
+                    invalidateDay()
+                }, {
+                    if (it == NO_NETWORK_CONNECTION_ERROR) viewState.showNoInternetDialog()
+                })
+
     }
 
-    abstract fun createRequestFilter(): Map<String, Any>
+    override fun onSubEventClick(subEvent: SubEvent) {
+        compositeDisposable += ReactiveNetwork.checkInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    if (it) {
+                        viewState.showSubEvent(event.id, subEvent.id)
+                    } else {
+                        viewState.showNoInternetDialog()
+                    }
+                }, {})
+    }
+
+    override fun onAddToScheduleClick(subEvent: SubEvent) {
+        processChangeEventInCalendarStatusRequest(
+                eventRepository.addEventToCalendar(event.id, subEvent.id)
+                        .andThen(Completable.fromAction { subEvent.isInCalendar = true })
+        )
+    }
+
+    override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
+        processChangeEventInCalendarStatusRequest(
+                eventRepository.removeEventFromCalendar(event.id, subEvent.id)
+                        .andThen(Completable.fromAction { subEvent.isInCalendar = false })
+        )
+    }
+
+    abstract fun filterSubEvent(subEvent: SubEvent): Boolean
 
     companion object {
-        private const val DAY_START = "0:00"
-        private const val DAY_END = "23:59"
+
+        private val NO_NETWORK_CONNECTION_ERROR = Throwable("No network connection")
     }
 }

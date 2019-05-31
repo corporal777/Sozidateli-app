@@ -50,7 +50,7 @@ open class SubEventItem(
 
                 setOnClickListener {
                     clickListener?.apply {
-                        if (subEvent.isInCalendar) onRemoveToScheduleClick(subEvent)
+                        if (subEvent.isInCalendar) onRemoveFromScheduleClick(subEvent)
                         else onAddToScheduleClick(subEvent)
                     }
                 }
@@ -83,8 +83,8 @@ open class SubEventItem(
     override fun getLayout() = R.layout.item_sub_event
 
     interface OnSubEventClickListener {
-        fun onSubEventClick(subevent: SubEvent)
-        fun onAddToScheduleClick(subevent: SubEvent)
-        fun onRemoveToScheduleClick(subevent: SubEvent)
+        fun onSubEventClick(subEvent: SubEvent)
+        fun onAddToScheduleClick(subEvent: SubEvent)
+        fun onRemoveFromScheduleClick(subEvent: SubEvent)
     }
 }

@@ -46,7 +46,7 @@ interface Api {
     fun getUserFull(): Maybe<ApiResponse<User>>
 
     @GET("/v1/users/{id}")
-    fun getUserById(@Path("id")id:Int): Single<ApiResponse<User>>
+    fun getUserById(@Path("id") id: Int): Single<ApiResponse<User>>
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>
@@ -77,7 +77,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/search")
-    fun chatSearch(@Field("user_fio")fio:String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
+    fun chatSearch(@Field("user_fio") fio: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/{chat}/message")
@@ -181,7 +181,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
-    fun getEventDaySchedule(@Path("eventId") eventId: Int, @FieldMap map: Map<String, @JvmSuppressWildcards Any?>, @Field("limit") limit: Int, @Field("start") offset: Int, @Field("tag[]") tags: List<String>): Maybe<ApiResponse<List<SubEvent>>>
+    fun getEventActivity(@Path("eventId") eventId: Int, @Field("limit") limit: String = "all"): Maybe<ApiResponse<List<SubEvent>>>
 
     @FormUrlEncoded
     @POST("/v1/user/events/registrations")

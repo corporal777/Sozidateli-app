@@ -223,6 +223,7 @@
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
     <string name="schedule_my_empty_day_placeholder">У вас нет событий добавьте их из списка</string>
     <string name="schedule_complete_empty_day_placeholder">В этот день нет событий</string>
+    <string name="schedule_cache_data">Отсутствует связь с сервером. Показаны данные актуальные на %s</string>
 
     <string name="auth_sn_set_email_title">Установите email</string>
 
@@ -248,4 +249,6 @@
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
 
+    <string name="no_internet_dialog_title">Ошибка</string>
+    <string name="no_internet_dialog_message">Отсутствует подключение к сети</string>
 </resources>

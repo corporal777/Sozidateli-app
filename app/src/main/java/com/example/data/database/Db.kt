@@ -4,17 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.data.models.UserEvent
 
-
-/**
- * Created by stanl on 08.12.2017.
- */
-/*@Database(
-        entities = [],
-        version = 1
-)*/
+@Database(entities = [UserEvent::class], version = 1)
 abstract class Db : RoomDatabase() {
 
+    abstract fun userEventDao(): UserEventDao
 
     companion object {
         @Volatile

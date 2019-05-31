@@ -46,6 +46,13 @@ fun Calendar.formatToDefaultTimeInterval(to: Calendar): String {
     return "${formatter.format(this.time)} - ${formatter.format(to.time)}"
 }
 
+fun Calendar.formatToDefaultTime(): String {
+    val formatter = if (this.isSameYear(Calendar.getInstance())) defaultDAteTimeFormatterNoYear
+    else defaultDateFormatter
+
+    return formatter.format(this.time)
+}
+
 fun Long.calendar(): Calendar = Calendar.getInstance().apply { timeInMillis = this@calendar }
 
 fun Date.calendar(): Calendar = Calendar.getInstance().apply { time = this@calendar }
@@ -57,4 +64,24 @@ fun Calendar.isSameDay(other: Calendar): Boolean {
 
 fun Calendar.isSameYear(other: Calendar): Boolean {
     return this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
+}
+
+fun Long.startOfDay(): Long {
+    return calendar().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
+            .timeInMillis
+}
+
+fun Long.endOfDay(): Long {
+    return calendar().apply {
+        set(Calendar.HOUR_OF_DAY, 23)
+        set(Calendar.MINUTE, 59)
+        set(Calendar.SECOND, 59)
+        set(Calendar.MILLISECOND, 999)
+    }
+            .timeInMillis
 }

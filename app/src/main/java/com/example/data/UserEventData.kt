@@ -10,8 +10,12 @@ class UserEventData {
     var categories: List<EventCategory>? = null
     var mapInfo: MapInfo? = null
     var partners: List<Partner>? = null
+    var subEvents: List<SubEvent>? = null
 
     var isStaticDataLoaded = false
+
+    var isDataFromLocalStorage = false
+    var dataLoadingDate = 0L
 
     fun clear() {
         event = null
@@ -19,7 +23,10 @@ class UserEventData {
         tags = null
         categories = null
         isStaticDataLoaded = false
+        isDataFromLocalStorage = false
+        dataLoadingDate = 0L
         mapInfo = null
         partners = null
+        subEvents = null
     }
 }

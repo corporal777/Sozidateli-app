@@ -3,7 +3,6 @@ package com.example.repository
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
-import com.example.data.models.SubeventInfo
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
@@ -23,7 +22,7 @@ class EventRepositoryImp
     override fun getEventList(limit: Int, offset: Int, name: String?, dateStart: String?,
                               dateEnd: String?, category: List<String>?,
                               organisation: List<String>?, qr: String?): Maybe<PaginationResponse<Event>> {
-        return callPagination(api.getEventList(limit,offset,name,dateStart,dateEnd,category,organisation,qr))
+        return callPagination(api.getEventList(limit, offset, name, dateStart, dateEnd, category, organisation, qr))
     }
 
     override fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
@@ -44,15 +43,15 @@ class EventRepositoryImp
     }
 
     override fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
-        return call(api.eventRegister(eventId, fields.let { if(it.isNullOrEmpty()) hashMapOf("_" to RequestBody.create(MediaType.parse("text/plain"), "_")) else it }, files.let { if(it.isNullOrEmpty()) null else it }))
+        return call(api.eventRegister(eventId, fields.let { if (it.isNullOrEmpty()) hashMapOf("_" to RequestBody.create(MediaType.parse("text/plain"), "_")) else it }, files.let { if (it.isNullOrEmpty()) null else it }))
     }
 
     override fun getEventRegister(eventId: Int): Single<EventRegisterResponse> {
         return call(api.getEventRegister(eventId))
     }
 
-    override fun getEventDaySchedule(eventId: Int, body: Map<String, Any>, limit: Int, offset: Int,tags: List<String>): Maybe<PaginationResponse<SubEvent>> {
-        return callPagination(api.getEventDaySchedule(eventId, body, limit, offset,tags))
+    override fun getEventActivity(eventId: Int): Maybe<List<SubEvent>> {
+        return call(api.getEventActivity(eventId))
     }
 
     override fun getEventInfo(eventId: Int): Maybe<EventInfo> {
@@ -100,6 +99,6 @@ class EventRepositoryImp
     }
 
     override fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
-        return callPagination(api.getEventSpeakers(eventId,limit,offset))
+        return callPagination(api.getEventSpeakers(eventId, limit, offset))
     }
 }

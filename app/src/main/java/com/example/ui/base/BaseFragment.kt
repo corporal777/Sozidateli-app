@@ -81,15 +81,15 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun showDialog(message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
-        mActivity?.showDialog(message,onOkClickListener)
+        mActivity?.showDialog(message, onOkClickListener)
     }
 
     override fun showDialog(title: String?, message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
-        mActivity?.showDialog(title,message,onOkClickListener)
+        mActivity?.showDialog(title, message, onOkClickListener)
     }
 
     override fun showDialog(title: String?, message: String?) {
-        mActivity?.showDialog(title,message)
+        mActivity?.showDialog(title, message)
     }
 
     override fun showToast(messagesIds: List<Int>) {
@@ -97,7 +97,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun showErrorDialog(messageIds: List<Int>, onDismissListener: DialogInterface.OnDismissListener?) {
-        mActivity?.showErrorDialog(messageIds,onDismissListener)
+        mActivity?.showErrorDialog(messageIds, onDismissListener)
+    }
+
+    override fun showNoInternetDialog() {
+        mActivity?.showNoInternetDialog()
     }
 
     override fun onDestroyView() {

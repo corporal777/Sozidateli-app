@@ -2,17 +2,21 @@ package com.example.di
 
 import android.app.Application
 import android.content.Context
+import android.net.NetworkInfo
 import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
-import com.example.util.ConnnectivityHelper
 import com.example.util.chat.ChatHelper
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.houseofapps.chat.HAChat
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
@@ -36,10 +40,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideConnnectivityHelper(context: Context): ConnnectivityHelper = ConnnectivityHelper(context)
-
-    @Provides
-    @Singleton
     fun provideUserEventData(): UserEventData = UserEventData()
 
     @Provides
@@ -58,4 +58,12 @@ class AppModule {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
     }
+
+    @Provides
+    @Connectivity
+    fun provideConnectivityObservable(context: Context): Observable<Boolean> =
+            ReactiveNetwork.observeNetworkConnectivity(context)
+                    .map { it.state() == NetworkInfo.State.CONNECTED }
+                    .share()
+
 }
