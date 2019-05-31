@@ -33,4 +33,6 @@
     <dimen name="event_schedule_sub_event_divider_height">24dp</dimen>
 
     <dimen name="max_height_image">200dp</dimen>
+
+    <dimen name="from_unread_message">70dp</dimen>
 </resources>

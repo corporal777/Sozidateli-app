@@ -16,7 +16,6 @@
             android:layout_width="@dimen/profile_avatar_size"
             android:layout_height="@dimen/profile_avatar_size"
             android:layout_marginStart="@dimen/profile_padding_start"
-            android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="ContentDescription" />
 

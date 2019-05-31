@@ -34,6 +34,11 @@ class ChatPresenter
     lateinit var chatId: String
     lateinit var userId: String
 
+    private var isFirstGetMessage = true
+    private var beforeItemId: String? = null
+
+    private var firstMessageId:String? = null
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
@@ -62,8 +67,42 @@ class ChatPresenter
                 .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ messages ->
-                    viewState.updateMessages(messages.map { UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString())) })
-                    if (isChatScrolledToBottom) viewState.scrollToBottomPosition()
+                    val messagesWithNewMessage = mutableListOf<UserChatMessage>()
+                    var lastMessage: Message? = null
+                    var positionBeforeItem = -1
+                    messages.forEach {
+                        if (lastMessage != null && lastMessage?.wasRead != it.wasRead && isFirstGetMessage) {
+                            beforeItemId = it._id
+                        }
+
+                        if (it._id == beforeItemId) positionBeforeItem = messages.indexOf(it)
+
+                        messagesWithNewMessage.add(UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString()), false))
+                        lastMessage = it
+                    }
+
+                    if (positionBeforeItem != -1) {
+                        messagesWithNewMessage.add(positionBeforeItem, UserChatMessage(Message("", Message.Type.TEXT, "", "", ""), false, true))
+                    }
+
+                    val isFirstChange = messages.let {
+                        if(it.isNotEmpty() && firstMessageId!=null){
+                           return@let firstMessageId != messages[0]._id
+                        } else{
+                            return@let false
+                        }
+
+                    }
+                    if(messages.isNotEmpty()) firstMessageId!=messages[0]._id
+
+                    viewState.updateMessages(messagesWithNewMessage)
+
+                    if (isFirstGetMessage && positionBeforeItem != -1) {
+                        viewState.scrollTo(positionBeforeItem)
+                    } else {
+                        if (isChatScrolledToBottom && isFirstChange) viewState.scrollToBottomPosition()
+                    }
+                    isFirstGetMessage = false
                 }, {
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)

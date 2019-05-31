@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/profile_padding_start"
+    android:paddingEnd="@dimen/profile_padding_start"
+    android:paddingTop="@dimen/profile_margin_between_field"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_title"
+        android:id="@+id/tvFieldLabel"/>
+
+    <com.example.ui.views.suggestFieldView.SuggestFieldView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="16sp"
+        android:inputType="text|textCapSentences"
+        android:layout_marginTop="4dp"
+        android:id="@+id/city"
+        android:maxLines="1"
+        android:background="@drawable/background_edittext_login"/>
+
+</LinearLayout>

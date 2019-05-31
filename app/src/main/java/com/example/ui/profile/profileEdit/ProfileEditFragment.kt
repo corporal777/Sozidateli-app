@@ -81,7 +81,7 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         listField.add(ProfileDatetItem(ProfileField("user_birthday", getString(R.string.profile_birthday), user.user_birthday), childFragmentManager))
         listField.add(ProfileSwitchItem(ProfileField("user_birthday_show", null, user.user_birthday_show)))
         listField.add(ProfileSelectItem(ProfileField("user_gender", getString(R.string.profile_gender), user.user_gender), genderData))
-        listField.add(ProfileTextItem(ProfileField("user_address_city", getString(R.string.profile_city), user.user_address_city)))
+        listField.add(ProfileCityItem(ProfileField("user_address", getString(R.string.profile_city), user.user_address)))
 
         listField.add(MarginItem(resources.getDimensionPixelSize(R.dimen.profile_margin_between_field)))
 

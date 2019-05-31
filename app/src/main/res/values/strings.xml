@@ -251,4 +251,6 @@
 
     <string name="no_internet_dialog_title">Ошибка</string>
     <string name="no_internet_dialog_message">Отсутствует подключение к сети</string>
+    <string name="unread_message">Непрочитанные сообщения</string>
+
 </resources>
