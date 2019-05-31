@@ -248,4 +248,6 @@
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
 
+    <string name="unread_message">Непрочитанные сообщения</string>
+
 </resources>

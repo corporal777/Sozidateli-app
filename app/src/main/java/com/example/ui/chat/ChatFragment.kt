@@ -22,6 +22,7 @@ import com.example.R
 import com.example.data.models.UserChatMessage
 import com.example.holders.ChatMessageImageItem
 import com.example.holders.ChatMessageTextItem
+import com.example.holders.ChatUnreadLabel
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.util.pagination.PaginationScrollListener
@@ -50,6 +51,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
+
 
     private val imageClickListener = { url: String, imageView: ImageView ->
         presenter.onImageClick(url, imageView)
@@ -94,6 +96,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             })
 
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            itemAnimator = null
 
             afterOnGlobalLayout {
                 startPostponedEnterTransition()
@@ -109,12 +112,16 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun updateMessages(messages: List<UserChatMessage>) {
         chatAdapter.update(messages.map {
-            val item = when (it.message.type) {
-                Message.Type.IMAGE -> ChatMessageImageItem(it, imageClickListener)
-                else -> ChatMessageTextItem(it)
-            }
+            if(it.isUnreadLabel){
+                ChatUnreadLabel()
+            } else {
+                val item = when (it.message.type) {
+                    Message.Type.IMAGE -> ChatMessageImageItem(it, imageClickListener)
+                    else -> ChatMessageTextItem(it)
+                }
 
-            item.apply { onBindListener = { presenter.onChatMessageOnScreen(message) } }
+                item.apply { onBindListener = { presenter.onChatMessageOnScreen(message) } }
+            }
         })
     }
 
@@ -141,6 +148,11 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     override fun scrollToBottomPosition() = scrollToPosition(0, true)
+
+    override fun scrollTo(position: Int) {
+        val offset = rvChat.height - resources.getDimensionPixelSize(R.dimen.from_unread_message)
+        (rvChat?.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+    }
 
     override fun clearMessageInput() = etMessage.text.clear()
 

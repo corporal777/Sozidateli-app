@@ -18,6 +18,9 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun scrollToBottomPosition()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun scrollTo(position:Int)
+
         @StateStrategyType(SkipStrategy::class)
         fun openImageFullScreen(url: String, imageView: ImageView)
 
