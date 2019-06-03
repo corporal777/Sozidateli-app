@@ -15,13 +15,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import ru.houseofapps.chat.HAChat
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class,DataDataRetrofitModule::class])
+@Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class, DataDataRetrofitModule::class])
 class AppModule {
 
     @Provides

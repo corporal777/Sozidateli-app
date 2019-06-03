@@ -175,7 +175,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
-    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.2'
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
     // sn
     implementation 'com.vk:androidsdk:1.6.7'

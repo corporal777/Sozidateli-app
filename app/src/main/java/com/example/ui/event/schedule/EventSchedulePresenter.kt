@@ -12,7 +12,6 @@ import com.example.util.UserEventLoadingHelper
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -33,8 +32,11 @@ constructor(
     protected var currentDay: EventScheduleCalendarDay? = null
     protected var selectedTags: List<Tag> = emptyList()
 
-    private val loadingCompleteAction = Action {
+    private val loadingCompleteAction = Consumer<Boolean> {
         viewState.apply {
+            if (userEventData.isDataFromLocalStorage) showDataFormCacheMessage(userEventData.dataLoadingDate.calendar().formatToDefaultTime())
+            else hideDataFormCacheMessage()
+
             userEventData.apply {
                 setDays(days)
                 setTags(tags as List<Tag>)
@@ -55,9 +57,15 @@ constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += loadData(userEventData.isDataFromLocalStorage)
+        compositeDisposable += connectivity
+                .flatMapSingle {
+                    val completable = if (it) loadData(userEventData.isDataFromLocalStorage)
+                    else if (!userEventData.isStaticDataLoaded) loadData(true)
+                    else findNearestDayFromEventDays(System.currentTimeMillis())
+
+                    completable.toSingleDefault(it)
+                }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
                 .subscribe(loadingCompleteAction, loadingErrorConsumer)
     }
 
@@ -67,9 +75,10 @@ constructor(
     }
 
     private fun loadEventScheduleStaticData(forceLoading: Boolean): Completable {
-        return if (forceLoading || userEventData.isStaticDataLoaded) Completable.complete()
-        else UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
-                .flatMapCompletable { Completable.complete() }
+        return if (forceLoading || !userEventData.isStaticDataLoaded)
+            UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
+                    .flatMapCompletable { Completable.complete() }
+        else Completable.complete()
     }
 
     private fun findNearestDayFromEventDays(date: Long): Completable {
@@ -96,9 +105,6 @@ constructor(
         } ?: return daySubEventsError()
 
         viewState.apply {
-            if (userEventData.isDataFromLocalStorage) showDataFormCacheMessage(userEventData.dataLoadingDate.calendar().formatToDefaultTime())
-            else hideDataFormCacheMessage()
-
             setSubEvents(subEvents, selectedTags)
             if (subEvents.isEmpty()) {
                 showEmptyDayPlaceholder()
