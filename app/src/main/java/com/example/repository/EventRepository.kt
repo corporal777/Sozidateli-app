@@ -14,7 +14,7 @@ interface EventRepository {
                      name: String? = null, dateStart: String? = null,
                      dateEnd: String? = null, category: List<String>? = null,
                      organisation: List<String>? = null,
-                     qr: String? = null): Maybe<PaginationResponse<Event>>
+                     qr: String? = null): Maybe<PaginationResponse<EventApprove>>
 
     fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
@@ -24,7 +24,7 @@ interface EventRepository {
     fun getEventRegister(eventId: Int): Single<EventRegisterResponse>
     fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>
     fun getEventInfo(eventId: Int): Maybe<EventInfo>
-    fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventRegisterResponse>>
+    fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventApprove>>
     fun setDefaultEvent(eventId: Int): Completable
     fun addEventToCalendar(eventId: Int, subEventId: Int): Completable
     fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable

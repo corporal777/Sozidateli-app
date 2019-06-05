@@ -20,7 +20,7 @@ import com.example.ui.image.ImageViewFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
 import com.example.ui.mapTabs.map.MapFragment
-import com.example.ui.myEvents.MyEventsFragment
+import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
@@ -33,7 +33,7 @@ import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.search.qr.QrScannerFragment
-import com.example.ui.recommendations.RecommendationsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment

@@ -97,7 +97,7 @@ class SearchPresenter
         searchHolder.totalCountSearchResult = 0
         factory.mapIndexedTotal { item, index, total ->
             searchHolder.totalCountSearchResult = total
-            return@mapIndexedTotal SearchEventResultItem(item, this@SearchPresenter)
+            return@mapIndexedTotal SearchEventResultItem(item.event, this@SearchPresenter)
         }
                 .build()
                 .performOnBackgroundOutOnMain()

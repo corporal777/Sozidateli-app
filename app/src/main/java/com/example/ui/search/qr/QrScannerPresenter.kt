@@ -34,7 +34,7 @@ class QrScannerPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     if (it.data.isNotEmpty()) {
-                        viewState.showEvent(it.data[0])
+                        viewState.showEvent(it.data[0].event)
                     } else {
                         viewState.showErrorDialog(listOf(R.string.by_qr_not_found_event), DialogInterface.OnDismissListener { viewState.navigateUp() })
                     }

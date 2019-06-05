@@ -1,16 +1,17 @@
-package com.example.ui.recommendations
+package com.example.ui.event.list
 
 import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
+import com.example.data.models.EventApprove
 import com.example.ui.base.BaseContract
 
-interface RecommendationsContract {
+interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(events: PagedList<Event>)
+        fun setData(events: PagedList<EventApprove>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)

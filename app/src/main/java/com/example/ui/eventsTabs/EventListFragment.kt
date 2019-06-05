@@ -10,9 +10,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.myEvents.MyEventsFragment
+import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
-import com.example.ui.recommendations.RecommendationsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject

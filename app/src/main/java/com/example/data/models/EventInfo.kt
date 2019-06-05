@@ -6,7 +6,7 @@ data class EventInfo(
         val event: Event,
         val tags: List<EventTag>,
         val categories: List<EventCategory>,
-        val partners:List<Partner>?,
+        val partners: List<Partner>?,
         @SerializedName("activities_dates")
         val dates: List<EventDate>,
         @SerializedName("news_count")

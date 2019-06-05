@@ -1,44 +1,34 @@
-package com.example.ui.recommendations
+package com.example.ui.event.list
 
 import android.view.View
-import call
-import com.arellomobile.mvp.InjectViewState
-import com.example.data.UserEventData
 import com.example.data.models.Event
+import com.example.data.models.EventApprove
 import com.example.extensions.build
-import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
+import io.reactivex.rxkotlin.plusAssign
 import withLoadingDialog
-import javax.inject.Inject
 
-@InjectViewState
-class RecommendationsPresenter
-@Inject constructor(
-        private val eventRepository: EventRepository,
-        private val userEventData: UserEventData
-) : BasePresenter<RecommendationsContract.View>(), RecommendationsContract.Presenter {
+abstract class EventListPresenter<V: EventListContract.View> : BasePresenter<V>(), EventListContract.Presenter {
 
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private var pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventList(limit, offset) }
+    protected abstract val pagination: PaginationDataSourceFactory<EventApprove>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        pagination.build()
+        compositeDisposable += pagination.build()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
-                .call(compositeDisposable)
     }
 
-    override fun attachView(view: RecommendationsContract.View?) {
+    override fun attachView(view: V?) {
         super.attachView(view)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
     }
 
     override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {
-        userEventData.event = event
         viewState.showAboutEvent(event, *sharedElements)
     }
 

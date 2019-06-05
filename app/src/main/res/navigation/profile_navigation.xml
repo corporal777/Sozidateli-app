@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/my_events_fragment"
-        android:name="com.example.ui.myEvents.MyEventsFragment"
+        android:name="com.example.ui.event.list.my.MyEventsFragment"
         android:label="@string/profile_me_events" />
 
     <fragment
