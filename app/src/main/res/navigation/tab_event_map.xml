@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tab_event_map"
+    app:startDestination="@id/map_tabs_fragment">
+
+    <fragment
+        android:id="@+id/map_tabs_fragment"
+        android:name="com.example.ui.mapTabs.MapTabsFragment"
+        tools:layout="@layout/fragment_map_tabs" />
+
+    <fragment
+        android:id="@+id/image_view_fragment"
+        android:name="com.example.ui.image.ImageViewFragment"
+        tools:layout="@layout/fragment_image_view">
+
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="resource"
+            app:argType="java.lang.Integer"
+            app:nullable="true" />
+
+        <argument
+            android:name="bitmap"
+            app:argType="android.graphics.Bitmap"
+            app:nullable="true" />
+
+        <argument
+            android:name="transition_name"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+</navigation>

@@ -16,12 +16,12 @@ import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.events.OnBackPressEvent
+import com.example.interfaces.OnBackPressedListener
 import com.example.ui.base.BaseFragmentActivity
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_email_set_social_network.view.btnSave
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
-import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -42,7 +42,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val startDestinations = arrayOf(
             R.id.event_list_fragment,
             R.id.login_fragment,
-            R.id.splash_fragment
+            R.id.splash_fragment,
+            R.id.event_tabs_fragment
     )
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
@@ -206,27 +207,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         toolbarDivider.visibility = View.GONE
     }
 
-    override fun onBackPressed() {
-        onSupportNavigateUp()
-    }
-
     override fun navigateUp() {
         onSupportNavigateUp()
     }
 
-    override fun onSupportNavigateUp() = findNavController().run {
-        if (currentDestination?.id?.let { isStartDestination(it) } == true) {
+    override fun onSupportNavigateUp() = findNavController().navigateUp()
+
+    override fun onBackPressed() {
+        val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
+        if ((currentFragment as? OnBackPressedListener)?.onBackPressed() == true) return
+        if (findNavController().currentDestination?.id?.let { isStartDestination(it) } == true) {
             finish()
-            false
-        } else {
-            val tabs = R.id.event_tabs_fragment
-            if (currentDestination?.id == tabs) {
-                EventBus.getDefault().post(OnBackPressEvent())
-            } else {
-                navigateUp()
-            }
-            true
+            return
         }
+
+        super.onBackPressed()
     }
 
     override fun showToolbar() {
@@ -240,7 +235,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
-        //(application as? App)?.appIsRunning = false
         super.onDestroy()
     }
 

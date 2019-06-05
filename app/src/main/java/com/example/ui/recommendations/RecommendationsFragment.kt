@@ -104,7 +104,7 @@ class RecommendationsFragment : BaseNestedNavigationFragment(), RecommendationsC
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<android.view.View, String>) {
         val extras = FragmentNavigatorExtras(*sharedElements)
         findParentNavigation().navigate(
-                R.id.about_event_navigation,
+                R.id.about_event,
                 bundleOf("event" to event),
                 null,
                 extras

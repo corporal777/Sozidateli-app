@@ -1,23 +1,31 @@
 package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventTabsContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun initialNavigationSetup()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showMyScheduleTab()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showScheduleTab()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showAboutTab()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showMapTab()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setCurrentDestinationOnStart()
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventList()
@@ -33,6 +41,9 @@ interface EventTabsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showAccount()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun finish()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -45,5 +56,7 @@ interface EventTabsContract {
         fun onMenuChatClick()
         fun onMenuSearchClick()
         fun onMenuAccountClick()
+
+        fun onClickBackWhenCurrentNavigationOnTop()
     }
 }

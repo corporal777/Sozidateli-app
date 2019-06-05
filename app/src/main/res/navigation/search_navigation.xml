@@ -19,7 +19,7 @@
 
         <action
             android:id="@+id/search_to_event_screen"
-            app:destination="@+id/about_event_navigation" />
+            app:destination="@+id/about_event" />
     </fragment>
 
 
@@ -41,7 +41,7 @@
 
         <action
             android:id="@+id/enter_code_to_event"
-            app:destination="@+id/about_event_navigation" />
+            app:destination="@+id/about_event" />
 
     </fragment>
 

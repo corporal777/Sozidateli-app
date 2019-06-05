@@ -1,29 +1,32 @@
 package com.example.ui.eventTabs
 
 import android.os.Bundle
+import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.*
+import androidx.core.util.forEach
+import androidx.core.util.set
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.events.OnBackPressEvent
+import com.example.interfaces.OnBackPressedListener
 import com.example.ui.base.BaseFragment
 import com.example.util.BottomNavigationViewHelper
 import com.example.util.Utils
-import com.example.util.navigator.KeepStateBackStackNavigator
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View {
+class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedListener {
 
     @InjectPresenter
     lateinit var presenter: EventTabsPresenter
@@ -34,62 +37,53 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
     @ProvidePresenter
     fun providePresenter(): EventTabsPresenter = presenterProvider.get()
 
-    private lateinit var bottomNavigationViewHelper: BottomNavigationViewHelper
+    private val graphIdToTagMap = SparseArray<String>()
+    private lateinit var currentNavController: NavController
 
-    private var navigator: KeepStateBackStackNavigator?=null
+    private val bottomNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
+        presenter.apply {
+            when (it.itemId) {
+                R.id.tab_event_my_schedule -> onMyScheduleTabSelected()
+                R.id.tab_event_schedule -> onScheduleTabSelected()
+                R.id.about_event -> onAboutSelected()
+                R.id.tab_event_map -> onMapTabsSelected()
+                R.id.to_list -> onToListSelected()
+                else -> return@OnNavigationItemSelectedListener false
+            }
+        }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+        return@OnNavigationItemSelectedListener true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        EventBus.getDefault().register(this)
-        bottomNavigationViewHelper = BottomNavigationViewHelper(bottomNavigation)
-        bottomNavigationViewHelper.removeShiftMode()
+        BottomNavigationViewHelper(bottomNavigation).removeShiftMode()
         setHasOptionsMenu(true)
-        bottomNavigation.apply {
-            setOnNavigationItemSelectedListener {
-                presenter.apply {
-                    when (it.itemId) {
-                        R.id.my_schedule_fragment -> onMyScheduleTabSelected()
-                        R.id.schedule_fragment -> onScheduleTabSelected()
-                        R.id.about_event_navigation -> onAboutSelected()
-                        R.id.map_tabs_fragment -> onMapTabsSelected()
-                        R.id.to_list -> presenter.onToListSelected()
-                        else -> return@setOnNavigationItemSelectedListener false
-                    }
-                }
-
-                return@setOnNavigationItemSelectedListener true
-            }
-        }
-
-        if (navigator == null) {
-            val controller = findNestedNavController()
-            val navHostFragment = childFragmentManager.findFragmentById(R.id.tabsNavHostFragment)!!
-            navigator = KeepStateBackStackNavigator(requireContext(), navHostFragment.childFragmentManager, R.id.tabsNavHostFragment,
-                    arrayListOf(R.id.my_schedule_fragment, R.id.schedule_fragment, R.id.about_event_fragment, R.id.map_tabs_fragment))
-            controller.navigatorProvider += navigator!!
-            controller.setGraph(R.navigation.event_tabs_navigation)
-        }
-        navigator?.setBottomNavigationView(bottomNavigation)
+        bottomNavigation.apply { setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener) }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu, { presenter.onMenuChatClick() }, { presenter.onMenuAccountClick() })
+    override fun initialNavigationSetup() {
+        setupFragments()
     }
 
-    override fun showMyScheduleTab() = findNestedNavController().navigate(R.id.my_schedule_fragment, null, buildNavOptions())
+    override fun showMyScheduleTab() = selectTab(R.id.tab_event_my_schedule)
 
-    override fun showScheduleTab() = findNestedNavController().navigate(R.id.schedule_fragment, null, buildNavOptions())
+    override fun showScheduleTab() = selectTab(R.id.tab_event_schedule)
 
-    override fun showAboutTab() = findNestedNavController().navigate(R.id.about_event_navigation_state, null, buildNavOptions())
+    override fun showAboutTab() = selectTab(R.id.about_event)
 
-    override fun showMapTab() = findNestedNavController().navigate(R.id.map_tabs_fragment, null, buildNavOptions())
+    override fun showMapTab() = selectTab(R.id.tab_event_map)
+
+    override fun setCurrentDestinationOnStart() {
+        val startDestination = currentNavController.graph.startDestination
+        if (currentNavController.currentDestination?.id != startDestination)
+            currentNavController.popBackStack(startDestination, false)
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (!currentNavController.navigateUp()) presenter.onClickBackWhenCurrentNavigationOnTop()
+        return true
+    }
 
     override fun showChat() {
         findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatNavigation())
@@ -103,21 +97,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
         findNavController().navigate(EventTabsFragmentDirections.mainToProfile())
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search -> presenter.onMenuSearchClick()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
-    @Subscribe
-    fun onBackPress(event: OnBackPressEvent) {
-        if (!findNestedNavController().popBackStack()) {
-            activity?.finish()
-        }
-    }
-
     override fun showEventList() {
         findNavController().apply {
             graph.startDestination = R.id.event_list_fragment
@@ -128,38 +107,109 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View {
         }
     }
 
-    private fun buildNavOptions(popupTo: Int = R.id.my_schedule_fragment): NavOptions {
-        return NavOptions.Builder()
-//                .setLaunchSingleTop(true)
-                .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
-                .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
-                .setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim)
-                .setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim)
-//                .setPopUpTo(popupTo, false)
-                .build()
+    override fun finish() {
+        activity?.finish()
     }
 
-    private fun matchDestination(destination: NavDestination,
-                                 @IdRes destId: Int): Boolean {
-        var currentDestination: NavDestination? = destination
-        while (currentDestination!!.id != destId && currentDestination.parent != null) {
-            currentDestination = currentDestination.parent
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
+        Utils.processMainMenu(menu, { presenter.onMenuChatClick() }, { presenter.onMenuAccountClick() })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.search -> presenter.onMenuSearchClick()
+            else -> return super.onOptionsItemSelected(item)
         }
-        return currentDestination.id == destId
+        return true
     }
 
     override fun setLabel(label: String) {
         (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 
-    private fun findNestedNavController(): NavController = Navigation.findNavController(view!!.findViewById(R.id.tabsNavHostFragment))
+    private fun selectTab(id: Int) {
+        val newTabTag = graphIdToTagMap[id]
+        val selectedFragment = childFragmentManager.findFragmentByTag(newTabTag)
+                as NavHostFragment
+
+        childFragmentManager.beginTransaction()
+                .attach(selectedFragment)
+                .setPrimaryNavigationFragment(selectedFragment)
+                .apply {
+                    // Detach all other Fragments
+                    graphIdToTagMap.forEach { _, fragmentTag ->
+                        if (fragmentTag != newTabTag) {
+                            detach(childFragmentManager.findFragmentByTag(fragmentTag)!!)
+                        }
+                    }
+                }
+                .setCustomAnimations(
+                        R.anim.nav_default_enter_anim,
+                        R.anim.nav_default_exit_anim,
+                        R.anim.nav_default_pop_enter_anim,
+                        R.anim.nav_default_pop_exit_anim)
+                .setReorderingAllowed(true)
+                .commit()
+
+        currentNavController = selectedFragment.navController
+        bottomNavigation.apply {
+            setOnNavigationItemSelectedListener(null)
+            selectedItemId = id
+            setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
+        }
+    }
+
+    private fun setupFragments() {
+        val navGraphIds = listOf(
+                R.navigation.tab_event_my_schedule,
+                R.navigation.tab_event_schedule,
+                R.navigation.about_event_navigation,
+                R.navigation.tab_event_map
+        )
+
+        navGraphIds.forEachIndexed { index, navGraphId ->
+            val fragmentTag = getFragmentTag(index)
+
+            // Find or create the Navigation host fragment
+            val navHostFragment = obtainNavHostFragment(
+                    childFragmentManager,
+                    fragmentTag,
+                    navGraphId,
+                    R.id.nav_host_container
+            )
+
+            // Obtain its id
+            val graphId = navHostFragment.navController.graph.id
+
+            // Save to the map
+            graphIdToTagMap[graphId] = fragmentTag
+        }
+    }
+
+    private fun obtainNavHostFragment(
+            fragmentManager: FragmentManager,
+            fragmentTag: String,
+            navGraphId: Int,
+            containerId: Int
+    ): NavHostFragment {
+        // If the Nav Host fragment exists, return it
+        val existingFragment = fragmentManager.findFragmentByTag(fragmentTag) as NavHostFragment?
+        existingFragment?.let { return it }
+
+        // Otherwise, create it and return it.
+        val navHostFragment = NavHostFragment.create(navGraphId)
+        fragmentManager.beginTransaction()
+                .add(containerId, navHostFragment, fragmentTag)
+                .detach(navHostFragment)
+                .commitNow()
+        return navHostFragment
+    }
+
+    private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
 
     override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_event_tabs
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        EventBus.getDefault().unregister(this)
-    }
 }
