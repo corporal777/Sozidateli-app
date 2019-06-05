@@ -2,14 +2,19 @@ package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
+import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
+import performOnBackgroundOutOnMain
+import withLoadingDialog
 import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
 class EventTabsPresenter
 @Inject constructor(
-        private val eventData: UserEventData
+        private val eventData: UserEventData,
+        private val eventRepository: EventRepository
 ) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
 
     private val tabSelectStack = Stack<TabSelectCommand>()
@@ -51,7 +56,15 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        viewState.showEventList()
+        compositeDisposable += eventRepository.setDefaultEvent(0)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    eventData.clear()
+                    viewState.showEventList()
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     override fun onMenuChatClick() = viewState.showChat()
