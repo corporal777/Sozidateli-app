@@ -9,13 +9,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
-import com.example.data.models.UserChatMessage
+import com.example.data.models.ChatMessage
 import com.example.extensions.dp
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 
 abstract class ChatMessageItem(
-        val message: UserChatMessage
+        val message: ChatMessage.Personal
 ) : Item(message.message._id.hashCode().toLong()) {
 
     val incomingMessageGuildLineStartPercent = INCOMING_MESSAGE_GUID_LINE_START

@@ -4,12 +4,12 @@ import android.view.View
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
-import com.example.data.models.UserChatMessage
+import com.example.data.models.ChatMessage
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
 
 class ChatMessageTextItem(
-        message: UserChatMessage
+        message: ChatMessage.Personal
 ) : ChatMessageItem(message) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {

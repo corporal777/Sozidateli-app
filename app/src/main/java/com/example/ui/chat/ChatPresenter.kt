@@ -5,7 +5,7 @@ import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
-import com.example.data.models.UserChatMessage
+import com.example.data.models.ChatMessage
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
@@ -29,15 +29,13 @@ class ChatPresenter
         private val haChat: HAChat
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
-    private var isChatScrolledToBottom = true
-
     lateinit var chatId: String
     lateinit var userId: String
 
-    private var isFirstGetMessage = true
-    private var beforeItemId: String? = null
-
-    private var firstMessageId:String? = null
+    private var isChatScrolledToBottom = false
+    private var isMessagesInitialLoad = false
+    private var isMessageSend = false
+    private var lastUnreadMessageId: String? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -67,48 +65,52 @@ class ChatPresenter
                 .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ messages ->
-                    val messagesWithNewMessage = mutableListOf<UserChatMessage>()
-                    var lastMessage: Message? = null
-                    var positionBeforeItem = -1
-                    messages.forEach {
-                        if (lastMessage != null && lastMessage?.wasRead != it.wasRead && isFirstGetMessage) {
-                            beforeItemId = it._id
-                        }
-
-                        if (it._id == beforeItemId) positionBeforeItem = messages.indexOf(it)
-
-                        messagesWithNewMessage.add(UserChatMessage(it, it.isUserMessage(appData.getUser().user_id.toString()), false))
-                        lastMessage = it
-                    }
-
-                    if (positionBeforeItem != -1) {
-                        messagesWithNewMessage.add(positionBeforeItem, UserChatMessage(Message("", Message.Type.TEXT, "", "", ""), false, true))
-                    }
-
-                    val isFirstChange = messages.let {
-                        if(it.isNotEmpty() && firstMessageId!=null){
-                           return@let firstMessageId != messages[0]._id
-                        } else{
-                            return@let false
-                        }
-
-                    }
-                    if(messages.isNotEmpty()) firstMessageId!=messages[0]._id
-
-                    viewState.updateMessages(messagesWithNewMessage)
-
-                    if (isFirstGetMessage && positionBeforeItem != -1) {
-                        viewState.scrollTo(positionBeforeItem)
-                    } else {
-                        if (isChatScrolledToBottom && isFirstChange) viewState.scrollToBottomPosition()
-                    }
-                    isFirstGetMessage = false
+                    val userId = appData.getUser().user_id.toString()
+                    val chatMessages: List<ChatMessage> = messages.map { ChatMessage.Personal(it, it.isUserMessage(userId)) }
+                    val lastUnreadIndex = findLastUnreadMessageIndex(messages)
+                    viewState.updateMessages(addUnreadMessagesItem(chatMessages, lastUnreadIndex))
+                    scrollOnChatMessagesUpdate(lastUnreadIndex)
                 }, {
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })
+    }
+
+    private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
+        return if (!isMessageSend) {
+            if (lastUnreadMessageId == null) lastUnreadMessageId = messages.findLast { message -> !message.wasRead }?._id
+            lastUnreadMessageId?.let { id -> messages.indexOfFirst { message -> message._id == id } }
+                    ?: LAST_UNREAD_INDEX_INVALID
+        } else LAST_UNREAD_INDEX_INVALID
+    }
+
+    private fun addUnreadMessagesItem(messages: List<ChatMessage>, index: Int): List<ChatMessage> {
+        if (index != LAST_UNREAD_INDEX_INVALID) {
+            return messages.toMutableList().apply { add(index + 1, CHAT_MESSAGE_UNREAD_ITEM) }
+        }
+
+        return messages
+    }
+
+    private fun scrollOnChatMessagesUpdate(lastUnreadIndex: Int) {
+        if (!isMessagesInitialLoad) {
+            isMessagesInitialLoad = true
+            if (lastUnreadIndex != LAST_UNREAD_INDEX_INVALID) {
+                viewState.apply {
+                    scrollToMessagesUnreadItem(lastUnreadIndex)
+                    enableBottomScrollListener()
+                }
+                return
+            } else {
+                isChatScrolledToBottom = true
+            }
+        }
+
+        if (isChatScrolledToBottom) {
+            viewState.scrollToBottomPosition()
+        }
     }
 
     override fun attachView(view: ChatContract.View?) {
@@ -131,13 +133,14 @@ class ChatPresenter
     }
 
     private fun sendMessage(message: String, type: Message.Type) {
-        viewState.apply { clearMessageInput() }
-        haChat.sendMessage(type, message) {
-            chatRepository.sendChatMessage(chatId, message, it._id, type.value)
+        if (!isMessageSend) {
+            isMessageSend = true
+            viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
+        viewState.apply { clearMessageInput() }
+        haChat.sendMessage(type, message) { chatRepository.sendChatMessage(chatId, message, it._id, type.value) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-
                 }, {
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
@@ -147,12 +150,16 @@ class ChatPresenter
                 .call(compositeDisposable)
     }
 
-    override fun onLoadMoreMessagesRequest() {
-        haChat.loadNextMessageHistory(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+    override fun onLoadPreviousMessagesRequest() {
+        haChat.loadPreviousMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
-    override fun onChatMessageOnScreen(message: UserChatMessage) {
-        haChat.readMessage(chatId, message.message)
+    override fun onLoadNextMessagesRequest() {
+        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+    }
+
+    override fun onChatMessageOnScreen(message: ChatMessage) {
+//        haChat.readMessage(chatId, message.message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -178,7 +185,8 @@ class ChatPresenter
 
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
-        haChat.loadMessagesAfterLast(chatId)
+        // TODO TEST THIS
+        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
     override fun onDestroy() {
@@ -187,6 +195,9 @@ class ChatPresenter
     }
 
     companion object {
-        const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 40
+        private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 40
+        private const val LAST_UNREAD_INDEX_INVALID = -1
+
+        private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.Service(ChatMessage.Service.Type.NEW_MESSAGES)
     }
 }

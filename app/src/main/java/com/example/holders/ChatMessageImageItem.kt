@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.Guideline
 import com.example.R
-import com.example.data.models.UserChatMessage
+import com.example.data.models.ChatMessage
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -12,11 +12,11 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_image.*
 
 class ChatMessageImageItem(
-        message: UserChatMessage,
+        message: ChatMessage.Personal,
         private val onImageClick: (url: String, imageView: ImageView) -> Unit
 ) : ChatMessageItem(message) {
 
-    val imageUrl = message.message.message!!
+    private val imageUrl = message.message.message
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)

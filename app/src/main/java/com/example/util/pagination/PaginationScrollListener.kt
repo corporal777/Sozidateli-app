@@ -5,7 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PaginationScrollListener(
         private val itemsOffset: Int = 0,
-        private val onNeedLoadMore: () -> Unit
+        private val onNeedLoadPrevious: () -> Unit,
+        private val onNeedLoadNext: () -> Unit
 ) : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -13,12 +14,10 @@ class PaginationScrollListener(
 
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
-        val itemPosition = if (layoutManager.reverseLayout) layoutManager.findLastVisibleItemPosition()
-        else layoutManager.findFirstVisibleItemPosition()
+        val firstPosition: Int = layoutManager.findLastVisibleItemPosition()
+        val lastPosition: Int = layoutManager.findFirstVisibleItemPosition()
 
-        val offset = if (layoutManager.reverseLayout) itemsOffset
-        else -itemsOffset
-
-        if (itemPosition + offset >= layoutManager.itemCount - 1) onNeedLoadMore()
+        if (firstPosition + itemsOffset >= layoutManager.itemCount - 1) onNeedLoadPrevious()
+        if (lastPosition - itemsOffset <= 0) onNeedLoadNext()
     }
 }

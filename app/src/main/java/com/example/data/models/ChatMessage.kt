@@ -1,25 +1,18 @@
 package com.example.data.models
 
-import com.example.util.FIELD_IMAGE
-import com.example.util.FIELD_SENDER_ID
-import com.example.util.FIELD_SEND_AT
-import com.example.util.FIELD_TEXT
-import com.google.firebase.firestore.FieldValue
-import java.util.*
+import ru.houseofapps.chat.models.Message
 
-data class ChatMessage(
-        var id: String? = null,
-        val text: String? = null,
-        val senderId: Int = -1,
-        val sendAt: Date = Date(),
-        val image: String? = null,
-        var isRead: Boolean? = false,
-        val isShowed: Boolean? = false
-) {
-    fun toMap() = mapOf(
-            FIELD_TEXT to text,
-            FIELD_SENDER_ID to senderId,
-            FIELD_SEND_AT to FieldValue.serverTimestamp(),
-            FIELD_IMAGE to image
-    )
+sealed class ChatMessage {
+    data class Personal(
+            val message: Message,
+            val isMyMessage: Boolean
+    ) : ChatMessage()
+
+    data class Service(
+            val type: Type
+    ) : ChatMessage() {
+        enum class Type {
+            NEW_MESSAGES
+        }
+    }
 }

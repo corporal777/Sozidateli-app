@@ -4,13 +4,13 @@ import android.widget.ImageView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.UserChatMessage
+import com.example.data.models.ChatMessage
 import com.example.ui.base.takePhoto.TakePhotoContract
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateMessages(messages: List<UserChatMessage>)
+        fun updateMessages(messages: List<ChatMessage>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
@@ -19,7 +19,7 @@ interface ChatContract {
         fun scrollToBottomPosition()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollTo(position:Int)
+        fun scrollToMessagesUnreadItem(position: Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun openImageFullScreen(url: String, imageView: ImageView)
@@ -32,13 +32,20 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAvatar(url: String?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun removeChatMessage(message: ChatMessage)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun enableBottomScrollListener()
     }
 
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
-        fun onChatMessageOnScreen(message: UserChatMessage)
+        fun onChatMessageOnScreen(message: ChatMessage)
         fun onImageClick(url: String, imageView: ImageView)
-        fun onLoadMoreMessagesRequest()
+        fun onLoadPreviousMessagesRequest()
+        fun onLoadNextMessagesRequest()
     }
 }
