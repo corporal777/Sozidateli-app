@@ -12,8 +12,6 @@ import android.widget.ImageView
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.SimpleItemAnimator
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -54,26 +52,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
 
-    private val scrollToBottomListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            val isBottomPosition = if (newState == SCROLL_STATE_IDLE) {
-                layoutManager.let {
-                    if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
-                    else it.findLastCompletelyVisibleItemPosition() == recyclerView.adapter?.itemCount?.minus(1)
-                }
-            } else false
-
-            presenter.onChatScrollChange(isBottomPosition)
-        }
-    }
-
-    val layoutManager: LinearLayoutManager by lazy {
-        LinearLayoutManager(context).apply {
-            stackFromEnd = false
-            reverseLayout = true
-        }
-    }
-
     private val imageClickListener = { url: String, imageView: ImageView ->
         presenter.onImageClick(url, imageView)
     }
@@ -92,7 +70,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
 
         rvChat.apply {
-            this.layoutManager = this@ChatFragment.layoutManager
             adapter = chatAdapter
 
             addOnScrollListener(PaginationScrollListener(10,
@@ -130,10 +107,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                 is ChatMessage.Service -> getItemForChatServiceMessage(it)
             }
         })
-    }
-
-    override fun enableBottomScrollListener() {
-        rvChat.addOnScrollListener(scrollToBottomListener)
     }
 
     override fun removeChatMessage(message: ChatMessage) {
@@ -193,10 +166,15 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         flCantSendHolder.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 
-    override fun scrollToBottomPosition() = scrollToPosition(0, true)
+    override fun checkScrollPosition() {
+        presenter.onChatScrollChange(isChatScrolledToBottom())
+    }
+
+    override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)
 
     override fun scrollToMessagesUnreadItem(position: Int) {
-        layoutManager.scrollToPositionWithOffset(position, 0)
+        val height = rvChat.height
+        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, height - height / 4)
     }
 
     override fun clearMessageInput() = etMessage.text.clear()
@@ -210,6 +188,13 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun showAvatar(url: String?) {
         val avatarView = activity?.findViewById<View>(R.id.avatar)
         avatarView?.ivAvatar?.setCircleImageWithPlaceholder(url, R.drawable.avatar_placeholder)
+    }
+
+    private fun isChatScrolledToBottom(): Boolean {
+        return (rvChat.layoutManager as LinearLayoutManager).let {
+            if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
+            else it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
+        }
     }
 
     override fun isShowToolbar() = true

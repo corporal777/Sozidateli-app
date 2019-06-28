@@ -70,6 +70,7 @@ class ChatPresenter
                     val lastUnreadIndex = findLastUnreadMessageIndex(messages)
                     viewState.updateMessages(addUnreadMessagesItem(chatMessages, lastUnreadIndex))
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
+                    isMessagesInitialLoad = true
                 }, {
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
@@ -80,36 +81,37 @@ class ChatPresenter
 
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
         return if (!isMessageSend) {
-            if (lastUnreadMessageId == null) lastUnreadMessageId = messages.findLast { message -> !message.wasRead }?._id
-            lastUnreadMessageId?.let { id -> messages.indexOfFirst { message -> message._id == id } }
+            if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
+                val userId = appData.getUser().user_id.toString()
+                lastUnreadMessageId = messages.findLast { message -> !message.isUserMessage(userId) && !message.wasRead }?._id
+            }
+            lastUnreadMessageId?.let { id -> messages.indexOfFirst { message -> message._id == id }.plus(1) }
                     ?: LAST_UNREAD_INDEX_INVALID
         } else LAST_UNREAD_INDEX_INVALID
     }
 
     private fun addUnreadMessagesItem(messages: List<ChatMessage>, index: Int): List<ChatMessage> {
         if (index != LAST_UNREAD_INDEX_INVALID) {
-            return messages.toMutableList().apply { add(index + 1, CHAT_MESSAGE_UNREAD_ITEM) }
+            return messages.toMutableList().apply { add(index, CHAT_MESSAGE_UNREAD_ITEM) }
         }
 
         return messages
     }
 
     private fun scrollOnChatMessagesUpdate(lastUnreadIndex: Int) {
+        var forceScrollToBottom = false
         if (!isMessagesInitialLoad) {
-            isMessagesInitialLoad = true
             if (lastUnreadIndex != LAST_UNREAD_INDEX_INVALID) {
-                viewState.apply {
-                    scrollToMessagesUnreadItem(lastUnreadIndex)
-                    enableBottomScrollListener()
-                }
+                viewState.scrollToMessagesUnreadItem(lastUnreadIndex)
                 return
             } else {
-                isChatScrolledToBottom = true
+                forceScrollToBottom = true
             }
         }
 
-        if (isChatScrolledToBottom) {
-            viewState.scrollToBottomPosition()
+        viewState.checkScrollPosition()
+        if (isChatScrolledToBottom || forceScrollToBottom) {
+            viewState.scrollToBottomPosition(isMessagesInitialLoad)
         }
     }
 
@@ -158,8 +160,8 @@ class ChatPresenter
         haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
-    override fun onChatMessageOnScreen(message: ChatMessage) {
-//        haChat.readMessage(chatId, message.message)
+    override fun onChatMessageOnScreen(message: ChatMessage.Personal) {
+        haChat.readMessage(chatId, message.message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -185,8 +187,7 @@ class ChatPresenter
 
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
-        // TODO TEST THIS
-        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
     }
 
     override fun onDestroy() {
@@ -195,7 +196,7 @@ class ChatPresenter
     }
 
     companion object {
-        private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 40
+        private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 50
         private const val LAST_UNREAD_INDEX_INVALID = -1
 
         private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.Service(ChatMessage.Service.Type.NEW_MESSAGES)

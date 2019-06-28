@@ -16,7 +16,7 @@ interface ChatContract {
         fun clearMessageInput()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollToBottomPosition()
+        fun scrollToBottomPosition(smooth: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun scrollToMessagesUnreadItem(position: Int)
@@ -37,13 +37,13 @@ interface ChatContract {
         fun removeChatMessage(message: ChatMessage)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun enableBottomScrollListener()
+        fun checkScrollPosition()
     }
 
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
-        fun onChatMessageOnScreen(message: ChatMessage)
+        fun onChatMessageOnScreen(message: ChatMessage.Personal)
         fun onImageClick(url: String, imageView: ImageView)
         fun onLoadPreviousMessagesRequest()
         fun onLoadNextMessagesRequest()
