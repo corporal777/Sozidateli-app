@@ -12,8 +12,6 @@ import io.reactivex.Single
 
 interface ChatRepository {
 
-    fun sendChatMessage(chatId: String, message: String, messageId: String, messageType: String): Completable
-
     fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 
     fun startChat(userId: Int): Single<ChatStartResponse>

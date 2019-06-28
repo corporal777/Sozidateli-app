@@ -8,7 +8,6 @@ import com.example.data.models.UploadImage
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -20,13 +19,9 @@ import javax.inject.Inject
 
 class ChatRepositoryImpl
 @Inject constructor(
-        private val appData: AppData,
+        appData: AppData,
         private val api: Api
 ) : ApiRepository(appData), ChatRepository {
-
-    override fun sendChatMessage(chatId: String, message: String, messageId: String, messageType: String): Completable {
-        return api.chatLastMessage(chatId, message, messageId, messageType)
-    }
 
     override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
 

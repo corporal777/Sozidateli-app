@@ -140,7 +140,7 @@ class ChatPresenter
             viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
         viewState.apply { clearMessageInput() }
-        haChat.sendMessage(type, message) { chatRepository.sendChatMessage(chatId, message, it._id, type.value) }
+        haChat.sendMessage(type, message)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                 }, {

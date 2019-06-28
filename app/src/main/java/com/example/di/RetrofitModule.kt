@@ -9,7 +9,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
 import io.reactivex.schedulers.Schedulers
+import isConnectedToNetwork
+import okhttp3.Cache
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -17,18 +21,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.facebook.FacebookSdk.getCacheDir
-import okhttp3.Cache
-import java.io.File
-import isConnectedToNetwork
-import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
-import okhttp3.CacheControl
-import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
-
-
-
 
 @Module
 class RetrofitModule {
@@ -54,12 +49,12 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(authInterceptor: AuthInterceptor,context: Context): OkHttpClient {
+    fun provideHttpClient(authInterceptor: AuthInterceptor, context: Context): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.MINUTES)
                 .writeTimeout(1, TimeUnit.MINUTES)
-                .cache(Cache(File(context.cacheDir,"http-cache"), 10 * 1024 * 1024))
+                .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
 
         clientBuilder.addInterceptor(authInterceptor)
 

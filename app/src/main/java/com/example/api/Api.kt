@@ -79,10 +79,6 @@ interface Api {
     @POST("/v1/user/chat/search")
     fun chatSearch(@Field("user_fio") fio: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
-    @FormUrlEncoded
-    @POST("/v1/user/chat/{chat}/message")
-    fun chatLastMessage(@Path("chat") chatId: String, @Field("message") message: String, @Field("message_id") messageId: String, @Field("message_type") messageType: String): Completable
-
     @POST("/v1/user/chat/start/{user}")
     fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
 
