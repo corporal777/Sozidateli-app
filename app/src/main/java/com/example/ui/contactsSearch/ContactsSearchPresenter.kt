@@ -1,15 +1,17 @@
 package com.example.ui.contactsSearch
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.user.User
-import com.example.extensions.build
+import com.example.extensions.buildList
 import com.example.repository.ChatRepository
-import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_FILTER
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.PaginationListGroupAdapter
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.subjects.PublishSubject
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -19,29 +21,52 @@ import javax.inject.Inject
 class ContactsSearchPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository
-) : BasePresenter<ContactsSearchContract.View>(), ContactsSearchContract.Presenter {
+) : BasePresenter<ContactsSearchContract.View>(), ContactsSearchContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+
+    var startAction: Int = ContactsSearchFragment.SEARCH_ACTION_NONE
 
     private var scrollPosition = 0
     private var scrollOffset = 0
+
+    private val searchSubject = PublishSubject.create<String>()
     private var searchText = ""
 
-    private val searchCompositeDisposable = CompositeDisposable()
-    private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.searchUser(searchText, searchText, limit, offset) }
+    private val pagination = PaginationDataSourceFactory { limit, offset ->
+        chatRepository.searchUser(getUserFilter(), limit, offset)
+    }.buildList()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        pagination.build()
+        compositeDisposable += Observable.create(pagination)
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.apply {
-                        viewState.hideLoadingDialog()
-                        setData(it)
-                    }
+                    viewState.hideLoadingDialog()
+                    dispatchListUpdate(it)
                 }, {
                     viewState.hideLoadingDialog()
                     it.printStackTrace()
                 })
-                .call(compositeDisposable)
+
+        compositeDisposable += searchSubject.debounce(300, TimeUnit.MILLISECONDS)
+                .performOnBackgroundOutOnMain()
+                .subscribe {
+                    if (searchText != it) {
+                        searchText = it
+                        pagination.invalidate()
+                    }
+                }
+
+        when (startAction) {
+            SEARCH_ACTION_INPUT -> viewState.apply {
+                focusOnInput()
+                showKeyboard()
+            }
+            SEARCH_ACTION_FILTER -> viewState.showFilter()
+        }
+    }
+
+    override fun onItemTake(position: Int) {
+        pagination.onItemTake(position)
     }
 
     override fun onScrollChange(position: Int, offset: Int) {
@@ -56,15 +81,9 @@ class ContactsSearchPresenter
     override fun onQueryTextChange(text: String) = search(text)
 
     private fun search(text: String) {
-        searchText = text
-        searchCompositeDisposable.clear()
-        Observable.timer(350, TimeUnit.MILLISECONDS)
-                .performOnBackgroundOutOnMain()
-                .subscribe {
-                    pagination.invalidate()
-                }
-                .call(searchCompositeDisposable)
-
+        text.trim().apply {
+            if (!isEmpty()) searchSubject.onNext(this)
+        }
     }
 
     override fun onSearchCollapsed() = viewState.navigateUp()
@@ -73,8 +92,22 @@ class ContactsSearchPresenter
         viewState.openUserInfo(user.user_id.toString())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        searchCompositeDisposable.clear()
+    private fun dispatchListUpdate(users: List<User>) {
+        val favorites = mutableListOf<User>()
+        val chats = mutableListOf<User>()
+        val another = mutableListOf<User>()
+        users.forEach {
+            when {
+                it.is_in_favorite -> favorites.add(it)
+                it.is_has_chat -> chats.add(it)
+                else -> another.add(it)
+            }
+        }
+
+        viewState.setItems(favorites, chats, another)
+    }
+
+    private fun getUserFilter(): Map<String, Any> {
+        return mapOf("user_fio" to searchText)
     }
 }

@@ -66,4 +66,9 @@
 
     <color name="tab_text">#282b3e</color>
     <color name="tab_text_selected">#282b3e</color>
+
+    <color name="search_input_background">#FAFAFA</color>
+    <color name="search_input_border">#D1D3D4</color>
+    <color name="search_input_icon">#000000</color>
+    <color name="search_input_text">#000000</color>
 </resources>

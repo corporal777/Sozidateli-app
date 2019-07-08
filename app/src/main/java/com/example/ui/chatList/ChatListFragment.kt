@@ -5,15 +5,20 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.holders.ChatListEmptyItem
+import com.example.holders.ChatListHeaderItem
 import com.example.holders.PagedListGroup
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
@@ -30,33 +35,45 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatGroup = PagedListGroup<UserChatItem>()
+    private val chatsGroup = PagedListGroup<UserChatItem>()
+    private val chatSection = Section().apply { add(chatsGroup) }
+    private val headerItem = ChatListHeaderItem({ presenter.onInputClick() }, { presenter.onInputFilterClick() })
+
+    private val adapter = GroupAdapter<ViewHolder>().apply {
+        addAll(listOf(headerItem, chatSection))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         recyclerView.apply {
-            adapter = GroupAdapter<ViewHolder>().apply { add(chatGroup) }
-            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+            adapter = this@ChatListFragment.adapter
         }
-        btnCreateChat.setOnClickListener { presenter.onMenuAddChatClick() }
-
     }
 
-    override fun setData(data: PagedList<UserChatItem>) {
-        chatGroup.submitList(data)
+    override fun setChats(data: PagedList<UserChatItem>) {
+        chatsGroup.submitList(data)
     }
 
     override fun showEmptyView(isShow: Boolean) {
-        emptyView.visibility = if (isShow) View.VISIBLE else View.GONE
+        if (isShow) chatSection.setHeader(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
+        else chatSection.removeFooter()
     }
 
     override fun openChat(chatId: Int, userId: String, userName: String) {
         findNavController().navigate(ChatListFragmentDirections.chatListToChat(userName, chatId.toString(), userId))
     }
 
-    override fun openSearchContact() {
-        findNavController().navigate(ChatListFragmentDirections.actionChatListFragmentToContactsSearchFragment())
+    override fun openSearchContact(action: Int) {
+        val lm = recyclerView.layoutManager as? LinearLayoutManager
+        val header = lm?.findViewByPosition(0)
+        val inputView = header?.findViewById<View>(R.id.etSearch)
+
+        val extras = inputView?.let { FragmentNavigatorExtras(it to it.transitionName) }
+        findNavController().navigate(
+                ChatListFragmentDirections.actionChatListFragmentToContactsSearchFragment(action),
+                extras ?: FragmentNavigatorExtras()
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

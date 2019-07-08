@@ -16,7 +16,7 @@
             android:id="@+id/etSearchText"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@drawable/background_search_edittext"
+            android:background="@drawable/background_search_input"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp"
             android:hint="@string/search_hint"

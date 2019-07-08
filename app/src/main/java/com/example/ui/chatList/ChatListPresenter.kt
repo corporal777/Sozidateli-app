@@ -4,17 +4,20 @@ import android.util.SparseArray
 import android.util.SparseIntArray
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.UserChat
 import com.example.events.OnSocketConnectEvent
 import com.example.holders.UserChatItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_FILTER
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_NONE
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
@@ -30,7 +33,9 @@ class ChatListPresenter
         private val haChat: HAChat
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
-    private val pagination = PaginationDataSourceFactory { limit, offset -> chatRepository.loadChatList(mapOf(), limit, offset) }.map { chat ->
+    private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
+        chatRepository.loadChatList(mapOf(), limit, offset)
+    }.map { chat ->
         UserChatItem(
                 chat,
                 { onChatClick(it) },
@@ -51,43 +56,46 @@ class ChatListPresenter
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
 
-
         val config = PagedList.Config.Builder()
                 .setInitialLoadSizeHint(20)
                 .setPageSize(20)
                 .setEnablePlaceholders(false)
                 .build()
 
-        RxPagedListBuilder(pagination, config)
+        compositeDisposable += RxPagedListBuilder(chatsPagination, config)
                 .buildFlowable(BackpressureStrategy.LATEST)
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.apply {
-                        setData(it)
+                        setChats(it)
                         showEmptyView(it.size == 0)
                     }
                 }, { it.printStackTrace() })
-                .call(compositeDisposable)
 
-        appData.onChatUnreadMessageCountChange
+        compositeDisposable += appData.onChatUnreadMessageCountChange
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val lastCount = lastChatUnreadCount
-                    if (lastCount != null && lastCount < it) pagination.source?.invalidate()
+                    if (lastCount != null && lastCount < it) chatsPagination.source?.invalidate()
                     lastChatUnreadCount = it
                 }, {})
-                .call(compositeDisposable)
     }
 
     override fun attachView(view: ChatListContract.View?) {
         super.attachView(view)
         if (firstLaunch) firstLaunch = false
-        else pagination.source?.invalidate()
+        else chatsPagination.source?.invalidate()
     }
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)
 
-    override fun onMenuAddChatClick() = viewState.openSearchContact()
+    override fun onMenuAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
+
+    override fun onEmptyChatsButtonAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
+
+    override fun onInputClick() = viewState.openSearchContact(SEARCH_ACTION_INPUT)
+
+    override fun onInputFilterClick() = viewState.openSearchContact(SEARCH_ACTION_FILTER)
 
     override fun onChatOnScreen(chat: UserChatItem) {
         val chatId = chat.userChat.id
@@ -120,7 +128,7 @@ class ChatListPresenter
 
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
-        pagination.source?.invalidate()
+        chatsPagination.source?.invalidate()
     }
 
     override fun onDestroy() {

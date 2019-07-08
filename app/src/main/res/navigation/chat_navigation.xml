@@ -38,17 +38,20 @@
         android:id="@+id/contacts_search_fragment"
         android:name="com.example.ui.contactsSearch.ContactsSearchFragment"
         android:label="@string/contact_search_title"
-        tools:layout="@layout/fragment_contacts_search" >
+        tools:layout="@layout/fragment_contacts_search">
         <action
             android:id="@+id/open_user"
             app:destination="@id/user_fragment" />
+        <argument
+            android:name="searchAction"
+            app:argType="integer" />
     </fragment>
 
 
     <fragment
         android:id="@+id/user_fragment"
         android:name="com.example.ui.user.UserFragment"
-        tools:layout="@layout/fragment_speaker" >
+        tools:layout="@layout/fragment_speaker">
         <action
             android:id="@+id/user_to_chat"
             app:destination="@id/chat_fragment" />

@@ -77,7 +77,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/search")
-    fun chatSearch(@Field("user_fio") fio: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
+    fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/user/chat/start/{user}")
     fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>

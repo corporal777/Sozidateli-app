@@ -1,6 +1,5 @@
 package com.example.ui.speaker
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Speaker
 import com.example.data.models.user.User
@@ -36,7 +35,6 @@ class SpeakerPresenter
                 .subscribe({
                     viewState.openChat(speaker.name, speaker.uid.toString(), it.chat_id.toString())
                 }, { it.printStackTrace() })
-                .call(compositeDisposable)
     }
 
     override fun onAddFavoriteClick() {
@@ -47,6 +45,5 @@ class SpeakerPresenter
                     speaker.isInFavorite = !speaker.isInFavorite
                     viewState.setSpeaker(speaker)
                 }, { it.printStackTrace() })
-                .call(compositeDisposable)
     }
 }

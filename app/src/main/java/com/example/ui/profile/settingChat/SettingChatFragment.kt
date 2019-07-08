@@ -34,10 +34,10 @@ class SettingChatFragment : BaseFragment(), SettingChatContract.View {
         switchOnlyFavorite.isChecked = user.settings_chat_allow_msg_from_fav
 
         switchAllUsers.setOnCheckedChangeListener { compoundButton, b ->
-            presenter.onChangeSetting(SETTING_TYPE_CHAT_ALL,b)
+            presenter.onChangeSetting(SETTING_TYPE_CHAT_ALL, b)
         }
         switchOnlyFavorite.setOnCheckedChangeListener { compoundButton, b ->
-            presenter.onChangeSetting(SETTING_TYPE_CHAT_FAVORITE,b)
+            presenter.onChangeSetting(SETTING_TYPE_CHAT_FAVORITE, b)
         }
     }
 

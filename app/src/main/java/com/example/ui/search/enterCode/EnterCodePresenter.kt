@@ -1,6 +1,5 @@
 package com.example.ui.search.enterCode
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.repository.EventRepository
@@ -23,6 +22,6 @@ class EnterCodePresenter
                     } else {
                         viewState.showErrorDialog(listOf(R.string.by_qr_not_found_event), null)
                     }
-                }, { it.printStackTrace() }).call(compositeDisposable)
+                }, { it.printStackTrace() })
     }
 }

@@ -43,7 +43,7 @@ class ChatRepositoryImpl
         return call(api.getChat(chatId))
     }
 
-    override fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return callPagination(api.chatSearch(if (name.isEmpty()) " " else name, limit, offset))
+    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return callPagination(api.chatSearch(searchMap, limit, offset))
     }
 }

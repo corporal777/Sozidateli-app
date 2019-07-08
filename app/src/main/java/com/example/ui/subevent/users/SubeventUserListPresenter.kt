@@ -22,16 +22,12 @@ class SubeventUserListPresenter @Inject constructor(
     var event: Int = ID_INVALID
     var subevent: Int = ID_INVALID
 
-    private val userClickListener: (User) -> Unit = {
-        onUserClick(it)
-    }
-
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         val eventId = event
         val subeventId = subevent
         if (eventId == ID_INVALID || subeventId == ID_INVALID) throw IllegalArgumentException("Invalid id: event: $eventId, subeventId: $subeventId")
         eventRepository.getSubeventUsers(eventId, subeventId, limit, offset)
-    }.map { UserItem(it, userClickListener) }
+    }.map { UserItem(it) { onUserClick(it) } }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

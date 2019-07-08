@@ -10,7 +10,7 @@ import setCircleImageWithPlaceholder
 
 class UserItem(
         private val user: User,
-        onUserClick: (User) -> Unit
+        onUserClick: () -> Unit
 ) : Item(user.user_id.toLong()) {
 
     private val clickListener by weak(onUserClick)
@@ -19,7 +19,7 @@ class UserItem(
         viewHolder.apply {
             tvUserName.text = user.fullName
             ivUserAvatar.setCircleImageWithPlaceholder(user.user_avatar, R.drawable.avatar_placeholder)
-            root.setOnClickListener { clickListener?.invoke(user) }
+            root.setOnClickListener { clickListener?.invoke() }
         }
     }
 

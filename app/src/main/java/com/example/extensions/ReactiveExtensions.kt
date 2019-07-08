@@ -51,6 +51,7 @@ fun <T> Observable<T>.performOnBackgroundOutOnMain(): Observable<T> {
 /**
  * Extension function to add a Disposable to a CompositeDisposable
  */
+@Deprecated("Use rxkotlin", ReplaceWith("compositeDisposable += this"))
 fun Disposable.call(compositeDisposable: CompositeDisposable) {
     compositeDisposable.add(this)
 }
@@ -87,7 +88,7 @@ fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completab
     val loadingDisposable = getLoadingDisposable(baseView)
     return this.doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
             .doFinally(getHideLoadingAction(baseView, loadingDisposable))
-            .doOnError(getHideLoadingConsumer(baseView,loadingDisposable))
+            .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
 
 
 }
@@ -95,7 +96,7 @@ fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completab
 fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
     return this.doFinally(getHideLoadingAction(baseView, loadingDisposable))
-            .doOnDispose(getHideLoadingAction(baseView,loadingDisposable))
+            .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
             .doOnSuccess(getHideLoadingConsumer(baseView, loadingDisposable))
             .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
 

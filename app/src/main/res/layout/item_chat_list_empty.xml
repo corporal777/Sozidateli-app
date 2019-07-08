@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/emptyView"
+    style="@style/ChatList.Empty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--suppress AndroidUnknownAttribute -->
+    <TextView
+        android:id="@+id/tvNoChats"
+        style="@style/ChatList.Empty.Message"
+        fontPath="fonts/OpenSans-Light.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/chat_list_empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingPrefix" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCreateChat"
+        style="@style/ChatList.Empty.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/background_corners"
+        android:text="@string/chat_list_create_chat"
+        android:textColor="@android:color/white"
+        android:theme="@style/ViewBackgroundAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineButtonRight"
+        app:layout_constraintStart_toStartOf="@+id/guidelineButtonLeft"
+        app:layout_constraintTop_toBottomOf="@+id/tvNoChats" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

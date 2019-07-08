@@ -6,7 +6,6 @@ import com.example.data.models.UploadImage
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -20,5 +19,5 @@ interface ChatRepository {
 
     fun getChat(chatId: String): Single<UserChat>
 
-    fun searchUser(name: String, email: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 }

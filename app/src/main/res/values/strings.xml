@@ -111,6 +111,10 @@
     <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
     <string name="search_empty_list">Ничего не найдено</string>
 
+    <string name="search_contact_section_favorites">Избранные контакты</string>
+    <string name="search_contact_section_chats">Все контакты</string>
+    <string name="search_contact_section_another">Другие пользователи</string>
+
     <string name="event_tab_my_schedule">Расписание</string>
     <string name="event_tab_schedule">События</string>
     <string name="event_tab_about">О мероприятии</string>
@@ -174,8 +178,11 @@
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
 
-    <string name="not_found_chats">У вас нет чатов</string>
-    <string name="create_chat">Создать чат</string>
+
+    <string name="chat_list_empty">У вас нет чатов</string>
+    <string name="chat_list_create_chat">Создать чат</string>
+    <string name="chat_list_contacts_and_chats">Контакты и чаты</string>
+    <string name="chat_list_chat_requests">Запросы на чат</string>
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="user_avatar">Аватар</string>

@@ -1,6 +1,5 @@
 package com.example.ui.views.suggestFieldView
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
@@ -31,7 +30,7 @@ class SuggestFieldViewPresenter @Inject constructor(
                     viewState.setSuggested(it.suggestions)
                 }, {
                     it.printStackTrace()
-                }).call(compositeDisposable)
+                })
     }
 
     override fun onDestroy() {

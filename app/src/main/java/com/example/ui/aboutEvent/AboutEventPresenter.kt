@@ -1,6 +1,5 @@
 package com.example.ui.aboutEvent
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData

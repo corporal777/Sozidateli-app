@@ -1,38 +1,28 @@
 package com.example.ui.contactsSearch
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.TextWatcher
-import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
+import android.widget.EditText
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.SimplePagingRecyclerViewAdapter
-import com.example.adapters.ViewHolder
-import com.example.data.models.ContactSearch
 import com.example.data.models.user.User
+import com.example.holders.ListSectionNameItem
+import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
-import com.example.util.CropCircleTransformation
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_contacts_search.*
-import kotlinx.android.synthetic.main.item_search_contact.*
+import com.example.util.SearchInput
+import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
-import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
@@ -43,75 +33,50 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
     lateinit var presenterProvider: Provider<ContactsSearchPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): ContactsSearchPresenter = presenterProvider.get()
+    fun providePresenter(): ContactsSearchPresenter = presenterProvider.get().apply {
+        val args = arguments?.let { ContactsSearchFragmentArgs.fromBundle(it) }
+        startAction = args?.searchAction ?: SEARCH_ACTION_NONE
+    }
 
     private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
-    private lateinit var typefaceBold: CalligraphyTypefaceSpan
-
-    private val adapter: SimplePagingRecyclerViewAdapter<User> by lazy {
-        object : SimplePagingRecyclerViewAdapter<User>(
-                { oldItem, newItem -> false },
-                { oldItem, newItem -> false }
-        ) {
-            override fun getItemLayout(itemView: Int) = R.layout.item_search_contact
-
-            override fun onBindItem(viewHolder: ViewHolder, item: User?, position: Int) {
-                item!!
-                viewHolder.apply {
-                    Picasso.get().load(item.user_avatar.let { if (it.isNullOrEmpty()) null else it })
-                            .placeholder(R.drawable.avatar_placeholder).networkPolicy(NetworkPolicy.NO_CACHE)
-                            .transform(CropCircleTransformation()).into(ivUserAvatar)
-
-                    tvUserName.text = makeSectionOfTextBold(item.fullName, this@ContactsSearchFragment.etSearchText.text.toString())
-
-                    val showTitle = position == 0 || getItem(position - 1)?.contactType != item.contactType
-
-                    val visibility: Int
-                    val textRes: Int?
-                    if (showTitle) {
-                        visibility = View.VISIBLE
-                          textRes = when (item.contactType) {
-                              ContactSearch.Type.FAVORITE -> R.string.contacts_search_favorites
-                              ContactSearch.Type.CHAT -> R.string.contacts_search_chats
-                              ContactSearch.Type.CONTACT -> R.string.contacts_search_another
-                          }
-
-                    } else {
-                        visibility = View.GONE
-                        textRes = null
-                    }
-
-                    tvContactType.apply {
-                        this.visibility = visibility
-                        text = textRes?.let { getString(it) }
-                    }
-
-                    typeDivider.apply { this.visibility = visibility }
-
-                    itemView.setOnClickListener { presenter.onUserClick(item) }
-                }
-            }
-
-            private fun makeSectionOfTextBold(text: String, textToBold: String): CharSequence {
-                return SpannableStringBuilder(text).apply {
-                    if (textToBold.isBlank()) return@apply
-
-                    var start = text.indexOf(string = textToBold, ignoreCase = true)
-                    while (start >= 0) {
-                        val end = start + textToBold.length
-                        setSpan(typefaceBold, start, end, 0)
-                        start = text.indexOf(textToBold, start + 1, true)
-                    }
-                }
-            }
+    private val favoritesSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-100L, getString(R.string.search_contact_section_favorites)))
+            setHideWhenEmpty(true)
         }
     }
+    private val chatsSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_chats)))
+            setHideWhenEmpty(true)
+        }
+    }
+    private val anotherSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-300L, getString(R.string.search_contact_section_another)))
+            setHideWhenEmpty(true)
+        }
+    }
+
+    private val adapter by lazy {
+        PaginationListGroupAdapter<ViewHolder>().apply {
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    presenter.onItemTake(findItemPositionWithoutHeaders(position))
+                }
+            })
+            add(favoritesSection)
+            add(chatsSection)
+            add(anotherSection)
+        }
+    }
+
+    private lateinit var searchInput: SearchInput
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        typefaceBold = CalligraphyTypefaceSpan(uk.co.chrisjenx.calligraphy.TypefaceUtils.load(context!!.assets, "fonts/OpenSans-Bold.ttf"))
         recyclerView.apply {
             adapter = this@ContactsSearchFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
@@ -130,36 +95,10 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
             itemAnimator = null
         }
 
-        etSearchText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                p0?.let {
-                    presenter.onQueryTextChange(it.toString())
-                }
-
-                if (!p0.isNullOrEmpty()) {
-                    etSearchText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0,
-                            R.drawable.ic_circle_close_search, 0)
-                    setTouchListener(true)
-
-                } else {
-                    etSearchText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0,
-                            0, 0)
-                    setTouchListener(false)
-                }
-            }
-        })
-
-        etSearchText.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                presenter.onQueryTextSubmit(etSearchText.text.toString())
-                return@OnEditorActionListener true
-            }
-            return@OnEditorActionListener false
-        })
+        searchInput = SearchInput(view.findViewById(R.id.search) as EditText).apply {
+            setOnTextChange { presenter.onQueryTextChange(it) }
+            setOnTextChangeDone { presenter.onQueryTextSubmit(it) }
+        }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
             doNotShowUntilDataLoad = true
@@ -168,31 +107,26 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         }
     }
 
-    private fun setTouchListener(isSetTouchListener: Boolean) {
-        if (!isSetTouchListener) {
-            etSearchText.setOnTouchListener(null)
-        } else {
-            etSearchText.setOnTouchListener { view, motionEvent ->
-                val DRAWABLE_RIGHT = 2
-
-                if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    if (motionEvent.rawX >= (etSearchText.right - etSearchText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                        etSearchText.setText("")
-
-                        return@setOnTouchListener true
-                    }
-                }
-                return@setOnTouchListener false
-            }
-        }
+    private fun findItemPositionWithoutHeaders(position: Int): Int {
+        var positionWithoutHeaders = position
+        if (favoritesSection.itemCount > 0
+                && positionWithoutHeaders > adapter.getAdapterPosition(favoritesSection)) --positionWithoutHeaders
+        if (chatsSection.itemCount > 0
+                && positionWithoutHeaders > adapter.getAdapterPosition(chatsSection)) --positionWithoutHeaders
+        if (anotherSection.itemCount > 0
+                && positionWithoutHeaders > adapter.getAdapterPosition(anotherSection)) --positionWithoutHeaders
+        return positionWithoutHeaders
     }
 
     override fun openUserInfo(userId: String) {
         findNavController().navigate(ContactsSearchFragmentDirections.openUser(userId))
     }
 
-    override fun setData(contactSearch: PagedList<User>) {
-        adapter.submitList(contactSearch)
+    override fun setItems(favorites: List<User>, chats: List<User>, another: List<User>) {
+        val mapToItem = { user: User -> UserItem(user) { presenter.onUserClick(user) } }
+        favoritesSection.update(favorites.map(mapToItem))
+        chatsSection.update(chats.map(mapToItem))
+        anotherSection.update(another.map(mapToItem))
         placeholderUtil.isDataLoad = true
     }
 
@@ -200,6 +134,24 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
+    override fun focusOnInput() {
+        searchInput.requestFocus()
+    }
+
+    override fun showFilter() {
+
+    }
+
+    override fun hideFilter() {
+
+    }
+
     override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_contacts_search
+
+    companion object {
+        const val SEARCH_ACTION_NONE = 0
+        const val SEARCH_ACTION_INPUT = 1
+        const val SEARCH_ACTION_FILTER = 2
+    }
 }

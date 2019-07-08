@@ -1,6 +1,5 @@
 package com.example.ui.views.chatView
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
@@ -33,7 +32,6 @@ class ChatViewPresenter @Inject constructor(
                 }, {
                     viewState.showCounter(false)
                 })
-                .call(compositeDisposable)
     }
 
     override fun onDestroy() {
