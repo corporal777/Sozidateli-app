@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
-import ru.houseofapps.chat.models.UnreadMessageCount
+import ru.houseofapps.chat.models.RoomUnreadMessageCount
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -107,7 +107,7 @@ class ChatListPresenter
         val changeAccept = createChatMessageCountConsumer(chat)
         val subscription = haChat.subscribeToUnreadMessageCountForRoom(chat.id.toString())
                 .performOnBackgroundOutOnMain()
-                .subscribe(changeAccept, Consumer { changeAccept.accept(UnreadMessageCount(chatId.toString(), 0)) })
+                .subscribe(changeAccept, Consumer { changeAccept.accept(RoomUnreadMessageCount(chatId.toString(), 0)) })
 
         chatUnreadMessageSubscriptions.put(chatId, subscription)
         compositeDisposable.add(subscription)
@@ -117,7 +117,7 @@ class ChatListPresenter
         // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
     }
 
-    private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<UnreadMessageCount> {
+    private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<RoomUnreadMessageCount> {
         return Consumer {
             if (it.room == chat.userChat.id.toString()) {
                 chatUnreadMessageCount.put(chat.userChat.id, it.count)

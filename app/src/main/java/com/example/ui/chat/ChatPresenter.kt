@@ -60,7 +60,8 @@ class ChatPresenter
     }
 
     private fun joinChat(withUser: User) {
-        compositeDisposable += haChat.joinToRoom(chatId, listOf(withUser.user_id.toString()))
+        compositeDisposable += haChat.joinToRoom(chatId)
+                .andThen(haChat.addUsersToRoom(chatId, listOf(withUser.user_id.toString())))
                 .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
                 .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
@@ -140,7 +141,7 @@ class ChatPresenter
             viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
         viewState.apply { clearMessageInput() }
-        haChat.sendMessage(type, message)
+        haChat.sendMessage(chatId, type, message)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                 }, {
