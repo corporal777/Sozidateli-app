@@ -7,19 +7,17 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.holders.ChatListEmptyItem
-import com.example.holders.ChatListHeaderItem
-import com.example.holders.PagedListGroup
-import com.example.holders.UserChatItem
+import com.example.data.models.Speaker
+import com.example.data.models.UserChat
+import com.example.holders.*
 import com.example.ui.base.BaseFragment
-import com.xwray.groupie.GroupAdapter
+import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -35,12 +33,34 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatsGroup = PagedListGroup<UserChatItem>()
-    private val chatSection = Section().apply { add(chatsGroup) }
-    private val headerItem = ChatListHeaderItem({ presenter.onInputClick() }, { presenter.onInputFilterClick() })
+    private val headerItem = ChatListHeaderItem(
+            { presenter.onInputClick() },
+            { presenter.onInputFilterClick() },
+            { presenter.onShowChatListClick() },
+            { presenter.onShowInvitesClick() }
+    )
 
-    private val adapter = GroupAdapter<ViewHolder>().apply {
-        addAll(listOf(headerItem, chatSection))
+    private val chatSection by lazy { Section() }
+
+    private val favoritesSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
+            setHideWhenEmpty(true)
+        }
+    }
+
+    private val adapter by lazy {
+        PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.ViewHolder>().apply {
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    if (position > 0) presenter.onItemTake(position - 1)
+                }
+            })
+
+            add(headerItem)
+            add(chatSection)
+            add(favoritesSection)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,11 +68,45 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
+            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 
-    override fun setChats(data: PagedList<UserChatItem>) {
-        chatsGroup.submitList(data)
+    override fun clearData() {
+        chatSection.update(emptyList())
+        favoritesSection.update(emptyList())
+    }
+
+    override fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>) {
+        chatSection.update(chats.map { chat ->
+            UserChatItem(
+                    chat,
+                    { presenter.onChatClick(it) },
+                    { presenter.onChatOnScreen(it) },
+                    { presenter.onChatGoneFromScreen(it) }
+            )
+        })
+
+        favoritesSection.update(favorites.map { UserItem(it.name, it.photo) { } })
+    }
+
+    override fun setInvitesData(chats: List<UserChat>) {
+        chatSection.update(chats.map { chat ->
+            UserChatItem(
+                    chat,
+                    { presenter.onChatClick(it) },
+                    { presenter.onChatOnScreen(it) },
+                    { presenter.onChatGoneFromScreen(it) }
+            )
+        })
+    }
+
+    override fun selectChats() {
+        headerItem.selectChatsButton()
+    }
+
+    override fun selectInvites() {
+        headerItem.selectRequestsButton()
     }
 
     override fun showEmptyView(isShow: Boolean) {

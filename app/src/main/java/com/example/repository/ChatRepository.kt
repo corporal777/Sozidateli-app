@@ -1,9 +1,6 @@
 package com.example.repository
 
-import com.example.data.models.ApiResponseUpload
-import com.example.data.models.ChatStartResponse
-import com.example.data.models.UploadImage
-import com.example.data.models.UserChat
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
@@ -11,7 +8,9 @@ import io.reactivex.Single
 
 interface ChatRepository {
 
-    fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
+    fun loadChatList(limit: Int, offset: Int): Maybe<ApiResponse<ChatListResponse>>
+
+    fun loadInvitesList(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 
     fun startChat(userId: Int): Single<ChatStartResponse>
 

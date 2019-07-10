@@ -2,10 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.ApiResponseUpload
-import com.example.data.models.ChatStartResponse
-import com.example.data.models.UploadImage
-import com.example.data.models.UserChat
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
@@ -23,7 +20,13 @@ class ChatRepositoryImpl
         private val api: Api
 ) : ApiRepository(appData), ChatRepository {
 
-    override fun loadChatList(searchMap: Map<String, Any>, limit: Int, offset: Int) = callPagination(api.chatList(searchMap, limit, offset))
+    override fun loadChatList(limit: Int, offset: Int): Maybe<ApiResponse<ChatListResponse>> {
+        return api.chatList(limit, offset)
+    }
+
+    override fun loadInvitesList(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
+        return callPagination(api.chatListInvites(limit, offset))
+    }
 
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.startChat(userId))

@@ -73,7 +73,11 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/list")
-    fun chatList(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<UserChat>>>
+    fun chatList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<ChatListResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/chat/list")
+    fun chatListInvites(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_invites") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/search")

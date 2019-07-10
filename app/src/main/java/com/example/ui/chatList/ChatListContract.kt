@@ -1,17 +1,15 @@
 package com.example.ui.chatList
 
-import androidx.paging.PagedList
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.Speaker
 import com.example.data.models.UserChat
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface ChatListContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setChats(data: PagedList<UserChatItem>)
 
         @StateStrategyType(SkipStrategy::class)
         fun openChat(chatId: Int, userId: String, userName: String)
@@ -21,6 +19,21 @@ interface ChatListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEmptyView(isShow: Boolean)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
+        fun selectChats()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
+        fun selectInvites()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list sources")
+        fun clearData()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list sources")
+        fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list sources")
+        fun setInvitesData(chats: List<UserChat>)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -31,5 +44,11 @@ interface ChatListContract {
         fun onEmptyChatsButtonAddChatClick()
         fun onInputClick()
         fun onInputFilterClick()
+
+        fun onShowChatListClick()
+        fun onShowInvitesClick()
+        fun onShowBanesClick()
+
+        fun onItemTake(position: Int)
     }
 }
