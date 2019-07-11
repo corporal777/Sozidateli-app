@@ -72,6 +72,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.showKeyboard()
     }
 
+    fun showKeyboard(view: View) {
+        mActivity?.showKeyboard(view)
+    }
+
     override fun navigateUp() {
         mActivity?.navigateUp()
     }

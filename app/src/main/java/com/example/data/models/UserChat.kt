@@ -25,5 +25,7 @@ data class UserChat(
         @SerializedName("last_message_id")
         var messageId: String?,
         @SerializedName("user_recepient_in_favorite")
-        var inFavorite: Boolean
+        var inFavorite: Boolean,
+        @SerializedName("chat_is_in_invites")
+        var isInInvites: Boolean
 ) : Parcelable

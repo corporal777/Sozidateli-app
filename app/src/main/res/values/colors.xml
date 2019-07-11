@@ -5,15 +5,13 @@
     <color name="colorAccent">#C49A6C</color>
     <color name="colorDivider">#EEEEEE</color>
 
+    <color name="red">#ed1c24</color>
     <color name="gray">#E4E4E4</color>
-
     <color name="hint_gray">#939598</color>
-
     <color name="main_background">#fafafa</color>
-
     <color name="text_title">#404041</color>
-
     <color name="disabled_color">#d1d3d4</color>
+    <color name="attention_action">#C73C00</color>
 
     <color name="action_button_enabled_background_color">#bd9b72</color>
     <color name="action_button_disabled_background_color">#d1d3d4</color>
@@ -24,6 +22,8 @@
     <color name="chat_message_background_incoming">#E4E4E4</color>
     <color name="chat_message_text_outgoing">#FFFFFF</color>
     <color name="chat_message_text_incoming">#B2000000</color>
+    <color name="chat_need_confirm_title_background">#F1F1F1</color>
+    <color name="chat_need_confirm_title_text">#000000</color>
 
     <color name="event_item_background">#FFFFFF</color>
     <color name="event_item_border">#E4E4E4</color>
@@ -55,8 +55,6 @@
     <color name="image_view_error_background">#42403E</color>
 
     <color name="search_edit_text_bg">#f8f8f8</color>
-
-    <color name="red">#ed1c24</color>
 
     <color name="tag_selected_background">#404041</color>
     <color name="tag_background">#00404041</color>

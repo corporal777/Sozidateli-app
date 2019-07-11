@@ -6,9 +6,19 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
 import com.example.ui.base.takePhoto.TakePhotoContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
+        fun showChatInput(animate: Boolean)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
+        fun showChatConfirm()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun focusOnInput(showKeyboard: Boolean)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateMessages(messages: List<ChatMessage>)
 
@@ -47,5 +57,10 @@ interface ChatContract {
         fun onImageClick(url: String, imageView: ImageView)
         fun onLoadPreviousMessagesRequest()
         fun onLoadNextMessagesRequest()
+
+        fun onConfirmChatClick()
+        fun onBlockChatClick()
+
+        fun onInputShowAnimationFinish()
     }
 }

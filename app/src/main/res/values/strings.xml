@@ -185,9 +185,13 @@
     <string name="chat_list_chat_requests">Запросы на чат</string>
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
+    <string name="chat_need_confirm">Вы еще не одобрили запрос на чат</string>
+    <string name="chat_confirm">Одобрить запрос</string>
+    <string name="chat_ban">Заблокировать</string>
+    <string name="chat_photo_message_text">Фото</string>
+
     <string name="user_avatar">Аватар</string>
 
-    <string name="chat_photo_message_text">Фото</string>
 
     <string name="image_transition_name">image_open_transition</string>
 

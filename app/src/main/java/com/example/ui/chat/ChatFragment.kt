@@ -13,6 +13,10 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.transition.AutoTransition
+import androidx.transition.Transition
+import androidx.transition.TransitionListenerAdapter
+import androidx.transition.TransitionManager
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -67,6 +71,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         setHasOptionsMenu(true)
         btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
         btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
+        btnConfirm.setOnClickListener { presenter.onConfirmChatClick() }
+        btnBlock.setOnClickListener { presenter.onBlockChatClick() }
         flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
 
         rvChat.apply {
@@ -84,6 +90,36 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             itemAnimator = null
 
             afterOnGlobalLayout { startPostponedEnterTransition() }
+        }
+    }
+
+    override fun showChatInput(animate: Boolean) {
+        if (animate) {
+            val transition = AutoTransition().apply {
+                addListener(object : TransitionListenerAdapter() {
+                    override fun onTransitionEnd(transition: Transition) {
+                        presenter.onInputShowAnimationFinish()
+                    }
+                })
+            }
+            TransitionManager.beginDelayedTransition(root, transition)
+        }
+
+        inputContainer.visibility = View.VISIBLE
+        inviteActionContainer.visibility = View.GONE
+    }
+
+    override fun showChatConfirm() {
+        inviteActionContainer.visibility = View.VISIBLE
+        inputContainer.visibility = View.GONE
+    }
+
+    override fun focusOnInput(showKeyboard: Boolean) {
+        etMessage.apply {
+            showSoftInputOnFocus = showKeyboard
+            requestFocus()
+            showSoftInputOnFocus = true
+            if (showKeyboard) showKeyboard(this)
         }
     }
 

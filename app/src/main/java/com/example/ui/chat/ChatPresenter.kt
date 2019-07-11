@@ -6,12 +6,14 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.models.ChatMessage
-import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.chat.ChatHelper
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
@@ -19,6 +21,7 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
 import withLoadingDialog
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -39,32 +42,28 @@ class ChatPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
         EventBus.getDefault().register(this)
 
-        chatRepository.getChat(chatId)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    val canSendMsg = if (it.inFavorite && !it.user.settings_chat_allow_msg_from_fav) false
-                    else !(!it.user.settings_chat_allow_msg_from_all && !(it.inFavorite && it.user.settings_chat_allow_msg_from_fav))
-
+        compositeDisposable += chatRepository.getChat(chatId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
                     viewState.apply {
                         showAvatar(it.user.user_avatar)
-                        showCantSendHolder(!canSendMsg)
+                        if (it.isInInvites) showChatConfirm()
+                        else {
+                            showChatInput(false)
+                            focusOnInput(false)
+                        }
                     }
-
-                    if (canSendMsg) joinChat(it.user)
-                }, { it.printStackTrace() })
-                .call(compositeDisposable)
-    }
-
-    private fun joinChat(withUser: User) {
-        compositeDisposable += haChat.joinToRoom(chatId)
-                .andThen(haChat.addUsersToRoom(chatId, listOf(withUser.user_id.toString())))
+                }
+                .observeOn(Schedulers.io())
+                .flatMapCompletable {
+                    haChat.joinToRoom(chatId)
+                            .andThen(haChat.addUsersToRoom(chatId, listOf(it.user.user_id.toString())))
+                }
                 .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
-                .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
                 .subscribe({ messages ->
                     val userId = appData.getUser().user_id.toString()
                     val chatMessages: List<ChatMessage> = messages.map { ChatMessage.Personal(it, it.isUserMessage(userId)) }
@@ -123,6 +122,7 @@ class ChatPresenter
     }
 
     override fun detachView(view: ChatContract.View?) {
+        view?.hideKeyboard()
         super.detachView(view)
         chatHelper.currentChatId = null
     }
@@ -184,6 +184,28 @@ class ChatPresenter
                 }, {
                     it.printStackTrace()
                 })
+    }
+
+    override fun onConfirmChatClick() {
+        compositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe {
+                    viewState.showChatInput(true)
+                }
+    }
+
+    override fun onBlockChatClick() {
+        compositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe {
+                    viewState.navigateUp()
+                }
+    }
+
+    override fun onInputShowAnimationFinish() {
+        viewState.focusOnInput(true)
     }
 
     @Subscribe

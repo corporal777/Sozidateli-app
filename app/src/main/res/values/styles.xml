@@ -72,6 +72,8 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="ViewBackground" />
+
     <style name="ViewBackgroundPrimary">
         <item name="viewBackground">@color/colorPrimary</item>
     </style>
@@ -86,6 +88,10 @@
 
     <style name="ViewBackgroundBlack">
         <item name="viewBackground">@color/text_title</item>
+    </style>
+
+    <style name="ViewBackgroundAttention">
+        <item name="viewBackground">@color/attention_action</item>
     </style>
 
     <style name="InputBorder">

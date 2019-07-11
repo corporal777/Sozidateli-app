@@ -70,6 +70,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
+    fun showKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
     override fun showDialog(message: String?) {
         showDialog(null, message, null)
     }
