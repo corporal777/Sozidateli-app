@@ -11,7 +11,9 @@ import javax.inject.Inject
 
 @InjectViewState
 class ProfileFullPresenter
-@Inject constructor(private val userRepository: UserRepository
+@Inject constructor(
+        private val userRepository: UserRepository,
+        private val appData: AppData
 ) : BasePresenter<ProfileFullContract.View>(), ProfileFullContract.Presenter {
 
     private var isFirstAttach = true

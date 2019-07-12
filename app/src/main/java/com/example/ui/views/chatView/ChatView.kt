@@ -1,6 +1,7 @@
 package com.example.ui.views.chatView
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
         private const val CHAT_VIEW_TAG = "chat_view_tag"
     }
 
-    private val mvpDelegate by lazy { MvpDelegate<ChatView>(this) }
+    private val mvpDelegate by lazy { MvpDelegate(this) }
 
     @InjectPresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
     lateinit var presenter: ChatViewPresenter
@@ -35,6 +36,14 @@ class ChatView : FrameLayout, ChatViewContract.View {
 
     private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
         ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_chat))
+    }
+
+    private val badgeBackgroundMessages by lazy {
+        ContextCompat.getDrawable(context, R.drawable.background_badge_attention_high)!!
+    }
+
+    private val badgeBackgroundRequests by lazy {
+        ContextCompat.getDrawable(context, R.drawable.background_badge_attention_medium)!!
     }
 
     constructor(context: Context) : super(context)
@@ -59,11 +68,23 @@ class ChatView : FrameLayout, ChatViewContract.View {
         mvpDelegate.onDestroy()
     }
 
-    override fun setChatCount(count: String) {
-        view.tvBadge.text = count
+    override fun setMessagesCount(count: String) {
+        showBadge(count, badgeBackgroundMessages)
     }
 
-    override fun showCounter(show: Boolean) {
-        view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
+    override fun setRequestsCount(count: String) {
+        showBadge(count, badgeBackgroundRequests)
+    }
+
+    private fun showBadge(count: String, backgroundDrawable: Drawable) {
+        view.tvBadge.apply {
+            text = count
+            background = backgroundDrawable
+            visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideCounter() {
+        view.tvBadge.visibility = View.GONE
     }
 }

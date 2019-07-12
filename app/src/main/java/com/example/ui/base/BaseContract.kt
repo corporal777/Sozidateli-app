@@ -59,8 +59,5 @@ interface BaseContract {
         fun hideAllLoadingDialogs()
     }
 
-    interface Presenter {
-        @StateStrategyType(SkipStrategy::class)
-        fun onError(errors: List<String>)
-    }
+    interface Presenter
 }

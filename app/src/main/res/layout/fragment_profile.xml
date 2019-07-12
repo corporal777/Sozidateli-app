@@ -38,7 +38,7 @@
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/background_badge"
+                android:background="@drawable/background_badge_attention_high"
                 android:gravity="center"
                 android:maxLength="3"
                 android:maxLines="1"

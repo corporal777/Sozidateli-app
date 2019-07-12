@@ -5,6 +5,7 @@ import android.widget.ImageView
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
+import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
@@ -29,7 +30,8 @@ class ChatPresenter
 @Inject constructor(
         private val chatHelper: ChatHelper,
         private val chatRepository: ChatRepository,
-        private val haChat: HAChat
+        private val haChat: HAChat,
+        private val appData: AppData
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String

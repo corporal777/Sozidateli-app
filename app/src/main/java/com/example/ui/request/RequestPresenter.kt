@@ -3,37 +3,29 @@ package com.example.ui.request
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
+import com.example.data.models.EventRegisterResponse
+import com.example.data.models.RegisterFieldResponse
+import com.example.events.OnUpdateMyEventsEvent
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.internal.operators.completable.CompletableFromAction
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.io.File
 import javax.inject.Inject
-import android.content.DialogInterface
-import com.example.R
-import com.example.data.models.EventRegisterResponse
-import com.example.data.models.RegisterFieldResponse
-import com.example.events.OnUpdateMyEventsEvent
-import com.example.util.PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED
-import com.example.util.PART_ERROR_REQUEST_EVENT_FILE_ERROR
-import com.example.util.PART_ERROR_REQUEST_EVENT_REGISTER_END
-import com.google.gson.Gson
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import okhttp3.MultipartBody
-import org.greenrobot.eventbus.EventBus
-
 
 @InjectViewState
 class RequestPresenter
 @Inject constructor(
         private val eventRepository: EventRepository
 ) : BasePresenter<RequestContract.View>(), RequestContract.Presenter {
-
 
     lateinit var event: Event
 
@@ -54,7 +46,7 @@ class RequestPresenter
             Pair(t1, t2)
         }).map {
             it.second.custom_fields?.let { fillingFieldArray ->
-                fillingFieldArray.forEach { fillingField->
+                fillingFieldArray.forEach { fillingField ->
 
                     it.first.fields?.let { arrayFields ->
                         arrayFields.forEach {
@@ -121,26 +113,6 @@ class RequestPresenter
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)
-    }
-
-    override fun onError(errors: List<String>) {
-        val messageIds = linkedSetOf<Int>()
-        var hasImportantError = false
-        errors.forEach {
-            if (it.contains(PART_ERROR_REQUEST_EVENT_REGISTER_END)) {
-                hasImportantError = true
-                messageIds.add(R.string.request_event_register_end)
-            } else if (it.contains(PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED)) {
-                messageIds.add(R.string.request_event_required_field)
-            } else if (it.contains(PART_ERROR_REQUEST_EVENT_FILE_ERROR)) {
-                messageIds.add(R.string.request_event_file_error)
-            }
-        }
-        if (hasImportantError) {
-            viewState.showErrorDialog(messageIds.toList(), DialogInterface.OnDismissListener { viewState.navigateUp() })
-        } else {
-            viewState.showToast(messageIds.toList())
-        }
     }
 
     override fun onGoTeEventListClick() {

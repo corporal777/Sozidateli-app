@@ -2,6 +2,7 @@ package com.example.ui.notifications
 
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.extensions.build
 import com.example.repository.UserRepository
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @InjectViewState
 class NotificationsPresenter
 @Inject constructor(
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val appData: AppData
 ) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
 
     private lateinit var notificationsToReadPublisher: PublishSubject<Notification>

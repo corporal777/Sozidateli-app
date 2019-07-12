@@ -15,6 +15,7 @@ class ChatListHeaderItem(
 
     private var selectedButton = SELECTED_BUTTON_NONE
     private var viewHolder: ViewHolder? = null
+    private var requestsCount: Int = 0
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         this.viewHolder = viewHolder

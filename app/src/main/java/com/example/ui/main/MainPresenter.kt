@@ -3,6 +3,7 @@ package com.example.ui.main
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.events.OnSocketConnectEvent
@@ -37,7 +38,8 @@ class MainPresenter
         private val userRepository: UserRepository,
         private val haChat: HAChat,
         private val eventRepository: EventRepository,
-        private val db: Db
+        private val db: Db,
+        private val appData: AppData
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -46,11 +48,9 @@ class MainPresenter
 
     private var isAuthRequired = false
 
-    override var isNeedErrorHandler = false
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.onTokenChange
+        appData.tokenChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
                     unsubscribeChat()
@@ -177,6 +177,7 @@ class MainPresenter
                     if (connected && chatCompositeDisposable.size() == 1) {
                         subscribeChatNewMessage()
                         subscribeChatUnreadCount()
+                        subscribeChatRequestsCount()
                     }
                 }, {
                     it.printStackTrace()
@@ -209,6 +210,17 @@ class MainPresenter
                     processNewMessageMessage(it)
                 }, {
                     it.printStackTrace()
+                })
+    }
+
+    private fun subscribeChatRequestsCount() {
+        chatCompositeDisposable += haChat.subscribeTo<Number>("chatRequestCount")
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.chatRequestsCount = it.toInt()
+                }, {
+                    it.printStackTrace()
+                    appData.chatRequestsCount = 0
                 })
     }
 

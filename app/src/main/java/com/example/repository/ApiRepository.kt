@@ -67,6 +67,5 @@ abstract class ApiRepository(
     protected fun processError(throwable: Throwable){
         val response  = ApiErrorParser.parse(throwable)
         saveSession(response)
-        appData.error = response
     }
 }

@@ -7,7 +7,9 @@ import javax.inject.Inject
 
 @InjectViewState
 class WelcomePresenter
-@Inject constructor() : BasePresenter<WelcomeContract.View>(), WelcomeContract.Presenter {
+@Inject constructor(
+        private val appData: AppData
+) : BasePresenter<WelcomeContract.View>(), WelcomeContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

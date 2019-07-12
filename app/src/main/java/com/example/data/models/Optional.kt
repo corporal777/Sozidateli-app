@@ -1,6 +1,6 @@
 package com.example.data.models
 
-data class Optional<T>(
+data class Optional<out T>(
         val value: T?
 )
 

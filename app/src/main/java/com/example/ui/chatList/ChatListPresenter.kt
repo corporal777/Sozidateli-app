@@ -3,6 +3,7 @@ package com.example.ui.chatList
 import android.util.SparseArray
 import android.util.SparseIntArray
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
@@ -35,7 +36,8 @@ import javax.inject.Inject
 class ChatListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
-        private val haChat: HAChat
+        private val haChat: HAChat,
+        private val appData:  AppData
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
@@ -75,7 +77,7 @@ class ChatListPresenter
         EventBus.getDefault().register(this)
         onShowChatListClick()
 
-        compositeDisposable += appData.onChatUnreadMessageCountChange
+        compositeDisposable += appData.chatMessageCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val lastCount = lastChatUnreadCount

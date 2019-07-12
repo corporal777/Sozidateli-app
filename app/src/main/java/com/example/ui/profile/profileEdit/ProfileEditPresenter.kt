@@ -16,7 +16,10 @@ import javax.inject.Inject
 
 @InjectViewState
 class ProfileEditPresenter
-@Inject constructor(private val userRepository: UserRepository) : TakePhotoPresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
+@Inject constructor(
+        private val userRepository: UserRepository,
+        private val appData: AppData
+) : TakePhotoPresenter<ProfileEditContract.View>(), ProfileEditContract.Presenter {
 
 
     var photo: String? = null
@@ -81,7 +84,7 @@ class ProfileEditPresenter
                 .subscribe({
 
                     it.isEmailChanged = isEmailChange
-                    if(isEmailChange){
+                    if (isEmailChange) {
                         it.new_email = mapUser["user_email"].toString()
                     }
 

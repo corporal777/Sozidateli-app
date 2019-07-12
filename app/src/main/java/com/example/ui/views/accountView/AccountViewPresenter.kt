@@ -19,7 +19,7 @@ class AccountViewPresenter @Inject constructor(
         super.onFirstViewAttach()
 
         viewState.showCounter(false)
-        appData.onNotificationsCountChange
+        appData.notificationsCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.apply {
@@ -40,9 +40,5 @@ class AccountViewPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
-    }
-
-    override fun onError(errors: List<String>) {
-
     }
 }

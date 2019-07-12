@@ -2,6 +2,7 @@ package com.example.ui.profile
 
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Event
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -12,14 +13,15 @@ import javax.inject.Inject
 @InjectViewState
 class ProfilePresenter
 @Inject constructor(
-
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val appData: AppData
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
         viewState.hideLastNotification()
-        appData.onNotificationsCountChange.performOnBackgroundOutOnMain()
+        appData.notificationsCountSubject
+                .performOnBackgroundOutOnMain()
                 .subscribe({
                     val user = appData.getUser()
                     val notification = user.last_notification

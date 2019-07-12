@@ -1,13 +1,9 @@
 package com.example.data
 
-import com.example.data.models.ApiResponse
-import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
-import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
@@ -33,7 +29,14 @@ class AppData(
         set(value) {
             val changed = field != value
             field = value
-            if (changed) chatUnreadMessageCountSubject.onNext(value)
+            if (changed) chatMessageCountSubject.onNext(value)
+        }
+
+    var chatRequestsCount = 0
+        set(value) {
+            val changed = field != value
+            field = value
+            if (changed) chatRequestsCountSubject.onNext(value)
         }
 
     var notificationsCount = 0
@@ -43,29 +46,14 @@ class AppData(
             if (changed) notificationsCountSubject.onNext(value)
         }
 
-    var error: ApiResponse<*>? = null
-        set(value) {
-            field = value
-            onErrorHandler.onNext(value.asOptional())
-        }
-
     private var user: User? = null
     var fullUser: User? = null
 
-    private val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
-    val onUserChange: Observable<Optional<User>> = userChangeSubject
-
-    private val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
-    val onTokenChange: Observable<Optional<String>> = tokenChangeSubject
-
-    private val chatUnreadMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
-    val onChatUnreadMessageCountChange: Observable<Int> = chatUnreadMessageCountSubject
-
-    private val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
-    val onNotificationsCountChange: Observable<Int> = notificationsCountSubject
-
-    private val onErrorHandler = PublishSubject.create<Optional<ApiResponse<*>>>()
-    val onErrorHandlerListener: Observable<Optional<ApiResponse<*>>> = onErrorHandler
+    val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
+    val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
+    val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
+    val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
+    val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
 
     fun setUser(user: User) {
         val changed = this.user != user
