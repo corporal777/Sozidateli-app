@@ -3,6 +3,8 @@ package com.example.ui.views.chatView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
+import com.example.util.BADGE_COUNT_MAX
+import com.example.util.BADGE_TEXT_IF_MORE_THAN_MAX
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -47,7 +49,7 @@ class ChatViewPresenter @Inject constructor(
         viewState.apply {
             val messages = messagesCount
             val requests = requestsCount
-            val countLet = { count: Int -> if (count > COUNT_MAX) TEXT_IF_MORE_THAN_MAX else count.toString() }
+            val countLet = { count: Int -> if (count > BADGE_COUNT_MAX) BADGE_TEXT_IF_MORE_THAN_MAX else count.toString() }
             when {
                 messages > 0 -> setMessagesCount(messages.let(countLet))
                 requests > 0 -> setRequestsCount(requests.let(countLet))
@@ -59,10 +61,5 @@ class ChatViewPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
-    }
-
-    companion object {
-        private const val COUNT_MAX = 99
-        private const val TEXT_IF_MORE_THAN_MAX = "99+"
     }
 }

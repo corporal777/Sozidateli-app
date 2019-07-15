@@ -1,7 +1,6 @@
 package com.example.ui.chatList
 
 import android.util.SparseArray
-import android.util.SparseIntArray
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
@@ -9,7 +8,6 @@ import com.example.data.models.Speaker
 import com.example.data.models.UserChat
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
-import com.example.holders.UserChatItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_FILTER
@@ -37,7 +35,7 @@ class ChatListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
         private val haChat: HAChat,
-        private val appData:  AppData
+        private val appData: AppData
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
@@ -54,16 +52,10 @@ class ChatListPresenter
         }
     }.buildList()
 
-    private val bansPagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.loadChatList(limit, offset).map { response ->
-            val items = response.response.chats.map { ChatListDataItem.Chat(it) }
-                    .plus(response.response.favorites.map { ChatListDataItem.User(it) })
-            PaginationResponse(response.response_detail?.total, items)
-        }
-    }.buildList()
-
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
-    private val chatUnreadMessageCount = SparseIntArray()
+    private val chatUnreadMessageConsumer = Consumer<RoomUnreadMessageCount> {
+        viewState.setChatUnreadMessageCount(it.room, it.count)
+    }
 
     private var firstLaunch = true
     private var lastChatUnreadCount: Int? = null
@@ -84,6 +76,10 @@ class ChatListPresenter
                     if (lastCount != null && lastCount < it) currentPagination?.invalidate()
                     lastChatUnreadCount = it
                 }, {})
+
+        compositeDisposable += haChat.subscribeToUnreadMessageCount()
+                .performOnBackgroundOutOnMain()
+                .subscribe(chatUnreadMessageConsumer, Consumer {})
     }
 
     override fun attachView(view: ChatListContract.View?) {
@@ -102,8 +98,6 @@ class ChatListPresenter
         changeListMode(SCREEN_MODE_INVITES)
     }
 
-    override fun onShowBanesClick() = changeListMode(SCREEN_MODE_BANS)
-
     private fun changeListMode(mode: Int) {
         if (listMode != mode) {
             listMode = mode
@@ -119,7 +113,6 @@ class ChatListPresenter
         val pagination = when (mode) {
             SCREEN_MODE_CHATS -> chatsPagination
             SCREEN_MODE_INVITES -> invitesPagination
-            SCREEN_MODE_BANS -> bansPagination
             else -> throw IllegalArgumentException("Wrong list mode $mode")
         }
 
@@ -141,7 +134,6 @@ class ChatListPresenter
         when (mode) {
             SCREEN_MODE_CHATS -> dispatchChatsListUpdate(data)
             SCREEN_MODE_INVITES -> dispatchInvitesListUpdate(data)
-            SCREEN_MODE_BANS -> bansPagination
             else -> throw IllegalArgumentException("Wrong list mode $mode")
         }
     }
@@ -181,38 +173,29 @@ class ChatListPresenter
         chatsPagination.onItemTake(position)
     }
 
-    override fun onChatOnScreen(chat: UserChatItem) {
-        val chatId = chat.userChat.id
+    override fun onChatOnScreen(chatId: Int) {
         val oldSubscription = chatUnreadMessageSubscriptions[chatId]
         if (oldSubscription != null && !oldSubscription.isDisposed) {
             oldSubscription.dispose()
         }
 
-        val changeAccept = createChatMessageCountConsumer(chat)
-        val subscription = haChat.subscribeToUnreadMessageCountForRoom(chat.id.toString())
+        val subscription = haChat.getUnreadMessageCount(chatId.toString())
                 .performOnBackgroundOutOnMain()
-                .subscribe(changeAccept, Consumer { changeAccept.accept(RoomUnreadMessageCount(chatId.toString(), 0)) })
+                .subscribe(chatUnreadMessageConsumer, Consumer {
+                    chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))
+                })
 
         chatUnreadMessageSubscriptions.put(chatId, subscription)
         compositeDisposable.add(subscription)
     }
 
-    override fun onChatGoneFromScreen(chat: UserChatItem) {
-        // chatUnreadMessageSubscriptions[chat.userChat.event_id]?.dispose()
-    }
-
-    private fun createChatMessageCountConsumer(chat: UserChatItem): Consumer<RoomUnreadMessageCount> {
-        return Consumer {
-            if (it.room == chat.userChat.id.toString()) {
-                chatUnreadMessageCount.put(chat.userChat.id, it.count)
-                if (chat.unreadMessageCount != it.count) chat.unreadMessageCount = it.count
-            }
-        }
+    override fun onChatGoneFromScreen(chatId: Int) {
+        chatUnreadMessageSubscriptions[chatId]?.dispose()
     }
 
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
-//        chatsPagination.source?.invalidate()
+        chatsPagination.invalidate()
     }
 
     override fun onDestroy() {
@@ -223,6 +206,5 @@ class ChatListPresenter
     companion object {
         private const val SCREEN_MODE_CHATS = 0
         private const val SCREEN_MODE_INVITES = 1
-        private const val SCREEN_MODE_BANS = 2
     }
 }

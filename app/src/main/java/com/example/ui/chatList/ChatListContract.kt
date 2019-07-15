@@ -1,10 +1,10 @@
 package com.example.ui.chatList
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
-import com.example.holders.UserChatItem
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
@@ -34,12 +34,15 @@ interface ChatListContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list sources")
         fun setInvitesData(chats: List<UserChat>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setChatUnreadMessageCount(chatId: String, count: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
-        fun onChatOnScreen(chat: UserChatItem)
-        fun onChatGoneFromScreen(chat: UserChatItem)
+        fun onChatOnScreen(chatId: Int)
+        fun onChatGoneFromScreen(chatId: Int)
         fun onMenuAddChatClick()
         fun onEmptyChatsButtonAddChatClick()
         fun onInputClick()
@@ -47,7 +50,6 @@ interface ChatListContract {
 
         fun onShowChatListClick()
         fun onShowInvitesClick()
-        fun onShowBanesClick()
 
         fun onItemTake(position: Int)
     }

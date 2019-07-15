@@ -3,6 +3,8 @@ package com.example.holders
 import android.view.View
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.util.BADGE_COUNT_MAX
+import com.example.util.BADGE_TEXT_IF_MORE_THAN_MAX
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
@@ -12,8 +14,8 @@ import setCircleImageWithPlaceholder
 class UserChatItem(
         val userChat: UserChat,
         private val onClick: (UserChat) -> Unit,
-        private val onBind: (UserChatItem) -> Unit,
-        private val onUnBind: (UserChatItem) -> Unit
+        private val onBind: ((UserChatItem) -> Unit)? = null,
+        private val onUnBind: ((UserChatItem) -> Unit)? = null
 ) : Item(userChat.id.toLong()) {
 
     private var viewHolder: ViewHolder? = null
@@ -26,7 +28,7 @@ class UserChatItem(
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         this.viewHolder = viewHolder
-        onBind(this)
+        onBind?.invoke(this)
         viewHolder.apply {
             ivAvatar.setCircleImageWithPlaceholder(userChat.user.user_avatar, R.drawable.avatar_placeholder)
 
@@ -47,7 +49,7 @@ class UserChatItem(
 
     private fun updateBadge() {
         viewHolder?.tvBadge?.apply {
-            text = unreadMessageCount.toString()
+            text = unreadMessageCount.let { count: Int -> if (count > BADGE_COUNT_MAX) BADGE_TEXT_IF_MORE_THAN_MAX else count.toString() }
             visibility = if (unreadMessageCount == 0) View.GONE else View.VISIBLE
         }
     }
@@ -55,7 +57,7 @@ class UserChatItem(
 
     override fun unbind(holder: ViewHolder) {
         super.unbind(holder)
-        onUnBind(this)
+        onUnBind?.invoke(this)
     }
 
     override fun getLayout() = R.layout.item_chat
@@ -77,5 +79,4 @@ class UserChatItem(
         result = 31 * result + unreadMessageCount
         return result
     }
-
 }

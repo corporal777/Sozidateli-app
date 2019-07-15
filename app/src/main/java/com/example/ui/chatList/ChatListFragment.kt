@@ -82,8 +82,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             UserChatItem(
                     chat,
                     { presenter.onChatClick(it) },
-                    { presenter.onChatOnScreen(it) },
-                    { presenter.onChatGoneFromScreen(it) }
+                    { presenter.onChatOnScreen(chat.id) },
+                    { presenter.onChatGoneFromScreen(chat.id) }
             )
         })
 
@@ -94,11 +94,19 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         chatSection.update(chats.map { chat ->
             UserChatItem(
                     chat,
-                    { presenter.onChatClick(it) },
-                    { presenter.onChatOnScreen(it) },
-                    { presenter.onChatGoneFromScreen(it) }
+                    { presenter.onChatClick(it) }
             )
         })
+    }
+
+    override fun setChatUnreadMessageCount(chatId: String, count: Int) {
+        for (i in 0 until chatSection.itemCount) {
+            val item = chatSection.getItem(i)
+            if (item is UserChatItem && item.userChat.id.toString() == chatId) {
+                item.unreadMessageCount = count
+                break
+            }
+        }
     }
 
     override fun selectChats() {
