@@ -43,7 +43,7 @@ interface ChatListContract {
         fun onChatClick(userChat: UserChat)
         fun onChatOnScreen(chatId: Int)
         fun onChatGoneFromScreen(chatId: Int)
-        fun onMenuAddChatClick()
+        fun onFabAddChatClick()
         fun onEmptyChatsButtonAddChatClick()
         fun onInputClick()
         fun onInputFilterClick()

@@ -1,9 +1,6 @@
 package com.example.ui.chatList
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -70,6 +67,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             adapter = this@ChatListFragment.adapter
             if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+
+        fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
     }
 
     override fun clearData() {
@@ -87,7 +86,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             )
         })
 
-        favoritesSection.update(favorites.map { UserItem(it.name, it.photo) { } })
+        favoritesSection.update(favorites.map { UserItem(it.uid, it.name, it.photo) { } })
     }
 
     override fun setInvitesData(chats: List<UserChat>) {
@@ -103,7 +102,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         for (i in 0 until chatSection.itemCount) {
             val item = chatSection.getItem(i)
             if (item is UserChatItem && item.userChat.id.toString() == chatId) {
-                item.unreadMessageCount = count
+                item.userChat.unreadMessageCount = count
+                item.updateBadge()
                 break
             }
         }
@@ -136,19 +136,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                 ChatListFragmentDirections.actionChatListFragmentToContactsSearchFragment(action),
                 extras ?: FragmentNavigatorExtras()
         )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_chat_list, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.addChat -> presenter.onMenuAddChatClick()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
     }
 
     override fun isShowToolbar() = true

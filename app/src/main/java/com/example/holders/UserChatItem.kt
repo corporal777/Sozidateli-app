@@ -20,12 +20,6 @@ class UserChatItem(
 
     private var viewHolder: ViewHolder? = null
 
-    var unreadMessageCount = 0
-        set(value) {
-            field = value
-            updateBadge()
-        }
-
     override fun bind(viewHolder: ViewHolder, position: Int) {
         this.viewHolder = viewHolder
         onBind?.invoke(this)
@@ -47,10 +41,10 @@ class UserChatItem(
         }
     }
 
-    private fun updateBadge() {
+    fun updateBadge() {
         viewHolder?.tvBadge?.apply {
-            text = unreadMessageCount.let { count: Int -> if (count > BADGE_COUNT_MAX) BADGE_TEXT_IF_MORE_THAN_MAX else count.toString() }
-            visibility = if (unreadMessageCount == 0) View.GONE else View.VISIBLE
+            text = userChat.unreadMessageCount.let { count: Int -> if (count > BADGE_COUNT_MAX) BADGE_TEXT_IF_MORE_THAN_MAX else count.toString() }
+            visibility = if (userChat.unreadMessageCount == 0) View.GONE else View.VISIBLE
         }
     }
 
@@ -64,19 +58,14 @@ class UserChatItem(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as UserChatItem
+        if (other !is UserChatItem) return false
 
         if (userChat != other.userChat) return false
-        if (unreadMessageCount != other.unreadMessageCount) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = userChat.hashCode()
-        result = 31 * result + unreadMessageCount
-        return result
+        return userChat.hashCode()
     }
 }

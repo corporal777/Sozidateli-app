@@ -1,6 +1,8 @@
 package com.example.ui.chatList
 
 import android.util.SparseArray
+import android.util.SparseIntArray
+import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
@@ -53,7 +55,9 @@ class ChatListPresenter
     }.buildList()
 
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
+    private val chatUnreadMessageCounters = SparseIntArray()
     private val chatUnreadMessageConsumer = Consumer<RoomUnreadMessageCount> {
+        it.room.toIntOrNull()?.also { room -> chatUnreadMessageCounters[room] = it.count }
         viewState.setChatUnreadMessageCount(it.room, it.count)
     }
 
@@ -144,7 +148,9 @@ class ChatListPresenter
 
         data.forEach {
             when (it) {
-                is ChatListDataItem.Chat -> chats.add(it.userChat)
+                is ChatListDataItem.Chat -> chats.add(it.userChat.apply {
+                    unreadMessageCount = chatUnreadMessageCounters[id, 0]
+                })
                 is ChatListDataItem.User -> favorites.add(it.user)
             }
         }
@@ -161,7 +167,7 @@ class ChatListPresenter
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)
 
-    override fun onMenuAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
+    override fun onFabAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
 
     override fun onEmptyChatsButtonAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
 
