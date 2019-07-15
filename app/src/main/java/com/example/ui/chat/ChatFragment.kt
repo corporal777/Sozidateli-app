@@ -13,10 +13,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.transition.AutoTransition
-import androidx.transition.Transition
-import androidx.transition.TransitionListenerAdapter
-import androidx.transition.TransitionManager
+import androidx.transition.*
 import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -28,6 +25,7 @@ import com.example.holders.ChatMessageTextItem
 import com.example.holders.ChatUnreadLabel
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
+import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
@@ -69,11 +67,13 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         setHasOptionsMenu(true)
-        btnSend.setOnClickListener { presenter.onSendTextMessageClick("${etMessage.text}") }
-        btnAttach.setOnClickListener { presenter.onTakePhotoRequest() }
         btnConfirm.setOnClickListener { presenter.onConfirmChatClick() }
         btnBlock.setOnClickListener { presenter.onBlockChatClick() }
         flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
+
+        btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
+        btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
+        btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
 
         rvChat.apply {
             adapter = chatAdapter
@@ -91,6 +91,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
             afterOnGlobalLayout { startPostponedEnterTransition() }
         }
+
+        etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable { presenter.onMessageInput(it.toString()) })
     }
 
     override fun showChatInput(animate: Boolean) {
@@ -120,6 +122,28 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             requestFocus()
             showSoftInputOnFocus = true
             if (showKeyboard) showKeyboard(this)
+        }
+    }
+
+    override fun showSendGroup() {
+        TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
+        sendGroup.visibility = View.VISIBLE
+        attachGroup.visibility = View.GONE
+    }
+
+    override fun showAttachGroup() {
+        TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
+        attachGroup.visibility = View.VISIBLE
+        sendGroup.visibility = View.GONE
+    }
+
+    private fun getInputActionTransition(): Transition {
+        return TransitionSet().apply {
+            ordering = TransitionSet.ORDERING_SEQUENTIAL
+            addTransition(Fade(Fade.OUT))
+            addTransition(ChangeBounds())
+            addTransition(Fade(Fade.IN))
+            duration = 100
         }
     }
 

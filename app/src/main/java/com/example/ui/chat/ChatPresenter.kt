@@ -210,6 +210,13 @@ class ChatPresenter
         viewState.focusOnInput(true)
     }
 
+    override fun onMessageInput(message: String) {
+        viewState.apply {
+            if (message.isEmpty()) showAttachGroup()
+            else showSendGroup()
+        }
+    }
+
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
         haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)

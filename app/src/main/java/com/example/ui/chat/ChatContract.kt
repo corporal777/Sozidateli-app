@@ -16,6 +16,12 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showChatConfirm()
 
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
+        fun showSendGroup()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
+        fun showAttachGroup()
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun focusOnInput(showKeyboard: Boolean)
 
@@ -62,5 +68,6 @@ interface ChatContract {
         fun onBlockChatClick()
 
         fun onInputShowAnimationFinish()
+        fun onMessageInput(message: String)
     }
 }

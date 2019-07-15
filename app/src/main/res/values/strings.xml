@@ -111,8 +111,8 @@
     <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
     <string name="search_empty_list">Ничего не найдено</string>
 
-    <string name="search_contact_section_favorites">Избранные контакты</string>
-    <string name="search_contact_section_chats">Все контакты</string>
+    <string name="search_contact_section_favorites">Избранные</string>
+    <string name="search_contact_section_chats">Вы ранее общались</string>
     <string name="search_contact_section_another">Другие пользователи</string>
 
     <string name="event_tab_my_schedule">Расписание</string>
