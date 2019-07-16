@@ -185,13 +185,18 @@
     <string name="chat_list_chat_requests">Запросы на чат</string>
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
-    <string name="chat_need_confirm">Вы еще не одобрили запрос на чат</string>
-    <string name="chat_confirm">Одобрить запрос</string>
+    <string name="chat_need_confirm">Вы сможете продолжить диалог после того, как подтвердите чат</string>
+    <string name="chat_wait_accept">Вы сможете продолжить диалог после того, как пользователь одобрит чат с вами</string>
+    <string name="chat_you_banned">Пользователь ограничил сообщения</string>
+    <string name="chat_banned_by_you">Вы ограничили отправку сообщений</string>
+    <string name="chat_confirm">Одобрить</string>
     <string name="chat_ban">Заблокировать</string>
     <string name="chat_photo_message_text">Фото</string>
 
-    <string name="user_avatar">Аватар</string>
+    <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
+    <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных  и вы не сможете ему больше отправлять сообщения.</string>
 
+    <string name="user_avatar">Аватар</string>
 
     <string name="image_transition_name">image_open_transition</string>
 

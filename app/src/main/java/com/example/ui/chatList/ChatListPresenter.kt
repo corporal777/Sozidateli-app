@@ -93,12 +93,18 @@ class ChatListPresenter
     }
 
     override fun onShowChatListClick() {
-        viewState.selectChats()
+        viewState.apply {
+            selectChats()
+            showAddChatButton()
+        }
         changeListMode(SCREEN_MODE_CHATS)
     }
 
     override fun onShowInvitesClick() {
-        viewState.selectInvites()
+        viewState.apply {
+            selectInvites()
+            hideAddChatButton()
+        }
         changeListMode(SCREEN_MODE_INVITES)
     }
 
@@ -120,16 +126,16 @@ class ChatListPresenter
             else -> throw IllegalArgumentException("Wrong list mode $mode")
         }
 
+        val canShowEmptyView = mode == SCREEN_MODE_CHATS
+
         currentPagination = pagination
 
         paginationDisposable += Observable.create(pagination)
-                .doOnDispose { Timber.tag("PAGINATION_T").d("DISPOSE") }
-                .doOnError { Timber.tag("PAGINATION_T").d("ERR ${it.message}") }
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.apply {
                         dispatchListUpdate(it, mode)
-                        showEmptyView(it.isEmpty())
+                        showEmptyView(canShowEmptyView && it.isEmpty())
                     }
                 }, { it.printStackTrace() })
     }

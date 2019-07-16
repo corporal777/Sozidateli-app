@@ -37,6 +37,12 @@ interface ChatListContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatUnreadMessageCount(chatId: String, count: Int)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "fab")
+        fun showAddChatButton()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "fab")
+        fun hideAddChatButton()
     }
 
     interface Presenter : BaseContract.Presenter {

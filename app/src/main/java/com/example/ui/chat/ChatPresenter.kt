@@ -2,7 +2,6 @@ package com.example.ui.chat
 
 import android.net.Uri
 import android.widget.ImageView
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -22,7 +21,6 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -37,6 +35,7 @@ class ChatPresenter
     lateinit var chatId: String
     lateinit var userId: String
 
+    private var isChatHasMessages = false
     private var isChatScrolledToBottom = false
     private var isMessagesInitialLoad = false
     private var isMessageSend = false
@@ -46,19 +45,7 @@ class ChatPresenter
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
 
-        compositeDisposable += chatRepository.getChat(chatId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    viewState.apply {
-                        showAvatar(it.user.user_avatar)
-                        if (it.isInInvites) showChatConfirm()
-                        else {
-                            showChatInput(false)
-                            focusOnInput(false)
-                        }
-                    }
-                }
-                .observeOn(Schedulers.io())
+        compositeDisposable += getChat()
                 .flatMapCompletable {
                     haChat.joinToRoom(chatId)
                             .andThen(haChat.addUsersToRoom(chatId, listOf(it.user.user_id.toString())))
@@ -80,6 +67,26 @@ class ChatPresenter
                     it.printStackTrace()
                 })
     }
+
+    private fun getChat() = chatRepository.getChat(chatId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                viewState.apply {
+                    showAvatar(it.user.user_avatar)
+                    when {
+                        it.isBannedByYou -> showYouBanUser()
+                        it.isBannedByRecipient -> showYouBanned()
+                        it.isInInvites -> showChatConfirm()
+                        else -> {
+                            showChatInput(false)
+                            focusOnInput(false)
+                        }
+                    }
+
+                    isChatHasMessages = it.lastMessage != null
+                }
+            }
+            .observeOn(Schedulers.io())
 
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
         return if (!isMessageSend) {
@@ -143,16 +150,18 @@ class ChatPresenter
             viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
         viewState.apply { clearMessageInput() }
-        haChat.sendMessage(chatId, type, message)
+        compositeDisposable += haChat.sendMessage(chatId, type, message)
+                .flatMapCompletable {
+                    if (!isChatHasMessages) getChat().withLoadingDialog(viewState).ignoreElement()
+                    else Completable.complete()
+                }
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                }, {
+                .subscribe({}, {
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })
-                .call(compositeDisposable)
     }
 
     override fun onLoadPreviousMessagesRequest() {
@@ -188,22 +197,22 @@ class ChatPresenter
                 })
     }
 
-    override fun onConfirmChatClick() {
-        compositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+    override fun onAcceptChatClick() {
+        compositeDisposable += chatRepository.chatAccept(chatId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.showChatInput(true)
-                }
+                .subscribe({ viewState.showChatInput(true) }, {})
     }
 
     override fun onBlockChatClick() {
-        compositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+        viewState.showChatBlockConfirmation()
+    }
+
+    override fun onBlockChatConfirm() {
+        compositeDisposable += chatRepository.chatBan(chatId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.navigateUp()
-                }
+                .subscribe({ viewState.navigateUp() }, {})
     }
 
     override fun onInputShowAnimationFinish() {

@@ -4,11 +4,11 @@ import afterOnGlobalLayout
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +31,8 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
+import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
 import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import ru.houseofapps.chat.models.Message
 import setCircleImageWithPlaceholder
@@ -67,8 +69,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         setHasOptionsMenu(true)
-        btnConfirm.setOnClickListener { presenter.onConfirmChatClick() }
-        btnBlock.setOnClickListener { presenter.onBlockChatClick() }
         flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
 
         btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
@@ -108,11 +108,45 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
 
         inputContainer.visibility = View.VISIBLE
-        inviteActionContainer.visibility = View.GONE
+        actionContainer.visibility = View.GONE
+    }
+
+    override fun showYouBanUser() {
+        showActionView(R.layout.layout_chat_action_text, true) {
+            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_baned_by_you_background))
+            tvActionText.text = getString(R.string.chat_banned_by_you)
+        }
+    }
+
+    override fun showYouBanned() {
+        showActionView(R.layout.layout_chat_action_text, true) {
+            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_you_baned_background))
+            tvActionText.text = getString(R.string.chat_you_banned)
+        }
+    }
+
+    override fun showWaitForInviteAccetp() {
+        showActionView(R.layout.layout_chat_action_text, true) {
+            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_wait_for_accept_background))
+            tvActionText.text = getString(R.string.chat_wait_accept)
+        }
     }
 
     override fun showChatConfirm() {
-        inviteActionContainer.visibility = View.VISIBLE
+        showActionView(R.layout.layout_chat_action_confirmation, true) {
+            btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
+            btnBlock.setOnClickListener { presenter.onBlockChatClick() }
+        }
+    }
+
+    private fun showActionView(@LayoutRes layout: Int, animate: Boolean, viewApply: View.() -> Unit) {
+        actionContainer.removeAllViews()
+        layoutInflater.inflate(layout, actionContainer).apply(viewApply)
+
+        if (animate) {
+            TransitionManager.beginDelayedTransition(root, Slide(Gravity.BOTTOM))
+        }
+        actionContainer.visibility = View.VISIBLE
         inputContainer.visibility = View.GONE
     }
 
@@ -126,12 +160,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     }
 
     override fun showSendGroup() {
+        if (sendGroup.visibility == View.VISIBLE && attachGroup.visibility == View.GONE) return
         TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
         sendGroup.visibility = View.VISIBLE
         attachGroup.visibility = View.GONE
     }
 
     override fun showAttachGroup() {
+        if (attachGroup.visibility == View.VISIBLE && sendGroup.visibility == View.GONE) return
         TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
         attachGroup.visibility = View.VISIBLE
         sendGroup.visibility = View.GONE
@@ -228,6 +264,15 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun checkScrollPosition() {
         presenter.onChatScrollChange(isChatScrolledToBottom())
+    }
+
+    override fun showChatBlockConfirmation() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.user_ban_confirmation_title)
+                .setMessage(R.string.user_ban_confirmation_message)
+                .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
     }
 
     override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)

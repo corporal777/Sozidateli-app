@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -29,7 +30,7 @@ class ChatRepositoryImpl
     }
 
     override fun startChat(userId: Int): Single<ChatStartResponse> {
-        return call(api.startChat(userId))
+        return call(api.chatStart(userId))
     }
 
     override fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>> {
@@ -48,5 +49,17 @@ class ChatRepositoryImpl
 
     override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.chatSearch(searchMap, limit, offset))
+    }
+
+    override fun chatAccept(chatId: String): Completable {
+        return call(api.chatAccept(chatId))
+    }
+
+    override fun chatBan(chatId: String): Completable {
+        return call(api.chatBan(chatId))
+    }
+
+    override fun chatUnban(chatId: String): Completable {
+        return call(api.chatUnban(chatId))
     }
 }

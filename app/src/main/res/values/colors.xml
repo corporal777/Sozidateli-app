@@ -13,6 +13,7 @@
     <color name="disabled_color">#d1d3d4</color>
     <color name="attention_action">#C73C00</color>
 
+    <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>
     <color name="badge_attention_high">#C73C00</color>
 
@@ -25,12 +26,15 @@
     <color name="chat_message_background_incoming">#E4E4E4</color>
     <color name="chat_message_text_outgoing">#FFFFFF</color>
     <color name="chat_message_text_incoming">#B2000000</color>
-    <color name="chat_need_confirm_title_background">#F1F1F1</color>
-    <color name="chat_need_confirm_title_text">#000000</color>
     <color name="chat_input_container_background">#E6FFFFFF</color>
     <color name="chat_input_background">#FAFAFA</color>
     <color name="chat_input_border">#c8c7cc</color>
     <color name="chat_background">#FAFAFA</color>
+    <color name="chat_action_title_text">#030303</color>
+    <color name="chat_action_need_confirm_background">#FFFFFF</color>
+    <color name="chat_action_wait_for_accept_background">#E4E4E4</color>
+    <color name="chat_action_baned_by_you_background">#E4E4E4</color>
+    <color name="chat_action_you_baned_background">#24C73C00</color>
 
     <color name="event_item_background">#FFFFFF</color>
     <color name="event_item_border">#E4E4E4</color>

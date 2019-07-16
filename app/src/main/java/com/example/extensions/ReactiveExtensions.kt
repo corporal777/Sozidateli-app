@@ -130,7 +130,7 @@ fun <T> Observable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Obs
 
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
-            .delay(200, TimeUnit.MILLISECONDS, Schedulers.io())
+            .delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete {
                 baseView.showLoadingDialog()

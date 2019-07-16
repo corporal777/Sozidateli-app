@@ -117,6 +117,14 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         headerItem.selectRequestsButton()
     }
 
+    override fun showAddChatButton() {
+        fabNewChat.show()
+    }
+
+    override fun hideAddChatButton() {
+        fabNewChat.hide()
+    }
+
     override fun showEmptyView(isShow: Boolean) {
         if (isShow) chatSection.setHeader(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
         else chatSection.removeFooter()

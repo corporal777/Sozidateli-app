@@ -84,11 +84,20 @@ interface Api {
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/user/chat/start/{user}")
-    fun startChat(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
+    fun chatStart(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
 
     @Multipart
     @POST("/v1/user/chat/{chat}/upload")
     fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
+
+    @POST("/v1/user/chat/{chat}/accept")
+    fun chatAccept(@Path("chat") chatId: String): Completable
+
+    @POST("/v1/user/chat/{chat}/bann/on")
+    fun chatBan(@Path("chat") chatId: String): Completable
+
+    @POST("/v1/user/chat/{chat}/bann/off")
+    fun chatUnban(@Path("chat") chatId: String): Completable
 
     @Multipart
     @POST("/v1/user/update/recomend_file")

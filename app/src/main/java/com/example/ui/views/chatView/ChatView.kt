@@ -43,7 +43,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
     }
 
     private val badgeBackgroundRequests by lazy {
-        ContextCompat.getDrawable(context, R.drawable.background_badge_attention_medium)!!
+        ContextCompat.getDrawable(context, R.drawable.background_badge_attention_low)!!
     }
 
     constructor(context: Context) : super(context)

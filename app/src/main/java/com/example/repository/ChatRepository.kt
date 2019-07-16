@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -19,4 +20,10 @@ interface ChatRepository {
     fun getChat(chatId: String): Single<UserChat>
 
     fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+
+    fun chatAccept(chatId: String): Completable
+
+    fun chatBan(chatId: String): Completable
+
+    fun chatUnban(chatId: String): Completable
 }

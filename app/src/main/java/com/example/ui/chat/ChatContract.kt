@@ -16,6 +16,15 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showChatConfirm()
 
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
+        fun showYouBanUser()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
+        fun showYouBanned()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
+        fun showWaitForInviteAccetp()
+
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
         fun showSendGroup()
 
@@ -54,6 +63,9 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun checkScrollPosition()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChatBlockConfirmation()
     }
 
     interface Presenter : TakePhotoContract.Presenter {
@@ -64,8 +76,9 @@ interface ChatContract {
         fun onLoadPreviousMessagesRequest()
         fun onLoadNextMessagesRequest()
 
-        fun onConfirmChatClick()
+        fun onAcceptChatClick()
         fun onBlockChatClick()
+        fun onBlockChatConfirm()
 
         fun onInputShowAnimationFinish()
         fun onMessageInput(message: String)
