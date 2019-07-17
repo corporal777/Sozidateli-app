@@ -2,8 +2,8 @@ package com.example.ui.speaker
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -64,8 +64,8 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
         }
     }
 
-    override fun openChat(userName: String, userId: String, chatId: String) {
-        findNavController().navigate(SpeakerFragmentDirections.speakerFragmentToChat(userName, chatId, userId))
+    override fun openChat(userName: String, chatId: String) {
+        findNavController().navigate(SpeakerFragmentDirections.speakerFragmentToChat(userName, chatId))
     }
 
     override fun isShowToolbar() = true

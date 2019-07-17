@@ -130,8 +130,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         else chatSection.removeFooter()
     }
 
-    override fun openChat(chatId: Int, userId: String, userName: String) {
-        findNavController().navigate(ChatListFragmentDirections.chatListToChat(userName, chatId.toString(), userId))
+    override fun openChat(chatId: Int, userName: String) {
+        findNavController().navigate(ChatListFragmentDirections.chatListToChat(userName, chatId.toString()))
     }
 
     override fun openSearchContact(action: Int) {

@@ -2,10 +2,8 @@ package com.example.ui.user
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Speaker
 import com.example.data.models.user.User
 import com.example.repository.ChatRepository
-import com.example.repository.SpeakerRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -19,7 +17,7 @@ class UserPresenter
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
 
-    var userId:Int=-1
+    var userId: Int = -1
     private lateinit var user: User
 
     override fun onFirstViewAttach() {
@@ -31,12 +29,8 @@ class UserPresenter
                 .subscribe({
                     user = it
                     viewState.setUser(it)
-                },{}).call(compositeDisposable)
+                }, {}).call(compositeDisposable)
 
-    }
-
-    override fun attachView(view: UserContract.View?) {
-        super.attachView(view)
     }
 
     override fun onWriteMsgClick() {
@@ -44,7 +38,7 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(user.fullName, user.user_id.toString(), it.chat_id.toString())
+                    viewState.openChat(user.fullName, it.chat_id.toString())
                 }, { it.printStackTrace() })
                 .call(compositeDisposable)
     }

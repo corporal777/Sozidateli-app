@@ -98,12 +98,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         } else {
             val chatData = intent.getBundleExtra(FIELD_CHAT)
             chatData?.let {
-                val userId = it.getString(FIELD_SENDER_ID, null)
                 val chatId = it.getString(FIELD_CHAT_ID, null)
                 val userName = it.getString(FIELD_LABEL, null)
                 val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
-                if (userId != null && chatId != null && userName != null)
-                    presenter.onHandleChat(userId, chatId, userName, notifiactionId)
+                if (chatId != null && userName != null)
+                    presenter.onHandleChat(chatId, userName, notifiactionId)
             }
         }
     }
@@ -160,11 +159,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         showDialog(getString(R.string.email_change_confirm_error))
     }
 
-    override fun showChat(userId: String, chatId: String, userName: String) {
+    override fun showChat(chatId: String, userName: String) {
         findNavController().navigate(R.id.chat_fragment, bundleOf(
                 FIELD_LABEL to userName,
-                FIELD_CHAT_ID to chatId,
-                FIELD_USER_ID to userId
+                FIELD_CHAT_ID to chatId
         ))
     }
 

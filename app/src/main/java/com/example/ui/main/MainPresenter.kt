@@ -1,5 +1,6 @@
 package com.example.ui.main
 
+import android.os.Build
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
@@ -8,6 +9,7 @@ import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
+import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -39,7 +41,8 @@ class MainPresenter
         private val haChat: HAChat,
         private val eventRepository: EventRepository,
         private val db: Db,
-        private val appData: AppData
+        private val appData: AppData,
+        private val chatRepository: ChatRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -76,6 +79,10 @@ class MainPresenter
 
                                         checkIntent()
                                     }
+
+                                    compositeDisposable += chatRepository.startChat(if (Build.VERSION.SDK_INT == 29) 1747 else 1810)
+                                            .performOnBackgroundOutOnMain()
+                                            .subscribe({ viewState.showChat(it.chat_id.toString(), it.chat_id.toString()) }, {})
                                 }, {
                                     it.printStackTrace()
                                     isAuthRequired = true
@@ -114,9 +121,9 @@ class MainPresenter
         } ?: Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
     }
 
-    override fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String) {
+    override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
         if (isAuthRequired) return
-        viewState.showChat(userId, chatId, userName)
+        viewState.showChat(chatId, userName)
     }
 
     override fun onHandleAuthLink(email: String, code: String) {

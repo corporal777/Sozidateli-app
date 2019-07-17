@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="inviteActionContainer,inputContainer" />
+        app:constraint_referenced_ids="actionContainer,inputContainer" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/inputContainer"
@@ -142,7 +142,6 @@
             android:textColor="@color/colorAccent"
             android:textSize="32sp"
             tools:ignore="MissingPrefix" />
-
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

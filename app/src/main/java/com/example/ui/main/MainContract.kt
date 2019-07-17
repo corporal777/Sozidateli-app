@@ -23,7 +23,7 @@ interface MainContract {
         fun showGreetings()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showChat(userId: String, chatId: String, userName: String)
+        fun showChat(chatId: String, userName: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
@@ -45,7 +45,7 @@ interface MainContract {
         fun onHandleAuthLink(email: String, code: String)
         fun onHandleRecoverPasswordLink(email: String, code: String)
         fun onHandleChangeEmailConfirm(email: String, code: String)
-        fun onHandleChat(userId: String, chatId: String, userName: String, notificationId: String)
+        fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleSocialNetworkConfirm(snType:String,id:String,code:String)
         fun onSetPassword(email: String, code: String, password: String)
     }

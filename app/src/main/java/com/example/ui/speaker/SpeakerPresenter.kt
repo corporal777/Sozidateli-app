@@ -2,10 +2,10 @@ package com.example.ui.speaker
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Speaker
-import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.repository.SpeakerRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -29,16 +29,16 @@ class SpeakerPresenter
     }
 
     override fun onWriteMsgClick() {
-        chatRepository.startChat(speaker.uid)
+        compositeDisposable += chatRepository.startChat(speaker.uid)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(speaker.name, speaker.uid.toString(), it.chat_id.toString())
+                    viewState.openChat(speaker.name, it.chat_id.toString())
                 }, { it.printStackTrace() })
     }
 
     override fun onAddFavoriteClick() {
-        speaker.isInFavorite.let { if (!it) speakerRepository.addToFavorite(speaker.id) else speakerRepository.removeFromFavorite(speaker.id) }
+        compositeDisposable += speaker.isInFavorite.let { if (!it) speakerRepository.addToFavorite(speaker.id) else speakerRepository.removeFromFavorite(speaker.id) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

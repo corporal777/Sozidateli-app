@@ -3,12 +3,16 @@ package com.example.ui.chat
 import afterOnGlobalLayout
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +37,8 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
-import kotlinx.android.synthetic.main.user_chat_avatar.view.*
 import ru.houseofapps.chat.models.Message
-import setCircleImageWithPlaceholder
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -51,7 +54,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val args = ChatFragmentArgs.fromBundle(arguments!!)
         chatId = args.chatId
-        userId = args.userId
     }
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
@@ -125,7 +127,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
-    override fun showWaitForInviteAccetp() {
+    override fun showWaitForInviteAccept() {
         showActionView(R.layout.layout_chat_action_text, true) {
             textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_wait_for_accept_background))
             tvActionText.text = getString(R.string.chat_wait_accept)
@@ -290,9 +292,29 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         // val avatarMenu = menu.findItem(R.event_id.avatar)
     }
 
-    override fun showAvatar(url: String?) {
-        val avatarView = activity?.findViewById<View>(R.id.avatar)
-        avatarView?.ivAvatar?.setCircleImageWithPlaceholder(url, R.drawable.avatar_placeholder)
+    override fun setUserAvatar(avatar: Bitmap) {
+        setToolbarLogo(avatar)
+    }
+
+    override fun setUserAvatarPlaceholder() {
+        setToolbarLogo((ContextCompat.getDrawable(requireContext(), R.drawable.ic_launcher) as BitmapDrawable).bitmap)
+    }
+
+    private fun setToolbarLogo(logo: Bitmap) {
+//        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+//            val size = resources.getDimensionPixelSize(R.dimen.event_schedule_sub_event_divider_height)
+//            setIcon(Bitmap.createScaledBitmap(logo, size, size, true).toDrawable(resources).apply {
+//                setBounds(0, 0, size, size)
+//            })
+//            setDisplayUseLogoEnabled(true)
+//        }
+    }
+
+    override fun removeUserAvatar() {
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            setLogo(null)
+            setDisplayUseLogoEnabled(false)
+        }
     }
 
     private fun isChatScrolledToBottom(): Boolean {

@@ -12,7 +12,7 @@ interface ChatListContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(chatId: Int, userId: String, userName: String)
+        fun openChat(chatId: Int, userName: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun openSearchContact(action: Int)

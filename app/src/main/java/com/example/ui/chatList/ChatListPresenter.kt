@@ -171,7 +171,7 @@ class ChatListPresenter
         viewState.setInvitesData(invites)
     }
 
-    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.user_id.toString(), userChat.user.fullName)
+    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
 
     override fun onFabAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
 

@@ -1,5 +1,6 @@
 package com.example.ui.chat
 
+import android.graphics.Bitmap
 import android.widget.ImageView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -23,7 +24,7 @@ interface ChatContract {
         fun showYouBanned()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
-        fun showWaitForInviteAccetp()
+        fun showWaitForInviteAccept()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
         fun showSendGroup()
@@ -55,8 +56,14 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showCantSendHolder(isShow: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAvatar(url: String?)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
+        fun setUserAvatar(avatar: Bitmap)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
+        fun setUserAvatarPlaceholder()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
+        fun removeUserAvatar()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun removeChatMessage(message: ChatMessage)

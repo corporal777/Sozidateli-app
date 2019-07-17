@@ -1,14 +1,11 @@
 package com.example.ui.user
 
-import android.graphics.Color
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Speaker
 import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
@@ -48,8 +45,8 @@ class UserFragment : BaseFragment(), UserContract.View {
         //tvDescription.text = speaker.description
     }
 
-    override fun openChat(userName: String, userId: String, chatId: String) {
-        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId, userId))
+    override fun openChat(userName: String, chatId: String) {
+        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId))
     }
 
     override fun isShowToolbar() = true

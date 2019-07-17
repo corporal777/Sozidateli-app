@@ -96,11 +96,11 @@
 
         <meta-data
             android:name="api_url"
-            android:value="http://192.168.1.24:3000/" />
+            android:value="http://194.58.123.180/chat/" />
 
         <meta-data
             android:name="socket_url"
-            android:value="http://192.168.1.24:4100/" />
+            android:value="http://194.58.123.180:4100" />
 
         <meta-data
             android:name="chat_project_key"

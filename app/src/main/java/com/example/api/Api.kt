@@ -80,6 +80,10 @@ interface Api {
     fun chatListInvites(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_invites") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>
 
     @FormUrlEncoded
+    @POST("/v1/user/chat/list")
+    fun chatListBans(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_banned") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>
+
+    @FormUrlEncoded
     @POST("/v1/user/chat/search")
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 

@@ -6,11 +6,15 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
+import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.chat.ChatHelper
+import com.squareup.picasso.Picasso
 import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
@@ -33,7 +37,6 @@ class ChatPresenter
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String
-    lateinit var userId: String
 
     private var isChatHasMessages = false
     private var isChatScrolledToBottom = false
@@ -44,6 +47,8 @@ class ChatPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
+
+        subscribeToChatEvents()
 
         compositeDisposable += getChat()
                 .flatMapCompletable {
@@ -68,25 +73,60 @@ class ChatPresenter
                 })
     }
 
+    private fun subscribeToChatEvents() {
+        val processEvent = { f: Flowable<String> ->
+            f.flatMapSingle { if (it == chatId) getChat() else Single.never() }
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({}, {})
+        }
+
+        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_ACCEPT))
+        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_INVITE))
+        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
+        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
+    }
+
     private fun getChat() = chatRepository.getChat(chatId)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess {
-                viewState.apply {
-                    showAvatar(it.user.user_avatar)
-                    when {
-                        it.isBannedByYou -> showYouBanUser()
-                        it.isBannedByRecipient -> showYouBanned()
-                        it.isInInvites -> showChatConfirm()
-                        else -> {
-                            showChatInput(false)
-                            focusOnInput(false)
+            .flatMap {
+                Completable.fromAction {
+                    viewState.apply {
+                        when {
+                            it.isBannedByYou -> {
+                                showYouBanUser()
+                                hideKeyboard()
+                            }
+                            it.isBannedByRecipient -> {
+                                showYouBanned()
+                                hideKeyboard()
+                            }
+                            it.isInInvites -> {
+                                showChatConfirm()
+                                hideKeyboard()
+                            }
+                            it.isWaitForAcceptInvites -> {
+                                showWaitForInviteAccept()
+                                hideKeyboard()
+                            }
+                            else -> {
+                                showChatInput(false)
+                                focusOnInput(false)
+                            }
                         }
-                    }
 
-                    isChatHasMessages = it.lastMessage != null
+                        isChatHasMessages = it.lastMessage != null
+                    }
+                    loadUserAvatar(it.user)
                 }
+                        .andThen(Single.just(it))
             }
             .observeOn(Schedulers.io())
+
+    private fun loadUserAvatar(user: User) {
+        compositeDisposable += Single.fromCallable { Picasso.get().load(user.user_id).get() }
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.setUserAvatar(it) }, { viewState.setUserAvatarPlaceholder() })
+    }
 
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
         return if (!isMessageSend) {
@@ -134,6 +174,7 @@ class ChatPresenter
         view?.hideKeyboard()
         super.detachView(view)
         chatHelper.currentChatId = null
+        viewState.removeUserAvatar()
     }
 
     override fun onSendTextMessageClick(message: String) {
@@ -150,13 +191,20 @@ class ChatPresenter
             viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
         viewState.apply { clearMessageInput() }
+
+        val reloadChat = !isChatHasMessages
+        if (reloadChat) viewState.showLoadingDialog()
+
         compositeDisposable += haChat.sendMessage(chatId, type, message)
                 .flatMapCompletable {
-                    if (!isChatHasMessages) getChat().withLoadingDialog(viewState).ignoreElement()
+                    if (reloadChat) getChat().ignoreElement()
                     else Completable.complete()
                 }
                 .performOnBackgroundOutOnMain()
-                .subscribe({}, {
+                .subscribe({
+                    if (reloadChat) viewState.hideLoadingDialog()
+                }, {
+                    if (reloadChat) viewState.hideLoadingDialog()
                     if (it is NoConnectionException) {
                         viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
@@ -241,5 +289,10 @@ class ChatPresenter
         private const val LAST_UNREAD_INDEX_INVALID = -1
 
         private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.Service(ChatMessage.Service.Type.NEW_MESSAGES)
+
+        private const val ACTION_ACCEPT = "chatAccept"
+        private const val ACTION_INVITE = "chatInvite"
+        private const val ACTION_BAN = "chatBan"
+        private const val ACTION_UNBAN = "chatUnban"
     }
 }

@@ -28,6 +28,8 @@ data class UserChat(
         var inFavorite: Boolean,
         @SerializedName("chat_is_in_invites")
         var isInInvites: Boolean,
+        @SerializedName("chat_wait_accept_invite")
+        var isWaitForAcceptInvites: Boolean,
         @SerializedName("chat_banned_by_recipient")
         var isBannedByRecipient: Boolean,
         @SerializedName("chat_banned_by_you")

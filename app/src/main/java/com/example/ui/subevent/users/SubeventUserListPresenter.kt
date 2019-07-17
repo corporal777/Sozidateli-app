@@ -50,7 +50,7 @@ class SubeventUserListPresenter @Inject constructor(
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(user.fullName, user.user_id.toString(), it.chat_id.toString())
+                    viewState.openChat(user.fullName, it.chat_id.toString())
                 }, { it.printStackTrace() })
     }
 

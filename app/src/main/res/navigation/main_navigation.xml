@@ -180,9 +180,6 @@
         <argument
             android:name="chatId"
             app:argType="string" />
-        <argument
-            android:name="userId"
-            app:argType="string" />
     </fragment>
 
     <fragment

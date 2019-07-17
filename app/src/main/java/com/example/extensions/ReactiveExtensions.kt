@@ -112,18 +112,28 @@ fun <T> Maybe<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T>
 
 fun <T> Flowable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Flowable<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
+    var isFirstHidden = false
     return this.doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
-            .doOnNext(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnNext {
+                if (!isFirstHidden) {
+                    isFirstHidden = true
+                    hideLoading(baseView, loadingDisposable)
+                }
+            }
             .doFinally(getHideLoadingAction(baseView, loadingDisposable))
-            .toObservable()
-            .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
-            .toFlowable(BackpressureStrategy.LATEST)
+            .doOnTerminate(getHideLoadingAction(baseView, loadingDisposable))
 }
 
 fun <T> Observable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
+    var isFirstHidden = false
     return this.doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
-            .doOnNext(getHideLoadingConsumer(baseView, loadingDisposable))
+            .doOnNext {
+                if (!isFirstHidden) {
+                    isFirstHidden = true
+                    hideLoading(baseView, loadingDisposable)
+                }
+            }
             .doFinally(getHideLoadingAction(baseView, loadingDisposable))
             .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
 }
