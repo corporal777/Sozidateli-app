@@ -1,9 +1,6 @@
 package com.example.ui.profile
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -41,6 +38,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         flChatSetting.setOnClickListener { presenter.clickChatSetting() }
         notification.setOnClickListener { presenter.onNotificationClick() }
         tvLastNotificationText.setOnClickListener { presenter.onNotificationClick() }
+        flBanned.setOnClickListener { presenter.onShowBannedClick() }
     }
 
     override fun showAboutStatus() {
@@ -79,6 +77,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
 
     override fun showChatSetting() {
         findNavController().navigate(ProfileFragmentDirections.profileToSetting())
+    }
+
+    override fun showBanned() {
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBannedFragment())
     }
 
     override fun setUser(user: User) {

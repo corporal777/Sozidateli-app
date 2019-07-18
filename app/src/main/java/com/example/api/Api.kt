@@ -103,6 +103,9 @@ interface Api {
     @POST("/v1/user/chat/{chat}/bann/off")
     fun chatUnban(@Path("chat") chatId: String): Completable
 
+    @GET("/v1/user/chat/count/invites")
+    fun getChatInvitesCount(): Single<ApiResponse<ChatInvitesCount>>
+
     @Multipart
     @POST("/v1/user/update/recomend_file")
     fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>

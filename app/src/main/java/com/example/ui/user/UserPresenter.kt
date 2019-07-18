@@ -6,23 +6,23 @@ import com.example.data.models.user.User
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class UserPresenter
-@Inject constructor(private val chatRepository: ChatRepository,
-                    private val userRepository: UserRepository
+@Inject constructor(
+        private val chatRepository: ChatRepository,
+        private val userRepository: UserRepository
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
-
 
     var userId: Int = -1
     private lateinit var user: User
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
         userRepository.getUserById(userId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -30,7 +30,6 @@ class UserPresenter
                     user = it
                     viewState.setUser(it)
                 }, {}).call(compositeDisposable)
-
     }
 
     override fun onWriteMsgClick() {
@@ -43,4 +42,11 @@ class UserPresenter
                 .call(compositeDisposable)
     }
 
+    override fun onUnbanClick() {
+        compositeDisposable += chatRepository.startChat(userId)
+                .flatMapCompletable { chatRepository.chatUnban(it.chat_id.toString()) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe { viewState.navigateUp() }
+    }
 }

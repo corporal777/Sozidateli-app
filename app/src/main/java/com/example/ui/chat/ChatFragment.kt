@@ -12,7 +12,6 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,10 +22,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ChatMessage
-import com.example.holders.ChatMessageImageItem
-import com.example.holders.ChatMessageItem
-import com.example.holders.ChatMessageTextItem
-import com.example.holders.ChatUnreadLabel
+import com.example.holders.*
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.util.SimpleTextWatcher
@@ -38,7 +34,6 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
 import ru.houseofapps.chat.models.Message
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -231,14 +226,16 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     private fun checkItemIsSameServiceMessage(message: ChatMessage.Service, item: Item<*>): Boolean {
         return when (item) {
-            is ChatUnreadLabel -> message.type == ChatMessage.Service.Type.NEW_MESSAGES
+            is ChatUnreadLabelItem -> message.type == ChatMessage.Service.Type.NEW_MESSAGES
             else -> false
         }
     }
 
     private fun getItemForChatServiceMessage(message: ChatMessage.Service): Item<*> {
         return when (message.type) {
-            ChatMessage.Service.Type.NEW_MESSAGES -> ChatUnreadLabel()
+            ChatMessage.Service.Type.NEW_MESSAGES -> ChatUnreadLabelItem()
+            ChatMessage.Service.Type.ACCEPT -> ChatAcceptItem()
+            ChatMessage.Service.Type.NO_TYPE -> ChatEmptyItem()
         }
     }
 

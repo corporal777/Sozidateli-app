@@ -87,11 +87,19 @@ const val SET_EMAIL_USER_SOCIAL = "set_email_user_social"
 const val SN_PROVIDER = "provider"
 
 
-const val PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED="is required"
-const val PART_ERROR_REQUEST_EVENT_REGISTER_END="registration is not carried out"
-const val PART_ERROR_REQUEST_EVENT_FILE_ERROR="is not uploaded by current user"
+const val PART_ERROR_REQUEST_EVENT_FIELD_REQUIRED = "is required"
+const val PART_ERROR_REQUEST_EVENT_REGISTER_END = "registration is not carried out"
+const val PART_ERROR_REQUEST_EVENT_FILE_ERROR = "is not uploaded by current user"
 
 const val BADGE_COUNT_MAX = 99
 const val BADGE_TEXT_IF_MORE_THAN_MAX = "99+"
 
-const val NAME="name"
+const val NAME = "name"
+
+const val ACTION_REQUEST_COUNT = "chatRequestCount"
+const val ACTION_ACCEPT = "chatAccept"
+const val ACTION_INVITE = "chatInvite"
+const val ACTION_BAN = "chatBan"
+const val ACTION_UNBAN = "chatUnban"
+
+const val CHAT_SERVICE_MESSAGE_ACCEPT = "accept"

@@ -29,6 +29,10 @@ class ChatRepositoryImpl
         return callPagination(api.chatListInvites(limit, offset))
     }
 
+    override fun loadBannedList(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>> {
+        return callPagination(api.chatListBans(limit, offset))
+    }
+
     override fun startChat(userId: Int): Single<ChatStartResponse> {
         return call(api.chatStart(userId))
     }
@@ -61,5 +65,9 @@ class ChatRepositoryImpl
 
     override fun chatUnban(chatId: String): Completable {
         return call(api.chatUnban(chatId))
+    }
+
+    override fun getChatInvitesCount(): Single<ChatInvitesCount> {
+        return call(api.getChatInvitesCount())
     }
 }

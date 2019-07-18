@@ -8,6 +8,7 @@ import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
+import com.example.ui.banned.BannedFragment
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
@@ -186,4 +187,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserFragment(): UserFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeBannedFragment(): BannedFragment
 }

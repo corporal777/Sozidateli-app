@@ -28,11 +28,12 @@ class UserFragment : BaseFragment(), UserContract.View {
         userId = args.userId.toInt()
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnWriteMsg.setOnClickListener { presenter.onWriteMsgClick() }
         btnAddToFavorite.visibility = View.GONE
+
+        btnUnban.setOnClickListener { presenter.onUnbanClick() }
     }
 
     override fun setUser(user: User) {

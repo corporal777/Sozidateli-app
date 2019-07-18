@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.RoomUnreadMessageCount
-import timber.log.Timber
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -50,6 +49,7 @@ class ChatListPresenter
 
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.loadInvitesList(limit, offset).map { response ->
+            response.totalCount?.let { appData.chatRequestsCount = it }
             PaginationResponse(response.totalCount, response.data.map { ChatListDataItem.Invite(it) })
         }
     }.buildList()
@@ -84,6 +84,10 @@ class ChatListPresenter
         compositeDisposable += haChat.subscribeToUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe(chatUnreadMessageConsumer, Consumer {})
+
+        compositeDisposable += appData.chatRequestsCountSubject
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.setInvitesCount(it) }, { viewState.setInvitesCount(0) })
     }
 
     override fun attachView(view: ChatListContract.View?) {

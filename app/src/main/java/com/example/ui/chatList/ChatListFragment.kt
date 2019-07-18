@@ -117,6 +117,13 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         headerItem.selectRequestsButton()
     }
 
+    override fun setInvitesCount(count: Int) {
+        headerItem.apply {
+            invitesCount = count
+            updateInvitesBadge()
+        }
+    }
+
     override fun showAddChatButton() {
         fabNewChat.show()
     }

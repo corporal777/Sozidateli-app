@@ -1,6 +1,5 @@
 package com.example.ui.main
 
-import android.os.Build
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
@@ -13,9 +12,12 @@ import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.ACTION_REQUEST_COUNT
 import com.example.util.UserEventLoadingHelper
 import com.example.util.chat.ChatHelper
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -79,10 +81,6 @@ class MainPresenter
 
                                         checkIntent()
                                     }
-
-                                    compositeDisposable += chatRepository.startChat(if (Build.VERSION.SDK_INT == 29) 1747 else 1810)
-                                            .performOnBackgroundOutOnMain()
-                                            .subscribe({ viewState.showChat(it.chat_id.toString(), it.chat_id.toString()) }, {})
                                 }, {
                                     it.printStackTrace()
                                     isAuthRequired = true
@@ -221,14 +219,17 @@ class MainPresenter
     }
 
     private fun subscribeChatRequestsCount() {
-        chatCompositeDisposable += haChat.subscribeTo<Number>("chatRequestCount")
+        compositeDisposable += Flowable.create<Int>({ emitter ->
+            val disposables = CompositeDisposable()
+            disposables += chatRepository.getChatInvitesCount().subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+            disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
+            disposables += haChat.subscribeToExcludeFlagChange()
+                    .flatMapSingle { chatRepository.getChatInvitesCount() }
+                    .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+            emitter.setDisposable(disposables)
+        }, BackpressureStrategy.LATEST)
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    appData.chatRequestsCount = it.toInt()
-                }, {
-                    it.printStackTrace()
-                    appData.chatRequestsCount = 0
-                })
+                .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
     }
 
     private fun processNewMessageMessage(newMessage: NewMessage) {

@@ -12,7 +12,7 @@ sealed class ChatMessage {
             val type: Type
     ) : ChatMessage() {
         enum class Type {
-            NEW_MESSAGES
+            NO_TYPE, NEW_MESSAGES, ACCEPT
         }
     }
 }

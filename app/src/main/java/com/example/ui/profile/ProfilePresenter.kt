@@ -76,4 +76,6 @@ class ProfilePresenter
     override fun clickChatSetting() = viewState.showChatSetting()
 
     override fun onNotificationClick() = viewState.showNotifications()
+
+    override fun onShowBannedClick() = viewState.showBanned()
 }

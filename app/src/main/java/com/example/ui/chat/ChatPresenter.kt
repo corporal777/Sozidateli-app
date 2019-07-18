@@ -6,10 +6,12 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
+import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
+import com.example.util.*
 import com.example.util.chat.ChatHelper
 import com.squareup.picasso.Picasso
 import io.reactivex.Completable
@@ -38,6 +40,8 @@ class ChatPresenter
 
     lateinit var chatId: String
 
+    private var chat: UserChat? = null
+
     private var isChatHasMessages = false
     private var isChatScrolledToBottom = false
     private var isMessagesInitialLoad = false
@@ -60,7 +64,12 @@ class ChatPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({ messages ->
                     val userId = appData.getUser().user_id.toString()
-                    val chatMessages: List<ChatMessage> = messages.map { ChatMessage.Personal(it, it.isUserMessage(userId)) }
+                    val chatMessages: List<ChatMessage> = messages.map {
+                        when (it.type) {
+                            Message.Type.SERVICE -> ChatMessage.Service(if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) ChatMessage.Service.Type.ACCEPT else ChatMessage.Service.Type.NO_TYPE)
+                            else -> ChatMessage.Personal(it, it.isUserMessage(userId))
+                        }
+                    }
                     val lastUnreadIndex = findLastUnreadMessageIndex(messages)
                     viewState.updateMessages(addUnreadMessagesItem(chatMessages, lastUnreadIndex))
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
@@ -90,6 +99,7 @@ class ChatPresenter
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap {
                 Completable.fromAction {
+                    this.chat = it
                     viewState.apply {
                         when {
                             it.isBannedByYou -> {
@@ -132,7 +142,11 @@ class ChatPresenter
         return if (!isMessageSend) {
             if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
                 val userId = appData.getUser().user_id.toString()
-                lastUnreadMessageId = messages.findLast { message -> !message.isUserMessage(userId) && !message.wasRead }?._id
+                lastUnreadMessageId = messages.findLast { message ->
+                    message.type != Message.Type.SERVICE
+                            && !message.isUserMessage(userId)
+                            && !message.wasRead
+                }?._id
             }
             lastUnreadMessageId?.let { id -> messages.indexOfFirst { message -> message._id == id }.plus(1) }
                     ?: LAST_UNREAD_INDEX_INVALID
@@ -246,7 +260,9 @@ class ChatPresenter
     }
 
     override fun onAcceptChatClick() {
+        val recipient = chat?.user?.user_id?.toString() ?: return
         compositeDisposable += chatRepository.chatAccept(chatId)
+                .andThen(haChat.sendMessage(chatId, Message.Type.SERVICE, CHAT_SERVICE_MESSAGE_ACCEPT, recipient))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.showChatInput(true) }, {})
@@ -281,6 +297,7 @@ class ChatPresenter
 
     override fun onDestroy() {
         super.onDestroy()
+        haChat.leaveRoom(chatId)
         EventBus.getDefault().unregister(this)
     }
 
@@ -289,10 +306,5 @@ class ChatPresenter
         private const val LAST_UNREAD_INDEX_INVALID = -1
 
         private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.Service(ChatMessage.Service.Type.NEW_MESSAGES)
-
-        private const val ACTION_ACCEPT = "chatAccept"
-        private const val ACTION_INVITE = "chatInvite"
-        private const val ACTION_BAN = "chatBan"
-        private const val ACTION_UNBAN = "chatUnban"
     }
 }

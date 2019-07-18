@@ -1,5 +1,6 @@
 package com.example.ui.chatList
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -43,6 +44,9 @@ interface ChatListContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "fab")
         fun hideAddChatButton()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setInvitesCount(count: Int)
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -45,6 +45,9 @@ interface ProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showNotifications()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showBanned()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -57,5 +60,6 @@ interface ProfileContract {
         fun clickAboutApp()
         fun clickChatSetting()
         fun onNotificationClick()
+        fun onShowBannedClick()
     }
 }

@@ -50,6 +50,7 @@
     <string name="change">Изменить</string>
     <string name="profile_about_app">О приложении</string>
     <string name="profile_setting_chat">Настройки чата</string>
+    <string name="profile_banned">Заблокированные</string>
 
     <string name="profile_phone">Телефон</string>
     <string name="profile_phone_work">Рабочий телефон</string>
@@ -192,6 +193,7 @@
     <string name="chat_confirm">Одобрить</string>
     <string name="chat_ban">Заблокировать</string>
     <string name="chat_photo_message_text">Фото</string>
+    <string name="chat_accept_item_text">Пользователь подтвердил чат</string>
 
     <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
     <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных  и вы не сможете ему больше отправлять сообщения.</string>
@@ -269,4 +271,6 @@
     <string name="no_internet_dialog_message">Отсутствует подключение к сети</string>
     <string name="unread_message">Непрочитанные сообщения</string>
 
+    <string name="banned_label">Заблокированные пользователи</string>
+    <string name="banned_empty_message">Никого нет</string>
 </resources>

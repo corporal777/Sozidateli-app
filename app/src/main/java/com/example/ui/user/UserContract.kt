@@ -18,5 +18,6 @@ interface UserContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onWriteMsgClick()
+        fun onUnbanClick()
     }
 }
