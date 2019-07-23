@@ -3,12 +3,7 @@ package com.example.ui.base.takePhoto
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import bundleOf
 import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.util.photohelper.CropActivity
@@ -23,10 +18,6 @@ abstract class TakePhotoFragment<V : TakePhotoContract.View, P : TakePhotoPresen
 
 
     private val mediaUtils by lazy { MediaUtils(this, presenter) }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun showCamera() = mediaUtils.requestImageFromCamera()
 
@@ -48,28 +39,13 @@ abstract class TakePhotoFragment<V : TakePhotoContract.View, P : TakePhotoPresen
     override fun showChangePhotoDialog() {
         val alertDialog = AlertDialog.Builder(context!!)
                 .setTitle(R.string.photo_alert_title)
-                .setPositiveButton(R.string.photo_alert_gallery, DialogInterface.OnClickListener { dialogInterface, i ->
+                .setPositiveButton(R.string.photo_alert_gallery, DialogInterface.OnClickListener { _, _ ->
                     presenter.onTakePhotoFromGalleryRequest()
                     return@OnClickListener
-                }).setNegativeButton(R.string.photo_alert_camera, DialogInterface.OnClickListener { dialogInterface, i ->
+                }).setNegativeButton(R.string.photo_alert_camera, DialogInterface.OnClickListener { _, _ ->
                     presenter.onTakePhotoFromCameraRequest()
                     return@OnClickListener
                 }).create()
         alertDialog.show()
-        /*val view = LayoutInflater.from(context!!).inflate(R.layout.bottom_sheet_select_photo, null, false)
-        BottomSheetDialog(context!!).apply {
-            setContentView(view)
-            view.btnCamera.setOnClickListener {
-                presenter.onTakePhotoFromCameraRequest()
-                dismiss()
-            }
-            view.btnPhotos.setOnClickListener {
-                presenter.onTakePhotoFromGalleryRequest()
-                dismiss()
-            }
-        }
-                .show()*/
     }
-
-    override fun isShowToolbar() = true
 }

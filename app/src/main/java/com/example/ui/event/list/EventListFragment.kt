@@ -14,6 +14,8 @@ import com.example.data.models.EventApprove
 import com.example.data.models.StatusEvent
 import com.example.extensions.dp
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.ARG_EVENT
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
@@ -159,8 +161,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
     override fun showEventRequest(event: Event) {
         findParentNavigation().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
     }
-
-    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.layout_list_with_placeholder
 }

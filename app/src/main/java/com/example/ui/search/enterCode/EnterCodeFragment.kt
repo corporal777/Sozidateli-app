@@ -41,7 +41,5 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View {
         ))
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_enter_code
 }

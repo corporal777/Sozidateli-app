@@ -70,7 +70,5 @@ class NewsListFragment : BaseFragment(), NewsListContract.View {
         findNavController().navigate(NewsListFragmentDirections.actionNewsListFragmentToNewsFragment(news))
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_news_list
 }

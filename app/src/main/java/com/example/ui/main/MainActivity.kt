@@ -7,8 +7,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -17,7 +23,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.OnBackPressedListener
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentActivity
+import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_email_set_social_network.view.btnSave
@@ -47,22 +56,62 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
     private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
-        supportActionBar?.title = arguments?.getString(ARG_CUSTOM_LABEL) ?: destination.label
-        presenter.apply {
-            when {
-                destination.id == R.id.chat_fragment -> presenter.onOpenChatDestination(arguments?.getString("chatId", null))
-                isStartDestination(destination.id) -> onOpenStartDestination()
-                else -> onOpenNotStartDestination()
+
+    }
+
+    private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            val destination = findNavController().currentDestination
+            supportActionBar?.title = f.arguments?.getString(ARG_CUSTOM_LABEL) ?: destination?.label
+
+            presenter.apply {
+                when {
+                    destination?.id == R.id.chat_fragment -> presenter.onOpenChatDestination(f.arguments?.getString("chatId", null))
+                    isStartDestination(destination?.id) -> onOpenStartDestination()
+                    else -> onOpenNotStartDestination()
+                }
+            }
+
+            if (f is ToolbarFragment) {
+                (supportActionBar as? ToolbarContentActionBar)?.apply { f.setupToolbarContent(this) }
+                showToolbar()
+            } else {
+                hideToolbar()
             }
         }
     }
 
+    private var toolbarContentActionBar: ToolbarContentActionBar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbar)
-        val navController = findNavController()
-        navController.addOnDestinationChangedListener(navigatedListener)
+        super.setSupportActionBar(toolbar)
+        super.getSupportActionBar()?.apply {
+            setDisplayShowCustomEnabled(true)
+            setDisplayShowTitleEnabled(false)
+            setCustomView(ToolbarContentView(this@MainActivity), ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        }
+        findNavController().addOnDestinationChangedListener(navigatedListener)
+        navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
         subscribeOnNotificationChanel()
+    }
+
+    override fun setSupportActionBar(toolbar: Toolbar?) {
+        throw UnsupportedOperationException("Do not set toolbars, use custom toolbar view instead")
+    }
+
+    override fun getSupportActionBar(): ActionBar? {
+        return super.getSupportActionBar()?.let {
+            if (toolbarContentActionBar == null) {
+                toolbarContentActionBar = ToolbarContentActionBar(this, it)
+            }
+
+            toolbarContentActionBar
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return false
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -200,9 +249,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
+    override fun showToolbar() {
+        supportActionBar?.show()
+    }
+
     override fun hideToolbar() {
         supportActionBar?.hide()
-        toolbarDivider.visibility = View.GONE
     }
 
     override fun navigateUp() {
@@ -212,8 +264,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onBackPressed() {
-        val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
-        if ((currentFragment as? OnBackPressedListener)?.onBackPressed() == true) return
+        if ((getCurrentFragment() as? OnBackPressedListener)?.onBackPressed() == true) return
         if (findNavController().currentDestination?.id?.let { isStartDestination(it) } == true) {
             finish()
             return
@@ -222,21 +273,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onBackPressed()
     }
 
-    override fun showToolbar() {
-        supportActionBar?.show()
-        toolbarDivider.visibility = View.VISIBLE
-    }
-
     override fun showBackButton(show: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(show)
     }
 
     override fun onDestroy() {
         findNavController().removeOnDestinationChangedListener(navigatedListener)
+        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
         super.onDestroy()
     }
 
-    private fun isStartDestination(destination: Int) = startDestinations.contains(destination)
+    private fun isStartDestination(destination: Int?) = startDestinations.contains(destination)
+
+    private fun getCurrentFragment(): Fragment? {
+        return navHostFragment.childFragmentManager.primaryNavigationFragment
+    }
 
     override fun getLoadingView(): View = flLoading
 

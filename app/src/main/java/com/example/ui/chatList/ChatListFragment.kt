@@ -153,7 +153,5 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         )
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_chat_list
 }

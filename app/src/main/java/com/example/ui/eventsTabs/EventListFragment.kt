@@ -1,19 +1,18 @@
 package com.example.ui.eventsTabs
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.my.MyEventsFragment
-import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.util.Utils
+import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
+import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -39,8 +38,6 @@ class EventListFragment : BaseFragment(), EventListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
-
         viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {
             override fun getPageTitle(position: Int) = tabsContent[position].first
             override fun getItem(position: Int) = tabsContent[position].second
@@ -65,25 +62,12 @@ class EventListFragment : BaseFragment(), EventListContract.View {
         findNavController().navigate(EventListFragmentDirections.mainToProfile())
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu, {
-            presenter.onMenuChatClick()
-        }, {
-            presenter.onMenuAccountClick()
-        })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search -> presenter.onMenuSearchClick()
-            else -> return super.onOptionsItemSelected(item)
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        toolbarContentActionBar.apply {
+            addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
         }
-        return true
     }
-
-    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_events_tabs
 }

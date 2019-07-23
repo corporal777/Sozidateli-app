@@ -44,20 +44,6 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_search_type_save, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.save -> presenter.save()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
-
     override fun setData(data: MutableList<SearchTypeEvent>) {
         groupAdapter.update(data.map {
             SearchTypeItem(it) { item, isSelect ->
@@ -65,8 +51,6 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
             }
         })
     }
-
-    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_search_type
 }

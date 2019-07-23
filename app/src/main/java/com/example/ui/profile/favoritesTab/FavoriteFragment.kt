@@ -43,7 +43,5 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
         }
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_favorite
 }

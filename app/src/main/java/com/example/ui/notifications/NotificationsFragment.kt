@@ -84,7 +84,5 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View {
         })
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.layout_list_with_placeholder
 }

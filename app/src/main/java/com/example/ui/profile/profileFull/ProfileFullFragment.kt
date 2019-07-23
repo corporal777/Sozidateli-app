@@ -47,19 +47,6 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_profile_full, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.edit -> presenter.onEditClick()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
     override fun showEditProfile() {
         findNavController().navigate(ProfileFullFragmentDirections.profileToEdit())
     }
@@ -210,8 +197,6 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
                 .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
                 .show()
     }
-
-    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_profile_full
 }

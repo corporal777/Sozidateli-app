@@ -135,8 +135,6 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNav
         tvCacheData.visibility = GONE
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_event_schedule
 
     abstract fun getEmptyDayPlaceholderText(): String

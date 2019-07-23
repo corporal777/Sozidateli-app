@@ -69,7 +69,5 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
         showToast(link)
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_documents_list
 }

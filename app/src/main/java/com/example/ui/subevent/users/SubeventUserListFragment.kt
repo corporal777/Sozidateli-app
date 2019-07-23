@@ -55,7 +55,5 @@ class SubeventUserListFragment : BaseNestedNavigationFragment(), SubeventUserLis
         tvMessage.text = getString(R.string.subevent_user_list_empty)
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_subevent_users
 }

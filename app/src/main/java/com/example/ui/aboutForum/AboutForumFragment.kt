@@ -29,7 +29,5 @@ class AboutForumFragment : BaseFragment(), AboutForumContract.View {
         tvInfo.text = event.info
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_about_forum
 }

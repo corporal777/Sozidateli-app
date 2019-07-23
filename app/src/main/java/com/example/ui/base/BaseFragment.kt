@@ -9,11 +9,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import com.example.interfaces.ToolbarFragment
+import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
+abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View, ToolbarFragment {
 
-    private var mActivity: BaseActivity? = null
+    protected var mActivity: BaseActivity? = null
+        private set
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -28,7 +32,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mActivity?.apply { if (isShowToolbar()) showToolbar() else hideToolbar() }
         return inflater.inflate(layout(), container, false)
     }
 
@@ -40,7 +43,12 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     @LayoutRes
     abstract fun layout(): Int
 
-    protected open fun isShowToolbar(): Boolean = false
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        toolbarContentActionBar.apply {
+            removeAllLeftViews()
+            removeAllRightViews()
+        }
+    }
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
 

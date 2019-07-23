@@ -50,7 +50,5 @@ class UserFragment : BaseFragment(), UserContract.View {
         findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId))
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_speaker
 }

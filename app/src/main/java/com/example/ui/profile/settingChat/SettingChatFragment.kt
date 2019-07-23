@@ -41,7 +41,5 @@ class SettingChatFragment : BaseFragment(), SettingChatContract.View {
         }
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_setting_chat
 }

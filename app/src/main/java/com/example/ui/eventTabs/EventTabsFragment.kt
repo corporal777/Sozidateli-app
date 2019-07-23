@@ -2,9 +2,6 @@ package com.example.ui.eventTabs
 
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.forEach
@@ -20,7 +17,6 @@ import com.example.R
 import com.example.interfaces.OnBackPressedListener
 import com.example.ui.base.BaseFragment
 import com.example.util.BottomNavigationViewHelper
-import com.example.util.Utils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
 import javax.inject.Inject
@@ -111,20 +107,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
         activity?.finish()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        Utils.processMainMenu(menu, { presenter.onMenuChatClick() }, { presenter.onMenuAccountClick() })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search -> presenter.onMenuSearchClick()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
     override fun setLabel(label: String) {
         (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
@@ -208,8 +190,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
     }
 
     private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
-
-    override fun isShowToolbar() = true
 
     override fun layout() = R.layout.fragment_event_tabs
 }

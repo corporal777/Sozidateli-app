@@ -146,7 +146,6 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
 
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_contacts_search
 
     companion object {

@@ -202,4 +202,21 @@
         <item name="android:padding">4dp</item>
         <item name="android:scaleType">centerInside</item>
     </style>
+
+    <style name="Toolbar" />
+
+    <style name="Toolbar.Custom" />
+
+    <style name="Toolbar.Custom.Title">
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="Toolbar.Custom.Button">
+        <item name="android:layout_width">@dimen/toolbar_content_button_size</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
 </resources>

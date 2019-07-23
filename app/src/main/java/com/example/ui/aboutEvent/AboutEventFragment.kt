@@ -193,7 +193,5 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
         (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_about_event
 }

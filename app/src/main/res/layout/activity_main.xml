@@ -9,18 +9,23 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetEnd="0dp"
+            android:contentInsetRight="0dp"
+            android:elevation="1dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        <View
-            android:id="@+id/toolbarDivider"
-            style="@style/ViewDivider.Horizontal" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -37,22 +42,23 @@
             app:navGraph="@navigation/main_navigation" />
 
         <FrameLayout
+            android:id="@+id/flLoading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/flLoading"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:alpha="0.5"/>
+                android:alpha="0.5"
+                android:background="@android:color/white" />
+
             <ProgressBar
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
         </FrameLayout>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

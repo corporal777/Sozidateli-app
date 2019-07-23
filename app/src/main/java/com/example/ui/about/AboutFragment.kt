@@ -24,7 +24,5 @@ class AboutFragment : BaseFragment(), AboutContract.View {
         tvText.text = text
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_about
 }

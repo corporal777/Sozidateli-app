@@ -47,6 +47,5 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         findNavController().navigate(RecoveryPasswordFragmentDirections.recoveryPassworToEmailLogin(email, null, false, true))
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_recovery_password
 }

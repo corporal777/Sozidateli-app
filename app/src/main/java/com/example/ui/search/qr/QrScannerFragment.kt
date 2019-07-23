@@ -75,7 +75,6 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View {
         findNavController().navigate(QrScannerFragmentDirections.actionQrFragmentToEnterCodeFragment())
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_qr_scanner
 
     companion object {

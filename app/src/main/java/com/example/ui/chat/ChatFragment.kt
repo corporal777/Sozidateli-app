@@ -6,7 +6,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
@@ -283,12 +285,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun clearMessageInput() = etMessage.text.clear()
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_chat, menu)
-        // val avatarMenu = menu.findItem(R.event_id.avatar)
-    }
-
     override fun setUserAvatar(avatar: Bitmap) {
         setToolbarLogo(avatar)
     }
@@ -321,6 +317,5 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_chat
 }

@@ -28,7 +28,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 
-
     override fun showLoadingDialog() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading++

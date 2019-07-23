@@ -113,7 +113,5 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToNotificationsFragment())
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_profile
 }

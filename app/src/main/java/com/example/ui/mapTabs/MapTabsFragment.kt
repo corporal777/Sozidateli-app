@@ -56,7 +56,6 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
         viewPager.setCurrentItem(position, false)
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_map_tabs
 
     private inner class TabsAdapter(

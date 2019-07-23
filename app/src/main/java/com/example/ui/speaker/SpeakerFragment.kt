@@ -68,7 +68,5 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
         findNavController().navigate(SpeakerFragmentDirections.speakerFragmentToChat(userName, chatId))
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_speaker
 }

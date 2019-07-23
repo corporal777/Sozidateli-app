@@ -63,6 +63,5 @@ class BuildingSchemeFragment : BaseNestedNavigationFragment(), BuildingSchemeCon
         scrollContainer.scrollTo(0, scroll)
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_building_scheme
 }

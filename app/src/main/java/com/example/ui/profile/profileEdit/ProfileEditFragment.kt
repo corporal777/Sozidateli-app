@@ -265,7 +265,5 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         }
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_profile_edit
 }

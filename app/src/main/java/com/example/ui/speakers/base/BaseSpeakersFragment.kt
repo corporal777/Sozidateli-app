@@ -90,7 +90,5 @@ abstract class BaseSpeakersFragment : BaseFragment(), BaseSpeakersContract.View 
         ))
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_speakers
 }

@@ -120,20 +120,5 @@ class SearchFragment : BaseFragment(), SearchContract.View {
         findNavController().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_search_clear, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.clear -> presenter.clearFilter()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_search
 }

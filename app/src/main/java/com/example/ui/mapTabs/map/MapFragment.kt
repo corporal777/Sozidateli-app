@@ -54,6 +54,5 @@ class MapFragment : BaseNestedNavigationFragment(), MapContract.View, OnMapReady
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
     }
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_map
 }

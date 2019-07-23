@@ -71,8 +71,6 @@ abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(
         (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.layout_list_with_placeholder
 
     abstract fun onItemActionClick(organization: Organization)

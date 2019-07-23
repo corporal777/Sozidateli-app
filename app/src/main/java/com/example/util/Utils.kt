@@ -1,11 +1,7 @@
 package com.example.util
 
 import android.content.res.Resources
-import android.view.Menu
-import com.example.R
 import com.example.data.models.ProfileField
-import com.example.ui.views.accountView.AccountView
-import com.example.ui.views.chatView.ChatView
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -49,17 +45,6 @@ object Utils {
 
         return "$formattedStart - $formattedFinish"
     }
-
-    fun processMainMenu(menu: Menu, onChatClick: () -> Unit, onAccountClick: () -> Unit) {
-        val chatItem = menu.findItem(R.id.chat)
-        val chatView = chatItem?.actionView as ChatView?
-        chatView?.run { setOnClickListener { onChatClick() } }
-
-        val accountItem = menu.findItem(R.id.account)
-        val accountView = accountItem?.actionView as AccountView?
-        accountView?.run { setOnClickListener { onAccountClick() } }
-    }
-
 
     public fun getDataByName(obj: Any?, fieldName: String): Any? {
         if (obj == null) return null

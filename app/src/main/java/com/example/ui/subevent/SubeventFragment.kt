@@ -88,7 +88,5 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
         }
     }
 
-    override fun isShowToolbar() = true
-
     override fun layout() = R.layout.fragment_subevent
 }

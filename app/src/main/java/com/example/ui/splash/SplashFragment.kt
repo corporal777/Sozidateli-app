@@ -19,5 +19,4 @@ class SplashFragment : BaseFragment(), SplashContract.View {
     fun providePresenter(): SplashPresenter = presenterProvider.get()
 
     override fun layout() = R.layout.fragment_splash
-    override fun isShowToolbar() = false
 }

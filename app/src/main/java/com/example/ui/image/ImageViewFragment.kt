@@ -102,7 +102,6 @@ class ImageViewFragment : BaseFragment(), ImageViewContract.View {
     override fun findImageBitmap(url: String) = Picasso.get().load(url).into(dummyTarget)
     override fun findImageBitmap(resource: Int) = Picasso.get().load(resource).into(dummyTarget)
 
-    override fun isShowToolbar() = true
     override fun layout() = R.layout.fragment_image_view
 
     companion object {
