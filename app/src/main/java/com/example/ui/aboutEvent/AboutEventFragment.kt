@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.transition.ChangeBounds
 import androidx.transition.ChangeImageTransform
@@ -16,6 +15,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.Partner
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -25,7 +25,7 @@ import setDatesIntervalText
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AboutEventFragment : BaseFragment(), AboutEventContract.View {
+class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: AboutEventPresenter
@@ -41,6 +41,9 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
             else setEvent(it)
         }
     }
+
+    override val title: String
+        get() = AboutEventFragmentArgs.fromBundle(arguments!!).event!!.name!!
 
     init {
         val transition = TransitionSet().apply {
@@ -148,7 +151,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
             val imageViewLayoutParams = LinearLayout.LayoutParams(0, currentHeight!!)
             imageViewLayoutParams.weight = 1F
             imageView.layoutParams = imageViewLayoutParams
-            imageView.setOnClickListener {view-> presenter.onPartnerClick(it) }
+            imageView.setOnClickListener { view -> presenter.onPartnerClick(it) }
 
             Picasso.get().load(it.logo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).into(imageView)
 
@@ -187,10 +190,6 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View {
 
     override fun showEventRequest(event: Event) {
         findNavController().navigate(R.id.request_fragment, bundleOf("event" to event))
-    }
-
-    override fun setLabel(label: String) {
-        (activity as AppCompatActivity?)?.supportActionBar?.title = label
     }
 
     override fun layout() = R.layout.fragment_about_event

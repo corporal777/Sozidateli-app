@@ -9,12 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View, ToolbarFragment {
+abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     protected var mActivity: BaseActivity? = null
         private set
@@ -42,13 +40,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View, Toolbar
 
     @LayoutRes
     abstract fun layout(): Int
-
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        toolbarContentActionBar.apply {
-            removeAllLeftViews()
-            removeAllRightViews()
-        }
-    }
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
 

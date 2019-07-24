@@ -4,7 +4,6 @@ import afterOnGlobalLayout
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -12,7 +11,6 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -25,8 +23,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ChatMessage
 import com.example.holders.*
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
@@ -39,7 +39,7 @@ import ru.houseofapps.chat.models.Message
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View {
+class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View, ToolbarFragment {
 
     @InjectPresenter
     override lateinit var presenter: ChatPresenter
@@ -49,9 +49,14 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     @ProvidePresenter
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
-        val args = ChatFragmentArgs.fromBundle(arguments!!)
-        chatId = args.chatId
+        chatId = this@ChatFragment.chatId!!
     }
+
+    override val title: String
+        get() = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
+
+    val chatId: String?
+        get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
 
     private val chatAdapter = GroupAdapter<ViewHolder>()
 
@@ -151,10 +156,12 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun focusOnInput(showKeyboard: Boolean) {
         etMessage.apply {
-            showSoftInputOnFocus = showKeyboard
-            requestFocus()
-            showSoftInputOnFocus = true
-            if (showKeyboard) showKeyboard(this)
+            post {
+                showSoftInputOnFocus = showKeyboard
+                requestFocus()
+                showSoftInputOnFocus = true
+                if (showKeyboard) showKeyboard(this)
+            }
         }
     }
 
@@ -286,28 +293,19 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun clearMessageInput() = etMessage.text.clear()
 
     override fun setUserAvatar(avatar: Bitmap) {
-        setToolbarLogo(avatar)
+
     }
 
     override fun setUserAvatarPlaceholder() {
-        setToolbarLogo((ContextCompat.getDrawable(requireContext(), R.drawable.ic_launcher) as BitmapDrawable).bitmap)
+
     }
 
     private fun setToolbarLogo(logo: Bitmap) {
-//        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-//            val size = resources.getDimensionPixelSize(R.dimen.event_schedule_sub_event_divider_height)
-//            setIcon(Bitmap.createScaledBitmap(logo, size, size, true).toDrawable(resources).apply {
-//                setBounds(0, 0, size, size)
-//            })
-//            setDisplayUseLogoEnabled(true)
-//        }
+
     }
 
     override fun removeUserAvatar() {
-        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            setLogo(null)
-            setDisplayUseLogoEnabled(false)
-        }
+
     }
 
     private fun isChatScrolledToBottom(): Boolean {
@@ -315,6 +313,10 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
             else it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
         }
+    }
+
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
     }
 
     override fun layout() = R.layout.fragment_chat

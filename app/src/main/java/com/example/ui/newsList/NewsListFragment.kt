@@ -11,6 +11,7 @@ import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.News
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_news.*
@@ -18,7 +19,9 @@ import setDateCheckYearText
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NewsListFragment : BaseFragment(), NewsListContract.View {
+class NewsListFragment : BaseFragment(), NewsListContract.View, ToolbarFragment {
+    override val title: String
+        get() = getString(R.string.about_event_news)
 
     @InjectPresenter
     lateinit var presenter: NewsListPresenter

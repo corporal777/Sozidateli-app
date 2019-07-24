@@ -24,7 +24,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.OnBackPressedListener
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.auth.login.LoginFragment
 import com.example.ui.base.BaseFragmentActivity
+import com.example.ui.chat.ChatFragment
+import com.example.ui.eventTabs.EventTabsFragment
+import com.example.ui.eventsTabs.EventListFragment
+import com.example.ui.splash.SplashFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -61,18 +66,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-            val destination = findNavController().currentDestination
-            supportActionBar?.title = f.arguments?.getString(ARG_CUSTOM_LABEL) ?: destination?.label
-
             presenter.apply {
-                when {
-                    destination?.id == R.id.chat_fragment -> presenter.onOpenChatDestination(f.arguments?.getString("chatId", null))
-                    isStartDestination(destination?.id) -> onOpenStartDestination()
+                when (f) {
+                    is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
+                    is SplashFragment, is LoginFragment, is EventListFragment, is EventTabsFragment -> onOpenStartDestination()
                     else -> onOpenNotStartDestination()
                 }
             }
 
             if (f is ToolbarFragment) {
+                supportActionBar?.title = f.title
                 (supportActionBar as? ToolbarContentActionBar)?.apply { f.setupToolbarContent(this) }
                 showToolbar()
             } else {
@@ -251,10 +254,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showToolbar() {
         supportActionBar?.show()
+        toolbarDivider.visibility = View.VISIBLE
     }
 
     override fun hideToolbar() {
-        supportActionBar?.hide()
+        supportActionBar?.apply {
+            title = ""
+            hide()
+            if (this is ToolbarContentActionBar) {
+                removeAllLeftViews()
+                removeAllRightViews()
+            }
+        }
+        toolbarDivider.visibility = View.GONE
     }
 
     override fun navigateUp() {

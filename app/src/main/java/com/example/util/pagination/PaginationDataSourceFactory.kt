@@ -1,6 +1,7 @@
 package com.example.util.pagination
 
 import androidx.paging.DataSource
+import com.example.extensions.build
 import io.reactivex.Maybe
 
 @Suppress("UNCHECKED_CAST")
@@ -8,11 +9,14 @@ open class PaginationDataSourceFactory<I>(
         private val paginationRequest: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
 ) : DataSourceFactory<Int, I>() {
 
+    var paginationErrorHandler: ((Throwable) -> Unit)? = null
+
     private var loadFromStart = false
 
     override fun createDataSource(): PaginationDataSource<I> {
         val source = PaginationDataSource<I>().apply {
             this.request = paginationRequest
+            this.errorHandler = paginationErrorHandler
             this.loadInitialFromStart = loadFromStart
         }
         loadFromStart = false
@@ -37,4 +41,9 @@ open class PaginationDataSourceFactory<I>(
         loadFromStart = true
         invalidate()
     }
+}
+
+fun <I> PaginationDataSourceFactory<I>.applyErrorHandler(handler: (Throwable) -> Unit): PaginationDataSourceFactory<I> {
+    paginationErrorHandler = handler
+    return this
 }

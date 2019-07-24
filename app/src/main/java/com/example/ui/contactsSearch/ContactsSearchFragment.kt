@@ -3,6 +3,7 @@ package com.example.ui.contactsSearch
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.example.R
 import com.example.data.models.user.User
 import com.example.holders.ListSectionNameItem
 import com.example.holders.UserItem
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
@@ -24,7 +26,10 @@ import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
+class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, ToolbarFragment {
+
+    override val title: String
+        get() = getString(R.string.contact_search_title)
 
     @InjectPresenter
     lateinit var presenter: ContactsSearchPresenter
@@ -98,6 +103,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         searchInput = SearchInput(view.findViewById(R.id.search) as EditText).apply {
             setOnTextChange { presenter.onQueryTextChange(it) }
             setOnTextChangeDone { presenter.onQueryTextSubmit(it) }
+            this.view.hint = getString(R.string.contacts_search_input_hint)
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
@@ -130,12 +136,30 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View {
         placeholderUtil.isDataLoad = true
     }
 
+    override fun clearItems() {
+        placeholderUtil.isDataLoad = false
+        favoritesSection.update(emptyList())
+        chatsSection.update(emptyList())
+        anotherSection.update(emptyList())
+    }
+
+    override fun showNeedMoreSymbols(symbolsLimit: Int) {
+        Toast.makeText(requireContext(), getString(R.string.contacts_need_more_symbols_message, symbolsLimit), Toast.LENGTH_SHORT).show()
+    }
+
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
-    override fun focusOnInput() {
-        searchInput.requestFocus()
+    override fun focusOnInput(showKeyboard: Boolean) {
+        searchInput.view.apply {
+            post {
+                showSoftInputOnFocus = showKeyboard
+                requestFocus()
+                showSoftInputOnFocus = true
+                if (showKeyboard) showKeyboard(this)
+            }
+        }
     }
 
     override fun showFilter() {

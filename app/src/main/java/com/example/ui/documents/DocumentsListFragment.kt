@@ -1,26 +1,25 @@
 package com.example.ui.documents
 
-import androidx.paging.PagedList
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.View
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Document
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_documents_list.*
 import kotlinx.android.synthetic.main.item_document.*
 import javax.inject.Inject
 import javax.inject.Provider
-import android.content.Intent
-import android.net.Uri
 
-
-class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
+class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, ToolbarFragment {
+    override val title: String
+        get() = getString(R.string.about_event_documents)
 
     @InjectPresenter
     lateinit var presenter: DocumentsListPresenter
@@ -64,8 +63,8 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View {
     }
 
     override fun openLinkInBrowser(link: String) {
-       /* val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-        startActivity(browserIntent)*/
+        /* val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+         startActivity(browserIntent)*/
         showToast(link)
     }
 

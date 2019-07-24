@@ -82,7 +82,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
     }
 
     override fun showChat() {
-        findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatNavigation())
+        findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatListTabsFragment())
     }
 
     override fun showSearch() {

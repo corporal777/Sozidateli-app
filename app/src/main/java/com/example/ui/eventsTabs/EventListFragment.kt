@@ -17,7 +17,10 @@ import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventListFragment : BaseFragment(), EventListContract.View {
+class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragment {
+
+    override val title: String
+        get() = getString(R.string.events_tabs_title)
 
     @InjectPresenter
     lateinit var presenter: EventListPresenter
@@ -51,7 +54,7 @@ class EventListFragment : BaseFragment(), EventListContract.View {
     }
 
     override fun showChat() {
-        findNavController().navigate(EventListFragmentDirections.actionEventsTabsFragmentToChatNavigation())
+        findNavController().navigate(EventListFragmentDirections.actionEventsTabsFragmentToChatListTabsFragment())
     }
 
     override fun showSearch() {

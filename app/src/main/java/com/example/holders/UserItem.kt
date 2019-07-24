@@ -11,16 +11,14 @@ class UserItem(
         private val id: Int,
         private val name: String,
         private val avatar: String?,
-        onUserClick: () -> Unit
+        private val  onUserClick: () -> Unit
 ) : Item(id.toLong()) {
-
-    private val clickListener by weak(onUserClick)
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             tvUserName.text = name
             ivUserAvatar.setCircleImageWithPlaceholder(avatar, R.drawable.avatar_placeholder)
-            itemView.setOnClickListener { clickListener?.invoke() }
+            itemView.setOnClickListener { onUserClick.invoke() }
         }
     }
 

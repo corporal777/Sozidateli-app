@@ -92,8 +92,8 @@
         android:label="@string/events_tabs_title"
         tools:layout="@layout/fragment_events_tabs">
         <action
-            android:id="@+id/action_events_tabs_fragment_to_chat_navigation"
-            app:destination="@id/chat_list_fragment" />
+            android:id="@+id/action_events_tabs_fragment_to_chat_list_tabs_fragment"
+            app:destination="@id/chat_list_tabs_fragment" />
         <action
             android:id="@+id/main_to_search"
             app:destination="@id/search_navigation" />
@@ -119,8 +119,8 @@
         tools:layout="@layout/fragment_event_tabs">
 
         <action
-            android:id="@+id/action_event_tabs_fragment_to_chat_navigation"
-            app:destination="@id/chat_list_fragment" />
+            android:id="@+id/action_event_tabs_fragment_to_chat_list_tabs_fragment"
+            app:destination="@id/chat_list_tabs_fragment" />
         <action
             android:id="@+id/main_to_search"
             app:destination="@id/search_navigation" />
@@ -276,8 +276,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/chat_list_fragment"
-        android:name="com.example.ui.chatList.ChatListFragment"
+        android:id="@+id/chat_list_tabs_fragment"
+        android:name="com.example.ui.chatList.ChatListTabsFragment"
         android:label="@string/chat_list"
         tools:layout="@layout/fragment_chat_list">
         <action

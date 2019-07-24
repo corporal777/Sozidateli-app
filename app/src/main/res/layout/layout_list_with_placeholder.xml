@@ -13,7 +13,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:placeholder="@+id/placeholder" />
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"

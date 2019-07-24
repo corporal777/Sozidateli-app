@@ -7,36 +7,34 @@ import android.widget.EditText
 import android.widget.TextView
 
 class SearchInput(
-        private val searchInput: EditText
+        val view: EditText
 ) {
 
     private var onTextChange: OnTextChange? = null
-    private var onTextChangeDone: OnTextChangeDone? = null
+    private var onTextChangeSearch: OnTextChangeDone? = null
 
     init {
-        searchInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+        view.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                onTextChange?.invoke(s.toString())
-            }
-        })
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    onTextChange?.invoke(s.toString())
+                }
+            })
 
-        searchInput.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                return@OnEditorActionListener onTextChangeDone?.let {
-                    it.invoke(textView.text.toString())
-                    true
-                } ?: false
-            }
-            return@OnEditorActionListener false
-        })
-    }
-
-    fun requestFocus() {
-        searchInput.requestFocus()
+            setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    return@OnEditorActionListener onTextChangeSearch?.let {
+                        it.invoke(textView.text.toString())
+                        true
+                    } ?: false
+                }
+                return@OnEditorActionListener false
+            })
+        }
     }
 
     fun setOnTextChange(onTextChange: OnTextChange) {
@@ -44,7 +42,7 @@ class SearchInput(
     }
 
     fun setOnTextChangeDone(onTextChangeDone: OnTextChangeDone) {
-        this.onTextChangeDone = onTextChangeDone
+        this.onTextChangeSearch = onTextChangeDone
     }
 }
 

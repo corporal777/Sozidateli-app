@@ -30,9 +30,6 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showPartner(partner:Partner)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setLabel(label: String)
-
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
 

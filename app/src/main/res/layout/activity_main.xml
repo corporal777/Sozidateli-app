@@ -10,17 +10,18 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:orientation="vertical"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:contentInsetStart="0dp"
             android:contentInsetLeft="0dp"
             android:contentInsetEnd="0dp"
             android:contentInsetRight="0dp"
-            android:elevation="1dp"
+            android:elevation="0dp"
             app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
@@ -28,9 +29,15 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <View
+        android:id="@+id/toolbarDivider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="1dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <fragment

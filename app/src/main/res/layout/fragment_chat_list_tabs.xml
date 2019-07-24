@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/search"
-        layout="@layout/view_search_input"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        style="@style/AppTheme.Tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,15 +16,17 @@
     <View
         android:id="@+id/divider"
         style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    <include
-        layout="@layout/layout_list_with_placeholder"
-        android:layout_width="match_parent"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 </androidx.constraintlayout.widget.ConstraintLayout>

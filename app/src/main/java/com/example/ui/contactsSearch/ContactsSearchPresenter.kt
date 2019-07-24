@@ -9,12 +9,10 @@ import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACT
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.PublishSubject
-import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -28,12 +26,13 @@ class ContactsSearchPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private val searchSubject = PublishSubject.create<String>()
     private var searchText = ""
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.searchUser(getUserFilter(), limit, offset)
-    }.buildList()
+    }
+            .applyErrorHandler { it.message?.let { message -> viewState.showToast(message) } }
+            .buildList()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -47,21 +46,10 @@ class ContactsSearchPresenter
                     it.printStackTrace()
                 })
 
-        compositeDisposable += searchSubject.debounce(300, TimeUnit.MILLISECONDS)
-                .performOnBackgroundOutOnMain()
-                .subscribe {
-                    if (searchText != it) {
-                        searchText = it
-                        pagination.invalidate()
-                    }
-                }
-
         when (startAction) {
-            SEARCH_ACTION_INPUT -> viewState.apply {
-                focusOnInput()
-                showKeyboard()
-            }
+            SEARCH_ACTION_INPUT -> viewState.focusOnInput(true)
             SEARCH_ACTION_FILTER -> viewState.showFilter()
+            else -> viewState.focusOnInput(false)
         }
     }
 
@@ -75,14 +63,28 @@ class ContactsSearchPresenter
     }
 
     override fun onQueryTextSubmit(text: String) {
-        viewState.hideKeyboard()
+        search(text)
     }
 
-    override fun onQueryTextChange(text: String) = search(text)
+    override fun onQueryTextChange(text: String) {
+
+    }
 
     private fun search(text: String) {
-        text.trim().apply {
-            if (!isEmpty()) searchSubject.onNext(this)
+        text.trim().let {
+            when {
+                it == searchText -> viewState.hideKeyboard()
+                it.length < MIN_SYMBOLS_TO_SEARCH -> viewState.showNeedMoreSymbols(MIN_SYMBOLS_TO_SEARCH)
+                else -> {
+                    viewState.apply {
+                        showLoadingDialog()
+                        hideKeyboard()
+                        clearItems()
+                    }
+                    searchText = it
+                    pagination.invalidate()
+                }
+            }
         }
     }
 
@@ -108,6 +110,13 @@ class ContactsSearchPresenter
     }
 
     private fun getUserFilter(): Map<String, Any> {
-        return mapOf("user_fio" to searchText)
+        return searchText.let {
+            if (it.isEmpty()) emptyMap()
+            else mapOf("user_fio" to searchText)
+        }
+    }
+
+    companion object {
+        private const val MIN_SYMBOLS_TO_SEARCH = 3
     }
 }

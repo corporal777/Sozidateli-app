@@ -3,6 +3,8 @@
     <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
 
+    <dimen name="margin_horizontal_default">20dp</dimen>
+
     <dimen name="chat_list_button_padding_left">8dp</dimen>
     <dimen name="chat_list_button_padding_right">8dp</dimen>
 

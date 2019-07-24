@@ -139,9 +139,11 @@
 
     <string name="write_message">Написать сообщение</string>
 
+    <string name="contacts_search_input_hint">Введите имя</string>
     <string name="contacts_search_favorites">Избранные контакты</string>
     <string name="contacts_search_chats">Текущие чаты</string>
     <string name="contacts_search_another">Все контакты</string>
+    <string name="contacts_need_more_symbols_message">Минимальное количество символов для поиска: %d</string>
 
     <string name="setting_chat_title">Настройки чата</string>
     <string name="setting_chat_all_users">Принимать сообщения от всех пользователей</string>
@@ -184,6 +186,8 @@
     <string name="chat_list_create_chat">Создать чат</string>
     <string name="chat_list_contacts_and_chats">Контакты и чаты</string>
     <string name="chat_list_chat_requests">Запросы на чат</string>
+
+    <string name="invite_list_empty">Никого нет</string>
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="chat_need_confirm">Вы сможете продолжить диалог после того, как подтвердите чат</string>

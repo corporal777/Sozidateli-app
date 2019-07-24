@@ -10,9 +10,13 @@ import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.banned.BannedFragment
 import com.example.ui.chat.ChatFragment
-import com.example.ui.chatList.ChatListFragment
+import com.example.ui.chatList.ChatListTabsFragment
+import com.example.ui.chatList.contacts.ChatListFragment
+import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
+import com.example.ui.event.list.my.MyEventsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.eventTabs.EventTabsFragment
@@ -21,7 +25,6 @@ import com.example.ui.image.ImageViewFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
 import com.example.ui.mapTabs.map.MapFragment
-import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notifications.NotificationsFragment
@@ -33,11 +36,10 @@ import com.example.ui.profile.favoritesTab.FavoriteFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
 import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
-import com.example.ui.search.qr.QrScannerFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment
+import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
@@ -54,7 +56,13 @@ import dagger.android.ContributesAndroidInjector
 abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
+    abstract fun contributeChatListTabsFragment(): ChatListTabsFragment
+
+    @ContributesAndroidInjector
     abstract fun contributeChatListFragment(): ChatListFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeInvitesListFragment(): InviteListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFirsFragment(): ChatFragment

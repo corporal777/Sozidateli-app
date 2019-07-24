@@ -9,8 +9,14 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface ContactsSearchContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list data")
         fun setItems(favorites: List<User>, chats: List<User>, another: List<User>)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list data")
+        fun clearItems()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNeedMoreSymbols(symbolsLimit: Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
@@ -18,8 +24,8 @@ interface ContactsSearchContract {
         @StateStrategyType(SkipStrategy::class)
         fun openUserInfo(userId: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun focusOnInput()
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun focusOnInput(showKeyboard: Boolean)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "filter")
         fun showFilter()

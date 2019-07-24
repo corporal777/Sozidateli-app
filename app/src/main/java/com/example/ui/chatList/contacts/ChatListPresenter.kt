@@ -1,4 +1,4 @@
-package com.example.ui.chatList
+package com.example.ui.chatList.contacts
 
 import android.util.SparseArray
 import android.util.SparseIntArray
@@ -12,14 +12,9 @@ import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_FILTER
-import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
-import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_NONE
 import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
@@ -47,13 +42,6 @@ class ChatListPresenter
         }
     }.buildList()
 
-    private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.loadInvitesList(limit, offset).map { response ->
-            response.totalCount?.let { appData.chatRequestsCount = it }
-            PaginationResponse(response.totalCount, response.data.map { ChatListDataItem.Invite(it) })
-        }
-    }.buildList()
-
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()
     private val chatUnreadMessageConsumer = Consumer<RoomUnreadMessageCount> {
@@ -64,20 +52,15 @@ class ChatListPresenter
     private var firstLaunch = true
     private var lastChatUnreadCount: Int? = null
 
-    private var listMode: Int = -1
-    private var currentPagination: PaginationList<*>? = null
-    private val paginationDisposable = CompositeDisposable()
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
-        onShowChatListClick()
 
         compositeDisposable += appData.chatMessageCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val lastCount = lastChatUnreadCount
-                    if (lastCount != null && lastCount < it) currentPagination?.invalidate()
+                    if (lastCount != null && lastCount < it) chatsPagination.invalidate()
                     lastChatUnreadCount = it
                 }, {})
 
@@ -85,71 +68,20 @@ class ChatListPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe(chatUnreadMessageConsumer, Consumer {})
 
-        compositeDisposable += appData.chatRequestsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.setInvitesCount(it) }, { viewState.setInvitesCount(0) })
+        compositeDisposable += Observable.create(chatsPagination)
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.apply {
+                        dispatchChatsListUpdate(it)
+                        showEmptyView(it.isEmpty())
+                    }
+                }, { it.printStackTrace() })
     }
 
     override fun attachView(view: ChatListContract.View?) {
         super.attachView(view)
         if (firstLaunch) firstLaunch = false
-        else currentPagination?.invalidate()
-    }
-
-    override fun onShowChatListClick() {
-        viewState.apply {
-            selectChats()
-            showAddChatButton()
-        }
-        changeListMode(SCREEN_MODE_CHATS)
-    }
-
-    override fun onShowInvitesClick() {
-        viewState.apply {
-            selectInvites()
-            hideAddChatButton()
-        }
-        changeListMode(SCREEN_MODE_INVITES)
-    }
-
-    private fun changeListMode(mode: Int) {
-        if (listMode != mode) {
-            listMode = mode
-            viewState.clearData()
-            paginationDisposable.clear()
-            listMode = mode
-            subscribeToPagination()
-        }
-    }
-
-    private fun subscribeToPagination() {
-        val mode = listMode
-        val pagination = when (mode) {
-            SCREEN_MODE_CHATS -> chatsPagination
-            SCREEN_MODE_INVITES -> invitesPagination
-            else -> throw IllegalArgumentException("Wrong list mode $mode")
-        }
-
-        val canShowEmptyView = mode == SCREEN_MODE_CHATS
-
-        currentPagination = pagination
-
-        paginationDisposable += Observable.create(pagination)
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.apply {
-                        dispatchListUpdate(it, mode)
-                        showEmptyView(canShowEmptyView && it.isEmpty())
-                    }
-                }, { it.printStackTrace() })
-    }
-
-    private fun dispatchListUpdate(data: List<ChatListDataItem>, mode: Int) {
-        when (mode) {
-            SCREEN_MODE_CHATS -> dispatchChatsListUpdate(data)
-            SCREEN_MODE_INVITES -> dispatchInvitesListUpdate(data)
-            else -> throw IllegalArgumentException("Wrong list mode $mode")
-        }
+        else chatsPagination.invalidate()
     }
 
     private fun dispatchChatsListUpdate(data: List<ChatListDataItem>) {
@@ -168,22 +100,17 @@ class ChatListPresenter
         viewState.setChatsData(chats, favorites)
     }
 
-    private fun dispatchInvitesListUpdate(data: List<ChatListDataItem>) {
-        val invites = mutableListOf<UserChat>()
-
-        data.forEach { if (it is ChatListDataItem.Invite) invites.add(it.userChat) }
-        viewState.setInvitesData(invites)
-    }
-
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
 
-    override fun onFabAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
+    override fun onUserClick(uid: Int, userName: String) {
+        compositeDisposable += chatRepository.startChat(uid)
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.openChat(it.chat_id, userName) }, {})
+    }
 
-    override fun onEmptyChatsButtonAddChatClick() = viewState.openSearchContact(SEARCH_ACTION_NONE)
+    override fun onFabAddChatClick() = viewState.openSearch()
 
-    override fun onInputClick() = viewState.openSearchContact(SEARCH_ACTION_INPUT)
-
-    override fun onInputFilterClick() = viewState.openSearchContact(SEARCH_ACTION_FILTER)
+    override fun onEmptyChatsButtonAddChatClick() = viewState.openSearch()
 
     override fun onItemTake(position: Int) {
         chatsPagination.onItemTake(position)
@@ -217,10 +144,5 @@ class ChatListPresenter
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
-    }
-
-    companion object {
-        private const val SCREEN_MODE_CHATS = 0
-        private const val SCREEN_MODE_INVITES = 1
     }
 }

@@ -36,7 +36,7 @@ class LayoutListWithPlaceholderUtil(
     var isDataLoad: Boolean = false
         set(value) {
             field = value
-            if (value) recyclerView.canShowPlaceholder = true
+            recyclerView.canShowPlaceholder = value || !doNotShowUntilDataLoad
         }
 
     fun setDefault() {

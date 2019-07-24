@@ -3,18 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimary"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:background="@color/colorPrimary">
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:layout_marginBottom="12dp"
         android:textAllCaps="true"
         android:textSize="16sp"
@@ -23,5 +22,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Example 1" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

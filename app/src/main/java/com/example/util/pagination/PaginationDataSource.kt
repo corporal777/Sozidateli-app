@@ -1,5 +1,7 @@
 package com.example.util.pagination
 
+import android.os.Handler
+import android.os.Looper
 import androidx.paging.PositionalDataSource
 import io.reactivex.Maybe
 import kotlin.math.min
@@ -7,6 +9,9 @@ import kotlin.math.min
 open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
     lateinit var request: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
+
+    var errorHandler: ((Throwable) -> Unit)? = null
+
     var loadInitialFromStart: Boolean = false
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<I>) {
@@ -39,7 +44,13 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
     private fun executeRequest(limit: Int, offset: Int): PaginationResponse<I>? {
         val request = request.invoke(limit, offset)
-        return request.blockingGet()
+
+        return try {
+            request.blockingGet()
+        } catch (t: Throwable) {
+            Handler(Looper.getMainLooper()).post { errorHandler?.invoke(t) }
+            null
+        }
     }
 
     private fun executeRequestData(limit: Int, offset: Int): List<I> {

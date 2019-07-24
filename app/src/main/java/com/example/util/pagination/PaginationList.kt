@@ -17,12 +17,15 @@ class PaginationList<T>(
 
     override fun subscribe(emitter: ObservableEmitter<List<T>>) {
         this.emitter = emitter
-        val disposable = pagination.subscribe {
+
+        val disposable = pagination.subscribe({
             pagedList?.removeWeakCallback(paginationCallback)
             pagedList = it.apply { addWeakCallback(null, paginationCallback) }
 
             emitter.onNext(it.snapshot())
-        }
+        }, {
+            emitter.onError(it)
+        })
 
         emitter.setDisposable(disposable)
     }

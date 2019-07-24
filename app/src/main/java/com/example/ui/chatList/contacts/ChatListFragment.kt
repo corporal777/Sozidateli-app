@@ -1,18 +1,21 @@
-package com.example.ui.chatList
+package com.example.ui.chatList.contacts
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
-import com.example.holders.*
+import com.example.holders.ChatListEmptyItem
+import com.example.holders.ListSectionNameItem
+import com.example.holders.UserChatItem
+import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -29,13 +32,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
-
-    private val headerItem = ChatListHeaderItem(
-            { presenter.onInputClick() },
-            { presenter.onInputFilterClick() },
-            { presenter.onShowChatListClick() },
-            { presenter.onShowInvitesClick() }
-    )
 
     private val chatSection by lazy { Section() }
 
@@ -54,7 +50,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                 }
             })
 
-            add(headerItem)
             add(chatSection)
             add(favoritesSection)
         }
@@ -71,11 +66,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
     }
 
-    override fun clearData() {
-        chatSection.update(emptyList())
-        favoritesSection.update(emptyList())
-    }
-
     override fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>) {
         chatSection.update(chats.map { chat ->
             UserChatItem(
@@ -86,15 +76,10 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             )
         })
 
-        favoritesSection.update(favorites.map { UserItem(it.uid, it.name, it.photo) { } })
-    }
-
-    override fun setInvitesData(chats: List<UserChat>) {
-        chatSection.update(chats.map { chat ->
-            UserChatItem(
-                    chat,
-                    { presenter.onChatClick(it) }
-            )
+        favoritesSection.update(favorites.map {
+            UserItem(it.uid, it.name, it.photo) {
+                presenter.onUserClick(it.uid, it.name)
+            }
         })
     }
 
@@ -109,48 +94,17 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
     }
 
-    override fun selectChats() {
-        headerItem.selectChatsButton()
-    }
-
-    override fun selectInvites() {
-        headerItem.selectRequestsButton()
-    }
-
-    override fun setInvitesCount(count: Int) {
-        headerItem.apply {
-            invitesCount = count
-            updateInvitesBadge()
-        }
-    }
-
-    override fun showAddChatButton() {
-        fabNewChat.show()
-    }
-
-    override fun hideAddChatButton() {
-        fabNewChat.hide()
-    }
-
     override fun showEmptyView(isShow: Boolean) {
         if (isShow) chatSection.setHeader(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
         else chatSection.removeFooter()
     }
 
     override fun openChat(chatId: Int, userName: String) {
-        findNavController().navigate(ChatListFragmentDirections.chatListToChat(userName, chatId.toString()))
+        findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
     }
 
-    override fun openSearchContact(action: Int) {
-        val lm = recyclerView.layoutManager as? LinearLayoutManager
-        val header = lm?.findViewByPosition(0)
-        val inputView = header?.findViewById<View>(R.id.etSearch)
-
-        val extras = inputView?.let { FragmentNavigatorExtras(it to it.transitionName) }
-        findNavController().navigate(
-                ChatListFragmentDirections.actionChatListFragmentToContactsSearchFragment(action),
-                extras ?: FragmentNavigatorExtras()
-        )
+    override fun openSearch() {
+        findNavController().navigate(R.id.contacts_search_fragment, bundleOf("searchAction" to SEARCH_ACTION_INPUT))
     }
 
     override fun layout() = R.layout.fragment_chat_list
