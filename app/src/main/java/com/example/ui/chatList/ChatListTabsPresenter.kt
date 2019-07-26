@@ -24,17 +24,14 @@ class ChatListTabsPresenter
 
     override fun attachView(view: ChatListTabsContract.View?) {
         super.attachView(view)
-        when (selectedTab) {
-            TAB_CHATS -> viewState.selectChats()
-            TAB_INVITES -> viewState.selectInvites()
-        }
+        viewState.selectTab(selectedTab)
     }
 
-    override fun onChatsSecelted() {
+    override fun onChatsSelected() {
         selectedTab = TAB_CHATS
     }
 
-    override fun onInvitessSecelted() {
+    override fun onInvitesSelected() {
         selectedTab = TAB_INVITES
     }
 

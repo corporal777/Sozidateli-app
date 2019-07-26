@@ -45,8 +45,8 @@ class ChatPresenter
     private var isChatHasMessages = false
     private var isChatScrolledToBottom = false
     private var isMessagesInitialLoad = false
-    private var isMessageSend = false
     private var lastUnreadMessageId: String? = null
+    private var isCanShowUnreadMessagesItem = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -63,13 +63,7 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ messages ->
-                    val userId = appData.getUser().user_id.toString()
-                    val chatMessages: List<ChatMessage> = messages.map {
-                        when (it.type) {
-                            Message.Type.SERVICE -> ChatMessage.Service(if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) ChatMessage.Service.Type.ACCEPT else ChatMessage.Service.Type.NO_TYPE)
-                            else -> ChatMessage.Personal(it, it.isUserMessage(userId))
-                        }
-                    }
+                    val chatMessages = createChatMessages(messages)
                     val lastUnreadIndex = findLastUnreadMessageIndex(messages)
                     viewState.updateMessages(addUnreadMessagesItem(chatMessages, lastUnreadIndex))
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
@@ -102,22 +96,10 @@ class ChatPresenter
                     this.chat = it
                     viewState.apply {
                         when {
-                            it.isBannedByYou -> {
-                                showYouBanUser()
-                                hideKeyboard()
-                            }
-                            it.isBannedByRecipient -> {
-                                showYouBanned()
-                                hideKeyboard()
-                            }
-                            it.isInInvites -> {
-                                showChatConfirm()
-                                hideKeyboard()
-                            }
-                            it.isWaitForAcceptInvites -> {
-                                showWaitForInviteAccept()
-                                hideKeyboard()
-                            }
+                            it.isBannedByYou -> disableMessaging { showYouBanUser() }
+                            it.isBannedByRecipient -> disableMessaging { showYouBanned() }
+                            it.isInInvites -> disableMessaging { showChatConfirm() }
+                            it.isWaitForAcceptInvites -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
                                 showChatInput(false)
                                 focusOnInput(false)
@@ -132,6 +114,33 @@ class ChatPresenter
             }
             .observeOn(Schedulers.io())
 
+    private fun disableMessaging(action: () -> Unit) {
+        action()
+        isCanShowUnreadMessagesItem = false
+        viewState.hideKeyboard()
+    }
+
+    private fun createChatMessages(messages: List<Message>): List<ChatMessage> {
+        val userId = appData.getUser().user_id.toString()
+        return messages.map {
+            when (it.type) {
+                Message.Type.SERVICE -> {
+                    val type: ChatMessage.Service.Type
+                    val message: Message?
+                    if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
+                        type = ChatMessage.Service.Type.ACCEPT
+                        message = it
+                    } else {
+                        type = ChatMessage.Service.Type.NO_TYPE
+                        message = null
+                    }
+                    ChatMessage.Service(type, message)
+                }
+                else -> ChatMessage.Personal(it, it.isUserMessage(userId))
+            }
+        }
+    }
+
     private fun loadUserAvatar(user: User) {
         compositeDisposable += Single.fromCallable { Picasso.get().load(user.user_id).get() }
                 .performOnBackgroundOutOnMain()
@@ -139,7 +148,7 @@ class ChatPresenter
     }
 
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
-        return if (!isMessageSend) {
+        return if (isCanShowUnreadMessagesItem) {
             if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
                 val userId = appData.getUser().user_id.toString()
                 lastUnreadMessageId = messages.findLast { message ->
@@ -200,8 +209,8 @@ class ChatPresenter
     }
 
     private fun sendMessage(message: String, type: Message.Type) {
-        if (!isMessageSend) {
-            isMessageSend = true
+        if (isCanShowUnreadMessagesItem) {
+            isCanShowUnreadMessagesItem = false
             viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
         }
         viewState.apply { clearMessageInput() }
@@ -234,8 +243,8 @@ class ChatPresenter
         haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
-    override fun onChatMessageOnScreen(message: ChatMessage.Personal) {
-        haChat.readMessage(chatId, message.message)
+    override fun onChatMessageOnScreen(message: Message) {
+        haChat.readMessage(chatId, message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {

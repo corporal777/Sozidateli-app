@@ -9,7 +9,8 @@ sealed class ChatMessage {
     ) : ChatMessage()
 
     data class Service(
-            val type: Type
+            val type: Type,
+            val message: Message? = null
     ) : ChatMessage() {
         enum class Type {
             NO_TYPE, NEW_MESSAGES, ACCEPT

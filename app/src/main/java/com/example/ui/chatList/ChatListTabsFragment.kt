@@ -46,8 +46,8 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             when (position) {
-                0 -> presenter.onChatsSecelted()
-                1 -> presenter.onInvitessSecelted()
+                0 -> presenter.onChatsSelected()
+                1 -> presenter.onInvitesSelected()
             }
         }
     }
@@ -97,12 +97,8 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
         }
     }
 
-    override fun selectChats() {
-        viewPager.setCurrentItem(0, false)
-    }
-
-    override fun selectInvites() {
-        viewPager.setCurrentItem(1, false)
+    override fun selectTab(position: Int) {
+        viewPager.setCurrentItem(position, false)
     }
 
     override fun setInvitesCount(count: Int) {

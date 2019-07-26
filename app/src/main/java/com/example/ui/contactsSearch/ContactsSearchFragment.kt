@@ -84,7 +84,6 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ContactsSearchFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })

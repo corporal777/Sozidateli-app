@@ -9,6 +9,15 @@ import java.util.*
 val defaultDateFormatter: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault())
 
+val dateFormatterShortMoth: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault())
+
+val dateFormatterShortMothNoYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_NO_YEAR, Locale.getDefault())
+
+val dateFormatterFullMothNoYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_NO_YEAR, Locale.getDefault())
+
 val defaultServerDateFormatter: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
@@ -18,7 +27,10 @@ val defaultServerDateTimeFormatter: DateFormat
 val defaultTimeFormatter: DateFormat
     get() = SimpleDateFormat(TIME_FORMAT_DEFAULT, Locale.getDefault())
 
-val defaultDAteTimeFormatterNoYear: DateFormat
+val defaultDateTimeFormatter: DateFormat
+    get() = SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT, Locale.getDefault())
+
+val defaultDateTimeFormatterNoYear: DateFormat
     get() = SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_NO_YEAR, Locale.getDefault())
 
 fun String.formatToDefaultDate(): String? {
@@ -40,14 +52,14 @@ fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: D
 fun Calendar.formatToDefaultTimeInterval(to: Calendar): String {
     val formatter = if (this.isSameYear(to)) {
         if (this.isSameDay(to)) defaultTimeFormatter
-        else defaultDAteTimeFormatterNoYear
+        else defaultDateTimeFormatterNoYear
     } else defaultDateFormatter
 
     return "${formatter.format(this.time)} - ${formatter.format(to.time)}"
 }
 
 fun Calendar.formatToDefaultTime(): String {
-    val formatter = if (this.isSameYear(Calendar.getInstance())) defaultDAteTimeFormatterNoYear
+    val formatter = if (this.isSameYear(Calendar.getInstance())) defaultDateTimeFormatterNoYear
     else defaultDateFormatter
 
     return formatter.format(this.time)

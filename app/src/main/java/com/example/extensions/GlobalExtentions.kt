@@ -41,17 +41,6 @@ fun TextView.setDateCheckYearText(date: String) {
     }
 }
 
-inline fun <T : View> T.afterOnGlobalLayout(crossinline onGlobalLayout: T.() -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            if (measuredWidth > 0 && measuredHeight > 0) {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                this@afterOnGlobalLayout.onGlobalLayout()
-            }
-        }
-    })
-}
-
 fun ImageView.setCircleImageWithPlaceholder(url: String?, placeholder: Int) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
             .transform(CropCircleTransformation())

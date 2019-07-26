@@ -51,6 +51,7 @@ class ChatListPresenter
 
     private var firstLaunch = true
     private var lastChatUnreadCount: Int? = null
+    private var isScrolledToTop = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -72,8 +73,9 @@ class ChatListPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.apply {
+                        checkScrollPosition()
                         dispatchChatsListUpdate(it)
-                        showEmptyView(it.isEmpty())
+                        if (isScrolledToTop) scrollToTopPosition()
                     }
                 }, { it.printStackTrace() })
     }
@@ -134,6 +136,10 @@ class ChatListPresenter
 
     override fun onChatGoneFromScreen(chatId: Int) {
         chatUnreadMessageSubscriptions[chatId]?.dispose()
+    }
+
+    override fun onChatScrollChange(isTopPosition: Boolean) {
+        isScrolledToTop = isTopPosition
     }
 
     @Subscribe

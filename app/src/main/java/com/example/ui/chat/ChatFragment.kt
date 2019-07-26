@@ -1,6 +1,5 @@
 package com.example.ui.chat
 
-import afterOnGlobalLayout
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +28,7 @@ import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SimpleTextWatcher
+import com.example.util.StayBottomOnLayoutChangeUtil
 import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
@@ -64,6 +65,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         presenter.onImageClick(url, imageView)
     }
 
+    private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -93,7 +96,9 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             }
             itemAnimator = null
 
-            afterOnGlobalLayout { startPostponedEnterTransition() }
+            bottomScroller.setupWithRecyclerView(this)
+
+            doOnNextLayout { startPostponedEnterTransition() }
         }
 
         etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable { presenter.onMessageInput(it.toString()) })
@@ -204,7 +209,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
                         else -> ChatMessageTextItem(it)
                     }
 
-                    item.apply { onBindListener = { presenter.onChatMessageOnScreen(message) } }
+                    item.apply { onBindListener = { presenter.onChatMessageOnScreen(message.message) } }
                 }
                 is ChatMessage.Service -> getItemForChatServiceMessage(it)
             }
@@ -243,7 +248,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     private fun getItemForChatServiceMessage(message: ChatMessage.Service): Item<*> {
         return when (message.type) {
             ChatMessage.Service.Type.NEW_MESSAGES -> ChatUnreadLabelItem()
-            ChatMessage.Service.Type.ACCEPT -> ChatAcceptItem()
+            ChatMessage.Service.Type.ACCEPT -> ChatAcceptItem { message.message?.let { presenter.onChatMessageOnScreen(it) } }
             ChatMessage.Service.Type.NO_TYPE -> ChatEmptyItem()
         }
     }
@@ -308,6 +313,13 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     }
 
+    private fun isChatScrolledToTop(): Boolean {
+        return (rvChat.layoutManager as LinearLayoutManager).let {
+            if (it.reverseLayout) it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
+            else it.findFirstCompletelyVisibleItemPosition() == 0
+        }
+    }
+
     private fun isChatScrolledToBottom(): Boolean {
         return (rvChat.layoutManager as LinearLayoutManager).let {
             if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
@@ -317,6 +329,10 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
+    }
+
+    override fun hideKeyboard() {
+        super.hideKeyboard(etMessage)
     }
 
     override fun layout() = R.layout.fragment_chat

@@ -19,9 +19,6 @@ class ChatMessageTextItem(
                 text = message.message.message
                 setTextColor(ContextCompat.getColor(context, if (message.isMyMessage) R.color.chat_message_text_outgoing
                 else R.color.chat_message_text_incoming))
-
-                setCompoundDrawablesWithIntrinsicBounds(0, 0, if (message.message.wasRead && message.isMyMessage) R.drawable.ic_read_msg else 0, 0)
-                compoundDrawablePadding = context.resources.getDimensionPixelSize(R.dimen.chat_padding_read_icon)
             }
         }
     }

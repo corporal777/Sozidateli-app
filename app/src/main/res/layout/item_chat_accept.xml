@@ -8,6 +8,6 @@
     android:paddingTop="16dp"
     android:paddingEnd="24dp"
     android:paddingBottom="16dp"
-    android:text="@string/chat_accept_item_text"
+    android:text="@string/chat_accepted"
     android:textColor="@color/chat_accept_item_text"
     android:textSize="16sp" />

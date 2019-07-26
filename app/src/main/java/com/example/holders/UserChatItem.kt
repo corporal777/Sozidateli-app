@@ -1,21 +1,28 @@
 package com.example.holders
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.doOnNextLayout
 import com.example.R
 import com.example.data.models.UserChat
-import com.example.util.BADGE_COUNT_MAX
-import com.example.util.BADGE_TEXT_IF_MORE_THAN_MAX
+import com.example.extensions.*
+import com.example.ui.views.BadgeDrawable
+import com.example.ui.views.addBadge
+import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
 import ru.houseofapps.chat.models.Message
 import setCircleImageWithPlaceholder
+import java.util.*
+
 
 class UserChatItem(
         val userChat: UserChat,
         private val onClick: (UserChat) -> Unit,
         private val onBind: ((UserChatItem) -> Unit)? = null,
-        private val onUnBind: ((UserChatItem) -> Unit)? = null
+        private val onUnBind: ((UserChatItem) -> Unit)? = null,
+        private val badgeDrawable: BadgeDrawable? = null
 ) : Item(userChat.id.toLong()) {
 
     private var viewHolder: ViewHolder? = null
@@ -31,20 +38,69 @@ class UserChatItem(
             tvLastMessage.apply {
                 text = when (userChat.lastMessageType) {
                     Message.Type.IMAGE -> context.getString(R.string.chat_photo_message_text)
+                    Message.Type.SERVICE -> {
+                        if (userChat.lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
+                            if (userChat.lastMessageSender == userChat.user.user_id) context.getString(R.string.chat_accepted)
+                            else context.getString(R.string.chat_accept_by_me)
+                        } else ""
+                    }
                     else -> userChat.lastMessage
+                }
+
+                doOnNextLayout { view ->
+                    badgeDrawable?.also { badge ->
+                        (view.parent as ViewGroup).overlay.clear()
+                        view.addBadge(badge) { badgeWidth, badgeHeight, anchorRect ->
+                            val badgeCenterX = anchorRect.right + 8.dp
+                            val badgeCenterY = anchorRect.top + height / 2
+
+                            anchorRect.set(
+                                    badgeCenterX,
+                                    badgeCenterY - badgeHeight / 2,
+                                    badgeCenterX + badgeWidth,
+                                    badgeCenterY + badgeHeight / 2
+                            )
+                        }
+                    }
                 }
             }
 
             itemView.setOnClickListener { onClick(userChat) }
 
             updateBadge()
+
+            tvDate.apply {
+                if (userChat.lastMessageDate == null) visibility = View.GONE
+                else {
+                    text = formatMessageDate(userChat.lastMessageDate)
+                    visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun formatMessageDate(date: String): String {
+        val messageDate = defaultServerDateTimeFormatter.parse(date)
+
+        val messageCalendar = Calendar.getInstance().apply {
+            time = messageDate
+        }
+
+        val now = Calendar.getInstance()
+
+        return when {
+            now.get(Calendar.YEAR) == messageCalendar.get(Calendar.YEAR) -> {
+                if (now.get(Calendar.DAY_OF_YEAR) == messageCalendar.get(Calendar.DAY_OF_YEAR)) defaultTimeFormatter.format(messageDate)
+                else dateFormatterFullMothNoYear.format(messageDate)
+            }
+            else -> dateFormatterShortMoth.format(messageDate)
         }
     }
 
     fun updateBadge() {
-        viewHolder?.tvBadge?.apply {
-            text = userChat.unreadMessageCount.let { count: Int -> if (count > BADGE_COUNT_MAX) BADGE_TEXT_IF_MORE_THAN_MAX else count.toString() }
-            visibility = if (userChat.unreadMessageCount == 0) View.GONE else View.VISIBLE
+        badgeDrawable?.apply {
+            number = userChat.unreadMessageCount
+            invalidateSelf()
         }
     }
 

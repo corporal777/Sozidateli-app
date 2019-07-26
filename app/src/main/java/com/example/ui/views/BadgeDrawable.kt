@@ -109,7 +109,7 @@ class BadgeDrawable(
     }
 }
 
-fun View.addBadge(badge: BadgeDrawable, customBadgeParent: ViewGroup?, setupBadgeRect: (badgeWidth: Int, badgeHeight: Int, anchorRect: Rect) -> Unit) {
+fun View.addBadge(badge: BadgeDrawable, customBadgeParent: ViewGroup? = null, setupBadgeRect: (badgeWidth: Int, badgeHeight: Int, anchorRect: Rect) -> Unit) {
     val parent = customBadgeParent ?: this.parent as ViewGroup
     parent.apply {
         clipChildren = false

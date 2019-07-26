@@ -2,9 +2,10 @@ package com.example.ui.chatList.contacts
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -16,6 +17,7 @@ import com.example.holders.UserChatItem
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
+import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -55,26 +57,34 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
     }
 
+    private val badgeColor by lazy { ContextCompat.getColor(requireContext(), R.color.badge_attention_high) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
     }
 
     override fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>) {
-        chatSection.update(chats.map { chat ->
-            UserChatItem(
-                    chat,
-                    { presenter.onChatClick(it) },
-                    { presenter.onChatOnScreen(chat.id) },
-                    { presenter.onChatGoneFromScreen(chat.id) }
-            )
-        })
+        if (chats.isEmpty()) {
+            chatSection.removeHeader()
+            chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
+        } else {
+            chatSection.setHeader(ListSectionNameItem(-300L))
+            chatSection.update(chats.map { chat ->
+                UserChatItem(
+                        chat,
+                        { presenter.onChatClick(it) },
+                        { presenter.onChatOnScreen(chat.id) },
+                        { presenter.onChatGoneFromScreen(chat.id) },
+                        BadgeDrawable(number = chat.unreadMessageCount, badgeBackgroundColor = badgeColor)
+                )
+            })
+        }
 
         favoritesSection.update(favorites.map {
             UserItem(it.uid, it.name, it.photo) {
@@ -94,9 +104,16 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
     }
 
-    override fun showEmptyView(isShow: Boolean) {
-        if (isShow) chatSection.setHeader(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
-        else chatSection.removeFooter()
+    override fun checkScrollPosition() {
+        presenter.onChatScrollChange(isChatScrolledToTop())
+    }
+
+    override fun scrollToTopPosition() {
+        recyclerView.scrollToPosition(0)
+    }
+
+    private fun isChatScrolledToTop(): Boolean {
+        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
     override fun openChat(chatId: Int, userName: String) {

@@ -17,13 +17,16 @@ interface ChatListContract {
         fun openSearch()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmptyView(isShow: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatUnreadMessageCount(chatId: String, count: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun checkScrollPosition()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun scrollToTopPosition()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -34,5 +37,6 @@ interface ChatListContract {
         fun onFabAddChatClick()
         fun onEmptyChatsButtonAddChatClick()
         fun onItemTake(position: Int)
+        fun onChatScrollChange(isTopPosition: Boolean)
     }
 }

@@ -8,6 +8,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
 import com.example.ui.base.takePhoto.TakePhotoContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import ru.houseofapps.chat.models.Message
 
 interface ChatContract {
     interface View : TakePhotoContract.View {
@@ -78,7 +79,7 @@ interface ChatContract {
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
-        fun onChatMessageOnScreen(message: ChatMessage.Personal)
+        fun onChatMessageOnScreen(message: Message)
         fun onImageClick(url: String, imageView: ImageView)
         fun onLoadPreviousMessagesRequest()
         fun onLoadNextMessagesRequest()

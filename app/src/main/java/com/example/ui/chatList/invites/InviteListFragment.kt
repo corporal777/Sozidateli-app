@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -12,6 +13,7 @@ import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
+import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,6 +42,11 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView.apply {
+            adapter = this@InviteListFragment.adapter
+            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
+
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
             doNotShowUntilDataLoad = true
             setMessage(getString(R.string.invite_list_empty))

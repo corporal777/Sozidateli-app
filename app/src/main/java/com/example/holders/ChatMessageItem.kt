@@ -54,8 +54,7 @@ abstract class ChatMessageItem(
                                 )
                         )
 
-                        val params = layoutParams
-                        when (params) {
+                        when (val params = layoutParams) {
                             is ConstraintLayout.LayoutParams -> {
                                 params.horizontalBias = if (message.isMyMessage) OUTGOING_MESSAGE_HORIZONTAL_BIAS
                                 else INCOMING_MESSAGE_HORIZONTAL_BIAS
