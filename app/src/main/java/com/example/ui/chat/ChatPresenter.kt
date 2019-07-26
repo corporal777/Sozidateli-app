@@ -9,6 +9,8 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
+import com.example.extensions.calendar
+import com.example.extensions.isSameDay
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.*
@@ -26,7 +28,9 @@ import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
+import timber.log.Timber
 import withLoadingDialog
+import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
@@ -63,9 +67,11 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ messages ->
-                    val chatMessages = createChatMessages(messages)
                     val lastUnreadIndex = findLastUnreadMessageIndex(messages)
-                    viewState.updateMessages(addUnreadMessagesItem(chatMessages, lastUnreadIndex))
+                    val chatMessages = createChatMessages(messages)
+                            .addDates()
+                            .addUnreadMessagesItem(lastUnreadIndex)
+                    viewState.updateMessages(chatMessages)
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
                     isMessagesInitialLoad = true
                 }, {
@@ -122,19 +128,14 @@ class ChatPresenter
 
     private fun createChatMessages(messages: List<Message>): List<ChatMessage> {
         val userId = appData.getUser().user_id.toString()
-        return messages.map {
+        return messages.mapNotNull {
             when (it.type) {
                 Message.Type.SERVICE -> {
-                    val type: ChatMessage.Service.Type
-                    val message: Message?
                     if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
-                        type = ChatMessage.Service.Type.ACCEPT
-                        message = it
+                        ChatMessage.Accept(it)
                     } else {
-                        type = ChatMessage.Service.Type.NO_TYPE
-                        message = null
+                        null
                     }
-                    ChatMessage.Service(type, message)
                 }
                 else -> ChatMessage.Personal(it, it.isUserMessage(userId))
             }
@@ -162,12 +163,37 @@ class ChatPresenter
         } else LAST_UNREAD_INDEX_INVALID
     }
 
-    private fun addUnreadMessagesItem(messages: List<ChatMessage>, index: Int): List<ChatMessage> {
-        if (index != LAST_UNREAD_INDEX_INVALID) {
-            return messages.toMutableList().apply { add(index, CHAT_MESSAGE_UNREAD_ITEM) }
-        }
+    private fun List<ChatMessage>.addDates(): List<ChatMessage> {
+        val list = toMutableList()
+        val iterator = list.listIterator()
 
-        return messages
+        val lastDate = Calendar.getInstance()
+        iterator.forEach {
+            val message = when (it) {
+                is ChatMessage.Personal -> it.message
+                is ChatMessage.Accept -> it.message
+                else -> return@forEach
+            }
+
+            val messageDate = message.createdAt
+            if (!messageDate.calendar().isSameDay(lastDate)) {
+                iterator.previous()
+                iterator.add(ChatMessage.Date(lastDate.timeInMillis))
+                iterator.next()
+            }
+
+            if (!iterator.hasNext()){
+                iterator.add(ChatMessage.Date(messageDate))
+            }
+
+            lastDate.timeInMillis = messageDate
+        }
+        return list
+    }
+
+    private fun List<ChatMessage>.addUnreadMessagesItem(index: Int): List<ChatMessage> {
+        return if (index != LAST_UNREAD_INDEX_INVALID) toMutableList().apply { add(index, CHAT_MESSAGE_UNREAD_ITEM) }
+        else this
     }
 
     private fun scrollOnChatMessagesUpdate(lastUnreadIndex: Int) {
@@ -314,6 +340,6 @@ class ChatPresenter
         private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 50
         private const val LAST_UNREAD_INDEX_INVALID = -1
 
-        private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.Service(ChatMessage.Service.Type.NEW_MESSAGES)
+        private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.NewMessages
     }
 }

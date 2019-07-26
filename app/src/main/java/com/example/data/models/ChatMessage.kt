@@ -8,12 +8,7 @@ sealed class ChatMessage {
             val isMyMessage: Boolean
     ) : ChatMessage()
 
-    data class Service(
-            val type: Type,
-            val message: Message? = null
-    ) : ChatMessage() {
-        enum class Type {
-            NO_TYPE, NEW_MESSAGES, ACCEPT
-        }
-    }
+    object NewMessages : ChatMessage()
+    data class Date(val date: Long) : ChatMessage()
+    data class Accept(val message: Message) : ChatMessage()
 }

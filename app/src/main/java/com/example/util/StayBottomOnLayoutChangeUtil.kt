@@ -18,7 +18,7 @@ class StayBottomOnLayoutChangeUtil {
     private val yScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             currentScroll += dy
-            if (abs(dy) != 0) findCurrentBottomView()
+            if (dy != 0) findCurrentBottomView()
         }
     }
 

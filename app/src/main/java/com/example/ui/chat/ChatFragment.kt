@@ -211,7 +211,9 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
                     item.apply { onBindListener = { presenter.onChatMessageOnScreen(message.message) } }
                 }
-                is ChatMessage.Service -> getItemForChatServiceMessage(it)
+                ChatMessage.NewMessages -> ChatUnreadLabelItem()
+                is ChatMessage.Date -> ChatDateItem(it.date)
+                is ChatMessage.Accept -> ChatAcceptItem { it.message.let { message -> presenter.onChatMessageOnScreen(message) } }
             }
         })
     }
@@ -219,37 +221,18 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override fun removeChatMessage(message: ChatMessage) {
         for (i in 0 until chatAdapter.itemCount) {
             val item = chatAdapter.getItem(i)
-            val isSameMessage = when (message) {
-                is ChatMessage.Personal -> checkItemIsSamePersonalMessage(message, item)
-                is ChatMessage.Service -> checkItemIsSameServiceMessage(message, item)
-            }
-
-            if (isSameMessage) {
+            if (checkItemIsSameMessage(message, item)) {
                 chatAdapter.remove(item)
                 break
             }
         }
     }
 
-    private fun checkItemIsSamePersonalMessage(message: ChatMessage.Personal, item: Item<*>): Boolean {
+    private fun checkItemIsSameMessage(message: ChatMessage, item: Item<*>): Boolean {
         return when (item) {
             is ChatMessageItem -> item.message == message
+            is ChatUnreadLabelItem -> message is ChatMessage.NewMessages
             else -> false
-        }
-    }
-
-    private fun checkItemIsSameServiceMessage(message: ChatMessage.Service, item: Item<*>): Boolean {
-        return when (item) {
-            is ChatUnreadLabelItem -> message.type == ChatMessage.Service.Type.NEW_MESSAGES
-            else -> false
-        }
-    }
-
-    private fun getItemForChatServiceMessage(message: ChatMessage.Service): Item<*> {
-        return when (message.type) {
-            ChatMessage.Service.Type.NEW_MESSAGES -> ChatUnreadLabelItem()
-            ChatMessage.Service.Type.ACCEPT -> ChatAcceptItem { message.message?.let { presenter.onChatMessageOnScreen(it) } }
-            ChatMessage.Service.Type.NO_TYPE -> ChatEmptyItem()
         }
     }
 

@@ -37,6 +37,8 @@
     <color name="chat_action_you_baned_background">#24C73C00</color>
     <color name="chat_accept_item_background">#B5D49A</color>
     <color name="chat_accept_item_text">#030303</color>
+    <color name="chat_date_item_background">#80000000</color>
+    <color name="chat_date_item_text">#FFFFFF</color>
 
     <color name="event_item_background">#FFFFFF</color>
     <color name="event_item_border">#E4E4E4</color>

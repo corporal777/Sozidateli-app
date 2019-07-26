@@ -81,11 +81,7 @@ class UserChatItem(
 
     private fun formatMessageDate(date: String): String {
         val messageDate = defaultServerDateTimeFormatter.parse(date)
-
-        val messageCalendar = Calendar.getInstance().apply {
-            time = messageDate
-        }
-
+        val messageCalendar = messageDate.time.calendar()
         val now = Calendar.getInstance()
 
         return when {
