@@ -45,8 +45,10 @@ class SubeventUserListFragment : BaseNestedNavigationFragment(), SubeventUserLis
         usersGroup.submitList(users)
     }
 
-    override fun openChat(userName: String, chatId: String) {
-        findNavController().navigate(SubeventUserListFragmentDirections.subeventUserListFragmentToChat(userName, chatId))
+    override fun openChat(userName: String, userAvatar: String?, chatId: String) {
+        findNavController().navigate(SubeventUserListFragmentDirections.subeventUserListFragmentToChat(userName, chatId).apply {
+            setUserAvatar(userAvatar)
+        })
     }
 
     override fun showEmptyListPlaceholder() {

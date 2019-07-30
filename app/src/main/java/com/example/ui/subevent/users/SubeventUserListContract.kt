@@ -17,7 +17,7 @@ interface SubeventUserListContract {
         fun showEmptyListPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun openChat(userName: String, chatId: String)
+        fun openChat(userName: String, userAvatar: String?, chatId: String)
     }
 
     interface Presenter : BaseContract.Presenter {

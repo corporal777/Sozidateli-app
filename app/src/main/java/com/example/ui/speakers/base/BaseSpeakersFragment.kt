@@ -8,20 +8,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import bundleOf
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Speaker
 import com.example.ui.base.BaseFragment
 import com.example.util.ARG_SPEAKER
-import com.example.util.ARG_USER
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.android.synthetic.main.item_speaker.*
-import setCircleImageWithPlaceholder
-import javax.inject.Inject
-import javax.inject.Provider
+import setCircleImage
 
 abstract class BaseSpeakersFragment : BaseFragment(), BaseSpeakersContract.View {
 
@@ -36,7 +31,7 @@ abstract class BaseSpeakersFragment : BaseFragment(), BaseSpeakersContract.View 
             override fun onBindItem(viewHolder: ViewHolder, item: Speaker?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    ivSpeakerAvatar.setCircleImageWithPlaceholder(item.photo, R.drawable.avatar_placeholder)
+                    ivSpeakerAvatar.setCircleImage(item.photo, R.drawable.avatar_placeholder)
 
                     tvSpeakerName.text = item.name
                     tvSpeakerInfo.text = item.description

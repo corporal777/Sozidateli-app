@@ -2,14 +2,19 @@ package com.example.ui.chat
 
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -22,6 +27,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ChatMessage
+import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.takePhoto.TakePhotoFragment
@@ -37,6 +43,7 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
 import ru.houseofapps.chat.models.Message
+import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -50,11 +57,28 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     @ProvidePresenter
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
-        chatId = this@ChatFragment.chatId!!
+        val presenter = this
+        arguments!!.let { ChatFragmentArgs.fromBundle(it) }.apply {
+            presenter.chatId = chatId
+            presenter.userAvatar = userAvatar
+        }
     }
 
-    override val title: String
-        get() = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
+    override val title: CharSequence
+        get() {
+            val userName = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
+            val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.chat_user_expand)?.let {
+                it.setBounds(0, 0, 12.dp, 12.dp)
+                ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+            }
+            return SpannableStringBuilder(userName)
+                    .apply {
+                        imageSpan?.let {
+                            append("  ")
+                            setSpan(it, this.length - 1, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        }
+                    }
+        }
 
     val chatId: String?
         get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
@@ -67,6 +91,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }
 
+    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -76,7 +102,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         setHasOptionsMenu(true)
-        flCantSendHolder.setOnTouchListener { _, _ -> return@setOnTouchListener true }
 
         btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
         btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
@@ -103,6 +128,8 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
         etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable { presenter.onMessageInput(it.toString()) })
     }
+
+    override fun clearMessageInput() = etMessage.text.clear()
 
     override fun showChatInput(animate: Boolean) {
         if (animate) {
@@ -159,6 +186,15 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         inputContainer.visibility = View.GONE
     }
 
+    override fun showChatBlockConfirmation() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.user_ban_confirmation_title)
+                .setMessage(R.string.user_ban_confirmation_message)
+                .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
     override fun focusOnInput(showKeyboard: Boolean) {
         etMessage.apply {
             post {
@@ -192,12 +228,6 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
             addTransition(Fade(Fade.IN))
             duration = 100
         }
-    }
-
-    private fun scrollToPosition(position: Int, smooth: Boolean) {
-        if (position < 0) return
-        if (smooth) rvChat?.smoothScrollToPosition(position)
-        else rvChat?.layoutManager?.scrollToPosition(position)
     }
 
     override fun updateMessages(messages: List<ChatMessage>) {
@@ -236,6 +266,35 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         }
     }
 
+    override fun cancelNotificationByChatId(chatId: String) {
+        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(chatId.hashCode())
+    }
+
+    override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)
+
+    override fun scrollToMessagesUnreadItem(position: Int) {
+        val height = rvChat.height
+        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, height - height / 4)
+    }
+
+    private fun scrollToPosition(position: Int, smooth: Boolean) {
+        if (position < 0) return
+        if (smooth) rvChat?.smoothScrollToPosition(position)
+        else rvChat?.layoutManager?.scrollToPosition(position)
+    }
+
+    override fun checkScrollPosition() {
+        presenter.onChatScrollChange(isChatScrolledToBottom())
+    }
+
+    private fun isChatScrolledToBottom(): Boolean {
+        return (rvChat.layoutManager as LinearLayoutManager).let {
+            if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
+            else it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
+        }
+    }
+
     override fun openImageFullScreen(url: String, imageView: ImageView) {
         val transitionName = imageView.transitionName
         findNavController().navigate(
@@ -249,73 +308,39 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         )
     }
 
-    override fun cancelNotificationByChatId(chatId: String) {
-        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(chatId.hashCode())
+    override fun showUser(uid: Int) {
+        findNavController().navigate(ChatFragmentDirections.actionChatFragmentToUserFragment(uid.toString()))
     }
 
-    override fun showCantSendHolder(isShow: Boolean) {
-        flCantSendHolder.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
-
-    override fun checkScrollPosition() {
-        presenter.onChatScrollChange(isChatScrolledToBottom())
-    }
-
-    override fun showChatBlockConfirmation() {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.user_ban_confirmation_title)
-                .setMessage(R.string.user_ban_confirmation_message)
-                .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
-    override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)
-
-    override fun scrollToMessagesUnreadItem(position: Int) {
-        val height = rvChat.height
-        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, height - height / 4)
-    }
-
-    override fun clearMessageInput() = etMessage.text.clear()
-
-    override fun setUserAvatar(avatar: Bitmap) {
-
-    }
-
-    override fun setUserAvatarPlaceholder() {
-
-    }
-
-    private fun setToolbarLogo(logo: Bitmap) {
-
-    }
-
-    override fun removeUserAvatar() {
-
-    }
-
-    private fun isChatScrolledToTop(): Boolean {
-        return (rvChat.layoutManager as LinearLayoutManager).let {
-            if (it.reverseLayout) it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
-            else it.findFirstCompletelyVisibleItemPosition() == 0
-        }
-    }
-
-    private fun isChatScrolledToBottom(): Boolean {
-        return (rvChat.layoutManager as LinearLayoutManager).let {
-            if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
-            else it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
+    override fun setUserAvatar(url: String) {
+        val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
+        val imagePadding = 8.dp
+        AppCompatImageView(requireContext()).apply {
+            layoutParams = ViewGroup.MarginLayoutParams(imageSize, MATCH_PARENT).apply {
+                rightMargin = 12.dp
+            }
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            setPadding(imagePadding, imagePadding, imagePadding, imagePadding)
+            setCircleImage(url)
+            toolbarContentActionBar.addRightView(this)
         }
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
+        toolbarContentActionBar.apply {
+            setOnToolbarClickListener { presenter.onUserClick() }
+        }
     }
 
     override fun hideKeyboard() {
         super.hideKeyboard(etMessage)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        toolbarContentActionBar.apply { setOnToolbarClickListener(null) }
     }
 
     override fun layout() = R.layout.fragment_chat

@@ -1,7 +1,7 @@
 package com.example.ui.chat
 
-import android.graphics.Bitmap
 import android.widget.ImageView
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -54,17 +54,8 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showCantSendHolder(isShow: Boolean)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
-        fun setUserAvatar(avatar: Bitmap)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
-        fun setUserAvatarPlaceholder()
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "avatar")
-        fun removeUserAvatar()
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setUserAvatar(url: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun removeChatMessage(message: ChatMessage)
@@ -74,6 +65,9 @@ interface ChatContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showChatBlockConfirmation()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUser(uid: Int)
     }
 
     interface Presenter : TakePhotoContract.Presenter {
@@ -90,5 +84,7 @@ interface ChatContract {
 
         fun onInputShowAnimationFinish()
         fun onMessageInput(message: String)
+
+        fun onUserClick()
     }
 }

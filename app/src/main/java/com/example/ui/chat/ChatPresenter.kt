@@ -7,7 +7,6 @@ import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
 import com.example.data.models.UserChat
-import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
@@ -15,7 +14,6 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
 import com.example.util.*
 import com.example.util.chat.ChatHelper
-import com.squareup.picasso.Picasso
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -28,7 +26,6 @@ import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
-import timber.log.Timber
 import withLoadingDialog
 import java.util.*
 import javax.inject.Inject
@@ -43,6 +40,7 @@ class ChatPresenter
 ) : TakePhotoPresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String
+    var userAvatar: String? = null
 
     private var chat: UserChat? = null
 
@@ -55,6 +53,8 @@ class ChatPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
+
+        userAvatar?.let { viewState.setUserAvatar(it) }
 
         subscribeToChatEvents()
 
@@ -112,9 +112,13 @@ class ChatPresenter
                             }
                         }
 
+                        val avatarFromChat = it.user.user_avatar
+                        if (userAvatar != avatarFromChat && avatarFromChat != null) {
+                            setUserAvatar(avatarFromChat)
+                        }
+
                         isChatHasMessages = it.lastMessage != null
                     }
-                    loadUserAvatar(it.user)
                 }
                         .andThen(Single.just(it))
             }
@@ -140,12 +144,6 @@ class ChatPresenter
                 else -> ChatMessage.Personal(it, it.isUserMessage(userId))
             }
         }
-    }
-
-    private fun loadUserAvatar(user: User) {
-        compositeDisposable += Single.fromCallable { Picasso.get().load(user.user_id).get() }
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.setUserAvatar(it) }, { viewState.setUserAvatarPlaceholder() })
     }
 
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
@@ -182,7 +180,7 @@ class ChatPresenter
                 iterator.next()
             }
 
-            if (!iterator.hasNext()){
+            if (!iterator.hasNext()) {
                 iterator.add(ChatMessage.Date(messageDate))
             }
 
@@ -223,7 +221,6 @@ class ChatPresenter
         view?.hideKeyboard()
         super.detachView(view)
         chatHelper.currentChatId = null
-        viewState.removeUserAvatar()
     }
 
     override fun onSendTextMessageClick(message: String) {
@@ -328,6 +325,10 @@ class ChatPresenter
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
         haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
+    }
+
+    override fun onUserClick() {
+        chat?.user?.user_id?.let { viewState.showUser(it) }
     }
 
     override fun onDestroy() {

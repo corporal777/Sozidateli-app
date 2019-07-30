@@ -46,8 +46,10 @@ class UserFragment : BaseFragment(), UserContract.View {
         //tvDescription.text = speaker.description
     }
 
-    override fun openChat(userName: String, chatId: String) {
-        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId))
+    override fun openChat(userName: String, userAvatar: String?, chatId: String) {
+        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
+            setUserAvatar(userAvatar)
+        })
     }
 
     override fun layout() = R.layout.fragment_speaker

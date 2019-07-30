@@ -20,15 +20,19 @@
         android:id="@+id/viewsLeft"
         android:layout_width="96dp"
         android:layout_height="match_parent"
+        android:gravity="left"
         android:orientation="horizontal"
         app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <LinearLayout
         android:id="@+id/viewsRight"
         android:layout_width="96dp"
         android:layout_height="match_parent"
+        android:gravity="right"
         android:orientation="horizontal"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="RtlHardcoded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

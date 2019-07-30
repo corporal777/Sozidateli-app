@@ -62,6 +62,11 @@ class ToolbarContentActionBar(
     fun removeRightView(position: Int) = customView.getRightViewContainer { removeViewAt(position) }
     fun removeAllRightViews() = customView.getRightViewContainer { removeAllViews() }
 
+    fun setOnToolbarClickListener(listener: OnToolbarClickListener?) {
+        if (listener == null) customView.setOnClickListener(null)
+        else customView.setOnClickListener { listener() }
+    }
+
     override fun setListNavigationCallbacks(adapter: SpinnerAdapter?, callback: OnNavigationListener?) {
         throw UnsupportedOperationException("Do not supported by ToolbarContentActionBar")
     }
@@ -223,4 +228,7 @@ class ToolbarContentActionBar(
     override fun getSelectedNavigationIndex(): Int {
         throw UnsupportedOperationException("Do not supported by ToolbarContentActionBar")
     }
+
 }
+
+typealias OnToolbarClickListener = () -> Unit

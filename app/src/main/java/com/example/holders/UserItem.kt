@@ -1,11 +1,10 @@
 package com.example.holders
 
 import com.example.R
-import com.example.util.weak
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_user.*
-import setCircleImageWithPlaceholder
+import setCircleImage
 
 class UserItem(
         private val id: Int,
@@ -17,7 +16,7 @@ class UserItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             tvUserName.text = name
-            ivUserAvatar.setCircleImageWithPlaceholder(avatar, R.drawable.avatar_placeholder)
+            ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
             itemView.setOnClickListener { onUserClick.invoke() }
         }
     }

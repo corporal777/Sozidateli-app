@@ -13,7 +13,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
 import ru.houseofapps.chat.models.Message
-import setCircleImageWithPlaceholder
+import setCircleImage
 import java.util.*
 
 
@@ -31,7 +31,7 @@ class UserChatItem(
         this.viewHolder = viewHolder
         onBind?.invoke(this)
         viewHolder.apply {
-            ivAvatar.setCircleImageWithPlaceholder(userChat.user.user_avatar, R.drawable.avatar_placeholder)
+            ivAvatar.setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
 
             tvName.text = userChat.user.fullName
 

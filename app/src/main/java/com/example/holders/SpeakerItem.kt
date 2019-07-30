@@ -7,7 +7,7 @@ import com.example.data.models.Speaker
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_speaker.view.*
-import setCircleImageWithPlaceholder
+import setCircleImage
 
 open class SpeakerItem(
         private var speaker: Speaker,
@@ -16,7 +16,7 @@ open class SpeakerItem(
 ) : Item(speaker.id.toLong()) {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            ivSpeakerAvatar.setCircleImageWithPlaceholder(speaker.photo, R.drawable.avatar_placeholder)
+            ivSpeakerAvatar.setCircleImage(speaker.photo, R.drawable.avatar_placeholder)
 
             tvSpeakerName.text = speaker.name
             tvSpeakerInfo.text = speaker.position

@@ -2,6 +2,9 @@ package com.example.ui.eventsTabs
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -67,8 +70,14 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
+        val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
         toolbarContentActionBar.apply {
             addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
+            addRightView(AppCompatImageView(requireContext()).apply {
+                layoutParams = ViewGroup.LayoutParams(imageSize, imageSize)
+                setImageResource(R.drawable.avatar_placeholder)
+                setOnClickListener { presenter.onMenuAccountClick() }
+            })
         }
     }
 

@@ -211,6 +211,8 @@
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center</item>
         <item name="android:maxLines">1</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/toolbar_title_text</item>
     </style>
 
     <style name="Toolbar.Custom.Button">

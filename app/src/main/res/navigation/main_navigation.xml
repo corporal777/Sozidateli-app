@@ -299,6 +299,19 @@
         <argument
             android:name="chatId"
             app:argType="string" />
+        <argument
+            android:name="userAvatar"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_chat_fragment_to_user_fragment"
+            app:destination="@id/user_fragment"
+            app:enterAnim="@anim/profile_enter"
+            app:exitAnim="@anim/profile_exit"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/profile_popup_enter"
+            app:popExitAnim="@anim/profile_popup_exit" />
     </fragment>
 
     <fragment

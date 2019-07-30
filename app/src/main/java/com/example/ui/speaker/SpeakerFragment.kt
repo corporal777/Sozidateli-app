@@ -64,8 +64,10 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
         }
     }
 
-    override fun openChat(userName: String, chatId: String) {
-        findNavController().navigate(SpeakerFragmentDirections.speakerFragmentToChat(userName, chatId))
+    override fun openChat(userName: String, userAvatar: String?, chatId: String) {
+        findNavController().navigate(SpeakerFragmentDirections.speakerFragmentToChat(userName, chatId).apply {
+            setUserAvatar(userAvatar)
+        })
     }
 
     override fun layout() = R.layout.fragment_speaker

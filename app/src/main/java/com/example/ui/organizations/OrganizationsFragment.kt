@@ -14,7 +14,7 @@ import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import kotlinx.android.synthetic.main.item_organization.*
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
-import setCircleImageWithPlaceholder
+import setCircleImage
 
 abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(), OrganizationsContract.View {
 
@@ -32,7 +32,7 @@ abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(
             override fun onBindItem(viewHolder: ViewHolder, item: Organization?, position: Int) {
                 item!!
                 viewHolder.apply {
-                    ivLogo.setCircleImageWithPlaceholder(item.logo, R.drawable.ic_launcher_background)
+                    ivLogo.setCircleImage(item.logo, R.drawable.ic_launcher_background)
 
                     tvLabel.text = item.name
                     btnAction.apply {

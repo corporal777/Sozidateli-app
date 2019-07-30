@@ -12,6 +12,7 @@
     <color name="text_title">#404041</color>
     <color name="disabled_color">#d1d3d4</color>
     <color name="attention_action">#C73C00</color>
+    <color name="toolbar_title_text">#000000</color>
 
     <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>

@@ -1,7 +1,5 @@
 import android.content.Context
 import android.net.ConnectivityManager
-import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.extensions.defaultServerDateFormatter
@@ -41,10 +39,10 @@ fun TextView.setDateCheckYearText(date: String) {
     }
 }
 
-fun ImageView.setCircleImageWithPlaceholder(url: String?, placeholder: Int) {
+fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
             .transform(CropCircleTransformation())
-            .placeholder(placeholder)
+            .apply { placeholder?.let { placeholder(it) } }
             .into(this)
 }
 

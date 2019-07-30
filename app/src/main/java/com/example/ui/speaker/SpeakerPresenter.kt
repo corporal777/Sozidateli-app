@@ -33,7 +33,7 @@ class SpeakerPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(speaker.name, it.chat_id.toString())
+                    viewState.openChat(speaker.name, speaker.photo, it.chat_id.toString())
                 }, { it.printStackTrace() })
     }
 
