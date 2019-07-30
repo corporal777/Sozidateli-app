@@ -1,6 +1,6 @@
-include ':app', ':filepicker', ':chat'
+include ':app', ':filepicker'
 
-project(':chat').projectDir = new File(getExternalModuleDir())
+//project(':chat').projectDir = new File(getExternalModuleDir())
 
 def getExternalModuleDir() {
     Properties properties = new Properties()
