@@ -3,7 +3,7 @@ package com.example.ui.speaker
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Speaker
 import com.example.repository.ChatRepository
-import com.example.repository.SpeakerRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -12,8 +12,9 @@ import javax.inject.Inject
 
 @InjectViewState
 class SpeakerPresenter
-@Inject constructor(private val chatRepository: ChatRepository,
-                    private val speakerRepository: SpeakerRepository
+@Inject constructor(
+        private val chatRepository: ChatRepository,
+        private val userRepository: UserRepository
 ) : BasePresenter<SpeakerContract.View>(), SpeakerContract.Presenter {
 
 
@@ -29,7 +30,7 @@ class SpeakerPresenter
     }
 
     override fun onWriteMsgClick() {
-        compositeDisposable += chatRepository.startChat(speaker.uid)
+        compositeDisposable += chatRepository.startChat(speaker.uid.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -38,7 +39,11 @@ class SpeakerPresenter
     }
 
     override fun onAddFavoriteClick() {
-        compositeDisposable += speaker.isInFavorite.let { if (!it) speakerRepository.addToFavorite(speaker.id) else speakerRepository.removeFromFavorite(speaker.id) }
+        val id = speaker.id.toString()
+        compositeDisposable += speaker.isInFavorite.let {
+            if (!it) userRepository.addToFavorite(id)
+            else userRepository.removeFromFavorite(id)
+        }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

@@ -10,6 +10,8 @@
     <string name="sans_serif_thin">sans-serif-thin</string>
     <string name="sans_serif_medium">sans-serif-medium</string>
 
+    <string name="content_description_avatar">Аватар</string>
+
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Рекомендуемые</string>
     <string name="tab_subscriptions_title">Подписки</string>
@@ -41,31 +43,6 @@
     <string name="auth_register_confirm_email_title">Вы успешно зарегистрировались</string>
     <string name="auth_register_confirm_email_message">На почтовый ящик %s отправлена инструкция по подтверждению Вашей учетной записи.</string>
 
-    <string name="profile_status">Ваш статус: %s</string>
-    <string name="profile_status_more">Подробнее о статусе</string>
-    <string name="profile_title">Личный кабинет</string>
-    <string name="profile_favorite">Избранное</string>
-    <string name="profile_me_events">Мои мероприятия</string>
-    <string name="profile_current_event">Текущее мероприятие</string>
-    <string name="change">Изменить</string>
-    <string name="profile_about_app">О приложении</string>
-    <string name="profile_setting_chat">Настройки чата</string>
-    <string name="profile_banned">Заблокированные</string>
-
-    <string name="profile_phone">Телефон</string>
-    <string name="profile_phone_work">Рабочий телефон</string>
-    <string name="profile_birthday">Дата рождения</string>
-    <string name="profile_country">Страна</string>
-    <string name="profile_city">Город</string>
-    <string name="profile_sn">Социальные сети</string>
-    <string name="profile_education">Образование ученая степень звание</string>
-    <string name="profile_institution">Учебное заведение</string>
-    <string name="profile_work_experience">Опыт работы</string>
-    <string name="profile_social_project">Социальные проекты</string>
-    <string name="profile_events">Мероприятия</string>
-    <string name="profile_interests">Интересы</string>
-    <string name="profile_last_notification">Последнее уведомление</string>
-
     <string name="notifications_label">Уведомления</string>
 
     <string name="menu_item_chat_label">Чат</string>
@@ -82,8 +59,11 @@
     <string name="news_read_more">Подробнее</string>
 
     <string name="speakers">Спикеры</string>
-    <string name="add_to_favorites">Добавить в избранное</string>
-    <string name="remove_from_favorites">Удалить из избранного</string>
+    <string name="add_to_favorites">Добавить в избранные</string>
+    <string name="remove_from_favorites">Удалить из избранных</string>
+    <string name="unblock">Разблокировать</string>
+    <string name="change">Изменить</string>
+    <string name="write_message">Написать сообщение</string>
 
     <string name="favorite_title">Избранное</string>
     <string-array name="favorite_tab_name_array">
@@ -137,8 +117,6 @@
     <string name="subevent_list_member">Список участников</string>
     <string name="suevent_u_speaker">Вы спикер</string>
 
-    <string name="write_message">Написать сообщение</string>
-
     <string name="contacts_search_input_hint">Введите имя</string>
     <string name="contacts_search_favorites">Избранные контакты</string>
     <string name="contacts_search_chats">Текущие чаты</string>
@@ -155,15 +133,6 @@
     <string name="enter_code_title">Ввода кода</string>
     <string name="enter_code_hint">XXXXXXXXXX</string>
     <string name="enter_code_btn_text">Введите код</string>
-
-    <string name="profile_educate_speciality">Специальность</string>
-    <string name="profile_educate_name">Учебное заведение</string>
-    <string name="profile_work_organization">Организация</string>
-    <string name="profile_work_position">Должность</string>
-    <string name="profile_work_description">Описание</string>
-    <string name="profile_social_project_name">Проект</string>
-    <string name="profile_social_project_role">Должность</string>
-    <string name="profile_social_project_description">Описание</string>
 
     <string name="contact_search_title">Поиск контактов</string>
     <string name="contact_search_hint">Ведите ФИО или ID</string>
@@ -213,6 +182,30 @@
     <string name="recovery_set_password_title">Укажите новый пароль</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
 
+    <string name="profile_label">Профиль</string>
+    <string name="profile_status">Ваш статус: %s</string>
+    <string name="profile_status_more">Подробнее о статусе</string>
+    <string name="profile_title">Личный кабинет</string>
+    <string name="profile_favorite">Избранное</string>
+    <string name="profile_me_events">Мои мероприятия</string>
+    <string name="profile_current_event">Текущее мероприятие</string>
+    <string name="profile_about_app">О приложении</string>
+    <string name="profile_setting_chat">Настройки чата</string>
+    <string name="profile_banned">Заблокированные</string>
+    <string name="profile_phone">Телефон</string>
+    <string name="profile_phone_work">Рабочий телефон</string>
+    <string name="profile_birthday">Дата рождения</string>
+    <string name="profile_country">Страна</string>
+    <string name="profile_city">Город</string>
+    <string name="profile_sn">Социальные сети</string>
+    <string name="profile_education">Образование ученая степень звание</string>
+    <string name="profile_institution">Учебное заведение</string>
+    <string name="profile_work_experience">Опыт работы</string>
+    <string name="profile_social_project">Социальные проекты</string>
+    <string name="profile_events">Мероприятия</string>
+    <string name="profile_interests">Интересы</string>
+    <string name="profile_last_notification">Последнее уведомление</string>
+    <string name="profile_uid">ID%d</string>
     <string name="profile_date_start_educate">Дата начала обучения</string>
     <string name="profile_date_end_educate">Дата окончания обучения</string>
     <string name="profile_sn_label">Ссылка на профиль</string>
@@ -227,12 +220,19 @@
     <string name="profile_attached_file_desc">Описание</string>
     <string name="profile_attached_file_url">Ссылка</string>
     <string name="profile_upload_document">Загрузить документ</string>
-
     <string name="profile_save_required_error">Вы не заполнили или заполнили не верно поле "%s"</string>
     <string name="profile_gender">Пол</string>
     <string name="profile_gender_male">Мужской</string>
     <string name="profile_gender_female">Женский</string>
     <string name="profile_gender_not_selected">Не выбрано</string>
+    <string name="profile_educate_speciality">Специальность</string>
+    <string name="profile_educate_name">Учебное заведение</string>
+    <string name="profile_work_organization">Организация</string>
+    <string name="profile_work_position">Должность</string>
+    <string name="profile_work_description">Описание</string>
+    <string name="profile_social_project_name">Проект</string>
+    <string name="profile_social_project_role">Должность</string>
+    <string name="profile_social_project_description">Описание</string>
 
     <string name="email_change_title">Email изменен</string>
     <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>

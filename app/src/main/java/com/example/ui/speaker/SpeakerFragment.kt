@@ -12,7 +12,7 @@ import com.example.data.models.Speaker
 import com.example.ui.base.BaseFragment
 import com.example.util.CropCircleTransformation
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_speaker.*
+import kotlinx.android.synthetic.main.fragment_user.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,35 +33,35 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnWriteMsg.setOnClickListener { presenter.onWriteMsgClick() }
-        btnAddToFavorite.setOnClickListener { presenter.onAddFavoriteClick() }
+//        btnWriteMsg.setOnClickListener { presenter.onWriteMessageClick() }
+//        btnAddToFavorite.setOnClickListener { presenter.onAddFavoriteClick() }
     }
 
     override fun setSpeaker(speaker: Speaker) {
-        Picasso.get().load(speaker.photo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
-        tvName.text = speaker.name
-        tvInfo.text = speaker.position
-        tvDescription.text = speaker.description
-
-        val btnFavoriteBackground: Int
-        val btnFavoriteTextColor: Int
-        val btnFavoriteText: String
-
-        if (speaker.isInFavorite) {
-            btnFavoriteBackground = R.drawable.background_corners_border
-            btnFavoriteTextColor = ContextCompat.getColor(context!!, R.color.colorAccent)
-            btnFavoriteText = getString(R.string.remove_from_favorites)
-        } else {
-            btnFavoriteBackground = R.drawable.background_corners
-            btnFavoriteTextColor = Color.WHITE
-            btnFavoriteText = getString(R.string.add_to_favorites)
-        }
-
-        btnAddToFavorite.apply {
-            setBackgroundResource(btnFavoriteBackground)
-            setTextColor(btnFavoriteTextColor)
-            text = btnFavoriteText
-        }
+//        Picasso.get().load(speaker.photo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
+//        tvName.text = speaker.name
+//        tvInfo.text = speaker.position
+//        tvDescription.text = speaker.description
+//
+//        val btnFavoriteBackground: Int
+//        val btnFavoriteTextColor: Int
+//        val btnFavoriteText: String
+//
+//        if (speaker.isInFavorite) {
+//            btnFavoriteBackground = R.drawable.background_corners_border
+//            btnFavoriteTextColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+//            btnFavoriteText = getString(R.string.remove_from_favorites)
+//        } else {
+//            btnFavoriteBackground = R.drawable.background_corners
+//            btnFavoriteTextColor = Color.WHITE
+//            btnFavoriteText = getString(R.string.add_to_favorites)
+//        }
+//
+//        btnAddToFavorite.apply {
+//            setBackgroundResource(btnFavoriteBackground)
+//            setTextColor(btnFavoriteTextColor)
+//            text = btnFavoriteText
+//        }
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
@@ -70,5 +70,5 @@ class SpeakerFragment : BaseFragment(), SpeakerContract.View {
         })
     }
 
-    override fun layout() = R.layout.fragment_speaker
+    override fun layout() = R.layout.fragment_user
 }

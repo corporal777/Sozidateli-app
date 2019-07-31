@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import bundleOf
+import androidx.core.os.bundleOf
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -15,7 +15,6 @@ import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
-import io.reactivex.disposables.CompositeDisposable
 import org.json.JSONObject
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkAuthListener

@@ -4,10 +4,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import bundleOf
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
@@ -63,8 +63,8 @@ abstract class BaseSpeakersFragment : BaseFragment(), BaseSpeakersContract.View 
         }
     }
 
-    abstract fun onSpeakerFavoriteChangeClick(item:Speaker)
-    abstract fun onSpeakerClick(item:Speaker)
+    abstract fun onSpeakerFavoriteChangeClick(item: Speaker)
+    abstract fun onSpeakerClick(item: Speaker)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,15 +1,12 @@
 package com.example.ui.search
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -86,7 +83,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     override fun showSearchResult(data: PagedList<SearchEventResultItem>, totalCount: Int?) {
         pagedList.submitList(data)
-        if(totalCount == null || totalCount==0){
+        if (totalCount == null || totalCount == 0) {
             header.showResultHeader(false, totalCount)
             header.showEmptyResult(true)
         } else {

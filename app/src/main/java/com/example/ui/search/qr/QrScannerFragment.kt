@@ -5,8 +5,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.PermissionChecker
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import bundleOf
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.CodeScanner

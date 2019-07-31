@@ -33,7 +33,7 @@ class ChatRepositoryImpl
         return callPagination(api.chatListBans(limit, offset))
     }
 
-    override fun startChat(userId: Int): Single<ChatStartResponse> {
+    override fun startChat(userId: String): Single<ChatStartResponse> {
         return call(api.chatStart(userId))
     }
 

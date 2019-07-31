@@ -309,7 +309,7 @@
             app:destination="@id/user_fragment"
             app:enterAnim="@anim/profile_enter"
             app:exitAnim="@anim/profile_exit"
-            app:launchSingleTop="false"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/profile_popup_enter"
             app:popExitAnim="@anim/profile_popup_exit" />
     </fragment>
@@ -330,10 +330,11 @@
     <fragment
         android:id="@+id/user_fragment"
         android:name="com.example.ui.user.UserFragment"
-        tools:layout="@layout/fragment_speaker">
+        tools:layout="@layout/fragment_user">
         <action
             android:id="@+id/user_to_chat"
-            app:destination="@id/chat_fragment" />
+            app:destination="@id/chat_fragment"
+            app:launchSingleTop="true" />
         <argument
             android:name="userId"
             app:argType="string" />

@@ -28,4 +28,7 @@ interface UserRepository {
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
     fun getUserById(id: String): Single<User>
+
+    fun addToFavorite(uid: String): Completable
+    fun removeFromFavorite(uid: String): Completable
 }

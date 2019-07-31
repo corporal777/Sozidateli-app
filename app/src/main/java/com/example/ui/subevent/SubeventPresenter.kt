@@ -3,7 +3,7 @@ package com.example.ui.subevent
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Speaker
 import com.example.repository.EventRepository
-import com.example.repository.SpeakerRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @InjectViewState
 class SubeventPresenter @Inject constructor(
         private val eventRepository: EventRepository,
-        private val speakerRepository: SpeakerRepository
+        private val userRepository: UserRepository
 ) : BasePresenter<SubeventContract.View>(), SubeventContract.Presenter {
 
     var event: Int = ID_INVALID
@@ -39,8 +39,9 @@ class SubeventPresenter @Inject constructor(
     }
 
     override fun onSpeakerChangeSubscriptionClick(speaker: Speaker) {
-        compositeDisposable += (if (speaker.isInFavorite) speakerRepository.removeFromFavorite(speaker.id)
-        else speakerRepository.addToFavorite(speaker.id))
+        val id = speaker.id.toString()
+        compositeDisposable += (if (speaker.isInFavorite) userRepository.removeFromFavorite(id)
+        else userRepository.addToFavorite(id))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

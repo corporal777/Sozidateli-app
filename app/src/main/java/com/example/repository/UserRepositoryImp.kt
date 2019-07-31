@@ -14,7 +14,6 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Path
 import java.io.File
 import javax.inject.Inject
 
@@ -84,4 +83,8 @@ class UserRepositoryImp
     override fun getUserById(id: String): Single<User> {
         return call(api.getUserById(id))
     }
+
+    override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
+
+    override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
 }

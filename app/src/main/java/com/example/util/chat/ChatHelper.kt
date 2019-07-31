@@ -4,7 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.MainThread
-import bundleOf
+import androidx.core.os.bundleOf
 import com.example.R
 import com.example.ui.main.MainActivity
 import com.example.util.*

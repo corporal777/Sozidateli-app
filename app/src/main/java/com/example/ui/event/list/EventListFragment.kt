@@ -3,9 +3,9 @@ package com.example.ui.event.list
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedList
-import bundleOf
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
@@ -14,8 +14,6 @@ import com.example.data.models.EventApprove
 import com.example.data.models.StatusEvent
 import com.example.extensions.dp
 import com.example.ui.base.BaseNestedNavigationFragment
-import com.example.ui.views.chatView.ChatView
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.ARG_EVENT
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener

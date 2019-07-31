@@ -105,7 +105,7 @@ class ChatListPresenter
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
 
     override fun onUserClick(uid: Int, userName: String) {
-        compositeDisposable += chatRepository.startChat(uid)
+        compositeDisposable += chatRepository.startChat(uid.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.openChat(it.chat_id, userName) }, {})
     }

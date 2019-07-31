@@ -26,8 +26,5 @@ class RepositoryModule {
     fun organizationRepository(repository: OrganizationRepositoryImp): OrganizationRepository = repository
 
     @Provides
-    fun speakerRepository(repository: SpeakerRepositoryImp): SpeakerRepository = repository
-
-    @Provides
     fun dataDataRepository(repository: DataDataRepositoryImp): DataDataRepository = repository
 }

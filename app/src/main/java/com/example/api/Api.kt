@@ -88,7 +88,7 @@ interface Api {
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/user/chat/start/{user}")
-    fun chatStart(@Path("user") userId: Int): Single<ApiResponse<ChatStartResponse>>
+    fun chatStart(@Path("user") userId: String): Single<ApiResponse<ChatStartResponse>>
 
     @Multipart
     @POST("/v1/user/chat/{chat}/upload")
@@ -157,10 +157,10 @@ interface Api {
     fun getEventDocs(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
 
     @POST("/v1/speakers/{id}/favorite")
-    fun speakerAddToFavorite(@Path("id") speakerId: Int): Completable
+    fun userAddToFavorite(@Path("id") uid: String): Completable
 
     @POST("/v1/speakers/{id}/unfavorite")
-    fun speakerRemoveFromFavorite(@Path("id") speakerId: Int): Completable
+    fun userRemoveFromFavorite(@Path("id") uid: String): Completable
 
     @POST("/v1/organisations/{organizationId}/subscribe")
     fun organizationSubscribe(@Path("organizationId") orgId: Int): Completable

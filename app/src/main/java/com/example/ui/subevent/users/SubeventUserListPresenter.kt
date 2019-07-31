@@ -46,7 +46,7 @@ class SubeventUserListPresenter @Inject constructor(
     }
 
     override fun onUserClick(user: User) {
-        compositeDisposable += chatRepository.startChat(user.user_id)
+        compositeDisposable += chatRepository.startChat(user.user_id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

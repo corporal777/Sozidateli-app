@@ -1,15 +1,14 @@
 package com.example.ui.mapTabs.buildingScheme
 
 import android.os.Bundle
-import androidx.transition.Fade
-import androidx.core.widget.NestedScrollView
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import bundleOf
+import androidx.transition.Fade
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Place
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.ui.image.ImageViewFragment
 import com.squareup.picasso.Picasso
@@ -39,9 +38,9 @@ class BuildingSchemeFragment : BaseNestedNavigationFragment(), BuildingSchemeCon
         }
     }
 
-    override fun setSchemeData(image:String?,description:String?) {
+    override fun setSchemeData(image: String?, description: String?) {
         ivScheme.apply {
-            Picasso.get().load(image.let { if(it.isNullOrEmpty()) null else it }).into(this)
+            Picasso.get().load(image.let { if (it.isNullOrEmpty()) null else it }).into(this)
             setOnClickListener { presenter.onImageClick() }
         }
 

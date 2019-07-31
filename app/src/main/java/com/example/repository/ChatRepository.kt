@@ -15,7 +15,7 @@ interface ChatRepository {
 
     fun loadBannedList(limit: Int, offset: Int): Maybe<PaginationResponse<UserChat>>
 
-    fun startChat(userId: Int): Single<ChatStartResponse>
+    fun startChat(userId: String): Single<ChatStartResponse>
 
     fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>
 
