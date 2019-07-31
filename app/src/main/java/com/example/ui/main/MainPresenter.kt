@@ -212,7 +212,7 @@ class MainPresenter
         chatCompositeDisposable += haChat.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    processNewMessageMessage(it)
+                     processNewMessageMessage(it)
                 }, {
                     it.printStackTrace()
                 })
@@ -239,9 +239,10 @@ class MainPresenter
             Message.Type.IMAGE -> photoMessageText
             else -> newMessage.message.message
         }
-        val senderId = newMessage.message.senderKey.toInt()
 
-        userRepository.getUserById(senderId)
+        val senderId = newMessage.message.senderKey
+
+        compositeDisposable += userRepository.getUserById(senderId)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     chatHelper.showNotificationIfCan(
@@ -253,7 +254,7 @@ class MainPresenter
                             avatarUrl = it.user_avatar)
                 }, {
                     it.printStackTrace()
-                }).call(compositeDisposable)
+                })
     }
 
     private fun unsubscribeChat() {

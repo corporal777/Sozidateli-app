@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.Guideline
 import com.example.R
 import com.example.data.models.ChatMessage
+import com.example.extensions.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -23,8 +24,10 @@ class ChatMessageImageItem(
         viewHolder.apply {
             pbImageLoading.visibility = View.VISIBLE
             ivChatImage.apply {
-                transitionName = imageUrl
+                transitionName = message.message._id
                 Picasso.get().load(imageUrl)
+                        .centerCrop()
+                        .resize(242.dp, 242.dp)
                         .error(R.drawable.ic_broken_image)
                         .transform(RoundedCornersTransformation(
                                 (cornersRadius / 1.5).toInt(),

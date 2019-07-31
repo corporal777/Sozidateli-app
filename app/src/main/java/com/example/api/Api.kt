@@ -46,7 +46,7 @@ interface Api {
     fun getUserFull(): Maybe<ApiResponse<User>>
 
     @GET("/v1/users/{id}")
-    fun getUserById(@Path("id") id: Int): Single<ApiResponse<User>>
+    fun getUserById(@Path("id") id: String): Single<ApiResponse<User>>
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>

@@ -4,15 +4,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.holders.ListSectionNameItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -30,6 +31,13 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
 
     private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
+    private val inviteSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-300L))
+            setHideWhenEmpty(true)
+        }
+    }
+
     private val adapter by lazy {
         PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.ViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
@@ -37,6 +45,8 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
                     if (position > 0) presenter.onItemTake(position - 1)
                 }
             })
+
+            add(inviteSection)
         }
     }
 
@@ -44,7 +54,6 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@InviteListFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
@@ -55,7 +64,7 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
     }
 
     override fun setInvitesData(chats: List<UserChat>) {
-        adapter.update(chats.map { chat ->
+        inviteSection.update(chats.map { chat ->
             UserChatItem(
                     chat,
                     { presenter.onChatClick(it) }

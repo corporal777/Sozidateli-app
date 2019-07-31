@@ -23,7 +23,7 @@ class UserPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        userRepository.getUserById(userId)
+        userRepository.getUserById(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

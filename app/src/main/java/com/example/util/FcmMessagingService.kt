@@ -55,7 +55,7 @@ class FcmMessagingService : FirebaseMessagingService() {
             else -> userChat.lastMessage
         } ?: return
 
-        val senderId = userChat.userSender?.user_id ?: return
+        val senderId = userChat.userSender?.user_id?.toString() ?: return
         val senderName = userChat.userSender?.fullName ?: return
 
         Completable.fromAction {

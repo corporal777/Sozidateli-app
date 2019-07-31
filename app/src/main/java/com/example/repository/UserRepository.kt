@@ -27,5 +27,5 @@ interface UserRepository {
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
-    fun getUserById(id: Int): Single<User>
+    fun getUserById(id: String): Single<User>
 }

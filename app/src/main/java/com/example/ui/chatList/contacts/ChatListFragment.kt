@@ -20,6 +20,7 @@ import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACT
 import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -35,7 +36,11 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatSection by lazy { Section() }
+    private val chatSection by lazy {
+        Section().apply {
+            setHideWhenEmpty(true)
+        }
+    }
 
     private val favoritesSection by lazy {
         Section().apply {
@@ -45,7 +50,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     private val adapter by lazy {
-        PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.ViewHolder>().apply {
+        PaginationListGroupAdapter<ViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     if (position > 0) presenter.onItemTake(position - 1)
@@ -74,16 +79,20 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             chatSection.removeHeader()
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
-            chatSection.setHeader(ListSectionNameItem(-300L))
-            chatSection.update(chats.map { chat ->
-                UserChatItem(
-                        chat,
-                        { presenter.onChatClick(it) },
-                        { presenter.onChatOnScreen(chat.id) },
-                        { presenter.onChatGoneFromScreen(chat.id) },
-                        BadgeDrawable(number = chat.unreadMessageCount, badgeBackgroundColor = badgeColor)
-                )
-            })
+            chatSection.apply {
+                if (groupCount == 0 || getGroup(0) != CHAT_SECTION_HEADER) {
+                    setHeader(CHAT_SECTION_HEADER)
+                }
+                update(chats.map { chat ->
+                    UserChatItem(
+                            chat,
+                            { presenter.onChatClick(it) },
+                            { presenter.onChatOnScreen(chat.id) },
+                            { presenter.onChatGoneFromScreen(chat.id) },
+                            BadgeDrawable(badgeBackgroundColor = badgeColor)
+                    )
+                })
+            }
         }
 
         favoritesSection.update(favorites.map {
@@ -97,8 +106,10 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         for (i in 0 until chatSection.itemCount) {
             val item = chatSection.getItem(i)
             if (item is UserChatItem && item.userChat.id.toString() == chatId) {
-                item.userChat.unreadMessageCount = count
-                item.updateBadge()
+                if (item.userChat.unreadMessageCount != count) {
+                    item.userChat.unreadMessageCount = count
+                    item.notifyChanged()
+                }
                 break
             }
         }
@@ -125,4 +136,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun layout() = R.layout.fragment_chat_list
+
+    companion object {
+        private val CHAT_SECTION_HEADER = ListSectionNameItem(-300L)
+    }
 }

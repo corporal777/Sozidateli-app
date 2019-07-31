@@ -81,7 +81,7 @@ class UserRepositoryImp
         return call(api.changeEmailConfirm(email, code))
     }
 
-    override fun getUserById(id: Int): Single<User> {
+    override fun getUserById(id: String): Single<User> {
         return call(api.getUserById(id))
     }
 }

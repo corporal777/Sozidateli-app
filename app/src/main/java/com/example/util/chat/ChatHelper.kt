@@ -21,7 +21,7 @@ class ChatHelper(private val context: Context) {
             chatId: String,
             messageId: String,
             message: String,
-            senderId: Int,
+            senderId: String,
             senderName: String,
             avatarUrl: String?
     ) {
@@ -42,7 +42,7 @@ class ChatHelper(private val context: Context) {
                 chatId: String,
                 messageId: String,
                 message: String,
-                senderId: Int,
+                senderId: String,
                 senderName: String,
                 avatarUrl: String?
         ) {
@@ -65,14 +65,14 @@ class ChatHelper(private val context: Context) {
         private fun createNotificationIntent(
                 context: Context,
                 chatId: String,
-                senderId: Int,
+                senderId: String,
                 senderName: String,
                 notificationId: String
         ): PendingIntent {
             val intent = Intent(context, MainActivity::class.java).apply {
                 putExtra(FIELD_CHAT, bundleOf(
                         FIELD_CHAT_ID to chatId,
-                        FIELD_SENDER_ID to senderId.toString(),
+                        FIELD_SENDER_ID to senderId,
                         FIELD_LABEL to senderName,
                         FIELD_NOTIFICATION_ID to notificationId
                 ))

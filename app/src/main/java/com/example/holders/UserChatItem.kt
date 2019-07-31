@@ -25,10 +25,7 @@ class UserChatItem(
         private val badgeDrawable: BadgeDrawable? = null
 ) : Item(userChat.id.toLong()) {
 
-    private var viewHolder: ViewHolder? = null
-
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        this.viewHolder = viewHolder
         onBind?.invoke(this)
         viewHolder.apply {
             ivAvatar.setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
@@ -48,9 +45,10 @@ class UserChatItem(
                 }
 
                 doOnNextLayout { view ->
-                    badgeDrawable?.also { badge ->
+                    badgeDrawable?.apply {
                         (view.parent as ViewGroup).overlay.clear()
-                        view.addBadge(badge) { badgeWidth, badgeHeight, anchorRect ->
+                        number = userChat.unreadMessageCount
+                        view.addBadge(this) { badgeWidth, badgeHeight, anchorRect ->
                             val badgeCenterX = anchorRect.right + 8.dp
                             val badgeCenterY = anchorRect.top + height / 2
 
@@ -66,8 +64,6 @@ class UserChatItem(
             }
 
             itemView.setOnClickListener { onClick(userChat) }
-
-            updateBadge()
 
             tvDate.apply {
                 if (userChat.lastMessageDate == null) visibility = View.GONE
@@ -90,13 +86,6 @@ class UserChatItem(
                 else dateFormatterFullMothNoYear.format(messageDate)
             }
             else -> dateFormatterShortMoth.format(messageDate)
-        }
-    }
-
-    fun updateBadge() {
-        badgeDrawable?.apply {
-            number = userChat.unreadMessageCount
-            invalidateSelf()
         }
     }
 
