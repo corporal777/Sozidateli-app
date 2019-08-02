@@ -1,13 +1,9 @@
 package com.example.ui.profile.profileFull
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -17,15 +13,12 @@ import com.example.holders.InfoProfileExpandFieldItem
 import com.example.holders.InfoProfileFieldItem
 import com.example.holders.ProfileHeaderItem
 import com.example.ui.base.BaseFragment
-import com.example.util.CropCircleTransformation
 import com.example.util.Utils
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_profile_full.*
-import java.lang.reflect.InvocationTargetException
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -122,7 +115,7 @@ class ProfileFullFragment : BaseFragment(), ProfileFullContract.View {
                     list.add(hashMapOf(
                             "" to Utils.getDatesInterval(item.begin, item.end),
                             getString(R.string.profile_educate_speciality) to item.specialty,
-                            getString(R.string.profile_educate_name) to item.organization
+                            getString(R.string.profile_educate_institution) to item.organization
                     ))
                 }
                 addToList(listField, list, getString(R.string.profile_institution))

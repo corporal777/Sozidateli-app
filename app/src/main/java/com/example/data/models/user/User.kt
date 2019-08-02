@@ -54,6 +54,7 @@ data class User(
         var user_address_flat: String? = null,
         var user_notes: String? = null,
         var user_description: String? = null,
+        var user_social_links: List<String>? = null,
         var emails: ArrayList<Value>? = null,
         var social_links: ArrayList<Value>? = null,
         var interests: ArrayList<Value>? = null,

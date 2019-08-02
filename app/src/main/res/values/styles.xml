@@ -14,6 +14,7 @@
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
+        <item name="android:windowBackground">@color/main_background</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -202,5 +203,25 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Profile" />
+
+    <style name="Profile.Title">
+        <item name="android:textColor">@color/profile_title_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+    </style>
+
+    <style name="Profile.Data">
+        <item name="android:textColor">@color/profile_data_text</item>
+        <item name="android:textColorLink">@color/profile_data_text_link</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 </resources>

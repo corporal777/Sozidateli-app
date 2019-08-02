@@ -174,7 +174,7 @@ class ChatPresenter
             }
 
             val messageDate = message.createdAt
-            if (!messageDate.calendar().isSameDay(lastDate)) {
+            if (!messageDate.calendar().isSameDay(lastDate) && iterator.previousIndex() != 0) {
                 iterator.previous()
                 iterator.add(ChatMessage.Date(lastDate.timeInMillis))
                 iterator.next()

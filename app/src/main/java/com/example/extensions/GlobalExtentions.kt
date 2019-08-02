@@ -1,12 +1,13 @@
 import android.content.Context
 import android.net.ConnectivityManager
+import android.text.style.URLSpan
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.getSpans
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import com.example.extensions.defaultServerDateFormatter
-import com.example.util.CropCircleTransformation
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
-import com.example.util.DATE_FORMAT_FULL_MONTH_NO_YEAR
-import com.example.util.Utils
+import com.example.util.*
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,6 +37,18 @@ fun TextView.setDateCheckYearText(date: String) {
         setDateCheckYearText(dateLong)
     } catch (e: Exception) {
         e.printStackTrace()
+    }
+}
+
+fun TextView.removeUrlUnderline() {
+    text.toSpannable().apply {
+        val urls = getSpans<URLSpan>()
+        urls.forEach {
+            val start = getSpanStart(it)
+            val end = getSpanEnd(it)
+            removeSpan(it)
+            set(start..end, URLSpanNoUnderline(it.url))
+        }
     }
 }
 

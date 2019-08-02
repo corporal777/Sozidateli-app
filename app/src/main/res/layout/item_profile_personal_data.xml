@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvOrganizationTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvOrganization"
+        android:text="@string/profile_work_organization"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvOrganization"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrganizationTitle"
+        tools:text="Ассоцияция “Донор-серч”" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupOrganization"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvOrganization,tvOrganizationTitle" />
+
+    <TextView
+        android:id="@+id/tvEmailTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvEmail"
+        android:text="@string/profile_email"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrganization" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="email"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmailTitle"
+        tools:text="Lyaka.art@gmail.com" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvEmail,tvEmailTitle" />
+
+    <TextView
+        android:id="@+id/tvPhoneWorkTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvPhoneWork"
+        android:text="@string/profile_phone_work"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+
+    <TextView
+        android:id="@+id/tvPhoneWork"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="phone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneWorkTitle"
+        tools:text="+7 (927) 298-16-17" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupPhoneWork"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvPhoneWork,tvPhoneWorkTitle" />
+
+    <TextView
+        android:id="@+id/tvPhoneMobileTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvPhoneMobile"
+        android:text="@string/profile_phone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneWork" />
+
+    <TextView
+        android:id="@+id/tvPhoneMobile"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="phone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneMobileTitle"
+        tools:text="+7 (927) 298-16-17" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupPhoneMobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvPhoneMobile,tvPhoneMobileTitle" />
+
+    <TextView
+        android:id="@+id/tvGenderTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvGender"
+        android:text="@string/profile_gender"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneMobile" />
+
+    <TextView
+        android:id="@+id/tvGender"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenderTitle"
+        tools:text="Мужской" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupGender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvGender,tvGenderTitle" />
+
+    <TextView
+        android:id="@+id/tvBirthdayTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvBirthday"
+        android:text="@string/profile_birthday"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGender" />
+
+    <TextView
+        android:id="@+id/tvBirthday"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBirthdayTitle"
+        tools:text="15.11.1983" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupBirthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvBirthday,tvBirthdayTitle" />
+
+    <TextView
+        android:id="@+id/tvCityTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvCity"
+        android:text="@string/profile_city"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBirthday" />
+
+    <TextView
+        android:id="@+id/tvCity"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCityTitle"
+        tools:text="Москва" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvCity,tvCityTitle" />
+
+    <TextView
+        android:id="@+id/tvSocialNetworksTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvSocialNetworks"
+        android:text="@string/profile_sn"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCity" />
+
+    <TextView
+        android:id="@+id/tvSocialNetworks"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworksTitle"
+        tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupSocialNetworks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvSocialNetworks,tvSocialNetworksTitle" />
+
+    <View
+        style="@style/ViewDivider.Horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworks" />
+</androidx.constraintlayout.widget.ConstraintLayout>
