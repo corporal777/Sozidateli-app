@@ -1,8 +1,10 @@
 import android.content.Context
 import android.net.ConnectivityManager
 import android.text.style.URLSpan
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.Group
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -67,4 +69,17 @@ fun SimpleDateFormat.parseTimestamp(source: String): Long {
 fun Context.isConnectedToNetwork(): Boolean {
     val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
     return connectivityManager?.activeNetworkInfo?.isConnected ?: false
+}
+
+fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
+    if (dataText.isNullOrBlank()) {
+        visibility = View.GONE
+        textField.text = null
+    } else {
+        textField.apply {
+            text = dataText
+            removeUrlUnderline()
+        }
+        visibility = View.VISIBLE
+    }
 }

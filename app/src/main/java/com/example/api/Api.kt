@@ -238,5 +238,6 @@ interface Api {
     @POST("/v1/events/{eventId}/speakers")
     fun getEventSpeakers(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
 
-
+    @POST("/v1/users/interests")
+    fun getIterestsList(): Maybe<ApiResponse<List<Speaker>>>
 }

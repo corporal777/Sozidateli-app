@@ -8,6 +8,7 @@ import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
+import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
@@ -88,7 +89,7 @@ class ChatListPresenter
 
     private fun dispatchChatsListUpdate(data: List<ChatListDataItem>) {
         val chats = mutableListOf<UserChat>()
-        val favorites = mutableListOf<Speaker>()
+        val favorites = mutableListOf<User>()
 
         data.forEach {
             when (it) {

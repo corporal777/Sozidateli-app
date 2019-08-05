@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
+import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface ChatListContract {
@@ -17,7 +18,7 @@ interface ChatListContract {
         fun openSearch()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>)
+        fun setChatsData(chats: List<UserChat>, favorites: List<User>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatUnreadMessageCount(chatId: String, count: Int)

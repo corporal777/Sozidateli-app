@@ -10,10 +10,7 @@ import com.example.data.models.Organization
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
-import com.example.holders.ProfileEducationDataItem
-import com.example.holders.ProfileExpandableTitleGroup
-import com.example.holders.ProfilePersonalDataItem
-import com.example.holders.ProfileUserItem
+import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
@@ -60,6 +57,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 mutableListOf<Group>(profileUserItem)
                         .addPersonalDataItems(user)
                         .addEducation(user)
+                        .addWorkExperience(user)
         )
     }
 
@@ -132,6 +130,16 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         if (!education.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education)).apply {
                 addAll(education.mapIndexed { index, socialRoles -> ProfileEducationDataItem(socialRoles, index == 0) })
+            }
+        }
+        return this
+    }
+
+    private fun MutableList<Group>.addWorkExperience(user: User): MutableList<Group> {
+        val work = user.work
+        if (!work.isNullOrEmpty()) {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience)).apply {
+                addAll(work.mapIndexed { index, socialRoles -> ProfileWorkExperienceDataItem(socialRoles, index == 0) })
             }
         }
         return this

@@ -49,6 +49,19 @@ fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: D
     return start.calendar().formatToDefaultTimeInterval(finish.calendar())
 }
 
+fun String?.formatServerDateOrDefault(format: String, default: String): String {
+    val date = this ?: return default
+    val parsed = with(defaultServerDateFormatter) {
+        try {
+            parse(date)
+        } catch (e: Throwable) {
+            null
+        }
+    } ?: return default
+
+    return SimpleDateFormat(format, Locale.getDefault()).format(parsed)
+}
+
 fun Calendar.formatToDefaultTimeInterval(to: Calendar): String {
     val formatter = if (this.isSameYear(to)) {
         if (this.isSameDay(to)) defaultTimeFormatter

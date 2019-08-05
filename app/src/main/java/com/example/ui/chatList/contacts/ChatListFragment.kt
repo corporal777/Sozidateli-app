@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Speaker
 import com.example.data.models.UserChat
+import com.example.data.models.user.User
 import com.example.holders.ChatListEmptyItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.UserChatItem
@@ -74,7 +75,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
     }
 
-    override fun setChatsData(chats: List<UserChat>, favorites: List<Speaker>) {
+    override fun setChatsData(chats: List<UserChat>, favorites: List<User>) {
         if (chats.isEmpty()) {
             chatSection.removeHeader()
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
@@ -96,8 +97,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
 
         favoritesSection.update(favorites.map {
-            UserItem(it.uid, it.name, it.photo) {
-                presenter.onUserClick(it.uid, it.name)
+            UserItem(it.user_id, it.fullName, it.user_avatar) {
+                presenter.onUserClick(it.user_id, it.fullName)
             }
         })
     }

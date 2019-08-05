@@ -8,18 +8,19 @@ import com.example.extensions.formatServerDateOrDefault
 import com.example.util.DATE_FORMAT_FULL_YEAR
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_profile_education_data.*
+import kotlinx.android.synthetic.main.item_profile_work_experience_data.*
+import setTextDataOrHide
 
-class ProfileEducationDataItem(
-        private val education: SocialRoles,
+class ProfileWorkExperienceDataItem(
+        private val work: SocialRoles,
         private val compactTopMargin: Boolean
 ) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             tvDates.apply {
-                val startYear = education.begin.formatServerDateOrDefault(DATE_FORMAT_FULL_YEAR, "")
-                val endYear = education.end.formatServerDateOrDefault(DATE_FORMAT_FULL_YEAR, resources.getString(R.string.profile_date_present))
+                val startYear = work.begin.formatServerDateOrDefault(DATE_FORMAT_FULL_YEAR, "")
+                val endYear = work.end.formatServerDateOrDefault(DATE_FORMAT_FULL_YEAR, resources.getString(R.string.profile_date_present))
                 val years = resources.getString(R.string.profile_dates, startYear, endYear)
                 text = years
 
@@ -33,10 +34,11 @@ class ProfileEducationDataItem(
                 }
             }
 
-            tvSpecialty.text = education.specialty
-            tvInstitution.text = education.organization
+            tvProject.text = work.organization ?: "-"
+            tvPosition.text = work.position ?: "-"
+            groupDescription.setTextDataOrHide(tvDescription, work.description)
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_education_data
+    override fun getLayout() = R.layout.item_profile_work_experience_data
 }

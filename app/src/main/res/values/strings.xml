@@ -235,8 +235,8 @@
     <string name="profile_social_project_description">Описание</string>
     <string name="profile_email">E-mail:</string>
     <string name="profile_title_education">Образование</string>
-    <string name="profile_education_dates">%s по %s</string>
-    <string name="profile_education_date_present">н.в.</string>
+    <string name="profile_dates">%s по %s</string>
+    <string name="profile_date_present">н.в.</string>
 
     <string name="email_change_title">Email изменен</string>
     <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>
