@@ -1,11 +1,14 @@
 package com.example.ui.user
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.Interest
 import com.example.data.models.user.User
+import com.example.data.models.user.UserInterests
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.views.UserSubscribeButton
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -23,12 +26,30 @@ class UserPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += userRepository.getUserById(userId)
+        compositeDisposable += Single.zip(
+                userRepository.getUserById(userId),
+                userRepository.getInterests(),
+                BiFunction<User, List<Interest>, UserInterests> { user, interests ->
+                    val groupedInterests: MutableMap<Interest, MutableList<Interest>>? = user.interests?.let { userInterests ->
+                        val groups = mutableMapOf<Interest, MutableList<Interest>>()
+                        userInterests.forEach {
+                            val key = interests.find { interest -> interest.id == it.parent }
+                            if (key != null) {
+                                val list = groups.getOrPut(key) { mutableListOf() }
+                                list.add(it)
+                            }
+                        }
+                        return@let groups
+                    }
+
+                    return@BiFunction UserInterests(user, groupedInterests)
+                }
+        )
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    user = it
-                    viewState.setUser(it)
+                    user = it.user
+                    viewState.setUser(it.user, it.interests)
                 }, { it.printStackTrace() })
     }
 

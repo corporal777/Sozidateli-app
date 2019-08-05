@@ -7,10 +7,10 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_profile_user.*
+import kotlinx.android.synthetic.main.item_profile_data_user.*
 import setCircleImage
 
-class ProfileUserItem(
+class ProfileDataUserItem(
         id: Long,
         private val avatar: String?,
         private val name: String,
@@ -47,5 +47,5 @@ class ProfileUserItem(
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_user
+    override fun getLayout() = R.layout.item_profile_data_user
 }

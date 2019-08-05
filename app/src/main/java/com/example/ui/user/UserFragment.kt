@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.Interest
 import com.example.data.models.Organization
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
@@ -42,7 +43,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<ViewHolder>()
 
-    private lateinit var profileUserItem: ProfileUserItem
+    private lateinit var profileUserItem: ProfileDataUserItem
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,18 +52,19 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    override fun setUser(user: User) {
+    override fun setUser(user: User, interests: Map<Interest, List<Interest>>?) {
         initProfileItem(user)
         adapter.update(
                 mutableListOf<Group>(profileUserItem)
                         .addPersonalDataItems(user)
                         .addEducation(user)
                         .addWorkExperience(user)
+                        .addInterests(interests)
         )
     }
 
     private fun initProfileItem(user: User) {
-        profileUserItem = ProfileUserItem(
+        profileUserItem = ProfileDataUserItem(
                 100L,
                 user.user_avatar,
                 user.fullName,
@@ -106,7 +108,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
         if (!organizations.isNullOrEmpty() || email != null || workPhone != null || mobilePhone != null
                 || gender != null || city != null || birthday != null || !socialNetworks.isNullOrEmpty()) {
-            this += ProfilePersonalDataItem(
+            this += ProfileDataPersonalItem(
                     organizations,
                     email,
                     workPhone,
@@ -129,7 +131,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val education = user.education
         if (!education.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education)).apply {
-                addAll(education.mapIndexed { index, socialRoles -> ProfileEducationDataItem(socialRoles, index == 0) })
+                addAll(education.mapIndexed { index, socialRoles -> ProfileDataEducationItem(socialRoles, index == 0) })
             }
         }
         return this
@@ -139,7 +141,23 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val work = user.work
         if (!work.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience)).apply {
-                addAll(work.mapIndexed { index, socialRoles -> ProfileWorkExperienceDataItem(socialRoles, index == 0) })
+                addAll(work.mapIndexed { index, socialRoles -> ProfileDataWorkExperienceItem(socialRoles, index == 0) })
+            }
+        }
+        return this
+    }
+
+    private fun MutableList<Group>.addInterests(interests: Map<Interest, List<Interest>>?): MutableList<Group> {
+        if (!interests.isNullOrEmpty()) {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_interests)).apply {
+                titleItem.hideDividerOnExpand = false
+                addAll(interests.map {
+                    val parent = it.key
+                    val childList = it.value
+                    ProfileExpandableSubtitleGroup(parent.value).apply {
+                        addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
+                    }
+                })
             }
         }
         return this

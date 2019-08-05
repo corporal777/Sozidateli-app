@@ -87,4 +87,8 @@ class UserRepositoryImp
     override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
 
     override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
+
+    override fun getInterests(): Single<List<Interest>> {
+        return call(api.getItnrestsList())
+    }
 }

@@ -2,45 +2,22 @@ package com.example.holders
 
 import android.graphics.drawable.TransitionDrawable
 import android.view.View
+import android.widget.TextView
 import com.example.R
-import com.xwray.groupie.ExpandableGroup
-import com.xwray.groupie.ExpandableItem
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_expandable_title.*
 
 class ProfileExpandableTitleItem(
-        private val title: String
-) : Item(), ExpandableItem {
+        title: String
+) : ExpandableTitleItem(title) {
 
-    private var isExpanded = false
+    var hideDividerOnExpand = true
 
-    private lateinit var onToggleListener: ExpandableGroup
-
-    override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.apply {
-            tvTitle.text = title
-            setExpanded(this)
-
-            container.setOnClickListener { onToggleListener.onToggleExpanded() }
-        }
-    }
-
-    override fun bind(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) super.bind(holder, position, payloads)
-        else holder.apply {
-            (payloads[0] as? Boolean)?.let {
-                isExpanded = it
-                setExpanded(holder, true)
-            }
-        }
-    }
-
-    private fun setExpanded(viewHolder: ViewHolder, animate: Boolean = false) {
+    override fun setExpanded(viewHolder: ViewHolder, isUpdate: Boolean) {
         viewHolder.container.apply {
             (background as TransitionDrawable).apply {
                 isCrossFadeEnabled = true
-                if (animate) {
+                if (isUpdate) {
                     if (isExpanded) startTransition(EXPAND_CHANGE_ANIMATION_DURATION)
                     else reverseTransition(EXPAND_CHANGE_ANIMATION_DURATION)
                 } else {
@@ -52,7 +29,7 @@ class ProfileExpandableTitleItem(
 
         viewHolder.ivArrow.apply {
             val toRotation = if (isExpanded) 0f else 180f
-            if (animate) {
+            if (isUpdate) {
                 animate().rotation(toRotation).duration = EXPAND_CHANGE_ANIMATION_DURATION.toLong()
             } else {
                 rotation = toRotation
@@ -60,15 +37,11 @@ class ProfileExpandableTitleItem(
         }
 
         viewHolder.divider.apply {
-            visibility = if (isExpanded) View.INVISIBLE else View.VISIBLE
+            visibility = if (hideDividerOnExpand && isExpanded) View.INVISIBLE else View.VISIBLE
         }
     }
 
-    override fun setExpandableGroup(onToggleListener: ExpandableGroup) {
-        this.isExpanded = onToggleListener.isExpanded
-        this.onToggleListener = onToggleListener
-        registerGroupDataObserver(onToggleListener)
-    }
+    override fun getTitleTextView(viewHolder: ViewHolder): TextView = viewHolder.tvTitle
 
     override fun getLayout() = R.layout.item_profile_expandable_title
 

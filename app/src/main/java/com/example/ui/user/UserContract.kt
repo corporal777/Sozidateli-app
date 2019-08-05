@@ -2,6 +2,7 @@ package com.example.ui.user
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.Interest
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -10,7 +11,7 @@ interface UserContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUser(user: User)
+        fun setUser(user: User, interests: Map<Interest, List<Interest>>?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openChat(userName: String, userAvatar: String?, chatId: String)

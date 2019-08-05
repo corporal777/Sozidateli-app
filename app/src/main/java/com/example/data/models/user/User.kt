@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import com.example.data.models.ContactSearch
 import com.example.data.models.Event
+import com.example.data.models.Interest
 import com.example.data.models.Notification
 import kotlinx.android.parcel.Parcelize
 
@@ -57,7 +58,7 @@ data class User(
         var user_social_links: List<String>? = null,
         var emails: ArrayList<Value>? = null,
         var social_links: ArrayList<Value>? = null,
-        var interests: ArrayList<Value>? = null,
+        var interests: ArrayList<Interest>? = null,
         var academic_degree: ArrayList<Value>? = null,
         var memberships: ArrayList<Value>? = null,
         var settings_chat_allow_msg_from_all: Boolean = true,

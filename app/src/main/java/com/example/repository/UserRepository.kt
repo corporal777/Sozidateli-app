@@ -1,9 +1,6 @@
 package com.example.repository
 
-import com.example.data.models.AuthResponse
-import com.example.data.models.MarkedResponse
-import com.example.data.models.Notification
-import com.example.data.models.Speaker
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.InstanceIdResult
@@ -31,4 +28,6 @@ interface UserRepository {
 
     fun addToFavorite(uid: String): Completable
     fun removeFromFavorite(uid: String): Completable
+
+    fun getInterests(): Single<List<Interest>>
 }

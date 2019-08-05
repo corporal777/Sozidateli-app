@@ -9,11 +9,11 @@ import com.example.data.models.Organization
 import com.example.util.ClickableSpan
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_profile_personal_data.*
+import kotlinx.android.synthetic.main.item_profile_data_personal.*
 import setTextDataOrHide
 
 
-class ProfilePersonalDataItem(
+class ProfileDataPersonalItem(
         private val organizations: List<Organization>?,
         private val email: String?,
         private val workPhone: String?,
@@ -45,5 +45,5 @@ class ProfilePersonalDataItem(
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_personal_data
+    override fun getLayout() = R.layout.item_profile_data_personal
 }

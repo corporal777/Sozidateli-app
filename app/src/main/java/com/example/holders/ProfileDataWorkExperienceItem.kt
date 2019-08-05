@@ -8,10 +8,10 @@ import com.example.extensions.formatServerDateOrDefault
 import com.example.util.DATE_FORMAT_FULL_YEAR
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_profile_work_experience_data.*
+import kotlinx.android.synthetic.main.item_profile_data_work_experience.*
 import setTextDataOrHide
 
-class ProfileWorkExperienceDataItem(
+class ProfileDataWorkExperienceItem(
         private val work: SocialRoles,
         private val compactTopMargin: Boolean
 ) : Item() {
@@ -40,5 +40,5 @@ class ProfileWorkExperienceDataItem(
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_work_experience_data
+    override fun getLayout() = R.layout.item_profile_data_work_experience
 }

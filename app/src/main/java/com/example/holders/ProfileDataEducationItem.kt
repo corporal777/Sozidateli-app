@@ -8,9 +8,9 @@ import com.example.extensions.formatServerDateOrDefault
 import com.example.util.DATE_FORMAT_FULL_YEAR
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_profile_education_data.*
+import kotlinx.android.synthetic.main.item_profile_data_education.*
 
-class ProfileEducationDataItem(
+class ProfileDataEducationItem(
         private val education: SocialRoles,
         private val compactTopMargin: Boolean
 ) : Item() {
@@ -38,5 +38,5 @@ class ProfileEducationDataItem(
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_education_data
+    override fun getLayout() = R.layout.item_profile_data_education
 }

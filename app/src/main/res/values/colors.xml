@@ -94,6 +94,7 @@
     <color name="profile_data_text">#000000</color>
     <color name="profile_data_text_link">@color/colorAccent</color>
     <color name="profile_section_title_text">@color/colorAccent</color>
+    <color name="profile_section_subtitle_text">@color/profile_title_text</color>
     <color name="profile_section_title_background_expanded">#00000000</color>
     <color name="profile_section_title_background_collapsed">#FFFFFF</color>
 </resources>
