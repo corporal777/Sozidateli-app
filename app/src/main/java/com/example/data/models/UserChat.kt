@@ -34,5 +34,7 @@ data class UserChat(
         var isBannedByRecipient: Boolean,
         @SerializedName("chat_banned_by_you")
         var isBannedByYou: Boolean,
+        @SerializedName("is_event_chat")
+        var isEventChat: Boolean,
         var unreadMessageCount: Int = 0
 ) : Parcelable

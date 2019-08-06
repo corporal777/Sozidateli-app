@@ -67,7 +67,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
     override val title: CharSequence
         get() {
             val userName = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
-            val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.chat_user_expand)?.let {
+            val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
                 it.setBounds(0, 0, 12.dp, 12.dp)
                 ImageSpan(it, ImageSpan.ALIGN_BASELINE)
             }

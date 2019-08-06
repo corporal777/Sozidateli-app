@@ -24,7 +24,6 @@ interface TakePhotoContract {
     }
 
     interface Presenter : MediaUtils.OnPhotoPathFoundListener {
-        fun onTakePhotoRequest()
         fun onTakePhotoFromCameraRequest()
         fun onTakePhotoFromGalleryRequest()
         fun onImageCropped(path: String?, uri: Uri?)

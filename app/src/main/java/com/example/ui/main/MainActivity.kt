@@ -34,7 +34,6 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_email_set_social_network.view.btnSave
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -123,6 +122,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private fun handleIntent(intent: Intent) {
+        if (wasLaunchedFromRecents()) return
         val appLinkAction = intent.action
         val appLinkData: Uri? = intent.data
         if (Intent.ACTION_VIEW == appLinkAction) {
@@ -157,6 +157,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     presenter.onHandleChat(chatId, userName, notifiactionId)
             }
         }
+    }
+
+    private fun wasLaunchedFromRecents(): Boolean {
+        return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
     }
 
     override fun checkIntent() {

@@ -8,16 +8,8 @@ import com.example.ui.base.BasePresenter
 abstract class TakePhotoPresenter<V : TakePhotoContract.View>
     : BasePresenter<V>(), TakePhotoContract.Presenter {
 
-
-    private var isLoaded = false;
-
     override fun onPhotoFound(path: String?, uri: Uri?, rotation: Int): Boolean {
-        if (!isLoaded) {
-            checkPhotoPath(path, uri) { _, photoUri ->
-                isLoaded = true
-                viewState.startCrop(photoUri, rotation)
-            }
-        }
+        checkPhotoPath(path, uri) { _, photoUri -> viewState.startCrop(photoUri, rotation) }
         return true
     }
 
@@ -32,11 +24,6 @@ abstract class TakePhotoPresenter<V : TakePhotoContract.View>
 
     override fun onPhotoFoundError(throwable: Throwable?) = showCanNotTakeImageToast()
     private fun showCanNotTakeImageToast() = viewState.showToast(R.string.error_take_image)
-
-    override fun onTakePhotoRequest() {
-        isLoaded = false
-        viewState.showChangePhotoDialog()
-    }
 
     override fun onTakePhotoFromCameraRequest() = viewState.showCamera()
     override fun onTakePhotoFromGalleryRequest() = viewState.showGallery()

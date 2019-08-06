@@ -6,7 +6,6 @@ import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
-import com.example.data.models.Speaker
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
@@ -15,6 +14,7 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
+import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
@@ -41,7 +41,9 @@ class ChatListPresenter
                     .plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.response_detail?.total, items)
         }
-    }.buildList()
+    }
+            .applyErrorHandler { viewState.showToast(it.message ?: it.localizedMessage) }
+            .buildList()
 
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()

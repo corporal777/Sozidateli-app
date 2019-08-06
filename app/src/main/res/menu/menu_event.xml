@@ -14,7 +14,6 @@
         android:title="@string/event_tab_about" />
     <item
         android:id="@+id/tab_event_map"
-        android:icon="@drawable/ic_account"
         android:title="@string/event_tab_map" />
     <item
         android:id="@+id/to_list"

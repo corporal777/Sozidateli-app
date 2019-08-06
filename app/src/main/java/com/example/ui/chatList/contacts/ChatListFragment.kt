@@ -2,6 +2,7 @@ package com.example.ui.chatList.contacts
 
 import android.os.Bundle
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -20,6 +21,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -72,7 +74,12 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             adapter = this@ChatListFragment.adapter
         }
 
-        fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
+        fabNewChat.apply {
+            setOnClickListener { presenter.onFabAddChatClick() }
+            (layoutParams as CoordinatorLayout.LayoutParams).apply {
+                (behavior as HideBottomViewOnScrollBehavior).slideUp(fabNewChat)
+            }
+        }
     }
 
     override fun setChatsData(chats: List<UserChat>, favorites: List<User>) {

@@ -37,7 +37,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     fun providePresenter(): AccountViewPresenter = presenterProvider.get()
 
     private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
-        ivImage.setImageResource(R.drawable.ic_account)
+        ivImage.setImageResource(R.drawable.avatar_placeholder)
     }
 
     override fun setCount(count: String) {

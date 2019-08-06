@@ -102,6 +102,7 @@ class ChatPresenter
                     this.chat = it
                     viewState.apply {
                         when {
+                            it.isEventChat -> viewState.hideKeyboard()
                             it.isBannedByYou -> disableMessaging { showYouBanUser() }
                             it.isBannedByRecipient -> disableMessaging { showYouBanned() }
                             it.isInInvites -> disableMessaging { showChatConfirm() }
@@ -328,7 +329,9 @@ class ChatPresenter
     }
 
     override fun onUserClick() {
-        chat?.user?.user_id?.let { viewState.showUser(it) }
+        if (chat?.isEventChat != true){
+            chat?.user?.user_id?.let { viewState.showUser(it) }
+        }
     }
 
     override fun onDestroy() {

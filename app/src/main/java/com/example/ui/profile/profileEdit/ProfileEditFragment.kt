@@ -68,7 +68,6 @@ class ProfileEditFragment : TakePhotoFragment<ProfileEditContract.View, ProfileE
         val listField = mutableListOf<Item>()
 
         listField.add(ProfileHeaderItem(user.fullName, user.user_avatar, user.user_id, true, View.OnClickListener {
-            presenter.onTakePhotoRequest()
         }, user.user_avatar_uri))
 
         listField.add(ProfileEmailItem(ProfileField("user_email", getString(R.string.email), user.user_email, true)))

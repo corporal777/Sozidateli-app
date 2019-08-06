@@ -10,7 +10,7 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
     lateinit var request: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
 
-    var errorHandler: ((Throwable) -> Unit)? = null
+    var errorHandler: PaginationErrorHandler? = null
 
     var loadInitialFromStart: Boolean = false
 
@@ -69,3 +69,5 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         return ConvertedPaginationDataSource(this, converter)
     }
 }
+
+typealias PaginationErrorHandler = (Throwable) -> Unit
