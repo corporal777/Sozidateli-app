@@ -237,6 +237,9 @@
     <string name="profile_title_education">Образование</string>
     <string name="profile_dates">%s по %s</string>
     <string name="profile_date_present">н.в.</string>
+    <string name="profile_additional_data">Дополнительные сведения</string>
+    <string name="profile_notes">Примечания</string>
+    <string name="profile_files">Файлы</string>
 
     <string name="email_change_title">Email изменен</string>
     <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>

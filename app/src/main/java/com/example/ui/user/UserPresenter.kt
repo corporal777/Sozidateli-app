@@ -2,6 +2,8 @@ package com.example.ui.user
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Interest
+import com.example.data.models.Organization
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.UserInterests
 import com.example.repository.ChatRepository
@@ -60,6 +62,14 @@ class UserPresenter
                 .subscribe({
                     viewState.openChat(user.fullName, user.user_avatar, it.chat_id.toString())
                 }, { it.printStackTrace() })
+    }
+
+    override fun onOrganizationClick(organization: Organization) {
+        viewState.showOrganization(organization)
+    }
+
+    override fun onFileClick(file: RecommendationFile) {
+        file.url?.let { viewState.downloadFile(it) }
     }
 
     override fun onSubscribeClick() {

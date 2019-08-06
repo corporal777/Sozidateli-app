@@ -1,13 +1,18 @@
 package com.example.ui.user
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Interest
 import com.example.data.models.Organization
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
@@ -41,6 +46,21 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         userId = args.userId
     }
 
+    private val onFileClickListener: (RecommendationFile) -> Unit = {
+        presenter.onFileClick(it)
+    }
+
+    private val onOrganizationClickListener: (Organization) -> Unit = {
+        presenter.onOrganizationClick(it)
+    }
+
+    private val onItemExpandChange: OnExpandChange<*> = {
+        if (it.isExpanded) {
+            val position = adapter.getAdapterPosition(it.titleItem)
+            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+        }
+    }
+
     private val adapter = GroupAdapter<ViewHolder>()
 
     private lateinit var profileUserItem: ProfileDataUserItem
@@ -60,6 +80,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                         .addEducation(user)
                         .addWorkExperience(user)
                         .addInterests(interests)
+                        .addAdditionalInformation(user)
         )
     }
 
@@ -89,7 +110,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private fun MutableList<Group>.addPersonalDataItems(user: User): MutableList<Group> {
-        val organizations: List<Organization>? = emptyList()
+        val organizations: List<Organization>? = user.organisations
         val email = user.user_email
         val workPhone = user.user_phone_work
         val mobilePhone = user.user_phone
@@ -116,12 +137,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     gender,
                     birthday,
                     city,
-                    socialNetworks
-            ) {
-
-                //TODO SHOW ORGANIZATION SCREEN
-                showToast("CLICK: ${it.name}")
-            }
+                    socialNetworks,
+                    onOrganizationClickListener)
         }
 
         return this
@@ -130,7 +147,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private fun MutableList<Group>.addEducation(user: User): MutableList<Group> {
         val education = user.education
         if (!education.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education)).apply {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education), onItemExpandChange).apply {
                 addAll(education.mapIndexed { index, socialRoles -> ProfileDataEducationItem(socialRoles, index == 0) })
             }
         }
@@ -140,7 +157,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private fun MutableList<Group>.addWorkExperience(user: User): MutableList<Group> {
         val work = user.work
         if (!work.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience)).apply {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience), onItemExpandChange).apply {
                 addAll(work.mapIndexed { index, socialRoles -> ProfileDataWorkExperienceItem(socialRoles, index == 0) })
             }
         }
@@ -149,17 +166,44 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private fun MutableList<Group>.addInterests(interests: Map<Interest, List<Interest>>?): MutableList<Group> {
         if (!interests.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_interests)).apply {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_interests), onItemExpandChange).apply {
                 titleItem.hideDividerOnExpand = false
                 addAll(interests.map {
                     val parent = it.key
                     val childList = it.value
-                    ProfileExpandableSubtitleGroup(parent.value).apply {
+                    ProfileExpandableSubtitleGroup(parent.value, onItemExpandChange).apply {
                         addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
                     }
                 })
             }
         }
+        return this
+    }
+
+    private fun MutableList<Group>.addAdditionalInformation(user: User): MutableList<Group> {
+        val notes = user.user_notes
+        val files = user.attached_recomendation_files
+
+        val subgroups = mutableListOf<Group>()
+        if (!notes.isNullOrBlank()) {
+            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onItemExpandChange).apply {
+                add(ProfileDataNotesItem(notes))
+            })
+        }
+
+        if (!files.isNullOrEmpty()) {
+            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onItemExpandChange).apply {
+                addAll(files.mapIndexed { index, file -> ProfileDataFileItem(file, index != files.size - 1, onFileClickListener) })
+            })
+        }
+
+        if (subgroups.isNotEmpty()) {
+            this += ProfileExpandableTitleGroup(getString(R.string.profile_additional_data), onItemExpandChange).apply {
+                titleItem.hideDividerOnExpand = false
+                addAll(subgroups)
+            }
+        }
+
         return this
     }
 
@@ -182,6 +226,19 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     setUserAvatar(userAvatar)
                 })
             }
+        }
+    }
+
+    override fun showOrganization(organization: Organization) {
+        TODO()
+    }
+
+    override fun downloadFile(file: String) {
+        val uri = Uri.parse(file)
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (e: ActivityNotFoundException) {
+            showToast(R.string.error_title)
         }
     }
 

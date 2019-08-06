@@ -3,9 +3,7 @@ package com.example.holders.registerEvent
 import android.text.InputType
 import android.view.MotionEvent
 import com.example.R
-import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.RegisterEventField
-import com.example.data.models.user.RecommendationFiles
 import com.example.ui.request.RequestPresenter
 import com.example.util.ID
 import com.example.util.NAME

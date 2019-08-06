@@ -1,3 +1,4 @@
 package com.example.holders
 
-class ProfileExpandableTitleGroup(subtitle: String) : ExpandableTitleGroup<ProfileExpandableTitleItem>(ProfileExpandableTitleItem(subtitle))
+class ProfileExpandableTitleGroup(subtitle: String, onExpandChange: OnExpandChange<ProfileExpandableTitleItem>)
+    : ExpandableTitleGroup<ProfileExpandableTitleItem>(ProfileExpandableTitleItem(subtitle), onExpandChange)

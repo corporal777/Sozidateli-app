@@ -1,8 +1,11 @@
 package com.example.ui.user
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Interest
+import com.example.data.models.Organization
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -24,10 +27,18 @@ interface UserContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "action")
         fun setActionUnblock()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun downloadFile(file: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showOrganization(organization: Organization)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onWriteMessageClick()
+        fun onOrganizationClick(organization: Organization)
+        fun onFileClick(file: RecommendationFile)
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

@@ -2,10 +2,7 @@ package com.example.data.models.user
 
 import android.net.Uri
 import android.os.Parcelable
-import com.example.data.models.ContactSearch
-import com.example.data.models.Event
-import com.example.data.models.Interest
-import com.example.data.models.Notification
+import com.example.data.models.*
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -68,16 +65,17 @@ data class User(
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
         var default_event: Event? = null,
+        val organisations: List<Organization>? = null,
         //var web: ArrayList<Value>? = null
-        var attached_recomendation_files: ArrayList<RecommendationFiles>? = null,
+        var attached_recomendation_files: ArrayList<RecommendationFile>? = null,
         var last_notification: Notification? = null,
         var notification_total: Int = -1,
         var notification_unread: Int = -1,
 //        var event_status: String? = null,
 
         //support field
-        var isEmailChanged:Boolean = false,
-        var new_email:String?=null,
+        var isEmailChanged: Boolean = false,
+        var new_email: String? = null,
 
 
         //for search chat
@@ -85,14 +83,14 @@ data class User(
         var is_has_chat: Boolean = false
 
 
-        ) : Parcelable {
+) : Parcelable {
     var fullName: String = ""
         get() = "$user_name $user_last_name"
 
     var contactType: ContactSearch.Type = ContactSearch.Type.CONTACT
-    get() {
-        if(is_in_favorite) return ContactSearch.Type.FAVORITE
-        if(is_has_chat) return ContactSearch.Type.CHAT
-        return ContactSearch.Type.CONTACT
-    }
+        get() {
+            if (is_in_favorite) return ContactSearch.Type.FAVORITE
+            if (is_has_chat) return ContactSearch.Type.CHAT
+            return ContactSearch.Type.CONTACT
+        }
 }
