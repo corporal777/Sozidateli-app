@@ -11,34 +11,10 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface ProfileContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAboutStatus()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showFullProfile()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showFavorite()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showMyEvents()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showTabEvents()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showCurrentEvent(event: Event)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAboutApp()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showChatSetting()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: User)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "NOTIFICATION")
-        fun showLastNotification(text: String, notificationCount: Int)
+        fun highlightNotifications(notificationCount: Int)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "NOTIFICATION")
         fun hideLastNotification()
@@ -47,19 +23,30 @@ interface ProfileContract {
         fun showNotifications()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showProfile()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showFavorites()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEvents()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAboutApp()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBanned()
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun clickAboutStatus()
-        fun clickFullProfile()
-        fun clickFavorite()
-        fun clickMyEvents()
-        fun clickTabEvents()
-        fun clickCurrentEvent(event: Event)
-        fun clickAboutApp()
-        fun clickChatSetting()
+        fun onProfileClick()
         fun onNotificationClick()
-        fun onShowBannedClick()
+        fun onFavoritesClick()
+        fun onEventsClick()
+        fun onAboutApplicationClick()
+        fun onBannedClick()
+        fun onSupportClick()
+        fun onRateClick()
+        fun onLogoutClick()
     }
 }

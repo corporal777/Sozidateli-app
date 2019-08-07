@@ -46,7 +46,7 @@ interface Api {
     fun getUserFull(): Maybe<ApiResponse<User>>
 
     @GET("/v1/users/{id}")
-    fun getUserById(@Path("id") id: String): Single<ApiResponse<User>>
+    fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>
@@ -239,5 +239,5 @@ interface Api {
     fun getEventSpeakers(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
 
     @POST("/v1/users/interests")
-    fun getItnrestsList(): Single<ApiResponse<List<Interest>>>
+    fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
 }

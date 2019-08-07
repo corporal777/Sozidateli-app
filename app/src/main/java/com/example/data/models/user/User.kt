@@ -60,6 +60,7 @@ data class User(
         var memberships: ArrayList<Value>? = null,
         var settings_chat_allow_msg_from_all: Boolean = true,
         var settings_chat_allow_msg_from_fav: Boolean = true,
+        val chat: UserChat? = null,
         //var settings_chat_disallow_msg_from_all: Boolean = false,
         var education: ArrayList<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,

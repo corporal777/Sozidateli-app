@@ -2,7 +2,6 @@ package com.example.ui.chatList.contacts
 
 import android.os.Bundle
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Speaker
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.holders.ChatListEmptyItem
@@ -21,7 +19,6 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -69,16 +66,12 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
         }
 
         fabNewChat.apply {
             setOnClickListener { presenter.onFabAddChatClick() }
-            (layoutParams as CoordinatorLayout.LayoutParams).apply {
-                (behavior as HideBottomViewOnScrollBehavior).slideUp(fabNewChat)
-            }
         }
     }
 

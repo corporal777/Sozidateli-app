@@ -1,7 +1,16 @@
 package com.example.ui.profile
 
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.doOnNextLayout
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -9,14 +18,18 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.user.User
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.CropCircleTransformation
-import com.squareup.picasso.Picasso
+import com.example.ui.views.BadgeDrawable
+import com.example.ui.views.addBadge
 import kotlinx.android.synthetic.main.fragment_profile.*
+import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ProfileFragment : BaseFragment(), ProfileContract.View {
+class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
+    override val title: CharSequence
+        get() = getString(R.string.profile_title)
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -27,86 +40,101 @@ class ProfileFragment : BaseFragment(), ProfileContract.View {
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get()
 
+    private lateinit var notificationBadge: BadgeDrawable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flMyEvents.setOnClickListener { presenter.clickMyEvents() }
-        flAbout.setOnClickListener { presenter.clickAboutApp() }
-        tvAboutStatus.setOnClickListener { presenter.clickAboutStatus() }
-        clProfile.setOnClickListener { presenter.clickFullProfile() }
-        flFavorite.setOnClickListener { presenter.clickFavorite() }
-        flChatSetting.setOnClickListener { presenter.clickChatSetting() }
-        notification.setOnClickListener { presenter.onNotificationClick() }
-        tvLastNotificationText.setOnClickListener { presenter.onNotificationClick() }
-        flBanned.setOnClickListener { presenter.onShowBannedClick() }
+        containerUser.setOnClickListener { presenter.onProfileClick() }
+        containerNotification.setOnClickListener { presenter.onNotificationClick() }
+        tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
+        tvEvents.setOnClickListener { presenter.onEventsClick() }
+        tvBanned.setOnClickListener { presenter.onBannedClick() }
+        tvSupport.setOnClickListener { presenter.onSupportClick() }
+        tvRate.setOnClickListener { presenter.onRateClick() }
+        tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
+        tvLogout.setOnClickListener { presenter.onLogoutClick() }
     }
 
-    override fun showAboutStatus() {
-        findNavController().navigate(ProfileFragmentDirections.profileToAbout())
+    override fun setUser(user: User) {
+        ivAvatar.setCircleImage(user.user_avatar, R.drawable.avatar_placeholder)
+        tvUserName.text = user.fullName
     }
 
-    override fun showFullProfile() {
+    override fun highlightNotifications(notificationCount: Int) {
+        ivNotificationIcon.apply {
+            if (!::notificationBadge.isInitialized) notificationBadge = BadgeDrawable(notificationCount)
+
+            doOnNextLayout {
+                addBadge(notificationBadge) { badgeWidth, badgeHeight, anchorRect ->
+                    val badgeCenterX = anchorRect.right
+                    val badgeCenterY = anchorRect.top + anchorRect.height() / 3
+
+                    anchorRect.set(
+                            badgeCenterX - badgeWidth / 2,
+                            badgeCenterY - badgeHeight / 2,
+                            badgeCenterX + badgeWidth / 2,
+                            badgeCenterY + badgeHeight / 2
+                    )
+                }
+            }
+        }
+
+        changeNotificationItem(R.string.profile_notifications_has_new, R.color.profile_notification_data_has_new, R.style.ViewBackgroundAccent)
+    }
+
+    override fun hideLastNotification() {
+        if (::notificationBadge.isInitialized) notificationBadge.apply {
+            number = 0
+            invalidateSelf()
+        }
+
+        changeNotificationItem(R.string.notifications_label, R.color.profile_notification_data_empty, R.style.ViewBackgroundGray)
+    }
+
+    private fun changeNotificationItem(@StringRes messageRes: Int, @ColorRes dataColorRes: Int, @StyleRes backgroundStyle: Int) {
+        val dataColor = ContextCompat.getColor(requireContext(), dataColorRes)
+        tvLastNotificationMessage.apply {
+            text = getString(messageRes)
+            setTextColor(dataColor)
+        }
+
+        ivNotificationIcon.apply {
+            imageTintList = ColorStateList.valueOf(dataColor)
+        }
+
+        ivNotificationArrow.apply {
+            imageTintList = ColorStateList.valueOf(dataColor)
+        }
+
+        containerNotification.background = getNotificationButtonBackground(backgroundStyle)
+    }
+
+    private fun getNotificationButtonBackground(@StyleRes style: Int): Drawable? {
+        return ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.background_highlight,
+                ContextThemeWrapper(requireContext(), style).theme
+        )
+    }
+
+    override fun showProfile() {
         findNavController().navigate(ProfileFragmentDirections.profileToFullProfile())
     }
 
-    override fun showFavorite() {
+    override fun showFavorites() {
         findNavController().navigate(ProfileFragmentDirections.profileToFavorite())
     }
 
-    override fun showMyEvents() {
+    override fun showEvents() {
         findNavController().navigate(ProfileFragmentDirections.profileToMyEvents())
-    }
-
-    override fun showTabEvents() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showCurrentEvent(event: Event) {
-        findNavController().apply {
-            graph.startDestination = R.id.profile_fragment
-            val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_list_fragment, true)
-                    .build()
-            navigate(R.id.profile_fragment, null, opts)
-        }
     }
 
     override fun showAboutApp() {
         findNavController().navigate(ProfileFragmentDirections.profileToAbout())
     }
 
-    override fun showChatSetting() {
-        findNavController().navigate(ProfileFragmentDirections.profileToSetting())
-    }
-
     override fun showBanned() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBannedFragment())
-    }
-
-    override fun setUser(user: User) {
-        tvName.text = user.fullName
-        //TODO: need status
-        //tvStatus.text = String.format(getString(R.string.profile_status), user.status)
-        Picasso.get().load(user.user_avatar.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.avatar_placeholder).transform(CropCircleTransformation()).into(ivAvatar)
-        val visibleCurrentEvent = if (user.default_event == null) View.GONE else View.VISIBLE
-        llCurrentEventRoot.visibility = visibleCurrentEvent
-
-        user.default_event?.let {
-            tvEventName.text = it.name
-            tvOrganizationName.text = it.organization?.name
-            tvEventDate.text = it.conference_start
-        }
-    }
-
-    override fun showLastNotification(text: String, notificationCount: Int) {
-        notification.visibility = View.VISIBLE
-        tvLastNotificationText.setHtml(text)
-        tvNotificationCount.text = notificationCount.toString()
-        tvNotificationCount.visibility = if (notificationCount <= 0) View.GONE else View.VISIBLE
-    }
-
-    override fun hideLastNotification() {
-        notification.visibility = View.GONE
     }
 
     override fun showNotifications() {

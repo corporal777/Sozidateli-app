@@ -24,10 +24,10 @@ interface UserRepository {
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
-    fun getUserById(id: String): Single<User>
+    fun getUserById(id: String): Maybe<User>
 
     fun addToFavorite(uid: String): Completable
     fun removeFromFavorite(uid: String): Completable
 
-    fun getInterests(): Single<List<Interest>>
+    fun getInterests(): Maybe<List<Interest>>
 }

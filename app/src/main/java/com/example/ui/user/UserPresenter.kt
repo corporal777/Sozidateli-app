@@ -1,6 +1,7 @@
 package com.example.ui.user
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Interest
 import com.example.data.models.Organization
 import com.example.data.models.user.RecommendationFile
@@ -9,7 +10,7 @@ import com.example.data.models.user.UserInterests
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import io.reactivex.Single
+import io.reactivex.Maybe
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @InjectViewState
 class UserPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
@@ -28,23 +30,11 @@ class UserPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Single.zip(
-                userRepository.getUserById(userId),
+        compositeDisposable += Maybe.zip(
+                if (isCurrentUser()) userRepository.getUserFull() else userRepository.getUserById(userId),
                 userRepository.getInterests(),
                 BiFunction<User, List<Interest>, UserInterests> { user, interests ->
-                    val groupedInterests: MutableMap<Interest, MutableList<Interest>>? = user.interests?.let { userInterests ->
-                        val groups = mutableMapOf<Interest, MutableList<Interest>>()
-                        userInterests.forEach {
-                            val key = interests.find { interest -> interest.id == it.parent }
-                            if (key != null) {
-                                val list = groups.getOrPut(key) { mutableListOf() }
-                                list.add(it)
-                            }
-                        }
-                        return@let groups
-                    }
-
-                    return@BiFunction UserInterests(user, groupedInterests)
+                    return@BiFunction UserInterests(user, groupUserInterests(user, interests))
                 }
         )
                 .performOnBackgroundOutOnMain()
@@ -53,6 +43,20 @@ class UserPresenter
                     user = it.user
                     viewState.setUser(it.user, it.interests)
                 }, { it.printStackTrace() })
+    }
+
+    private fun groupUserInterests(user: User, interests: List<Interest>): MutableMap<Interest, MutableList<Interest>>? {
+        return user.interests?.let { userInterests ->
+            val groups = mutableMapOf<Interest, MutableList<Interest>>()
+            userInterests.forEach {
+                val key = interests.find { interest -> interest.id == it.parent }
+                if (key != null) {
+                    val list = groups.getOrPut(key) { mutableListOf() }
+                    list.add(it)
+                }
+            }
+            return@let groups
+        }
     }
 
     override fun onWriteMessageClick() {
@@ -93,4 +97,6 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.setActionSubscribe() }, { it.printStackTrace() })
     }
+
+    private fun isCurrentUser() = userId === appData.getUser().user_id.toString()
 }

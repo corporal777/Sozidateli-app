@@ -24,7 +24,7 @@ class UserRepositoryImp
 ) : ApiRepository(appData), UserRepository {
 
     override fun getUserShort(): Maybe<User> = call(api.getUserShort()).doOnSuccess { appData.setUser(it) }
-    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.fullUser = it }
+    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())
 
@@ -80,7 +80,7 @@ class UserRepositoryImp
         return call(api.changeEmailConfirm(email, code))
     }
 
-    override fun getUserById(id: String): Single<User> {
+    override fun getUserById(id: String): Maybe<User> {
         return call(api.getUserById(id))
     }
 
@@ -88,7 +88,7 @@ class UserRepositoryImp
 
     override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
 
-    override fun getInterests(): Single<List<Interest>> {
-        return call(api.getItnrestsList())
+    override fun getInterests(): Maybe<List<Interest>> {
+        return call(api.getInterestsList())
     }
 }

@@ -212,7 +212,7 @@ class MainPresenter
         chatCompositeDisposable += haChat.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                     processNewMessageMessage(it)
+                    processNewMessageMessage(it)
                 }, {
                     it.printStackTrace()
                 })

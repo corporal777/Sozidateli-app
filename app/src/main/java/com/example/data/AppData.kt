@@ -1,5 +1,6 @@
 package com.example.data
 
+import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
@@ -47,7 +48,6 @@ class AppData(
         }
 
     private var user: User? = null
-    var fullUser: User? = null
 
     val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
@@ -65,4 +65,14 @@ class AppData(
 
     fun getUser(): User = user
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+
+    fun logout() {
+        user = null
+        appPrefs.userId = -1
+        notificationsCount = 0
+        chatRequestsCount = 0
+        chatUnreadMessageCount = 0
+        userChangeSubject.onNext(Optional(null))
+        token = null
+    }
 }

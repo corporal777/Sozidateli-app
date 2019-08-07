@@ -91,7 +91,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 user.fullName,
                 user.user_id,
                 when {
-                    user.user_banned -> ACTION_UNBLOCK
+                    user.chat?.isBannedByYou == true -> ACTION_UNBLOCK
                     user.is_in_favorite -> ACTION_UNSUBSCRIBE
                     else -> ACTION_SUBSCRIBE
                 },

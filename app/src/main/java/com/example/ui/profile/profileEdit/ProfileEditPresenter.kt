@@ -26,9 +26,9 @@ class ProfileEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.fullUser?.let {
-            viewState.setUser(it)
-        }
+//        appData.fullUser?.let {
+//            viewState.setUser(it)
+//        }
     }
 
     override fun attachView(view: ProfileEditContract.View?) {
@@ -36,62 +36,62 @@ class ProfileEditPresenter
     }
 
     override fun onSaveClick(fields: List<ProfileField>, expandFields: List<ProfileFieldExpand>) {
-
-        val mapUser = HashMap<String, Any?>()
-
-        fields.forEach {
-            if (isRequiredValid(it)) {
-                mapUser.put(it.nameField, it.data)
-            } else {
-                it.label?.let { name ->
-                    viewState.showRequiredError(name)
-                }
-                return
-            }
-        }
-
-        expandFields.forEach {
-            val arr = mutableListOf<HashMap<String, Any?>>()
-            it.listOfField.forEach { arrayField ->
-                val map = HashMap<String, Any?>()
-                arrayField.forEach {
-                    if (isRequiredValid(it)) {
-                        map.put(it.nameField, it.data)
-                    } else {
-                        it.label?.let { name ->
-                            viewState.showRequiredError(name)
-                        }
-                        return
-                    }
-                }
-
-                arr.add(map)
-            }
-            mapUser.put(it.nameField, arr)
-        }
-
-        var isEmailChange = false
-
-        if (mapUser["user_email"] != appData.fullUser?.user_email) {
-            isEmailChange = true
-        }
-
-
-        userRepository.uploadAvatar(photo)
-                .andThen(userRepository.updateUser(mapUser))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-
-                    it.isEmailChanged = isEmailChange
-                    if (isEmailChange) {
-                        it.new_email = mapUser["user_email"].toString()
-                    }
-
-                    appData.fullUser = it
-                    viewState.navigateUp()
-                }, {})
-                .call(compositeDisposable)
+//
+//        val mapUser = HashMap<String, Any?>()
+//
+//        fields.forEach {
+//            if (isRequiredValid(it)) {
+//                mapUser.put(it.nameField, it.data)
+//            } else {
+//                it.label?.let { name ->
+//                    viewState.showRequiredError(name)
+//                }
+//                return
+//            }
+//        }
+//
+//        expandFields.forEach {
+//            val arr = mutableListOf<HashMap<String, Any?>>()
+//            it.listOfField.forEach { arrayField ->
+//                val map = HashMap<String, Any?>()
+//                arrayField.forEach {
+//                    if (isRequiredValid(it)) {
+//                        map.put(it.nameField, it.data)
+//                    } else {
+//                        it.label?.let { name ->
+//                            viewState.showRequiredError(name)
+//                        }
+//                        return
+//                    }
+//                }
+//
+//                arr.add(map)
+//            }
+//            mapUser.put(it.nameField, arr)
+//        }
+//
+//        var isEmailChange = false
+//
+//        if (mapUser["user_email"] != appData.fullUser?.user_email) {
+//            isEmailChange = true
+//        }
+//
+//
+//        userRepository.uploadAvatar(photo)
+//                .andThen(userRepository.updateUser(mapUser))
+//                .performOnBackgroundOutOnMain()
+//                .withLoadingDialog(viewState)
+//                .subscribe({
+//
+//                    it.isEmailChanged = isEmailChange
+//                    if (isEmailChange) {
+//                        it.new_email = mapUser["user_email"].toString()
+//                    }
+//
+//                    appData.fullUser = it
+//                    viewState.navigateUp()
+//                }, {})
+//                .call(compositeDisposable)
     }
 
     private fun isRequiredValid(field: ProfileField): Boolean {
@@ -133,11 +133,11 @@ class ProfileEditPresenter
     }
 
     override fun onImageTaken(path: String, uri: Uri) {
-        photo = path
-        val user = appData.fullUser
-        user?.let {
-            it.user_avatar_uri = uri
-            viewState.setUser(it)
-        }
+//        photo = path
+//        val user = appData.fullUser
+//        user?.let {
+//            it.user_avatar_uri = uri
+//            viewState.setUser(it)
+//        }
     }
 }

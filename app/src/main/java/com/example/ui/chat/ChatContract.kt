@@ -66,7 +66,7 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showChatBlockConfirmation()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showUser(uid: Int)
     }
 

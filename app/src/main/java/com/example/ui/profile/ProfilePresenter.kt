@@ -1,12 +1,12 @@
 package com.example.ui.profile
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Event
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.HAChat
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -14,68 +14,68 @@ import javax.inject.Inject
 class ProfilePresenter
 @Inject constructor(
         private val userRepository: UserRepository,
+        private val haChat: HAChat,
         private val appData: AppData
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        compositeDisposable += appData.notificationsCountSubject
+                .performOnBackgroundOutOnMain()
+                .subscribe({ updateNotification() }, {})
 
-        viewState.hideLastNotification()
-        appData.notificationsCountSubject
+        compositeDisposable += userRepository.getUserShort()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    val user = appData.getUser()
-                    val notification = user.last_notification
-                    if (notification != null) viewState.showLastNotification(notification.text, it)
-                    else viewState.hideLastNotification()
-                }, {
+                    viewState.setUser(it)
+                    updateNotification()
+                }, { it.printStackTrace() })
+    }
 
-                }).call(compositeDisposable)
-
-
-        userRepository.getUserShort()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState?.apply {
-                        setUser(appData.getUser())
-                        it.last_notification?.let { notification ->
-                            viewState.showLastNotification(notification.text, it.notification_unread)
-                        }
-                    }
-                }, {
-                    it.printStackTrace()
-                })
-                .call(compositeDisposable)
+    private fun updateNotification() {
+        val unreadNotifications = appData.getUser().notification_unread
+        viewState.apply {
+            if (unreadNotifications > 0) highlightNotifications(unreadNotifications)
+            else hideLastNotification()
+        }
     }
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState?.apply {
-            setUser(appData.getUser())
-        }
+        viewState.setUser(appData.getUser())
+        updateNotification()
     }
 
-    override fun clickAboutStatus() = viewState.showAboutStatus()
+    override fun onProfileClick() = viewState.showProfile()
 
-    override fun clickFullProfile() = viewState.showFullProfile()
+    override fun onFavoritesClick() = viewState.showFavorites()
 
-    override fun clickFavorite() = viewState.showFavorite()
+    override fun onEventsClick() = viewState.showEvents()
 
-    override fun clickMyEvents() = viewState.showMyEvents()
-
-    override fun clickTabEvents() = viewState.showTabEvents()
-
-    override fun clickCurrentEvent(event: Event) {
-        appData.getUser().default_event?.let {
-            viewState.showCurrentEvent(it)
-        }
-    }
-
-    override fun clickAboutApp() = viewState.showAboutApp()
-
-    override fun clickChatSetting() = viewState.showChatSetting()
+    override fun onAboutApplicationClick() = viewState.showAboutApp()
 
     override fun onNotificationClick() = viewState.showNotifications()
 
-    override fun onShowBannedClick() = viewState.showBanned()
+    override fun onBannedClick() = viewState.showBanned()
+
+    override fun onSupportClick() {
+        TODO("not implemented")
+    }
+
+    override fun onRateClick() {
+        TODO("not implemented")
+    }
+
+    override fun onLogoutClick() {
+        compositeDisposable += userRepository.getFcmToken()
+                .flatMapCompletable { userRepository.notificationsUnregister(it.token) }
+                .doOnComplete {
+                    appData.isSubscribedToPush = false
+                    haChat.disconnect()
+                    appData.logout()
+                }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({}, {})
+    }
 }

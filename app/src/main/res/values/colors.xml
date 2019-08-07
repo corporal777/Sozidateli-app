@@ -59,9 +59,6 @@
     <color name="password_hint_correct_text">#2bb673</color>
     <color name="password_hint_invalid_text">#F44336</color>
 
-    <color name="profile_divider">#eaeaea</color>
-    <color name="profile_notification_background">#C49A6C</color>
-
     <color name="input_border">#D5D7D8</color>
 
     <color name="event_tabs_background">#42403E</color>
@@ -95,6 +92,9 @@
     <color name="profile_data_text_link">@color/colorAccent</color>
     <color name="profile_section_title_text">@color/colorAccent</color>
     <color name="profile_section_subtitle_text">@color/profile_title_text</color>
+    <color name="profile_button_background">#FFFFFF</color>
     <color name="profile_section_title_background_expanded">#00000000</color>
-    <color name="profile_section_title_background_collapsed">#FFFFFF</color>
+    <color name="profile_section_title_background_collapsed">@color/profile_button_background</color>
+    <color name="profile_notification_data_has_new">#FFFFFF</color>
+    <color name="profile_notification_data_empty">#000000</color>
 </resources>

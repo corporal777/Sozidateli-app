@@ -83,6 +83,10 @@
         <item name="viewBackground">@color/colorAccent</item>
     </style>
 
+    <style name="ViewBackgroundWhite">
+        <item name="viewBackground">@android:color/white</item>
+    </style>
+
     <style name="ViewBackgroundGray">
         <item name="viewBackground">@color/gray</item>
     </style>
@@ -223,5 +227,18 @@
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+    </style>
+
+    <style name="Profile.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/background_highlight</item>
+        <item name="android:theme">@style/ViewBackgroundWhite</item>
+        <item name="android:drawableEnd">@drawable/ic_keyboard_arrow_right</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">@dimen/margin_horizontal_default</item>
+        <item name="android:paddingEnd">@dimen/margin_horizontal_default</item>
     </style>
 </resources>
