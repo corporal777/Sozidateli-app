@@ -241,4 +241,28 @@
         <item name="android:paddingStart">@dimen/margin_horizontal_default</item>
         <item name="android:paddingEnd">@dimen/margin_horizontal_default</item>
     </style>
+
+    <style name="UserItem" />
+
+    <style name="UserItem.Avatar">
+        <item name="android:layout_width">63dp</item>
+        <item name="android:layout_height">63dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">14dp</item>
+        <item name="android:layout_marginBottom">14dp</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="UserItem.Name">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">17dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

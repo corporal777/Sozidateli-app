@@ -3,14 +3,15 @@ package com.example.holders
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.item_user.*
+import kotlinx.android.synthetic.main.item_user_unblock.*
 import setCircleImage
 
-class UserItem(
+class UserUnblockItem(
         private val id: Int,
         private val name: String,
         private val avatar: String?,
-        private val onUserClick: () -> Unit
+        private val onUserClick: () -> Unit,
+        private val onUnblockClick: () -> Unit
 ) : Item(id.toLong()) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
@@ -18,26 +19,22 @@ class UserItem(
             tvUserName.text = name
             ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
             itemView.setOnClickListener { onUserClick.invoke() }
+            btnUnblock.setOnClickListener { onUnblockClick() }
         }
     }
 
-    override fun getLayout() = R.layout.item_user
+    override fun getLayout() = R.layout.item_user_unblock
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is UserItem) return false
+        if (other !is UserUnblockItem) return false
 
         if (id != other.id) return false
-        if (name != other.name) return false
-        if (avatar != other.avatar) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + (avatar?.hashCode() ?: 0)
-        return result
+        return id
     }
 }

@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.example.R
+import uk.co.chrisjenx.calligraphy.CalligraphyUtils
 
 class UserSubscribeButton : AppCompatButton {
 
@@ -25,12 +26,25 @@ class UserSubscribeButton : AppCompatButton {
     var action = ACTION_SUBSCRIBE
         private set
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        obtainAttributes(attrs)
+    }
 
     init {
-        setActionUnsubscribe()
+        CalligraphyUtils.applyFontToTextView(context, this, "fonts/OpenSans-Semibold.ttf")
+    }
+
+    private fun obtainAttributes(attrs: AttributeSet?) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.UserSubscribeButton)
+        action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, ACTION_SUBSCRIBE)
+        a.recycle()
+
+        when (action) {
+            ACTION_UNSUBSCRIBE -> setActionUnsubscribe()
+            ACTION_SUBSCRIBE -> setActionSubscribe()
+            ACTION_UNBLOCK -> setActionUnblock()
+        }
     }
 
     fun setActionSubscribe() {

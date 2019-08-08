@@ -268,7 +268,7 @@
     <fragment
         android:id="@+id/banned_fragment"
         android:name="com.example.ui.banned.BannedFragment"
-        android:label="@string/banned_label">
+        android:label="@string/profile_banned">
 
         <action
             android:id="@+id/banned_fragment_to_user_fragment"

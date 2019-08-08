@@ -3,12 +3,12 @@ package com.example.ui.banned
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
-import com.example.holders.UserItem
+import com.example.holders.UserUnblockItem
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.xwray.groupie.GroupAdapter
@@ -17,7 +17,10 @@ import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BannedFragment : BaseFragment(), BannedContract.View {
+class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
+
+    override val title: CharSequence
+        get() = getString(R.string.profile_banned)
 
     @InjectPresenter
     lateinit var presenter: BannedPresenter
@@ -37,7 +40,6 @@ class BannedFragment : BaseFragment(), BannedContract.View {
         setHasOptionsMenu(true)
         recyclerView.apply {
             adapter = this@BannedFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
@@ -48,7 +50,16 @@ class BannedFragment : BaseFragment(), BannedContract.View {
     }
 
     override fun setItems(userChats: List<UserChat>) {
-        adapter.update(userChats.map { UserItem(it.id, it.user.fullName, it.user.user_avatar) { presenter.onUserClick(it) } })
+        adapter.update(userChats.map {
+            UserUnblockItem(
+                    it.id,
+                    it.user.fullName,
+                    it.user.user_avatar,
+                    { presenter.onUserClick(it) },
+                    { presenter.onUnblockLick(it) }
+            )
+        })
+        placeholderUtil.isDataLoad = true
     }
 
     override fun openUserInfo(userId: String) {

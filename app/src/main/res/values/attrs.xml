@@ -8,7 +8,15 @@
     </declare-styleable>
 
     <declare-styleable name="AutoPlaceholderRecyclerView">
-        <attr name="placeholder" format="reference"/>
-        <attr name="hideOnEmpty" format="boolean"/>
+        <attr name="placeholder" format="reference" />
+        <attr name="hideOnEmpty" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="UserSubscribeButton">
+        <attr name="subscribeAction">
+            <enum name="unblock" value="-1"/>
+            <enum name="subscribe" value="0"/>
+            <enum name="unsubscribe" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>
