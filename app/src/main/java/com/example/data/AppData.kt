@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.SparseArray
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
@@ -54,6 +55,8 @@ class AppData(
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
+
+    val opennedUserProfiles = SparseArray<User>()
 
     fun setUser(user: User) {
         val changed = this.user != user

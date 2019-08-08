@@ -316,9 +316,7 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
         val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
         val imagePadding = 8.dp
         AppCompatImageView(requireContext()).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(imageSize, MATCH_PARENT).apply {
-                rightMargin = 12.dp
-            }
+            layoutParams = ViewGroup.MarginLayoutParams(imageSize, MATCH_PARENT)
             scaleType = ImageView.ScaleType.CENTER_INSIDE
             setPadding(imagePadding, imagePadding, imagePadding, imagePadding)
             setCircleImage(url)

@@ -1,5 +1,6 @@
 package com.example.ui.user
 
+import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Interest
@@ -14,6 +15,7 @@ import io.reactivex.Maybe
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.HAChat
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -22,7 +24,8 @@ class UserPresenter
 @Inject constructor(
         private val appData: AppData,
         private val chatRepository: ChatRepository,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val haChat: HAChat
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
     lateinit var userId: String
@@ -30,6 +33,10 @@ class UserPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.apply {
+            showUserMenuButton(!isCurrentUser())
+        }
+
         compositeDisposable += Maybe.zip(
                 if (isCurrentUser()) userRepository.getUserFull() else userRepository.getUserById(userId),
                 userRepository.getInterests(),
@@ -41,7 +48,19 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     user = it.user
+                    appData.opennedUserProfiles[user.user_id] = user
                     viewState.setUser(it.user, it.interests)
+                }, { it.printStackTrace() })
+
+        compositeDisposable += haChat.subscribeToExcludeFlagChange()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    if (::user.isInitialized && it.roomKey == user.chat?.id.toString()) {
+                        viewState.apply {
+                            if (it.exclude) setActionUnblock()
+                            else setActionSubscribe()
+                        }
+                    }
                 }, { it.printStackTrace() })
     }
 
@@ -95,7 +114,31 @@ class UserPresenter
                 .flatMapCompletable { chatRepository.chatUnban(it.chat_id.toString()) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ viewState.setActionSubscribe() }, { it.printStackTrace() })
+                .subscribe({
+                    user.chat?.isBannedByYou = false
+                    viewState.setActionSubscribe()
+                }, { it.printStackTrace() })
+    }
+
+    override fun onBlockClick() {
+        viewState.showBlockConfirmation()
+    }
+
+    override fun onBlockConfirm() {
+        compositeDisposable += chatRepository.startChat(userId)
+                .flatMapCompletable { chatRepository.chatBan(it.chat_id.toString()) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    user.chat?.isBannedByYou = true
+                    viewState.setActionUnblock()
+                }, { it.printStackTrace() })
+    }
+
+    override fun onMenuButtonUserClick() {
+        if (::user.isInitialized) {
+            viewState.showUserMenu(user.chat?.isBannedByYou == true)
+        }
     }
 
     private fun isCurrentUser() = userId === appData.getUser().user_id.toString()

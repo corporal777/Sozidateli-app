@@ -5,6 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.isEmpty
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -22,10 +28,12 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
+import setSelectableItemBackgroundBorderless
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -62,6 +70,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private val adapter = GroupAdapter<ViewHolder>()
+
+    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
+    private lateinit var menuImageView: ImageView
 
     private lateinit var profileUserItem: ProfileDataUserItem
 
@@ -220,13 +231,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
-        findNavController().apply {
-            if (!popBackStack(R.id.chat_fragment, false)) {
-                navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
-                    setUserAvatar(userAvatar)
-                })
-            }
-        }
+        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
+            setUserAvatar(userAvatar)
+        })
     }
 
     override fun showOrganization(organization: Organization) {
@@ -240,6 +247,53 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         } catch (e: ActivityNotFoundException) {
             showToast(R.string.error_title)
         }
+    }
+
+    override fun showUserMenuButton(show: Boolean) {
+        if (show) {
+            val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
+            menuImageView = AppCompatImageButton(requireContext()).apply {
+                layoutParams = ViewGroup.LayoutParams(imageSize, ViewGroup.LayoutParams.MATCH_PARENT)
+                setSelectableItemBackgroundBorderless()
+                setImageResource(R.drawable.ic_menu)
+                setOnClickListener { presenter.onMenuButtonUserClick() }
+            }
+
+            toolbarContentActionBar.addRightView(menuImageView)
+        } else {
+            toolbarContentActionBar.removeAllRightViews()
+        }
+    }
+
+    override fun showUserMenu(isBlocked: Boolean) {
+        PopupMenu(requireContext(), menuImageView).apply {
+            menu.apply {
+                val text = if (isBlocked) R.string.unblock else R.string.block
+                val blockItem = if (isEmpty()) add(text) else getItem(0).apply {
+                    this.setTitle(text)
+                }
+
+                blockItem.setOnMenuItemClickListener {
+                    if (isBlocked) presenter.onUnblockClick() else presenter.onBlockClick()
+                    return@setOnMenuItemClickListener true
+                }
+            }
+            show()
+        }
+    }
+
+    override fun showBlockConfirmation() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.user_ban_confirmation_title)
+                .setMessage(R.string.user_ban_confirmation_message)
+                .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockConfirm() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
     }
 
     override fun layout() = R.layout.fragment_user

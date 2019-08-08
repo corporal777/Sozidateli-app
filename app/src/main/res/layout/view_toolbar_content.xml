@@ -9,9 +9,8 @@
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Toolbar.Custom.Title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/viewsRight"
         app:layout_constraintStart_toEndOf="@id/viewsLeft"
         tools:text="Title" />
@@ -20,9 +19,9 @@
         android:id="@+id/viewsLeft"
         android:layout_width="96dp"
         android:layout_height="match_parent"
-        android:gravity="left"
+        android:layout_marginEnd="12dp"
+        android:gravity="left|center_vertical"
         android:orientation="horizontal"
-        app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="RtlHardcoded" />
 
@@ -30,9 +29,9 @@
         android:id="@+id/viewsRight"
         android:layout_width="96dp"
         android:layout_height="match_parent"
-        android:gravity="right"
+        android:layout_marginEnd="12dp"
+        android:gravity="right|center_vertical"
         android:orientation="horizontal"
-        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="RtlHardcoded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import com.example.R
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
@@ -15,7 +16,7 @@ class ProfileDataUserItem(
         private val avatar: String?,
         private val name: String,
         private val uid: Int,
-        private val subscribeAction: Int,
+        private var subscribeAction: Int,
         private val actionClickListener: (Int) -> Unit,
         private val writeMessageClickListener: () -> Unit
 ) : Item(id) {
@@ -26,7 +27,7 @@ class ProfileDataUserItem(
             tvName.text = name
             tvId.apply { text = resources.getString(R.string.profile_uid, uid) }
             btnAction.apply {
-                setAction(this, subscribeAction)
+                setAction(this, btnChat, subscribeAction)
                 setOnClickListener { actionClickListener(this.action) }
             }
 
@@ -36,14 +37,28 @@ class ProfileDataUserItem(
 
     override fun bind(holder: ViewHolder, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) super.bind(holder, position, payloads)
-        else holder.apply { (payloads[0] as? Int)?.let { setAction(btnAction, it) } }
+        else holder.apply {
+            (payloads[0] as? Int)?.let {
+                subscribeAction = it
+                setAction(btnAction, btnChat, it)
+            }
+        }
     }
 
-    private fun setAction(button: UserSubscribeButton, action: Int) {
+    private fun setAction(subscribeButton: UserSubscribeButton, newChatButton: View, action: Int) {
         when (action) {
-            ACTION_UNBLOCK -> button.setActionUnblock()
-            ACTION_SUBSCRIBE -> button.setActionSubscribe()
-            ACTION_UNSUBSCRIBE -> button.setActionUnsubscribe()
+            ACTION_UNBLOCK -> {
+                subscribeButton.setActionUnblock()
+                newChatButton.isEnabled = false
+            }
+            ACTION_SUBSCRIBE -> {
+                subscribeButton.setActionSubscribe()
+                newChatButton.isEnabled = true
+            }
+            ACTION_UNSUBSCRIBE -> {
+                subscribeButton.setActionUnsubscribe()
+                newChatButton.isEnabled = true
+            }
         }
     }
 

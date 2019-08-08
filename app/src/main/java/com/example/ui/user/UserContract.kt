@@ -1,5 +1,6 @@
 package com.example.ui.user
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -33,15 +34,27 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showOrganization(organization: Organization)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun showUserMenuButton(show: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUserMenu(isBlocked: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showBlockConfirmation()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onWriteMessageClick()
         fun onOrganizationClick(organization: Organization)
         fun onFileClick(file: RecommendationFile)
+        fun onMenuButtonUserClick()
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()
         fun onUnblockClick()
+        fun onBlockClick()
+        fun onBlockConfirm()
     }
 }

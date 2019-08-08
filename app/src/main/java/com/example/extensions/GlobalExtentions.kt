@@ -1,6 +1,7 @@
 import android.content.Context
 import android.net.ConnectivityManager
 import android.text.style.URLSpan
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -82,4 +83,9 @@ fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
         }
         visibility = View.VISIBLE
     }
+}
+
+fun View.setSelectableItemBackgroundBorderless() = with(TypedValue()) {
+    context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, this, true)
+    setBackgroundResource(resourceId)
 }

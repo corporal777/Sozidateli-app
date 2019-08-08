@@ -89,10 +89,11 @@ class ChatPresenter
                     .subscribe({}, {})
         }
 
-        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_ACCEPT))
+//        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_ACCEPT))
         compositeDisposable += processEvent(haChat.subscribeTo(ACTION_INVITE))
-        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
-        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
+//        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
+//        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
+        compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
     }
 
     private fun getChat() = chatRepository.getChat(chatId)
@@ -329,7 +330,7 @@ class ChatPresenter
     }
 
     override fun onUserClick() {
-        if (chat?.isEventChat != true){
+        if (chat?.isEventChat != true) {
             chat?.user?.user_id?.let { viewState.showUser(it) }
         }
     }

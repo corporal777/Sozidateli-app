@@ -94,7 +94,12 @@
     <color name="profile_section_subtitle_text">@color/profile_title_text</color>
     <color name="profile_button_background">#FFFFFF</color>
     <color name="profile_section_title_background_expanded">#00000000</color>
-    <color name="profile_section_title_background_collapsed">@color/profile_button_background</color>
+    <color name="profile_section_title_background_collapsed">@color/profile_button_background
+    </color>
     <color name="profile_notification_data_has_new">#FFFFFF</color>
     <color name="profile_notification_data_empty">#000000</color>
+    <color name="profile_new_message_background_enabled">@color/colorAccent</color>
+    <color name="profile_new_message_background_disabled">#D8D8D8</color>
+    <color name="profile_new_message_text_enabled">#FFFFFF</color>
+    <color name="profile_new_message_text_disabled">#FFFFFF</color>
 </resources>
