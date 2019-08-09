@@ -2,18 +2,24 @@ package com.example.ui.profile.favoritesTab
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.TabsFragmentAdapter
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
-import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
+import com.example.ui.speakers.favorite.FavoriteUsersFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteFragment : BaseFragment(), FavoriteContract.View {
+class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragment {
+
+    override val title: String
+        get() = getString(R.string.profile_favorite)
+
 
     @InjectPresenter
     lateinit var presenter: FavoritePresenter
@@ -27,17 +33,13 @@ class FavoriteFragment : BaseFragment(), FavoriteContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragments = ArrayList<androidx.fragment.app.Fragment>()
-        fragments.add(FavoriteSpeakersFragment())
-        fragments.add(FavoriteOrganizationsFragment())
-
-        viewPager.adapter = object : androidx.fragment.app.FragmentPagerAdapter(childFragmentManager) {
-            override fun getItem(position: Int) = fragments[position]
-            override fun getCount() = fragments.size
-            override fun getPageTitle(position: Int) = resources.getStringArray(R.array.favorite_tab_name_array)[position]
-        }
+        val fragments = listOf<Pair<Fragment, String>>(
+                FavoriteUsersFragment() to getString(R.string.favorites_users),
+                FavoriteOrganizationsFragment() to getString(R.string.favorites_organizations)
+        )
 
         viewPager.run {
+            adapter = TabsFragmentAdapter(fragments, childFragmentManager)
             offscreenPageLimit = fragments.size
             tabLayout.setupWithViewPager(this)
         }

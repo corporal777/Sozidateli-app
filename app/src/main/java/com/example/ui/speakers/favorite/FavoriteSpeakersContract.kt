@@ -6,13 +6,18 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Speaker
 import com.example.ui.base.BaseContract
-import com.example.ui.speakers.base.BaseSpeakersContract
 
 interface FavoriteSpeakersContract {
-    interface View : BaseSpeakersContract.View {
+    interface View : BaseContract.View {
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setData(data: PagedList<Speaker>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSpeaker(speaker: Speaker)
     }
 
-    interface Presenter : BaseSpeakersContract.Presenter {
-
+    interface Presenter : BaseContract.Presenter {
+        fun onSpeakerClick(speaker: Speaker)
+        fun onSpeakerFavoriteChangeClick(speaker: Speaker)
     }
 }

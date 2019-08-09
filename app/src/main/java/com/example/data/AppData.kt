@@ -56,8 +56,6 @@ class AppData(
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
 
-    val opennedUserProfiles = SparseArray<User>()
-
     fun setUser(user: User) {
         val changed = this.user != user
         this.user = user

@@ -97,9 +97,9 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
 
         favoritesSection.update(favorites.map {
-            UserItem(it.user_id, it.fullName, it.user_avatar) {
+            UserItem(it.user_id, it.fullName, it.user_avatar, {
                 presenter.onUserClick(it.user_id, it.fullName)
-            }
+            })
         })
     }
 

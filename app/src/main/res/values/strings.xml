@@ -66,12 +66,6 @@
     <string name="change">Изменить</string>
     <string name="write_message">Написать сообщение</string>
 
-    <string name="favorite_title">Избранное</string>
-    <string-array name="favorite_tab_name_array">
-        <item>Спикеры</item>
-        <item>Организации</item>
-    </string-array>
-
     <string name="chat_list">Чаты</string>
 
     <string name="profile_show_in_profile">Отображать в профиле</string>
@@ -243,6 +237,9 @@
     <string name="profile_additional_data">Дополнительные сведения</string>
     <string name="profile_notes">Примечания</string>
     <string name="profile_files">Файлы</string>
+
+    <string name="favorites_users">Пользователи</string>
+    <string name="favorites_organizations">Организации</string>
 
     <string name="email_change_title">Email изменен</string>
     <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>

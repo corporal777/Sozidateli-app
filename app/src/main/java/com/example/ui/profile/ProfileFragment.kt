@@ -117,8 +117,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         )
     }
 
-    override fun showProfile() {
-        findNavController().navigate(ProfileFragmentDirections.profileToFullProfile())
+    override fun showProfile(uid: String) {
+        findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
     }
 
     override fun showFavorites() {

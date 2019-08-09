@@ -46,7 +46,7 @@ class ProfilePresenter
         updateNotification()
     }
 
-    override fun onProfileClick() = viewState.showProfile()
+    override fun onProfileClick() = viewState.showProfile(appData.getUser().user_id.toString())
 
     override fun onFavoritesClick() = viewState.showFavorites()
 

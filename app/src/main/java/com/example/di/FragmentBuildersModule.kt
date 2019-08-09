@@ -32,9 +32,8 @@ import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
-import com.example.ui.profile.favoritesTab.FavoriteFragment
+import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.profileEdit.ProfileEditFragment
-import com.example.ui.profile.profileFull.ProfileFullFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.request.RequestFragment
 import com.example.ui.search.SearchFragment
@@ -43,7 +42,7 @@ import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.search.searchType.SearchTypeFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
-import com.example.ui.speakers.favorite.FavoriteSpeakersFragment
+import com.example.ui.speakers.favorite.FavoriteUsersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
@@ -95,9 +94,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeAboutFragment(): AboutFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeProfileFullFragment(): ProfileFullFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeAboutEventFragment(): AboutEventFragment
 
     @ContributesAndroidInjector
@@ -113,7 +109,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeDocumentsListFragment(): DocumentsListFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFavoriteSpeakersFragment(): FavoriteSpeakersFragment
+    abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
@@ -122,7 +118,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeSubscribeOrganizationsFragment(): SubscribeOrganizationsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFavoriteFragment(): FavoriteFragment
+    abstract fun contributeFavoriteFragment(): FavoriteTabsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeProfileEditFragment(): ProfileEditFragment

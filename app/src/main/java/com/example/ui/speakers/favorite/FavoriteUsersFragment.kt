@@ -1,16 +1,13 @@
-package com.example.ui.banned
+package com.example.ui.speakers.favorite
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.UserChat
-import com.example.holders.UserItem
-import com.example.interfaces.ToolbarFragment
+import com.example.data.models.Speaker
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -18,19 +15,16 @@ import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
-
-    override val title: CharSequence
-        get() = getString(R.string.profile_banned)
+class FavoriteUsersFragment : BaseFragment(), FavoriteSpeakersContract.View {
 
     @InjectPresenter
-    lateinit var presenter: BannedPresenter
+    lateinit var presenter: FavoriteSpeakersPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<BannedPresenter>
+    lateinit var presenterProvider: Provider<FavoriteSpeakersPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): BannedPresenter = presenterProvider.get()
+    fun providePresenter(): FavoriteSpeakersPresenter = presenterProvider.get()
 
     private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
@@ -39,7 +33,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            adapter = this@BannedFragment.adapter
+            adapter = this@FavoriteUsersFragment.adapter
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
@@ -49,22 +43,12 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
         }
     }
 
-    override fun setItems(userChats: List<UserChat>) {
-        adapter.update(userChats.map {
-            UserItem(
-                    it.id,
-                    it.user.fullName,
-                    it.user.user_avatar,
-                    { presenter.onUserClick(it) },
-                    ACTION_UNBLOCK,
-                    { presenter.onUnblockLick(it) }
-            )
-        })
+    override fun setData(data: PagedList<Speaker>) {
         placeholderUtil.isDataLoad = true
     }
 
-    override fun openUserInfo(userId: String) {
-        findNavController().navigate(BannedFragmentDirections.bannedFragmentToUserFragment(userId))
+    override fun showSpeaker(speaker: Speaker) {
+
     }
 
     override fun layout() = R.layout.layout_list_with_placeholder

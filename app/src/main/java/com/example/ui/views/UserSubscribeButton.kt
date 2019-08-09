@@ -37,9 +37,14 @@ class UserSubscribeButton : AppCompatButton {
 
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.UserSubscribeButton)
-        action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, ACTION_SUBSCRIBE)
+        val action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, ACTION_SUBSCRIBE)
         a.recycle()
 
+        setAction(action)
+    }
+
+    fun setAction(action: Int) {
+        this.action = action
         when (action) {
             ACTION_UNSUBSCRIBE -> setActionUnsubscribe()
             ACTION_SUBSCRIBE -> setActionSubscribe()

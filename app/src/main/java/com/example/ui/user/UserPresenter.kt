@@ -1,6 +1,5 @@
 package com.example.ui.user
 
-import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Interest
@@ -48,7 +47,6 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     user = it.user
-                    appData.opennedUserProfiles[user.user_id] = user
                     viewState.setUser(it.user, it.interests)
                 }, { it.printStackTrace() })
 
@@ -141,5 +139,5 @@ class UserPresenter
         }
     }
 
-    private fun isCurrentUser() = userId === appData.getUser().user_id.toString()
+    private fun isCurrentUser() = userId == appData.getUser().user_id.toString()
 }

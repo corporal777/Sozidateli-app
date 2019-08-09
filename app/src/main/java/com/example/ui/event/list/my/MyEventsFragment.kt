@@ -6,11 +6,15 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContract.View {
+class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContract.View, ToolbarFragment {
+
+    override val title: CharSequence
+        get() = getString(R.string.tab_events_title)
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "MyEventsPresenter")
     override lateinit var presenter: MyEventsPresenter

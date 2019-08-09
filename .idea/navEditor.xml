@@ -719,11 +719,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="profile_to_full_profile">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="profile_to_my_events">
                               <value>
                                 <LayoutPositions />
@@ -734,23 +729,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="profile_full_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="2692" />
-                            <option name="y" value="724" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="profile_to_edit">
+                            <entry key="profile_to_user">
                               <value>
                                 <LayoutPositions />
                               </value>

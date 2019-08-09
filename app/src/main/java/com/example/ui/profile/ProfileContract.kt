@@ -23,7 +23,7 @@ interface ProfileContract {
         fun showNotifications()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showProfile()
+        fun showProfile(uid: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFavorites()

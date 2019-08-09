@@ -27,7 +27,7 @@ class SubeventUserListPresenter @Inject constructor(
         val subeventId = subevent
         if (eventId == ID_INVALID || subeventId == ID_INVALID) throw IllegalArgumentException("Invalid id: event: $eventId, subeventId: $subeventId")
         eventRepository.getSubeventUsers(eventId, subeventId, limit, offset)
-    }.map { UserItem(it.user_id, it.fullName, it.user_avatar) { onUserClick(it) } }
+    }.map { UserItem(it.user_id, it.fullName, it.user_avatar, { onUserClick(it) }) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
