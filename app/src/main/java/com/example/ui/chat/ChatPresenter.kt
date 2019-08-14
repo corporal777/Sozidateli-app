@@ -12,7 +12,8 @@ import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.repository.ChatRepository
 import com.example.ui.base.takePhoto.TakePhotoPresenter
-import com.example.util.*
+import com.example.util.ACTION_INVITE
+import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.chat.ChatHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -49,6 +50,10 @@ class ChatPresenter
     private var isMessagesInitialLoad = false
     private var lastUnreadMessageId: String? = null
     private var isCanShowUnreadMessagesItem = true
+    private var scrollPosition = 0
+    private var scrollOffset = 0
+
+    private val scrolledView = mutableSetOf<Int>()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -217,6 +222,9 @@ class ChatPresenter
         super.attachView(view)
         viewState.cancelNotificationByChatId(chatId)
         chatHelper.currentChatId = chatId
+
+//        if (scrolledView.add(view.hashCode()) && scrollPosition != 0 && scrollOffset != 0)
+            viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
     }
 
     override fun detachView(view: ChatContract.View?) {
@@ -274,6 +282,11 @@ class ChatPresenter
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
         isChatScrolledToBottom = isBottomPosition
+    }
+
+    override fun onScrollChange(position: Int, offset: Int) {
+        scrollPosition = position
+        scrollOffset = offset
     }
 
     override fun onImageTaken(path: String, uri: Uri) {

@@ -72,8 +72,8 @@ class UserRepositoryImp
                 }))
     }
 
-    override fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
-        return callPagination(api.getUserFavoriteSpeakers(limit, offset))
+    override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return callPagination(api.getUserFavoriteUsers(limit, offset))
     }
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {

@@ -25,7 +25,7 @@ class EventSpeakersFragment : BaseSpeakersFragment(), EventSpeakersContract.View
     @ProvidePresenter
     fun providePresenter(): EventSpeakersPresenter = presenterProvider.get().apply {
         arguments?.let {
-            event = EventSpeakersFragmentArgs.fromBundle(it).event
+//            event = EventSpeakersFragmentArgs.fromBundle(it).event
         }
     }
 

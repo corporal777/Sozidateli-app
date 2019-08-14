@@ -15,10 +15,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_REQUEST_COUNT
 import com.example.util.UserEventLoadingHelper
 import com.example.util.chat.ChatHelper
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -29,6 +26,7 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
+import timber.log.Timber
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -93,7 +91,6 @@ class MainPresenter
                     }
                 }
                 .call(compositeDisposable)
-
     }
 
     private fun checkShowGreetings(): Maybe<Boolean> {

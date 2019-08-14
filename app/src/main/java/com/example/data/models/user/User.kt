@@ -85,13 +85,6 @@ data class User(
 
 
 ) : Parcelable {
-    var fullName: String = ""
+    val fullName: String
         get() = "$user_name $user_last_name"
-
-    var contactType: ContactSearch.Type = ContactSearch.Type.CONTACT
-        get() {
-            if (is_in_favorite) return ContactSearch.Type.FAVORITE
-            if (is_has_chat) return ContactSearch.Type.CHAT
-            return ContactSearch.Type.CONTACT
-        }
 }

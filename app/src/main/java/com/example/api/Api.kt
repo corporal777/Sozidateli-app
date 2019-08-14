@@ -69,7 +69,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/favorites/speakers")
-    fun getUserFavoriteSpeakers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
+    fun getUserFavoriteUsers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/list")

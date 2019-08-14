@@ -22,6 +22,15 @@ class StayBottomOnLayoutChangeUtil {
         }
     }
 
+    var isEnabled = true
+        set(value) {
+            field = value
+            if (::recyclerView.isInitialized) {
+                if (value) recyclerView.addOnScrollListener(yScrollListener)
+                else recyclerView.removeOnScrollListener(yScrollListener)
+            }
+        }
+
     private val layoutChangeListener = View.OnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
         if (bottom != oldBottom && oldBottom != 0) {
             val changeSize = oldBottom - bottom
@@ -54,7 +63,9 @@ class StayBottomOnLayoutChangeUtil {
         this.recyclerView = view
         this.layoutManager = view.layoutManager as LinearLayoutManager
         view.apply {
-            addOnScrollListener(yScrollListener)
+            if (isEnabled){
+                addOnScrollListener(yScrollListener)
+            }
             addOnLayoutChangeListener(layoutChangeListener)
         }
     }

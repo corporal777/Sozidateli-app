@@ -30,16 +30,7 @@ abstract class OrganizationsFragment<P : OrganizationsPresenter> : BaseFragment(
             override fun getItemLayout(itemView: Int) = R.layout.item_organization
 
             override fun onBindItem(viewHolder: ViewHolder, item: Organization?, position: Int) {
-                item!!
-                viewHolder.apply {
-                    ivLogo.setCircleImage(item.logo, R.drawable.ic_launcher_background)
 
-                    tvLabel.text = item.name
-                    btnAction.apply {
-                        text = getActionText(item)
-                        setOnClickListener { onItemActionClick(item) }
-                    }
-                }
             }
         }
     }

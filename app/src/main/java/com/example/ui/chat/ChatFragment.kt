@@ -24,7 +24,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.*
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.arellomobile.mvp.presenter.ProvidePresenterTag
 import com.example.R
 import com.example.data.models.ChatMessage
 import com.example.extensions.dp
@@ -33,6 +35,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.takePhoto.TakePhotoFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.PositionOffsetScrollListener
 import com.example.util.SimpleTextWatcher
 import com.example.util.StayBottomOnLayoutChangeUtil
 import com.example.util.pagination.PaginationScrollListener
@@ -49,13 +52,18 @@ import javax.inject.Provider
 
 class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View, ToolbarFragment {
 
-    @InjectPresenter
-    override lateinit var presenter: ChatPresenter
-
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
 
-    @ProvidePresenter
+    @InjectPresenter(type = PresenterType.WEAK)
+    override lateinit var presenter: ChatPresenter
+
+    @ProvidePresenterTag(presenterClass = ChatPresenter::class, type = PresenterType.WEAK)
+    fun provideRepositoryPresenterTag(): String? {
+        return chatId
+    }
+
+    @ProvidePresenter(type = PresenterType.WEAK)
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val presenter = this
         arguments!!.let { ChatFragmentArgs.fromBundle(it) }.apply {
@@ -109,18 +117,19 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
         rvChat.apply {
             adapter = chatAdapter
-
-            addOnScrollListener(PaginationScrollListener(10,
-                    { presenter.onLoadPreviousMessagesRequest() },
-                    { presenter.onLoadNextMessagesRequest() }
-            ))
-
             (itemAnimator as SimpleItemAnimator).apply {
                 supportsChangeAnimations = false
                 changeDuration = 0
             }
             itemAnimator = null
 
+            addOnScrollListener(PaginationScrollListener(10,
+                    { presenter.onLoadPreviousMessagesRequest() },
+                    { presenter.onLoadNextMessagesRequest() }
+            ))
+            addOnScrollListener(PositionOffsetScrollListener { position, offset ->
+                presenter.onScrollChange(position, offset)
+            })
             bottomScroller.setupWithRecyclerView(this)
 
             doOnNextLayout { startPostponedEnterTransition() }
@@ -275,13 +284,19 @@ class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), Chat
 
     override fun scrollToMessagesUnreadItem(position: Int) {
         val height = rvChat.height
-        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, height - height / 4)
+        scrollToPositionWithOffset(position, height - height / 4)
     }
 
     private fun scrollToPosition(position: Int, smooth: Boolean) {
         if (position < 0) return
         if (smooth) rvChat?.smoothScrollToPosition(position)
         else rvChat?.layoutManager?.scrollToPosition(position)
+    }
+
+    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
+        bottomScroller.isEnabled = false
+        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        bottomScroller.isEnabled = true
     }
 
     override fun checkScrollPosition() {

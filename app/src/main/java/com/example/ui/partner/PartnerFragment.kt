@@ -39,7 +39,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
     }
 
     override fun setData(partner: Partner) {
-        Picasso.get().load(partner.logo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+        Picasso.get().load(partner.logo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.mipmap.ic_launcher_background).into(ivLogo)
         tvInfo.text = partner.description
         partner.name?.let {
             setLabel(it)

@@ -53,7 +53,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
                         }
                     }
 
-                    Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+                    Picasso.get().load(event.logo).placeholder(R.mipmap.ic_launcher_background).into(ivLogo)
 
                     tvOrganizationLabel.text = event.organization?.name
                     tvEventLabel.text = event.name

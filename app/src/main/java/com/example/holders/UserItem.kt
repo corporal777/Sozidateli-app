@@ -54,6 +54,4 @@ class UserItem(
         result = 31 * result + (action ?: 0)
         return result
     }
-
-
 }

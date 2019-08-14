@@ -11,10 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
-import com.example.holders.ChatListEmptyItem
-import com.example.holders.ListSectionNameItem
-import com.example.holders.UserChatItem
-import com.example.holders.UserItem
+import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
 import com.example.ui.views.BadgeDrawable
@@ -43,10 +40,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     private val favoritesSection by lazy {
-        Section().apply {
-            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
-            setHideWhenEmpty(true)
-        }
+        TitledSection(-200L, getString(R.string.search_contact_section_favorites))
     }
 
     private val adapter by lazy {

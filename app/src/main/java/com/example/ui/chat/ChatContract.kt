@@ -36,7 +36,7 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun focusOnInput(showKeyboard: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun updateMessages(messages: List<ChatMessage>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -63,6 +63,9 @@ interface ChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun checkScrollPosition()
 
+        @StateStrategyType(SkipStrategy::class)
+        fun scrollToPositionWithOffset(position: Int, offset: Int)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showChatBlockConfirmation()
 
@@ -73,6 +76,7 @@ interface ChatContract {
     interface Presenter : TakePhotoContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
+        fun onScrollChange(position: Int, offset: Int)
         fun onChatMessageOnScreen(message: Message)
         fun onImageClick(url: String, imageView: ImageView)
         fun onLoadPreviousMessagesRequest()

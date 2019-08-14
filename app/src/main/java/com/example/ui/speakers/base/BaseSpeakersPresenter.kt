@@ -15,14 +15,14 @@ open class BaseSpeakersPresenter<V : BaseSpeakersContract.View>
         private val userRepository: UserRepository
 ) : BasePresenter<V>(), BaseSpeakersContract.Presenter {
 
-    open val pagination = PaginationDataSourceFactory { limit, offset -> userRepository.getFavoriteSpeakers(limit, offset) }
+    open val pagination = PaginationDataSourceFactory { limit, offset -> userRepository.getFavoriteUsers(limit, offset) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        pagination.build()
-                .withLoadingDialog(viewState)
-                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
-                .call(compositeDisposable)
+//        pagination.build()
+//                .withLoadingDialog(viewState)
+//                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
+//                .call(compositeDisposable)
     }
 
     override fun onSpeakerClick(speaker: Speaker) = viewState.showSpeaker(speaker)

@@ -28,7 +28,7 @@ class NewsFragment : BaseFragment(), NewsContract.View, ToolbarFragment {
     }
 
     override fun setData(news: News) {
-        Picasso.get().load(news.picture.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).into(ivLogo)
+        Picasso.get().load(news.picture.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.mipmap.ic_launcher_background).into(ivLogo)
         news.text?.let {
             tvInfo.setHtml(it)
         }

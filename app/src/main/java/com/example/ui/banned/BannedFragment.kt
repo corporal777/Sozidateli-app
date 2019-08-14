@@ -7,11 +7,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.util.LayoutListWithPlaceholderUtil
+import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
@@ -34,7 +36,18 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
 
     private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
-    private val adapter = GroupAdapter<ViewHolder>()
+    private val usersSection = TitledSection(-100L)
+
+    private val adapter by lazy {
+        PaginationListGroupAdapter<ViewHolder>().apply {
+            add(usersSection)
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    if (position > 0) presenter.onItemTake(position - 1)
+                }
+            })
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,7 +63,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
     }
 
     override fun setItems(userChats: List<UserChat>) {
-        adapter.update(userChats.map {
+        usersSection.update(userChats.map {
             UserItem(
                     it.id,
                     it.user.fullName,

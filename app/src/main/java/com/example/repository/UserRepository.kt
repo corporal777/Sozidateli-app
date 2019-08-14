@@ -20,7 +20,7 @@ interface UserRepository {
     fun updateUser(user: Map<String, Any?>): Single<User>
     fun uploadAvatar(photo: String?): Completable
     fun uploadRecommendationFile(file: String): Single<User>
-    fun getFavoriteSpeakers(limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
+    fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 

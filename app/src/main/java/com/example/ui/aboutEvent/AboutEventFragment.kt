@@ -98,7 +98,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         tvEventDate.setDatesIntervalText(event.conference_start, event.conference_finish)
         btnGoToEvent.visibility = View.VISIBLE
 
-        Picasso.get().load(event.logo).placeholder(R.drawable.ic_launcher_background).into(ivLogo, object : Callback {
+        Picasso.get().load(event.logo).placeholder(R.mipmap.ic_launcher_background).into(ivLogo, object : Callback {
             override fun onSuccess() {
                 presenter.onImageLoad()
                 startPostponedEnterTransition()
@@ -153,7 +153,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             imageView.layoutParams = imageViewLayoutParams
             imageView.setOnClickListener { view -> presenter.onPartnerClick(it) }
 
-            Picasso.get().load(it.logo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.drawable.ic_launcher_background).into(imageView)
+            Picasso.get().load(it.logo.let { if (it.isNullOrEmpty()) null else it }).placeholder(R.mipmap.ic_launcher_background).into(imageView)
 
             subContainer.addView(imageView)
 

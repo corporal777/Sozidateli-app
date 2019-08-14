@@ -4,79 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/subscription_background"
-    android:foreground="?attr/selectableItemBackground">
+    android:background="@drawable/background_user_item">
 
     <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
+        android:id="@+id/ivOrganizationImage"
+        style="@style/UserItem.Avatar"
+        android:layout_width="82dp"
+        android:layout_height="82dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="18sp"
+        android:id="@+id/tvOrganizationName"
+        style="@style/UserItem.Name"
         app:layout_constraintBottom_toTopOf="@+id/btnAction"
-        app:layout_constraintEnd_toStartOf="@+id/ivNext"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivOrganizationImage"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem" />
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="17dp"
+        tools:text="@tools:sample/full_names" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.ui.views.UserSubscribeButton
         android:id="@+id/btnAction"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/background_corners_border"
-        android:fontFamily="@string/sans_serif_light"
-        android:foreground="?attr/selectableItemBackground"
-        android:minHeight="0dp"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:textAllCaps="false"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp"
-        android:theme="@style/ViewBackgroundAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivNext"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
-        app:layout_constraintTop_toBottomOf="@+id/tvLabel"
-        app:layout_constraintWidth_default="wrap"
-        tools:text="@string/unsubscribe" />
-
-    <ImageView
-        android:id="@+id/ivNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_keyboard_arrow_right"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="10dp"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvOrganizationName"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrganizationName" />
+
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
