@@ -31,6 +31,7 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import setSelectableItemBackgroundBorderless
@@ -74,7 +75,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
     private lateinit var menuImageView: ImageView
 
-    private lateinit var profileUserItem: ProfileDataUserItem
+    private var profileUserItem: ProfileDataUserItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,20 +84,33 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    override fun setUser(user: User, interests: Map<Interest, List<Interest>>?) {
-        initProfileItem(user)
+    override fun setCurrentUser(user: User, interests: Map<Interest, List<Interest>>?) {
+        setUser(ProfileDataCurrentUserItem(
+                100L,
+                user.user_avatar,
+                user.fullName,
+                user.user_id,
+                {}
+        ), user, interests, true)
+    }
+
+    override fun setAnotherUser(user: User, interests: Map<Interest, List<Interest>>?) {
+        setUser(initProfileItem(user), user, interests, false)
+    }
+
+    private fun setUser(headerItem: Item, user: User, interests: Map<Interest, List<Interest>>?, editable: Boolean) {
         adapter.update(
-                mutableListOf<Group>(profileUserItem)
-                        .addPersonalDataItems(user)
-                        .addEducation(user)
-                        .addWorkExperience(user)
-                        .addInterests(interests)
-                        .addAdditionalInformation(user)
+                mutableListOf<Group>(headerItem)
+                        .addPersonalDataItems(user, editable)
+                        .addEducation(user, editable)
+                        .addWorkExperience(user, editable)
+                        .addInterests(interests, editable)
+                        .addAdditionalInformation(user, editable)
         )
     }
 
-    private fun initProfileItem(user: User) {
-        profileUserItem = ProfileDataUserItem(
+    private fun initProfileItem(user: User): ProfileDataUserItem {
+        return ProfileDataUserItem(
                 100L,
                 user.user_avatar,
                 user.fullName,
@@ -118,9 +132,12 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 {
                     presenter.onWriteMessageClick()
                 })
+                .apply {
+                    profileUserItem = this
+                }
     }
 
-    private fun MutableList<Group>.addPersonalDataItems(user: User): MutableList<Group> {
+    private fun MutableList<Group>.addPersonalDataItems(user: User, editable: Boolean): MutableList<Group> {
         val organizations: List<Organization>? = user.organisations
         val email = user.user_email
         val workPhone = user.user_phone_work
@@ -155,7 +172,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return this
     }
 
-    private fun MutableList<Group>.addEducation(user: User): MutableList<Group> {
+    private fun MutableList<Group>.addEducation(user: User, editable: Boolean): MutableList<Group> {
         val education = user.education
         if (!education.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education), onItemExpandChange).apply {
@@ -165,7 +182,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return this
     }
 
-    private fun MutableList<Group>.addWorkExperience(user: User): MutableList<Group> {
+    private fun MutableList<Group>.addWorkExperience(user: User, editable: Boolean): MutableList<Group> {
         val work = user.work
         if (!work.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience), onItemExpandChange).apply {
@@ -175,7 +192,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return this
     }
 
-    private fun MutableList<Group>.addInterests(interests: Map<Interest, List<Interest>>?): MutableList<Group> {
+    private fun MutableList<Group>.addInterests(interests: Map<Interest, List<Interest>>?, editable: Boolean): MutableList<Group> {
         if (!interests.isNullOrEmpty()) {
             this += ProfileExpandableTitleGroup(getString(R.string.profile_interests), onItemExpandChange).apply {
                 titleItem.hideDividerOnExpand = false
@@ -191,7 +208,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return this
     }
 
-    private fun MutableList<Group>.addAdditionalInformation(user: User): MutableList<Group> {
+    private fun MutableList<Group>.addAdditionalInformation(user: User, editable: Boolean): MutableList<Group> {
         val notes = user.user_notes
         val files = user.attached_recomendation_files
 
@@ -219,15 +236,15 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun setActionSubscribe() {
-        profileUserItem.notifyChanged(ACTION_SUBSCRIBE)
+        profileUserItem?.notifyChanged(ACTION_SUBSCRIBE)
     }
 
     override fun setActionUnsubscribe() {
-        profileUserItem.notifyChanged(ACTION_UNSUBSCRIBE)
+        profileUserItem?.notifyChanged(ACTION_UNSUBSCRIBE)
     }
 
     override fun setActionUnblock() {
-        profileUserItem.notifyChanged(ACTION_UNBLOCK)
+        profileUserItem?.notifyChanged(ACTION_UNBLOCK)
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {

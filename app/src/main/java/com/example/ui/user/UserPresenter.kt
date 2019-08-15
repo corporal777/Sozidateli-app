@@ -47,7 +47,11 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     user = it.user
-                    viewState.setUser(it.user, it.interests)
+                    if (isCurrentUser()) {
+                        viewState.setCurrentUser(it.user, it.interests)
+                    } else {
+                        viewState.setAnotherUser(it.user, it.interests)
+                    }
                 }, { it.printStackTrace() })
 
         compositeDisposable += haChat.subscribeToExcludeFlagChange()

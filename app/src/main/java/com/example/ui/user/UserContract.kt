@@ -14,8 +14,11 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface UserContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUser(user: User, interests: Map<Interest, List<Interest>>?)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "user")
+        fun setCurrentUser(user: User, interests: Map<Interest, List<Interest>>?)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "user")
+        fun setAnotherUser(user: User, interests: Map<Interest, List<Interest>>?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openChat(userName: String, userAvatar: String?, chatId: String)
