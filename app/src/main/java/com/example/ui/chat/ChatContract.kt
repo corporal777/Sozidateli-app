@@ -6,12 +6,12 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
-import com.example.ui.base.takePhoto.TakePhotoContract
+import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import ru.houseofapps.chat.models.Message
 
 interface ChatContract {
-    interface View : TakePhotoContract.View {
+    interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showChatInput(animate: Boolean)
 
@@ -73,12 +73,14 @@ interface ChatContract {
         fun showUser(uid: Int)
     }
 
-    interface Presenter : TakePhotoContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun onSendTextMessageClick(message: String)
         fun onChatScrollChange(isBottomPosition: Boolean)
         fun onScrollChange(position: Int, offset: Int)
         fun onChatMessageOnScreen(message: Message)
         fun onImageClick(url: String, imageView: ImageView)
+        fun onTakePhotoFromCameraRequest()
+        fun onTakePhotoFromGalleryRequest()
         fun onLoadPreviousMessagesRequest()
         fun onLoadNextMessagesRequest()
 

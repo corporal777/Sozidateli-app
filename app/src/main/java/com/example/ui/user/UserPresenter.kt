@@ -1,18 +1,31 @@
 package com.example.ui.user
 
+import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
+import com.example.R
 import com.example.data.AppData
 import com.example.data.models.Interest
+import com.example.data.models.Optional
 import com.example.data.models.Organization
+import com.example.data.models.ProfileUserData
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
-import com.example.data.models.user.UserInterests
+import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.CropCircleTransformation
+import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.loadBitmap
+import com.example.util.rxtakephoto.ResultRotation
+import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import withLoadingDialog
@@ -24,11 +37,12 @@ class UserPresenter
         private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
-        private val haChat: HAChat
+        private val haChat: HAChat,
+        private val takePhoto: RxTakePhoto
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
     lateinit var userId: String
-    private lateinit var user: User
+    private lateinit var profileUserData: ProfileUserData
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -36,28 +50,34 @@ class UserPresenter
             showUserMenuButton(!isCurrentUser())
         }
 
+        val getUser = (if (isCurrentUser()) userRepository.getUserFull() else userRepository.getUserById(userId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { user -> user.user_avatar.loadAvatar().map { user to it } }
+                .observeOn(Schedulers.io())
+
         compositeDisposable += Maybe.zip(
-                if (isCurrentUser()) userRepository.getUserFull() else userRepository.getUserById(userId),
+                getUser,
                 userRepository.getInterests(),
-                BiFunction<User, List<Interest>, UserInterests> { user, interests ->
-                    return@BiFunction UserInterests(user, groupUserInterests(user, interests))
+                BiFunction<Pair<User, Optional<Bitmap>>, List<Interest>, UserData> { userBitmapPair, interests ->
+                    val user = userBitmapPair.first
+                    val avatar = userBitmapPair.second.value
+                    return@BiFunction UserData(user, avatar, groupUserInterests(user, interests))
                 }
         )
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    user = it.user
-                    if (isCurrentUser()) {
-                        viewState.setCurrentUser(it.user, it.interests)
-                    } else {
-                        viewState.setAnotherUser(it.user, it.interests)
-                    }
+                    profileUserData = ProfileUserData(
+                            it,
+                            isCurrentUser()
+                    )
+                    viewState.setUser(profileUserData)
                 }, { it.printStackTrace() })
 
         compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    if (::user.isInitialized && it.roomKey == user.chat?.id.toString()) {
+                    if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
                         viewState.apply {
                             if (it.exclude) setActionUnblock()
                             else setActionSubscribe()
@@ -81,6 +101,7 @@ class UserPresenter
     }
 
     override fun onWriteMessageClick() {
+        val user = profileUserData.user
         compositeDisposable += chatRepository.startChat(user.user_id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -117,7 +138,7 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    user.chat?.isBannedByYou = false
+                    profileUserData.user.chat?.isBannedByYou = false
                     viewState.setActionSubscribe()
                 }, { it.printStackTrace() })
     }
@@ -132,15 +153,94 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    user.chat?.isBannedByYou = true
+                    profileUserData.user.chat?.isBannedByYou = true
                     viewState.setActionUnblock()
                 }, { it.printStackTrace() })
     }
 
     override fun onMenuButtonUserClick() {
-        if (::user.isInitialized) {
-            viewState.showUserMenu(user.chat?.isBannedByYou == true)
+        if (::profileUserData.isInitialized) {
+            viewState.showUserMenu(profileUserData.user.chat?.isBannedByYou == true)
         }
+    }
+
+    override fun onEditMainDataClick() {
+        if (profileUserData.editable) {
+            profileUserData.isEditMainData = true
+            compositeDisposable += profileUserData.user.user_avatar.loadAvatar()
+                    .withLoadingDialog(viewState)
+                    .subscribe({
+                        viewState.setMainDataEditMode(profileUserData.user, it.value, true)
+                    }, {
+                        viewState.setMainDataEditMode(profileUserData.user, null, true)
+                    })
+        }
+    }
+
+    override fun onEditMainDataCancelClick() {
+        profileUserData.isEditMainData = false
+        viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, false)
+    }
+
+    override fun onDisabledMainInputInfoClick() {
+        viewState.showDisabledMainInputInfo()
+    }
+
+    private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
+        return loadBitmap(listOf(CropCircleTransformation()))
+    }
+
+    override fun onEditAvatarClick() {
+        viewState.showTakePictureChooser()
+    }
+
+    override fun onRemoveAvatarClick() {
+
+    }
+
+    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
+    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage())
+
+    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
+        compositeDisposable += takePhotoRequest
+                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_AVATAR, outputMaxHeight = IMAGE_MAX_SIZE_AVATAR) }
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.changeUserAvatar(it)
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    override fun onEditSave(data: Map<String, Any?>) {
+        if (data.isEmpty()) return
+        if (data.containsKey(User.FIELD_USER_AVATAR)) {
+            val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
+            if (data.size == 1) {
+                updateUser(userRepository.uploadAvatar(avatar))
+            } else {
+                updateUser(userRepository.uploadAvatar(avatar)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) })
+            }
+        } else {
+            updateUser(userRepository.updateUser(data))
+        }
+    }
+
+    private fun updateUser(request: Single<User>) {
+        compositeDisposable += request.performOnBackgroundOutOnMain()
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
+                .observeOn(Schedulers.io())
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    profileUserData.user = it.first
+                    profileUserData.avatar = it.second.value
+                    viewState.setUser(profileUserData)
+                }, {
+                    it.printStackTrace()
+                    viewState.showToast(R.string.error_title)
+                })
     }
 
     private fun isCurrentUser() = userId == appData.getUser().user_id.toString()

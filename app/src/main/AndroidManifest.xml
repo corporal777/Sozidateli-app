@@ -55,6 +55,8 @@
 
         <activity android:name=".util.photohelper.CropActivity" />
 
+        <activity android:name=".util.rxtakephoto.CropActivity" />
+
         <activity
             android:name=".ui.snAuth.SnAuthActivity"
             android:screenOrientation="portrait"

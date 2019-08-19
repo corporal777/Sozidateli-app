@@ -2,14 +2,9 @@ package com.example.repository
 
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
-import com.example.data.prefs.AppPrefs
 import com.example.util.ApiErrorParser
 import com.example.util.pagination.PaginationResponse
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import io.reactivex.*
-import retrofit2.HttpException
-import java.io.IOException
 
 abstract class ApiRepository(
         private val appData: AppData
@@ -64,8 +59,8 @@ abstract class ApiRepository(
         response?.session?.run { appData.token = token }
     }
 
-    protected fun processError(throwable: Throwable){
-        val response  = ApiErrorParser.parse(throwable)
+    protected fun processError(throwable: Throwable) {
+        val response = ApiErrorParser.parse(throwable)
         saveSession(response)
     }
 }

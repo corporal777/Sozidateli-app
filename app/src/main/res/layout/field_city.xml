@@ -25,6 +25,6 @@
         android:layout_marginTop="4dp"
         android:id="@+id/city"
         android:maxLines="1"
-        android:background="@drawable/background_edittext_login"/>
+        android:background="@drawable/background_input_borders"/>
 
 </LinearLayout>

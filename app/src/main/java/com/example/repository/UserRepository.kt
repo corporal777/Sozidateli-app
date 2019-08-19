@@ -1,6 +1,10 @@
 package com.example.repository
 
-import com.example.data.models.*
+import android.graphics.Bitmap
+import com.example.data.models.AuthResponse
+import com.example.data.models.Interest
+import com.example.data.models.MarkedResponse
+import com.example.data.models.Notification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.InstanceIdResult
@@ -17,8 +21,8 @@ interface UserRepository {
     fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
-    fun updateUser(user: Map<String, Any?>): Single<User>
-    fun uploadAvatar(photo: String?): Completable
+    fun updateUser(data: Map<String, Any?>): Single<User>
+    fun uploadAvatar(photo: Bitmap?): Single<User>
     fun uploadRecommendationFile(file: String): Single<User>
     fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 

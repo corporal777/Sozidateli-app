@@ -51,7 +51,7 @@
     <style name="Auth.EditText" parent="Base.V7.Widget.AppCompat.EditText">
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">10dp</item>
-        <item name="android:background">@drawable/background_edittext_login</item>
+        <item name="android:background">@drawable/background_input_borders</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">40dp</item>
         <item name="android:textSize">16sp</item>
@@ -240,6 +240,56 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:paddingStart">@dimen/margin_horizontal_default</item>
         <item name="android:paddingEnd">@dimen/margin_horizontal_default</item>
+    </style>
+
+    <style name="Profile.Edit" />
+
+    <style name="Profile.Edit.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical|start</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="android:minEms">8</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Profile.Edit.InputContainer">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+    </style>
+
+    <style name="Profile.Edit.InputTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/profile_title_text</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/input_border_color</item>
+        <item name="boxBackgroundColor">@color/input_background</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <style name="Profile.Edit.Input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_color_profile_data</item>
+        <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
+    </style>
+
+    <style name="Profile.Edit.Input.Theme">
+        <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
 
     <style name="UserItem" />

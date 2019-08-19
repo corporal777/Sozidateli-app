@@ -32,7 +32,7 @@ import com.example.data.models.ChatMessage
 import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.takePhoto.TakePhotoFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PositionOffsetScrollListener
@@ -50,13 +50,13 @@ import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : TakePhotoFragment<ChatContract.View, ChatPresenter>(), ChatContract.View, ToolbarFragment {
+class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
 
     @InjectPresenter(type = PresenterType.WEAK)
-    override lateinit var presenter: ChatPresenter
+    lateinit var presenter: ChatPresenter
 
     @ProvidePresenterTag(presenterClass = ChatPresenter::class, type = PresenterType.WEAK)
     fun provideRepositoryPresenterTag(): String? {

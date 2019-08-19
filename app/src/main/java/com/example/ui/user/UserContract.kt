@@ -1,11 +1,12 @@
 package com.example.ui.user
 
+import android.graphics.Bitmap
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Interest
 import com.example.data.models.Organization
+import com.example.data.models.ProfileUserData
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
@@ -15,10 +16,7 @@ interface UserContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "user")
-        fun setCurrentUser(user: User, interests: Map<Interest, List<Interest>>?)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "user")
-        fun setAnotherUser(user: User, interests: Map<Interest, List<Interest>>?)
+        fun setUser(profileUserData: ProfileUserData)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openChat(userName: String, userAvatar: String?, chatId: String)
@@ -46,6 +44,18 @@ interface UserContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBlockConfirmation()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showTakePictureChooser()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun changeUserAvatar(avatar: Bitmap?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDisabledMainInputInfo()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -59,5 +69,15 @@ interface UserContract {
         fun onUnblockClick()
         fun onBlockClick()
         fun onBlockConfirm()
+
+        fun onEditMainDataClick()
+        fun onEditMainDataCancelClick()
+        fun onDisabledMainInputInfoClick()
+        fun onEditAvatarClick()
+        fun onRemoveAvatarClick()
+        fun onTakePhotoFromCameraRequest()
+        fun onTakePhotoFromGalleryRequest()
+
+        fun onEditSave(data: Map<String, Any?>)
     }
 }

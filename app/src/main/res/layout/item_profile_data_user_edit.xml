@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="22dp"
+        android:contentDescription="@string/content_description_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/avatar_placeholder" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAvatarChange"
+        style="@style/Profile.Edit.Button"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/background_action_button_selector"
+        android:drawableStart="@drawable/ic_profile_edit_avatar_selector"
+        android:text="@string/profile_edit_change_photo"
+        android:textColor="@color/text_color_action_button"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/btnAvatarRemove"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAvatarRemove"
+        style="@style/Profile.Edit.Button"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background_action_button_selector"
+        android:drawableStart="@drawable/ic_profile_remove_selector"
+        android:text="@string/profile_edit_remove_photo"
+        android:textColor="@color/text_color_action_button"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/btnAvatarChange" />
+
+    <LinearLayout
+        android:id="@+id/llSurname"
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSurname"
+            style="@style/Profile.Edit.InputTitle"
+            android:labelFor="@+id/etSurname"
+            android:text="@string/profile_edit_user_surname" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSurname"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSurname"
+                style="@style/Profile.Edit.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords|textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llName"
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llSurname">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvName"
+            style="@style/Profile.Edit.InputTitle"
+            android:labelFor="@+id/etName"
+            android:text="@string/profile_edit_user_name" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilName"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                style="@style/Profile.Edit.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords|textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llMiddleName"
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llName">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMiddleName"
+            style="@style/Profile.Edit.InputTitle"
+            android:labelFor="@+id/etMiddleName"
+            android:text="@string/profile_edit_user_middle_name" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMiddleName"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMiddleName"
+                style="@style/Profile.Edit.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords|textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/scNoMiddleName"
+        style="@style/Profile.Edit.InputTitle"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:minHeight="0dp"
+        android:text="@string/profile_edit_user_no_middle_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llMiddleName" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSave"
+        style="@style/Profile.Edit.Button"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/background_button_save"
+        android:drawableStart="@drawable/ic_save"
+        android:minEms="7"
+        android:text="@string/save"
+        android:textColor="@color/button_save_text"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/btnRevoke"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scNoMiddleName" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnRevoke"
+        style="@style/Profile.Edit.Button"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:background="@drawable/background_button_cancel"
+        android:drawableStart="@drawable/ic_revoke"
+        android:minEms="7"
+        android:text="@string/revoke"
+        android:textColor="@color/button_cancel_text"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnSave"
+        app:layout_constraintTop_toTopOf="@+id/btnSave" />
+
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSave" />
+</androidx.constraintlayout.widget.ConstraintLayout>

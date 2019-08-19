@@ -1,6 +1,5 @@
 package com.example.data.models.user
 
-import android.net.Uri
 import android.os.Parcelable
 import com.example.data.models.*
 import kotlinx.android.parcel.Parcelize
@@ -32,7 +31,6 @@ data class User(
         var user_age: Int = -1,
         var user_birthday_show: Boolean = false,
         var user_avatar: String? = null,
-        var user_avatar_uri: Uri? = null, //for update user avatar
         var user_gender: String? = null,
         var passport_country_id: String? = null,
         var passport_serial: String? = null,
@@ -87,4 +85,11 @@ data class User(
 ) : Parcelable {
     val fullName: String
         get() = "$user_name $user_last_name"
+
+    companion object {
+        const val FIELD_USER_NAME = "user_name"
+        const val FIELD_USER_LAST_NAME = "user_last_name"
+        const val FIELD_USER_MIDDLE_NAME = "user_middle_name"
+        const val FIELD_USER_AVATAR = "user_avatar"
+    }
 }

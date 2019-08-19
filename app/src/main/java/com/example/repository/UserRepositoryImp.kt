@@ -1,8 +1,12 @@
 package com.example.repository
 
+import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.AuthResponse
+import com.example.data.models.Interest
+import com.example.data.models.MarkedResponse
+import com.example.data.models.Notification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
@@ -14,6 +18,7 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import toBodyPart
 import java.io.File
 import javax.inject.Inject
 
@@ -37,7 +42,7 @@ class UserRepositoryImp
     }
 
     override fun getFcmToken(): Maybe<InstanceIdResult> {
-        return Maybe.create<InstanceIdResult> { emitter ->
+        return Maybe.create { emitter ->
             RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
         }
     }
@@ -50,17 +55,12 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
-    override fun updateUser(map: Map<String, Any?>) = call(api.updateUser(map)
+    override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data)
             .doOnSuccess { appData.setUser(it.response) })
 
-    override fun uploadAvatar(photo: String?): Completable {
-        if (photo.isNullOrEmpty()) return Completable.complete()
-        return call(api.uploadAvatar(
-                photo.let {
-                    val imageFile = File(it)
-                    val body = RequestBody.create(MediaType.parse("image/*"), imageFile)
-                    MultipartBody.Part.createFormData("file", imageFile.name, body)
-                }))
+    override fun uploadAvatar(photo: Bitmap?): Single<User> {
+        return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png"))
+                .doOnSuccess { appData.setUser(it.response) })
     }
 
     override fun uploadRecommendationFile(file: String): Single<User> {

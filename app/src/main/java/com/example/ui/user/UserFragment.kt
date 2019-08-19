@@ -2,11 +2,16 @@ package com.example.ui.user
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.PopupMenu
@@ -18,6 +23,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Interest
 import com.example.data.models.Organization
+import com.example.data.models.ProfileUserData
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
@@ -31,6 +37,7 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -70,12 +77,13 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    private val adapter = GroupAdapter<ViewHolder>()
+    private val dataSection = Section()
+    private val adapter = GroupAdapter<ViewHolder>().apply {
+        add(dataSection)
+    }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
     private lateinit var menuImageView: ImageView
-
-    private var profileUserItem: ProfileDataUserItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,23 +92,22 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    override fun setCurrentUser(user: User, interests: Map<Interest, List<Interest>>?) {
-        setUser(ProfileDataCurrentUserItem(
-                100L,
-                user.user_avatar,
-                user.fullName,
-                user.user_id,
-                {}
-        ), user, interests, true)
-    }
-
-    override fun setAnotherUser(user: User, interests: Map<Interest, List<Interest>>?) {
-        setUser(initProfileItem(user), user, interests, false)
+    override fun setUser(profileUserData: ProfileUserData) {
+        val user = profileUserData.user
+        val avatar = profileUserData.avatar
+        setUser(
+                if (profileUserData.editable) initEditableProfileItem(user, avatar)
+                else initProfileItem(user, avatar),
+                user,
+                profileUserData.interests,
+                profileUserData.editable
+        )
     }
 
     private fun setUser(headerItem: Item, user: User, interests: Map<Interest, List<Interest>>?, editable: Boolean) {
-        adapter.update(
-                mutableListOf<Group>(headerItem)
+        dataSection.setHeader(headerItem)
+        dataSection.update(
+                mutableListOf<Group>()
                         .addPersonalDataItems(user, editable)
                         .addEducation(user, editable)
                         .addWorkExperience(user, editable)
@@ -109,10 +116,42 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         )
     }
 
-    private fun initProfileItem(user: User): ProfileDataUserItem {
+    private fun initEditableProfileItem(user: User, avatar: Bitmap?): ProfileDataUserEditableItem {
+        return ProfileDataUserEditableItem(
+                HEADER_ITEM_ID,
+                avatar,
+                user.fullName,
+                user.user_id
+        ) { presenter.onEditMainDataClick() }
+    }
+
+    override fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean) {
+        if (edit) {
+            dataSection.setHeader(ProfileDataUserEditItem(
+                    HEADER_ITEM_ID,
+                    avatar,
+                    user.user_name,
+                    user.user_last_name,
+                    user.user_middle_name,
+                    { presenter.onRemoveAvatarClick() },
+                    { presenter.onEditAvatarClick() },
+                    { presenter.onEditSave(it) },
+                    { presenter.onEditMainDataCancelClick() },
+                    { presenter.onDisabledMainInputInfoClick() }
+            ))
+        } else {
+            dataSection.setHeader(initEditableProfileItem(user, avatar))
+        }
+    }
+
+    override fun changeUserAvatar(avatar: Bitmap?) {
+        dataSection.notifyItemChanged(0, avatar)
+    }
+
+    private fun initProfileItem(user: User, avatar: Bitmap?): ProfileDataUserItem {
         return ProfileDataUserItem(
-                100L,
-                user.user_avatar,
+                HEADER_ITEM_ID,
+                avatar,
                 user.fullName,
                 user.user_id,
                 when {
@@ -132,9 +171,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 {
                     presenter.onWriteMessageClick()
                 })
-                .apply {
-                    profileUserItem = this
-                }
     }
 
     private fun MutableList<Group>.addPersonalDataItems(user: User, editable: Boolean): MutableList<Group> {
@@ -236,15 +272,15 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun setActionSubscribe() {
-        profileUserItem?.notifyChanged(ACTION_SUBSCRIBE)
+        dataSection.notifyItemChanged(0, ACTION_SUBSCRIBE)
     }
 
     override fun setActionUnsubscribe() {
-        profileUserItem?.notifyChanged(ACTION_UNSUBSCRIBE)
+        dataSection.notifyItemChanged(0, ACTION_UNSUBSCRIBE)
     }
 
     override fun setActionUnblock() {
-        profileUserItem?.notifyChanged(ACTION_UNBLOCK)
+        dataSection.notifyItemChanged(0, ACTION_UNBLOCK)
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
@@ -308,10 +344,34 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 .show()
     }
 
+    override fun showTakePictureChooser() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.photo_alert_title)
+                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryRequest() }
+                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraRequest() }
+                .show()
+    }
+
+    override fun showDisabledMainInputInfo() {
+        val message = SpannableString(getString(R.string.profile_edit_name_disabled_message))
+        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+        val dialog = AlertDialog.Builder(requireContext())
+                .setTitle(R.string.profile_edit_name_disabled_title)
+                .setMessage(message)
+                .setPositiveButton(R.string.ok) { _, _ -> }
+                .show()
+
+        (dialog.findViewById(android.R.id.message) as? TextView)?.movementMethod = LinkMovementMethod.getInstance()
+    }
+
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         this.toolbarContentActionBar = toolbarContentActionBar
     }
 
     override fun layout() = R.layout.fragment_user
+
+    companion object {
+        private const val HEADER_ITEM_ID = 100L
+    }
 }

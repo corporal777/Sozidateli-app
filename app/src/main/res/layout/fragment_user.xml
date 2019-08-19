@@ -11,7 +11,6 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:descendantFocusability="beforeDescendants"
-        android:paddingBottom="100dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="1"
         tools:listitem="@layout/item_profile_data_user" />

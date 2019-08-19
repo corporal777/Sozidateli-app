@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
@@ -8,10 +9,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
+import toBodyPart
 import javax.inject.Inject
 
 
@@ -37,14 +35,11 @@ class ChatRepositoryImpl
         return call(api.chatStart(userId))
     }
 
-    override fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>> {
+    override fun uploadImage(chatId: String, bitmap: Bitmap): Single<ApiResponseUpload<UploadImage>> {
         return api.uploadChatImage(
                 chatId,
-                image.let {
-                    val imageFile = File(it)
-                    val body = RequestBody.create(MediaType.parse("image/*"), imageFile)
-                    MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
-                })
+                bitmap.toBodyPart("file[0]", "image.png")
+        )
     }
 
     override fun getChat(chatId: String): Single<UserChat> {

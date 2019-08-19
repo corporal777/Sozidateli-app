@@ -24,6 +24,6 @@
         android:imeOptions="actionDone"
         android:layout_marginTop="4dp"
         android:id="@+id/editText"
-        android:background="@drawable/background_edittext_login"/>
+        android:background="@drawable/background_input_borders"/>
 
 </LinearLayout>

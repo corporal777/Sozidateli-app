@@ -10,10 +10,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.FieldType
 import com.example.data.models.RegisterFieldResponse
+import com.example.holders.ActionButtonItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
 import com.example.util.REQUEST_CODE_SELECT_PDF
-import com.example.util.photohelper.RealPathUtil
+import com.nabinbhandari.android.permissions.PermissionHandler
+import com.nabinbhandari.android.permissions.Permissions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -22,9 +24,6 @@ import kotlinx.android.synthetic.main.fragment_request.*
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Provider
-import com.example.holders.ActionButtonItem
-import com.nabinbhandari.android.permissions.PermissionHandler
-import com.nabinbhandari.android.permissions.Permissions
 
 
 class RequestFragment : BaseFragment(), RequestContract.View {
@@ -73,7 +72,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
             }
         }
 
-        if(fieldResponse.categories.isNotEmpty()) {
+        if (fieldResponse.categories.isNotEmpty()) {
             listFields.add(RegisterEventDropDownCategoryItem(fieldResponse.categories, presenter, fieldResponse.selectedCategory))
         }
 
@@ -111,9 +110,9 @@ class RequestFragment : BaseFragment(), RequestContract.View {
                 val uri = result?.data
                 try {
                     uri?.let {
-                        presenter.onFileSelected(RealPathUtil.getPath(context, uri))
+                        presenter.onFileSelected(uri.toString())
                     }
-                } catch (e:Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                     showDialog(getString(R.string.select_file_error))
                 }

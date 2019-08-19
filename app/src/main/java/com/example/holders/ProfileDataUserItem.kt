@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.graphics.Bitmap
 import android.view.View
 import com.example.R
 import com.example.ui.views.UserSubscribeButton
@@ -9,11 +10,14 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_user.*
+import kotlinx.android.synthetic.main.item_profile_data_user.ivAvatar
+import kotlinx.android.synthetic.main.item_profile_data_user.tvName
+import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
 import setCircleImage
 
 class ProfileDataUserItem(
         id: Long,
-        private val avatar: String?,
+        private val avatar: Bitmap?,
         private val name: String,
         private val uid: Int,
         private var subscribeAction: Int,
@@ -23,7 +27,10 @@ class ProfileDataUserItem(
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
-            ivAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
+            ivAvatar.apply {
+                if (avatar != null) setImageBitmap(avatar)
+                else setImageResource(R.drawable.avatar_placeholder)
+            }
             tvName.text = name
             tvId.apply { text = resources.getString(R.string.profile_uid, uid) }
             btnAction.apply {

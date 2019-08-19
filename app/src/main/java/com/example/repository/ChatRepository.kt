@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.graphics.Bitmap
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -17,7 +18,7 @@ interface ChatRepository {
 
     fun startChat(userId: String): Single<ChatStartResponse>
 
-    fun uploadImage(chatId: String, image: String): Single<ApiResponseUpload<UploadImage>>
+    fun uploadImage(chatId: String, bitmap: Bitmap): Single<ApiResponseUpload<UploadImage>>
 
     fun getChat(chatId: String): Single<UserChat>
 

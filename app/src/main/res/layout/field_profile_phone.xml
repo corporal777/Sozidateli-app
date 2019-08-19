@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:background="@drawable/background_edittext_login"
+        android:background="@drawable/background_input_borders"
         android:minHeight="40dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp">

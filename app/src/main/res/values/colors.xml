@@ -13,6 +13,9 @@
     <color name="disabled_color">#d1d3d4</color>
     <color name="attention_action">#C73C00</color>
     <color name="toolbar_title_text">#000000</color>
+    <color name="input_border_background">#33000000</color>
+    <color name="input_border_background_disabled">#1A000000</color>
+    <color name="input_background">#FFFFFF</color>
 
     <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>
@@ -89,6 +92,7 @@
     <color name="profile_action_ban">@color/attention_action</color>
     <color name="profile_title_text">#80000000</color>
     <color name="profile_data_text">#000000</color>
+    <color name="profile_data_disabled">#979797</color>
     <color name="profile_data_text_link">@color/colorAccent</color>
     <color name="profile_section_title_text">@color/colorAccent</color>
     <color name="profile_section_subtitle_text">@color/profile_title_text</color>
@@ -102,4 +106,10 @@
     <color name="profile_new_message_background_disabled">#D8D8D8</color>
     <color name="profile_new_message_text_enabled">#FFFFFF</color>
     <color name="profile_new_message_text_disabled">#FFFFFF</color>
+
+    <color name="button_save_background">#7D9D57</color>
+    <color name="button_save_text">#FFFFFF</color>
+    <color name="button_cancel_background">#1A000000</color>
+    <color name="button_cancel_border">#1A000000</color>
+    <color name="button_cancel_text">#66000000</color>
 </resources>

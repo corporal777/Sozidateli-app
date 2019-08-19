@@ -241,11 +241,6 @@
         android:label="@string/profile_favorite" />
 
     <fragment
-        android:id="@+id/profile_edit_fragment"
-        android:name="com.example.ui.profile.profileEdit.ProfileEditFragment"
-        android:label=" " />
-
-    <fragment
         android:id="@+id/profile_setting_chat_fragment"
         android:name="com.example.ui.profile.settingChat.SettingChatFragment"
         android:label="@string/setting_chat_title" />

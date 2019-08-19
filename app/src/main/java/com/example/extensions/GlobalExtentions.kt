@@ -1,5 +1,8 @@
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.style.URLSpan
 import android.util.TypedValue
 import android.view.View
@@ -12,6 +15,10 @@ import androidx.core.text.toSpannable
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.squareup.picasso.Picasso
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.YEAR
@@ -55,6 +62,14 @@ fun TextView.removeUrlUnderline() {
     }
 }
 
+fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit) {
+    addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = onTextChanged(s)
+    })
+}
+
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
             .transform(CropCircleTransformation())
@@ -62,10 +77,14 @@ fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
             .into(this)
 }
 
+fun ImageView.setCircleImage(bitmap: Bitmap?, placeholder: Int? = null) {
+    if (bitmap == null) setImageResource(placeholder ?: return)
+    else setImageBitmap(CropCircleTransformation().transform(bitmap))
+}
+
 fun SimpleDateFormat.parseTimestamp(source: String): Long {
     return this.parse(source).time
 }
-
 
 fun Context.isConnectedToNetwork(): Boolean {
     val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
@@ -88,4 +107,16 @@ fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
 fun View.setSelectableItemBackgroundBorderless() = with(TypedValue()) {
     context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, this, true)
     setBackgroundResource(resourceId)
+}
+
+fun Bitmap.toBodyPart(name: String, fileName: String, compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): MultipartBody.Part {
+    return let { bitmap ->
+        val byteArray = ByteArrayOutputStream().let {
+            bitmap.compress(compressFormat, 100, it)
+            it.toByteArray()
+        }
+
+        val body = RequestBody.create(MediaType.parse("application/octet-stream"), byteArray)
+        MultipartBody.Part.createFormData(name, fileName, body)
+    }
 }
