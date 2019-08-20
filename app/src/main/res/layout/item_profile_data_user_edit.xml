@@ -66,25 +66,19 @@
             android:labelFor="@+id/etSurname"
             android:text="@string/profile_edit_user_surname" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.example.ui.views.ResizableIconsTexInputLayout
             android:id="@+id/tilSurname"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSurname"
                 style="@style/Profile.Edit.Input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textCapWords|textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.example.ui.views.ResizableIconsTexInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -104,26 +98,19 @@
             android:labelFor="@+id/etName"
             android:text="@string/profile_edit_user_name" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.example.ui.views.ResizableIconsTexInputLayout
             android:id="@+id/tilName"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:hintEnabled="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
                 style="@style/Profile.Edit.Input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textCapWords|textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.example.ui.views.ResizableIconsTexInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -143,26 +130,19 @@
             android:labelFor="@+id/etMiddleName"
             android:text="@string/profile_edit_user_middle_name" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.example.ui.views.ResizableIconsTexInputLayout
             android:id="@+id/tilMiddleName"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:hintEnabled="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivAvatar">
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMiddleName"
                 style="@style/Profile.Edit.Input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textCapWords|textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.example.ui.views.ResizableIconsTexInputLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat
