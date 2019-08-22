@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_email" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                style="@style/Profile.Edit.Input"
+                android:enabled="false"
+                android:hint="@string/profile_edit_email_hint"
+                android:inputType="textEmailAddress" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/scShowEmail"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_phone_work" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etWorkPhone"
+                style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_phone_hint"
+                android:inputType="phone" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/scWorkPhone"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_phone_mobile" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMobilePhone"
+                style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_phone_hint"
+                android:inputType="phone" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/scMobilePhone"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_gender" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="dropdown_menu">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvGender"
+                style="@style/Profile.Edit.Input"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_birthday" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilBirthday"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBirthday"
+                style="@style/Profile.Edit.Input"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/scBirthday"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/profile_city" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom">
+
+            <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+                android:id="@+id/etCity"
+                style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_city_hint"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSave"
+            style="@style/Profile.Edit.ActionButton"
+            android:background="@drawable/background_button_save"
+            android:drawableStart="@drawable/ic_save"
+            android:minEms="7"
+            android:text="@string/save"
+            android:textColor="@color/button_save_text"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnRevoke"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRevoke"
+            style="@style/Profile.Edit.ActionButton"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/background_button_cancel"
+            android:drawableStart="@drawable/ic_revoke"
+            android:minEms="7"
+            android:text="@string/revoke"
+            android:textColor="@color/button_cancel_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnSave"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view"
+        style="@style/ViewDivider.Horizontal" />
+</LinearLayout>

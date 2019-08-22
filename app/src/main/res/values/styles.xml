@@ -20,22 +20,20 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="buttonBarNegativeButtonStyle">@style/AlertButtonStyle</item>
-        <item name="buttonBarNeutralButtonStyle">@style/AlertButtonStyle</item>
-        <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/AlertButtonStyle</item>
-        <item name="buttonStyle">@style/AlertButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/AlertButtonStyle</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/AlertButtonStyle</item>
+        <item name="android:buttonBarButtonStyle">@style/AlertButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/AlertButtonStyle</item>
+        <item name="android:buttonStyle">@style/AlertButtonStyle</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@android:color/transparent</item>
     </style>
 
-
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/text_title</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
-
 
     <style name="AppTheme.Tabs" parent="AppTheme">
         <item name="tabGravity">fill</item>
@@ -244,7 +242,7 @@
 
     <style name="Profile.Edit" />
 
-    <style name="Profile.Edit.Button">
+    <style name="Profile.Edit.ActionButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawablePadding">8dp</item>
@@ -258,7 +256,7 @@
     </style>
 
     <style name="Profile.Edit.InputContainer">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:orientation">vertical</item>
@@ -278,6 +276,7 @@
         <item name="boxStrokeColor">@color/input_border_color</item>
         <item name="boxBackgroundColor">@color/input_background</item>
         <item name="hintEnabled">false</item>
+        <item name="errorTextColor">@color/attention_action</item>
     </style>
 
     <style name="Profile.Edit.Input">
@@ -292,6 +291,21 @@
 
     <style name="Profile.Edit.Input.Theme">
         <item name="android:colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="Profile.Edit.Switch" parent="Profile.Edit.InputTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">0dp</item>
+    </style>
+
+    <style name="Profile.Edit.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:src">@drawable/ic_profile_edit</item>
+        <item name="android:contentDescription">@string/content_description_edit</item>
     </style>
 
     <style name="UserItem" />

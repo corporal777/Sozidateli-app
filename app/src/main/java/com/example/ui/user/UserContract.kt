@@ -56,6 +56,9 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDisabledMainInputInfo()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setPersonalDataDataEditMode(user: User, edit: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -72,12 +75,15 @@ interface UserContract {
 
         fun onEditMainDataClick()
         fun onEditMainDataCancelClick()
+        fun onEditMainSaveClick(data: Map<String, Any?>)
         fun onDisabledMainInputInfoClick()
         fun onEditAvatarClick()
         fun onRemoveAvatarClick()
         fun onTakePhotoFromCameraRequest()
         fun onTakePhotoFromGalleryRequest()
 
-        fun onEditSave(data: Map<String, Any?>)
+        fun onEditPersonalDataClick()
+        fun onEditPersonalDataCancelClick()
+        fun onEditPersonalDataSaveClick(data: Map<String, Any?>)
     }
 }

@@ -1,10 +1,10 @@
 package com.example.data.models
 
-data class DataDataResponse (
-        var suggestions:List<DataDataItem>
+data class DaDataResponse (
+        var suggestions:List<DaDataItem>
 )
 
- data class DataDataItem(
+ data class DaDataItem(
         val value:String,
         val unrestricted_value:String,
         val data: DataDataInformation

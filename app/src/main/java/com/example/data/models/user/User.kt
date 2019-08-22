@@ -91,5 +91,14 @@ data class User(
         const val FIELD_USER_LAST_NAME = "user_last_name"
         const val FIELD_USER_MIDDLE_NAME = "user_middle_name"
         const val FIELD_USER_AVATAR = "user_avatar"
+        const val FIELD_USER_EMAIL = "user_email"
+        const val FIELD_USER_EMAIL_SHOW = "user_email_show"
+        const val FIELD_USER_PHONE_WORK = "user_phone_work"
+        const val FIELD_USER_PHONE_WORK_SHOW = "user_phone_work_show"
+        const val FIELD_USER_PHONE_MOBILE = "user_phone"
+        const val FIELD_USER_PHONE_MOBILE_SHOW = "user_phone_show"
+        const val FIELD_USER_GENDER = "user_gender"
+        const val FIELD_USER_BIRTHDAY = "user_birthday"
+        const val FIELD_USER_CITY = "user_address_city"
     }
 }

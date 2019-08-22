@@ -26,8 +26,7 @@ import com.example.data.models.Organization
 import com.example.data.models.ProfileUserData
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
-import com.example.extensions.defaultDateFormatter
-import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.formatToDefaultDate
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -35,6 +34,7 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -77,7 +77,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    private val dataSection = Section()
+    private val personalDataSection = Section()
+
+    private val dataSection = Section().apply {
+        add(personalDataSection)
+    }
     private val adapter = GroupAdapter<ViewHolder>().apply {
         add(dataSection)
     }
@@ -95,29 +99,29 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
         val avatar = profileUserData.avatar
-        setUser(
-                if (profileUserData.editable) initEditableProfileItem(user, avatar)
-                else initProfileItem(user, avatar),
-                user,
-                profileUserData.interests,
-                profileUserData.editable
-        )
-    }
+        val headerItem = if (profileUserData.editable) initEditableProfileItem(user, avatar, profileUserData.isEditMainData)
+        else initProfileItem(user, avatar)
+        val editable = profileUserData.editable
+        val interests = profileUserData.interests
 
-    private fun setUser(headerItem: Item, user: User, interests: Map<Interest, List<Interest>>?, editable: Boolean) {
         dataSection.setHeader(headerItem)
-        dataSection.update(
-                mutableListOf<Group>()
-                        .addPersonalDataItems(user, editable)
-                        .addEducation(user, editable)
-                        .addWorkExperience(user, editable)
-                        .addInterests(interests, editable)
-                        .addAdditionalInformation(user, editable)
-        )
+        personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable, profileUserData.isEditPersonalData)))
     }
 
-    private fun initEditableProfileItem(user: User, avatar: Bitmap?): ProfileDataUserEditableItem {
-        return ProfileDataUserEditableItem(
+    private fun initEditableProfileItem(user: User, avatar: Bitmap?, edit: Boolean): Item {
+        return if (edit) ProfileDataUserEditItem(
+                HEADER_ITEM_ID,
+                avatar,
+                user.user_name,
+                user.user_last_name,
+                user.user_middle_name,
+                { presenter.onRemoveAvatarClick() },
+                { presenter.onEditAvatarClick() },
+                { presenter.onEditMainSaveClick(it) },
+                { presenter.onEditMainDataCancelClick() },
+                { presenter.onDisabledMainInputInfoClick() }
+        )
+        else ProfileDataUserEditableItem(
                 HEADER_ITEM_ID,
                 avatar,
                 user.fullName,
@@ -126,22 +130,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean) {
-        if (edit) {
-            dataSection.setHeader(ProfileDataUserEditItem(
-                    HEADER_ITEM_ID,
-                    avatar,
-                    user.user_name,
-                    user.user_last_name,
-                    user.user_middle_name,
-                    { presenter.onRemoveAvatarClick() },
-                    { presenter.onEditAvatarClick() },
-                    { presenter.onEditSave(it) },
-                    { presenter.onEditMainDataCancelClick() },
-                    { presenter.onDisabledMainInputInfoClick() }
-            ))
-        } else {
-            dataSection.setHeader(initEditableProfileItem(user, avatar))
-        }
+        dataSection.setHeader(initEditableProfileItem(user, avatar, edit))
     }
 
     override fun changeUserAvatar(avatar: Bitmap?) {
@@ -173,27 +162,50 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 })
     }
 
-    private fun MutableList<Group>.addPersonalDataItems(user: User, editable: Boolean): MutableList<Group> {
-        val organizations: List<Organization>? = user.organisations
+    private fun initPersonalDataItem(user: User, editable: Boolean, edit: Boolean): Group? {
+        return if (editable) {
+            ProfileExpandableTitleGroup(
+                    getString(R.string.profile_title_general_info),
+                    onItemExpandChange,
+                    { presenter.onEditPersonalDataClick() }
+            ).apply {
+                titleItem.editMode = edit
+                val item = initPersonalDataContentItem(user, edit)
+                add(item)
+            }
+        } else {
+            initProfileDataPersonalItem(user, true)
+        }
+    }
+
+    private fun initPersonalDataContentItem(user: User, edit: Boolean): Item {
+        return if (edit) initProfileDataEditPersonalItem(user)
+        else initProfileDataPersonalItem(user, false)
+                ?: initProfileDataEditPersonalItem(user)
+    }
+
+    override fun setPersonalDataDataEditMode(user: User, edit: Boolean) {
+        (personalDataSection.getGroup(0) as? ProfileExpandableTitleGroup)?.apply {
+            clear()
+            add(initPersonalDataContentItem(user, edit))
+            titleItem.editMode = edit
+            if (!isExpanded) onToggleExpanded()
+        }
+    }
+
+    private fun initProfileDataPersonalItem(user: User, withOrganizations: Boolean): ProfileDataPersonalItem? {
+        val organizations: List<Organization>? = if (withOrganizations) user.organisations else null
         val email = user.user_email
         val workPhone = user.user_phone_work
         val mobilePhone = user.user_phone
         val gender = user.user_gender
-        val birthday = user.user_birthday?.let { string ->
-            val date = try {
-                defaultServerDateFormatter.parse(string)
-            } catch (e: Throwable) {
-                null
-            }
-
-            date?.let { defaultDateFormatter.format(it) }
-        }
+        val birthday = user.user_birthday?.formatToDefaultDate()
         val city = user.user_address_city
         val socialNetworks = user.user_social_links
 
         if (!organizations.isNullOrEmpty() || email != null || workPhone != null || mobilePhone != null
                 || gender != null || city != null || birthday != null || !socialNetworks.isNullOrEmpty()) {
-            this += ProfileDataPersonalItem(
+            return ProfileDataPersonalItem(
                     organizations,
                     email,
                     workPhone,
@@ -205,7 +217,25 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     onOrganizationClickListener)
         }
 
-        return this
+        return null
+    }
+
+    private fun initProfileDataEditPersonalItem(user: User): ProfileDataEditPersonalItem {
+        return ProfileDataEditPersonalItem(
+                requireContext(),
+                user.user_email,
+                user.user_email_show,
+                user.user_phone_work,
+                user.user_phone_work_show,
+                user.user_phone,
+                user.user_phone_show,
+                user.user_gender,
+                user.user_birthday,
+                user.user_address,
+                user.user_social_links,
+                { presenter.onEditMainSaveClick(it) },
+                { presenter.onEditMainDataCancelClick() }
+        )
     }
 
     private fun MutableList<Group>.addEducation(user: User, editable: Boolean): MutableList<Group> {
@@ -269,6 +299,16 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
 
         return this
+    }
+
+    private fun ExpandableGroup.getGroupChild(): List<Group> {
+        val itemsCount = groupCount
+        val childList = mutableListOf<Group>()
+        for (index in 1 until itemsCount) {
+            childList.add(getGroup(index))
+        }
+
+        return childList
     }
 
     override fun setActionSubscribe() {

@@ -18,7 +18,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAvatarChange"
-        style="@style/Profile.Edit.Button"
+        style="@style/Profile.Edit.ActionButton"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -36,7 +36,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAvatarRemove"
-        style="@style/Profile.Edit.Button"
+        style="@style/Profile.Edit.ActionButton"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/background_action_button_selector"
@@ -53,6 +53,7 @@
     <LinearLayout
         android:id="@+id/llSurname"
         style="@style/Profile.Edit.InputContainer"
+        android:layout_width="0dp"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
@@ -66,24 +67,27 @@
             android:labelFor="@+id/etSurname"
             android:text="@string/profile_edit_user_surname" />
 
-        <com.example.ui.views.ResizableIconsTexInputLayout
+        <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilSurname"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSurname"
                 style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_edit_user_surname_hint"
                 android:inputType="textCapWords|textPersonName" />
-        </com.example.ui.views.ResizableIconsTexInputLayout>
+        </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llName"
         style="@style/Profile.Edit.InputContainer"
+        android:layout_width="0dp"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
@@ -98,24 +102,27 @@
             android:labelFor="@+id/etName"
             android:text="@string/profile_edit_user_name" />
 
-        <com.example.ui.views.ResizableIconsTexInputLayout
+        <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilName"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
                 style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_edit_user_name_hint"
                 android:inputType="textCapWords|textPersonName" />
-        </com.example.ui.views.ResizableIconsTexInputLayout>
+        </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llMiddleName"
         style="@style/Profile.Edit.InputContainer"
+        android:layout_width="0dp"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
@@ -130,37 +137,31 @@
             android:labelFor="@+id/etMiddleName"
             android:text="@string/profile_edit_user_middle_name" />
 
-        <com.example.ui.views.ResizableIconsTexInputLayout
+        <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMiddleName"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMiddleName"
                 style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_edit_user_middle_name_hint"
                 android:inputType="textCapWords|textPersonName" />
-        </com.example.ui.views.ResizableIconsTexInputLayout>
-    </LinearLayout>
+        </com.example.ui.views.CustomTextInputLayout>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/scNoMiddleName"
-        style="@style/Profile.Edit.InputTitle"
-        android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:minHeight="0dp"
-        android:text="@string/profile_edit_user_no_middle_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llMiddleName" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/scNoMiddleName"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_edit_user_no_middle_name" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
-        style="@style/Profile.Edit.Button"
+        style="@style/Profile.Edit.ActionButton"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="18dp"
         android:background="@drawable/background_button_save"
@@ -174,11 +175,11 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scNoMiddleName" />
+        app:layout_constraintTop_toBottomOf="@+id/llMiddleName" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRevoke"
-        style="@style/Profile.Edit.Button"
+        style="@style/Profile.Edit.ActionButton"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:background="@drawable/background_button_cancel"

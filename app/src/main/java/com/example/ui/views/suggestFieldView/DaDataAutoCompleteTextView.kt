@@ -2,46 +2,37 @@ package com.example.ui.views.suggestFieldView
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.AdapterView
-import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
-import com.example.R
-import com.example.data.models.DataDataItem
-import com.example.data.models.DataDataResponse
+import com.example.adapters.NoFilterArrayAdapter
+import com.example.data.models.DaDataItem
+import com.example.data.models.UserAddress
 import com.example.util.SimpleTextWatcher
-import kotlinx.android.synthetic.main.image_with_badge.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SuggestFieldView : AppCompatAutoCompleteTextView, SuggestFieldViewContract.View {
+class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoCompleteTextViewContract.View {
 
-    companion object {
-        private const val CHAT_VIEW_TAG = "suggest"
-    }
+    private val mvpDelegate by lazy { MvpDelegate(this) }
 
-    private val mvpDelegate by lazy { MvpDelegate<SuggestFieldView>(this) }
-
-    @InjectPresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
-    lateinit var presenter: SuggestFieldViewPresenter
+    @InjectPresenter
+    lateinit var presenter: DaDataAutoCompleteTextViewPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<SuggestFieldViewPresenter>
+    lateinit var presenterProvider: Provider<DaDataAutoCompleteTextViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
-    fun providePresenter(): SuggestFieldViewPresenter = presenterProvider.get()
+    @ProvidePresenter
+    fun providePresenter(): DaDataAutoCompleteTextViewPresenter = presenterProvider.get()
 
-    private val adapterData = AutoSuggestAdapter(context, android.R.layout.simple_dropdown_item_1line)
+    var onDataSelectedListener: OnDataSelectedListener? = null
+
+    private val adapter = NoFilterArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
             .apply {
-                setOnItemClickListener{adapterView, view, i, l ->
-                    onItemSelected(getObject(i))
+                setOnItemClickListener { _, _, position, _ ->
+                    presenter.onItemSelected(position)
                 }
             }
 
@@ -49,30 +40,33 @@ class SuggestFieldView : AppCompatAutoCompleteTextView, SuggestFieldViewContract
         presenter.onQueryChange(it.toString())
     }
 
-    var onItemSelected: (data: DataDataItem) -> Unit = {}
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         (context.applicationContext as App).appComponent.inject(this)
-        setAdapter(adapterData)
+        setAdapter(adapter)
         addTextChangedListener(simpleTextWatcher)
     }
 
-    override fun setSuggested(list: List<DataDataItem>) {
-        adapterData.setData(list)
-        adapterData.notifyDataSetChanged()
+    override fun setSuggested(list: List<DaDataItem>) {
+        adapter.apply {
+            clear()
+            addAll(list.map { it.unrestricted_value })
+            notifyDataSetChanged()
+        }
     }
 
-
-    fun setTextWithoutListen(text:String){
+    fun setTextWithoutSearch(text: String?) {
         removeTextChangedListener(simpleTextWatcher)
         setText(text)
         addTextChangedListener(simpleTextWatcher)
     }
 
+    override fun performOnItemSelected(item: DaDataItem) {
+        onDataSelectedListener?.invoke(item)
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -87,5 +81,6 @@ class SuggestFieldView : AppCompatAutoCompleteTextView, SuggestFieldViewContract
         mvpDelegate.onDestroyView()
         mvpDelegate.onDestroy()
     }
-
 }
+
+typealias OnDataSelectedListener = (data: DaDataItem) -> Unit

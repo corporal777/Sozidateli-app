@@ -1,17 +1,20 @@
 package com.example.holders
 
 import android.graphics.drawable.TransitionDrawable
-import android.view.View
 import android.widget.TextView
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_expandable_title.*
 
 class ProfileExpandableTitleItem(
-        title: String
+        title: String,
+        private val editClickListener: OnEditClickListener?
 ) : ExpandableTitleItem(title) {
 
     var hideDividerOnExpand = true
+    var editMode = false
 
     override fun setExpanded(viewHolder: ViewHolder, isUpdate: Boolean) {
         viewHolder.container.apply {
@@ -37,7 +40,19 @@ class ProfileExpandableTitleItem(
         }
 
         viewHolder.divider.apply {
-            visibility = if (hideDividerOnExpand && isExpanded) View.INVISIBLE else View.VISIBLE
+            isInvisible = hideDividerOnExpand && isExpanded
+        }
+
+        viewHolder.btnEdit.apply {
+            if (editClickListener != null) {
+                val hide = editMode && isExpanded
+                animate().alpha(if (hide) 0f else 1f).duration = EXPAND_CHANGE_ANIMATION_DURATION.toLong()
+                setOnClickListener { editClickListener.invoke() }
+                isEnabled = !hide
+            } else {
+                setOnClickListener(null)
+                isVisible = false
+            }
         }
     }
 
@@ -49,3 +64,5 @@ class ProfileExpandableTitleItem(
         private const val EXPAND_CHANGE_ANIMATION_DURATION = 200
     }
 }
+
+typealias OnEditClickListener = () -> Unit

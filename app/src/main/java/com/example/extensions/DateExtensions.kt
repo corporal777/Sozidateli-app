@@ -34,13 +34,21 @@ val defaultDateTimeFormatterNoYear: DateFormat
     get() = SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_NO_YEAR, Locale.getDefault())
 
 fun String.formatToDefaultDate(): String? {
-    val serverDate = try {
-        defaultServerDateFormatter.parse(this)
+    return parseAndFormat(defaultServerDateFormatter, defaultDateFormatter)
+}
+
+fun String.formatToDefaultServerDate(): String? {
+    return parseAndFormat(defaultDateFormatter, defaultServerDateFormatter)
+}
+
+fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
+    val date = try {
+        parser.parse(this)
     } catch (e: ParseException) {
-        return null
+        null
     }
 
-    return defaultDateFormatter.format(serverDate)
+    return date?.let { formatter.format(it) }
 }
 
 fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: DateFormat = defaultServerDateTimeFormatter): String? {

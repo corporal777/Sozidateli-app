@@ -26,5 +26,5 @@ class RepositoryModule {
     fun organizationRepository(repository: OrganizationRepositoryImp): OrganizationRepository = repository
 
     @Provides
-    fun dataDataRepository(repository: DataDataRepositoryImp): DataDataRepository = repository
+    fun dataDataRepository(repository: DaDataRepositoryImp): DaDataRepository = repository
 }

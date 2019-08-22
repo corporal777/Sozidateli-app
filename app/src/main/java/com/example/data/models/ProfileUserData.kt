@@ -5,7 +5,8 @@ import com.example.data.models.user.UserData
 data class ProfileUserData(
         private val userData: UserData,
         val editable: Boolean,
-        var isEditMainData: Boolean = false
+        var isEditMainData: Boolean = false,
+        var isEditPersonalData: Boolean = false
 ) {
     var user
         get() = userData.user

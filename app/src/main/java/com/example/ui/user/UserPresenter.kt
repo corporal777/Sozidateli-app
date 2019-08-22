@@ -165,21 +165,20 @@ class UserPresenter
     }
 
     override fun onEditMainDataClick() {
-        if (profileUserData.editable) {
-            profileUserData.isEditMainData = true
-            compositeDisposable += profileUserData.user.user_avatar.loadAvatar()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.setMainDataEditMode(profileUserData.user, it.value, true)
-                    }, {
-                        viewState.setMainDataEditMode(profileUserData.user, null, true)
-                    })
-        }
+        profileUserData.isEditMainData = true
+        viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, true)
     }
 
     override fun onEditMainDataCancelClick() {
         profileUserData.isEditMainData = false
         viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, false)
+    }
+
+    override fun onEditMainSaveClick(data: Map<String, Any?>) {
+        onEditSave(data) {
+            profileUserData.isEditMainData = false
+            viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, false)
+        }
     }
 
     override fun onDisabledMainInputInfoClick() {
@@ -212,31 +211,53 @@ class UserPresenter
                 })
     }
 
-    override fun onEditSave(data: Map<String, Any?>) {
-        if (data.isEmpty()) return
-        if (data.containsKey(User.FIELD_USER_AVATAR)) {
-            val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
-            if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar))
-            } else {
-                updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) })
-            }
-        } else {
-            updateUser(userRepository.updateUser(data))
+    override fun onEditPersonalDataClick() {
+        profileUserData.isEditPersonalData = true
+        viewState.setPersonalDataDataEditMode(profileUserData.user, true)
+    }
+
+    override fun onEditPersonalDataCancelClick() {
+        profileUserData.isEditPersonalData = false
+        viewState.setPersonalDataDataEditMode(profileUserData.user, false)
+    }
+
+    override fun onEditPersonalDataSaveClick(data: Map<String, Any?>) {
+        onEditSave(data) {
+            profileUserData.isEditPersonalData = false
+            viewState.setPersonalDataDataEditMode(profileUserData.user, false)
         }
     }
 
-    private fun updateUser(request: Single<User>) {
+    private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Unit) {
+        if (data.isEmpty()) {
+            onComplete()
+            return
+        }
+
+        if (data.containsKey(User.FIELD_USER_AVATAR)) {
+            val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
+            if (data.size == 1) {
+                updateUser(userRepository.uploadAvatar(avatar), onComplete)
+            } else {
+                updateUser(userRepository.uploadAvatar(avatar)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
+            }
+        } else {
+            updateUser(userRepository.updateUser(data), onComplete)
+        }
+    }
+
+    private fun updateUser(request: Single<User>, onComplete: () -> Unit) {
         compositeDisposable += request.performOnBackgroundOutOnMain()
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
                 .observeOn(Schedulers.io())
                 .withLoadingDialog(viewState)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     profileUserData.user = it.first
                     profileUserData.avatar = it.second.value
-                    viewState.setUser(profileUserData)
+                    onComplete()
                 }, {
                     it.printStackTrace()
                     viewState.showToast(R.string.error_title)
