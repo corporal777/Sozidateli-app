@@ -70,7 +70,7 @@ class ProfileDataEditPersonalItem(
             }
             etCity.apply {
                 setTextWithoutSearch(mAddress.address)
-//                onDataSelectedListener = { mAddress = it.data }
+                onDataSelectedListener = { mAddress = UserAddress.fromDaDataItem(it) }
             }
 
             scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }

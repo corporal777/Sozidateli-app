@@ -24,6 +24,7 @@ import com.example.R
 import com.example.data.models.Interest
 import com.example.data.models.Organization
 import com.example.data.models.ProfileUserData
+import com.example.data.models.UserAddress
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
@@ -231,7 +232,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 user.user_phone_show,
                 user.user_gender,
                 user.user_birthday,
-                user.user_address,
+                UserAddress.fromUser(user),
                 user.user_social_links,
                 { presenter.onEditMainSaveClick(it) },
                 { presenter.onEditMainDataCancelClick() }
