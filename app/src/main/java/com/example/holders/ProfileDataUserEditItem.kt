@@ -132,7 +132,7 @@ class ProfileDataUserEditItem(
             if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)
             val middleName = if (mNoMiddleNameChecked) USER_MIDDLE_NAME_EMPTY else mMiddleName
             if (this@ProfileDataUserEditItem.middleName != middleName) put(User.FIELD_USER_MIDDLE_NAME, middleName)
-            if (avatar != mAvatar) put(User.FIELD_USER_AVATAR, mAvatar)
+            if (avatar != mAvatar) put(User.FIELD_USER_AVATAR, mAvatar ?: "")
         }
     }
 
