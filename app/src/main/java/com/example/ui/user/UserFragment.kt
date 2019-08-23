@@ -240,8 +240,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
                 user.social_links,
-                { presenter.onEditMainSaveClick(it) },
-                { presenter.onEditMainDataCancelClick() },
+                { presenter.onEditPersonalDataSaveClick(it) },
+                { presenter.onEditPersonalDataCancelClick() },
                 { presenter.onChangeEmailClick() },
                 { presenter.onChangePasswordClick() }
         )
