@@ -201,6 +201,7 @@
     <string name="profile_sn_hint">vk.com/durov</string>
     <string name="profile_sn_add">Добавить соц. сеть</string>
     <string name="profile_education">Образование ученая степень звание</string>
+    <string name="profile_education_level">Уровень образования</string>
     <string name="profile_institution">Учебное заведение</string>
     <string name="profile_work_experience">Опыт работы</string>
     <string name="profile_social_project">Социальные проекты</string>
@@ -263,6 +264,14 @@
     <string name="profile_edit_email_hint">example@email.com</string>
     <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
     <string name="profile_edit_request_error">Ошибка обновления данных</string>
+    <string-array name="profile_edit_education_levels">
+        <item>Среднее образование</item>
+        <item>Среднее профессиональное</item>
+        <item>Незаконченное высшее</item>
+        <item>Высшее</item>
+        <item>Более одного высшего</item>
+        <item>Есть ученая степень</item>
+    </string-array>
 
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>

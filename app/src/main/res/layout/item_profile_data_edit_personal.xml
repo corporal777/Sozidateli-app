@@ -149,6 +149,7 @@
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:endIconDrawable="@drawable/ic_drop_down"
             app:endIconMode="dropdown_menu">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView

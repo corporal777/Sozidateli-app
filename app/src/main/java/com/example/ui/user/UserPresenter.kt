@@ -194,7 +194,7 @@ class UserPresenter
     }
 
     override fun onRemoveAvatarClick() {
-
+        viewState.changeUserAvatar(null)
     }
 
     override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
@@ -252,14 +252,19 @@ class UserPresenter
         }
     }
 
+    override fun onEditEducationClick() {
+        profileUserData.isEditEducationData = true
+        viewState.setEducationDataDataEditMode(profileUserData.user, true)
+    }
+
     private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Unit) {
         if (data.isEmpty()) {
             onComplete()
             return
         }
 
-        if (data.containsKey(User.FIELD_USER_AVATAR)) {
-            val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
+        val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
+        if (avatar != null) {
             if (data.size == 1) {
                 updateUser(userRepository.uploadAvatar(avatar), onComplete)
             } else {

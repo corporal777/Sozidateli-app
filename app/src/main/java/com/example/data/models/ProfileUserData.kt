@@ -6,7 +6,8 @@ data class ProfileUserData(
         private val userData: UserData,
         val editable: Boolean,
         var isEditMainData: Boolean = false,
-        var isEditPersonalData: Boolean = false
+        var isEditPersonalData: Boolean = false,
+        var isEditEducationData: Boolean = false
 ) {
     var user
         get() = userData.user

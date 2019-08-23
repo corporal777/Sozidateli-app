@@ -74,6 +74,9 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setEducationDataDataEditMode(user: User, edit: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -104,5 +107,7 @@ interface UserContract {
         fun onChangeEmailConfirm(email: String)
         fun onChangePasswordClick()
         fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
+
+        fun onEditEducationClick()
     }
 }

@@ -121,6 +121,6 @@ class RetrofitModule {
     @Provides
     @Singleton
     fun provideGson(): Gson {
-        return GsonBuilder().create()
+        return GsonBuilder().serializeNulls().create()
     }
 }

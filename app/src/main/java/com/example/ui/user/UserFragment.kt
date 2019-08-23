@@ -23,10 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Interest
-import com.example.data.models.Organization
-import com.example.data.models.ProfileUserData
-import com.example.data.models.UserAddress
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
@@ -84,9 +81,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private val personalDataSection = Section()
+    private val educationDataSection = Section()
 
     private val dataSection = Section().apply {
         add(personalDataSection)
+        add(educationDataSection)
     }
     private val adapter = GroupAdapter<ViewHolder>().apply {
         add(dataSection)
@@ -112,6 +111,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
         dataSection.setHeader(headerItem)
         personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable, profileUserData.isEditPersonalData)))
+        educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable, profileUserData.isEditEducationData)))
     }
 
     private fun initEditableProfileItem(user: User, avatar: Bitmap?, edit: Boolean): Item {
@@ -140,7 +140,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun changeUserAvatar(avatar: Bitmap?) {
-        dataSection.notifyItemChanged(0, avatar)
+        dataSection.notifyItemChanged(0, avatar.asOptional())
     }
 
     private fun initProfileItem(user: User, avatar: Bitmap?): ProfileDataUserItem {
@@ -247,14 +247,28 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         )
     }
 
-    private fun MutableList<Group>.addEducation(user: User, editable: Boolean): MutableList<Group> {
-        val education = user.education
-        if (!education.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_title_education), onItemExpandChange).apply {
-                addAll(education.mapIndexed { index, socialRoles -> ProfileDataEducationItem(socialRoles, index == 0) })
-            }
+    override fun setEducationDataDataEditMode(user: User, edit: Boolean) {
+        (educationDataSection.getGroup(0) as? ProfileExpandableTitleGroup)?.apply {
+            clear()
+            add(ProfileEducationGroup(user.user_education, edit))
+            titleItem.editMode = edit
+            if (!isExpanded) onToggleExpanded()
         }
-        return this
+    }
+
+    private fun initEducationDataItem(user: User, editable: Boolean, edit: Boolean): Group? {
+        val education = user.education
+        return if (!education.isNullOrEmpty() || editable) {
+            ProfileExpandableTitleGroup(
+                    getString(R.string.profile_title_education),
+                    onItemExpandChange,
+                    { presenter.onEditEducationClick() }
+            ).apply {
+                titleItem.editMode = edit
+                add(ProfileEducationGroup(user.user_education, edit))
+//                addAll(education.mapIndexed { index, socialRoles -> ProfileDataEducationItem(socialRoles, index == 0) })
+            }
+        } else null
     }
 
     private fun MutableList<Group>.addWorkExperience(user: User, editable: Boolean): MutableList<Group> {

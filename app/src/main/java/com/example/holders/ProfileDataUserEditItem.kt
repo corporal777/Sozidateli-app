@@ -3,6 +3,7 @@ package com.example.holders
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import com.example.R
+import com.example.data.models.Optional
 import com.example.data.models.user.User
 import com.example.util.USER_MIDDLE_NAME_EMPTY
 import com.google.android.material.textfield.TextInputLayout
@@ -74,7 +75,7 @@ class ProfileDataUserEditItem(
     }
 
     override fun bind(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.size > 0) setAvatar(holder, payloads.getOrNull(0) as Bitmap?)
+        if (payloads.size > 0) setAvatar(holder, (payloads.getOrNull(0) as Optional<*>).value as? Bitmap)
         else super.bind(holder, position, payloads)
     }
 
