@@ -62,6 +62,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     testOptions {
         unitTests.includeAndroidResources = true
     }
@@ -101,11 +105,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.0.2'
 
     // google
-    implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.google.firebase:firebase-firestore:17.1.4'
-    implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     // navigation
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
@@ -156,7 +158,6 @@ dependencies {
     implementation 'com.hbb20:ccp:2.2.9'
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
     implementation 'me.srodrigo:androidhintspinner:1.0.0'
-    implementation 'io.michaelrocks:libphonenumber-android:8.10.7'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
@@ -165,18 +166,19 @@ dependencies {
     //utils
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
-    implementation 'com.github.qingmei2:rximagepicker:2.2.0'
+    implementation 'com.github.qingmei2:rximagepicker:2.5.1'
     implementation 'com.isseiaoki:simplecropview:1.1.8'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'org.bitbucket.houseofapps:chatlibrary-android:0.3.1'
 //    implementation project(':chat')
+    implementation 'io.michaelrocks:libphonenumber-android:8.10.16'
 
 
     // network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
     implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
     // sn

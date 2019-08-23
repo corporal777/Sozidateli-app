@@ -31,7 +31,11 @@ class DataDataRetrofitModule {
                 .writeTimeout(1, TimeUnit.MINUTES)
 
         if (BuildConfig.DEBUG) {
-            val logInterceptor = HttpLoggingInterceptor { message -> Timber.tag("DA_DATA").d(message) }
+            val logInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+                override fun log(message: String) {
+                    Timber.tag("DA_DATA").d(message)
+                }
+            })
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
         }

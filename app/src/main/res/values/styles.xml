@@ -25,6 +25,11 @@
         <item name="android:buttonBarButtonStyle">@style/AlertButtonStyle</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/AlertButtonStyle</item>
         <item name="android:buttonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonBarButtonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonStyle">@style/AlertButtonStyle</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@android:color/transparent</item>
     </style>
@@ -258,7 +263,7 @@
     <style name="Profile.Edit.InputContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginTop">12dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
@@ -285,8 +290,9 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text_color_profile_data</item>
         <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="Profile.Edit.Input.Theme">
@@ -296,6 +302,7 @@
     <style name="Profile.Edit.Switch" parent="Profile.Edit.InputTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:minHeight">0dp</item>
+        <item name="android:colorControlActivated">#FFF</item>
     </style>
 
     <style name="Profile.Edit.Button">

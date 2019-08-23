@@ -16,8 +16,10 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.squareup.picasso.Picasso
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -116,7 +118,7 @@ fun Bitmap.toBodyPart(name: String, fileName: String, compressFormat: Bitmap.Com
             it.toByteArray()
         }
 
-        val body = RequestBody.create(MediaType.parse("application/octet-stream"), byteArray)
+        val body = byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
         MultipartBody.Part.createFormData(name, fileName, body)
     }
 }

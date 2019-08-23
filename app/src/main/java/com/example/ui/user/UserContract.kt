@@ -59,6 +59,21 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun setPersonalDataDataEditMode(user: User, edit: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChangeEmail()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChangeEmailComplete(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChangePassword()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPasswordChangeComplete()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showUpdateError(message: String? = null)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -85,5 +100,9 @@ interface UserContract {
         fun onEditPersonalDataClick()
         fun onEditPersonalDataCancelClick()
         fun onEditPersonalDataSaveClick(data: Map<String, Any?>)
+        fun onChangeEmailClick()
+        fun onChangeEmailConfirm(email: String)
+        fun onChangePasswordClick()
+        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
     }
 }

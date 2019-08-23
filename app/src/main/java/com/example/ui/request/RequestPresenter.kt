@@ -13,8 +13,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.internal.operators.completable.CompletableFromAction
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -75,11 +78,11 @@ class RequestPresenter
 
         if (value != null) {
             if (value is File) {
-                requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), value)
+                requestBody = value.asRequestBody("application/octet-stream".toMediaTypeOrNull())
                 files[field] = MultipartBody.Part.createFormData(field, value.name, requestBody)
                 //data.remove(fieldForRemove)
             } else {
-                requestBody = RequestBody.create(MediaType.parse("text/plain"), value.toString())
+                requestBody = value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 data[field] = requestBody
             }
         }

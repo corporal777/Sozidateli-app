@@ -14,7 +14,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_INVITE
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.IMAGE_MAX_SIZE_CHAT
-import com.example.util.chat.ChatHelper
+import com.example.util.ChatHelper
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.Completable

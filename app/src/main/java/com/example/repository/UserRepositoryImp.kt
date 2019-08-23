@@ -16,8 +16,10 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import toBodyPart
 import java.io.File
 import javax.inject.Inject
@@ -67,7 +69,7 @@ class UserRepositoryImp
         return call(api.uploadDocument(
                 file.let {
                     val imageFile = File(it)
-                    val body = RequestBody.create(MediaType.parse("application/pdf"), imageFile)
+                    val body = imageFile.asRequestBody("application/pdf".toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
     }

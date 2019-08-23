@@ -12,6 +12,7 @@
 
     <string name="content_description_avatar">Аватар</string>
     <string name="content_description_edit">Изменить</string>
+    <string name="content_description_delete">Удалить</string>
 
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Рекомендуемые</string>
@@ -197,6 +198,8 @@
     <string name="profile_city">Город:</string>
     <string name="profile_city_hint">Москва</string>
     <string name="profile_sn">Социальные сети:</string>
+    <string name="profile_sn_hint">vk.com/durov</string>
+    <string name="profile_sn_add">Добавить соц. сеть</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_institution">Учебное заведение</string>
     <string name="profile_work_experience">Опыт работы</string>
@@ -211,10 +214,12 @@
     <string name="profile_sn_label">Ссылка на профиль</string>
     <string name="profile_date_start">Дата начала </string>
     <string name="profile_date_end">Дата окончания </string>
-    <string name="profile_old_password">Старый пароль</string>
-    <string name="profile_new_password">Новый пароль</string>
+    <string name="profile_password_change">Изменить пароль</string>
+    <string name="profile_password_change_complete">Пароль успешно изменен</string>
+    <string name="profile_password_old">Старый пароль</string>
+    <string name="profile_password_new">Новый пароль</string>
+    <string name="profile_password_hint">********</string>
     <string name="profile_confirm_new_password">Подтвердите новый пароль</string>
-    <string name="profile_password_success_change">Пароль успешно изменен</string>
     <string name="profile_attached_file">Файлы рекоммендаций</string>
     <string name="profile_attached_file_name">Название</string>
     <string name="profile_attached_file_desc">Описание</string>
@@ -234,6 +239,8 @@
     <string name="profile_social_project_role">Должность</string>
     <string name="profile_social_project_description">Описание</string>
     <string name="profile_email">E-mail:</string>
+    <string name="profile_email_change">Изменить e-mail</string>
+    <string name="profile_email_change_message">На указанный e-mail будет отправлено письмо с ссылкой для подтверждения. Пожалуйста, перейдите по этой ссылке.</string>
     <string name="profile_title_general_info">Общая информация</string>
     <string name="profile_title_education">Образование</string>
     <string name="profile_dates">%s по %s</string>
@@ -254,6 +261,8 @@
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
     <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста обратитесь в нашу службу поддержки: support@sozidateli.ru</string>
     <string name="profile_edit_email_hint">example@email.com</string>
+    <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
+    <string name="profile_edit_request_error">Ошибка обновления данных</string>
 
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>
@@ -295,6 +304,8 @@
     <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
+    <string name="invalid_phone_number_error">Введите правильный номер</string>
+    <string name="passwords_do_not_match">Пароли не совпадают</string>
 
     <string name="no_internet_dialog_title">Ошибка</string>
     <string name="no_internet_dialog_message">Отсутствует подключение к сети</string>

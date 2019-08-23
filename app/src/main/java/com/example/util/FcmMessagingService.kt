@@ -5,7 +5,6 @@ import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.prefs.AppPrefs
 import com.example.repository.ChatRepository
-import com.example.util.chat.ChatHelper
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
@@ -31,12 +30,8 @@ class FcmMessagingService : FirebaseMessagingService() {
         super.onCreate()
     }
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        remoteMessage?.let { sendNotification(it) }
-    }
-
-    override fun onNewToken(p0: String?) {
-
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        sendNotification(remoteMessage)
     }
 
     @SuppressLint("CheckResult")

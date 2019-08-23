@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.data.models.UserEvent
 
-@Database(entities = [UserEvent::class], version = 1)
+@Database(entities = [UserEvent::class], version = 1, exportSchema = false)
 abstract class Db : RoomDatabase() {
 
     abstract fun userEventDao(): UserEventDao

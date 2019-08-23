@@ -59,18 +59,21 @@ class RetrofitModule {
         clientBuilder.addInterceptor(authInterceptor)
 
         if (BuildConfig.DEBUG) {
-            val logInterceptor = HttpLoggingInterceptor { message -> Timber.tag("API_T").d(message) }
+            val logInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+                override fun log(message: String) {
+                    Timber.tag("API_T").d(message)
+                }
+            })
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
         }
 
         clientBuilder.addNetworkInterceptor {
             val response = it.proceed(it.request())
-            val cacheControl: CacheControl
-            if (context.isConnectedToNetwork()) {
-                cacheControl = CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
+            val cacheControl: CacheControl = if (context.isConnectedToNetwork()) {
+                CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
             } else {
-                cacheControl = CacheControl.Builder()
+                CacheControl.Builder()
                         .maxStale(7, TimeUnit.DAYS)
                         .build()
             }

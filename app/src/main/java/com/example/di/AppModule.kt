@@ -8,9 +8,8 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
-import com.example.util.chat.ChatHelper
+import com.example.util.ChatHelper
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
@@ -24,9 +23,6 @@ class AppModule {
 
     @Provides
     fun provideContext(app: Application): Context = app
-
-    @Provides
-    fun provideFireStore() = FirebaseFirestore.getInstance()
 
     @Provides
     @Singleton

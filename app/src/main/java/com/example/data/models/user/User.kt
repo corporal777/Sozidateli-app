@@ -1,10 +1,7 @@
 package com.example.data.models.user
 
-import android.os.Parcelable
 import com.example.data.models.*
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class User(
         var user_id: Int = -1,
         var user_created: String = "",
@@ -52,7 +49,7 @@ data class User(
         var user_description: String? = null,
         var user_social_links: List<String>? = null,
         var emails: ArrayList<Value>? = null,
-        var social_links: ArrayList<Value>? = null,
+        var social_links: List<UserDataSocialLink>? = null,
         var interests: ArrayList<Interest>? = null,
         var academic_degree: ArrayList<Value>? = null,
         var memberships: ArrayList<Value>? = null,
@@ -72,17 +69,12 @@ data class User(
         var notification_unread: Int = -1,
 //        var event_status: String? = null,
 
-        //support field
-        var isEmailChanged: Boolean = false,
-        var new_email: String? = null,
-
-
         //for search chat
         var is_in_favorite: Boolean = false,
         var is_has_chat: Boolean = false
 
 
-) : Parcelable {
+) {
     val fullName: String
         get() = "$user_name $user_last_name"
 
@@ -99,6 +91,20 @@ data class User(
         const val FIELD_USER_PHONE_MOBILE_SHOW = "user_phone_show"
         const val FIELD_USER_GENDER = "user_gender"
         const val FIELD_USER_BIRTHDAY = "user_birthday"
-        const val FIELD_USER_CITY = "user_address_city"
+        const val FIELD_USER_BIRTHDAY_SHOW = "user_birthday_show"
+        const val FIELD_USER_ADDRESS = "user_address"
+        const val FIELD_USER_ADDRESS_INDEX = "user_address_index"
+        const val FIELD_USER_ADDRESS_COUNTRY = "user_address_country"
+        const val FIELD_USER_ADDRESS_REGION = "user_address_region"
+        const val FIELD_USER_ADDRESS_AREA = "user_address_area"
+        const val FIELD_USER_ADDRESS_CITY = "user_address_city"
+        const val FIELD_USER_ADDRESS_DISTRICT = "user_address_district"
+        const val FIELD_USER_ADDRESS_SETTLEMENT = "user_address_settlement"
+        const val FIELD_USER_ADDRESS_STREET = "user_address_street"
+        const val FIELD_USER_ADDRESS_HOUSE = "user_address_house"
+        const val FIELD_USER_ADDRESS_FLAT = "user_address_flat"
+        const val FIELD_SOCIAL_LINKS = "social_links"
+        const val FIELD_USER_OLD_PASSWORD = "user_old_password"
+        const val FIELD_USER_NEW_PASSWORD = "user_new_password"
     }
 }

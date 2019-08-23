@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        android:layout_marginTop="0dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -39,15 +38,55 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--suppress AndroidUnknownAttribute -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnChangeEmail"
+            fontPath="fonts/OpenSans-Bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:minHeight="36dp"
+            android:layout_marginEnd="12dp"
+            android:background="?selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/profile_email_change"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp" />
+
+        <!--suppress AndroidUnknownAttribute -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnChangePassword"
+            fontPath="fonts/OpenSans-Bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:minHeight="36dp"
+            android:background="?selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/profile_password_change"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
             android:text="@string/profile_phone_work" />
 
         <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilWorkPhone"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,6 +97,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWorkPhone"
                 style="@style/Profile.Edit.Input"
+                android:digits=" 0123456789()-+"
                 android:hint="@string/profile_phone_hint"
                 android:inputType="phone" />
         </com.example.ui.views.CustomTextInputLayout>
@@ -69,15 +109,14 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
             android:text="@string/profile_phone_mobile" />
 
         <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilMobilePhone"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,13 +134,12 @@
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/scMobilePhone"
             style="@style/Profile.Edit.Switch"
+            tools:checked="true"
             android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -126,8 +164,7 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        android:layout_marginTop="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -151,13 +188,12 @@
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/scBirthday"
             style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
             android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default">
+        style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -167,22 +203,57 @@
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:endIconMode="custom">
+            app:endIconMode="none">
 
             <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
                 android:id="@+id/etCity"
                 style="@style/Profile.Edit.Input"
                 android:hint="@string/profile_city_hint"
+                android:inputType="textCapSentences"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp" />
         </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginEnd="0dp"
+        style="@style/Profile.Edit.InputContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:text="@string/profile_sn" />
+
+        <LinearLayout
+            android:id="@+id/llSocialNetworks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:id="@+id/btnSocialNetworkAdd"
+            style="@style/Profile.Edit.ActionButton"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/background_action_button_selector"
+            android:drawableStart="@drawable/ic_add_sn"
+            android:text="@string/profile_sn_add"
+            android:textColor="@color/text_color_action_button"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/btnAvatarRemove"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+            app:layout_constraintVertical_chainStyle="packed" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:orientation="horizontal">
 
@@ -220,5 +291,6 @@
 
     <View
         android:id="@+id/view"
-        style="@style/ViewDivider.Horizontal" />
+        style="@style/ViewDivider.Horizontal"
+        android:layout_marginTop="24dp" />
 </LinearLayout>

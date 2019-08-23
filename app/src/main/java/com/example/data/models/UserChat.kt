@@ -1,12 +1,9 @@
 package com.example.data.models
 
-import android.os.Parcelable
 import com.example.data.models.user.User
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 import ru.houseofapps.chat.models.Message
 
-@Parcelize
 data class UserChat(
         val id: Int,
         @SerializedName("user_recepient")
@@ -37,4 +34,4 @@ data class UserChat(
         @SerializedName("is_event_chat")
         var isEventChat: Boolean,
         var unreadMessageCount: Int = 0
-) : Parcelable
+)

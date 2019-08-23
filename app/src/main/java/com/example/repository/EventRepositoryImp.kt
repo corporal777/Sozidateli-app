@@ -9,8 +9,10 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -49,7 +51,7 @@ class EventRepositoryImp
     }
 
     override fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
-        return call(api.eventRegister(eventId, fields.let { if (it.isNullOrEmpty()) hashMapOf("_" to RequestBody.create(MediaType.parse("text/plain"), "_")) else it }, files.let { if (it.isNullOrEmpty()) null else it }))
+        return call(api.eventRegister(eventId, fields.let { if (it.isNullOrEmpty()) hashMapOf("_" to "_".toRequestBody("text/plain".toMediaTypeOrNull())) else it }, files.let { if (it.isNullOrEmpty()) null else it }))
     }
 
     override fun getEventRegister(eventId: Int): Single<EventRegisterResponse> {

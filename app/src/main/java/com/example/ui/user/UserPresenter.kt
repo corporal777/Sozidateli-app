@@ -2,7 +2,6 @@ package com.example.ui.user
 
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
-import com.example.R
 import com.example.data.AppData
 import com.example.data.models.Interest
 import com.example.data.models.Optional
@@ -14,6 +13,7 @@ import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.AuthValidateUtil
 import com.example.util.CropCircleTransformation
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
@@ -228,6 +228,30 @@ class UserPresenter
         }
     }
 
+    override fun onChangeEmailClick() {
+        viewState.showChangeEmail()
+    }
+
+    override fun onChangeEmailConfirm(email: String) {
+        if (AuthValidateUtil.isValidEmail(email)) {
+            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
+                viewState.showChangeEmailComplete(email)
+            }
+        } else {
+            viewState.showUpdateError()
+        }
+    }
+
+    override fun onChangePasswordClick() {
+        viewState.showChangePassword()
+    }
+
+    override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
+        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
+            viewState.showPasswordChangeComplete()
+        }
+    }
+
     private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Unit) {
         if (data.isEmpty()) {
             onComplete()
@@ -260,7 +284,7 @@ class UserPresenter
                     onComplete()
                 }, {
                     it.printStackTrace()
-                    viewState.showToast(R.string.error_title)
+                    viewState.showUpdateError(it.message)
                 })
     }
 

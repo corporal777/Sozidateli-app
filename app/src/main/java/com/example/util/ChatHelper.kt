@@ -1,4 +1,4 @@
-package com.example.util.chat
+package com.example.util
 
 import android.app.PendingIntent
 import android.content.Context
@@ -7,7 +7,6 @@ import androidx.annotation.MainThread
 import androidx.core.os.bundleOf
 import com.example.R
 import com.example.ui.main.MainActivity
-import com.example.util.*
 
 class ChatHelper(private val context: Context) {
 

@@ -101,7 +101,7 @@
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
     </fragment>
-    <include app:graph="@navigation/about_event_navigation" />
+<!--    <include app:graph="@navigation/about_event_navigation" />-->
     <include app:graph="@navigation/search_navigation" />
 
     <fragment
