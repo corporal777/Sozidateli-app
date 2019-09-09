@@ -3,7 +3,7 @@ package com.example.di
 import com.example.ui.about.AboutFragment
 import com.example.ui.aboutEvent.AboutEventFragment
 import com.example.ui.aboutForum.AboutForumFragment
-import com.example.ui.auth.login.LoginFragment
+import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.RegisterFragment
@@ -66,7 +66,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeFirsFragment(): ChatFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeLoginFragment(): LoginFragment
+    abstract fun contributeLoginFragment(): AuthorizationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeLoginEmailFragment(): LoginEmailFragment

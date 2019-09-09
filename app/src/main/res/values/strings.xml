@@ -13,6 +13,9 @@
     <string name="content_description_avatar">Аватар</string>
     <string name="content_description_edit">Изменить</string>
     <string name="content_description_delete">Удалить</string>
+    <string name="content_description_logo">@string/app_name</string>
+    <string name="content_description_facebook">Facebook</string>
+    <string name="content_description_vk">Vk</string>
 
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Рекомендуемые</string>
@@ -28,8 +31,10 @@
     <string name="event_status_finished">Завершено</string>
     <string name="event_status_decline">Отклонено</string>
 
-    <string name="auth_title_login">Сообщество лидеров социальных проектов</string>
-    <string name="auth_label_choose_login">Войти с помощью</string>
+    <string name="auth_title_login">Присоединяйтесь\nк Сообществу лидеров\nсоциальных проектов</string>
+    <string name="auth_with_social_network">С помощью социальных сетей</string>
+    <string name="auth_with_email">С помощью электронной почты</string>
+    <string name="auth_or_login">Или войдите,\nесли у вас уже есть аккаунт</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
     <string name="auth_hint_password">Пароль</string>

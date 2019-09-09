@@ -59,6 +59,7 @@
     <color name="auth_vk_color">#5376a3</color>
     <color name="auth_ok_color">#ed812b</color>
     <color name="auth_email_color">#bd9b72</color>
+    <color name="auth_background_overlay">#80000000</color>
     <color name="password_hint_correct_text">#2bb673</color>
     <color name="password_hint_invalid_text">#F44336</color>
 

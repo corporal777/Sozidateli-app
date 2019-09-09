@@ -13,6 +13,7 @@ import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_REQUEST_COUNT
+import com.example.util.AuthBackground
 import com.example.util.UserEventLoadingHelper
 import com.example.util.ChatHelper
 import io.reactivex.*
@@ -78,6 +79,8 @@ class MainPresenter
 
                                         checkIntent()
                                     }
+
+                                    AuthBackground.clear()
                                 }, {
                                     it.printStackTrace()
                                     isAuthRequired = true
@@ -262,6 +265,7 @@ class MainPresenter
         super.onDestroy()
         unsubscribeChat()
         chatHelper.currentChatId = null
+        AuthBackground.clear()
     }
 
     override fun onOpenStartDestination() {

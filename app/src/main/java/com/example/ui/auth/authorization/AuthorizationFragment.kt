@@ -1,4 +1,4 @@
-package com.example.ui.auth.login
+package com.example.ui.auth.authorization
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,34 +8,37 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.snAuth.SnType
+import com.example.util.AuthBackground
 import com.example.util.AuthValidateUtil
 import com.example.util.SimpleTextWatcher
 import com.vk.sdk.VKScope
 import kotlinx.android.synthetic.main.dialog_email_set_social_network.view.*
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_authorization.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginFragment : BaseFragment(), LoginContract.View {
+class AuthorizationFragment : BaseFragment(), AuthorizationContract.View, BackgroundImageFragment {
 
     @InjectPresenter
-    lateinit var presenter: LoginPresenter
+    lateinit var presenter: AuthorizationPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<LoginPresenter>
+    lateinit var presenterProvider: Provider<AuthorizationPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): LoginPresenter = presenterProvider.get()
+    fun providePresenter(): AuthorizationPresenter = presenterProvider.get()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flFbAuth.setOnClickListener { presenter.onClickFb() }
-        flVkAuth.setOnClickListener { presenter.onClickVk() }
-        flOkAuth.setOnClickListener { presenter.onClickOk() }
-        flEmailAuth.setOnClickListener { presenter.onClickEmail() }
+        ibFacebook.setOnClickListener { presenter.onFbClick() }
+        ibVk.setOnClickListener { presenter.onVkClick() }
+        ibOk.setOnClickListener { presenter.onOkClick() }
+        ibEmail.setOnClickListener { presenter.onEmailClick() }
+        ibLogin.setOnClickListener { presenter.onLoginClick() }
     }
 
     override fun startVkAuthorization() {
@@ -50,7 +53,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         SnAuthManager.startAuthOk(requireContext())
     }
 
-    override fun showSocialNetworkSetEmail(snType: SnType, email: String?,token:String) {
+    override fun showSocialNetworkSetEmail(snType: SnType, email: String?, token: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_email_set_social_network, null, false)
         val alert = AlertDialog.Builder(context!!)
                 .setTitle(R.string.auth_sn_set_email_title)
@@ -61,7 +64,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         view.btnCancel.setOnClickListener { alert.dismiss() }
 
         view.btnSave.setOnClickListener {
-            presenter.onClickSetSocialNetworkEmail(snType, view.etEmail.text.toString(),token)
+            presenter.onClickSetSocialNetworkEmail(snType, view.etEmail.text.toString(), token)
             alert.dismiss()
         }
 
@@ -79,8 +82,10 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     }
 
     override fun showLogin() {
-        findNavController().navigate(LoginFragmentDirections.loginToLoginEmailAction(null, null, false, false))
+        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction(null, null, false, false))
     }
 
-    override fun layout() = R.layout.fragment_login
+    override fun getFragmentBackgroundDrawable() = AuthBackground.get(resources)
+
+    override fun layout() = R.layout.fragment_authorization
 }

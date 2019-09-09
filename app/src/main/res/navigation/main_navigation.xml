@@ -11,8 +11,8 @@
         tools:layout="@layout/fragment_splash" />
 
     <fragment
-        android:id="@+id/login_fragment"
-        android:name="com.example.ui.auth.login.LoginFragment"
+        android:id="@+id/authorization_fragment"
+        android:name="com.example.ui.auth.authorization.AuthorizationFragment"
         android:label="Login">
 
         <action

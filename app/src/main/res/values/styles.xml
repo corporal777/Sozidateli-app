@@ -15,6 +15,8 @@
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:windowBackground">@color/main_background</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -100,6 +102,23 @@
 
     <style name="ViewBackgroundAttention">
         <item name="viewBackground">@color/attention_action</item>
+    </style>
+
+    <style name="ViewBackgroundSave">
+        <item name="viewBackground">@color/button_save_background</item>
+    </style>
+
+    <style name="ViewBackgroundFacebook">
+        <item name="viewBackground">@color/auth_fb_color</item>
+    </style>
+
+    <style name="ViewBackgroundVk">
+        <item name="viewBackground">@color/auth_vk_color</item>
+    </style>
+
+
+    <style name="ViewBackgroundOk">
+        <item name="viewBackground">@color/auth_ok_color</item>
     </style>
 
     <style name="InputBorder">

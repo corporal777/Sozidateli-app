@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="240dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="48dp"
+            android:contentDescription="@string/content_description_logo"
+            android:src="@drawable/ic_app_logo_white"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
+
+        <TextView
+            android:id="@+id/textView"
+            fontPath="fonts/OpenSans-Semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/auth_title_login"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/llSocialNetworks"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+            tools:ignore="MissingPrefix" />
+
+        <LinearLayout
+            android:id="@+id/llSocialNetworks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/llEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <TextView
+                android:id="@+id/tvSocialNetworks"
+                fontPath="fonts/OpenSans-Semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/auth_with_social_network"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_facebook"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_facebook"
+                android:theme="@style/ViewBackgroundFacebook" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibVk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_vk"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_vk"
+                android:theme="@style/ViewBackgroundVk" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibOk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_vk"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_ok"
+                android:theme="@style/ViewBackgroundOk" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/llLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llSocialNetworks">
+
+            <TextView
+                android:id="@+id/tvEmail"
+                fontPath="fonts/OpenSans-Semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/auth_with_email"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_vk"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_email"
+                android:theme="@style/ViewBackgroundAttention" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llEmail">
+
+            <TextView
+                android:id="@+id/tvLogin"
+                fontPath="fonts/OpenSans-Semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/auth_or_login"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                tools:ignore="MissingPrefix" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ibLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_corners"
+                android:minHeight="48dp"
+                android:text="@string/auth_label_login"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:theme="@style/ViewBackgroundAccent" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

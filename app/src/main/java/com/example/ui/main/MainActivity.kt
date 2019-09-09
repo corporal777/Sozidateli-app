@@ -22,9 +22,10 @@ import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.OnBackPressedListener
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.login.LoginFragment
+import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.eventTabs.EventTabsFragment
@@ -37,7 +38,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
@@ -54,7 +54,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val startDestinations = arrayOf(
             R.id.event_list_fragment,
-            R.id.login_fragment,
+            R.id.authorization_fragment,
             R.id.splash_fragment,
             R.id.event_tabs_fragment
     )
@@ -68,7 +68,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             presenter.apply {
                 when (f) {
                     is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
-                    is SplashFragment, is LoginFragment, is EventListFragment, is EventTabsFragment -> onOpenStartDestination()
+                    is SplashFragment, is AuthorizationFragment, is EventListFragment, is EventTabsFragment -> onOpenStartDestination()
                     else -> onOpenNotStartDestination()
                 }
             }
@@ -80,6 +80,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             } else {
                 hideToolbar()
             }
+
+            content.background = if (f is BackgroundImageFragment) f.getFragmentBackgroundDrawable() else null
         }
     }
 
@@ -233,10 +235,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showGreetings() = findNavController().navigate(R.id.welcome_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.login_fragment, true)
+            .setPopUpTo(R.id.authorization_fragment, true)
             .build())
 
-    override fun showLogin() = findNavController().navigate(R.id.login_fragment, null, NavOptions.Builder()
+    override fun showLogin() = findNavController().navigate(R.id.authorization_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.splash_fragment, true)
             .build())
 

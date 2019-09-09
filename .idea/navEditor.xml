@@ -418,6 +418,27 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="authorization_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1472" />
+                            <option name="y" value="46" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="login_to_login_email_action">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="banned_fragment">
                     <value>
                       <LayoutPositions>
@@ -610,27 +631,6 @@
                               </value>
                             </entry>
                             <entry key="login_email_to_register_action">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="login_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="1472" />
-                            <option name="y" value="46" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="login_to_login_email_action">
                               <value>
                                 <LayoutPositions />
                               </value>

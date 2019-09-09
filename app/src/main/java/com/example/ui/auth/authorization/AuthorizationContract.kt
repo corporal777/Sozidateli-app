@@ -1,11 +1,11 @@
-package com.example.ui.auth.login
+package com.example.ui.auth.authorization
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.ui.snAuth.SnType
 
-interface LoginContract {
+interface AuthorizationContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun startVkAuthorization()
@@ -20,17 +20,19 @@ interface LoginContract {
         fun showLogin()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSocialNetworkSetEmail(snType:SnType,email:String?,token:String)
+        fun showSocialNetworkSetEmail(snType: SnType, email: String?, token: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNeedConfirmEmailDialog(email: String?)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onClickVk()
-        fun onClickFb()
-        fun onClickOk()
-        fun onClickEmail()
-        fun onClickSetSocialNetworkEmail(snType: SnType,email:String,token:String)
+        fun onVkClick()
+        fun onFbClick()
+        fun onOkClick()
+        fun onEmailClick()
+        fun onLoginClick()
+
+        fun onClickSetSocialNetworkEmail(snType: SnType, email: String, token: String)
     }
 }
