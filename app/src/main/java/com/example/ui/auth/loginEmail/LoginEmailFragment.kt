@@ -71,7 +71,7 @@ class LoginEmailFragment : BaseFragment(), LoginEmailContract.View {
     }
 
     override fun showRegister() {
-        findNavController().navigate(LoginEmailFragmentDirections.loginEmailToRegisterAction())
+        findNavController().navigate(LoginEmailFragmentDirections.loginEmailToRegisterAction(null))
     }
 
     override fun enableLoginBtn(isEnable: Boolean) {

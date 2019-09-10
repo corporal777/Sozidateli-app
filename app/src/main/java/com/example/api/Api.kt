@@ -13,7 +13,8 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}")
-    fun authSocialNetwork(@Path("sn") sn: String, @Field("token") token: String, @Field("email") email: String?): Single<ApiResponse<AuthSNResponse>>
+    fun authSocialNetwork(@Path("sn") sn: String, @Field("token") token: String, @Field("email") email: String?,
+                          @Field("user_name") firstName: String? = null, @Field("user_last_name") lastName: String? = null, @Field("user_pwd") password: String? = null): Single<ApiResponse<AuthSNResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}/set_email")
@@ -26,6 +27,10 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/user/auth")
     fun authEmail(@Field("user_email") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/auth/status")
+    fun registerStatus(@Field("user_email") email: String?, @Field("social_provider") snType: String?, @Field("social_id") snId: String?): Single<ApiResponse<RegisterStatus>>
 
     @FormUrlEncoded
     @POST("/v1/user/register")

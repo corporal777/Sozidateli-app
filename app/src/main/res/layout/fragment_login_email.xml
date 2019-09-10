@@ -36,7 +36,7 @@
             android:id="@+id/etPassword"
             style="@style/Auth.EditText"
             android:layout_marginTop="30dp"
-            android:hint="@string/auth_hint_password"
+            android:hint="@string/auth_input_password_hint"
             android:importantForAutofill="no"
             android:inputType="textPassword"
             tools:ignore="UnusedAttribute" />
@@ -72,7 +72,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
-        android:text="@string/auth_register_btn"
+        android:text="@string/auth_register"
         android:textColor="@color/auth_email_color"
         android:textStyle="bold"
         tools:ignore="MissingPrefix" />

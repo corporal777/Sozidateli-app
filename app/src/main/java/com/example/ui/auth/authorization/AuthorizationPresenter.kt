@@ -1,8 +1,9 @@
 package com.example.ui.auth.authorization
 
-import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.AuthSNResponse
+import com.example.data.models.RegisterStatus
+import com.example.data.models.SnUser
+import com.example.data.models.SnUserData
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.snAuth.SnAuth
@@ -10,8 +11,9 @@ import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.snAuth.SnType
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -22,8 +24,7 @@ class AuthorizationPresenter
 
     private val snAuthListener = object : SnAuthManager.OnSnAuthListener {
         override fun onSnAuthComplete(snAuth: SnAuth) {
-            val sn = snAuth.snType.code
-            executeAuthorization(snAuth.snType, authRepository.authSocialNetwork(sn, snAuth.token, snAuth.email), snAuth.email, snAuth.token)
+            checkSnRegistration(snAuth)
         }
 
         override fun onSnAuthError(error: SnAuthError) {
@@ -51,36 +52,50 @@ class AuthorizationPresenter
     }
 
     override fun onEmailClick() {
-
+        viewState.showRegistration()
     }
 
-    override fun onClickSetSocialNetworkEmail(snType: SnType, email: String, token: String) {
-        authRepository.setEmailSocialNetwork(snType.code, email, token)
+    private fun checkSnRegistration(snAuth: SnAuth) {
+        val userRequest = when (snAuth.snType) {
+            SnType.VK -> authRepository.getVkUser()
+            SnType.FB -> authRepository.getFbUser()
+            SnType.OK -> authRepository.getOkUser()
+        }
+
+        viewState.showLoadingDialog()
+        compositeDisposable += userRequest
+                .flatMap {
+                    val checkStatus = authRepository.checkSnRegisterStatus(snAuth.snType.code, it.id)
+                    Single.zip<RegisterStatus, SnUserData, Pair<RegisterStatus, SnUser>>(checkStatus, Single.just(it), BiFunction { status, snUser ->
+                        status to SnUser(snAuth, snUser)
+                    })
+                }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.showNeedConfirmEmailDialog(email)
-                }, {
-                    it.printStackTrace()
-                    viewState.showSocialNetworkSetEmail(snType, email, token)
-                }).call(compositeDisposable)
-    }
-
-    private fun executeAuthorization(snType: SnType, request: Single<AuthSNResponse>, email: String? = null, token: String) {
-        request.performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    if (it.user_email_not_set) {
-                        viewState.showSocialNetworkSetEmail(snType, email, token)
+                    val snUser = it.second
+                    val status = it.first
+                    if (!status.social_auth_found || !status.user_by_social_confirmed_email) {
+                        viewState.hideLoadingDialog()
+                        viewState.showRegistration(snUser)
                     } else {
-                        if (!it.user_email_confirmed) {
-                            viewState.showNeedConfirmEmailDialog(null)
-                        }
+                        authorize(snUser.snAuth)
                     }
-                }, { it.printStackTrace() })
-                .call(compositeDisposable)
+                }, {
+                    viewState.hideLoadingDialog()
+                    it.printStackTrace()
+                })
     }
 
+    private fun authorize(snAuth: SnAuth) {
+        compositeDisposable += authRepository.authSocialNetwork(snAuth.snType.code, snAuth.token, snAuth.email)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideLoadingDialog()
+                }, {
+                    viewState.hideLoadingDialog()
+                    it.printStackTrace()
+                })
+    }
 
     private fun setSnAuthListener() {
         SnAuthManager.addOnSnAuthListener(snAuthListener)

@@ -4,9 +4,19 @@ import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
 import com.example.data.models.AuthResponse
-import com.example.data.models.AuthSNResponse
+import com.example.data.models.RegisterStatus
+import com.example.data.models.SnUserData
+import com.facebook.Profile
+import com.vk.sdk.api.VKApi
+import com.vk.sdk.api.VKError
+import com.vk.sdk.api.VKRequest
+import com.vk.sdk.api.VKResponse
+import com.vk.sdk.api.model.VKUsersArray
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.json.JSONObject
+import ru.ok.android.sdk.Odnoklassniki
+import ru.ok.android.sdk.OkListener
 import javax.inject.Inject
 
 class AuthRepositoryImp
@@ -15,15 +25,8 @@ class AuthRepositoryImp
         private val api: Api
 ) : ApiRepository(appData), AuthRepository {
 
-    override fun authSocialNetwork(snType: String, token: String, email: String?): Single<AuthSNResponse> {
-        return api.authSocialNetwork(snType, token, email)
-                .doOnError { processError(it) }
-                .doOnSuccess {
-                    if (!it.response.user_email_not_set && it.response.user_email_confirmed) {
-                        saveSession(it)
-                    }
-                }
-                .map { it.response }
+    override fun authSocialNetwork(snType: String, token: String, email: String?, firstName: String?, lastName: String?, password: String?): Completable {
+        return call(api.authSocialNetwork(snType, token, email, firstName, lastName, password)).flatMapCompletable { Completable.complete() }
     }
 
     override fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable {
@@ -46,10 +49,6 @@ class AuthRepositoryImp
         return callAuthCompletable(api.registerEmailConfirm(email, code))
     }
 
-    private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return call(authRequest).flatMapCompletable { Completable.complete() }
-    }
-
     override fun sendRecoveryEmail(email: String): Completable {
         return callAuthCompletable(api.sendEmailRecovery(email))
     }
@@ -60,5 +59,55 @@ class AuthRepositoryImp
 
     override fun setPassword(email: String, code: String, password: String): Completable {
         return callAuthCompletable(api.setPassword(email, code, password))
+    }
+
+    override fun checkSnRegisterStatus(snType: String, snId: String): Single<RegisterStatus> {
+        return call(api.registerStatus(null, snType, snId))
+    }
+
+    override fun getVkUser(): Single<SnUserData> {
+        return Single.create { emitter ->
+            VKApi.users().get().executeWithListener(object : VKRequest.VKRequestListener() {
+                override fun onComplete(response: VKResponse) {
+                    val user = VKUsersArray().let {
+                        it.parse(response.json)
+                        it[0]
+                    }
+                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name))
+                }
+
+                override fun onError(error: VKError?) {
+                    emitter.onError(RuntimeException(error?.errorMessage ?: "Vk get user error"))
+                }
+            })
+        }
+    }
+
+    override fun getFbUser(): Single<SnUserData> {
+        return Single.fromCallable {
+            val profile = Profile.getCurrentProfile()
+            SnUserData(profile.id, profile.firstName, profile.lastName)
+        }
+    }
+
+    override fun getOkUser(): Single<SnUserData> {
+        return Single.create { emitter ->
+            Odnoklassniki.instance.request("users.getCurrentUser", listener = object : OkListener {
+                override fun onError(error: String?) {
+                    emitter.onError(RuntimeException(error ?: "Ok get user error"))
+                }
+
+                override fun onSuccess(json: JSONObject) {
+                    val id = json.getString("uid")
+                    val firstName = json.getString("first_name")
+                    val lastName = json.getString("last_name")
+                    emitter.onSuccess(SnUserData(id, firstName, lastName))
+                }
+            })
+        }
+    }
+
+    private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
+        return call(authRequest).flatMapCompletable { Completable.complete() }
     }
 }

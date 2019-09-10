@@ -2,8 +2,8 @@ package com.example.ui.auth.authorization
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.SnUser
 import com.example.ui.base.BaseContract
-import com.example.ui.snAuth.SnType
 
 interface AuthorizationContract {
     interface View : BaseContract.View {
@@ -20,10 +20,7 @@ interface AuthorizationContract {
         fun showLogin()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSocialNetworkSetEmail(snType: SnType, email: String?, token: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showNeedConfirmEmailDialog(email: String?)
+        fun showRegistration(snUser: SnUser? = null)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -32,7 +29,5 @@ interface AuthorizationContract {
         fun onOkClick()
         fun onEmailClick()
         fun onLoginClick()
-
-        fun onClickSetSocialNetworkEmail(snType: SnType, email: String, token: String)
     }
 }

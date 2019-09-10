@@ -429,6 +429,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_authorization_fragment_to_register_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="login_to_login_email_action">
                               <value>
                                 <LayoutPositions />

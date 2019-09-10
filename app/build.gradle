@@ -183,8 +183,8 @@ dependencies {
 
     // sn
     implementation 'com.vk:androidsdk:1.6.7'
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation 'ru.ok:odnoklassniki-android-sdk:2.1.6'
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
 
     // crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.10.0@aar') {

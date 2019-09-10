@@ -57,9 +57,8 @@ class SnAuthActivity : AppCompatActivity() {
 
     private val okAuthListener by lazy {
         object : OkAuthListener {
-            override fun onSuccess(json: JSONObject?) {
-                if (json == null) authError()
-                else authComplete(SnAuth(json.getString("access_token"), snType = SnType.OK))
+            override fun onSuccess(json: JSONObject) {
+                authComplete(SnAuth(json.getString("access_token"), snType = SnType.OK))
             }
 
             override fun onCancel(error: String?) {
@@ -76,9 +75,8 @@ class SnAuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val args = intent.extras
-        val authType = args?.getSerializable(ARG_AUTH_TYPE)
 
-        when (authType) {
+        when (args?.getSerializable(ARG_AUTH_TYPE)) {
             SnType.VK -> authVk(args.getStringArray(ARG_AUTH_VK_SCOPES) ?: emptyArray())
             SnType.FB -> authFb()
             SnType.OK -> authOk()
@@ -113,8 +111,8 @@ class SnAuthActivity : AppCompatActivity() {
                     fbAuthCallbackManager.onActivityResult(requestCode, resultCode, data) -> {
                 //do nothing
             }
-            Odnoklassniki.getInstance().isActivityRequestOAuth(requestCode) -> {
-                Odnoklassniki.getInstance().onAuthActivityResult(requestCode, resultCode, data, okAuthListener)
+            Odnoklassniki.of(this).isActivityRequestOAuth(requestCode) -> {
+                Odnoklassniki.of(this).onAuthActivityResult(requestCode, resultCode, data, okAuthListener)
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -149,8 +147,8 @@ class SnAuthActivity : AppCompatActivity() {
         internal fun getStartIntent(context: Context, snType: SnType, vkScopes: Array<String>? = null): Intent {
             return Intent(context, SnAuthActivity::class.java).apply {
                 putExtras(bundleOf(
-                        SnAuthActivity.ARG_AUTH_TYPE to snType,
-                        SnAuthActivity.ARG_AUTH_VK_SCOPES to vkScopes
+                        ARG_AUTH_TYPE to snType,
+                        ARG_AUTH_VK_SCOPES to vkScopes
                 ))
             }
         }

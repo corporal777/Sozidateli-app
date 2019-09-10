@@ -53,8 +53,6 @@
             <nav-graph android:value="@navigation/main_navigation" />
         </activity>
 
-        <activity android:name=".util.photohelper.CropActivity" />
-
         <activity android:name=".util.rxtakephoto.CropActivity" />
 
         <activity

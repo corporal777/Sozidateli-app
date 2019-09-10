@@ -16,6 +16,8 @@
     <string name="content_description_logo">@string/app_name</string>
     <string name="content_description_facebook">Facebook</string>
     <string name="content_description_vk">Vk</string>
+    <string name="content_description_ok">Одноклассники</string>
+    <string name="content_description_close">Закрыть</string>
 
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Рекомендуемые</string>
@@ -37,18 +39,22 @@
     <string name="auth_or_login">Или войдите,\nесли у вас уже есть аккаунт</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
-    <string name="auth_hint_password">Пароль</string>
     <string name="auth_forgot_password"><u>Забыли пароль</u></string>
     <string name="auth_login_btn">Войти</string>
-    <string name="auth_register_btn">Регистрация</string>
+    <string name="auth_register">Регистрация</string>
     <string name="auth_create_account">Создать аккаунт</string>
-    <string name="auth_hint_name">Ваше имя</string>
-    <string name="auth_hint_last_name">Ваша фамилия</string>
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
     <string name="auth_register_confirm_email_title">Вы успешно зарегистрировались</string>
     <string name="auth_register_confirm_email_message">На почтовый ящик %s отправлена инструкция по подтверждению Вашей учетной записи.</string>
+    <string name="auth_input_first_name_hint">Укажите ваше имя</string>
+    <string name="auth_input_last_name_hint">Укажите вашу фамилию</string>
+    <string name="auth_input_email_hint">Укажите вашу электронную почту</string>
+    <string name="auth_input_password_hint">Пароль</string>
+    <string name="auth_input_password_confirm_hint">Повтор пароля</string>
+    <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
+    <string name="auth_register_with_sn">или зарегистрируйтесь с помощью соцсети</string>
 
     <string name="notifications_label">Центр уведомлений</string>
 

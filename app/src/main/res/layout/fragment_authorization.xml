@@ -15,7 +15,7 @@
             android:id="@+id/ivLogo"
             android:layout_width="240dp"
             android:layout_height="50dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="64dp"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_white"
             app:layout_constraintBottom_toTopOf="@+id/textView"
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_corners"
-                android:contentDescription="@string/content_description_vk"
+                android:contentDescription="@string/content_description_ok"
                 android:minHeight="48dp"
                 android:src="@drawable/ic_ok"
                 android:theme="@style/ViewBackgroundOk" />
