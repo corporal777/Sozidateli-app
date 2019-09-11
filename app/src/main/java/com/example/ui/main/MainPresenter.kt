@@ -14,9 +14,12 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_REQUEST_COUNT
 import com.example.util.AuthBackground
-import com.example.util.UserEventLoadingHelper
 import com.example.util.ChatHelper
-import io.reactivex.*
+import com.example.util.UserEventLoadingHelper
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -59,7 +62,10 @@ class MainPresenter
                     unsubscribeChat()
                     if (token.value == null) {
                         isAuthRequired = true
-                        viewState.showLogin()
+                        viewState.apply {
+                            showLogin()
+                            checkIntent()
+                        }
                     } else {
                         userRepository.getUserShort()
                                 .flatMapCompletable { subscribeToNotifications() }
@@ -154,10 +160,14 @@ class MainPresenter
     }
 
     override fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String) {
-        authRepository.confirmEmailSocialNetwork(snType, id, code)
+        compositeDisposable += authRepository.confirmEmailSocialNetwork(snType, id, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({}, {}).call(compositeDisposable)
+                .subscribe({
+                    // do nothing
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     override fun onSetPassword(email: String, code: String, password: String) {

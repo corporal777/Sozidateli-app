@@ -15,9 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="33dp"
-            android:layout_marginEnd="16.5dp"
-            android:background="?attr/selectableItemBackground"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_close"
             android:minWidth="48dp"
             android:minHeight="48dp"
@@ -29,228 +29,246 @@
             android:id="@+id/ivLogo"
             android:layout_width="240dp"
             android:layout_height="50dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_gray"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintBottom_toTopOf="@+id/tvRegisterTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvRegisterTitle"
             fontPath="fonts/OpenSans-Semibold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
-            android:text="@string/auth_register"
             android:textColor="@color/auth_title_text"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/tilFirstName"
+            app:layout_constraintBottom_toTopOf="@+id/llInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-            tools:ignore="MissingPrefix" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilFirstName"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintBottom_toTopOf="@+id/tilLastName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFirstName"
-                style="@style/Profile.Edit.Input"
-                android:hint="@string/auth_input_first_name_hint"
-                android:inputType="textCapWords"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilLastName"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintBottom_toTopOf="@+id/tilEmail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilFirstName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLastName"
-                style="@style/Profile.Edit.Input"
-                android:hint="@string/auth_input_last_name_hint"
-                android:inputType="textCapWords"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilEmail"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintBottom_toTopOf="@+id/tilPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilLastName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail"
-                style="@style/Profile.Edit.Input"
-                android:hint="@string/auth_input_email_hint"
-                android:inputType="textEmailAddress"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilPassword"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconMode="password_toggle"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintBottom_toTopOf="@+id/tilPasswordConfirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilEmail">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                style="@style/Profile.Edit.Input"
-                android:hint="@string/auth_input_password_hint"
-                android:inputType="textPassword"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilPasswordConfirm"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconMode="password_toggle"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:layout_constraintBottom_toTopOf="@+id/llAgree"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilPassword">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPasswordConfirm"
-                style="@style/Profile.Edit.Input"
-                android:hint="@string/auth_input_password_confirm_hint"
-                android:inputType="textPassword"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-        </com.example.ui.views.CustomTextInputLayout>
+            tools:ignore="MissingPrefix"
+            tools:text="@string/auth_register" />
 
         <LinearLayout
-            android:id="@+id/llAgree"
+            android:id="@+id/llInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/ibLogin"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/ibRegister"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilPasswordConfirm">
+            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle">
 
-            <FrameLayout
-                android:id="@+id/flAgree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:minWidth="48dp"
-                android:minHeight="48dp">
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/cbAgree"
-                    fontPath="fonts/OpenSans-Light.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@null"
-                    android:clickable="false"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:theme="@style/CheckBoxTheme" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/tvAgree"
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilFirstName"
+                style="@style/Profile.Edit.InputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/auth_title_text"
-                tools:text="@string/auth_agree_user_agreement" />
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFirstName"
+                    style="@style/Profile.Edit.Input"
+                    android:hint="@string/auth_input_first_name_hint"
+                    android:inputType="textCapWords"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilLastName"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@+id/tilEmail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilFirstName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLastName"
+                    style="@style/Profile.Edit.Input"
+                    android:hint="@string/auth_input_last_name_hint"
+                    android:inputType="textCapWords"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilEmail"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@+id/tilPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilLastName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    style="@style/Profile.Edit.Input"
+                    android:hint="@string/auth_input_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilPassword"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="password_toggle"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@+id/tilPasswordConfirm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilEmail">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    style="@style/Profile.Edit.Input"
+                    android:hint="@string/auth_input_password_hint"
+                    android:inputType="textPassword"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilPasswordConfirm"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="password_toggle"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@+id/llAgree"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilPassword">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPasswordConfirm"
+                    style="@style/Profile.Edit.Input"
+                    android:hint="@string/auth_input_password_confirm_hint"
+                    android:inputType="textPassword"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/llAgree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/flAgree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbAgree"
+                        fontPath="fonts/OpenSans-Light.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:theme="@style/CheckBoxTheme" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvAgree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/auth_title_text"
+                    tools:text="@string/auth_agree_user_agreement" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAgreeError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:gravity="center"
+                android:text="@string/auth_error_agreement"
+                android:textColor="@color/attention_action"
+                android:visibility="invisible" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/ibLogin"
+            android:id="@+id/ibRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:background="@drawable/background_action_button_selector"
             android:minHeight="48dp"
-            android:text="@string/auth_label_login"
+            android:text="@string/auth_action_register"
             android:textAllCaps="false"
             android:textColor="@color/text_color_action_button"
             android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/clSn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llAgree" />
+            app:layout_constraintTop_toBottomOf="@+id/llInput"
+            app:layout_goneMarginBottom="24dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/clSn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.504"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibLogin">
+            app:layout_constraintTop_toBottomOf="@+id/ibRegister">
 
             <TextView
                 android:id="@+id/tvSnRegistration"
@@ -273,8 +291,8 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_circle"
                 android:contentDescription="@string/content_description_vk"
-                android:minWidth="60dp"
-                android:minHeight="60dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 android:src="@drawable/ic_vk"
                 android:theme="@style/ViewBackgroundVk"
                 app:layout_constraintEnd_toStartOf="@+id/ibFacebook"
@@ -288,8 +306,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_circle"
                 android:contentDescription="@string/content_description_ok"
-                android:minWidth="60dp"
-                android:minHeight="60dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 android:src="@drawable/ic_ok"
                 android:theme="@style/ViewBackgroundOk"
                 app:layout_constraintBottom_toBottomOf="@+id/ibVk"
@@ -305,8 +323,8 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/background_circle"
                 android:contentDescription="@string/content_description_facebook"
-                android:minWidth="60dp"
-                android:minHeight="60dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 android:src="@drawable/ic_facebook"
                 android:theme="@style/ViewBackgroundFacebook"
                 app:layout_constraintBottom_toBottomOf="@+id/ibVk"
@@ -314,5 +332,6 @@
                 app:layout_constraintStart_toEndOf="@+id/ibVk"
                 app:layout_constraintTop_toTopOf="@+id/ibVk" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

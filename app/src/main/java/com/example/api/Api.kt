@@ -44,6 +44,10 @@ interface Api {
     @POST("/v1/user/update/change_email_confirm")
     fun changeEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
+    @FormUrlEncoded
+    @POST("/v1/user/register_resend")
+    fun registerEmailResend(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
+
     @GET("/v1/user/info/short")
     fun getUserShort(): Maybe<ApiResponse<User>>
 

@@ -4,6 +4,7 @@ import com.example.ui.about.AboutFragment
 import com.example.ui.aboutEvent.AboutEventFragment
 import com.example.ui.aboutForum.AboutForumFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.loginEmail.LoginEmailFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.RegisterFragment
@@ -190,4 +191,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeBannedFragment(): BannedFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEmailConfirmFragment(): EmailConfirmFragment
 }

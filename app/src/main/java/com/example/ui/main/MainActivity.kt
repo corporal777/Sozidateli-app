@@ -22,7 +22,6 @@ import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.OnBackPressedListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
@@ -80,8 +79,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             } else {
                 hideToolbar()
             }
-
-            content.background = if (f is BackgroundImageFragment) f.getFragmentBackgroundDrawable() else null
         }
     }
 

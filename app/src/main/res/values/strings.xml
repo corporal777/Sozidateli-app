@@ -42,12 +42,15 @@
     <string name="auth_forgot_password"><u>Забыли пароль</u></string>
     <string name="auth_login_btn">Войти</string>
     <string name="auth_register">Регистрация</string>
+    <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
     <string name="auth_create_account">Создать аккаунт</string>
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
-    <string name="auth_register_confirm_email_title">Вы успешно зарегистрировались</string>
-    <string name="auth_register_confirm_email_message">На почтовый ящик %s отправлена инструкция по подтверждению Вашей учетной записи.</string>
+    <string name="auth_register_confirm_email_title">Пожалуйста, подтвердите адрес электронной почты</string>
+    <string name="auth_register_confirm_email_message">На %s было отправлено письмо со ссылкой и кодом подтверждения.\n\nПожалуйста, перейдите по ссылке в письме.</string>
+    <string name="auth_register_confirm_email_timer">Повторная отправка возможна через %s</string>
+    <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_input_first_name_hint">Укажите ваше имя</string>
     <string name="auth_input_last_name_hint">Укажите вашу фамилию</string>
     <string name="auth_input_email_hint">Укажите вашу электронную почту</string>
@@ -55,6 +58,22 @@
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
     <string name="auth_register_with_sn">или зарегистрируйтесь с помощью соцсети</string>
+    <string name="auth_action_register">Зарегистрироваться</string>
+    <string name="auth_error_no_first_name">Введите имя</string>
+    <string name="auth_error_no_last_name">Введите фамилию</string>
+    <string name="auth_error_wrong_email">Введите корректный e-mail</string>
+    <string name="auth_error_no_password">Введите пароль</string>
+    <string name="auth_error_short_password">Больше 5 символов</string>
+    <string name="auth_error_password_do_not_match">Пароли не совпадают</string>
+    <string name="auth_error_agreement">Согласитесь с условиями</string>
+    <plurals name="seconds_timer">
+        <item quantity="zero">%d секунд</item>
+        <item quantity="one">%d секунду</item>
+        <item quantity="two">%d секунды</item>
+        <item quantity="few">%d секунды</item>
+        <item quantity="many">%d секунд</item>
+        <item quantity="other">%d секунд</item>
+    </plurals>
 
     <string name="notifications_label">Центр уведомлений</string>
 

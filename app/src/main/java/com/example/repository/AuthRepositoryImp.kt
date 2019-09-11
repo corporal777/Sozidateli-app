@@ -41,12 +41,16 @@ class AuthRepositoryImp
         return callAuthCompletable(api.authEmail(email, password))
     }
 
-    override fun register(email: String, password: String, name: String, lastName: String): Completable {
-        return callAuthCompletable(api.registerEmail(email, password, name, lastName))
+    override fun register(email: String, password: String, firstName: String, lastName: String): Completable {
+        return callAuthCompletable(api.registerEmail(email, password, firstName, lastName))
     }
 
     override fun registerConfirm(email: String, code: String): Completable {
         return callAuthCompletable(api.registerEmailConfirm(email, code))
+    }
+
+    override fun registerEmailResend(email: String): Completable {
+        return callAuthCompletable(api.registerEmailResend(email))
     }
 
     override fun sendRecoveryEmail(email: String): Completable {

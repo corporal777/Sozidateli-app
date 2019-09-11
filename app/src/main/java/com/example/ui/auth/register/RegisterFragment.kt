@@ -5,7 +5,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
-import android.view.WindowManager
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -13,6 +14,7 @@ import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
 import kotlinx.android.synthetic.main.fragment_register.*
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -25,47 +27,24 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
     lateinit var presenterProvider: Provider<RegisterPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): RegisterPresenter = presenterProvider.get()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    fun providePresenter(): RegisterPresenter = presenterProvider.get().apply {
+        snUser = arguments?.let { RegisterFragmentArgs.fromBundle(it).snUser }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//
-//        ivClose.setOnClickListener { presenter.onClickBack() }
-//
-//        etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-//            presenter.onChangeEmailText(charSequence.toString())
-//        })
-//
-//        etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-//            presenter.onChangePasswordText(charSequence.toString())
-//        })
-//
-//        etName.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-//            presenter.onChangeNameText(charSequence.toString())
-//        })
-//
-//        etLastName.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-//            presenter.onChangeLastNameText(charSequence.toString())
-//        })
-//
-//        btnRegister.setOnClickListener {
-//            presenter.onClickRegister(
-//                    email = etEmail.text.toString(),
-//                    password = etPassword.text.toString(),
-//                    name = etName.text.toString(),
-//                    lastName = etLastName.text.toString()
-//            )
-//        }
+        ivClose.setOnClickListener { presenter.onClickClose() }
+
+        etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) } }
+        etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+        etEmail.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }
+        etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
+        etPasswordConfirm.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordConfirmText(text) } }
 
         val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
             val linkStart = 11
             val linkEnd = length
-            setSpan(ClickableSpan { showToast("ADS") }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            setSpan(ClickableSpan { presenter.onClickUserAgreement() }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
 
         tvAgree.apply {
@@ -78,21 +57,68 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
                 isChecked = !isChecked
             }
         }
+
+        cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
+
+        ibRegister.setOnClickListener {
+            presenter.onClickRegister(
+                    etEmail.text?.toString(),
+                    etFirstName.text?.toString(),
+                    etLastName.text?.toString(),
+                    etPassword.text?.toString(),
+                    etPasswordConfirm.text?.toString(),
+                    cbAgree.isChecked
+            )
+        }
+    }
+
+    override fun setData(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {
+        etEmail.setText(email)
+        etFirstName.setText(firstName)
+        etLastName.setText(lastName)
+        etPassword.setText(password)
+        etPasswordConfirm.setText(passwordConfirm)
+        cbAgree.isChecked = isAgree
+    }
+
+    override fun showSnRegistration(show: Boolean) {
+        clSn.isVisible = show
+        tvRegisterTitle.text = getString(if (show) R.string.auth_register else R.string.auth_register_sn)
+    }
+
+    override fun showFirstNameError(show: Boolean) {
+        tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
+    }
+
+    override fun showLastNameError(show: Boolean) {
+        tilLastName.error = if (show) getString(R.string.auth_error_no_last_name) else null
+    }
+
+    override fun showEmailError(show: Boolean) {
+        tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
+    }
+
+    override fun showPasswordError(show: Boolean) {
+        tilPassword.error = if (show) getString(
+                if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
+                else R.string.auth_error_short_password
+        ) else null
+    }
+
+    override fun showPasswordConfirmError(show: Boolean) {
+        tilPasswordConfirm.error = if (show) getString(R.string.auth_error_password_do_not_match) else null
+    }
+
+    override fun showAgreementError(show: Boolean) {
+        tvAgreeError.isInvisible = !show
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-//        btnRegister.apply { isEnabled = isEnable }
+        ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun passwordCheckColored(isHasSix: Boolean, isOneCap: Boolean, isHasSymbol: Boolean) {
-//        tvPasswordHintLength.apply {
-//            if (isHasSix) highlightCorrect()
-//            else highlightError()
-//        }
-    }
-
-    override fun goToLoginWithEmailConfirmation(email: String, password: String) {
-        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailLogin(email, password, true, false))
+    override fun showEmailConfirmation(email: String) {
+        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email))
     }
 
     override fun layout() = R.layout.fragment_register
