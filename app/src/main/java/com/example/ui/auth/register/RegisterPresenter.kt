@@ -3,7 +3,8 @@ package com.example.ui.auth.register
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
-import com.example.ui.base.BasePresenter
+import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -13,8 +14,9 @@ import javax.inject.Inject
 @InjectViewState
 class RegisterPresenter
 @Inject constructor(
-        private val authRepository: AuthRepository
-) : BasePresenter<RegisterContract.View>(), RegisterContract.Presenter {
+        private val authRepository: AuthRepository,
+        snAuthManager: SnAuthManager
+) : BaseAuthPresenter<RegisterContract.View>(authRepository, snAuthManager), RegisterContract.Presenter {
 
     var snUser: SnUser? = null
         set(value) {
@@ -24,7 +26,6 @@ class RegisterPresenter
                 lastName = value.snUserData.lastName
                 email = value.snAuth.email
             }
-            performDataChange()
         }
 
     private var firstName: String? = null
@@ -36,8 +37,13 @@ class RegisterPresenter
 
     override fun attachView(view: RegisterContract.View?) {
         super.attachView(view)
+        initData()
+    }
+
+    private fun initData() {
         viewState.setData(email, firstName, lastName, password, passwordConfirm, isAgree)
         viewState.showSnRegistration(snUser == null)
+        performDataChange()
     }
 
     override fun onClickClose() {
@@ -49,7 +55,7 @@ class RegisterPresenter
     }
 
     override fun onClickRegister(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {
-        if (isDataValid()) {
+        if (isDataValid(firstName, lastName, email, password, passwordConfirm, isAgree)) {
             register(email!!, firstName!!, lastName!!, password!!)
         } else {
             viewState.apply {
@@ -101,10 +107,10 @@ class RegisterPresenter
     }
 
     private fun performDataChange() {
-        viewState.enableRegisterBtn(isDataValid())
+        viewState.enableRegisterBtn(isDataValid(firstName, lastName, email, password, passwordConfirm, isAgree))
     }
 
-    private fun isDataValid(): Boolean {
+    private fun isDataValid(firstName: String?, lastName: String?, email: String?, password: String?, passwordConfirm: String?, isAgree: Boolean): Boolean {
         return !firstName.isNullOrBlank()
                 && !lastName.isNullOrBlank()
                 && email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
@@ -122,10 +128,15 @@ class RegisterPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.showEmailConfirmation(email)
+                    viewState.showEmailConfirmation(email, snUser?.snAuth)
                 }, {
                     it.printStackTrace()
                     viewState.showToast(it.message ?: it.localizedMessage)
                 })
+    }
+
+    override fun onContinueRegistration(snUser: SnUser) {
+        this.snUser = snUser
+        initData()
     }
 }

@@ -39,8 +39,10 @@
     <string name="auth_or_login">Или войдите,\nесли у вас уже есть аккаунт</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
-    <string name="auth_forgot_password"><u>Забыли пароль</u></string>
-    <string name="auth_login_btn">Войти</string>
+    <string name="auth_forgot_password">Забыли пароль?</string>
+    <string name="auth_login">Войти</string>
+    <string name="auth_login_with_email">с помощью вашей электронной почты</string>
+    <string name="auth_login_with_sn">Войдите с помощью учетной записи  социальной сети</string>
     <string name="auth_register">Регистрация</string>
     <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
     <string name="auth_create_account">Создать аккаунт</string>
@@ -74,6 +76,7 @@
         <item quantity="many">%d секунд</item>
         <item quantity="other">%d секунд</item>
     </plurals>
+    <string name="auth_login_registration_confirm">Пользователь не найден. Зарегистрировать нового пользователя?</string>
 
     <string name="notifications_label">Центр уведомлений</string>
 

@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class RxTakePhotoModule {
+class MainActivityProvidersModule {
 
     @Provides
     fun provideRxTakePhoto(activity: FragmentActivity): RxTakePhoto {

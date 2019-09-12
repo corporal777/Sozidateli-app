@@ -631,7 +631,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="login_email_fragment">
+                  <entry key="login_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -642,12 +642,12 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="login_email_to_recovery_action">
+                            <entry key="login_to_recovery_action">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="login_email_to_register_action">
+                            <entry key="login_to_register_action">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -755,7 +755,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="recovery_passwor_to_email_login">
+                            <entry key="recovery_password_to_email_login">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -893,6 +893,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="welcome_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

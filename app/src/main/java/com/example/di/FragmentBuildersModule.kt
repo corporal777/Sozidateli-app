@@ -5,7 +5,7 @@ import com.example.ui.aboutEvent.AboutEventFragment
 import com.example.ui.aboutForum.AboutForumFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.confirm.EmailConfirmFragment
-import com.example.ui.auth.loginEmail.LoginEmailFragment
+import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.RegisterFragment
 import com.example.ui.auth.welcome.WelcomeFragment
@@ -70,7 +70,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeLoginFragment(): AuthorizationFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeLoginEmailFragment(): LoginEmailFragment
+    abstract fun contributeLoginEmailFragment(): LoginFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRegisterFragment(): RegisterFragment

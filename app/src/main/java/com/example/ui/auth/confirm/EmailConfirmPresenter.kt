@@ -3,6 +3,7 @@ package com.example.ui.auth.confirm
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.snAuth.SnAuth
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -17,6 +18,7 @@ class EmailConfirmPresenter
         private val authRepository: AuthRepository
 ) : BasePresenter<EmailConfirmContract.View>(), EmailConfirmContract.Presenter {
 
+    var snAuth: SnAuth? = null
     lateinit var email: String
 
     private val timerCompositeDisposable = CompositeDisposable()
@@ -29,7 +31,14 @@ class EmailConfirmPresenter
     }
 
     override fun onResendClick() {
-        compositeDisposable += authRepository.registerEmailResend(email)
+        val snAuth = this.snAuth
+        val request = if (snAuth != null) {
+            authRepository.registerSnResend(snAuth.snType.code, email, snAuth.token)
+        } else {
+            authRepository.registerEmailResend(email)
+        }
+
+        compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

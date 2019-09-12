@@ -27,7 +27,10 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
 
     @ProvidePresenter
     fun providePresenter(): EmailConfirmPresenter = presenterProvider.get().apply {
-        email = EmailConfirmFragmentArgs.fromBundle(arguments!!).email
+        EmailConfirmFragmentArgs.fromBundle(arguments!!).also {
+            email = it.email
+            snAuth = it.snAuth
+        }
     }
 
     private val timerMessage by lazy {

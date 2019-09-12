@@ -28,29 +28,17 @@ class AuthorizationFragment : BaseFragment(), AuthorizationContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibFacebook.setOnClickListener { presenter.onFbClick() }
-        ibVk.setOnClickListener { presenter.onVkClick() }
-        ibOk.setOnClickListener { presenter.onOkClick() }
+        ibFacebook.setOnClickListener { presenter.authFb() }
+        ibVk.setOnClickListener { presenter.authVk() }
+        ibOk.setOnClickListener { presenter.authOk() }
         ibEmail.setOnClickListener { presenter.onEmailClick() }
         ibLogin.setOnClickListener { presenter.onLoginClick() }
 
         svContent.background = AuthBackground.get(resources)
     }
 
-    override fun startVkAuthorization() {
-        SnAuthManager.startAuthVk(requireContext(), arrayOf(VKScope.EMAIL))
-    }
-
-    override fun startFbAuthorization() {
-        SnAuthManager.startAuthFacebook(requireContext())
-    }
-
-    override fun startOkAuthorization() {
-        SnAuthManager.startAuthOk(requireContext())
-    }
-
     override fun showLogin() {
-        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction(null, null, false, false))
+        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction())
     }
 
     override fun showRegistration(snUser: SnUser?) {

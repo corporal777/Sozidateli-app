@@ -7,6 +7,7 @@ import dagger.Module
 
 @Module
 abstract class MainActivityModule {
+
     @Binds
-    abstract fun providesMainActivity(activity: MainActivity): FragmentActivity
+    abstract fun providesMainFragmentActivity(activity: MainActivity): FragmentActivity
 }

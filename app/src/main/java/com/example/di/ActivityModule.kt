@@ -1,6 +1,7 @@
 package com.example.di
 
 import com.example.ui.main.MainActivity
+import com.example.ui.snAuth.SnAuthActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -8,6 +9,9 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityModule {
 
-    @ContributesAndroidInjector(modules = [MainActivityModule::class, FragmentBuildersModule::class, RxTakePhotoModule::class])
+    @ContributesAndroidInjector(modules = [MainActivityModule::class, FragmentBuildersModule::class, MainActivityProvidersModule::class])
     abstract fun contributeMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeSnAuthActivity(): SnAuthActivity
 }

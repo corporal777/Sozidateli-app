@@ -8,6 +8,7 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
+import com.example.ui.snAuth.SnAuthManager
 import com.example.util.ChatHelper
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import dagger.Module
@@ -60,4 +61,7 @@ class AppModule {
                     .map { it.state() == NetworkInfo.State.CONNECTED }
                     .share()
 
+    @Singleton
+    @Provides
+    fun providesSnAuthManager(context: Context) = SnAuthManager(context)
 }

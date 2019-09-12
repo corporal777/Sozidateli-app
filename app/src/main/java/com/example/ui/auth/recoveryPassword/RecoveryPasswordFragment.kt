@@ -2,7 +2,7 @@ package com.example.ui.auth.recoveryPassword
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AlertDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -33,6 +33,8 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             presenter.onChangeEmailText(charSequence.toString())
         })
+
+        ibClose.setOnClickListener { presenter.onCloseClick() }
     }
 
     override fun setEmail(email: String) {
@@ -43,8 +45,17 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         btnRecovery.apply { isEnabled = isEnable }
     }
 
-    override fun goToLoginWithEmailRecovery(email: String) {
-        findNavController().navigate(RecoveryPasswordFragmentDirections.recoveryPassworToEmailLogin(email, null, false, true))
+    override fun showEmailError(show: Boolean) {
+        tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
+    }
+
+    override fun showRecoveryNotification(email: String) {
+        AlertDialog.Builder(requireContext())
+                .setMessage(getString(R.string.recovery_confirm_email_message).format(email))
+                .setPositiveButton(R.string.ok) { _, _ -> presenter.onUserUnderstand() }
+                .setOnCancelListener { presenter.onUserUnderstand() }
+                .setOnDismissListener { presenter.onUserUnderstand() }
+                .show()
     }
 
     override fun layout() = R.layout.fragment_recovery_password

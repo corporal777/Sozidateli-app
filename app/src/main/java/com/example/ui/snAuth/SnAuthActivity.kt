@@ -15,14 +15,17 @@ import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
+import dagger.android.AndroidInjection
 import org.json.JSONObject
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkAuthListener
 import ru.ok.android.sdk.util.OkAuthType
 import ru.ok.android.sdk.util.OkScope
-
+import javax.inject.Inject
 
 class SnAuthActivity : AppCompatActivity() {
+
+    @Inject lateinit var snAuthManager: SnAuthManager
 
     private val vkAuthCallback by lazy {
         object : VKCallback<VKAccessToken> {
@@ -72,6 +75,7 @@ class SnAuthActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         val args = intent.extras
@@ -119,12 +123,12 @@ class SnAuthActivity : AppCompatActivity() {
     }
 
     private fun authComplete(snUser: SnAuth) {
-        SnAuthManager.onSnAuthComplete(snUser)
+        snAuthManager.onSnAuthComplete(snUser)
         finish()
     }
 
     private fun authError(message: String? = null) {
-        SnAuthManager.onSnAuthError(SnAuthError(message))
+        snAuthManager.onSnAuthError(SnAuthError(message))
         finish()
     }
 

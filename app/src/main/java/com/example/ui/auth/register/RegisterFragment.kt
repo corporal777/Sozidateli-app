@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.snAuth.SnAuth
 import com.example.util.ClickableSpan
 import kotlinx.android.synthetic.main.fragment_register.*
 import onTextChanged
@@ -70,6 +71,10 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
                     cbAgree.isChecked
             )
         }
+
+        ibFacebook.setOnClickListener { presenter.authFb() }
+        ibVk.setOnClickListener { presenter.authVk() }
+        ibOk.setOnClickListener { presenter.authOk() }
     }
 
     override fun setData(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {
@@ -117,8 +122,8 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun showEmailConfirmation(email: String) {
-        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email))
+    override fun showEmailConfirmation(email: String, snAuth: SnAuth?) {
+        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email, snAuth))
     }
 
     override fun layout() = R.layout.fragment_register

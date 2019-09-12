@@ -2,10 +2,9 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.ApiResponse
-import com.example.data.models.AuthResponse
-import com.example.data.models.RegisterStatus
-import com.example.data.models.SnUserData
+import com.example.data.models.*
+import com.example.ui.snAuth.SnAuth
+import com.example.ui.snAuth.SnType
 import com.facebook.Profile
 import com.vk.sdk.api.VKApi
 import com.vk.sdk.api.VKError
@@ -14,6 +13,7 @@ import com.vk.sdk.api.VKResponse
 import com.vk.sdk.api.model.VKUsersArray
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import org.json.JSONObject
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
@@ -24,6 +24,22 @@ class AuthRepositoryImp
         appData: AppData,
         private val api: Api
 ) : ApiRepository(appData), AuthRepository {
+
+    override fun authSocialNetwork(snAuth: SnAuth): Single<Pair<RegisterStatus, SnUser>> {
+        val userRequest = when (snAuth.snType) {
+            SnType.VK -> getVkUser()
+            SnType.FB -> getFbUser()
+            SnType.OK -> getOkUser()
+        }
+
+        return userRequest
+                .flatMap {
+                    val checkStatus = checkSnRegisterStatus(snAuth.snType.code, it.id)
+                    Single.zip<RegisterStatus, SnUserData, Pair<RegisterStatus, SnUser>>(checkStatus, Single.just(it), BiFunction { status, snUser ->
+                        status to SnUser(snAuth, snUser)
+                    })
+                }
+    }
 
     override fun authSocialNetwork(snType: String, token: String, email: String?, firstName: String?, lastName: String?, password: String?): Completable {
         return call(api.authSocialNetwork(snType, token, email, firstName, lastName, password)).flatMapCompletable { Completable.complete() }
@@ -51,6 +67,10 @@ class AuthRepositoryImp
 
     override fun registerEmailResend(email: String): Completable {
         return callAuthCompletable(api.registerEmailResend(email))
+    }
+
+    override fun registerSnResend(snType: String, email: String, token: String): Completable {
+        return callAuthCompletable(api.registerSnResend(snType, email, token))
     }
 
     override fun sendRecoveryEmail(email: String): Completable {

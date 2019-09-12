@@ -1,8 +1,9 @@
 package com.example.ui.snAuth
 
 import android.content.Context
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 
-object SnAuthManager {
+class SnAuthManager(private val context: Context) {
 
     private val authListeners = mutableListOf<OnSnAuthListener>()
 
@@ -14,12 +15,14 @@ object SnAuthManager {
         authListeners.remove(snAuthListener)
     }
 
-    fun startAuthVk(context: Context, scopes: Array<String>? = null) = start(context, SnType.VK, scopes)
-    fun startAuthFacebook(context: Context) = start(context, SnType.FB)
-    fun startAuthOk(context: Context) = start(context, SnType.OK)
+    fun startAuthVk(scopes: Array<String>? = null) = start(SnType.VK, scopes)
+    fun startAuthFacebook() = start(SnType.FB)
+    fun startAuthOk() = start(SnType.OK)
 
-    private fun start(context: Context, snType: SnType, vkScopes: Array<String>? = null) {
-        context.startActivity(SnAuthActivity.getStartIntent(context, snType, vkScopes))
+    private fun start(snType: SnType, vkScopes: Array<String>? = null) {
+        context.startActivity(SnAuthActivity.getStartIntent(context, snType, vkScopes).apply {
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
+        })
     }
 
     internal fun onSnAuthComplete(snAuth: SnAuth) {
