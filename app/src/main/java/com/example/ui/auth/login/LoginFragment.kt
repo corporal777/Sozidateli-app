@@ -30,11 +30,6 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenterProvider.get()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         etEmail.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }

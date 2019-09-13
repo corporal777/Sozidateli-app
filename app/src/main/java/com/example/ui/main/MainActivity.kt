@@ -22,6 +22,7 @@ import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.OnBackPressedListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
@@ -37,6 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
@@ -78,6 +80,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 showToolbar()
             } else {
                 hideToolbar()
+            }
+
+            val bg = if (f is BackgroundImageFragment) f.getFragmentBackgroundDrawable() else null
+            root.background = bg
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = if (bg == null) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
             }
         }
     }

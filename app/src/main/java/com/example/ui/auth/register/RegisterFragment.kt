@@ -5,8 +5,10 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
+import android.view.WindowManager
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -16,6 +18,7 @@ import com.example.ui.snAuth.SnAuth
 import com.example.util.ClickableSpan
 import kotlinx.android.synthetic.main.fragment_register.*
 import onTextChanged
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 

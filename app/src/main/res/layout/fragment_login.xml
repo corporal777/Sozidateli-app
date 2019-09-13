@@ -30,7 +30,7 @@
             android:id="@+id/ivLogo"
             android:layout_width="240dp"
             android:layout_height="50dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/auth_logo_margin_top"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_gray"
             app:layout_constraintBottom_toTopOf="@+id/tvRegisterTitle"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
@@ -64,6 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
@@ -80,8 +81,8 @@
             android:id="@+id/llInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/ibLogin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithEmail">
@@ -101,7 +102,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     style="@style/Profile.Edit.Input"
-                    android:hint="@string/auth_input_email_hint"
+                    android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp" />
@@ -151,6 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:background="@drawable/background_action_button_selector"
             android:minHeight="48dp"
@@ -158,7 +160,6 @@
             android:textAllCaps="false"
             android:textColor="@color/text_color_action_button"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/clSn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword"
@@ -175,7 +176,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibLogin">
+            app:layout_constraintTop_toBottomOf="@+id/ibLogin"
+            app:layout_constraintVertical_bias="1.0">
 
             <TextView
                 android:id="@+id/tvSnRegistration"
@@ -239,7 +241,6 @@
                 app:layout_constraintStart_toEndOf="@+id/ibVk"
                 app:layout_constraintTop_toTopOf="@+id/ibVk" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <include
             android:id="@+id/actionContainer"

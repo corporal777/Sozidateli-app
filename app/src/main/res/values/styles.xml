@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -16,8 +16,7 @@
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:windowBackground">@color/main_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

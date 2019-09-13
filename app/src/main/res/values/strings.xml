@@ -42,7 +42,7 @@
     <string name="auth_forgot_password">Забыли пароль?</string>
     <string name="auth_login">Войти</string>
     <string name="auth_login_with_email">с помощью вашей электронной почты</string>
-    <string name="auth_login_with_sn">Войдите с помощью учетной записи  социальной сети</string>
+    <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
     <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
     <string name="auth_create_account">Создать аккаунт</string>

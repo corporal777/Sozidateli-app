@@ -16,7 +16,7 @@
             android:id="@+id/ivLogo"
             android:layout_width="240dp"
             android:layout_height="50dp"
-            android:layout_marginTop="@dimen/auth_logo_margin_top"
+            android:layout_marginTop="64dp"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_white"
             app:layout_constraintBottom_toTopOf="@+id/textView"
@@ -31,25 +31,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
             android:text="@string/auth_title_login"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/llSocialNetworks"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
             tools:ignore="MissingPrefix" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/llSocialNetworks"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:layout_marginEnd="40dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,59 +66,41 @@
                 android:text="@string/auth_with_social_network"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_facebook"
+                android:minHeight="52dp"
+                android:src="@drawable/ic_facebook"
+                android:theme="@style/ViewBackgroundFacebook" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ibVk"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/background_circle"
+                android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_vk"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
+                android:minHeight="52dp"
                 android:src="@drawable/ic_vk"
-                android:theme="@style/ViewBackgroundVk"
-                app:layout_constraintEnd_toStartOf="@+id/ibFacebook"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworks" />
+                android:theme="@style/ViewBackgroundVk" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ibOk"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_circle"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_ok"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
+                android:minHeight="52dp"
                 android:src="@drawable/ic_ok"
-                android:theme="@style/ViewBackgroundOk"
-                app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ibFacebook"
-                app:layout_constraintTop_toTopOf="@+id/ibVk" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibFacebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="@drawable/background_circle"
-                android:contentDescription="@string/content_description_facebook"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_facebook"
-                android:theme="@style/ViewBackgroundFacebook"
-                app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                app:layout_constraintEnd_toStartOf="@+id/ibOk"
-                app:layout_constraintStart_toEndOf="@+id/ibVk"
-                app:layout_constraintTop_toTopOf="@+id/ibVk" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:theme="@style/ViewBackgroundOk" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llEmail"
@@ -144,7 +126,7 @@
                 android:gravity="center"
                 android:text="@string/auth_with_email"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -154,7 +136,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_vk"
-                android:minHeight="48dp"
+                android:minHeight="52dp"
                 android:src="@drawable/ic_email"
                 android:theme="@style/ViewBackgroundAttention" />
         </LinearLayout>
@@ -164,7 +146,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="24dp"
             android:orientation="vertical"
@@ -182,7 +164,7 @@
                 android:gravity="center"
                 android:text="@string/auth_or_login"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -191,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/background_corners"
-                android:minHeight="48dp"
+                android:minHeight="52dp"
                 android:text="@string/auth_label_login"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

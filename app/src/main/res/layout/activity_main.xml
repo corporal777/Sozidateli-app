@@ -1,70 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    tools:context="com.example.ui.main.MainActivity">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:contentInsetStart="0dp"
-            android:contentInsetLeft="0dp"
-            android:contentInsetEnd="0dp"
-            android:contentInsetRight="0dp"
-            android:elevation="0dp"
-            app:contentInsetEnd="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        <View
-            android:id="@+id/toolbarDivider"
-            style="@style/ViewDivider.Horizontal" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true"
+        tools:context="com.example.ui.main.MainActivity">
 
-        <fragment
-            android:id="@+id/navHostFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/main_navigation" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:elevation="0dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:contentInsetStart="0dp"
+                android:contentInsetLeft="0dp"
+                android:contentInsetEnd="0dp"
+                android:contentInsetRight="0dp"
+                android:elevation="0dp"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            <View
+                android:id="@+id/toolbarDivider"
+                style="@style/ViewDivider.Horizontal" />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout
-            android:id="@+id/flLoading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <FrameLayout
+            <fragment
+                android:id="@+id/navHostFragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0.5"
-                android:background="@android:color/white" />
-
-            <ProgressBar
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center" />
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/main_navigation" />
         </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/flLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="@android:color/white" />
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center" />
     </FrameLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>
