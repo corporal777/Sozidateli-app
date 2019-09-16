@@ -1,18 +1,27 @@
 package com.example.ui.event.list
 
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.adapters.SimplePagingRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Event
 import com.example.data.models.EventApprove
 import com.example.data.models.StatusEvent
+import com.example.extensions.dateFormatterShortMothShortYear
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
+import com.example.extensions.parseAndFormat
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.util.ARG_EVENT
 import com.example.util.LayoutListWithPlaceholderUtil
@@ -20,7 +29,6 @@ import com.example.util.PositionOffsetScrollListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_event.*
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
-import setDatesIntervalText
 
 abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNavigationFragment(), EventListContract.View {
 
@@ -33,6 +41,15 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
                 { oldItem, newItem -> oldItem.event.id == newItem.event.id },
                 { oldItem, newItem -> oldItem == newItem }
         ) {
+
+            private val backgroundOverlayColor by lazy {
+                ResourcesCompat.getColor(resources, R.color.auth_background_overlay, null)
+            }
+
+            private val showMoreUnderlineSpan by lazy {
+                UnderlineSpan()
+            }
+
             override fun getItemLayout(itemView: Int) = R.layout.item_event
 
             override fun onBindItem(viewHolder: ViewHolder, item: EventApprove?, position: Int) {
@@ -45,7 +62,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
                         setOnClickListener {
                             presenter.onEventClick(
                                     event,
-                                    ivLogo to "logo",
+                                    ivBackground to "logo",
                                     tvOrganizationLabel to "organizationLabel",
                                     tvEventLabel to "eventLabel",
                                     tvEventDate to "eventDate"
@@ -53,12 +70,33 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
                         }
                     }
 
-                    Picasso.get().load(event.logo).placeholder(R.mipmap.ic_launcher_background).into(ivLogo)
+                    ivBackground.apply {
+                        Picasso.get().load(event.logo).placeholder(R.mipmap.ic_launcher_background).into(this)
+                        setColorFilter(backgroundOverlayColor, PorterDuff.Mode.DARKEN)
+                    }
 
-                    tvOrganizationLabel.text = event.organization?.name
+                    tvOrganizationLabel.apply {
+                        text = event.organization?.name
+                    }
                     tvEventLabel.text = event.name
-                    tvEventDate.setDatesIntervalText(event.conference_start, event.conference_finish)
+                    tvEventDate.apply {
+                        val start = event.conference_start
+                        val finish = event.conference_finish
 
+                        val parser = defaultServerDateFormatter
+                        val formatter = dateFormatterShortMothShortYear
+                        text = if (start != null && finish != null) {
+                            "${start.parseAndFormat(parser, formatter)} - ${finish.parseAndFormat(parser, formatter)}"
+                        } else {
+                            start?.parseAndFormat(parser, formatter)
+                        }
+                    }
+
+                    tvShowMore.apply {
+                        text = text.toSpannable().apply {
+                            set(0..text.length, showMoreUnderlineSpan)
+                        }
+                    }
 
                     when (item.status) {
                         EventApprove.Status.EMPTY -> showRegisterToEvent(viewHolder, event)
@@ -79,7 +117,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
 
             private fun showApproveStatus(viewHolder: ViewHolder, event: Event, status: EventApprove.Status) {
                 viewHolder.apply {
-
                     btnGoToEvent.apply { visibility = View.GONE }
                     tvStatus.apply {
                         visibility = View.VISIBLE
@@ -143,7 +180,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
     override fun showAboutEvent(event: Event, vararg sharedElements: Pair<View, String>) {

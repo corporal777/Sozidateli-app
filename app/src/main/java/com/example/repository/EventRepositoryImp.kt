@@ -8,7 +8,6 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,6 +24,16 @@ class EventRepositoryImp
                               dateEnd: String?, category: List<String>?,
                               organisation: List<String>?, qr: String?): Maybe<PaginationResponse<EventApprove>> {
         return callPagination(api.getEventList(limit, offset, name, dateStart, dateEnd, category, organisation, qr))
+                .map { response ->
+                    PaginationResponse(
+                            response.totalCount,
+                            response.data.map { item -> EventApprove(item, EventApprove.Status.EMPTY) }
+                    )
+                }
+    }
+
+    override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<EventApprove>> {
+        return callPagination(api.getEventRecommendations(limit, offset))
                 .map { response ->
                     PaginationResponse(
                             response.totalCount,

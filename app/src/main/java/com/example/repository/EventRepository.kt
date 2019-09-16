@@ -16,6 +16,8 @@ interface EventRepository {
                      organisation: List<String>? = null,
                      qr: String? = null): Maybe<PaginationResponse<EventApprove>>
 
+    fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<EventApprove>>
+
     fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
     fun getEventDocuments(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>

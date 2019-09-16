@@ -6,10 +6,11 @@ import com.example.data.models.EventApprove
 import com.example.extensions.build
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.applyErrorHandler
 import io.reactivex.rxkotlin.plusAssign
 import withLoadingDialog
 
-abstract class EventListPresenter<V: EventListContract.View> : BasePresenter<V>(), EventListContract.Presenter {
+abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>(), EventListContract.Presenter {
 
     private var scrollPosition = 0
     private var scrollOffset = 0
@@ -18,7 +19,11 @@ abstract class EventListPresenter<V: EventListContract.View> : BasePresenter<V>(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += pagination.build()
+        compositeDisposable += pagination
+                .applyErrorHandler {
+                    it.printStackTrace()
+                }
+                .build()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
     }

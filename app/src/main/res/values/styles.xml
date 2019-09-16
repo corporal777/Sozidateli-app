@@ -46,7 +46,7 @@
         <item name="tabGravity">fill</item>
         <item name="tabIndicatorColor">?attr/colorAccent</item>
         <item name="tabMaxWidth">0dp</item>
-        <item name="tabMode">fixed</item>
+        <item name="tabMode">auto</item>
         <item name="tabSelectedTextColor">@color/tab_text_selected</item>
         <item name="tabTextAppearance">@style/EventsTabText</item>
         <item name="tabTextColor">@color/tab_text</item>
@@ -76,6 +76,9 @@
 
     <style name="EventsTabText" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">-0.05</item>
+        <item name="fontPath">fonts/OpenSans-Light.ttf</item>
     </style>
 
     <style name="ViewBackground" />

@@ -12,6 +12,9 @@ val defaultDateFormatter: DateFormat
 val dateFormatterShortMoth: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault())
 
+val dateFormatterShortMothShortYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_SHORT_YEAR, Locale.getDefault())
+
 val dateFormatterShortMothNoYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_NO_YEAR, Locale.getDefault())
 
@@ -51,10 +54,10 @@ fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
     return date?.let { formatter.format(it) }
 }
 
-fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: DateFormat = defaultServerDateTimeFormatter): String? {
+fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: DateFormat = defaultServerDateTimeFormatter, withTime: Boolean = true): String? {
     val start = formatter.parse(this)
     val finish = formatter.parse(to)
-    return start.calendar().formatToDefaultTimeInterval(finish.calendar())
+    return start.calendar().formatToDefaultTimeInterval(finish.calendar(), withTime)
 }
 
 fun String?.formatServerDateOrDefault(format: String, default: String): String {
@@ -70,11 +73,16 @@ fun String?.formatServerDateOrDefault(format: String, default: String): String {
     return SimpleDateFormat(format, Locale.getDefault()).format(parsed)
 }
 
-fun Calendar.formatToDefaultTimeInterval(to: Calendar): String {
-    val formatter = if (this.isSameYear(to)) {
-        if (this.isSameDay(to)) defaultTimeFormatter
-        else defaultDateTimeFormatterNoYear
-    } else defaultDateFormatter
+fun Calendar.formatToDefaultTimeInterval(to: Calendar, withTime: Boolean): String {
+    val formatter = if (withTime) {
+        if (isSameYear(to)) {
+            if (isSameDay(to)) defaultTimeFormatter
+            else defaultDateTimeFormatterNoYear
+        } else defaultDateFormatter
+    } else {
+        if (isSameYear(to)) dateFormatterShortMothNoYear
+        else defaultDateFormatter
+    }
 
     return "${formatter.format(this.time)} - ${formatter.format(to.time)}"
 }

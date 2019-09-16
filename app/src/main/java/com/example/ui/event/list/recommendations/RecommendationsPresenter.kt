@@ -12,5 +12,5 @@ class RecommendationsPresenter
         private val eventRepository: EventRepository
 ) : EventListPresenter<RecommendationsContract.View>(), RecommendationsContract.Presenter {
 
-    override val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventList(limit, offset) }
+    override val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventRecommendations(limit, offset) }
 }

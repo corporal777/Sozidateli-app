@@ -48,7 +48,8 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         return try {
             request.blockingGet()
         } catch (t: Throwable) {
-            Handler(Looper.getMainLooper()).post { errorHandler?.invoke(t) }
+            val errorHandler = errorHandler ?: throw t
+            Handler(Looper.getMainLooper()).post { errorHandler(t) }
             null
         }
     }

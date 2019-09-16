@@ -56,7 +56,7 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        appData.tokenChangeSubject
+        compositeDisposable += appData.tokenChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
                     unsubscribeChat()
@@ -67,44 +67,53 @@ class MainPresenter
                             checkIntent()
                         }
                     } else {
-                        userRepository.getUserShort()
-                                .flatMapCompletable { subscribeToNotifications() }
-                                .andThen(checkShowGreetings())
-                                .flatMap { checkUserEvent(it) }
-                                .performOnBackgroundOutOnMain()
-                                .withLoadingDialog(viewState)
-                                .subscribe({ showAction ->
-                                    viewState.apply {
-                                        connectToSocket(appData.getUser().user_id)
-
-                                        when (showAction) {
-                                            SHOW_EVENT_LIST -> showEventList(R.id.splash_fragment)
-                                            SHOW_EVENT_LIST_AFTER_GREETINGS -> showEventList(R.id.welcome_fragment)
-                                            SHOW_USER_EVENT -> showEvent()
-                                        }
-
-                                        checkIntent()
-                                    }
-
-                                    AuthBackground.clear()
-                                }, {
-                                    it.printStackTrace()
-                                    isAuthRequired = true
-                                    viewState.apply {
-                                        showLogin()
-                                        checkIntent()
-                                    }
-                                })
-                                .call(compositeDisposable)
+                        loadUser()
                     }
                 }
-                .call(compositeDisposable)
+    }
+
+    private fun loadUser() {
+        if (isAuthRequired) viewState.showLoadingDialog()
+        compositeDisposable += userRepository.getUserShort()
+                .flatMapCompletable { subscribeToNotifications() }
+                .andThen(checkShowGreetings())
+                .flatMap { checkUserEvent(it) }
+                .performOnBackgroundOutOnMain()
+                .subscribe({ showAction ->
+                    viewState.apply {
+                        hideLoadingDialog()
+                        connectToSocket(appData.getUser().user_id)
+
+                        when (showAction) {
+                            SHOW_EVENT_LIST -> showEventList(R.id.splash_fragment)
+                            SHOW_EVENT_LIST_AFTER_GREETINGS -> showEventList(R.id.welcome_fragment)
+                            SHOW_USER_EVENT -> showEvent()
+                        }
+
+                        checkIntent()
+                    }
+
+                    AuthBackground.clear()
+                }, {
+                    it.printStackTrace()
+                    isAuthRequired = true
+                    viewState.apply {
+                        hideLoadingDialog()
+                        showLogin()
+                        checkIntent()
+                    }
+                })
     }
 
     private fun checkShowGreetings(): Maybe<Boolean> {
         return if (isAuthRequired) {
             isAuthRequired = false
-            Completable.fromAction { viewState.showGreetings() }
+            Completable.fromAction {
+                viewState.apply {
+                    hideAllLoadingDialogs()
+                    showGreetings()
+                }
+            }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
                     .andThen(Maybe.just(true))

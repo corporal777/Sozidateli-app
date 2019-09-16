@@ -27,6 +27,7 @@
     <string name="go_to_event">Участвовать</string>
     <string name="subscribe">Подписаться</string>
     <string name="unsubscribe">Отписаться</string>
+    <string name="show_more">Показать полностью</string>
 
     <string name="event_status_approved">Одобрено</string>
     <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
@@ -178,7 +179,6 @@
     <string name="photo_alert_gallery">Галерея</string>
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
-
 
     <string name="chat_list_empty">У вас нет чатов</string>
     <string name="chat_list_create_chat">Создать чат</string>
