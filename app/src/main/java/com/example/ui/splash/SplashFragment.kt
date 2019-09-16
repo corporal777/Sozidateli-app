@@ -3,11 +3,13 @@ package com.example.ui.splash
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
+import com.example.util.AuthBackground
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SplashFragment : BaseFragment(), SplashContract.View {
+class SplashFragment : BaseFragment(), BackgroundImageFragment, SplashContract.View {
 
     @InjectPresenter
     lateinit var presenter: SplashPresenter
@@ -17,6 +19,8 @@ class SplashFragment : BaseFragment(), SplashContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SplashPresenter = presenterProvider.get()
+
+    override fun getFragmentBackgroundDrawable() = AuthBackground.get(resources)
 
     override fun layout() = R.layout.fragment_splash
 }
