@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -104,6 +105,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().addOnDestinationChangedListener(navigatedListener)
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
         subscribeOnNotificationChanel()
+
+        with(resources.configuration) {
+            Toast.makeText(this@MainActivity, "SCREEN HEIGHT: $screenHeightDp", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
