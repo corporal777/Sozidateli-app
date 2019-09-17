@@ -14,12 +14,11 @@
 
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="240dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/auth_logo_height"
             android:layout_marginTop="@dimen/auth_logo_margin_top"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_white"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,17 +31,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
             android:text="@string/auth_title_login"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="@dimen/auth_label_text_size"
             app:layout_constraintBottom_toTopOf="@+id/llSocialNetworks"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+            app:layout_constraintVertical_chainStyle="spread_inside"
             tools:ignore="MissingPrefix" />
 
         <LinearLayout
@@ -50,9 +50,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="40dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/llEmail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -66,7 +67,7 @@
                 android:gravity="center"
                 android:text="@string/auth_with_social_network"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="@dimen/auth_block_label_text_size"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -76,7 +77,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_facebook"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:src="@drawable/ic_facebook"
                 android:theme="@style/ViewBackgroundFacebook" />
 
@@ -87,7 +88,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_vk"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:src="@drawable/ic_vk"
                 android:theme="@style/ViewBackgroundVk" />
 
@@ -98,7 +99,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_ok"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:src="@drawable/ic_ok"
                 android:theme="@style/ViewBackgroundOk" />
         </LinearLayout>
@@ -108,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/llLogin"
@@ -127,7 +128,7 @@
                 android:gravity="center"
                 android:text="@string/auth_with_email"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="@dimen/auth_block_label_text_size"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -137,7 +138,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_vk"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:src="@drawable/ic_email"
                 android:theme="@style/ViewBackgroundAttention" />
         </LinearLayout>
@@ -165,7 +166,7 @@
                 android:gravity="center"
                 android:text="@string/auth_or_login"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/auth_block_login_label_text_size"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -174,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/background_corners"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:text="@string/auth_label_login"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
