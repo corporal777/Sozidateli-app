@@ -1,12 +1,13 @@
 package com.example.util
 
+import android.text.NoCopySpan
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 
 class ClickableSpan(
         private val onClick: () -> Unit
-) : ClickableSpan() {
+) : ClickableSpan(), NoCopySpan {
 
     override fun updateDrawState(ds: TextPaint) {
         ds.color = ds.linkColor

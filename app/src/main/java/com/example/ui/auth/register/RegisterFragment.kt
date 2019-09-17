@@ -5,6 +5,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
+import androidx.core.text.clearSpans
+import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -75,6 +77,11 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         ibFacebook.setOnClickListener { presenter.authFb() }
         ibVk.setOnClickListener { presenter.authVk() }
         ibOk.setOnClickListener { presenter.authOk() }
+    }
+
+    override fun onDestroyView() {
+        tvAgree.text.toSpannable().clearSpans()
+        super.onDestroyView()
     }
 
     override fun setData(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {

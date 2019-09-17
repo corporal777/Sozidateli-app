@@ -3,6 +3,7 @@ package com.example.ui.base
 import android.content.DialogInterface
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
@@ -49,13 +50,13 @@ interface BaseContract {
     }
 
     interface LoadingView {
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showLoadingDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideLoadingDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
     }
 

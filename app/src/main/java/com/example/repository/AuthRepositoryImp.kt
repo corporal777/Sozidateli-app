@@ -4,8 +4,10 @@ import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.ui.snAuth.SnAuth
+import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
 import com.facebook.Profile
+import com.facebook.ProfileTracker
 import com.vk.sdk.api.VKApi
 import com.vk.sdk.api.VKError
 import com.vk.sdk.api.VKRequest
@@ -17,7 +19,9 @@ import io.reactivex.functions.BiFunction
 import org.json.JSONObject
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 class AuthRepositoryImp
 @Inject constructor(
@@ -108,9 +112,23 @@ class AuthRepositoryImp
     }
 
     override fun getFbUser(): Single<SnUserData> {
-        return Single.fromCallable {
-            val profile = Profile.getCurrentProfile()
-            SnUserData(profile.id, profile.firstName, profile.lastName)
+        val profile = Profile.getCurrentProfile()
+        return if (profile == null) {
+            Single.create<SnUserData> { emitter ->
+                object : ProfileTracker() {
+                    override fun onCurrentProfileChanged(oldProfile: Profile?, currentProfile: Profile?) {
+                        stopTracking()
+                        if (currentProfile != null) {
+                            emitter.onSuccess(SnUserData(currentProfile.id, currentProfile.firstName, currentProfile.lastName))
+                        } else {
+                            emitter.onError(SnAuthError("No fb profile error"))
+                        }
+                    }
+                }
+            }
+                    .timeout(5, TimeUnit.SECONDS, Single.error(SnAuthError("No fb profile error")))
+        } else {
+            Single.just(SnUserData(profile.id, profile.firstName, profile.lastName))
         }
     }
 

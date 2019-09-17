@@ -102,10 +102,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
@@ -123,10 +123,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_password_hint"
-                    android:inputType="textPassword"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textPassword" />
             </com.example.ui.views.CustomTextInputLayout>
         </LinearLayout>
 

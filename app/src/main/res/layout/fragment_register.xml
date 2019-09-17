@@ -83,10 +83,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFirstName"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_first_name_hint"
-                    android:inputType="textCapWords"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
@@ -108,10 +108,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLastName"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_last_name_hint"
-                    android:inputType="textCapWords"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
@@ -133,10 +133,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_email_hint"
-                    android:inputType="textEmailAddress"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
@@ -149,6 +149,7 @@
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
+                app:errorIconDrawable="@null"
                 app:layout_constraintBottom_toTopOf="@+id/tilPasswordConfirm"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,10 +158,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_password_hint"
-                    android:inputType="textPassword"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textPassword" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
@@ -182,10 +183,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPasswordConfirm"
                     style="@style/Profile.Edit.Input"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_password_confirm_hint"
-                    android:inputType="textPassword"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:inputType="textPassword" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <LinearLayout

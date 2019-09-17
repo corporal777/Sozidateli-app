@@ -312,8 +312,8 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text_color_profile_data</item>
         <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
         <item name="android:maxLines">1</item>
     </style>
 
