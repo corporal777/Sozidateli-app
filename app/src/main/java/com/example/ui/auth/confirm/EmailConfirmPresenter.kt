@@ -70,6 +70,10 @@ class EmailConfirmPresenter
                 })
     }
 
+    override fun onCloseClick() {
+        viewState.navigateUp()
+    }
+
     companion object {
         private const val TIMER_SECONDS_COUNT = 30
     }

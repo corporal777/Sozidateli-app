@@ -1,6 +1,5 @@
 package com.example.data
 
-import android.util.SparseArray
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User

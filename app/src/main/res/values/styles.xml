@@ -315,6 +315,8 @@
         <item name="android:layout_marginTop">12dp</item>
         <item name="android:layout_marginBottom">12dp</item>
         <item name="android:maxLines">1</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
 
     <style name="Profile.Edit.Input.Theme">

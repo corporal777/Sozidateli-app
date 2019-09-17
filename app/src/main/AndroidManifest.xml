@@ -28,6 +28,7 @@
 
         <activity
             android:name="com.example.ui.main.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

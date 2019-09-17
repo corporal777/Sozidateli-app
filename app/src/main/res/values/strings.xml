@@ -52,7 +52,7 @@
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
     <string name="auth_register_confirm_email_title">Пожалуйста, подтвердите адрес электронной почты</string>
     <string name="auth_register_confirm_email_message">На %s было отправлено письмо со ссылкой и кодом подтверждения.\n\nПожалуйста, перейдите по ссылке в письме.</string>
-    <string name="auth_register_confirm_email_timer">Повторная отправка возможна через %s</string>
+    <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_input_first_name_hint">Укажите ваше имя</string>
     <string name="auth_input_last_name_hint">Укажите вашу фамилию</string>

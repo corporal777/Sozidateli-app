@@ -18,5 +18,6 @@ interface EmailConfirmContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onResendClick()
+        fun onCloseClick()
     }
 }

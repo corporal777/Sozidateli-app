@@ -64,7 +64,6 @@ class MainPresenter
                         isAuthRequired = true
                         viewState.apply {
                             showLogin()
-                            checkIntent()
                         }
                     } else {
                         loadUser()

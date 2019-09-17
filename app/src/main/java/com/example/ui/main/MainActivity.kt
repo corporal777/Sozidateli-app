@@ -130,7 +130,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private fun handleIntent(intent: Intent) {
-        if (wasLaunchedFromRecents()) return
+        if (wasLaunchedFromResents()) return
         val appLinkAction = intent.action
         val appLinkData: Uri? = intent.data
         if (Intent.ACTION_VIEW == appLinkAction) {
@@ -167,7 +167,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    private fun wasLaunchedFromRecents(): Boolean {
+    private fun wasLaunchedFromResents(): Boolean {
         return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
     }
 

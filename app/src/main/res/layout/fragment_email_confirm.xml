@@ -6,11 +6,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/content_description_close"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="240dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/auth_logo_margin_top"
         android:contentDescription="@string/content_description_logo"
         android:src="@drawable/ic_app_logo_gray"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,13 +33,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+
     <TextView
         android:id="@+id/tvTitle"
         fontPath="fonts/OpenSans-Semibold.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="2dp"
@@ -41,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="2dp"
@@ -65,10 +81,13 @@
         android:lineSpacingExtra="2dp"
         android:textColor="@color/auth_title_text"
         android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnResend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+        app:layout_constraintVertical_bias="0.16000003"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:ignore="MissingPrefix"
         tools:text="@string/auth_register_confirm_email_timer" />
 
@@ -86,6 +105,7 @@
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTimer" />

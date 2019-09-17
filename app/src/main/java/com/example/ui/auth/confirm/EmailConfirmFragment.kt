@@ -46,6 +46,8 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
             ))
             setOnClickListener { presenter.onResendClick() }
         }
+
+        ibClose.setOnClickListener { presenter.onCloseClick() }
     }
 
     override fun setEmail(email: String) {
