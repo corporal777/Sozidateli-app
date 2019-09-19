@@ -1,22 +1,25 @@
 package com.example.data.models
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Notification(
         val id: Int,
-        @SerializedName("user_id")
-        val userId: Int,
-        @SerializedName("organization_id")
-        val organizationId: Int?,
-        @SerializedName("project_id")
-        val projectId: Int?,
-        val code: Int?,
-        val type: String,
-        val text: String,
-        var status: String,
-        val extra: String,
-        val time: String
-) : Parcelable
+        val title: String?,
+        val message: String?,
+        val date: String,
+        val type: Type,
+        var wasRead: Boolean,
+        var acceptState: AcceptState = AcceptState.NONE,
+        val rateId: Int? = null
+) : Parcelable {
+
+    enum class Type {
+        SIMPLE, ACCEPTABLE, RATE
+    }
+
+    enum class AcceptState {
+        NONE, ACCEPTED, CANCELED, DISABLED
+    }
+}

@@ -2,6 +2,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.text.Editable
+import android.text.InputFilter
+import android.text.Layout
 import android.text.TextWatcher
 import android.text.style.URLSpan
 import android.util.TypedValue
@@ -12,18 +14,19 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import androidx.core.view.doOnLayout
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.squareup.picasso.Picasso
-import okhttp3.MediaType
+import com.xwray.groupie.GroupAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.YEAR
+import kotlin.math.roundToInt
 
 fun TextView.setDatesIntervalText(startDate: Long, finishDate: Long) {
     this.text = Utils.getDatesInterval(startDate, finishDate)
@@ -71,6 +74,30 @@ fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit) {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = onTextChanged(s)
     })
 }
+
+fun TextView.checkIsEllipsized(onChecked: (Boolean) -> Unit) {
+    val check: (Layout) -> Unit = {
+        val lines = layout.lineCount
+        val ellipsizeCount = layout.getEllipsisCount(lines - 1)
+        onChecked(ellipsizeCount > 0)
+    }
+    val layout = this.layout
+    if (layout != null) check(layout) else doOnLayout { check(this.layout) }
+}
+
+fun TextView.calculateTextLinesCount(text: String): Int {
+    val width = width - paddingStart - paddingLeft
+    if (width <= 0) return 0
+    val textWidth = with(paint) {
+        textSize = this@calculateTextLinesCount.textSize
+        measureText(text)
+    }
+
+    return (textWidth / width).roundToInt()
+}
+
+val TextView.maxLength: Int
+    get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
 
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })

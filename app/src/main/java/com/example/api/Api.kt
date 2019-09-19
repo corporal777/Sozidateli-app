@@ -66,7 +66,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/notifications")
-    fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Notification>>>
+    fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<RemoteNotification>>>
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/mark_as_read")
@@ -254,6 +254,10 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/speakers")
     fun getEventSpeakers(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
+
+    @FormUrlEncoded
+    @POST("/v1/events/{eventId}/rating/set")
+    fun setEventRating(@Path("eventId") eventId: Int, @Field("rating_value") value: Int): Completable
 
     @POST("/v1/users/interests")
     fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>

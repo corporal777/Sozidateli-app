@@ -1,10 +1,7 @@
 package com.example.repository
 
 import android.graphics.Bitmap
-import com.example.data.models.AuthResponse
-import com.example.data.models.Interest
-import com.example.data.models.MarkedResponse
-import com.example.data.models.Notification
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.InstanceIdResult
@@ -16,7 +13,7 @@ interface UserRepository {
     fun getUserShort(): Maybe<User>
     fun getUserFull(): Maybe<User>
     fun getLastNotification(): Single<List<Notification>>
-    fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>>
+    fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
     fun markNotificationsAsRead(ids: List<Int>): Maybe<MarkedResponse>
     fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable

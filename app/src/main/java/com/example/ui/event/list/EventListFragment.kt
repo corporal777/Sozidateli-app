@@ -2,13 +2,10 @@ package com.example.ui.event.list
 
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.core.text.set
-import androidx.core.text.toSpannable
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,10 +41,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
 
             private val backgroundOverlayColor by lazy {
                 ResourcesCompat.getColor(resources, R.color.auth_background_overlay, null)
-            }
-
-            private val showMoreUnderlineSpan by lazy {
-                UnderlineSpan()
             }
 
             override fun getItemLayout(itemView: Int) = R.layout.item_event
@@ -93,9 +86,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
                     }
 
                     tvShowMore.apply {
-                        text = text.toSpannable().apply {
-                            set(0..text.length, showMoreUnderlineSpan)
-                        }
+
                     }
 
                     when (item.status) {

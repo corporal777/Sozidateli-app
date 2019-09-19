@@ -1,6 +1,5 @@
 package com.example.ui.notifications
 
-import androidx.paging.PagedList
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -10,14 +9,28 @@ import com.example.ui.base.BaseContract
 interface NotificationsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(notifications: PagedList<Notification>)
+        fun setData(notifications: List<Notification>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUrl(url: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun onNotificationNeedUpdate(id: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRatingChooser(id: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
-        fun onNotificationOnScreen(notification: Notification)
+        fun onItemTake(position: Int)
+
+        fun onNotificationReadMoreClick(id: Int)
+        fun onNotificationReadClick(id: Int)
+        fun onNotificationAcceptClick(id: Int)
+        fun onNotificationCancelClick(id: Int)
+        fun onNotificationChangeDecisionClick(id: Int)
+        fun onNotificationRateClick(id: Int)
+        fun onNotificationRatingChosen(id: Int, rating: Int)
     }
 }

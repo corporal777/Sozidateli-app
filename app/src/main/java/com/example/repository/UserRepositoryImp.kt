@@ -3,10 +3,7 @@ package com.example.repository
 import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.AuthResponse
-import com.example.data.models.Interest
-import com.example.data.models.MarkedResponse
-import com.example.data.models.Notification
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
@@ -35,7 +32,7 @@ class UserRepositoryImp
 
     override fun getLastNotification() = call(api.getLastNotification())
 
-    override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<Notification>> {
+    override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>> {
         return callPagination(api.getUserNotifications(limit, offset))
     }
 

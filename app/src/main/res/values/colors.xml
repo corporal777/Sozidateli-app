@@ -110,6 +110,10 @@
     <color name="profile_new_message_text_enabled">#FFFFFF</color>
     <color name="profile_new_message_text_disabled">#FFFFFF</color>
 
+    <color name="notification_center_notification_unread">#26C49A6C</color>
+    <color name="notification_center_notification_read">@android:color/white</color>
+    <color name="notification_accept_state_text">#66000000</color>
+
     <color name="button_save_background">#7D9D57</color>
     <color name="button_save_text">#FFFFFF</color>
     <color name="button_cancel_background">#1A000000</color>

@@ -24,11 +24,6 @@
     <string name="tab_subscriptions_title">Подписки</string>
     <string name="tab_events_title">Мои мероприятия</string>
 
-    <string name="go_to_event">Участвовать</string>
-    <string name="subscribe">Подписаться</string>
-    <string name="unsubscribe">Отписаться</string>
-    <string name="show_more">Показать полностью</string>
-
     <string name="event_status_approved">Одобрено</string>
     <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
     <string name="event_status_finished">Завершено</string>
@@ -80,6 +75,17 @@
     <string name="auth_login_registration_confirm">Пользователь не найден. Зарегистрировать нового пользователя?</string>
 
     <string name="notifications_label">Центр уведомлений</string>
+    <string name="notifications_read_more">Показать полностью</string>
+    <string name="notifications_mark_as_read">Отметить прочитанным</string>
+    <string name="notifications_accept">Принять</string>
+    <string name="notifications_cancel">Отклонить</string>
+    <string name="notifications_state_accepted">Принято</string>
+    <string name="notifications_state_cancelled">Отклонено</string>
+    <string name="notifications_change_decision">Изменить решение?</string>
+    <string name="notifications_rate_event">Оценить мероприятие</string>
+    <string name="notifications_simple_title">Уведомление</string>
+    <string name="notifications_acceptable_title">Приглашение</string>
+    <string name="notifications_rate_title">Оценка мероприятия</string>
 
     <string name="menu_item_chat_label">Чат</string>
     <string name="menu_item_search_label">Поиск</string>
@@ -104,6 +110,11 @@
 
     <string name="chat_list">Чаты</string>
 
+    <string name="go_to_event">Участвовать</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="unsubscribe">Отписаться</string>
+    <string name="show_more">Показать полностью</string>
+    <string name="rate">Оценить</string>
     <string name="edit">Редактировать</string>
     <string name="save">Сохранить</string>
     <string name="ok">Ок</string>

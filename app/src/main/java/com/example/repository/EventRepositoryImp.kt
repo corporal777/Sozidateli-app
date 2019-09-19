@@ -126,4 +126,8 @@ class EventRepositoryImp
     override fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
         return callPagination(api.getEventSpeakers(eventId, limit, offset))
     }
+
+    override fun setEventRating(eventId: Int, value: Int): Completable {
+        return call(api.setEventRating(eventId, value))
+    }
 }
