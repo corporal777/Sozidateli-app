@@ -7,13 +7,15 @@ import com.example.R
 import com.example.data.models.Notification
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_notification_accept.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class AcceptNotificationItem(
         private val notification: Notification,
         onReadMoreClickListener: OnNotificationReadMoreClickListener,
+        onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
         private val acceptClickListener: OnNotificationAcceptClickListener,
         private val changeDecisionClickListener: OnNotificationChangeDecisionClickListener
-) : NotificationItem(notification, onReadMoreClickListener) {
+) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)
@@ -32,8 +34,8 @@ class AcceptNotificationItem(
 
             tvAcceptState.apply {
                 text = when (notification.acceptState) {
-                    Notification.AcceptState.DISABLED,
                     Notification.AcceptState.NONE -> null
+                    Notification.AcceptState.DISABLED -> resources.getString(R.string.notifications_state_disabled)
                     Notification.AcceptState.ACCEPTED -> resources.getString(R.string.notifications_state_accepted)
                     Notification.AcceptState.CANCELED -> resources.getString(R.string.notifications_state_cancelled)
                 }
@@ -44,7 +46,7 @@ class AcceptNotificationItem(
             btnAccept.isVisible = isEnabled && isAcceptable
             btnCancel.isVisible = isEnabled && isAcceptable
             btnChangeDecision.isVisible = isEnabled && !isAcceptable
-            tvAcceptState.isVisible = isEnabled && !isAcceptable
+            tvAcceptState.isVisible = !isAcceptable
         }
     }
 

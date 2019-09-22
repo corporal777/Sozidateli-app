@@ -669,6 +669,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="notification_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="notifications_fragment">
                     <value>
                       <LayoutPositions>
@@ -677,6 +689,15 @@
                             <option name="x" value="2692" />
                             <option name="y" value="368" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="notifications_center_to_notification">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

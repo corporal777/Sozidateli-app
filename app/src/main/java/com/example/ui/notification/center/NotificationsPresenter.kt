@@ -1,4 +1,4 @@
-package com.example.ui.notifications
+package com.example.ui.notification.center
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -7,6 +7,7 @@ import com.example.data.models.RemoteNotification
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
+import com.example.ui.banned.BannedContract
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
@@ -27,6 +28,7 @@ class NotificationsPresenter
         private val appData: AppData
 ) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
 
+    private var firstLaunch = true
     private var notifications: List<Notification> = emptyList()
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
@@ -70,6 +72,12 @@ class NotificationsPresenter
                 })
     }
 
+    override fun attachView(view: NotificationsContract.View?) {
+        super.attachView(view)
+        if (firstLaunch) firstLaunch = false
+        else pagination.invalidate()
+    }
+
     override fun onNotificationUrlClick(url: String) {
         viewState.showUrl(url)
     }
@@ -106,7 +114,9 @@ class NotificationsPresenter
     }
 
     override fun onNotificationReadMoreClick(id: Int) {
-
+        notifications.find { it.id == id }?.apply {
+            viewState.showNotification(this)
+        }
     }
 
     override fun onNotificationReadClick(id: Int) {

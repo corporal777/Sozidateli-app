@@ -77,10 +77,12 @@
     <string name="notifications_label">Центр уведомлений</string>
     <string name="notifications_read_more">Показать полностью</string>
     <string name="notifications_mark_as_read">Отметить прочитанным</string>
+    <string name="notifications_was_read">Прочитано</string>
     <string name="notifications_accept">Принять</string>
     <string name="notifications_cancel">Отклонить</string>
     <string name="notifications_state_accepted">Принято</string>
     <string name="notifications_state_cancelled">Отклонено</string>
+    <string name="notifications_state_disabled">Приглашение было отозвано</string>
     <string name="notifications_change_decision">Изменить решение?</string>
     <string name="notifications_rate_event">Оценить мероприятие</string>
     <string name="notifications_simple_title">Уведомление</string>

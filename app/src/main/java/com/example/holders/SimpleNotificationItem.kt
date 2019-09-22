@@ -7,12 +7,14 @@ import com.example.R
 import com.example.data.models.Notification
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_notification_simple.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class SimpleNotificationItem(
         private val notification: Notification,
         onReadMoreClickListener: OnNotificationReadMoreClickListener,
+        onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
         private val onNotificationReadClickListener: OnNotificationReadClickListener
-) : NotificationItem(notification, onReadMoreClickListener) {
+) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)
@@ -20,6 +22,10 @@ class SimpleNotificationItem(
             btnMarkAsRead.apply {
                 isVisible = !btnReadMore.isVisible && !notification.wasRead
                 setOnClickListener { onNotificationReadClickListener(notification.id) }
+            }
+
+            tvWasRead.apply {
+                isVisible = !btnMarkAsRead.isVisible && notification.wasRead
             }
         }
     }

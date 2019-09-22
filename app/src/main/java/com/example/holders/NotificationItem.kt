@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
@@ -15,10 +16,12 @@ import com.example.extensions.substringToWholeWord
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import maxLength
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 abstract class NotificationItem(
         private val notification: Notification,
-        private val onReadMoreClickListener: OnNotificationReadMoreClickListener
+        private val onReadMoreClickListener: OnNotificationReadMoreClickListener,
+        private val onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener
 ) : Item(notification.id.toLong()) {
 
     abstract fun getTitleView(viewHolder: ViewHolder): TextView
@@ -38,6 +41,8 @@ abstract class NotificationItem(
             val ellipsizedMessage = message?.substringToWholeWord(maxLength)
             text = ellipsizedMessage
             getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
+            BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+                    .setOnLinkClickListener(onLinkClickListener)
         }
 
         getDateView(viewHolder).apply {

@@ -1,10 +1,10 @@
-package com.example.ui.notifications
+package com.example.ui.notification.center
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,14 +15,16 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.EventRatingDialog
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
-import kotlinx.android.synthetic.main.layout_rate.view.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
 
 class NotificationsFragment : BaseFragment(), NotificationsContract.View, ToolbarFragment {
@@ -58,6 +60,11 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     private val rateClickListener: OnNotificationRateClickListener = { presenter.onNotificationRateClick(it) }
 
+    private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
+        presenter.onNotificationUrlClick(url)
+        true
+    }
+
     private val adapter by lazy {
         PaginationListGroupAdapter<ViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
@@ -81,12 +88,16 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     override fun setData(notifications: List<Notification>) {
         adapter.update(notifications.map {
             when (it.type) {
-                Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, readClickListener)
-                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, acceptClickListener, changeDecisionClickListener)
-                Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, rateClickListener)
+                Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, linkClickListener, readClickListener)
+                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, linkClickListener, acceptClickListener, changeDecisionClickListener)
+                Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener)
             }
         })
         placeholderUtil.isDataLoad = true
+    }
+
+    override fun showNotification(notification: Notification) {
+        findNavController().navigate(NotificationsFragmentDirections.notificationsCenterToNotification(notification))
     }
 
     override fun showUrl(url: String) {
@@ -103,13 +114,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     }
 
     override fun showRatingChooser(id: Int) {
-        val ratingView = layoutInflater.inflate(R.layout.layout_rate, null)
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.notifications_rate_event)
-                .setView(ratingView)
-                .setPositiveButton(R.string.rate) { _, _ -> presenter.onNotificationRatingChosen(id, ratingView.ratingBar.rating.toInt()) }
-                .setNegativeButton(R.string.cancel) { _, _ -> }
-                .show()
+        EventRatingDialog.show(requireContext()) { presenter.onNotificationRatingChosen(id, it.roundToInt()) }
     }
 
 

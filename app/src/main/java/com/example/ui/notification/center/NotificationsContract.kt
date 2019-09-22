@@ -1,4 +1,4 @@
-package com.example.ui.notifications
+package com.example.ui.notification.center
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
@@ -19,6 +19,9 @@ interface NotificationsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRatingChooser(id: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showNotification(notification: Notification)
     }
 
     interface Presenter : BaseContract.Presenter {

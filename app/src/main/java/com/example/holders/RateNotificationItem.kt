@@ -11,18 +11,22 @@ import kotlinx.android.synthetic.main.item_notification_accept.tvDate
 import kotlinx.android.synthetic.main.item_notification_accept.tvMessage
 import kotlinx.android.synthetic.main.item_notification_accept.tvTitle
 import kotlinx.android.synthetic.main.item_notification_rate.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class RateNotificationItem(
         private val notification: Notification,
         onReadMoreClickListener: OnNotificationReadMoreClickListener,
+        onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
         private val rateClickListener: OnNotificationRateClickListener
-) : NotificationItem(notification, onReadMoreClickListener) {
+) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         super.bind(viewHolder, position)
-        viewHolder.btnRate.apply {
-            setOnClickListener { rateClickListener(notification.id) }
-            isVisible = !notification.wasRead
+        viewHolder.apply {
+            btnRate.apply {
+                setOnClickListener { rateClickListener(notification.id) }
+                isVisible = !notification.wasRead
+            }
         }
     }
 

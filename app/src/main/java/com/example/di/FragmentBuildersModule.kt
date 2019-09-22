@@ -28,7 +28,8 @@ import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
 import com.example.ui.mapTabs.map.MapFragment
 import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
-import com.example.ui.notifications.NotificationsFragment
+import com.example.ui.notification.NotificationFragment
+import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
 import com.example.ui.partner.PartnerFragment
@@ -161,6 +162,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNotificationFragment(): NotificationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeQrScannerFragment(): QrScannerFragment
