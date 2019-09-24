@@ -124,9 +124,20 @@
         <item name="viewBackground">@color/auth_vk_color</item>
     </style>
 
-
     <style name="ViewBackgroundOk">
         <item name="viewBackground">@color/auth_ok_color</item>
+    </style>
+
+    <style name="ViewBackgroundStatusLow">
+        <item name="viewBackground">@color/profile_status_low_background</item>
+    </style>
+
+    <style name="ViewBackgroundStatusMid">
+        <item name="viewBackground">@color/profile_status_mid_background</item>
+    </style>
+
+    <style name="ViewBackgroundStatusMax">
+        <item name="viewBackground">@color/profile_status_max_background</item>
     </style>
 
     <style name="InputBorder">
@@ -441,5 +452,31 @@
         <item name="android:paddingEnd">8dp</item>
         <item name="android:text">@string/notifications_read_more</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Status" />
+
+    <style name="Status.Description">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:textColor">@color/profile_status_description</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Status.Description.Profile">
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:drawablePadding">0dp</item>
+    </style>
+
+    <style name="Status.Counter">
+        <item name="android:layout_width">29dp</item>
+        <item name="android:layout_height">29dp</item>
+        <item name="android:textColor">@color/profile_status_description</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:background">@drawable/background_status_counter</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>

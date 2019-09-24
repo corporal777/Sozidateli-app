@@ -131,8 +131,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 HEADER_ITEM_ID,
                 avatar,
                 user.fullName,
-                user.user_id
-        ) { presenter.onEditMainDataClick() }
+                user.user_id,
+                user.user_status,
+                { presenter.onEditMainDataClick() },
+                { presenter.onStatusClick() }
+        )
     }
 
     override fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean) {
@@ -350,6 +353,10 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
             setUserAvatar(userAvatar)
         })
+    }
+
+    override fun showStatus() {
+        findNavController().navigate(UserFragmentDirections.userToStatus())
     }
 
     override fun showOrganization(organization: Organization) {

@@ -77,6 +77,9 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun setEducationDataDataEditMode(user: User, edit: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showStatus()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -84,6 +87,7 @@ interface UserContract {
         fun onOrganizationClick(organization: Organization)
         fun onFileClick(file: RecommendationFile)
         fun onMenuButtonUserClick()
+        fun onStatusClick()
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

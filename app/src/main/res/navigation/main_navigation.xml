@@ -340,8 +340,16 @@
             android:id="@+id/user_to_chat"
             app:destination="@id/chat_fragment"
             app:launchSingleTop="true" />
+        <action
+            android:id="@+id/user_to_status"
+            app:destination="@id/user_status_fragment" />
         <argument
             android:name="userId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/user_status_fragment"
+        android:name="com.example.ui.status.tabs.StatusPagesFragment"
+        tools:layout="@layout/fragment_status_pages" />
 </navigation>

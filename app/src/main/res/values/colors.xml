@@ -110,6 +110,16 @@
     <color name="profile_new_message_text_enabled">#FFFFFF</color>
     <color name="profile_new_message_text_disabled">#FFFFFF</color>
 
+    <color name="profile_status_low_text">#45413A</color>
+    <color name="profile_status_low_background">#E4E4E4</color>
+    <color name="profile_status_mid_text">#45413A</color>
+    <color name="profile_status_mid_background">#B5D49A</color>
+    <color name="profile_status_max_text">#FFFFFF</color>
+    <color name="profile_status_max_background">#7D9D57</color>
+    <color name="profile_status_your_status">#45413A</color>
+    <color name="profile_status_description">#E6000000</color>
+    <color name="profile_status_description_counter_border">#7D9D57</color>
+
     <color name="notification_center_notification_unread">#26C49A6C</color>
     <color name="notification_center_notification_read">@android:color/white</color>
     <color name="notification_accept_state_text">#66000000</color>

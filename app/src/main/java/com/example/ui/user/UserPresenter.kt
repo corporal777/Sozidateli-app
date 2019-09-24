@@ -257,6 +257,10 @@ class UserPresenter
         viewState.setEducationDataDataEditMode(profileUserData.user, true)
     }
 
+    override fun onStatusClick() {
+        viewState.showStatus()
+    }
+
     private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Unit) {
         if (data.isEmpty()) {
             onComplete()

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_marginBottom="120dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvYourStatus"
+            fontPath="fonts/OpenSans-Semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/status_your_status"
+            android:textColor="@color/profile_status_your_status"
+            android:textSize="19sp"
+            tools:ignore="MissingPrefix" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStatus"
+            fontPath="fonts/OpenSans-Semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="20dp"
+            android:textAllCaps="true"
+            android:textSize="19sp"
+            tools:text="@string/profile_status_low" />
+
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSecurity"
+                style="@style/Status.Description"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:text="@string/status_security"
+                tools:drawableStart="@drawable/ic_status_complete"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvSupport"
+                style="@style/Status.Description"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:text="@string/status_support"
+                tools:drawableStart="@drawable/ic_status_complete"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvInvites"
+                style="@style/Status.Description"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:text="@string/status_invites"
+                tools:drawableStart="@drawable/ic_status_complete"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                fontPath="fonts/OpenSans-Semibold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:gravity="center"
+                android:text="@string/status_conditions"
+                android:textColor="@color/profile_status_your_status"
+                android:textSize="19sp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                style="@style/Status.Description"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:layout_marginTop="16dp"
+                android:text="@string/status_verified_phone"
+                tools:drawableStart="@drawable/ic_status_complete"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvProfile"
+                style="@style/Status.Description"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:layout_marginTop="16dp"
+                android:text="@string/status_fill_profile"
+                tools:drawableStart="@drawable/ic_status_uncomplete"
+                tools:ignore="MissingPrefix" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="1"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_name"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="2"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_birthday"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="3"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_sn"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="4"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_education"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="5"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_work_experience"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Status.Counter"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:text="6"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    style="@style/Status.Description.Profile"
+                    fontPath="fonts/OpenSans-Light.ttf"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/status_profile_additional_data"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -45,6 +45,8 @@ import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
 import com.example.ui.speakers.favorite.FavoriteUsersFragment
 import com.example.ui.splash.SplashFragment
+import com.example.ui.status.StatusFragment
+import com.example.ui.status.tabs.StatusPagesFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.user.UserFragment
@@ -198,4 +200,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEmailConfirmFragment(): EmailConfirmFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeStatusPagesFragment(): StatusPagesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeStatusFragment(): StatusFragment
 }

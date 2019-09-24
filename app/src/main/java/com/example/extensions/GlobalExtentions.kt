@@ -10,15 +10,19 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
+import com.example.R
+import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.GroupAdapter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -98,6 +102,38 @@ fun TextView.calculateTextLinesCount(text: String): Int {
 
 val TextView.maxLength: Int
     get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
+
+fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
+    val statusTextRes: Int
+    val statusTextColorRes: Int
+    val statusBackgroundStyleRes: Int
+    when (status) {
+        User.Status.LOW_PROTECTION -> {
+            statusTextRes = R.string.profile_status_low
+            statusTextColorRes = R.color.profile_status_low_text
+            statusBackgroundStyleRes = R.style.ViewBackgroundStatusLow
+        }
+        User.Status.MID_PROTECTION -> {
+            statusTextRes = R.string.profile_status_mid
+            statusTextColorRes = R.color.profile_status_mid_text
+            statusBackgroundStyleRes = R.style.ViewBackgroundStatusMid
+        }
+        User.Status.MAX_PROTECTION -> {
+            statusTextRes = R.string.profile_status_max
+            statusTextColorRes = R.color.profile_status_max_text
+            statusBackgroundStyleRes = R.style.ViewBackgroundStatusMax
+        }
+    }
+
+    val statusText = resources.getString(statusTextRes).toUpperCase(Locale.getDefault())
+    text = toFormat?.format(statusText) ?: statusText
+    setTextColor(ContextCompat.getColor(context, statusTextColorRes))
+    background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.background_corners,
+            ContextThemeWrapper(context, statusBackgroundStyleRes).theme
+    )
+}
 
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })

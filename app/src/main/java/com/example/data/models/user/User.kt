@@ -1,6 +1,7 @@
 package com.example.data.models.user
 
 import com.example.data.models.*
+import com.google.gson.annotations.SerializedName
 
 data class User(
         var user_id: Int = -1,
@@ -8,6 +9,7 @@ data class User(
         var user_modified: Boolean = false,
         var user_banned: Boolean = false,
         var user_suspended: Boolean = false,
+        var user_status: Status = Status.LOW_PROTECTION,
         var user_email: String? = null,
         var user_email_show: Boolean = false,
         var user_email_confirmed: Boolean = false,
@@ -107,5 +109,14 @@ data class User(
         const val FIELD_SOCIAL_LINKS = "social_links"
         const val FIELD_USER_OLD_PASSWORD = "user_old_password"
         const val FIELD_USER_NEW_PASSWORD = "user_new_password"
+    }
+
+    enum class Status {
+        @SerializedName("LOW_PROTECTION")
+        LOW_PROTECTION,
+        @SerializedName("MID_PROTECTION")
+        MID_PROTECTION,
+        @SerializedName("MAX_PROTECTION")
+        MAX_PROTECTION
     }
 }

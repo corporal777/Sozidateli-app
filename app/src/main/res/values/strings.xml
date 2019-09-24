@@ -318,6 +318,24 @@
         <item>Более одного высшего</item>
         <item>Есть ученая степень</item>
     </string-array>
+    <string name="profile_user_status">Статус: %s</string>
+    <string name="profile_status_low">Анонимный</string>
+    <string name="profile_status_mid">Защищенный</string>
+    <string name="profile_status_max">Максимальный</string>
+
+    <string name="status_your_status">Ваш текущий статус:</string>
+    <string name="status_security">Повышенная безопасность аккаунта</string>
+    <string name="status_support">Приоритетная техничнсекая поддержка</string>
+    <string name="status_invites">Возможность принимать приглашения в проектах Фонда Президентских Грантов</string>
+    <string name="status_conditions">Чтобы повысить статус необходимо:</string>
+    <string name="status_verified_phone">Подтвержден номер телефона</string>
+    <string name="status_fill_profile">Заполнить профиль:</string>
+    <string name="status_profile_name">ФИО</string>
+    <string name="status_profile_birthday">Дату рождения</string>
+    <string name="status_profile_sn">Социальные сети</string>
+    <string name="status_profile_education">Образование</string>
+    <string name="status_profile_work_experience">Опыт работы</string>
+    <string name="status_profile_additional_data">Дополнительные сведения</string>
 
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>
