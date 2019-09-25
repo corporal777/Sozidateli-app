@@ -109,6 +109,8 @@
     <string name="unblock">Разблокировать</string>
     <string name="change">Изменить</string>
     <string name="write_message">Написать сообщение</string>
+    <string name="remove">Удалить</string>
+    <string name="accept">Подтвердить</string>
 
     <string name="chat_list">Чаты</string>
 
@@ -150,9 +152,6 @@
 
     <string name="sub_event_register_users">Регистрация участников форума</string>
     <string name="sub_event_add_to_schedule">Добавить в расписание</string>
-
-    <string name="remove">Удалить</string>
-
 
     <string name="event_map_tab_how_to_get">Как добраться</string>
     <string name="event_map_tab_building_scheme">Схема комплекса</string>
@@ -336,6 +335,26 @@
     <string name="status_profile_education">Образование</string>
     <string name="status_profile_work_experience">Опыт работы</string>
     <string name="status_profile_additional_data">Дополнительные сведения</string>
+    <string name="status_profile_title_set">Подтверждение номера телефона</string>
+    <string name="status_profile_message_set">Для того, чтобы подтвердить номер телефона, введите пароль, который указывали при регистрации</string>
+    <string name="status_profile_title_change">Изменение номера телефона</string>
+    <string name="status_profile_message_change">Для того, чтобы изменить номер телефона, введите пароль, который указывали при регистрации</string>
+    <string name="status_profile_title_remove">Удаление номера телефона</string>
+    <string name="status_profile_message_remove">Для того, чтобы удалить номер телефона, введите пароль, который указывали при регистрации</string>
+    <string name="status_profile_check_password_wrong">Введен неправильный пароль</string>
+    <string name="status_profile_status_phone_number_set">Укажите номер телефона, для подтверждения. На этот номер будет выслан код из 6 цифр, которые нужно ввести в соответующую форму.</string>
+    <string name="status_profile_status_phone_number_change">Введите новый номер</string>
+    <string name="status_profile_status_phone_set_to_profile">Если хотите указать номер телефона в Вашем личном профиле, то выберите соответвующую галочку для этого номера:</string>
+    <string name="status_profile_status_phone_set_to_profile_mobile">Это мобильный</string>
+    <string name="status_profile_status_phone_set_to_profile_work">Это рабочий</string>
+    <string name="status_profile_status_phone_do_not_set_to_profile">Не указывать в профиле</string>
+    <string name="status_profile_status_code_set">На номер %s выслан код из 6 цифр. Ведите его для подтверждения.</string>
+    <string name="status_profile_status_code_resend">На номер %s выслан новый код.</string>
+    <string name="status_profile_status_code_hint">Введите 6 код из смс</string>
+    <string name="status_profile_status_code_empty">Введите код</string>
+    <string name="status_profile_status_code_error">Введен неправильный код</string>
+    <string name="status_profile_status_code_do_not_receive">Не пришел код</string>
+    <string name="status_profile_status_phone_remove">Вы действительно хотиет удалить номер телефона %s? Удалив номер Вам будет присвоен статус АНОНИМНЫЙ</string>
 
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>

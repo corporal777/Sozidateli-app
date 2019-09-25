@@ -23,6 +23,7 @@ import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.squareup.picasso.Picasso
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -184,4 +185,15 @@ fun Bitmap.toBodyPart(name: String, fileName: String, compressFormat: Bitmap.Com
         val body = byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
         MultipartBody.Part.createFormData(name, fileName, body)
     }
+}
+
+fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null): Boolean {
+    if (this.isNullOrEmpty()) return false
+    val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
+    val parsedPhone = try {
+        phoneNumberUtil.parse(this, defaultRegion)
+    } catch (e: Throwable) {
+        return false
+    }
+    return phoneNumberUtil.isValidNumber(parsedPhone)
 }

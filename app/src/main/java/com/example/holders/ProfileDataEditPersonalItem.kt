@@ -22,6 +22,7 @@ import com.example.util.GENDER_MALE
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
 import onTextChanged
 import java.util.*
@@ -178,16 +179,14 @@ class ProfileDataEditPersonalItem(
     private fun checkDataValid(viewHolder: ViewHolder): Boolean {
         var isValid = true
         if (workPhone != mWorkPhone || mobilePhone != mMobilePhone) {
-            val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
-            val country = Locale.getDefault().country
             if (workPhone != mWorkPhone && !mWorkPhone.isNullOrEmpty()) {
-                if (!phoneNumberUtil.isValidNumber(phoneNumberUtil.parse(mWorkPhone, country))) {
+                if (!mWorkPhone.isValidPhoneNumber(context)) {
                     viewHolder.tilWorkPhone.error = invalidNumberError
                     isValid = false
                 }
             }
             if (mobilePhone != mMobilePhone && !mMobilePhone.isNullOrEmpty()) {
-                if (!phoneNumberUtil.isValidNumber(phoneNumberUtil.parse(mMobilePhone, country))) {
+                if (!mMobilePhone.isValidPhoneNumber(context)) {
                     viewHolder.tilMobilePhone.error = invalidNumberError
                     isValid = false
                 }

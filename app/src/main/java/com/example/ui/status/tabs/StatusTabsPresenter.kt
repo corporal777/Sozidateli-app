@@ -4,6 +4,8 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.user.User
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
+import performOnBackground
 import javax.inject.Inject
 
 @InjectViewState
@@ -16,11 +18,18 @@ class StatusTabsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        when (appData.getUser().user_status) {
-            User.Status.LOW_PROTECTION -> viewState.selectTab(0)
-            User.Status.MID_PROTECTION -> viewState.selectTab(1)
-            User.Status.MAX_PROTECTION -> viewState.selectTab(2)
-        }
+        compositeDisposable += appData.userChangeSubject
+                .performOnBackground()
+                .subscribe({
+                    when (it.value?.user_status) {
+                        User.Status.LOW_PROTECTION -> viewState.selectTab(0)
+                        User.Status.MID_PROTECTION -> viewState.selectTab(1)
+                        User.Status.MAX_PROTECTION -> viewState.selectTab(2)
+                    }
+                }, {
+                    it.printStackTrace()
+                })
+
     }
 
     override fun onCloseClick() {
