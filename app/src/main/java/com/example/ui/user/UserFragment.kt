@@ -5,14 +5,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageButton
@@ -34,8 +29,6 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.AuthValidateUtil
-import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -43,7 +36,6 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
-import onTextChanged
 import setSelectableItemBackgroundBorderless
 import javax.inject.Inject
 import javax.inject.Provider
@@ -104,30 +96,18 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
         val avatar = profileUserData.avatar
-        val headerItem = if (profileUserData.editable) initEditableProfileItem(user, avatar, profileUserData.isEditMainData)
+        val headerItem = if (profileUserData.editable) initEditableProfileItem(user, avatar)
         else initProfileItem(user, avatar)
         val editable = profileUserData.editable
         val interests = profileUserData.interests
 
         dataSection.setHeader(headerItem)
-        personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable, profileUserData.isEditPersonalData)))
+        personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable)))
         educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable, profileUserData.isEditEducationData)))
     }
 
-    private fun initEditableProfileItem(user: User, avatar: Bitmap?, edit: Boolean): Item {
-        return if (edit) ProfileDataUserEditItem(
-                HEADER_ITEM_ID,
-                avatar,
-                user.user_name,
-                user.user_last_name,
-                user.user_middle_name,
-                { presenter.onRemoveAvatarClick() },
-                { presenter.onEditAvatarClick() },
-                { presenter.onEditMainSaveClick(it) },
-                { presenter.onEditMainDataCancelClick() },
-                { presenter.onDisabledMainInputInfoClick() }
-        )
-        else ProfileDataUserEditableItem(
+    private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
+        return ProfileDataUserEditableItem(
                 HEADER_ITEM_ID,
                 avatar,
                 user.fullName,
@@ -136,10 +116,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 { presenter.onEditMainDataClick() },
                 { presenter.onStatusClick() }
         )
-    }
-
-    override fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean) {
-        dataSection.setHeader(initEditableProfileItem(user, avatar, edit))
     }
 
     override fun changeUserAvatar(avatar: Bitmap?) {
@@ -171,15 +147,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 })
     }
 
-    private fun initPersonalDataItem(user: User, editable: Boolean, edit: Boolean): Group? {
+    private fun initPersonalDataItem(user: User, editable: Boolean): Group? {
         return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_general_info),
                     onItemExpandChange,
                     { presenter.onEditPersonalDataClick() }
             ).apply {
-                titleItem.editMode = edit
-                val item = initPersonalDataContentItem(user, edit)
+                val item = initPersonalDataContentItem(user)
                 add(item)
             }
         } else {
@@ -187,22 +162,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    private fun initPersonalDataContentItem(user: User, edit: Boolean): Item {
-        return if (edit) initProfileDataEditPersonalItem(user)
-        else initProfileDataPersonalItem(user, false)
-                ?: initProfileDataEditPersonalItem(user)
+    private fun initPersonalDataContentItem(user: User): Item {
+        return initProfileDataPersonalItem(user, false)
     }
 
-    override fun setPersonalDataDataEditMode(user: User, edit: Boolean) {
-        (personalDataSection.getGroup(0) as? ProfileExpandableTitleGroup)?.apply {
-            clear()
-            add(initPersonalDataContentItem(user, edit))
-            titleItem.editMode = edit
-            if (!isExpanded) onToggleExpanded()
-        }
-    }
-
-    private fun initProfileDataPersonalItem(user: User, withOrganizations: Boolean): ProfileDataPersonalItem? {
+    private fun initProfileDataPersonalItem(user: User, withOrganizations: Boolean): ProfileDataPersonalItem {
         val organizations: List<Organization>? = if (withOrganizations) user.organisations else null
         val email = user.user_email
         val workPhone = user.user_phone_work
@@ -212,42 +176,16 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val city = user.user_address_city
         val socialNetworks = user.social_links
 
-        if (!organizations.isNullOrEmpty() || email != null || workPhone != null || mobilePhone != null
-                || gender != null || city != null || birthday != null || !socialNetworks.isNullOrEmpty()) {
-            return ProfileDataPersonalItem(
-                    organizations,
-                    email,
-                    workPhone,
-                    mobilePhone,
-                    gender,
-                    birthday,
-                    city,
-                    socialNetworks?.map { it.value },
-                    onOrganizationClickListener)
-        }
-
-        return null
-    }
-
-    private fun initProfileDataEditPersonalItem(user: User): ProfileDataEditPersonalItem {
-        return ProfileDataEditPersonalItem(
-                requireContext(),
-                user.user_email,
-                user.user_email_show,
-                user.user_phone_work,
-                user.user_phone_work_show,
-                user.user_phone,
-                user.user_phone_show,
-                user.user_gender,
-                user.user_birthday,
-                user.user_birthday_show,
-                UserAddress.fromUser(user),
-                user.social_links,
-                { presenter.onEditPersonalDataSaveClick(it) },
-                { presenter.onEditPersonalDataCancelClick() },
-                { presenter.onChangeEmailClick() },
-                { presenter.onChangePasswordClick() }
-        )
+        return ProfileDataPersonalItem(
+                organizations,
+                email,
+                workPhone,
+                mobilePhone,
+                gender,
+                birthday,
+                city,
+                socialNetworks?.map { it.value },
+                onOrganizationClickListener)
     }
 
     override fun setEducationDataDataEditMode(user: User, edit: Boolean) {
@@ -414,135 +352,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 .show()
     }
 
-    override fun showTakePictureChooser() {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.photo_alert_title)
-                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryRequest() }
-                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraRequest() }
-                .show()
-    }
-
-    override fun showDisabledMainInputInfo() {
-        val message = SpannableString(getString(R.string.profile_edit_name_disabled_message))
-        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-        val dialog = AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_edit_name_disabled_title)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-
-        (dialog.findViewById(android.R.id.message) as? TextView)?.movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    override fun showChangeEmail() {
-        val view = layoutInflater.inflate(R.layout.dialog_change_email, null)
-        val til = view.findViewById<TextInputLayout>(R.id.tilEmail)
-        val et = view.findViewById<EditText>(R.id.etEmail)
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_email_change)
-                .setView(view)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-                .apply {
-                    setOnShowListener {
-                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                            setOnClickListener {
-                                val email = et.text.toString()
-                                if (AuthValidateUtil.isValidEmail(email)) {
-                                    presenter.onChangeEmailConfirm(email)
-                                    dismiss()
-                                } else til.error = getString(R.string.profile_edit_email_invalid)
-                            }
-                        }
-                    }
-                }
-                .show()
-    }
-
-    override fun showChangeEmailComplete(email: String) {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.email_change_title)
-                .setMessage(String.format(getString(R.string.email_change_msg, email)))
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
-    override fun showChangePassword() {
-        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
-        val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
-        val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
-            onTextChanged { tilOldPassword.error = null }
-        }
-        val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
-        val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
-            onTextChanged { tilNewPassword.error = null }
-        }
-        val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
-        val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
-            onTextChanged { tilNewPasswordConfirm.error = null }
-        }
-
-        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
-                .setView(view)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-                .apply {
-                    setOnShowListener {
-                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                            setOnClickListener {
-                                var hasError = false
-                                val oldPassword = etOldPassword.text?.toString()
-                                val newPassword = etNewPassword.text?.toString()
-                                val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
-
-                                if (oldPassword.isNullOrEmpty()) {
-                                    tilOldPassword.error = emptyFieldError
-                                    hasError = true
-                                }
-
-                                if (newPassword != newPasswordConfirm) {
-                                    tilNewPasswordConfirm.error = getString(R.string.passwords_do_not_match)
-                                    hasError = true
-                                } else {
-                                    if (newPassword.isNullOrEmpty()) {
-                                        tilNewPassword.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                    if (newPasswordConfirm.isNullOrEmpty()) {
-                                        tilNewPasswordConfirm.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                }
-
-                                if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
-                                    presenter.onChangePasswordClickConfirm(oldPassword, newPassword, newPasswordConfirm)
-                                    dismiss()
-                                }
-                            }
-                        }
-                    }
-                }
-                .show()
-    }
-
-    override fun showPasswordChangeComplete() {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
-                .setMessage(R.string.profile_password_change_complete)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
                 ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showDataEditor(type: UserEditDataType) {
+        findNavController().navigate(UserFragmentDirections.userToEdit(type))
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

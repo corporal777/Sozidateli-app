@@ -10,7 +10,18 @@ import com.squareup.picasso.Transformation;
 
 public class CropCircleTransformation implements Transformation {
 
-    @Override public Bitmap transform(Bitmap source) {
+    private final Boolean recycleSource;
+
+    public CropCircleTransformation() {
+        this(true);
+    }
+
+    public CropCircleTransformation(Boolean recycleSource) {
+        this.recycleSource = recycleSource;
+    }
+
+    @Override
+    public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());
 
         int width = (source.getWidth() - size) / 2;
@@ -34,12 +45,13 @@ public class CropCircleTransformation implements Transformation {
         float r = size / 2f;
         canvas.drawCircle(r, r, r, paint);
 
-        source.recycle();
+        if (recycleSource) source.recycle();
 
         return bitmap;
     }
 
-    @Override public String key() {
+    @Override
+    public String key() {
         return "CropCircleTransformation()";
     }
 }

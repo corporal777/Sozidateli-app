@@ -7,6 +7,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Organization
 import com.example.data.models.ProfileUserData
+import com.example.data.models.UserEditDataType
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
@@ -45,32 +46,8 @@ interface UserContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBlockConfirmation()
 
-        @StateStrategyType(SkipStrategy::class)
-        fun setMainDataEditMode(user: User, avatar: Bitmap?, edit: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showTakePictureChooser()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeUserAvatar(avatar: Bitmap?)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showDisabledMainInputInfo()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun setPersonalDataDataEditMode(user: User, edit: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmail()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmailComplete(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangePassword()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPasswordChangeComplete()
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
@@ -80,6 +57,9 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showStatus()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showDataEditor(type: UserEditDataType)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -96,22 +76,7 @@ interface UserContract {
         fun onBlockConfirm()
 
         fun onEditMainDataClick()
-        fun onEditMainDataCancelClick()
-        fun onEditMainSaveClick(data: Map<String, Any?>)
-        fun onDisabledMainInputInfoClick()
-        fun onEditAvatarClick()
-        fun onRemoveAvatarClick()
-        fun onTakePhotoFromCameraRequest()
-        fun onTakePhotoFromGalleryRequest()
-
         fun onEditPersonalDataClick()
-        fun onEditPersonalDataCancelClick()
-        fun onEditPersonalDataSaveClick(data: Map<String, Any?>)
-        fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String)
-        fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
-
         fun onEditEducationClick()
     }
 }

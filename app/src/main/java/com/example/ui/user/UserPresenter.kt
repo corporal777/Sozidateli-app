@@ -3,10 +3,7 @@ package com.example.ui.user
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Interest
-import com.example.data.models.Optional
-import com.example.data.models.Organization
-import com.example.data.models.ProfileUserData
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.UserData
@@ -15,12 +12,9 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.CropCircleTransformation
-import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
-import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
@@ -37,8 +31,7 @@ class UserPresenter
         private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
-        private val haChat: HAChat,
-        private val takePhoto: RxTakePhoto
+        private val haChat: HAChat
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
     lateinit var userId: String
@@ -165,91 +158,11 @@ class UserPresenter
     }
 
     override fun onEditMainDataClick() {
-        profileUserData.isEditMainData = true
-        viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, true)
-    }
-
-    override fun onEditMainDataCancelClick() {
-        profileUserData.isEditMainData = false
-        viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, false)
-    }
-
-    override fun onEditMainSaveClick(data: Map<String, Any?>) {
-        onEditSave(data) {
-            profileUserData.isEditMainData = false
-            viewState.setMainDataEditMode(profileUserData.user, profileUserData.avatar, false)
-        }
-    }
-
-    override fun onDisabledMainInputInfoClick() {
-        viewState.showDisabledMainInputInfo()
-    }
-
-    private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
-        return loadBitmap(listOf(CropCircleTransformation()))
-    }
-
-    override fun onEditAvatarClick() {
-        viewState.showTakePictureChooser()
-    }
-
-    override fun onRemoveAvatarClick() {
-        viewState.changeUserAvatar(null)
-    }
-
-    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
-    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage())
-
-    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
-        compositeDisposable += takePhotoRequest
-                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_AVATAR, outputMaxHeight = IMAGE_MAX_SIZE_AVATAR) }
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.changeUserAvatar(it)
-                }, {
-                    it.printStackTrace()
-                })
+        viewState.showDataEditor(UserEditDataType.MAIN)
     }
 
     override fun onEditPersonalDataClick() {
-        profileUserData.isEditPersonalData = true
-        viewState.setPersonalDataDataEditMode(profileUserData.user, true)
-    }
-
-    override fun onEditPersonalDataCancelClick() {
-        profileUserData.isEditPersonalData = false
-        viewState.setPersonalDataDataEditMode(profileUserData.user, false)
-    }
-
-    override fun onEditPersonalDataSaveClick(data: Map<String, Any?>) {
-        onEditSave(data) {
-            profileUserData.isEditPersonalData = false
-            viewState.setPersonalDataDataEditMode(profileUserData.user, false)
-        }
-    }
-
-    override fun onChangeEmailClick() {
-        viewState.showChangeEmail()
-    }
-
-    override fun onChangeEmailConfirm(email: String) {
-        if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
-                viewState.showChangeEmailComplete(email)
-            }
-        } else {
-            viewState.showUpdateError()
-        }
-    }
-
-    override fun onChangePasswordClick() {
-        viewState.showChangePassword()
-    }
-
-    override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
-            viewState.showPasswordChangeComplete()
-        }
+        viewState.showDataEditor(UserEditDataType.PERSONAL)
     }
 
     override fun onEditEducationClick() {
@@ -261,40 +174,8 @@ class UserPresenter
         viewState.showStatus()
     }
 
-    private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Unit) {
-        if (data.isEmpty()) {
-            onComplete()
-            return
-        }
-
-        val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
-        if (avatar != null) {
-            if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), onComplete)
-            } else {
-                updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
-            }
-        } else {
-            updateUser(userRepository.updateUser(data), onComplete)
-        }
-    }
-
-    private fun updateUser(request: Single<User>, onComplete: () -> Unit) {
-        compositeDisposable += request.performOnBackgroundOutOnMain()
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
-                .observeOn(Schedulers.io())
-                .withLoadingDialog(viewState)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    profileUserData.user = it.first
-                    profileUserData.avatar = it.second.value
-                    onComplete()
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                })
+    private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
+        return loadBitmap(listOf(CropCircleTransformation()))
     }
 
     private fun isCurrentUser() = userId == appData.getUser().user_id.toString()

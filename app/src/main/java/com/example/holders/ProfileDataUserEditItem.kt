@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import com.example.R
 import com.example.data.models.Optional
 import com.example.data.models.user.User
+import com.example.util.CropCircleTransformation
 import com.example.util.USER_MIDDLE_NAME_EMPTY
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -13,7 +14,6 @@ import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
 import onTextChanged
 
 class ProfileDataUserEditItem(
-        id: Long,
         private val avatar: Bitmap?,
         private val name: String?,
         private val surname: String?,
@@ -23,7 +23,7 @@ class ProfileDataUserEditItem(
         private val saveClickListener: (data: Map<String, Any?>) -> Unit,
         private val cancelClickListener: () -> Unit,
         private val onDisabledInputInfoClickListener: () -> Unit
-) : Item(id) {
+) : Item() {
 
     private var mAvatar = avatar
     private var mName = name
@@ -82,8 +82,12 @@ class ProfileDataUserEditItem(
     private fun setAvatar(viewHolder: ViewHolder, avatar: Bitmap?) {
         this.mAvatar = avatar
         viewHolder.ivAvatar.apply {
-            if (avatar != null) setImageBitmap(avatar)
+            if (avatar != null) setImageBitmap(CropCircleTransformation(false).transform(avatar))
             else setImageResource(R.drawable.avatar_placeholder)
+        }
+
+        viewHolder.btnAvatarRemove.apply {
+            isEnabled = avatar != null
         }
     }
 

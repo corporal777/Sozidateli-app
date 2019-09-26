@@ -8,7 +8,8 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="0dp">
+        android:layout_marginTop="0dp"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -38,9 +39,11 @@
     </LinearLayout>
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <!--suppress AndroidUnknownAttribute -->
         <androidx.appcompat.widget.AppCompatButton
@@ -207,6 +210,7 @@
                 style="@style/Profile.Edit.Input"
                 android:hint="@string/profile_city_hint"
                 android:inputType="textCapSentences"
+                android:minHeight="48dp"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp" />
         </com.example.ui.views.CustomTextInputLayout>

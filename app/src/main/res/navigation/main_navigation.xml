@@ -343,9 +343,21 @@
         <action
             android:id="@+id/user_to_status"
             app:destination="@id/user_status_fragment" />
+        <action
+            android:id="@+id/user_to_edit"
+            app:destination="@id/user_edit_fragment" />
         <argument
             android:name="userId"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_edit_fragment"
+        android:name="com.example.ui.user.edit.UserEditFragment"
+        tools:layout="@layout/fragment_user">
+        <argument
+            android:name="type"
+            app:argType="com.example.data.models.UserEditDataType" />
     </fragment>
 
     <fragment

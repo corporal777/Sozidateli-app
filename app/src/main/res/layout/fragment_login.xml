@@ -105,8 +105,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:theme="@style/Profile.Edit.Input.Theme" />
+                    android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout

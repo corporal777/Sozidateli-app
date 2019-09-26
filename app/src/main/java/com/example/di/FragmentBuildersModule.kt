@@ -50,6 +50,7 @@ import com.example.ui.status.tabs.StatusPagesFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.user.UserFragment
+import com.example.ui.user.edit.UserEditFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -194,6 +195,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserFragment(): UserFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserEditFragment(): UserEditFragment
 
     @ContributesAndroidInjector
     abstract fun contributeBannedFragment(): BannedFragment
