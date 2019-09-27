@@ -7,9 +7,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="0dp"
-        android:visibility="gone">
+        style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"
@@ -39,11 +37,9 @@
     </LinearLayout>
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <!--suppress AndroidUnknownAttribute -->
         <androidx.appcompat.widget.AppCompatButton

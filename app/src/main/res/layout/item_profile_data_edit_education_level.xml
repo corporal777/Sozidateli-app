@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:endIconDrawable="@drawable/ic_drop_down"
-        app:endIconMode="dropdown_menu">
+        app:endIconMode="dropdown_menu"
+        app:errorEnabled="false">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvEducationLevel"
             style="@style/Profile.Edit.Input"
+            android:layout_marginBottom="0dp"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"

@@ -38,22 +38,27 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPasswordChangeComplete()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setEducationData(user: User)
     }
 
     interface Presenter : BaseContract.Presenter {
         //main data
-        fun onDisabledMainInputInfoClick()
 
+        fun onDisabledMainInputInfoClick()
         fun onEditAvatarClick()
         fun onRemoveAvatarClick()
         fun onTakePhotoFromCameraRequest()
         fun onTakePhotoFromGalleryRequest()
 
         //personal data
+
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String)
         fun onChangePasswordClick()
         fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
+
 
         fun onSaveClick(data: Map<String, Any?>)
         fun onCancelClick()

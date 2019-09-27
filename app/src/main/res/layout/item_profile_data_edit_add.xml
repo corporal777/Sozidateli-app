@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAdd"
+        style="@style/Profile.Edit.ActionButton"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/background_action_button_selector"
+        android:drawableStart="@drawable/ic_add_sn"
+        android:textColor="@color/text_color_action_button"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/btnAvatarRemove"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="@string/profile_sn_add" />
+</LinearLayout>

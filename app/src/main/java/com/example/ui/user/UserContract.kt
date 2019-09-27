@@ -1,6 +1,5 @@
 package com.example.ui.user
 
-import android.graphics.Bitmap
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -9,7 +8,6 @@ import com.example.data.models.Organization
 import com.example.data.models.ProfileUserData
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
@@ -46,14 +44,8 @@ interface UserContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBlockConfirmation()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeUserAvatar(avatar: Bitmap?)
-
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun setEducationDataDataEditMode(user: User, edit: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showStatus()

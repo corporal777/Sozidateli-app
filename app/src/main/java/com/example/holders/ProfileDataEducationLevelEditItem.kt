@@ -7,11 +7,12 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_education_level.*
 import onTextChanged
 
-class ProfileDataEditEducationLevelItem(
-        private val educationLevel: String?
+class ProfileDataEducationLevelEditItem(
+        educationLevel: String?
 ) : Item() {
 
-    private var mEducationLevel = educationLevel
+    var mEducationLevel = educationLevel
+        private set
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {

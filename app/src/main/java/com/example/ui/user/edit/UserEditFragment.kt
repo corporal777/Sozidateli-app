@@ -16,7 +16,8 @@ import com.example.R
 import com.example.data.models.UserAddress
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
-import com.example.holders.ProfileDataEditPersonalItem
+import com.example.holders.ProfileDataEducationEditGroup
+import com.example.holders.ProfileDataPersonalEditItem
 import com.example.holders.ProfileDataUserEditItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -94,7 +95,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setPersonalData(user: User) {
-        adapter.update(listOf(ProfileDataEditPersonalItem(
+        adapter.update(listOf(ProfileDataPersonalEditItem(
                 requireContext(),
                 user.user_email,
                 user.user_email_show,
@@ -228,6 +229,16 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
                 ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun setEducationData(user: User) {
+        val education = user.education ?: emptyList()
+        adapter.update(listOf(ProfileDataEducationEditGroup(
+                user.user_education,
+                education,
+                { presenter.onSaveClick(it) },
+                { presenter.onCancelClick() }
+        )))
     }
 
     override fun layout() = R.layout.fragment_user

@@ -166,8 +166,7 @@ class UserPresenter
     }
 
     override fun onEditEducationClick() {
-        profileUserData.isEditEducationData = true
-        viewState.setEducationDataDataEditMode(profileUserData.user, true)
+        viewState.showDataEditor(UserEditDataType.EDUCATION)
     }
 
     override fun onStatusClick() {

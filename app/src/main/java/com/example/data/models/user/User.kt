@@ -59,7 +59,6 @@ data class User(
         var settings_chat_allow_msg_from_fav: Boolean = true,
         val chat: UserChat? = null,
         val user_education: String? = null,
-        //var settings_chat_disallow_msg_from_all: Boolean = false,
         var education: List<SocialRoles>? = null,
         var work: ArrayList<SocialRoles>? = null,
         var social_projects: ArrayList<SocialRoles>? = null,
@@ -109,6 +108,8 @@ data class User(
         const val FIELD_SOCIAL_LINKS = "social_links"
         const val FIELD_USER_OLD_PASSWORD = "user_old_password"
         const val FIELD_USER_NEW_PASSWORD = "user_new_password"
+        const val FIELD_USER_EDUCATION = "user_education"
+        const val FIELD_EDUCATION = "education"
     }
 
     enum class Status {

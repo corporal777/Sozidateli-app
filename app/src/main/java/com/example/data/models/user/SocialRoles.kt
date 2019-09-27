@@ -14,5 +14,12 @@ data class SocialRoles(
         var description: String? = null,
         var role: String? = null,
         var name: String? = null
+) : Parcelable {
 
-):Parcelable
+    companion object {
+        const val FIELD_BEGIN = "begin"
+        const val FIELD_END = "end"
+        const val FIELD_ORGANIZATION = "organization"
+        const val FIELD_SPECIALITY = "specialty"
+    }
+}

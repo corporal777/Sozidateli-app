@@ -18,7 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.Interest
+import com.example.data.models.Organization
+import com.example.data.models.ProfileUserData
+import com.example.data.models.UserEditDataType
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
@@ -96,14 +99,13 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
         val avatar = profileUserData.avatar
-        val headerItem = if (profileUserData.editable) initEditableProfileItem(user, avatar)
-        else initProfileItem(user, avatar)
-        val editable = profileUserData.editable
         val interests = profileUserData.interests
-
+        val editable = profileUserData.editable
+        val headerItem = if (editable) initEditableProfileItem(user, avatar)
+        else initProfileItem(user, avatar)
         dataSection.setHeader(headerItem)
         personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable)))
-        educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable, profileUserData.isEditEducationData)))
+        educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable)))
     }
 
     private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
@@ -116,10 +118,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 { presenter.onEditMainDataClick() },
                 { presenter.onStatusClick() }
         )
-    }
-
-    override fun changeUserAvatar(avatar: Bitmap?) {
-        dataSection.notifyItemChanged(0, avatar.asOptional())
     }
 
     private fun initProfileItem(user: User, avatar: Bitmap?): ProfileDataUserItem {
@@ -154,16 +152,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     onItemExpandChange,
                     { presenter.onEditPersonalDataClick() }
             ).apply {
-                val item = initPersonalDataContentItem(user)
-                add(item)
+                add(initProfileDataPersonalItem(user, false))
             }
         } else {
             initProfileDataPersonalItem(user, true)
         }
-    }
-
-    private fun initPersonalDataContentItem(user: User): Item {
-        return initProfileDataPersonalItem(user, false)
     }
 
     private fun initProfileDataPersonalItem(user: User, withOrganizations: Boolean): ProfileDataPersonalItem {
@@ -188,26 +181,20 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 onOrganizationClickListener)
     }
 
-    override fun setEducationDataDataEditMode(user: User, edit: Boolean) {
-        (educationDataSection.getGroup(0) as? ProfileExpandableTitleGroup)?.apply {
-            clear()
-            add(ProfileEducationGroup(user.user_education, edit))
-            titleItem.editMode = edit
-            if (!isExpanded) onToggleExpanded()
-        }
-    }
-
-    private fun initEducationDataItem(user: User, editable: Boolean, edit: Boolean): Group? {
-        val education = user.education
-        return if (!education.isNullOrEmpty() || editable) {
+    private fun initEducationDataItem(user: User, editable: Boolean): Group? {
+        val education = user.education ?: emptyList()
+        return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_education),
                     onItemExpandChange,
                     { presenter.onEditEducationClick() }
             ).apply {
-                titleItem.editMode = edit
-                add(ProfileEducationGroup(user.user_education, edit))
-//                addAll(education.mapIndexed { index, socialRoles -> ProfileDataEducationItem(socialRoles, index == 0) })
+                add(Section().apply {
+                    setHeader(ProfileDataEducationLevelItem(user.user_education))
+                    addAll(education.mapIndexed { index, socialRoles ->
+                        ProfileDataEducationItem(socialRoles, index == 0)
+                    })
+                })
             }
         } else null
     }

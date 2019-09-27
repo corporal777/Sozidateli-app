@@ -23,6 +23,7 @@
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:errorEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnDelete"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +32,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSn"
             style="@style/Profile.Edit.Input"
+            android:layout_marginBottom="0dp"
             android:hint="@string/profile_sn_hint"
             android:inputType="textWebEditText" />
     </com.example.ui.views.CustomTextInputLayout>

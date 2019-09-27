@@ -1,5 +1,7 @@
+import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.PorterDuff
 import android.net.ConnectivityManager
 import android.text.Editable
 import android.text.InputFilter
@@ -7,6 +9,8 @@ import android.text.Layout
 import android.text.TextWatcher
 import android.text.style.URLSpan
 import android.util.TypedValue
+import android.view.KeyEvent.ACTION_UP
+import android.view.MotionEvent.ACTION_POINTER_UP
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,6 +26,7 @@ import com.example.R
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
+import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -196,4 +201,25 @@ fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null):
         return false
     }
     return phoneNumberUtil.isValidNumber(parsedPhone)
+}
+
+fun TextInputLayout.initAsDatePicker(startDate: Date?, transformDate: (year: Int, month: Int, day: Int) -> String?) {
+    val showDatePicker = {
+        val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
+        DatePickerDialog(context, R.style.AlertDialogTheme, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            editText?.setText(transformDate(year, month, dayOfMonth))
+        }, calendar.get(YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                .show()
+    }
+    setEndIconDrawable(R.drawable.ic_calendar)
+    setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
+    setEndIconOnClickListener { showDatePicker() }
+    editText?.apply {
+        isCursorVisible = false
+        isFocusableInTouchMode = false
+        setOnTouchListener { _, event ->
+            if (event.action == ACTION_UP) showDatePicker()
+            true
+        }
+    }
 }

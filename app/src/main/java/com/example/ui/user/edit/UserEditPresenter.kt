@@ -35,7 +35,8 @@ class UserEditPresenter
         super.onFirstViewAttach()
         when (editType) {
             UserEditDataType.MAIN -> setMainData()
-            UserEditDataType.PERSONAL -> setPersonalData()
+            UserEditDataType.PERSONAL ->  viewState.setPersonalData(user)
+            UserEditDataType.EDUCATION ->  viewState.setEducationData(user)
         }
     }
 
@@ -82,10 +83,6 @@ class UserEditPresenter
                 }, {
                     it.printStackTrace()
                 })
-    }
-
-    private fun setPersonalData() {
-        viewState.setPersonalData(user)
     }
 
     override fun onChangeEmailClick() {

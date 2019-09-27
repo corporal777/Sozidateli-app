@@ -44,14 +44,16 @@ fun String.formatToDefaultServerDate(): String? {
     return parseAndFormat(defaultDateFormatter, defaultServerDateFormatter)
 }
 
-fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
-    val date = try {
+fun String.parseToDate(parser: DateFormat): Date? {
+    return try {
         parser.parse(this)
     } catch (e: ParseException) {
         null
     }
+}
 
-    return date?.let { formatter.format(it) }
+fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
+    return parseToDate(parser)?.let { formatter.format(it) }
 }
 
 fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: DateFormat = defaultServerDateTimeFormatter, withTime: Boolean = true): String? {

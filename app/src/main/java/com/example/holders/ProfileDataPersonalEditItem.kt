@@ -1,8 +1,6 @@
 package com.example.holders
 
-import android.app.DatePickerDialog
 import android.content.Context
-import android.graphics.PorterDuff
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +19,12 @@ import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import initAsDatePicker
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
 import onTextChanged
-import java.util.*
 
-class ProfileDataEditPersonalItem(
+class ProfileDataPersonalEditItem(
         private val context: Context,
         private val email: String?,
         private val showEmail: Boolean,
@@ -87,19 +84,10 @@ class ProfileDataEditPersonalItem(
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
-            tilBirthday.apply {
-                setEndIconDrawable(R.drawable.ic_calendar)
-                setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
-                setEndIconOnClickListener {
-                    val calendar = Calendar.getInstance().apply {
-                        mBirthday?.let { time = defaultDateFormatter.parse(it) }
-                    }
-                    DatePickerDialog(this@ProfileDataEditPersonalItem.context, R.style.AlertDialogTheme, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                        etBirthday.setText(String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, dayOfMonth, month + 1, year))
-                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                            .show()
-                }
+            tilBirthday.initAsDatePicker(mBirthday?.let { defaultDateFormatter.parse(it) }) { year, month, day ->
+                String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
             }
+
             etCity.apply {
                 setTextWithoutSearch(mAddress.address)
                 onDataSelectedListener = { mAddress = UserAddress.fromDaDataItem(it) }
