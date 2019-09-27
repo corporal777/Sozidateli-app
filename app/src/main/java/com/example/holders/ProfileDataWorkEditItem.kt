@@ -10,26 +10,29 @@ import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import initAsDatePicker
-import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import onTextChanged
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ProfileDataEducationEditItem(
+class ProfileDataWorkEditItem(
         start: String?,
         finish: String?,
         organization: String?,
-        speciality: String?,
-        private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit
+        position: String?,
+        description: String?,
+        private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit
 ) : Item() {
 
     var mStart = start
         private set
     var mFinish = finish
         private set
-    var mInstitution = organization
+    var mOrganization = organization
         private set
-    var mSpeciality = speciality
+    var mPosition = position
+        private set
+    var mDescription = description
         private set
     var isNotFinished = mFinish == null
         private set
@@ -57,16 +60,20 @@ class ProfileDataEducationEditItem(
                 tilFinish.error = null
                 setFinishEnabled(this, !it)
             }
-            etInstitution.initInput(mInstitution) {
-                tilInstitution.error = null
-                mInstitution = it.toString()
+            etProject.initInput(mOrganization) {
+                tilProject.error = null
+                mOrganization = it.toString()
             }
-            etSpeciality.initInput(mSpeciality) {
-                tilSpeciality.error = null
-                mSpeciality = it.toString()
+            etPosition.initInput(mPosition) {
+                tilPosition.error = null
+                mPosition = it.toString()
+            }
+            etDescription.initInput(mDescription) {
+                tilDescription.error = null
+                mDescription = it.toString()
             }
 
-            btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
+            btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
         }
     }
 
@@ -75,15 +82,18 @@ class ProfileDataEducationEditItem(
         else {
             holder.apply {
                 if (!isStartValid()) tilStart.apply {
-                    error = resources.getString(R.string.profile_education_start_error)
+                    error = resources.getString(R.string.profile_work_start_error)
                 }
                 if (!isFinishValid()) tilFinish.apply {
-                    error = resources.getString(R.string.profile_education_finish_error)
+                    error = resources.getString(R.string.profile_work_finish_error)
                 }
-                if (!isOrganizationValid()) tilInstitution.apply {
+                if (!isOrganizationValid()) tilProject.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)
                 }
-                if (!isSpecialityValid()) tilSpeciality.apply {
+                if (!isPositionValid()) tilPosition.apply {
+                    error = resources.getString(R.string.profile_edit_empty_field_error)
+                }
+                if (!isDescriptionValid()) tilDescription.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)
                 }
             }
@@ -136,9 +146,10 @@ class ProfileDataEducationEditItem(
         }
     }
 
-    private fun isOrganizationValid() = !mInstitution.isNullOrBlank()
-    private fun isSpecialityValid() = !mSpeciality.isNullOrBlank()
-    fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isSpecialityValid()
+    private fun isOrganizationValid() = !mOrganization.isNullOrBlank()
+    private fun isPositionValid() = !mPosition.isNullOrBlank()
+    private fun isDescriptionValid() = true
+    fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid() && isDescriptionValid()
 
-    override fun getLayout() = R.layout.item_profile_data_edit_education
+    override fun getLayout() = R.layout.item_profile_data_edit_work
 }

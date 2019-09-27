@@ -3,7 +3,9 @@ package com.example.ui.user.edit
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.Interest
 import com.example.data.models.UserEditDataType
+import com.example.data.models.UserInterest
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -35,8 +37,10 @@ class UserEditPresenter
         super.onFirstViewAttach()
         when (editType) {
             UserEditDataType.MAIN -> setMainData()
-            UserEditDataType.PERSONAL ->  viewState.setPersonalData(user)
-            UserEditDataType.EDUCATION ->  viewState.setEducationData(user)
+            UserEditDataType.PERSONAL -> viewState.setPersonalData(user)
+            UserEditDataType.EDUCATION -> viewState.setEducationData(user)
+            UserEditDataType.WORK -> viewState.setWorkData(user)
+            UserEditDataType.INTERESTS -> setInterestsData()
         }
     }
 
@@ -56,7 +60,11 @@ class UserEditPresenter
     }
 
     override fun onSaveClick(data: Map<String, Any?>) {
-        onEditSave(data)
+
+    }
+
+    override fun onSaveInterestsClick(data: List<Interest>) {
+        onEditSave(mapOf(User.FIELD_INTERESTS to data)) { false }
     }
 
     override fun onDisabledMainInputInfoClick() {
@@ -109,6 +117,31 @@ class UserEditPresenter
             viewState.showPasswordChangeComplete()
             false
         }
+    }
+
+    private fun setInterestsData() {
+        compositeDisposable += userRepository.getInterests()
+                .map { groupUserInterests(it) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.setInterestsData(it)
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    private fun groupUserInterests(interests: List<Interest>): Map<Interest, List<UserInterest>> {
+        val userInterests = user.interests ?: emptyList()
+        val groups = mutableMapOf<Interest, MutableList<UserInterest>>()
+        interests.forEach { interest ->
+            val parent = interests.find { parent -> parent.id == interest.parent }
+            parent?.let {
+                val isUserInterest = userInterests.find { userInterest -> userInterest.id == interest.id } != null
+                groups.getOrPut(parent) { mutableListOf() }.add(UserInterest(interest, isUserInterest))
+            }
+        }
+        return groups
     }
 
     private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Boolean = { true }) {

@@ -169,6 +169,14 @@ class UserPresenter
         viewState.showDataEditor(UserEditDataType.EDUCATION)
     }
 
+    override fun onEditWorkClick() {
+        viewState.showDataEditor(UserEditDataType.WORK)
+    }
+
+    override fun onEditInterestsClick() {
+        viewState.showDataEditor(UserEditDataType.INTERESTS)
+    }
+
     override fun onStatusClick() {
         viewState.showStatus()
     }

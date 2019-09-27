@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_expandable_subtitle.*
@@ -8,6 +9,30 @@ import kotlinx.android.synthetic.main.item_profile_expandable_subtitle.*
 class ProfileExpandableSubtitleItem(
         title: String
 ) : ExpandableTitleItem(title) {
+
+    var badgeCount = 0
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
+        setBadge(viewHolder, badgeCount)
+    }
+
+    override fun bind(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+        if (payload as? Int != null) {
+            setBadge(holder, payload)
+        } else {
+            super.bind(holder, position, payloads)
+        }
+    }
+
+    private fun setBadge(viewHolder: ViewHolder, count: Int) {
+        badgeCount = count
+        viewHolder.tvBadge.apply {
+            isVisible = count > 0
+            text = count.toString()
+        }
+    }
 
     override fun setExpanded(viewHolder: ViewHolder, isUpdate: Boolean) {
         viewHolder.ivArrow.apply {

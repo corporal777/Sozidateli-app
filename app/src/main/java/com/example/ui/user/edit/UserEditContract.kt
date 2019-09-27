@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.Interest
+import com.example.data.models.UserInterest
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
@@ -41,6 +43,12 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun setEducationData(user: User)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setWorkData(user: User)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -61,6 +69,7 @@ interface UserEditContract {
 
 
         fun onSaveClick(data: Map<String, Any?>)
+        fun onSaveInterestsClick(data: List<Interest>)
         fun onCancelClick()
     }
 }

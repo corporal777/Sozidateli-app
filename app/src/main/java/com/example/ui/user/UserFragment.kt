@@ -77,10 +77,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private val personalDataSection = Section()
     private val educationDataSection = Section()
+    private val workDataSection = Section()
+    private val interestsDataSection = Section()
 
     private val dataSection = Section().apply {
         add(personalDataSection)
         add(educationDataSection)
+        add(workDataSection)
+        add(interestsDataSection)
     }
     private val adapter = GroupAdapter<ViewHolder>().apply {
         add(dataSection)
@@ -106,6 +110,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         dataSection.setHeader(headerItem)
         personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable)))
         educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable)))
+        workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
+        interestsDataSection.update(listOfNotNull(initInterests(interests, editable)))
     }
 
     private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
@@ -199,30 +205,42 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         } else null
     }
 
-    private fun MutableList<Group>.addWorkExperience(user: User, editable: Boolean): MutableList<Group> {
-        val work = user.work
-        if (!work.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_work_experience), onItemExpandChange).apply {
-                addAll(work.mapIndexed { index, socialRoles -> ProfileDataWorkExperienceItem(socialRoles, index == 0) })
-            }
-        }
-        return this
-    }
-
-    private fun MutableList<Group>.addInterests(interests: Map<Interest, List<Interest>>?, editable: Boolean): MutableList<Group> {
-        if (!interests.isNullOrEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_interests), onItemExpandChange).apply {
-                titleItem.hideDividerOnExpand = false
-                addAll(interests.map {
-                    val parent = it.key
-                    val childList = it.value
-                    ProfileExpandableSubtitleGroup(parent.value, onItemExpandChange).apply {
-                        addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
-                    }
+    private fun initWorkExperience(user: User, editable: Boolean): Group? {
+        val work = user.work ?: emptyList()
+        return if (editable) {
+            ProfileExpandableTitleGroup(
+                    getString(R.string.profile_work_experience),
+                    onItemExpandChange,
+                    { presenter.onEditWorkClick() }
+            ).apply {
+                add(Section().apply {
+                    addAll(work.mapIndexed { index, socialRoles ->
+                        ProfileDataWorkExperienceItem(socialRoles, index == 0)
+                    })
                 })
             }
-        }
-        return this
+        } else null
+    }
+
+    private fun initInterests(interests: Map<Interest, List<Interest>>?, editable: Boolean): Group? {
+        val nonNullInterests = interests ?: emptyMap()
+        return if (editable) {
+            ProfileExpandableTitleGroup(
+                    getString(R.string.profile_interests),
+                    onItemExpandChange,
+                    { presenter.onEditInterestsClick() }
+            ).apply {
+                add(Section().apply {
+                    addAll(nonNullInterests.map {
+                        val parent = it.key
+                        val childList = it.value
+                        ProfileExpandableSubtitleGroup(parent.value, onItemExpandChange).apply {
+                            addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
+                        }
+                    })
+                })
+            }
+        } else null
     }
 
     private fun MutableList<Group>.addAdditionalInformation(user: User, editable: Boolean): MutableList<Group> {

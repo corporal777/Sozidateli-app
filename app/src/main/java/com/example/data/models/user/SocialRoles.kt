@@ -21,5 +21,7 @@ data class SocialRoles(
         const val FIELD_END = "end"
         const val FIELD_ORGANIZATION = "organization"
         const val FIELD_SPECIALITY = "specialty"
+        const val FIELD_POSITION = "position"
+        const val FIELD_DESCRIPTION = "description"
     }
 }

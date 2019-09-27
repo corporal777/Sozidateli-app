@@ -1,0 +1,38 @@
+package com.example.holders
+
+import androidx.core.view.isVisible
+import com.example.R
+import com.example.data.models.UserInterest
+import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import kotlinx.android.synthetic.main.item_profile_data_edit_interest.*
+
+class ProfileDataInterestEditItem(
+        private val userInterest: UserInterest,
+        private val compactBottom: Boolean,
+        private val onCheckChanged: () -> Unit
+) : Item(userInterest.interest.id.toLong()) {
+
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.apply {
+            cbInterest.apply {
+                text = userInterest.interest.value
+                isChecked = userInterest.isUserInterest
+                setOnCheckedChangeListener { _, isChecked ->
+                    userInterest.isUserInterest = isChecked
+                    onCheckChanged()
+                }
+            }
+            divider.isVisible = !compactBottom
+        }
+    }
+
+    override fun unbind(holder: ViewHolder) {
+        holder.cbInterest.apply {
+            setOnCheckedChangeListener(null)
+        }
+        super.unbind(holder)
+    }
+
+    override fun getLayout() = R.layout.item_profile_data_edit_interest
+}

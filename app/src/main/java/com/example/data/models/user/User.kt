@@ -50,28 +50,24 @@ data class User(
         var user_notes: String? = null,
         var user_description: String? = null,
         var user_social_links: List<String>? = null,
-        var emails: ArrayList<Value>? = null,
+        var emails: List<Value>? = null,
         var social_links: List<UserDataSocialLink>? = null,
-        var interests: ArrayList<Interest>? = null,
-        var academic_degree: ArrayList<Value>? = null,
-        var memberships: ArrayList<Value>? = null,
+        var interests: List<Interest>? = null,
+        var academic_degree: List<Value>? = null,
+        var memberships: List<Value>? = null,
         var settings_chat_allow_msg_from_all: Boolean = true,
         var settings_chat_allow_msg_from_fav: Boolean = true,
         val chat: UserChat? = null,
         val user_education: String? = null,
         var education: List<SocialRoles>? = null,
-        var work: ArrayList<SocialRoles>? = null,
-        var social_projects: ArrayList<SocialRoles>? = null,
+        var work: List<SocialRoles>? = null,
+        var social_projects: List<SocialRoles>? = null,
         var default_event: Event? = null,
         val organisations: List<Organization>? = null,
-        //var web: ArrayList<Value>? = null
-        var attached_recomendation_files: ArrayList<RecommendationFile>? = null,
+        var attached_recomendation_files: List<RecommendationFile>? = null,
         var last_notification: Notification? = null,
         var notification_total: Int = -1,
         var notification_unread: Int = -1,
-//        var event_status: String? = null,
-
-        //for search chat
         var is_in_favorite: Boolean = false,
         var is_has_chat: Boolean = false
 
@@ -110,6 +106,8 @@ data class User(
         const val FIELD_USER_NEW_PASSWORD = "user_new_password"
         const val FIELD_USER_EDUCATION = "user_education"
         const val FIELD_EDUCATION = "education"
+        const val FIELD_WORK = "work"
+        const val FIELD_INTERESTS = "interests"
     }
 
     enum class Status {

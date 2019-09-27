@@ -1,6 +1,6 @@
 package com.example.holders
 
-import android.view.View
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Interest
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -15,7 +15,7 @@ class ProfileDataInterestItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {
             tvInterest.text = interest.value
-            divider.visibility = if (compactBottom) View.GONE else View.VISIBLE
+            divider.isVisible = !compactBottom
         }
     }
 

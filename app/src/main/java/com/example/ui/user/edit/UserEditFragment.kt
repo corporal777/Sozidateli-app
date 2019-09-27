@@ -13,17 +13,18 @@ import androidx.appcompat.app.AlertDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.Interest
 import com.example.data.models.UserAddress
+import com.example.data.models.UserInterest
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
-import com.example.holders.ProfileDataEducationEditGroup
-import com.example.holders.ProfileDataPersonalEditItem
-import com.example.holders.ProfileDataUserEditItem
+import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -239,6 +240,36 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 { presenter.onSaveClick(it) },
                 { presenter.onCancelClick() }
         )))
+    }
+
+    override fun setWorkData(user: User) {
+        val work = user.work ?: emptyList()
+        adapter.update(listOf(ProfileDataWorkEditGroup(
+                work,
+                { presenter.onSaveClick(it) },
+                { presenter.onCancelClick() }
+        )))
+    }
+
+    override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
+        adapter.update(listOf(Section().apply {
+            addAll(interests.map {
+                val parent = it.key
+                val childList = it.value
+                ProfileExpandableSubtitleGroup(parent.value) {}.apply {
+                    titleItem.badgeCount = childList.count { child -> child.isUserInterest }
+                    val interestsItems = childList.mapIndexed { index, interest ->
+                        ProfileDataInterestEditItem(interest, index != childList.size - 1) {
+                            presenter.onSaveInterestsClick(interests.values.flatten().filter { item -> item.isUserInterest }
+                                    .map { item -> item.interest })
+                            val count = childList.count { child -> child.isUserInterest }
+                            titleItem.notifyChanged(count)
+                        }
+                    }
+                    addAll(interestsItems)
+                }
+            })
+        }))
     }
 
     override fun layout() = R.layout.fragment_user

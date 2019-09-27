@@ -301,6 +301,10 @@
     <string name="profile_education_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_education_not_finished">По настоящее время</string>
     <string name="profile_additional_data">Дополнительные сведения</string>
+    <string name="profile_work_start">Начало</string>
+    <string name="profile_work_start_error">Выберите дату начала</string>
+    <string name="profile_work_finish">Окончание</string>
+    <string name="profile_work_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_notes">Примечания</string>
     <string name="profile_files">Файлы</string>
     <string name="profile_edit_change_photo">Изменить фото</string>

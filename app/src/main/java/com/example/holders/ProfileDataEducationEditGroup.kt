@@ -15,12 +15,7 @@ class ProfileDataEducationEditGroup(
 
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel)
     private val educations = mutableListOf<ProfileDataEducationEditItem>()
-    private val addItem = ProfileDataEditAddItem(ACTION_ADD_RECORD) {
-        val item = createEducationItem(null)
-        educations.add(item)
-        add(item)
-        notifyItemInserted(educations.size)
-    }
+    private val addItem = ProfileDataEditAddItem(ACTION_ADD_RECORD) { add(createEducationItem(null)) }
     private val saveItem = ProfileDataEditSaveItem({
         if (checkDataValid()) saveClickListener(getDataToSave())
     }, {
@@ -78,6 +73,12 @@ class ProfileDataEducationEditGroup(
         }
     }
 
+    private fun add(item: ProfileDataEducationEditItem) {
+        educations.add(item)
+        super.add(item)
+        notifyItemInserted(educations.size)
+    }
+
     private fun checkDataValid(): Boolean {
         var isValid = true
         educations.forEach {
@@ -95,7 +96,7 @@ class ProfileDataEducationEditGroup(
                 User.FIELD_EDUCATION to educations.map {
                     mapOf(
                             SocialRoles.FIELD_BEGIN to it.mStart,
-                            SocialRoles.FIELD_END to it.mFinish,
+                            SocialRoles.FIELD_END to if (it.isNotFinished) null else it.mFinish,
                             SocialRoles.FIELD_ORGANIZATION to it.mInstitution,
                             SocialRoles.FIELD_SPECIALITY to it.mSpeciality
                     )
