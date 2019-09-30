@@ -32,7 +32,6 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -79,12 +78,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private val educationDataSection = Section()
     private val workDataSection = Section()
     private val interestsDataSection = Section()
+    private val additionalDataSection = Section()
 
     private val dataSection = Section().apply {
         add(personalDataSection)
         add(educationDataSection)
         add(workDataSection)
         add(interestsDataSection)
+        add(additionalDataSection)
     }
     private val adapter = GroupAdapter<ViewHolder>().apply {
         add(dataSection)
@@ -112,6 +113,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable)))
         workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
         interestsDataSection.update(listOfNotNull(initInterests(interests, editable)))
+        additionalDataSection.update(listOfNotNull(initAdditionalInformation(user, editable)))
     }
 
     private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
@@ -155,8 +157,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_general_info),
-                    onItemExpandChange,
-                    { presenter.onEditPersonalDataClick() }
+                    onExpandChange = onItemExpandChange,
+                    editClickListener = { presenter.onEditPersonalDataClick() }
             ).apply {
                 add(initProfileDataPersonalItem(user, false))
             }
@@ -192,8 +194,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_education),
-                    onItemExpandChange,
-                    { presenter.onEditEducationClick() }
+                    onExpandChange = onItemExpandChange,
+                    editClickListener = { presenter.onEditEducationClick() }
             ).apply {
                 add(Section().apply {
                     setHeader(ProfileDataEducationLevelItem(user.user_education))
@@ -210,8 +212,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_work_experience),
-                    onItemExpandChange,
-                    { presenter.onEditWorkClick() }
+                    onExpandChange = onItemExpandChange,
+                    editClickListener = { presenter.onEditWorkClick() }
             ).apply {
                 add(Section().apply {
                     addAll(work.mapIndexed { index, socialRoles ->
@@ -227,14 +229,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         return if (editable) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_interests),
-                    onItemExpandChange,
-                    { presenter.onEditInterestsClick() }
+                    onExpandChange = onItemExpandChange,
+                    editClickListener = { presenter.onEditInterestsClick() }
             ).apply {
                 add(Section().apply {
                     addAll(nonNullInterests.map {
                         val parent = it.key
                         val childList = it.value
-                        ProfileExpandableSubtitleGroup(parent.value, onItemExpandChange).apply {
+                        ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
                             addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
                         }
                     })
@@ -243,41 +245,38 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         } else null
     }
 
-    private fun MutableList<Group>.addAdditionalInformation(user: User, editable: Boolean): MutableList<Group> {
+    private fun initAdditionalInformation(user: User, editable: Boolean): Group? {
         val notes = user.user_notes
         val files = user.attached_recomendation_files
 
         val subgroups = mutableListOf<Group>()
         if (!notes.isNullOrBlank()) {
-            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onItemExpandChange).apply {
+            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
                 add(ProfileDataNotesItem(notes))
             })
         }
 
         if (!files.isNullOrEmpty()) {
-            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onItemExpandChange).apply {
-                addAll(files.mapIndexed { index, file -> ProfileDataFileItem(file, index != files.size - 1, onFileClickListener) })
+            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
+                addAll(files.mapIndexed { index, file ->
+                    ProfileDataFileItem(
+                            (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file",
+                            index != files.size - 1
+                    ) { presenter.onFileClick(file) }
+                })
             })
         }
 
-        if (subgroups.isNotEmpty()) {
-            this += ProfileExpandableTitleGroup(getString(R.string.profile_additional_data), onItemExpandChange).apply {
+        return if (editable) {
+            ProfileExpandableTitleGroup(
+                    getString(R.string.profile_additional_data),
+                    onExpandChange = onItemExpandChange,
+                    editClickListener = { presenter.onEditAdditionalDataClick() }
+            ).apply {
                 titleItem.hideDividerOnExpand = false
                 addAll(subgroups)
             }
-        }
-
-        return this
-    }
-
-    private fun ExpandableGroup.getGroupChild(): List<Group> {
-        val itemsCount = groupCount
-        val childList = mutableListOf<Group>()
-        for (index in 1 until itemsCount) {
-            childList.add(getGroup(index))
-        }
-
-        return childList
+        } else null
     }
 
     override fun setActionSubscribe() {

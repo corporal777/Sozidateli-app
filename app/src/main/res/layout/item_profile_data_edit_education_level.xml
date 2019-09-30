@@ -17,7 +17,7 @@
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvEducationLevel"
-            style="@style/Profile.Edit.Input"
+            style="@style/Profile.Edit.Input.SingleLine"
             android:layout_marginBottom="0dp"
             android:cursorVisible="false"
             android:focusable="false"

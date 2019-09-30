@@ -15,15 +15,15 @@ class ProfileDataEducationEditGroup(
 
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel)
     private val educations = mutableListOf<ProfileDataEducationEditItem>()
-    private val addItem = ProfileDataEditAddItem(ACTION_ADD_RECORD) { add(createEducationItem(null)) }
-    private val saveItem = ProfileDataEditSaveItem({
+    private val addItem = ProfileDataEditAddItem(0L, ACTION_ADD_RECORD) { add(createEducationItem(null)) }
+    private val saveItem = ProfileDataEditSaveItem(1L, {
         if (checkDataValid()) saveClickListener(getDataToSave())
     }, {
         cancelClickListener()
     })
 
     init {
-        add(ProfileDataEducationLevelEditItem(educationLevel))
+        add(educationLevelItem)
         education.map { createEducationItem(it) }.let {
             educations.addAll(it)
             addAll(it)

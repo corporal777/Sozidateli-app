@@ -78,7 +78,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSurname"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_edit_user_surname_hint"
                 android:inputType="textCapWords|textPersonName" />
         </com.example.ui.views.CustomTextInputLayout>
@@ -113,7 +113,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_edit_user_name_hint"
                 android:inputType="textCapWords|textPersonName" />
         </com.example.ui.views.CustomTextInputLayout>
@@ -148,7 +148,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMiddleName"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_edit_user_middle_name_hint"
                 android:inputType="textCapWords|textPersonName" />
         </com.example.ui.views.CustomTextInputLayout>

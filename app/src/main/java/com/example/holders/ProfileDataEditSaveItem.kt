@@ -6,9 +6,10 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
 
 class ProfileDataEditSaveItem(
+        id: Long,
         private val saveClickListener: () -> Unit,
         private val cancelClickListener: () -> Unit
-) : Item() {
+) : Item(id) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.apply {

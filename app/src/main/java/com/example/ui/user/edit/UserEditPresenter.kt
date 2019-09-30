@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.Interest
 import com.example.data.models.UserEditDataType
 import com.example.data.models.UserInterest
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -31,20 +32,29 @@ class UserEditPresenter
 
     lateinit var editType: UserEditDataType
 
-    private val user = appData.getUser()
+    private var isFileEdit = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        when (editType) {
-            UserEditDataType.MAIN -> setMainData()
-            UserEditDataType.PERSONAL -> viewState.setPersonalData(user)
-            UserEditDataType.EDUCATION -> viewState.setEducationData(user)
-            UserEditDataType.WORK -> viewState.setWorkData(user)
-            UserEditDataType.INTERESTS -> setInterestsData()
-        }
+        compositeDisposable += appData.userChangeSubject
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val user = it.value ?: throw RuntimeException("Edit null user")
+                    when (editType) {
+                        UserEditDataType.MAIN -> setMainData(user)
+                        UserEditDataType.PERSONAL -> viewState.setPersonalData(user)
+                        UserEditDataType.EDUCATION -> viewState.setEducationData(user)
+                        UserEditDataType.WORK -> viewState.setWorkData(user)
+                        UserEditDataType.INTERESTS -> setInterestsData(user)
+                        UserEditDataType.ADDITIONAL -> viewState.setAdditionalData(user)
+                    }
+                }, {
+                    it.printStackTrace()
+                    viewState.navigateUp()
+                })
     }
 
-    private fun setMainData() {
+    private fun setMainData(user: User) {
         compositeDisposable += user.user_avatar.loadBitmap()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -59,8 +69,8 @@ class UserEditPresenter
         viewState.navigateUp()
     }
 
-    override fun onSaveClick(data: Map<String, Any?>) {
-
+    override fun onSaveClick(data: Map<String, Any?>, closeOnFinish: Boolean) {
+        onEditSave(data) { closeOnFinish }
     }
 
     override fun onSaveInterestsClick(data: List<Interest>) {
@@ -119,9 +129,54 @@ class UserEditPresenter
         }
     }
 
-    private fun setInterestsData() {
+    override fun onAddFileClick() {
+        viewState.showFileSelector()
+    }
+
+    override fun onEditFileClick(file: RecommendationFile) {
+        isFileEdit = true
+        viewState.setFileEditData(file)
+    }
+
+    override fun onFilePicked(path: String) {
+        compositeDisposable += userRepository.uploadRecommendationFile(path)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+
+                }, {
+                    it.printStackTrace()
+                    viewState.showUpdateError()
+                })
+    }
+
+    override fun onFileEditSaveClick() {
+        onEditSave(mapOf(
+                User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
+                        ?: emptyList())
+        )) { true }
+    }
+
+    override fun onFileEditCancelClick() {
+        isFileEdit = false
+        viewState.setAdditionalData(appData.getUser())
+    }
+
+    override fun onNavigateUpRequest() {
+        if (isFileEdit) {
+            onFileEditCancelClick()
+        } else {
+            viewState.navigateUpChecked()
+        }
+    }
+
+    override fun onFileClick(file: RecommendationFile) {
+        file.url?.let { viewState.downloadFile(it) }
+    }
+
+    private fun setInterestsData(user: User) {
         compositeDisposable += userRepository.getInterests()
-                .map { groupUserInterests(it) }
+                .map { groupUserInterests(user, it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -131,7 +186,7 @@ class UserEditPresenter
                 })
     }
 
-    private fun groupUserInterests(interests: List<Interest>): Map<Interest, List<UserInterest>> {
+    private fun groupUserInterests(user: User, interests: List<Interest>): Map<Interest, List<UserInterest>> {
         val userInterests = user.interests ?: emptyList()
         val groups = mutableMapOf<Interest, MutableList<UserInterest>>()
         interests.forEach { interest ->
@@ -144,7 +199,7 @@ class UserEditPresenter
         return groups
     }
 
-    private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Boolean = { true }) {
+    private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Boolean) {
         if (data.isEmpty()) {
             viewState.navigateUp()
             return

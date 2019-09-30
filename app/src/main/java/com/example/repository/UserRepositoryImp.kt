@@ -3,7 +3,10 @@ package com.example.repository
 import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.AuthResponse
+import com.example.data.models.Interest
+import com.example.data.models.MarkedResponse
+import com.example.data.models.RemoteNotification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
@@ -12,10 +15,8 @@ import durdinapps.rxfirebase2.RxHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import toBodyPart
 import java.io.File
@@ -69,6 +70,7 @@ class UserRepositoryImp
                     val body = imageFile.asRequestBody("application/pdf".toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
+                .doOnSuccess { appData.setUser(it) }
     }
 
     override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {

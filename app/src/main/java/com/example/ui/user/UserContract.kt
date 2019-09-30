@@ -72,5 +72,6 @@ interface UserContract {
         fun onEditEducationClick()
         fun onEditWorkClick()
         fun onEditInterestsClick()
+        fun onEditAdditionalDataClick()
     }
 }

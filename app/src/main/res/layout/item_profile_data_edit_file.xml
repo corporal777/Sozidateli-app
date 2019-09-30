@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                style="@style/Profile.Edit.Input"
+                android:inputType="text"
+                android:maxLines="2"
+                tools:text="@tools:sample/lorem/random" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+</LinearLayout>

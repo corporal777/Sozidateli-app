@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="12dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNotes"
+                style="@style/Profile.Edit.Input"
+                android:inputType="textMultiLine|textCapSentences"
+                tools:text="@tools:sample/lorem/random" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        android:layout_marginTop="12dp" />
+</LinearLayout>

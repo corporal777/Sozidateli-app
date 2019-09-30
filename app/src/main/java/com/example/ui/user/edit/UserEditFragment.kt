@@ -1,6 +1,10 @@
 package com.example.ui.user.edit
 
+import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -10,6 +14,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -17,12 +22,16 @@ import com.example.data.models.Interest
 import com.example.data.models.UserAddress
 import com.example.data.models.UserInterest
 import com.example.data.models.asOptional
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
+import com.vincent.filepicker.Constant
+import com.vincent.filepicker.activity.PDFFilePickActivity
+import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -49,6 +58,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     private val adapter = GroupAdapter<ViewHolder>()
+
+    private val onItemExpandChange: OnExpandChange<*> = {
+        if (it.isExpanded) {
+            val position = adapter.getAdapterPosition(it.titleItem)
+            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -256,7 +272,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             addAll(interests.map {
                 val parent = it.key
                 val childList = it.value
-                ProfileExpandableSubtitleGroup(parent.value) {}.apply {
+                ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
                     titleItem.badgeCount = childList.count { child -> child.isUserInterest }
                     val interestsItems = childList.mapIndexed { index, interest ->
                         ProfileDataInterestEditItem(interest, index != childList.size - 1) {
@@ -270,6 +286,69 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 }
             })
         }))
+    }
+
+    override fun setAdditionalData(user: User) {
+        adapter.update(listOf(ProfileDataAdditionalEditGroup(
+                requireContext(),
+                user.user_notes,
+                user.attached_recomendation_files ?: emptyList(),
+                onItemExpandChange,
+                { presenter.onAddFileClick() },
+                { presenter.onFileClick(it) },
+                { presenter.onEditFileClick(it) },
+                { presenter.onSaveClick(it, false) },
+                { presenter.onCancelClick() }
+        )))
+    }
+
+    override fun showFileSelector() {
+        startActivityForResult(Intent(requireContext(), PDFFilePickActivity::class.java), Constant.REQUEST_CODE_PICK_FILE)
+    }
+
+    override fun setFileEditData(file: RecommendationFile) {
+        val editItem = ProfileDataFileEditItem(file.desc)
+        adapter.update(listOf(
+                editItem,
+                ProfileDataFileItem(file.name ?: "", true) { presenter.onFileClick(file) },
+                ProfileDataEditSaveItem(0L, {
+                    hideKeyboard()
+                    file.desc = editItem.mName
+                    presenter.onFileEditSaveClick()
+                }, {
+                    hideKeyboard()
+                    presenter.onFileEditCancelClick()
+                })
+        ))
+    }
+
+    override fun downloadFile(file: String) {
+        val uri = Uri.parse(file)
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (e: ActivityNotFoundException) {
+            showToast(R.string.error_title)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        super.onActivityResult(requestCode, resultCode, result)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
+                val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
+                file?.let {
+                    presenter.onFilePicked(it.path)
+                }
+            }
+        }
+    }
+
+    override fun navigateUp() {
+        presenter.onNavigateUpRequest()
+    }
+
+    override fun navigateUpChecked() {
+        super.navigateUp()
     }
 
     override fun layout() = R.layout.fragment_user

@@ -82,7 +82,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFirstName"
-                    style="@style/Profile.Edit.Input"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_first_name_hint"
@@ -103,7 +103,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLastName"
-                    style="@style/Profile.Edit.Input"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_last_name_hint"
@@ -124,7 +124,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
-                    style="@style/Profile.Edit.Input"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_email_hint"
@@ -145,7 +145,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
-                    style="@style/Profile.Edit.Input"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_password_hint"
@@ -166,7 +166,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPasswordConfirm"
-                    style="@style/Profile.Edit.Input"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_password_confirm_hint"

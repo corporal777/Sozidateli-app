@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_horizontal_default"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="@dimen/margin_horizontal_default"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Profile.Edit.InputTitle"
+        android:text="@string/profile_edit_additional_data_title" />
+</LinearLayout>

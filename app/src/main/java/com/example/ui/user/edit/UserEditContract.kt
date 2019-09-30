@@ -6,6 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Interest
 import com.example.data.models.UserInterest
+import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
@@ -41,14 +42,29 @@ interface UserEditContract {
         @StateStrategyType(SkipStrategy::class)
         fun showPasswordChangeComplete()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEducationData(user: User)
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setWorkData(user: User)
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setAdditionalData(user: User)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showFileSelector()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setFileEditData(file: RecommendationFile)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun downloadFile(file: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun navigateUpChecked()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -67,9 +83,19 @@ interface UserEditContract {
         fun onChangePasswordClick()
         fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
 
+        //additional data
 
-        fun onSaveClick(data: Map<String, Any?>)
+        fun onAddFileClick()
+        fun onEditFileClick(file: RecommendationFile)
+        fun onFilePicked(path: String)
+        fun onFileEditSaveClick()
+        fun onFileEditCancelClick()
+        fun onFileClick(file: RecommendationFile)
+
+        fun onSaveClick(data: Map<String, Any?>, closeOnFinish: Boolean = true)
         fun onSaveInterestsClick(data: List<Interest>)
         fun onCancelClick()
+
+        fun onNavigateUpRequest()
     }
 }

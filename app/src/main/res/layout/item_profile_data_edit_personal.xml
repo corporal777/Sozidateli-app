@@ -24,7 +24,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:enabled="false"
                 android:hint="@string/profile_edit_email_hint"
                 android:inputType="textEmailAddress" />
@@ -94,7 +94,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWorkPhone"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:digits=" 0123456789()-+"
                 android:hint="@string/profile_phone_hint"
                 android:inputType="phone" />
@@ -123,7 +123,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMobilePhone"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_phone_hint"
                 android:inputType="phone" />
         </com.example.ui.views.CustomTextInputLayout>
@@ -150,7 +150,7 @@
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/tvGender"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -176,7 +176,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etBirthday"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false" />
@@ -203,7 +203,7 @@
 
             <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
                 android:id="@+id/etCity"
-                style="@style/Profile.Edit.Input"
+                style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_city_hint"
                 android:inputType="textCapSentences"
                 android:minHeight="48dp"

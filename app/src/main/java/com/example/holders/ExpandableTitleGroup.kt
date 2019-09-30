@@ -4,8 +4,9 @@ import com.xwray.groupie.ExpandableGroup
 
 abstract class ExpandableTitleGroup<T : ExpandableTitleItem>(
         val titleItem: T,
+        isInitiallyExpanded: Boolean = false,
         val onExpandChange: OnExpandChange<T>
-) : ExpandableGroup(titleItem) {
+) : ExpandableGroup(titleItem, isInitiallyExpanded) {
 
     override fun onToggleExpanded() {
         super.onToggleExpanded()

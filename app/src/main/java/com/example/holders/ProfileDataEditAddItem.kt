@@ -6,9 +6,10 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_add.*
 
 class ProfileDataEditAddItem(
+        id: Long,
         private val action: Int,
         private val addClickListener: () -> Unit
-) : Item() {
+) : Item(id) {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.btnAdd.apply {

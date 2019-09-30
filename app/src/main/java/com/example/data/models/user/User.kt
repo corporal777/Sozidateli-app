@@ -108,6 +108,8 @@ data class User(
         const val FIELD_EDUCATION = "education"
         const val FIELD_WORK = "work"
         const val FIELD_INTERESTS = "interests"
+        const val FIELD_USER_NOTES = "user_notes"
+        const val FIELD_ATTACHED_FILES = "attached_recomendation_files"
     }
 
     enum class Status {
