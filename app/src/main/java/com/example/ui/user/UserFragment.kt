@@ -22,7 +22,6 @@ import com.example.data.models.Interest
 import com.example.data.models.Organization
 import com.example.data.models.ProfileUserData
 import com.example.data.models.UserEditDataType
-import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
 import com.example.holders.*
@@ -59,10 +58,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         userId = args.userId
     }
 
-    private val onFileClickListener: (RecommendationFile) -> Unit = {
-        presenter.onFileClick(it)
-    }
-
     private val onOrganizationClickListener: (Organization) -> Unit = {
         presenter.onOrganizationClick(it)
     }
@@ -74,21 +69,20 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
+    private val mainDataSection = Section()
     private val personalDataSection = Section()
     private val educationDataSection = Section()
     private val workDataSection = Section()
     private val interestsDataSection = Section()
     private val additionalDataSection = Section()
 
-    private val dataSection = Section().apply {
+    private val adapter = GroupAdapter<ViewHolder>().apply {
+        add(mainDataSection)
         add(personalDataSection)
         add(educationDataSection)
         add(workDataSection)
         add(interestsDataSection)
         add(additionalDataSection)
-    }
-    private val adapter = GroupAdapter<ViewHolder>().apply {
-        add(dataSection)
     }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
@@ -108,7 +102,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val editable = profileUserData.editable
         val headerItem = if (editable) initEditableProfileItem(user, avatar)
         else initProfileItem(user, avatar)
-        dataSection.setHeader(headerItem)
+        mainDataSection.update(listOf(headerItem))
         personalDataSection.update(listOfNotNull(initPersonalDataItem(user, editable)))
         educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable)))
         workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
@@ -198,10 +192,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     editClickListener = { presenter.onEditEducationClick() }
             ).apply {
                 add(Section().apply {
-                    setHeader(ProfileDataEducationLevelItem(user.user_education))
-                    addAll(education.mapIndexed { index, socialRoles ->
-                        ProfileDataEducationItem(socialRoles, index == 0)
-                    })
+                    setHeader(ProfileDataEducationLevelItem(user.user_education ?: "-"))
+                    if (education.isEmpty()) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditEducationClick() })
+                    } else {
+                        addAll(education.mapIndexed { index, socialRoles ->
+                            ProfileDataEducationItem(socialRoles, index == 0)
+                        })
+                    }
                 })
             }
         } else null
@@ -216,9 +214,13 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     editClickListener = { presenter.onEditWorkClick() }
             ).apply {
                 add(Section().apply {
-                    addAll(work.mapIndexed { index, socialRoles ->
-                        ProfileDataWorkExperienceItem(socialRoles, index == 0)
-                    })
+                    if (work.isEmpty()) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditWorkClick() })
+                    } else {
+                        addAll(work.mapIndexed { index, socialRoles ->
+                            ProfileDataWorkExperienceItem(socialRoles, index == 0)
+                        })
+                    }
                 })
             }
         } else null
@@ -233,39 +235,43 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     editClickListener = { presenter.onEditInterestsClick() }
             ).apply {
                 add(Section().apply {
-                    addAll(nonNullInterests.map {
-                        val parent = it.key
-                        val childList = it.value
-                        ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
-                            addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
-                        }
-                    })
+                    if (nonNullInterests.isEmpty()) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditInterestsClick() })
+                    } else {
+                        addAll(nonNullInterests.map {
+                            val parent = it.key
+                            val childList = it.value
+                            ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
+                                addAll(childList.mapIndexed { index, interest -> ProfileDataInterestItem(interest, index != childList.size - 1) })
+                            }
+                        })
+                    }
                 })
             }
         } else null
     }
 
     private fun initAdditionalInformation(user: User, editable: Boolean): Group? {
-        val notes = user.user_notes
-        val files = user.attached_recomendation_files
+        val notes = user.user_notes.let { if (it.isNullOrEmpty()) "-" else it }
+        val files = user.attached_recomendation_files ?: emptyList()
 
         val subgroups = mutableListOf<Group>()
-        if (!notes.isNullOrBlank()) {
-            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
-                add(ProfileDataNotesItem(notes))
-            })
-        }
+        subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
+            add(ProfileDataNotesItem(notes))
+        })
 
-        if (!files.isNullOrEmpty()) {
-            subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
+        subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
+            if (files.isEmpty()) {
+                add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_FILE) { presenter.onEditAdditionalDataClick() })
+            } else {
                 addAll(files.mapIndexed { index, file ->
                     ProfileDataFileItem(
                             (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file",
                             index != files.size - 1
                     ) { presenter.onFileClick(file) }
                 })
-            })
-        }
+            }
+        })
 
         return if (editable) {
             ProfileExpandableTitleGroup(
@@ -280,15 +286,15 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun setActionSubscribe() {
-        dataSection.notifyItemChanged(0, ACTION_SUBSCRIBE)
+        mainDataSection.notifyItemChanged(0, ACTION_SUBSCRIBE)
     }
 
     override fun setActionUnsubscribe() {
-        dataSection.notifyItemChanged(0, ACTION_UNSUBSCRIBE)
+        mainDataSection.notifyItemChanged(0, ACTION_UNSUBSCRIBE)
     }
 
     override fun setActionUnblock() {
-        dataSection.notifyItemChanged(0, ACTION_UNBLOCK)
+        mainDataSection.notifyItemChanged(0, ACTION_UNBLOCK)
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {

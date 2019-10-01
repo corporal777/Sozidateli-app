@@ -10,14 +10,10 @@ import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.AuthValidateUtil
 import com.example.util.CropCircleTransformation
 import com.example.util.loadBitmap
-import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
@@ -43,20 +39,25 @@ class UserPresenter
             showUserMenuButton(!isCurrentUser())
         }
 
-        val getUser = (if (isCurrentUser()) userRepository.getUserFull() else userRepository.getUserById(userId))
+        val getUser = if (isCurrentUser()) {
+            userRepository.getUserFull()
+                    .flatMapObservable { appData.userChangeSubject }
+                    .map { it.value!! }
+        } else {
+            userRepository.getUserById(userId).toObservable()
+        }
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { user -> user.user_avatar.loadAvatar().map { user to it } }
+                .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
                 .observeOn(Schedulers.io())
 
-        compositeDisposable += Maybe.zip(
-                getUser,
-                userRepository.getInterests(),
-                BiFunction<Pair<User, Optional<Bitmap>>, List<Interest>, UserData> { userBitmapPair, interests ->
-                    val user = userBitmapPair.first
-                    val avatar = userBitmapPair.second.value
-                    return@BiFunction UserData(user, avatar, groupUserInterests(user, interests))
+        compositeDisposable += userRepository.getInterests()
+                .flatMapObservable { interests ->
+                    getUser.map {
+                        val user = it.first
+                        val avatar = it.second.value
+                        UserData(user, avatar, groupUserInterests(user, interests))
+                    }
                 }
-        )
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -64,7 +65,9 @@ class UserPresenter
                             it,
                             isCurrentUser()
                     )
-                    viewState.setUser(profileUserData)
+                    viewState.apply {
+                        setUser(profileUserData)
+                    }
                 }, { it.printStackTrace() })
 
         compositeDisposable += haChat.subscribeToExcludeFlagChange()

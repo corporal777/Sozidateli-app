@@ -15,6 +15,7 @@ import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -70,11 +71,11 @@ class UserEditPresenter
     }
 
     override fun onSaveClick(data: Map<String, Any?>, closeOnFinish: Boolean) {
-        onEditSave(data) { closeOnFinish }
+        onEditSave(data, closeOnFinish) { closeOnFinish }
     }
 
     override fun onSaveInterestsClick(data: List<Interest>) {
-        onEditSave(mapOf(User.FIELD_INTERESTS to data)) { false }
+        onEditSave(mapOf(User.FIELD_INTERESTS to data), false) { false }
     }
 
     override fun onDisabledMainInputInfoClick() {
@@ -109,7 +110,7 @@ class UserEditPresenter
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
+            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email)), false) {
                 viewState.showChangeEmailComplete(email)
                 false
             }
@@ -123,7 +124,7 @@ class UserEditPresenter
     }
 
     override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
+        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword), false) {
             viewState.showPasswordChangeComplete()
             false
         }
@@ -154,7 +155,7 @@ class UserEditPresenter
         onEditSave(mapOf(
                 User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
                         ?: emptyList())
-        )) { true }
+        ), true) { true }
     }
 
     override fun onFileEditCancelClick() {
@@ -199,7 +200,7 @@ class UserEditPresenter
         return groups
     }
 
-    private fun onEditSave(data: Map<String, Any?>, onComplete: () -> Boolean) {
+    private fun onEditSave(data: Map<String, Any?>, reloadUser: Boolean, onComplete: () -> Boolean) {
         if (data.isEmpty()) {
             viewState.navigateUp()
             return
@@ -208,18 +209,19 @@ class UserEditPresenter
         val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
         if (avatar != null) {
             if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), onComplete)
+                updateUser(userRepository.uploadAvatar(avatar), reloadUser, onComplete)
             } else {
                 updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, reloadUser, onComplete)
             }
         } else {
-            updateUser(userRepository.updateUser(data), onComplete)
+            updateUser(userRepository.updateUser(data), reloadUser, onComplete)
         }
     }
 
-    private fun updateUser(request: Single<User>, onComplete: () -> Boolean) {
+    private fun updateUser(request: Single<User>, reloadUser: Boolean, onComplete: () -> Boolean) {
         compositeDisposable += request
+                .flatMapMaybe { if (reloadUser) userRepository.getUserFull() else Maybe.just(it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

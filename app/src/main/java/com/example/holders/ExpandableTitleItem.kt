@@ -7,10 +7,10 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 
 abstract class ExpandableTitleItem(
-        private val title: String,
-        var isExpanded: Boolean = false
+        private val title: String
 ) : Item(title.hashCode().toLong()), ExpandableItem {
 
+    var isExpanded: Boolean = false
     private lateinit var onToggleListener: ExpandableGroup
 
     override fun bind(viewHolder: ViewHolder, position: Int) {

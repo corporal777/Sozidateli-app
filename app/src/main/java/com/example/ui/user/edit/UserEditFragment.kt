@@ -279,7 +279,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                             presenter.onSaveInterestsClick(interests.values.flatten().filter { item -> item.isUserInterest }
                                     .map { item -> item.interest })
                             val count = childList.count { child -> child.isUserInterest }
-                            titleItem.notifyChanged(count)
+                            titleItem.apply {
+                                badgeCount = count
+                                notifyChanged(count)
+                            }
                         }
                     }
                     addAll(interestsItems)

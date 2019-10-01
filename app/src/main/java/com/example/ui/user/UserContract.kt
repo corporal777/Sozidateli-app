@@ -14,7 +14,7 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface UserContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "user")
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(profileUserData: ProfileUserData)
 
         @StateStrategyType(OneExecutionStateStrategy::class)

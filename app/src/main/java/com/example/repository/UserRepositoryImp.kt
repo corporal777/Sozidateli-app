@@ -55,12 +55,10 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
-    override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data)
-            .doOnSuccess { appData.setUser(it.response) })
+    override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data))
 
     override fun uploadAvatar(photo: Bitmap?): Single<User> {
-        return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png"))
-                .doOnSuccess { appData.setUser(it.response) })
+        return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
     }
 
     override fun uploadRecommendationFile(file: String): Single<User> {

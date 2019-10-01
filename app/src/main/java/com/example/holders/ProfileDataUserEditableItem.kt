@@ -36,5 +36,15 @@ class ProfileDataUserEditableItem(
         }
     }
 
+    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (!super.isSameAs(other)) return false
+        if (other !is ProfileDataUserEditableItem) return false
+        if (other.avatar != avatar) return false
+        if (other.name != name) return false
+        if (other.uid != uid) return false
+        if (other.status != status) return false
+        return true
+    }
+
     override fun getLayout() = R.layout.item_profile_data_current_user
 }

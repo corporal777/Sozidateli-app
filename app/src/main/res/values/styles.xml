@@ -293,7 +293,7 @@
         <item name="android:minHeight">32dp</item>
         <item name="android:minEms">8</item>
         <item name="android:paddingStart">14dp</item>
-        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingEnd">14dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">13sp</item>
     </style>

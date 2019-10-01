@@ -8,6 +8,10 @@ abstract class ExpandableTitleGroup<T : ExpandableTitleItem>(
         val onExpandChange: OnExpandChange<T>
 ) : ExpandableGroup(titleItem, isInitiallyExpanded) {
 
+    init {
+        titleItem.isExpanded = isExpanded
+    }
+
     override fun onToggleExpanded() {
         super.onToggleExpanded()
         titleItem.notifyChanged(isExpanded)
