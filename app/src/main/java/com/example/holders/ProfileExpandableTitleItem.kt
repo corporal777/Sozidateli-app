@@ -14,7 +14,6 @@ class ProfileExpandableTitleItem(
 ) : ExpandableTitleItem(title) {
 
     var hideDividerOnExpand = true
-    var editMode = false
 
     override fun setExpanded(viewHolder: ViewHolder, isUpdate: Boolean) {
         viewHolder.container.apply {
@@ -45,10 +44,7 @@ class ProfileExpandableTitleItem(
 
         viewHolder.btnEdit.apply {
             if (editClickListener != null) {
-                val hide = editMode && isExpanded
-                animate().alpha(if (hide) 0f else 1f).duration = EXPAND_CHANGE_ANIMATION_DURATION.toLong()
                 setOnClickListener { editClickListener.invoke() }
-                isEnabled = !hide
             } else {
                 setOnClickListener(null)
                 isVisible = false

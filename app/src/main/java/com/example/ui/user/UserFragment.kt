@@ -184,21 +184,21 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private fun initEducationDataItem(user: User, editable: Boolean): Group? {
+        val educationLevel = user.user_education
         val education = user.education ?: emptyList()
-        return if (editable) {
+        return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty()) {
+            val editClick: OnEditClickListener = { presenter.onEditEducationClick() }
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_education),
                     onExpandChange = onItemExpandChange,
-                    editClickListener = { presenter.onEditEducationClick() }
+                    editClickListener = if (editable) editClick else null
             ).apply {
                 add(Section().apply {
-                    setHeader(ProfileDataEducationLevelItem(user.user_education ?: "-"))
-                    if (education.isEmpty()) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditEducationClick() })
+                    setHeader(ProfileDataEducationLevelItem(educationLevel.let { if (it.isNullOrEmpty()) "-" else it }))
+                    if (education.isEmpty() && editable) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
                     } else {
-                        addAll(education.mapIndexed { index, socialRoles ->
-                            ProfileDataEducationItem(socialRoles, index == 0)
-                        })
+                        addAll(education.map { ProfileDataEducationItem(it) })
                     }
                 })
             }
@@ -207,15 +207,16 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private fun initWorkExperience(user: User, editable: Boolean): Group? {
         val work = user.work ?: emptyList()
-        return if (editable) {
+        return if (editable || work.isNotEmpty()) {
+            val editClick: OnEditClickListener = { presenter.onEditWorkClick() }
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_work_experience),
                     onExpandChange = onItemExpandChange,
-                    editClickListener = { presenter.onEditWorkClick() }
+                    editClickListener = if (editable) editClick else null
             ).apply {
                 add(Section().apply {
-                    if (work.isEmpty()) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditWorkClick() })
+                    if (work.isEmpty() && editable) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
                     } else {
                         addAll(work.mapIndexed { index, socialRoles ->
                             ProfileDataWorkExperienceItem(socialRoles, index == 0)
@@ -228,15 +229,16 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private fun initInterests(interests: Map<Interest, List<Interest>>?, editable: Boolean): Group? {
         val nonNullInterests = interests ?: emptyMap()
-        return if (editable) {
+        return if (editable || nonNullInterests.isNotEmpty()) {
+            val editClick: OnEditClickListener = { presenter.onEditInterestsClick() }
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_interests),
                     onExpandChange = onItemExpandChange,
-                    editClickListener = { presenter.onEditInterestsClick() }
+                    editClickListener = if (editable) editClick else null
             ).apply {
                 add(Section().apply {
-                    if (nonNullInterests.isEmpty()) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD) { presenter.onEditInterestsClick() })
+                    if (nonNullInterests.isEmpty() && editable) {
+                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
                     } else {
                         addAll(nonNullInterests.map {
                             val parent = it.key
@@ -252,17 +254,18 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private fun initAdditionalInformation(user: User, editable: Boolean): Group? {
-        val notes = user.user_notes.let { if (it.isNullOrEmpty()) "-" else it }
+        val editClick: OnEditClickListener = { presenter.onEditAdditionalDataClick() }
+        val notes = user.user_notes
         val files = user.attached_recomendation_files ?: emptyList()
 
         val subgroups = mutableListOf<Group>()
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
-            add(ProfileDataNotesItem(notes))
+            add(ProfileDataNotesItem(notes.let { if (it.isNullOrEmpty()) "-" else it }))
         })
 
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
-            if (files.isEmpty()) {
-                add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_FILE) { presenter.onEditAdditionalDataClick() })
+            if (files.isEmpty() && editable) {
+                add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_FILE, editClick))
             } else {
                 addAll(files.mapIndexed { index, file ->
                     ProfileDataFileItem(
@@ -273,11 +276,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             }
         })
 
-        return if (editable) {
+        return if (editable || !notes.isNullOrEmpty() || files.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_additional_data),
                     onExpandChange = onItemExpandChange,
-                    editClickListener = { presenter.onEditAdditionalDataClick() }
+                    editClickListener = if (editable) editClick else null
             ).apply {
                 titleItem.hideDividerOnExpand = false
                 addAll(subgroups)
