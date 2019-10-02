@@ -14,8 +14,6 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
 import com.example.util.REQUEST_CODE_SELECT_PDF
-import com.nabinbhandari.android.permissions.PermissionHandler
-import com.nabinbhandari.android.permissions.Permissions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -82,16 +80,16 @@ class RequestFragment : BaseFragment(), RequestContract.View {
     }
 
     override fun openFileSelector() {
-        Permissions.check(context, Manifest.permission.READ_EXTERNAL_STORAGE, null, object : PermissionHandler() {
-            override fun onGranted() {
-                val intent = Intent()
-                        .setType("*/*")
-                        .setAction(Intent.ACTION_OPEN_DOCUMENT)
-                        .addCategory(Intent.CATEGORY_OPENABLE)
-
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_SELECT_PDF)
-            }
-        })
+//        Permissions.check(context, Manifest.permission.READ_EXTERNAL_STORAGE, null, object : PermissionHandler() {
+//            override fun onGranted() {
+//                val intent = Intent()
+//                        .setType("*/*")
+//                        .setAction(Intent.ACTION_OPEN_DOCUMENT)
+//                        .addCategory(Intent.CATEGORY_OPENABLE)
+//
+//                startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_SELECT_PDF)
+//            }
+//        })
 
     }
 

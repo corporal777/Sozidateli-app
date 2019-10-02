@@ -34,6 +34,7 @@ class UserEditPresenter
     lateinit var editType: UserEditDataType
 
     private var isFileEdit = false
+    private var isInterestsLoaded = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -70,12 +71,28 @@ class UserEditPresenter
         viewState.navigateUp()
     }
 
-    override fun onSaveClick(data: Map<String, Any?>, closeOnFinish: Boolean) {
-        onEditSave(data, closeOnFinish) { closeOnFinish }
+    override fun onSaveMainClick(data: Map<String, Any?>) {
+        onEditSave(data, true) { true }
+    }
+
+    override fun onSavePersonalClick(data: Map<String, Any?>) {
+        onEditSave(data, true) { true }
+    }
+
+    override fun onSaveEducationClick(data: Map<String, Any?>) {
+        onEditSave(data, true) { true }
+    }
+
+    override fun onSaveWorkClick(data: Map<String, Any?>) {
+        onEditSave(data, true) { true }
     }
 
     override fun onSaveInterestsClick(data: List<Interest>) {
-        onEditSave(mapOf(User.FIELD_INTERESTS to data), false) { false }
+        onEditSave(mapOf(User.FIELD_INTERESTS to data), true) { false }
+    }
+
+    override fun onSaveAdditionalClick(data: Map<String, Any?>) {
+        onEditSave(data, true) { false }
     }
 
     override fun onDisabledMainInputInfoClick() {
@@ -141,6 +158,7 @@ class UserEditPresenter
 
     override fun onFilePicked(path: String) {
         compositeDisposable += userRepository.uploadRecommendationFile(path)
+                .flatMapMaybe { userRepository.getUserFull() }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -155,7 +173,10 @@ class UserEditPresenter
         onEditSave(mapOf(
                 User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
                         ?: emptyList())
-        ), true) { true }
+        ), true) {
+            isFileEdit = false
+            true
+        }
     }
 
     override fun onFileEditCancelClick() {
@@ -164,10 +185,9 @@ class UserEditPresenter
     }
 
     override fun onNavigateUpRequest() {
-        if (isFileEdit) {
-            onFileEditCancelClick()
-        } else {
-            viewState.navigateUpChecked()
+        when {
+            isFileEdit -> onFileEditCancelClick()
+            else -> viewState.navigateUpChecked()
         }
     }
 
@@ -176,12 +196,14 @@ class UserEditPresenter
     }
 
     private fun setInterestsData(user: User) {
+        if (isInterestsLoaded) return
         compositeDisposable += userRepository.getInterests()
                 .map { groupUserInterests(user, it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.setInterestsData(it)
+                    isInterestsLoaded = true
                 }, {
                     it.printStackTrace()
                 })

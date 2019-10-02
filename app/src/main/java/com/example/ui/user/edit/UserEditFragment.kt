@@ -33,7 +33,6 @@ import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_chat_list.*
@@ -81,7 +80,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_middle_name,
                 { presenter.onRemoveAvatarClick() },
                 { presenter.onEditAvatarClick() },
-                { presenter.onSaveClick(it) },
+                { presenter.onSaveMainClick(it) },
                 { presenter.onCancelClick() },
                 { presenter.onDisabledMainInputInfoClick() }
         )))
@@ -125,7 +124,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
                 user.social_links,
-                { presenter.onSaveClick(it) },
+                { presenter.onSavePersonalClick(it) },
                 { presenter.onCancelClick() },
                 { presenter.onChangeEmailClick() },
                 { presenter.onChangePasswordClick() }
@@ -253,7 +252,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.update(listOf(ProfileDataEducationEditGroup(
                 user.user_education,
                 education,
-                { presenter.onSaveClick(it) },
+                { presenter.onSaveEducationClick(it) },
                 { presenter.onCancelClick() }
         )))
     }
@@ -262,33 +261,31 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         val work = user.work ?: emptyList()
         adapter.update(listOf(ProfileDataWorkEditGroup(
                 work,
-                { presenter.onSaveClick(it) },
+                { presenter.onSaveWorkClick(it) },
                 { presenter.onCancelClick() }
         )))
     }
 
     override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
-        adapter.update(listOf(Section().apply {
-            addAll(interests.map {
-                val parent = it.key
-                val childList = it.value
-                ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
-                    titleItem.badgeCount = childList.count { child -> child.isUserInterest }
-                    val interestsItems = childList.mapIndexed { index, interest ->
-                        ProfileDataInterestEditItem(interest, index != childList.size - 1) {
-                            presenter.onSaveInterestsClick(interests.values.flatten().filter { item -> item.isUserInterest }
-                                    .map { item -> item.interest })
-                            val count = childList.count { child -> child.isUserInterest }
-                            titleItem.apply {
-                                badgeCount = count
-                                notifyChanged(count)
-                            }
+        adapter.update(interests.map {
+            val parent = it.key
+            val childList = it.value
+            ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
+                titleItem.badgeCount = childList.count { child -> child.isUserInterest }
+                val interestsItems = childList.mapIndexed { index, interest ->
+                    ProfileDataInterestEditItem(interest, index != childList.size - 1) {
+                        presenter.onSaveInterestsClick(interests.values.flatten().filter { item -> item.isUserInterest }
+                                .map { item -> item.interest })
+                        val count = childList.count { child -> child.isUserInterest }
+                        titleItem.apply {
+                            badgeCount = count
+                            notifyChanged(count)
                         }
                     }
-                    addAll(interestsItems)
                 }
-            })
-        }))
+                addAll(interestsItems)
+            }
+        })
     }
 
     override fun setAdditionalData(user: User) {
@@ -300,7 +297,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 { presenter.onAddFileClick() },
                 { presenter.onFileClick(it) },
                 { presenter.onEditFileClick(it) },
-                { presenter.onSaveClick(it, false) },
+                { presenter.onSaveAdditionalClick(it) },
                 { presenter.onCancelClick() }
         )))
     }

@@ -168,7 +168,7 @@ dependencies {
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
     implementation 'com.github.qingmei2:rximagepicker:2.5.1'
     implementation 'com.isseiaoki:simplecropview:1.1.8'
-    implementation 'com.nabinbhandari.android:permissions:3.8'
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'org.bitbucket.houseofapps:chatlibrary-android:0.3.1'
 //    implementation project(':chat')
     implementation 'io.michaelrocks:libphonenumber-android:8.10.16'

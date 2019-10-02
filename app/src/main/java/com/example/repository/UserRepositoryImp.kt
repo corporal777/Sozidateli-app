@@ -68,7 +68,6 @@ class UserRepositoryImp
                     val body = imageFile.asRequestBody("application/pdf".toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
-                .doOnSuccess { appData.setUser(it) }
     }
 
     override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {

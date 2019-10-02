@@ -92,8 +92,12 @@ interface UserEditContract {
         fun onFileEditCancelClick()
         fun onFileClick(file: RecommendationFile)
 
-        fun onSaveClick(data: Map<String, Any?>, closeOnFinish: Boolean = true)
+        fun onSaveMainClick(data: Map<String, Any?>)
+        fun onSavePersonalClick(data: Map<String, Any?>)
+        fun onSaveEducationClick(data: Map<String, Any?>)
+        fun onSaveWorkClick(data: Map<String, Any?>)
         fun onSaveInterestsClick(data: List<Interest>)
+        fun onSaveAdditionalClick(data: Map<String, Any?>)
         fun onCancelClick()
 
         fun onNavigateUpRequest()

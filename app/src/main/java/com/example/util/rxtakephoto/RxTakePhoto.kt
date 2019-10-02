@@ -1,14 +1,15 @@
 package com.example.util.rxtakephoto
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.FragmentActivity
 import com.example.util.rxtakephoto.CropActivity.Companion.CROP_MODE_DEFAULT
 import com.isseiaoki.simplecropview.CropImageView
-import com.isseiaoki.simplecropview.util.Utils
 import com.qingmei2.rximagepicker.core.RxImagePicker
 import com.qingmei2.rximagepicker.entity.Result
+import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.IOException
@@ -17,9 +18,16 @@ class RxTakePhoto(
         private val context: FragmentActivity
 ) {
 
+    private val rxPermissions = RxPermissions(context)
+    private val rxImagePicker = RxImagePicker.create()
+
     fun takeCameraImage(): Observable<ResultRotation> {
-        return RxImagePicker.create()
-                .openCamera(context)
+        return rxPermissions
+                .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .flatMap {
+                    if (it) rxImagePicker.openCamera(context)
+                    else throw PermissionNotGrantedException()
+                }
                 .findRotation()
     }
 
