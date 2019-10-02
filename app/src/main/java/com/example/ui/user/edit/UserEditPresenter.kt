@@ -134,10 +134,12 @@ class UserEditPresenter
     }
 
     override fun onSaveInterestsClick(data: List<Interest>) {
+        viewState.showLoadingDialog()
         onEditSave(mapOf(User.FIELD_INTERESTS to data)) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 interests = it.interests
             }.asOptional())
+            viewState.hideAllLoadingDialogs()
             false
         }
     }
