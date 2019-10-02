@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_notification_simple.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
@@ -16,7 +16,7 @@ class SimpleNotificationItem(
         private val onNotificationReadClickListener: OnNotificationReadClickListener
 ) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
             btnMarkAsRead.apply {
@@ -30,10 +30,10 @@ class SimpleNotificationItem(
         }
     }
 
-    override fun getTitleView(viewHolder: ViewHolder): TextView = viewHolder.tvTitle
-    override fun getMessageView(viewHolder: ViewHolder): TextView = viewHolder.tvMessage
-    override fun getDateView(viewHolder: ViewHolder): TextView = viewHolder.tvDate
-    override fun getReadMoreView(viewHolder: ViewHolder): View = viewHolder.btnReadMore
+    override fun getTitleView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvTitle
+    override fun getMessageView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvMessage
+    override fun getDateView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvDate
+    override fun getReadMoreView(viewHolder:GroupieViewHolder): View = viewHolder.btnReadMore
     override fun getLayout() = R.layout.item_notification_simple
 }
 

@@ -1,7 +1,5 @@
 package com.example.holders
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -10,13 +8,12 @@ import com.example.extensions.defaultDateFormatter
 import com.example.ui.search.SearchContract
 import com.example.ui.search.SearchHolder
 import com.example.util.SimpleTextWatcher
-import com.example.util.TYPE_DATE
 import com.example.util.TYPE_DATE_PERIOD_FROM
 import com.example.util.TYPE_DATE_PERIOD_TO
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_search_header.view.*
 import java.util.*
 
@@ -25,8 +22,8 @@ open class SearchHeaderItem(
         private val presenter: SearchContract.Presenter
 ) : Item() {
 
-    private var placesAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
-    private var typeEventsAdapter = GroupAdapter<com.xwray.groupie.ViewHolder>()
+    private var placesAdapter = GroupAdapter<GroupieViewHolder>()
+    private var typeEventsAdapter = GroupAdapter<GroupieViewHolder>()
 
     private var searchHolder: SearchHolder? = null
     private var isShowResultLabel = false
@@ -37,7 +34,7 @@ open class SearchHeaderItem(
     }
 
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             etSearchText.removeTextChangedListener(simpleTextWatcher)
             if (searchHolder != null) {

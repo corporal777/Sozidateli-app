@@ -12,7 +12,7 @@ import com.example.R
 import com.example.data.models.ChatMessage
 import com.example.extensions.dp
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 abstract class ChatMessageItem(
         val message: ChatMessage.Personal
@@ -31,7 +31,7 @@ abstract class ChatMessageItem(
     var onBindListener: (() -> Unit)? = null
 
     @CallSuper
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         onBindListener?.invoke()
         viewHolder.apply {
             getGuidLineStart(this)
@@ -81,9 +81,9 @@ abstract class ChatMessageItem(
         }
     }
 
-    abstract fun getGuidLineStart(viewHolder: ViewHolder): Guideline
-    abstract fun getGuidLineEnd(viewHolder: ViewHolder): Guideline
-    abstract fun getMessageContainer(viewHolder: ViewHolder): View
+    abstract fun getGuidLineStart(viewHolder:GroupieViewHolder): Guideline
+    abstract fun getGuidLineEnd(viewHolder:GroupieViewHolder): Guideline
+    abstract fun getMessageContainer(viewHolder:GroupieViewHolder): View
 
     companion object {
         const val INCOMING_MESSAGE_GUID_LINE_START = 0f

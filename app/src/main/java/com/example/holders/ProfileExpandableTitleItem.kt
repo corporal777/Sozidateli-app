@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_expandable_title.*
 
 class ProfileExpandableTitleItem(
@@ -15,7 +15,7 @@ class ProfileExpandableTitleItem(
 
     var hideDividerOnExpand = true
 
-    override fun setExpanded(viewHolder: ViewHolder, isUpdate: Boolean) {
+    override fun setExpanded(viewHolder:GroupieViewHolder, isUpdate: Boolean) {
         viewHolder.container.apply {
             (background as TransitionDrawable).apply {
                 isCrossFadeEnabled = true
@@ -52,7 +52,7 @@ class ProfileExpandableTitleItem(
         }
     }
 
-    override fun getTitleTextView(viewHolder: ViewHolder): TextView = viewHolder.tvTitle
+    override fun getTitleTextView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvTitle
 
     override fun getLayout() = R.layout.item_profile_expandable_title
 

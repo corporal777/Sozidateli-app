@@ -18,7 +18,7 @@ import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
@@ -64,7 +64,7 @@ class ProfileDataPersonalEditItem(
             }
             .toMutableList()
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             etEmail.setText(email)
             tilWorkPhone.apply { error = null }
@@ -140,7 +140,7 @@ class ProfileDataPersonalEditItem(
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
-    private fun initSocialNetworkInput(viewHolder: ViewHolder, sn: UserDataSocialLink) {
+    private fun initSocialNetworkInput(viewHolder:GroupieViewHolder, sn: UserDataSocialLink) {
         var csn = sn
         val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
@@ -164,7 +164,7 @@ class ProfileDataPersonalEditItem(
         viewHolder.llSocialNetworks.addView(parent)
     }
 
-    private fun checkDataValid(viewHolder: ViewHolder): Boolean {
+    private fun checkDataValid(viewHolder:GroupieViewHolder): Boolean {
         var isValid = true
         if (workPhone != mWorkPhone || mobilePhone != mMobilePhone) {
             if (workPhone != mWorkPhone && !mWorkPhone.isNullOrEmpty()) {

@@ -4,14 +4,14 @@ import android.text.InputType
 import com.example.R
 import com.example.data.models.RegisterEventField
 import com.example.ui.request.RequestPresenter
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_city.view.*
 
 open class RegisterEventCityItem(
         private val fieldRegister: RegisterEventField,
         presenter: RequestPresenter
 ) : BaseRegisterItem(presenter) {
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
 
         viewHolder.itemView.etInput.apply {
             hint = fieldRegister.name

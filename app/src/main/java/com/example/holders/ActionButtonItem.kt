@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_action_button.view.*
 
 class ActionButtonItem(
@@ -13,7 +13,7 @@ class ActionButtonItem(
         private val marginTop: Int = -1
 ) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             btn.text = text
             btn.setOnClickListener(clickListener)

@@ -2,10 +2,10 @@ package com.example.util.pagination
 
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import java.lang.ref.WeakReference
 
-class PaginationListGroupAdapter<VH : ViewHolder> : GroupAdapter<VH>() {
+class PaginationListGroupAdapter<VH : GroupieViewHolder> : GroupAdapter<VH>() {
 
     private var weakPaginationListItemTakeCallback: WeakReference<OnItemTakeCallback>? = null
 

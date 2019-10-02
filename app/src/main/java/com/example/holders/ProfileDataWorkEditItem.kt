@@ -8,7 +8,7 @@ import com.example.extensions.parseToDate
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
 import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import onTextChanged
@@ -37,7 +37,7 @@ class ProfileDataWorkEditItem(
     var isNotFinished = mFinish == null
         private set
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
             etStart.setText(startDate?.let { formatDate(it) })
@@ -77,7 +77,7 @@ class ProfileDataWorkEditItem(
         }
     }
 
-    override fun bind(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) super.bind(holder, position, payloads)
         else {
             holder.apply {
@@ -126,7 +126,7 @@ class ProfileDataWorkEditItem(
         return SimpleDateFormat(format, Locale.getDefault()).format(calendar.time)
     }
 
-    private fun setFinishEnabled(viewHolder: ViewHolder, enabled: Boolean) {
+    private fun setFinishEnabled(viewHolder:GroupieViewHolder, enabled: Boolean) {
         isNotFinished = !enabled
         viewHolder.apply {
             etFinish.isEnabled = enabled

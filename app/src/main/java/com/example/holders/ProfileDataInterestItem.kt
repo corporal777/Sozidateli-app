@@ -4,7 +4,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Interest
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_interest.*
 
 class ProfileDataInterestItem(
@@ -12,7 +12,7 @@ class ProfileDataInterestItem(
         private val compactBottom: Boolean
 ) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvInterest.text = interest.value
             divider.isVisible = !compactBottom

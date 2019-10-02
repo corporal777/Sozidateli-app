@@ -8,7 +8,7 @@ import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
 import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_user.*
 import kotlinx.android.synthetic.main.item_profile_data_user.ivAvatar
 import kotlinx.android.synthetic.main.item_profile_data_user.tvName
@@ -25,7 +25,7 @@ class ProfileDataUserItem(
         private val writeMessageClickListener: () -> Unit
 ) : Item(id) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             ivAvatar.apply {
                 if (avatar != null) setImageBitmap(avatar)
@@ -42,7 +42,7 @@ class ProfileDataUserItem(
         }
     }
 
-    override fun bind(holder: ViewHolder, position: Int, payloads: List<Any>) {
+    override fun bind(holder:GroupieViewHolder, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) super.bind(holder, position, payloads)
         else holder.apply {
             (payloads[0] as? Int)?.let {

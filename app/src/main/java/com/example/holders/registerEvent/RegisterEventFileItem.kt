@@ -8,7 +8,7 @@ import com.example.ui.request.RequestPresenter
 import com.example.util.ID
 import com.example.util.NAME
 import com.google.gson.internal.LinkedTreeMap
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 import java.io.File
 
@@ -17,7 +17,7 @@ open class RegisterEventFileItem(private val fieldRegister:RegisterEventField, p
 
    private var file: File?=null
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             etInput.inputType = InputType.TYPE_NULL
             etInput.hint = fieldRegister.name

@@ -12,7 +12,7 @@ import com.example.ui.views.TagChip
 import com.example.util.weak
 import com.google.android.material.chip.Chip
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_sub_event.*
 
 open class SubEventItem(
@@ -26,7 +26,7 @@ open class SubEventItem(
 
     private val clickListener by weak(clickListener)
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvTime.text = subEvent.start.formatDefaultServerTimeToDefaultTimeInterval(subEvent.finish)
             tvStatus.text = subEvent.title

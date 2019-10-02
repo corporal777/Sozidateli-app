@@ -13,8 +13,8 @@ import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import maxLength
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
@@ -24,13 +24,13 @@ abstract class NotificationItem(
         private val onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener
 ) : Item(notification.id.toLong()) {
 
-    abstract fun getTitleView(viewHolder: ViewHolder): TextView
-    abstract fun getMessageView(viewHolder: ViewHolder): TextView
-    abstract fun getDateView(viewHolder: ViewHolder): TextView
-    abstract fun getReadMoreView(viewHolder: ViewHolder): View
+    abstract fun getTitleView(viewHolder: GroupieViewHolder): TextView
+    abstract fun getMessageView(viewHolder: GroupieViewHolder): TextView
+    abstract fun getDateView(viewHolder: GroupieViewHolder): TextView
+    abstract fun getReadMoreView(viewHolder: GroupieViewHolder): View
 
     @CallSuper
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             setBackgroundColor(ContextCompat.getColor(context, if (notification.wasRead) R.color.notification_center_notification_read else R.color.notification_center_notification_unread))
         }

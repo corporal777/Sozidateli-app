@@ -19,7 +19,7 @@ import com.example.ui.base.BaseFragment
 import com.example.util.ARG_EVENT
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -47,7 +47,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
         add(pagedList)
     }
 
-    private val groupAdapter = GroupAdapter<ViewHolder>()
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

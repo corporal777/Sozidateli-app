@@ -5,12 +5,12 @@ import com.example.data.models.Event
 import com.example.ui.search.SearchContract
 import com.example.util.Utils
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_search_event_result.view.*
 
 open class SearchEventResultItem(private val event: Event, private val presenter: SearchContract.Presenter) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             tvOrganizationName.text = event.organization?.name
             tvEventName.text = event.name

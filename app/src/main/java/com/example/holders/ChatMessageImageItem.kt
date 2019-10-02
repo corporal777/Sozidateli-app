@@ -9,7 +9,7 @@ import com.example.extensions.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_image.*
 
 class ChatMessageImageItem(
@@ -19,7 +19,7 @@ class ChatMessageImageItem(
 
     private val imageUrl = message.message.message
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
             pbImageLoading.visibility = View.VISIBLE
@@ -50,8 +50,8 @@ class ChatMessageImageItem(
         }
     }
 
-    override fun getGuidLineStart(viewHolder: ViewHolder): Guideline = viewHolder.guidelineStart
-    override fun getGuidLineEnd(viewHolder: ViewHolder): Guideline = viewHolder.guidelineEnd
-    override fun getMessageContainer(viewHolder: ViewHolder): View = viewHolder.imageContainer
+    override fun getGuidLineStart(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineStart
+    override fun getGuidLineEnd(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineEnd
+    override fun getMessageContainer(viewHolder:GroupieViewHolder): View = viewHolder.imageContainer
     override fun getLayout() = R.layout.item_chat_message_image
 }

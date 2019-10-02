@@ -11,7 +11,7 @@ import com.example.holders.PagedListGroup
 import com.example.holders.UserItem
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_subevent_users.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -36,7 +36,7 @@ class SubeventUserListFragment : BaseNestedNavigationFragment(), SubeventUserLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            adapter = GroupAdapter<ViewHolder>().apply { add(usersGroup) }
+            adapter = GroupAdapter<GroupieViewHolder>().apply { add(usersGroup) }
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
     }

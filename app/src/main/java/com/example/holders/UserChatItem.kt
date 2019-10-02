@@ -10,7 +10,7 @@ import com.example.ui.views.BadgeDrawable
 import com.example.ui.views.addBadge
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat.*
 import ru.houseofapps.chat.models.Message
 import setCircleImage
@@ -25,7 +25,7 @@ class UserChatItem(
         private val badgeDrawable: BadgeDrawable? = null
 ) : Item(userChat.id.toLong()) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         onBind?.invoke(this)
         viewHolder.apply {
             ivAvatar.setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
@@ -89,7 +89,7 @@ class UserChatItem(
         }
     }
 
-    override fun unbind(holder: ViewHolder) {
+    override fun unbind(holder:GroupieViewHolder) {
         super.unbind(holder)
         onUnBind?.invoke(this)
     }

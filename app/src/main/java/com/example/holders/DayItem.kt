@@ -3,7 +3,7 @@ package com.example.holders
 import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_day.*
 
 open class DayItem(
@@ -13,7 +13,7 @@ open class DayItem(
 
     var isSelected = false
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             root.alpha = if (day.hasEvents) 1f else 0.3f
             tvDayName.text = day.dayOfWeek

@@ -4,11 +4,11 @@ import android.widget.ImageView
 import com.example.R
 import com.example.data.models.SearchTypeEvent
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_search_type.view.*
 
 open class SearchTypeItem(private val searchTypeEvent: SearchTypeEvent, private val itemClick: (searchTypeEvent: SearchTypeEvent, isSelect: Boolean) -> Unit) : Item() {
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             tvName.text = searchTypeEvent.name
 

@@ -7,14 +7,14 @@ import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.RegisterEventField
 import com.example.ui.request.RequestPresenter
 import com.google.gson.internal.LinkedTreeMap
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_with_conteiner_item.view.*
 
 open class RegisterEventSelectBoxItem(private val fieldRegister:RegisterEventField, presenter: RequestPresenter) : BaseRegisterItem(presenter) {
 
     var selected = LinkedTreeMap<String,String>()
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
 
         if (isFirstBind) {
             fieldRegister.dataFromServer?.let {

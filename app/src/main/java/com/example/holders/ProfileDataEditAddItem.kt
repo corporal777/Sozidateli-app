@@ -2,7 +2,7 @@ package com.example.holders
 
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_add.*
 
 class ProfileDataEditAddItem(
@@ -11,7 +11,7 @@ class ProfileDataEditAddItem(
         private val addClickListener: () -> Unit
 ) : Item(id) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.btnAdd.apply {
             setOnClickListener { addClickListener() }
             val actionText = when (action) {

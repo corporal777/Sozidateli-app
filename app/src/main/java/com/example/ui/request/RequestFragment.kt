@@ -17,7 +17,7 @@ import com.example.util.REQUEST_CODE_SELECT_PDF
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_request.*
 import java.io.File
 import javax.inject.Inject
@@ -40,7 +40,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
         }
     }
 
-    private val adapter by lazy { GroupAdapter<ViewHolder>().apply { add(section) } }
+    private val adapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(section) } }
 
     private val section = Section()
 

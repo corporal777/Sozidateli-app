@@ -15,7 +15,7 @@ import com.example.ui.speaker.SpeakerFragmentArgs
 import com.example.ui.subevent.users.SubeventUserListFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_subevent.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -41,7 +41,7 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            adapter = GroupAdapter<ViewHolder>().apply {
+            adapter = GroupAdapter<GroupieViewHolder>().apply {
                 add(infoSection)
                 add(speakersSection)
             }

@@ -19,7 +19,7 @@ import com.example.ui.views.EventRatingDialog
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
@@ -66,7 +66,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     }
 
     private val adapter by lazy {
-        PaginationListGroupAdapter<ViewHolder>().apply {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     if (position > 0) presenter.onItemTake(position - 1)

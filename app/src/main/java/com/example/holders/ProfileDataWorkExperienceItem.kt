@@ -7,7 +7,7 @@ import com.example.extensions.dp
 import com.example.extensions.formatServerDateOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_work_experience.*
 import setTextDataOrHide
 
@@ -16,7 +16,7 @@ class ProfileDataWorkExperienceItem(
         private val compactTopMargin: Boolean
 ) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvDates.apply {
                 val startYear = work.begin.formatServerDateOrDefault(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, "")

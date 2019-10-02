@@ -52,7 +52,7 @@ interface UserEditContract {
         fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAdditionalData(user: User)
+        fun setAdditionalData(user: User, previousNotes: String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showFileSelector()
@@ -91,6 +91,7 @@ interface UserEditContract {
         fun onFileEditSaveClick()
         fun onFileEditCancelClick()
         fun onFileClick(file: RecommendationFile)
+        fun onNotesChanged(notes: String?)
 
         fun onSaveMainClick(data: Map<String, Any?>)
         fun onSavePersonalClick(data: Map<String, Any?>)

@@ -6,7 +6,7 @@ import androidx.core.text.toSpannable
 import com.example.R
 import com.example.data.models.user.RecommendationFile
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_editable_file.*
 
 class ProfileDataFileEditableItem(
@@ -17,7 +17,7 @@ class ProfileDataFileEditableItem(
         private val onRemoveClick: (ProfileDataFileEditableItem) -> Unit
 ) : Item(id) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val fileName = (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file"
             tvFileName.text = fileName.toSpannable().apply {

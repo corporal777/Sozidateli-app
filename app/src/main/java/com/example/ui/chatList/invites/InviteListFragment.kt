@@ -39,7 +39,7 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
     }
 
     private val adapter by lazy {
-        PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.ViewHolder>().apply {
+        PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     if (position > 0) presenter.onItemTake(position - 1)

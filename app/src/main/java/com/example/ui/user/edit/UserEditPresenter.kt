@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.Interest
 import com.example.data.models.UserEditDataType
 import com.example.data.models.UserInterest
+import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
@@ -15,7 +16,6 @@ import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -36,6 +36,8 @@ class UserEditPresenter
     private var isFileEdit = false
     private var isInterestsLoaded = false
 
+    private var notes: String? = null
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userChangeSubject
@@ -48,7 +50,7 @@ class UserEditPresenter
                         UserEditDataType.EDUCATION -> viewState.setEducationData(user)
                         UserEditDataType.WORK -> viewState.setWorkData(user)
                         UserEditDataType.INTERESTS -> setInterestsData(user)
-                        UserEditDataType.ADDITIONAL -> viewState.setAdditionalData(user)
+                        UserEditDataType.ADDITIONAL -> viewState.setAdditionalData(user, notes)
                     }
                 }, {
                     it.printStackTrace()
@@ -72,27 +74,82 @@ class UserEditPresenter
     }
 
     override fun onSaveMainClick(data: Map<String, Any?>) {
-        onEditSave(data, true) { true }
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                user_avatar = it.user_avatar
+                user_name = it.user_name
+                user_last_name = it.user_last_name
+                user_middle_name = it.user_middle_name
+            }.asOptional())
+            true
+        }
     }
 
     override fun onSavePersonalClick(data: Map<String, Any?>) {
-        onEditSave(data, true) { true }
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                user_email = it.user_email
+                user_email_show = it.user_email_show
+                user_phone_work = it.user_phone_work
+                user_phone_work_show = it.user_phone_work_show
+                user_phone = it.user_phone
+                user_phone_show = it.user_phone_show
+                user_gender = it.user_gender
+                user_birthday = it.user_birthday
+                user_birthday_show = it.user_birthday_show
+                social_links = it.social_links
+                user_address = it.user_address
+                user_address_index = it.user_address_index
+                user_address_country = it.user_address_country
+                user_address_region = it.user_address_region
+                user_address_area = it.user_address_area
+                user_address_city = it.user_address_city
+                user_address_district = it.user_address_district
+                user_address_settlement = it.user_address_settlement
+                user_address_street = it.user_address_street
+                user_address_house = it.user_address_house
+                user_address_flat = it.user_address_flat
+            }.asOptional())
+            true
+        }
     }
 
     override fun onSaveEducationClick(data: Map<String, Any?>) {
-        onEditSave(data, true) { true }
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                user_education = it.user_education
+                education = it.education
+            }.asOptional())
+            true
+        }
     }
 
     override fun onSaveWorkClick(data: Map<String, Any?>) {
-        onEditSave(data, true) { true }
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                work = it.work
+            }.asOptional())
+            true
+        }
     }
 
     override fun onSaveInterestsClick(data: List<Interest>) {
-        onEditSave(mapOf(User.FIELD_INTERESTS to data), true) { false }
+        onEditSave(mapOf(User.FIELD_INTERESTS to data)) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                interests = it.interests
+            }.asOptional())
+            false
+        }
     }
 
     override fun onSaveAdditionalClick(data: Map<String, Any?>) {
-        onEditSave(data, true) { false }
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                user_notes = it.user_notes
+                attached_recomendation_files = it.attached_recomendation_files
+            }.asOptional())
+            false
+        }
     }
 
     override fun onDisabledMainInputInfoClick() {
@@ -127,7 +184,7 @@ class UserEditPresenter
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email)), false) {
+            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
                 viewState.showChangeEmailComplete(email)
                 false
             }
@@ -141,7 +198,7 @@ class UserEditPresenter
     }
 
     override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword), false) {
+        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
             viewState.showPasswordChangeComplete()
             false
         }
@@ -158,11 +215,12 @@ class UserEditPresenter
 
     override fun onFilePicked(path: String) {
         compositeDisposable += userRepository.uploadRecommendationFile(path)
-                .flatMapMaybe { userRepository.getUserFull() }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-
+                    appData.userChangeSubject.onNext(appData.getUser().apply {
+                        attached_recomendation_files = it.attached_recomendation_files
+                    }.asOptional())
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError()
@@ -173,15 +231,17 @@ class UserEditPresenter
         onEditSave(mapOf(
                 User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
                         ?: emptyList())
-        ), true) {
-            isFileEdit = false
+        )) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                attached_recomendation_files = it.attached_recomendation_files
+            }.asOptional())
             true
         }
     }
 
     override fun onFileEditCancelClick() {
         isFileEdit = false
-        viewState.setAdditionalData(appData.getUser())
+        viewState.setAdditionalData(appData.getUser(), notes)
     }
 
     override fun onNavigateUpRequest() {
@@ -193,6 +253,10 @@ class UserEditPresenter
 
     override fun onFileClick(file: RecommendationFile) {
         file.url?.let { viewState.downloadFile(it) }
+    }
+
+    override fun onNotesChanged(notes: String?) {
+        this.notes = notes
     }
 
     private fun setInterestsData(user: User) {
@@ -222,7 +286,7 @@ class UserEditPresenter
         return groups
     }
 
-    private fun onEditSave(data: Map<String, Any?>, reloadUser: Boolean, onComplete: () -> Boolean) {
+    private fun onEditSave(data: Map<String, Any?>, onComplete: (User) -> Boolean) {
         if (data.isEmpty()) {
             viewState.navigateUp()
             return
@@ -231,23 +295,22 @@ class UserEditPresenter
         val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
         if (avatar != null) {
             if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), reloadUser, onComplete)
+                updateUser(userRepository.uploadAvatar(avatar), onComplete)
             } else {
                 updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, reloadUser, onComplete)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
             }
         } else {
-            updateUser(userRepository.updateUser(data), reloadUser, onComplete)
+            updateUser(userRepository.updateUser(data), onComplete)
         }
     }
 
-    private fun updateUser(request: Single<User>, reloadUser: Boolean, onComplete: () -> Boolean) {
+    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
         compositeDisposable += request
-                .flatMapMaybe { if (reloadUser) userRepository.getUserFull() else Maybe.just(it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    if (onComplete()) viewState.navigateUp()
+                    if (onComplete(it)) viewState.navigateUp()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

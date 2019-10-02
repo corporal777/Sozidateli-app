@@ -13,13 +13,13 @@ import com.example.data.models.ProfileField
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_info_profile_expand.view.*
 
 class InfoProfileExpandFieldItem(private val title:String,private val data: MutableList<HashMap<String, String?>>,private val isFirst:Boolean = false) : Item() {
 
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             expand.setName(title)
             expand.setDataInfo(data)

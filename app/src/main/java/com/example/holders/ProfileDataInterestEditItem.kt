@@ -4,7 +4,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserInterest
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_interest.*
 
 class ProfileDataInterestEditItem(
@@ -13,7 +13,7 @@ class ProfileDataInterestEditItem(
         private val onCheckChanged: () -> Unit
 ) : Item(userInterest.interest.id.toLong()) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             cbInterest.apply {
                 text = userInterest.interest.value
@@ -27,7 +27,7 @@ class ProfileDataInterestEditItem(
         }
     }
 
-    override fun unbind(holder: ViewHolder) {
+    override fun unbind(holder:GroupieViewHolder) {
         holder.cbInterest.apply {
             setOnCheckedChangeListener(null)
         }

@@ -4,19 +4,19 @@ import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.data.models.EventScheduleCalendarDay
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class CalendarHorizontalListItem(
         days: List<EventScheduleCalendarDay>,
         private val onDaySelect: (date: EventScheduleCalendarDay) -> Unit
-) : HorizontalListItem<ViewHolder>() {
+) : HorizontalListItem<GroupieViewHolder>() {
 
     private val items = days.map { day ->
         DayItem(day, onDaySelect)
     }
 
     init {
-        adapter = GroupAdapter<ViewHolder>().apply { addAll(items) }
+        adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
         backgroundColor = Color.WHITE
     }
 

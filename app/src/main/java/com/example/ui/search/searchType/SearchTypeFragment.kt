@@ -13,7 +13,7 @@ import com.example.data.models.SearchTypeEvent
 import com.example.holders.SearchTypeItem
 import com.example.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_search_type.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -32,7 +32,7 @@ class SearchTypeFragment : BaseFragment(), SearchTypeContract.View {
         this.setData(args.data.array, args.data.isOrganization)
     }
 
-    private var groupAdapter = GroupAdapter<ViewHolder>()
+    private var groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -19,7 +19,7 @@ import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_event_schedule.*
 
 abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNavigationFragment(), EventScheduleContract.View {
@@ -30,7 +30,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNav
     private val calendarSection = Section()
     private val daySection = Section()
     private val eventsSection = Section()
-    private val groupAdapter = GroupAdapter<ViewHolder>().apply {
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
         add(tagsSection)
         add(calendarSection)
         add(daySection)

@@ -16,12 +16,12 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_header.view.*
 
 class ProfileHeaderItem(private val name: String, private val image: String?, private val id: Int, private val isShowEdit: Boolean = false, private val onAvatarClickListener: View.OnClickListener? = null,private val avatarUri: Uri?=null) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             Picasso.get().setLoggingEnabled(true)
             if(avatarUri!=null){

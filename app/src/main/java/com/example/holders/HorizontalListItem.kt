@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.R
 import com.example.util.PositionOffsetScrollListener
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_horizontal_list.*
 
 open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
@@ -25,7 +25,7 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
 
     var backgroundColor = Color.TRANSPARENT
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.recyclerView.apply {
             recyclerView = this
             adapter = this@HorizontalListItem.adapter
@@ -55,7 +55,7 @@ open class HorizontalListItem<VH : RecyclerView.ViewHolder> : Item() {
         }
     }
 
-    override fun unbind(holder: ViewHolder) {
+    override fun unbind(holder:GroupieViewHolder) {
         super.unbind(holder)
         recyclerView?.apply {
             removeOnScrollListener(scrollListener)

@@ -9,7 +9,7 @@ import com.example.ui.request.RequestPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 import java.io.File
 

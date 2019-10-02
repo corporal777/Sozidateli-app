@@ -58,7 +58,7 @@ data class User(
         var settings_chat_allow_msg_from_all: Boolean = true,
         var settings_chat_allow_msg_from_fav: Boolean = true,
         val chat: UserChat? = null,
-        val user_education: String? = null,
+        var user_education: String? = null,
         var education: List<SocialRoles>? = null,
         var work: List<SocialRoles>? = null,
         var social_projects: List<SocialRoles>? = null,

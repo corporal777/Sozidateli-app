@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.Speaker
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_speaker.view.*
 import setCircleImage
 
@@ -14,7 +14,7 @@ open class SpeakerItem(
         private val onSpeakerClick: (Speaker) -> Unit,
         private val onFavoriteChangeClick: (Speaker) -> Unit
 ) : Item(speaker.id.toLong()) {
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             ivSpeakerAvatar.setCircleImage(speaker.photo, R.drawable.avatar_placeholder)
 

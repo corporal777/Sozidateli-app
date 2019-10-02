@@ -6,11 +6,11 @@ import com.example.data.models.RegisterEventField
 import com.example.ui.request.RequestPresenter
 import com.example.util.SimpleTextWatcher
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 
 open class RegisterEventNumberItem(private val fieldRegister:RegisterEventField, presenter: RequestPresenter) : RegisterEventStringItem(fieldRegister,presenter) {
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
 
         viewHolder.itemView.etInput.apply {

@@ -34,8 +34,8 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import setSelectableItemBackgroundBorderless
 import javax.inject.Inject
@@ -76,7 +76,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private val interestsDataSection = Section()
     private val additionalDataSection = Section()
 
-    private val adapter = GroupAdapter<ViewHolder>().apply {
+    private val adapter = GroupAdapter<GroupieViewHolder>().apply {
         add(mainDataSection)
         add(personalDataSection)
         add(educationDataSection)

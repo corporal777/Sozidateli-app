@@ -5,7 +5,7 @@ import com.example.R
 import com.example.data.models.SubeventInfo
 import com.example.extensions.formatDefaultServerTimeToDefaultTimeInterval
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_subevent_info.view.*
 
 open class SubeventInfoItem(
@@ -13,7 +13,7 @@ open class SubeventInfoItem(
         private val onOpenUserListClick: () -> Unit
 ) : Item(subevent.id.toLong()) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             tvTime.text = subevent.start.formatDefaultServerTimeToDefaultTimeInterval(subevent.finish)
             tvTitle.text = subevent.title

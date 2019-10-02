@@ -17,7 +17,7 @@ import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACT
 import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -44,7 +44,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     private val adapter by lazy {
-        PaginationListGroupAdapter<ViewHolder>().apply {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     if (position > 0) presenter.onItemTake(position - 1)

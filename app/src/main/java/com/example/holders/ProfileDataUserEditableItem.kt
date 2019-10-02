@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.example.R
 import com.example.data.models.user.User
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_current_user.*
 import setUserStatus
 
@@ -18,7 +18,7 @@ class ProfileDataUserEditableItem(
         private val statusClickListener: () -> Unit
 ) : Item(id) {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             ivAvatar.apply {
                 if (avatar != null) setImageBitmap(avatar)

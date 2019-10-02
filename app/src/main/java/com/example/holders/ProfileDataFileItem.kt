@@ -7,7 +7,7 @@ import androidx.core.text.toSpannable
 import com.example.R
 import com.example.data.models.user.RecommendationFile
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_file.*
 
 class ProfileDataFileItem(
@@ -16,7 +16,7 @@ class ProfileDataFileItem(
         private val onFileClick: () -> Unit
 ) : Item() {
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvFileName.text = name.toSpannable().apply {
                 setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

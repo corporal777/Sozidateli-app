@@ -17,11 +17,12 @@ class ProfileDataAdditionalEditGroup(
         private val onFileClick: (RecommendationFile) -> Unit,
         private val onFileEditClick: (RecommendationFile) -> Unit,
         private val saveClickListener: (data: Map<String, Any?>) -> Unit,
-        private val cancelClickListener: () -> Unit
+        private val cancelClickListener: () -> Unit,
+        onNotesChange: (String?) -> Unit
 ) : NestedGroup() {
 
     private val descriptionItem = ProfileDataNotesDescriptionItem(ID_DESCRIPTION)
-    private val notesItem = ProfileDataNotesEditItem(ID_NOTES, notes)
+    private val notesItem = ProfileDataNotesEditItem(ID_NOTES, notes, onNotesChange)
     private val notesExpandableGroup = ProfileExpandableSubtitleGroup(context.getString(R.string.profile_notes), true, onExpandChange)
     private val fileExpandableGroup = ProfileExpandableSubtitleGroup(context.getString(R.string.profile_files), true, onExpandChange)
     private val addItem = ProfileDataEditAddItem(ID_ADD, ACTION_ADD_FILE, addFileClickListener)
@@ -32,6 +33,12 @@ class ProfileDataAdditionalEditGroup(
     })
 
     private val fileItems = mutableListOf<ProfileDataFileEditableItem>()
+
+    var notes: String?
+        get() = notesItem.mNotes
+        set(value) {
+            notesItem.mNotes = value
+        }
 
     init {
         add(descriptionItem)
@@ -72,10 +79,8 @@ class ProfileDataAdditionalEditGroup(
                 onFileClick,
                 onFileEditClick,
                 { item ->
-                    fileItems.remove(item)
-                    fileExpandableGroup.remove(item)
                     saveClickListener(mapOf(
-                            User.FIELD_ATTACHED_FILES to fileItems.map { it.file }
+                            User.FIELD_ATTACHED_FILES to fileItems.filter { item != it }.map { it.file }
                     ))
                 }
         )

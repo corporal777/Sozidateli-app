@@ -3,7 +3,7 @@ package com.example.holders
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_edit_education_level.*
 import onTextChanged
 
@@ -14,7 +14,7 @@ class ProfileDataEducationLevelEditItem(
     var mEducationLevel = educationLevel
         private set
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEducationLevel.apply {
                 val educationLevels = context.resources.getStringArray(R.array.profile_edit_education_levels)

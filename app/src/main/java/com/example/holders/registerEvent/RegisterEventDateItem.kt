@@ -9,7 +9,7 @@ import com.example.data.models.RegisterEventField
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.ui.request.RequestPresenter
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_input.view.*
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -41,7 +41,7 @@ open class RegisterEventDateItem(private val fieldRegister:RegisterEventField,
 
     private var text = ""
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
             etInput.inputType = InputType.TYPE_NULL
             etInput.hint = fieldRegister.name

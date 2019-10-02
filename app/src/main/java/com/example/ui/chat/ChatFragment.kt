@@ -41,7 +41,7 @@ import com.example.util.StayBottomOnLayoutChangeUtil
 import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
@@ -91,7 +91,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     val chatId: String?
         get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
 
-    private val chatAdapter = GroupAdapter<ViewHolder>()
+    private val chatAdapter = GroupAdapter<GroupieViewHolder>()
 
     private val imageClickListener = { url: String, imageView: ImageView ->
         presenter.onImageClick(url, imageView)

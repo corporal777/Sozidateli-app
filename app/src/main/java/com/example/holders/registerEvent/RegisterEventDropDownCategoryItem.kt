@@ -4,7 +4,7 @@ import com.example.R
 import com.example.data.models.Category
 import com.example.ui.request.RequestPresenter
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.register_event_drop_down.view.*
 import me.srodrigo.androidhintspinner.HintAdapter
 import me.srodrigo.androidhintspinner.HintSpinner
@@ -15,7 +15,7 @@ class RegisterEventDropDownCategoryItem(private val categories: ArrayList<Catego
     private var showArray: Array<String>? = null
 
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
 
             if (showArray == null) {

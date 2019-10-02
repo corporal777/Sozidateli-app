@@ -33,7 +33,7 @@ import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import onTextChanged
@@ -56,7 +56,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         editType = UserEditFragmentArgs.fromBundle(arguments!!).type
     }
 
-    private val adapter = GroupAdapter<ViewHolder>()
+    private val adapter = GroupAdapter<GroupieViewHolder>()
 
     private val onItemExpandChange: OnExpandChange<*> = {
         if (it.isExpanded) {
@@ -288,7 +288,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         })
     }
 
-    override fun setAdditionalData(user: User) {
+    override fun setAdditionalData(user: User, previousNotes: String?) {
         adapter.update(listOf(ProfileDataAdditionalEditGroup(
                 requireContext(),
                 user.user_notes,
@@ -298,8 +298,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 { presenter.onFileClick(it) },
                 { presenter.onEditFileClick(it) },
                 { presenter.onSaveAdditionalClick(it) },
-                { presenter.onCancelClick() }
-        )))
+                { presenter.onCancelClick() },
+                { presenter.onNotesChanged(it) }
+        ).apply {
+            previousNotes?.let { notes = it }
+        }))
     }
 
     override fun showFileSelector() {

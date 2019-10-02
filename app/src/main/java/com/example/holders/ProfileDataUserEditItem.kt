@@ -9,7 +9,7 @@ import com.example.util.CropCircleTransformation
 import com.example.util.USER_MIDDLE_NAME_EMPTY
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
 import onTextChanged
 
@@ -36,7 +36,7 @@ class ProfileDataUserEditItem(
 
     private lateinit var emptyInputError: String
 
-    override fun bind(viewHolder: ViewHolder, position: Int) {
+    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             setAvatar(this, mAvatar)
 
@@ -74,12 +74,12 @@ class ProfileDataUserEditItem(
         }
     }
 
-    override fun bind(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.size > 0) setAvatar(holder, (payloads.getOrNull(0) as Optional<*>).value as? Bitmap)
         else super.bind(holder, position, payloads)
     }
 
-    private fun setAvatar(viewHolder: ViewHolder, avatar: Bitmap?) {
+    private fun setAvatar(viewHolder:GroupieViewHolder, avatar: Bitmap?) {
         this.mAvatar = avatar
         viewHolder.ivAvatar.apply {
             if (avatar != null) setImageBitmap(CropCircleTransformation(false).transform(avatar))
@@ -110,7 +110,7 @@ class ProfileDataUserEditItem(
         }
     }
 
-    private fun checkDataComplete(viewHolder: ViewHolder): Boolean {
+    private fun checkDataComplete(viewHolder:GroupieViewHolder): Boolean {
         var hasError = false
         viewHolder.apply {
             if (mSurname.isNullOrEmpty()) {

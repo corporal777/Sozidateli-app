@@ -145,8 +145,8 @@ dependencies {
     implementation 'com.splunk:mint-android-sdk:5.2.4'
 
     //ui
-    implementation "com.xwray:groupie:2.3.0"
-    implementation "com.xwray:groupie-kotlin-android-extensions:2.3.0"
+    implementation "com.xwray:groupie:2.6.0"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.6.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
