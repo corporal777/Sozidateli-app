@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+
 import com.squareup.picasso.Transformation;
 
 public class RoundedCornersTransformation implements Transformation {
@@ -34,8 +35,8 @@ public class RoundedCornersTransformation implements Transformation {
         mCornerType = cornerType;
     }
 
-    @Override public Bitmap transform(Bitmap source) {
-
+    @Override
+    public Bitmap transform(Bitmap source) {
         int width = source.getWidth();
         int height = source.getHeight();
 
@@ -212,7 +213,8 @@ public class RoundedCornersTransformation implements Transformation {
         canvas.drawRect(new RectF(mMargin + mRadius, mMargin + mRadius, right, bottom), paint);
     }
 
-    @Override public String key() {
+    @Override
+    public String key() {
         return "RoundedTransformation(radius=" + mRadius + ", margin=" + mMargin + ", diameter="
                 + mDiameter + ", cornerType=" + mCornerType.name() + ")";
     }
