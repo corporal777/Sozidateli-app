@@ -2,6 +2,7 @@ package com.example.ui.organizations.favorites
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -9,6 +10,7 @@ import com.example.data.models.Organization
 import com.example.holders.OrganizationItem
 import com.example.holders.TitledSection
 import com.example.ui.base.BaseFragment
+import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -68,7 +70,8 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
     }
 
     override fun showOrganization(organization: Organization) {
-
+        val args = OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+        findNavController().navigate(R.id.organization_fragment, args)
     }
 
     override fun layout() = R.layout.layout_list_with_placeholder

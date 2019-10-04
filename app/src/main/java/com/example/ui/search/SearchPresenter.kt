@@ -1,6 +1,5 @@
 package com.example.ui.search
 
-import androidx.paging.PagedList
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.DataArgsSearchType
@@ -17,7 +16,6 @@ import com.example.util.TYPE_DATE_PERIOD_TO
 import com.example.util.Utils
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -65,7 +63,7 @@ class SearchPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     search()
-                },{}).call(typeTextCompositeDisposable)
+                }, {}).call(typeTextCompositeDisposable)
 
     }
 
@@ -97,13 +95,13 @@ class SearchPresenter
         searchHolder.totalCountSearchResult = 0
         factory.mapIndexedTotal { item, index, total ->
             searchHolder.totalCountSearchResult = total
-            return@mapIndexedTotal SearchEventResultItem(item.event, this@SearchPresenter)
+            return@mapIndexedTotal SearchEventResultItem(item, this@SearchPresenter)
         }
                 .build()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.showSearchResult(it,searchHolder.totalCountSearchResult)
+                    viewState.showSearchResult(it, searchHolder.totalCountSearchResult)
                 }, {
                     it.printStackTrace()
                 }).call(compositeDisposable)

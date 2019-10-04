@@ -22,24 +22,12 @@ class EventRepositoryImp
 
     override fun getEventList(limit: Int, offset: Int, name: String?, dateStart: String?,
                               dateEnd: String?, category: List<String>?,
-                              organisation: List<String>?, qr: String?): Maybe<PaginationResponse<EventApprove>> {
+                              organisation: List<String>?, qr: String?): Maybe<PaginationResponse<Event>> {
         return callPagination(api.getEventList(limit, offset, name, dateStart, dateEnd, category, organisation, qr))
-                .map { response ->
-                    PaginationResponse(
-                            response.totalCount,
-                            response.data.map { item -> EventApprove(item, EventApprove.Status.EMPTY) }
-                    )
-                }
     }
 
-    override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<EventApprove>> {
+    override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return callPagination(api.getEventRecommendations(limit, offset))
-                .map { response ->
-                    PaginationResponse(
-                            response.totalCount,
-                            response.data.map { item -> EventApprove(item, EventApprove.Status.EMPTY) }
-                    )
-                }
     }
 
     override fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
@@ -75,14 +63,12 @@ class EventRepositoryImp
         return call(api.getEventInfo(eventId))
     }
 
-    override fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<EventApprove>> {
+    override fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
         return callPagination(api.getEventRegisterList(limit, offset))
                 .map { response ->
                     PaginationResponse(
                             response.totalCount,
-                            response.data.mapNotNull { item ->
-                                item.event?.let { EventApprove(it, item.status.toEventApproveStatus()) }
-                            }
+                            response.data.mapNotNull { item -> item.event }
                     )
                 }
     }

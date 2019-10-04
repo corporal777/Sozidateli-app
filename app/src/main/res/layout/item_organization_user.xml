@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/background_user_item">
 
     <ImageView
         android:id="@+id/ivUserAvatar"
@@ -18,29 +18,40 @@
     <TextView
         android:id="@+id/tvUserName"
         style="@style/UserItem.Name"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnUnblock"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvDescription"
+        app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintStart_toEndOf="@+id/ivUserAvatar"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="@tools:sample/full_names" />
 
-    <com.example.ui.views.UserSubscribeButton
-        android:id="@+id/btnUnblock"
+    <TextView
+        android:id="@+id/tvDescription"
+        fontPath="fonts/OpenSans-Light.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
-        android:background="?attr/selectableItemBackground"
-        android:drawablePadding="10dp"
-        android:textColor="@color/colorAccent"
-        android:textSize="16sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvUserName"
         app:layout_constraintTop_toBottomOf="@+id/tvUserName"
-        app:subscribeAction="unblock" />
+        tools:ignore="MissingPrefix"
+        tools:text="Волонтер" />
+
+    <ImageView
+        android:id="@+id/ivNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:src="@drawable/ic_keyboard_arrow_right"
+        android:tint="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <View
         android:id="@+id/divider"

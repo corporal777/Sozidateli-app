@@ -6,8 +6,8 @@ import com.example.extensions.dp
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_organization.*
 
 class OrganizationItem(
@@ -15,7 +15,7 @@ class OrganizationItem(
         private val onOrganizationClick: () -> Unit,
         private val onRemoveClick: () -> Unit
 ) : Item(organization.id.toLong()) {
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvOrganizationName.text = organization.name
             itemView.setOnClickListener { onOrganizationClick.invoke() }

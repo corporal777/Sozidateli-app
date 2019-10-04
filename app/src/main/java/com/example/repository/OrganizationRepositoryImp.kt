@@ -43,4 +43,8 @@ class OrganizationRepositoryImp
     override fun getOrganizationList(): Single<List<Organization>> {
         return call(api.getOrganizationList())
     }
+
+    override fun getOrganizationById(id: String): Single<Organization> {
+        return call(api.getOrganizationById(id))
+    }
 }

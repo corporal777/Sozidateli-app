@@ -15,22 +15,18 @@ data class Event(
         val conference_finish: String?,
         val registration_start: String?,
         val registration_finish: String?,
-        val status: String?,
+        val status: Status?,
         val place: Place?,
         val organization: Organization?,
         val organization_id: String?,
         val event_code: String?
 
-) : Parcelable
-
-
-enum class StatusEvent(val code: String) {
-    APPROVED("APPROVED"),
-    CONFIRMATION_EXPECTED("CONFIRMATION_EXPECTED"),
-    CONFERENCE_ENDS("CONFERENCE_ENDS"),
-    IN_ARCHIVE("IN_ARCHIVE"),
-    IN_DRAFT("IN_DRAFT"),
-    REGISTRATION_PARTICIPANTS("REGISTRATION_PARTICIPANTS"),
-    REGISTRATION_PARTICIPANTS_ENDS("REGISTRATION_PARTICIPANTS_ENDS"),
-    CONFERENCE_IN_PROGRESS("CONFERENCE_IN_PROGRESS")
+) : Parcelable {
+    enum class Status {
+        WAIT_VERIFY_USER,
+        PENDING,
+        APPROVED,
+        DECLINED,
+        CONFERENCE_ENDS
+    }
 }

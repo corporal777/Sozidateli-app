@@ -44,7 +44,6 @@ class UserSubscribeButton : AppCompatButton {
     }
 
     fun setAction(action: Int) {
-        this.action = action
         when (action) {
             ACTION_UNSUBSCRIBE -> setActionUnsubscribe()
             ACTION_SUBSCRIBE -> setActionSubscribe()

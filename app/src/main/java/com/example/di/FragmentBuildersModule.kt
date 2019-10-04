@@ -30,8 +30,9 @@ import com.example.ui.news.NewsFragment
 import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
+import com.example.ui.organizations.OrganizationFragment
+import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
-import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
@@ -116,10 +117,13 @@ abstract class FragmentBuildersModule {
     abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
+    abstract fun contributeOrganizationFragment(): OrganizationFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSubscribeOrganizationsFragment(): SubscribeOrganizationsFragment
+    abstract fun contributeOrganizationEventsFragment(): OrganizationEventsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteTabsFragment

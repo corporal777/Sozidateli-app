@@ -14,4 +14,5 @@ interface OrganizationRepository {
     fun removeFromFavorite(orgId: Int): Completable
     fun favoriteList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>>
     fun getOrganizationList(): Single<List<Organization>>
+    fun getOrganizationById(id: String): Single<Organization>
 }

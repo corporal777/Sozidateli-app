@@ -129,4 +129,9 @@
     <color name="button_cancel_background">#1A000000</color>
     <color name="button_cancel_border">#1A000000</color>
     <color name="button_cancel_text">#66000000</color>
+
+    <color name="indicator_color">#C4C4C4</color>
+    <color name="indicator_color_selected">@color/colorAccent</color>
+
+    <color name="organization_logo_border">#33000000</color>
 </resources>

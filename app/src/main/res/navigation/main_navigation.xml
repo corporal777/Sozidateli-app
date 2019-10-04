@@ -246,6 +246,28 @@
         android:label="@string/profile_favorite" />
 
     <fragment
+        android:id="@+id/organization_fragment"
+        android:name="com.example.ui.organizations.OrganizationFragment">
+        <argument
+            android:name="organizationId"
+            app:argType="string"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/organization_to_organization_events"
+            app:destination="@id/organization_events_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/organization_events_fragment"
+        android:name="com.example.ui.organizations.events.OrganizationEventsFragment">
+        <argument
+            android:name="organizationId"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
         android:id="@+id/profile_setting_chat_fragment"
         android:name="com.example.ui.profile.settingChat.SettingChatFragment"
         android:label="@string/setting_chat_title" />

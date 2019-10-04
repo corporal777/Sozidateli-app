@@ -1,11 +1,9 @@
 package com.example.ui.event.list.my
 
-import android.view.View
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.Event
-import com.example.data.models.EventApprove
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
@@ -22,7 +20,7 @@ class MyEventsPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventRegisterList(limit, offset) }
 
-    override fun onEventClick(event: Event, vararg sharedElements: Pair<View, String>) {
+    override fun onEventClick(event: Event) {
         if (isCanSetDefault(event)) {
             eventRepository.setDefaultEvent(event.id)
                     .performOnBackgroundOutOnMain()
@@ -34,11 +32,11 @@ class MyEventsPresenter
                         it.printStackTrace()
                     }).call(compositeDisposable)
         } else {
-            super.onEventClick(event, *sharedElements)
+            super.onEventClick(event)
         }
     }
 
     private fun isCanSetDefault(event: Event): Boolean {
-        return event.status == EventApprove.Status.APPROVED.code
+        return event.status == Event.Status.APPROVED
     }
 }

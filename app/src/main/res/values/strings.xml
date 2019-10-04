@@ -111,6 +111,7 @@
     <string name="write_message">Написать сообщение</string>
     <string name="remove">Удалить</string>
     <string name="accept">Подтвердить</string>
+    <string name="learn_more">Узнать больше</string>
 
     <string name="chat_list">Чаты</string>
 
@@ -427,4 +428,10 @@
     <string name="about_version">Версия %s</string>
     <string name="about_developed_by">Разработано в</string>
     <string name="about_developer_site">www.houseofapps.ru</string>
+
+    <string name="organization_main_data">Основная информация</string>
+    <string name="organization_peoples">Люди</string>
+    <string name="organization_peoples_watch">Смотреть всех</string>
+    <string name="organization_events">Мероприятия</string>
+    <string name="organization_events_watch">Смотреть все мероприятия</string>
 </resources>

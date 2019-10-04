@@ -13,7 +13,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.organizations.subscribe.SubscribeOrganizationsFragment
+import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
@@ -37,7 +37,7 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
     private val tabsContent by lazy {
         listOf(
                 getString(R.string.tab_recommended_title) to RecommendationsFragment(),
-                getString(R.string.tab_subscriptions_title) to SubscribeOrganizationsFragment(),
+                getString(R.string.tab_subscriptions_title) to FavoriteOrganizationsFragment(),
                 getString(R.string.tab_events_title) to MyEventsFragment()
         )
     }

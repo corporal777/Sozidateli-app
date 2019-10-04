@@ -248,6 +248,9 @@ interface Api {
     @POST("/v1/organisations")
     fun getOrganizationList(): Single<ApiResponse<List<Organization>>>
 
+    @GET("/v1/organisations/{id}")
+    fun getOrganizationById(@Path("id") id: String): Single<ApiResponse<Organization>>
+
     @GET("/v1/events/categories")
     fun getCategoriesList(): Single<ApiResponse<List<Category>>>
 
