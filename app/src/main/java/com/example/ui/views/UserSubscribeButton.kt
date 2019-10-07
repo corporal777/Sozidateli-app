@@ -19,11 +19,13 @@ class UserSubscribeButton : AppCompatButton {
     private val actionSubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_star) }
     private val actionUnsubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_star_filled) }
 
-    private val actionSubscribeText by lazy { resources.getString(R.string.add_to_favorites) }
-    private val actionUnsubscribeText by lazy { resources.getString(R.string.remove_from_favorites) }
+    private val actionSubscribeText by lazy { resources.getString(R.string.subscribe) }
+    private val actionUnsubscribeText by lazy { resources.getString(R.string.unsubscribe) }
+    private val actionFavoriteText by lazy { resources.getString(R.string.add_to_favorites) }
+    private val actionUnfavoriteText by lazy { resources.getString(R.string.remove_from_favorites) }
     private val actionUnblockText by lazy { resources.getString(R.string.unblock) }
 
-    var action = ACTION_SUBSCRIBE
+    var action = Action.FAVORITE
         private set
 
     constructor(context: Context) : super(context)
@@ -37,32 +39,45 @@ class UserSubscribeButton : AppCompatButton {
 
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.UserSubscribeButton)
-        val action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, ACTION_SUBSCRIBE)
+        val action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, 0)
+
         a.recycle()
 
-        setAction(action)
+        setAction(Action.values()[action])
     }
 
-    fun setAction(action: Int) {
+    fun setAction(action: Action) {
         when (action) {
-            ACTION_UNSUBSCRIBE -> setActionUnsubscribe()
-            ACTION_SUBSCRIBE -> setActionSubscribe()
-            ACTION_UNBLOCK -> setActionUnblock()
+            Action.SUBSCRIBE -> setActionSubscribe()
+            Action.UNSUBSCRIBE -> setActionUnsubscribe()
+            Action.FAVORITE -> setActionFavorite()
+            Action.UNFAVORITE -> setActionUnfavorite()
+            Action.UNBLOCK -> setActionUnblock()
         }
     }
 
     fun setActionSubscribe() {
-        action = ACTION_SUBSCRIBE
+        action = Action.SUBSCRIBE
         changeAction(actionSubscribeText, actionSubscribeTextColor, actionSubscribeImage)
     }
 
     fun setActionUnsubscribe() {
-        action = ACTION_UNSUBSCRIBE
+        action = Action.UNSUBSCRIBE
         changeAction(actionUnsubscribeText, actionSubscribeTextColor, actionUnsubscribeImage)
     }
 
+    fun setActionFavorite() {
+        action = Action.FAVORITE
+        changeAction(actionFavoriteText, actionSubscribeTextColor, actionSubscribeImage)
+    }
+
+    fun setActionUnfavorite() {
+        action = Action.UNFAVORITE
+        changeAction(actionUnfavoriteText, actionSubscribeTextColor, actionUnsubscribeImage)
+    }
+
     fun setActionUnblock() {
-        action = ACTION_UNBLOCK
+        action = Action.UNBLOCK
         changeAction(actionUnblockText, actionUnblockTextColor, null)
     }
 
@@ -83,22 +98,23 @@ class UserSubscribeButton : AppCompatButton {
         val bundle = state as? Bundle
         if (bundle != null) {
             super.onRestoreInstanceState(bundle.getParcelable(STATE_SUPER))
-            when (bundle.getInt(STATE_ACTION)) {
-                ACTION_UNBLOCK -> setActionUnblock()
-                ACTION_SUBSCRIBE -> setActionSubscribe()
-                ACTION_UNSUBSCRIBE -> setActionUnsubscribe()
-            }
+            val action = bundle.getSerializable(STATE_ACTION) as Action
+            setAction(action)
         } else {
             super.onRestoreInstanceState(state)
         }
     }
 
     companion object {
-        const val ACTION_UNBLOCK = -1
-        const val ACTION_SUBSCRIBE = 0
-        const val ACTION_UNSUBSCRIBE = 1
-
         private const val STATE_SUPER = "UserSubscribeButton:super"
         private const val STATE_ACTION = "UserSubscribeButton:action"
+    }
+
+    enum class Action {
+        SUBSCRIBE,
+        UNSUBSCRIBE,
+        FAVORITE,
+        UNFAVORITE,
+        UNBLOCK
     }
 }

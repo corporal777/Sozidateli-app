@@ -35,8 +35,8 @@ class RequestFragment : BaseFragment(), RequestContract.View {
     @ProvidePresenter
     fun providePresenter(): RequestPresenter = presenterProvider.get().apply {
         arguments?.let {
-            val arg = RequestFragmentArgs.fromBundle(it)
-            event = arg.event
+//            val arg = RequestFragmentArgs.fromBundle(it)
+//            event = arg.event
         }
     }
 

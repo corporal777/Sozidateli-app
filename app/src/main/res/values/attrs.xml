@@ -14,9 +14,11 @@
 
     <declare-styleable name="UserSubscribeButton">
         <attr name="subscribeAction">
-            <enum name="unblock" value="-1"/>
-            <enum name="subscribe" value="0"/>
-            <enum name="unsubscribe" value="1"/>
+            <enum name="subscribe" value="0" />
+            <enum name="unsubscribe" value="1" />
+            <enum name="favorite" value="2" />
+            <enum name="unfavorite" value="3" />
+            <enum name="unblock" value="4" />
         </attr>
     </declare-styleable>
 </resources>

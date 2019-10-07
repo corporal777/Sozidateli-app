@@ -2,9 +2,6 @@ package com.example.holders
 
 import com.example.R
 import com.example.data.models.Organization
-import com.example.extensions.dp
-import com.example.ui.views.UserSubscribeButton
-import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -20,13 +17,14 @@ class OrganizationItem(
             tvOrganizationName.text = organization.name
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
-                setAction(UserSubscribeButton.ACTION_UNSUBSCRIBE)
                 setOnClickListener { onRemoveClick() }
             }
 
-            Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it })
-                    .transform(RoundedCornersTransformation(16.dp, 0))
-                    .into(ivOrganizationImage)
+            ivOrganizationImage.apply {
+                clipToOutline = true
+                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it })
+                        .into(this)
+            }
         }
     }
 

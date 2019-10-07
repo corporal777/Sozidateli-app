@@ -179,25 +179,25 @@ interface Api {
     @POST("/v1/speakers/{id}/unfavorite")
     fun userRemoveFromFavorite(@Path("id") uid: String): Completable
 
+    @POST("/v1/organisations")
+    fun getOrganizationList(): Single<ApiResponse<List<Organization>>>
+
+    @GET("/v1/organisations/{id}")
+    fun getOrganizationById(@Path("id") id: String): Single<ApiResponse<OrganizationData>>
+
     @POST("/v1/organisations/{organizationId}/subscribe")
-    fun organizationSubscribe(@Path("organizationId") orgId: Int): Completable
+    fun organizationSubscribe(@Path("organizationId") orgId: String): Completable
 
     @POST("/v1/organisations/{organizationId}/unsubscribe")
-    fun organizationUnsubscribe(@Path("organizationId") orgId: Int): Completable
+    fun organizationUnsubscribe(@Path("organizationId") orgId: String): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/organisations/{organizationId}/members")
+    fun organizationMembers(@Path("organizationId") orgId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<OrganizationMember>>>
 
     @FormUrlEncoded
     @POST("/v1/user/subscribed/organisations")
     fun organizationSubscribeList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
-
-    @POST("/v1/organisations/{organizationId}/favorite")
-    fun organizationAddToFavorite(@Path("organizationId") orgId: Int): Completable
-
-    @POST("/v1/organisations/{organizationId}/unfavorite")
-    fun organizationRemoveFromFavorite(@Path("organizationId") orgId: Int): Completable
-
-    @FormUrlEncoded
-    @POST("/v1/user/favorites/organisations")
-    fun organizationFavoriteList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
 
     @GET("/v1/events/{eventId}/register/fields")
     fun getEventRegisterField(@Path("eventId") eventId: Int): Single<ApiResponse<RegisterFieldResponse>>
@@ -244,12 +244,6 @@ interface Api {
 
     @GET("/v1/partners/{partnerId}")
     fun getPartnerById(@Path("partnerId") partnerId: Int): Single<ApiResponse<Partner>>
-
-    @POST("/v1/organisations")
-    fun getOrganizationList(): Single<ApiResponse<List<Organization>>>
-
-    @GET("/v1/organisations/{id}")
-    fun getOrganizationById(@Path("id") id: String): Single<ApiResponse<Organization>>
 
     @GET("/v1/events/categories")
     fun getCategoriesList(): Single<ApiResponse<List<Category>>>

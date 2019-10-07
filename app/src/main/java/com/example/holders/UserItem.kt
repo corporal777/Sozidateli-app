@@ -2,8 +2,9 @@ package com.example.holders
 
 import android.view.View
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_user.*
 import setCircleImage
 
@@ -12,11 +13,11 @@ class UserItem(
         private val name: String,
         private val avatar: String?,
         private val onUserClick: () -> Unit,
-        private val action: Int? = null,
+        private val action: UserSubscribeButton.Action? = null,
         private val onActionClick: (() -> Unit)? = null
 ) : Item(id.toLong()) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvUserName.text = name
             ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
@@ -51,7 +52,7 @@ class UserItem(
         var result = id
         result = 31 * result + name.hashCode()
         result = 31 * result + (avatar?.hashCode() ?: 0)
-        result = 31 * result + (action ?: 0)
+        result = 31 * result + (action?.hashCode() ?: 0)
         return result
     }
 }

@@ -14,7 +14,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.Organization
-import com.example.data.models.user.User
+import com.example.data.models.OrganizationMember
 import com.example.holders.EventItem
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
@@ -58,14 +58,24 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
 
         llContent.isVisible = false
+
+        btnAction.apply {
+            setOnClickListener {
+                when (action) {
+                    UserSubscribeButton.Action.SUBSCRIBE -> presenter.onSubscribeClick()
+                    UserSubscribeButton.Action.UNSUBSCRIBE -> presenter.onUnsubscribeClick()
+                    else -> throw IllegalArgumentException("Wrong action: $it for organization")
+                }
+            }
+        }
     }
 
-    override fun setOrganization(organization: Organization, events: List<Event>, eventsTotal: Int, users: List<User>, usersTotal: Int, listsLimit: Int) {
+    override fun setOrganization(organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
         ivBackground.apply {
-            if (organization.bg_image.isNullOrEmpty()) {
+            if (organization.background.isNullOrEmpty()) {
                 isVisible = false
             } else {
-                Picasso.get().load(organization.bg_image).into(this, object : Callback {
+                Picasso.get().load(organization.background).into(this, object : Callback {
                     override fun onSuccess() {
 
                     }
@@ -97,16 +107,52 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
 
         tvName.text = organization.name
-        btnAction.apply {
-            setAction(if (organization.isInFavorite == true) UserSubscribeButton.ACTION_UNSUBSCRIBE else UserSubscribeButton.ACTION_SUBSCRIBE)
-            setOnClickListener { TODO() }
-        }
-        tvDescriptionShort.text = "Мотивируем сдавать кровь. Присоединяйся к крупнейшему сообществу доноров России и Ближнего Зарубежья"
-        tvLinks.text = "https://organization.ru\n\nhttps://vk.com/antigaiandroid"
-        tvAddress.text = "420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14\n(904) 669-66-21\nsupport@donorsearch.org"
-        tvDescription.text = "Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи."
 
-        val usersCountText = usersTotal.toString()
+        tvDescriptionShort.text = organization.descriptionShort
+
+        val linksData = StringBuilder().apply {
+            organization.webLinks?.let { list ->
+                if (list.isNotEmpty()) append(list.joinToString(separator = "\n"))
+            }
+            organization.socialLinks?.let { list ->
+                if (list.isNotEmpty()) {
+                    if (length > 0) append("\n\n")
+                    append(list.joinToString(separator = "\n"))
+                }
+            }
+        }
+        tvLinks.apply {
+            isVisible = linksData.isNotEmpty()
+            text = linksData
+        }
+
+        val addressData = StringBuilder().apply {
+            organization.address?.let { append(it) }
+            organization.phones?.let { list ->
+                if (list.isNotEmpty()) {
+                    if (length > 0) append("\n")
+                    append(list.joinToString(separator = "\n") { if (!it.affiliation.isNullOrBlank()) "${it.affiliation}: ${it.phone}" else it.phone })
+                }
+            }
+            organization.emails?.let { list ->
+                if (list.isNotEmpty()) {
+                    if (length > 0) append("\n")
+                    append(list.joinToString(separator = "\n") { if (!it.affiliation.isNullOrBlank()) "${it.affiliation}: ${it.email}" else it.email })
+                }
+            }
+        }
+
+        tvAddress.apply {
+            isVisible = addressData.isNotEmpty()
+            text = addressData
+        }
+
+        tvDescription.apply {
+            isVisible = !organization.descriptionFull.isNullOrEmpty()
+            text = organization.descriptionFull
+        }
+
+        val usersCountText = "${organization.totalMembers}"
         val peoplesText = getString(R.string.organization_peoples)
         val peoplesSpannable = "$peoplesText $usersCountText".toSpannable().apply {
             val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/OpenSans-Bold.ttf"))
@@ -117,17 +163,20 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvPeoples.text = peoplesSpannable
 
         rvPeoples.adapter = GroupAdapter<GroupieViewHolder>().apply {
-            addAll(users.map { OrganizationUserItem(it.user_id, it.fullName, it.user_avatar, it.user_description) { TODO() } })
+            addAll(users.map {
+                val user = it.user
+                OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onUserClick(user) }
+            })
         }
 
         btnPeoples.apply {
-            isVisible = usersTotal > listsLimit
-            setOnClickListener { TODO() }
+            isVisible = organization.totalMembers > users.size
+            setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
         dividerPeoples.isVisible = btnPeoples.isVisible
 
-        val eventsCountText = eventsTotal.toString()
+        val eventsCountText = "${organization.totalEvents}"
         val eventsText = getString(R.string.organization_events)
         val eventsSpannable = "$eventsText $eventsCountText".toSpannable().apply {
             val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/OpenSans-Bold.ttf"))
@@ -169,15 +218,21 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
 
         btnEvents.apply {
-            isVisible = eventsTotal > listsLimit
+            isVisible = organization.totalEvents > events.size
             setOnClickListener { presenter.onShowMoreEventsClick() }
         }
 
         llContent.isVisible = true
     }
 
-    override fun showEvents(id: String) {
-        findNavController().navigate(OrganizationFragmentDirections.organizationToOrganizationEvents(id))
+    override fun setSubscribed(isSubscribed: Boolean) {
+        btnAction.apply {
+            setAction(if (isSubscribed) UserSubscribeButton.Action.UNSUBSCRIBE else UserSubscribeButton.Action.SUBSCRIBE)
+        }
+    }
+
+    override fun showEvents(organizationId: String) {
+        findNavController().navigate(OrganizationFragmentDirections.organizationToOrganizationEvents(organizationId))
     }
 
     override fun showAboutEvent(event: Event) {
@@ -186,6 +241,14 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
     override fun showEventRequest(event: Event) {
         findNavController().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
+    }
+
+    override fun showUsers(organizationId: String) {
+        findNavController().navigate(OrganizationFragmentDirections.organizationToOrganizationUsers(organizationId))
+    }
+
+    override fun showUser(id: String) {
+        findNavController().navigate(OrganizationFragmentDirections.organizationToUser(id))
     }
 
     override fun changeScrollY(scroll: Int) {

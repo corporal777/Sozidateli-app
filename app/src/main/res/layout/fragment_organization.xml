@@ -148,9 +148,11 @@
                 android:autoLink="all"
                 android:textColor="@color/colorAccent"
                 android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/tvAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvMainData"
+                app:layout_goneMarginBottom="24dp"
                 tools:ignore="MissingPrefix"
                 tools:text="https://organization.ru\n\nhttps://vk.com/antigaiandroid" />
 
@@ -165,10 +167,12 @@
                 android:autoLink="all"
                 android:textColor="@color/profile_name_text"
                 android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/tvDescription"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvLinks"
                 app:layout_constraintVertical_bias="0.0"
+                app:layout_goneMarginBottom="24dp"
                 tools:ignore="MissingPrefix"
                 tools:text="420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14\n(904) 669-66-21\nsupport@donorsearch.org" />
 
@@ -182,10 +186,12 @@
                 android:autoLink="all"
                 android:textColor="@color/profile_name_text"
                 android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/btnLearnMore"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvAddress"
                 app:layout_constraintVertical_bias="0.0"
+                app:layout_goneMarginBottom="24dp"
                 tools:ignore="MissingPrefix"
                 tools:text="Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи. " />
 
@@ -203,6 +209,7 @@
                 android:text="@string/learn_more"
                 android:textColor="@color/colorAccent"
                 android:textSize="15sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

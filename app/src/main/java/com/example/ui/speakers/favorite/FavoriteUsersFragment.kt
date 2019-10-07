@@ -11,7 +11,7 @@ import com.example.data.models.user.User
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -65,7 +65,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                     it.fullName,
                     it.user_avatar,
                     { presenter.onUserClick(it) },
-                    ACTION_UNSUBSCRIBE,
+                    UserSubscribeButton.Action.UNFAVORITE,
                     { presenter.onUserRemoveFromFavoritesClick(it) }
             )
         })

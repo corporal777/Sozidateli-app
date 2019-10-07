@@ -6,16 +6,17 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationMember
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface OrganizationContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setOrganization(organization: Organization, events: List<Event>, eventsTotal: Int, users: List<User>, usersTotal: Int, listsLimit: Int)
+        fun setOrganization(organization: Organization, events: List<Event>, users: List<OrganizationMember>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEvents(id: String)
+        fun showEvents(organizationId: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun changeScrollY(scroll: Int)
@@ -25,12 +26,27 @@ interface OrganizationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setSubscribed(isSubscribed: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUsers(organizationId: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUser(id: String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onShowMoreEventsClick()
         fun onEventClick(event: Event)
         fun onGoToEventClick(event: Event)
+
+        fun onShowMoreUsersClick()
+        fun onUserClick(user: User)
+
+        fun onSubscribeClick()
+        fun onUnsubscribeClick()
 
         fun onScrollPositionChange(scroll: Int)
     }

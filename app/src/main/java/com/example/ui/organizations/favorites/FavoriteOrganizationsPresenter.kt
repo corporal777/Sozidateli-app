@@ -18,8 +18,10 @@ class FavoriteOrganizationsPresenter
         private val organizationRepository: OrganizationRepository
 ) : BasePresenter<FavoriteOrganizationsContract.View>(), FavoriteOrganizationsContract.Presenter {
 
-    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.favoriteList(limit, offset) }
+    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.subscribeList(limit, offset) }
             .buildList()
+
+    private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -29,12 +31,18 @@ class FavoriteOrganizationsPresenter
                 .subscribe({ viewState.setOrganizations(it) }, { it.printStackTrace() })
     }
 
+    override fun attachView(view: FavoriteOrganizationsContract.View?) {
+        super.attachView(view)
+        if (firstLaunch) firstLaunch = false
+        else pagination.invalidate()
+    }
+
     override fun onOrganizationClick(organization: Organization) {
         viewState.showOrganization(organization)
     }
 
     override fun onRemoveFromFavoriteClick(organization: Organization) {
-        compositeDisposable += organizationRepository.removeFromFavorite(organization.id)
+        compositeDisposable += organizationRepository.unsubscribe(organization.id)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ pagination.invalidate() }, { pagination.invalidate() })

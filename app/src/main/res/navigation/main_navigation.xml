@@ -106,17 +106,11 @@
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
     </fragment>
-    <!--    <include app:graph="@navigation/about_event_navigation" />-->
-    <include app:graph="@navigation/search_navigation" />
 
     <fragment
         android:id="@+id/request_fragment"
         android:name="com.example.ui.request.RequestFragment"
-        tools:layout="@layout/fragment_request">
-        <argument
-            android:name="event"
-            app:argType="com.example.data.models.Event" />
-    </fragment>
+        tools:layout="@layout/fragment_request"></fragment>
 
     <fragment
         android:id="@+id/event_tabs_fragment"
@@ -256,6 +250,14 @@
         <action
             android:id="@+id/organization_to_organization_events"
             app:destination="@id/organization_events_fragment" />
+
+        <action
+            android:id="@+id/organization_to_organization_users"
+            app:destination="@id/organization_members_fragment" />
+
+        <action
+            android:id="@+id/organization_to_user"
+            app:destination="@id/user_fragment" />
     </fragment>
 
     <fragment
@@ -265,6 +267,19 @@
             android:name="organizationId"
             app:argType="string"
             app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/organization_members_fragment"
+        android:name="com.example.ui.organizations.members.OrganizationMembersFragment">
+        <argument
+            android:name="organizationId"
+            app:argType="string"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/organization_members_to_user"
+            app:destination="@id/user_fragment" />
     </fragment>
 
     <fragment
@@ -368,6 +383,9 @@
         <action
             android:id="@+id/user_to_edit"
             app:destination="@id/user_edit_fragment" />
+        <action
+            android:id="@+id/user_to_organization"
+            app:destination="@id/organization_fragment" />
         <argument
             android:name="userId"
             app:argType="string" />

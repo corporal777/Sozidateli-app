@@ -27,9 +27,7 @@ import com.example.extensions.formatToDefaultDate
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
+import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -129,16 +127,17 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 user.fullName,
                 user.user_id,
                 when {
-                    user.chat?.isBannedByYou == true -> ACTION_UNBLOCK
-                    user.is_in_favorite -> ACTION_UNSUBSCRIBE
-                    else -> ACTION_SUBSCRIBE
+                    user.chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
+                    user.is_in_favorite -> UserSubscribeButton.Action.UNFAVORITE
+                    else -> UserSubscribeButton.Action.FAVORITE
                 },
                 {
                     presenter.apply {
                         when (it) {
-                            ACTION_UNBLOCK -> onUnblockClick()
-                            ACTION_SUBSCRIBE -> onSubscribeClick()
-                            ACTION_UNSUBSCRIBE -> onUnsubscribeClick()
+                            UserSubscribeButton.Action.FAVORITE -> onSubscribeClick()
+                            UserSubscribeButton.Action.UNFAVORITE -> onUnsubscribeClick()
+                            UserSubscribeButton.Action.UNBLOCK -> onUnblockClick()
+                            else -> throw IllegalArgumentException("Wrong action: $it for user")
                         }
                     }
                 },
@@ -289,15 +288,15 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun setActionSubscribe() {
-        mainDataSection.notifyItemChanged(0, ACTION_SUBSCRIBE)
+        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.FAVORITE)
     }
 
     override fun setActionUnsubscribe() {
-        mainDataSection.notifyItemChanged(0, ACTION_UNSUBSCRIBE)
+        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.UNFAVORITE)
     }
 
     override fun setActionUnblock() {
-        mainDataSection.notifyItemChanged(0, ACTION_UNBLOCK)
+        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.UNBLOCK)
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
@@ -311,7 +310,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun showOrganization(organization: Organization) {
-        TODO()
+        findNavController().navigate(UserFragmentDirections.userToOrganization(organization.id))
     }
 
     override fun downloadFile(file: String) {

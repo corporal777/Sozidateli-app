@@ -4,28 +4,21 @@ import android.graphics.Bitmap
 import android.view.View
 import com.example.R
 import com.example.ui.views.UserSubscribeButton
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_SUBSCRIBE
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNSUBSCRIBE
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_user.*
-import kotlinx.android.synthetic.main.item_profile_data_user.ivAvatar
-import kotlinx.android.synthetic.main.item_profile_data_user.tvName
-import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
-import setCircleImage
 
 class ProfileDataUserItem(
         id: Long,
         private val avatar: Bitmap?,
         private val name: String,
         private val uid: Int,
-        private var subscribeAction: Int,
-        private val actionClickListener: (Int) -> Unit,
+        private var subscribeAction: UserSubscribeButton.Action,
+        private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
         private val writeMessageClickListener: () -> Unit
 ) : Item(id) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             ivAvatar.apply {
                 if (avatar != null) setImageBitmap(avatar)
@@ -42,29 +35,33 @@ class ProfileDataUserItem(
         }
     }
 
-    override fun bind(holder:GroupieViewHolder, position: Int, payloads: List<Any>) {
+    override fun bind(holder: GroupieViewHolder, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) super.bind(holder, position, payloads)
         else holder.apply {
-            (payloads[0] as? Int)?.let {
+            (payloads[0] as? UserSubscribeButton.Action)?.let {
                 subscribeAction = it
                 setAction(btnAction, btnChat, it)
             }
         }
     }
 
-    private fun setAction(subscribeButton: UserSubscribeButton, newChatButton: View, action: Int) {
+    private fun setAction(subscribeButton: UserSubscribeButton, newChatButton: View, action: UserSubscribeButton.Action) {
         when (action) {
-            ACTION_UNBLOCK -> {
+            UserSubscribeButton.Action.FAVORITE -> {
+                subscribeButton.setActionFavorite()
+                newChatButton.isEnabled = true
+            }
+            UserSubscribeButton.Action.UNFAVORITE -> {
+                subscribeButton.setActionUnfavorite()
+                newChatButton.isEnabled = true
+            }
+            UserSubscribeButton.Action.UNBLOCK -> {
                 subscribeButton.setActionUnblock()
                 newChatButton.isEnabled = false
             }
-            ACTION_SUBSCRIBE -> {
-                subscribeButton.setActionSubscribe()
-                newChatButton.isEnabled = true
-            }
-            ACTION_UNSUBSCRIBE -> {
-                subscribeButton.setActionUnsubscribe()
-                newChatButton.isEnabled = true
+            else -> {
+                subscribeButton.setActionFavorite()
+                newChatButton.isEnabled = false
             }
         }
     }

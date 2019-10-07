@@ -11,10 +11,9 @@ import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.UserSubscribeButton.Companion.ACTION_UNBLOCK
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
@@ -69,7 +68,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
                     it.user.fullName,
                     it.user.user_avatar,
                     { presenter.onUserClick(it) },
-                    ACTION_UNBLOCK,
+                    UserSubscribeButton.Action.UNBLOCK,
                     { presenter.onUnblockLick(it) }
             )
         })
