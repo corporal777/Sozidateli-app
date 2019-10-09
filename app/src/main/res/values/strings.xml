@@ -112,9 +112,8 @@
     <string name="remove">Удалить</string>
     <string name="accept">Подтвердить</string>
     <string name="learn_more">Узнать больше</string>
-
+    <string name="clear">Очистить</string>
     <string name="chat_list">Чаты</string>
-
     <string name="go_to_event">Участвовать</string>
     <string name="subscribe">Подписаться</string>
     <string name="unsubscribe">Отписаться</string>
@@ -128,6 +127,15 @@
     <string name="add_record">Добавить запись</string>
     <string name="add_file">Добавить файл</string>
 
+    <string-array name="organization_types">
+        <item>Некоммерческая</item>
+        <item>Коммерческая</item>
+    </string-array>
+    <string-array name="subscription_status">
+        <item>Есть подписка</item>
+        <item>Нет подписки</item>
+    </string-array>
+
     <string name="request_label">Заявка на участие</string>
     <string name="request_requires">Пожалуйста, заполните все поля, чтобы участвовать в мероприятии</string>
     <string name="request_make_request">Подать заявку</string>
@@ -136,12 +144,23 @@
     <string name="search_hint">Введите название</string>
     <string name="search_date">Дата мероприятия</string>
     <string name="search_period_date">Период мероприятия</string>
-    <string name="search_organizations">Организации</string>
     <string name="search_type_event">Типы мероприятий</string>
     <string name="search_select">Выбрать</string>
     <string name="search_date_hint">DD/MM/YYYY</string>
     <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
     <string name="search_empty_list">Ничего не найдено</string>
+    <string name="search_organizations">Мероприятия</string>
+    <string name="search_events">Организации</string>
+    <string name="search_users">Люди</string>
+    <string name="search_input_hint">Введите название</string>
+    <string name="search_filter_address">Область, край, район или город</string>
+    <string name="search_filter_name">Укажите название органзации</string>
+    <string name="search_filter_inn">ИНН</string>
+    <string name="search_filter_type">Тип</string>
+    <string name="search_filter_subscription">Подписка</string>
+    <string name="search_filters">Фильтры</string>
+    <string name="search_filters_find">Найти</string>
+    <string name="search_filters_not_chosen">Не выбрано</string>
 
     <string name="search_contact_section_favorites">Избранные</string>
     <string name="search_contact_section_chats">Вы ранее общались</string>
@@ -403,8 +422,6 @@
     <string name="request_event_file_error">Ошибка прикрипления файла</string>
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
-
-    <string name="clear">Очистить</string>
 
     <string name="by_qr_not_found_event">По этому коду не найдено ни одного мероприятия</string>
 

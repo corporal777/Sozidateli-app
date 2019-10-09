@@ -1,176 +1,100 @@
 package com.example.ui.search
 
-import call
-import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.DataArgsSearchType
-import com.example.data.models.Event
-import com.example.data.models.SearchTypeEvent
-import com.example.events.OnAddSearchTypeEvent
-import com.example.extensions.build
-import com.example.holders.SearchEventResultItem
-import com.example.repository.EventRepository
+import com.example.data.models.SearchFilter
+import com.example.extensions.buildList
 import com.example.ui.base.BasePresenter
-import com.example.util.TYPE_DATE
-import com.example.util.TYPE_DATE_PERIOD_FROM
-import com.example.util.TYPE_DATE_PERIOD_TO
-import com.example.util.Utils
 import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.PaginationList
+import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-@InjectViewState
-class SearchPresenter
-@Inject constructor(private val eventRepository: EventRepository
-) : BasePresenter<SearchContract.View>(), SearchContract.Presenter {
+abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter> : BasePresenter<V>(), SearchContract.Presenter<I> {
 
-    private var searchHolder: SearchHolder = SearchHolder()
-    private var typeTextCompositeDisposable = CompositeDisposable()
+    private lateinit var paginationList: PaginationList<I>
+    private lateinit var searchInterface: SearchInterface
+    protected abstract val pagination: PaginationDataSourceFactory<I>
+    protected lateinit var searchText: String
+    protected lateinit var filter: F
+    protected lateinit var tmpFilter: F
 
-    val factory = PaginationDataSourceFactory { limit, offset ->
-        eventRepository.getEventList(limit, offset, searchHolder.text,
-                dateLongToStrinng(searchHolder.dateFrom),
-                dateLongToStrinng(searchHolder.dateTo), searchHolder.categories.map { it.id }, searchHolder.organizations.map { it.id })
-    }
+    private val searchDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setSearchData(searchHolder)
-        EventBus.getDefault().register(this)
+        filter = createFilter()
+        tmpFilter = createFilter()
+        compositeDisposable += searchDisposable
     }
 
-    private fun dateLongToStrinng(date: Long): String? {
-        if (date == 0L) return null
-        return Utils.defaultServerDateFormatter.format(date)
-    }
-
-    override fun attachView(view: SearchContract.View?) {
-        super.attachView(view)
-        viewState.updateCategoryList(searchHolder)
-        viewState.updateOrganizationList(searchHolder)
-    }
-
-    override fun onSearchTextChange(text: String) {
-        typeTextCompositeDisposable.clear()
-        searchHolder.text = text
-        Observable.timer(400, TimeUnit.MILLISECONDS)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    search()
-                }, {}).call(typeTextCompositeDisposable)
-
-    }
-
-    override fun removeOrganizationItem(searchTypeEvent: SearchTypeEvent) {
-        searchHolder.organizations.remove(searchTypeEvent)
-        viewState.updateOrganizationList(searchHolder)
-        search()
-    }
-
-    override fun removeCategoryItem(searchTypeEvent: SearchTypeEvent) {
-        searchHolder.categories.remove(searchTypeEvent)
-        viewState.updateCategoryList(searchHolder)
-        search()
-    }
-
-    override fun onOrganizationClick() {
-        val data = DataArgsSearchType(arrayListOf(), true)
-        data.array.addAll(searchHolder.organizations)
-        viewState.showPlaces(data)
-    }
-
-    override fun onCategoryClick() {
-        val data = DataArgsSearchType(arrayListOf(), false)
-        data.array.addAll(searchHolder.categories)
-        viewState.showTypeEvent(data)
-    }
-
-    private fun search() {
-        searchHolder.totalCountSearchResult = 0
-        factory.mapIndexedTotal { item, index, total ->
-            searchHolder.totalCountSearchResult = total
-            return@mapIndexedTotal SearchEventResultItem(item, this@SearchPresenter)
+    override fun onResume(searchInterface: SearchInterface) {
+        this.searchInterface = searchInterface.apply {
+            searchTextCallback = { onSearchTextChange(searchText) }
+            showFilterCallback = { onShowFilterRequest() }
+            onSearchTextChange(searchText)
         }
-                .build()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.showSearchResult(it, searchHolder.totalCountSearchResult)
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun onEvent(event: OnAddSearchTypeEvent) {
-        if (event.isOrganization) {
-            searchHolder.organizations.clear()
-            searchHolder.organizations.addAll(event.data)
-        } else {
-            searchHolder.categories.clear()
-            searchHolder.categories.addAll(event.data)
+    override fun onItemTake(position: Int) {
+        paginationList.onItemTake(position)
+    }
+
+    override fun onFilterApplyClick() {
+        filter = copyFilter(tmpFilter)
+        invalidateList()
+        viewState.hideFilter()
+    }
+
+    override fun onFilterClearClick() {
+        tmpFilter = createFilter()
+        viewState.clearFilter()
+    }
+
+    override fun onFilterCancel() {
+        tmpFilter = copyFilter(filter)
+    }
+
+    private fun onSearchTextChange(text: String) {
+        val isReallyChange = !::searchText.isInitialized || searchText != text
+        this.searchText = text
+        if (isReallyChange) invalidateList()
+    }
+
+    private fun onShowFilterRequest() {
+        viewState.showFilter(tmpFilter)
+    }
+
+    protected fun invalidateList() {
+        searchDisposable.clear()
+        initSearchPagination()
+        paginationList.invalidate()
+    }
+
+    private fun initSearchPagination() {
+        if (!::paginationList.isInitialized) {
+            paginationList = pagination.applyErrorHandler {
+                it.printStackTrace()
+            }
+                    .buildList()
         }
-        EventBus.getDefault().removeStickyEvent(event)
-        search()
-    }
 
-    override fun onClickDate(type: String) {
-        var date = 0L
-        when (type) {
-            TYPE_DATE -> {
-                date = searchHolder.date
-            }
-            TYPE_DATE_PERIOD_FROM -> {
-                date = searchHolder.dateFrom
-            }
-            TYPE_DATE_PERIOD_TO -> {
-                date = searchHolder.dateTo
-            }
+        if (searchDisposable.size() == 0) {
+            searchDisposable += Observable.create(paginationList)
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        viewState.apply {
+                            setData(it)
+                            hideAllLoadingDialogs()
+                        }
+                    }, {
+                        viewState.hideAllLoadingDialogs()
+                        it.printStackTrace()
+                    })
         }
-        viewState.showDateDialog(date, type)
     }
 
-    override fun onDateSelected(date: Long, type: String) {
-        when (type) {
-            TYPE_DATE -> {
-                searchHolder.date = date
-            }
-            TYPE_DATE_PERIOD_FROM -> {
-                searchHolder.dateFrom = date
-            }
-            TYPE_DATE_PERIOD_TO -> {
-                searchHolder.dateTo = date
-            }
-        }
-        viewState.setSearchData(searchHolder)
-        search()
-    }
-
-    override fun clearFilter() {
-        searchHolder.clear()
-        viewState.setSearchData(searchHolder)
-        viewState.updateCategoryList(searchHolder)
-        viewState.updateOrganizationList(searchHolder)
-        viewState.hideSearchResultLabel()
-    }
-
-    override fun onEventClick(event: Event) {
-        viewState.showEvent(event)
-    }
-
-    override fun onGoToEventClick(event: Event) = viewState.showEventRequest(event)
-
-    override fun onQrScanClick() = viewState.showQrScan()
-
-    override fun onDestroy() {
-        super.onDestroy()
-        typeTextCompositeDisposable.clear()
-        EventBus.getDefault().unregister(this)
-    }
+    abstract fun createFilter(): F
+    abstract fun copyFilter(filter: F): F
 }

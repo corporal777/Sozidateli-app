@@ -322,6 +322,11 @@
         <item name="errorTextColor">@color/attention_action</item>
     </style>
 
+    <style name="Profile.Edit.InputLayout.DropDown">
+        <item name="endIconDrawable">@drawable/ic_drop_down</item>
+        <item name="endIconMode">dropdown_menu</item>
+    </style>
+
     <style name="Profile.Edit.Input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -334,6 +339,14 @@
 
     <style name="Profile.Edit.Input.SingleLine">
         <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="Profile.Edit.Input.SingleLine.DropDown">
+        <item name="android:cursorVisible">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
     </style>
 
     <style name="Profile.Edit.Input.Theme">

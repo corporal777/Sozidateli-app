@@ -33,9 +33,7 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View {
     }
 
     override fun showEvent(event: Event) {
-        findNavController().navigate(R.id.enter_code_to_event, bundleOf(
-                ARG_EVENT to event
-        ))
+
     }
 
     override fun layout() = R.layout.fragment_enter_code

@@ -26,12 +26,8 @@ class OrganizationRepositoryImp
         return call(api.organizationUnsubscribe(orgId))
     }
 
-    override fun subscribeList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>> {
-        return callPagination(api.organizationSubscribeList(limit, offset))
-    }
-
-    override fun getOrganizationList(): Single<List<Organization>> {
-        return call(api.getOrganizationList())
+    override fun getOrganizations(limit: Int, offset: Int, filter: Map<String, Any>?): Maybe<PaginationResponse<Organization>> {
+        return callPagination(api.getOrganizations(limit, offset, filter))
     }
 
     override fun getOrganizationById(id: String): Single<OrganizationData> {

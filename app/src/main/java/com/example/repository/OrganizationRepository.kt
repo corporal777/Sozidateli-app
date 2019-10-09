@@ -11,8 +11,7 @@ import io.reactivex.Single
 interface OrganizationRepository {
     fun subscribe(orgId: String): Completable
     fun unsubscribe(orgId: String): Completable
-    fun subscribeList(limit: Int, offset: Int): Maybe<PaginationResponse<Organization>>
-    fun getOrganizationList(): Single<List<Organization>>
+    fun getOrganizations(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Organization>>
     fun getOrganizationById(id: String): Single<OrganizationData>
     fun getMembers(limit: Int, offset: Int, orgId: String): Maybe<PaginationResponse<OrganizationMember>>
 }

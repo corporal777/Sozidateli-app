@@ -179,8 +179,9 @@ interface Api {
     @POST("/v1/speakers/{id}/unfavorite")
     fun userRemoveFromFavorite(@Path("id") uid: String): Completable
 
+    @FormUrlEncoded
     @POST("/v1/organisations")
-    fun getOrganizationList(): Single<ApiResponse<List<Organization>>>
+    fun getOrganizations(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<Organization>>>
 
     @GET("/v1/organisations/{id}")
     fun getOrganizationById(@Path("id") id: String): Single<ApiResponse<OrganizationData>>
@@ -194,10 +195,6 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/organisations/{organizationId}/members")
     fun organizationMembers(@Path("organizationId") orgId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<OrganizationMember>>>
-
-    @FormUrlEncoded
-    @POST("/v1/user/subscribed/organisations")
-    fun organizationSubscribeList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Organization>>>
 
     @GET("/v1/events/{eventId}/register/fields")
     fun getEventRegisterField(@Path("eventId") eventId: Int): Single<ApiResponse<RegisterFieldResponse>>

@@ -39,10 +39,12 @@ import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.request.RequestFragment
-import com.example.ui.search.SearchFragment
 import com.example.ui.search.enterCode.EnterCodeFragment
+import com.example.ui.search.event.SearchEventFragment
+import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.qr.QrScannerFragment
-import com.example.ui.search.searchType.SearchTypeFragment
+import com.example.ui.search.tabs.SearchTabsFragment
+import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
 import com.example.ui.speakers.favorite.FavoriteUsersFragment
@@ -136,10 +138,16 @@ abstract class FragmentBuildersModule {
     abstract fun contributeRequestFragment(): RequestFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSearchFragment(): SearchFragment
+    abstract fun contributeSearchTabsFragment(): SearchTabsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSearchTypeFragment(): SearchTypeFragment
+    abstract fun contributeSearchOrganizationsFragment(): SearchOrganizationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchEventsFragment(): SearchEventFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchUsersFragment(): SearchUserFragment
 
     @ContributesAndroidInjector
     abstract fun contributeEventTabsFragment(): EventTabsFragment

@@ -2,120 +2,86 @@ package com.example.ui.search
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
+import android.view.ViewGroup
 import com.example.R
-import com.example.data.models.DataArgsSearchType
-import com.example.data.models.Event
-import com.example.holders.PagedListGroup
-import com.example.holders.SearchEventResultItem
-import com.example.holders.SearchHeaderItem
+import com.example.data.models.SearchFilter
+import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
-import com.example.util.ARG_EVENT
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
+import com.example.ui.views.BottomDialog
+import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_search.*
-import javax.inject.Inject
-import javax.inject.Provider
 
-class SearchFragment : BaseFragment(), SearchContract.View {
+abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> : BaseFragment(), SearchContract.View<I, F> {
 
-    @InjectPresenter
-    lateinit var presenter: SearchPresenter
+    abstract var presenter: P
 
-    @Inject
-    lateinit var presenterProvider: Provider<SearchPresenter>
+    private var filterDialog: BottomDialog? = null
+    private var filterView: View? = null
 
-    @ProvidePresenter
-    fun providePresenter(): SearchPresenter = presenterProvider.get().apply {
-        header = SearchHeaderItem(childFragmentManager, this)
-        section.setHeader(header)
-        groupAdapter.add(section)
+    protected val adapter by lazy {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    presenter.onItemTake(position)
+                }
+            })
+        }
     }
 
-    private lateinit var header: SearchHeaderItem
-
-    private val pagedList = PagedListGroup<SearchEventResultItem>()
-
-    private val section = Section().apply {
-        add(pagedList)
+    override fun onResume() {
+        super.onResume()
+        (parentFragment as? SearchInterfaceProvider)?.apply {
+            presenter.onResume(provideSearchInterface())
+        }
     }
-
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = groupAdapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            adapter = this@SearchFragment.adapter
         }
     }
 
-    override fun showTypeEvent(data: DataArgsSearchType) {
-        findNavController().navigate(SearchFragmentDirections.searchToSearchType(data))
+    override fun setData(data: List<I>) {
+        adapter.update(data.map(::createItem))
     }
 
-    override fun showPlaces(data: DataArgsSearchType) {
-        findNavController().navigate(SearchFragmentDirections.searchToSearchType(data))
-    }
+    override fun showFilter(filter: F) {
+        val filterContainer = (layoutInflater.inflate(R.layout.layout_filter, null) as ViewGroup).apply {
+            findViewById<ViewGroup>(R.id.flFilters).apply {
+                val filterView = createFilterView(filter)
+                this@SearchFragment.filterView = filterView
+                addView(filterView)
+            }
 
-    override fun setSearchData(searchHolder: SearchHolder) {
-        header.setSearchData(searchHolder)
-        section.notifyItemChanged(0)
-    }
-
-    override fun updateOrganizationList(searchHolder: SearchHolder) {
-        header.updatePlacesList(searchHolder)
-    }
-
-    override fun updateCategoryList(searchHolder: SearchHolder) {
-        header.updateTypeEventsList(searchHolder)
-    }
-
-    override fun showSearchResult(data: PagedList<SearchEventResultItem>, totalCount: Int?) {
-        pagedList.submitList(data)
-        if (totalCount == null || totalCount == 0) {
-            header.showResultHeader(false, totalCount)
-            header.showEmptyResult(true)
-        } else {
-            header.showResultHeader(true, totalCount)
-            header.showEmptyResult(false)
+            findViewById<View>(R.id.btnApply).setOnClickListener { presenter.onFilterApplyClick() }
+            findViewById<View>(R.id.btnClear).setOnClickListener { presenter.onFilterClearClick() }
+            findViewById<View>(R.id.btnClose).setOnClickListener { filterDialog?.dismiss() }
         }
-        section.notifyItemChanged(0)
+
+        filterDialog = BottomDialog(requireContext(), filterContainer)
+                .apply {
+                    setOnDismissListener { presenter.onFilterCancel() }
+                    show()
+                }
     }
 
-    override fun hideSearchResultLabel() {
-        header.showResultHeader(false, null)
-        pagedList.submitList(null)
-        header.showEmptyResult(false)
+    override fun hideFilter() {
+        filterDialog?.apply {
+            setOnDismissListener(null)
+            dismiss()
+        }
     }
 
-    override fun showEvent(event: Event) {
-        findNavController().navigate(R.id.search_to_event_screen, bundleOf(
-                ARG_EVENT to event
-        ))
+    override fun clearFilter() {
+        filterView?.let { clearFilterView(it) }
     }
 
-    override fun showDateDialog(date: Long, type: String) {
-        header.showDateDialog(date, type)
-    }
-
-    override fun showQrScan() {
-        findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToQrScannerFragment())
-    }
-
-    override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
-    }
+    protected abstract fun createItem(itemData: I): Item
+    protected abstract fun createFilterView(filter: F): View
+    protected abstract fun clearFilterView(filterView: View)
 
     override fun layout() = R.layout.fragment_search
 }

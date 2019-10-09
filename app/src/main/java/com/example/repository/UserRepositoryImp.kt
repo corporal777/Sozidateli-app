@@ -89,4 +89,8 @@ class UserRepositoryImp
     override fun getInterests(): Maybe<List<Interest>> {
         return call(api.getInterestsList())
     }
+
+    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+        return callPagination(api.chatSearch(searchMap, limit, offset))
+    }
 }

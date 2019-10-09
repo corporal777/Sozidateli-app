@@ -18,7 +18,7 @@ class FavoriteOrganizationsPresenter
         private val organizationRepository: OrganizationRepository
 ) : BasePresenter<FavoriteOrganizationsContract.View>(), FavoriteOrganizationsContract.Presenter {
 
-    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.subscribeList(limit, offset) }
+    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.getOrganizations(limit, offset) }
             .buildList()
 
     private var firstLaunch = true

@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/Profile.Edit.InputContainer">
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.InputTitle"

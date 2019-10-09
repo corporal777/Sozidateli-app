@@ -47,5 +47,4 @@
             android:text="@string/save"
             android:textColor="@color/text_color_action_button" />
     </LinearLayout>
-
 </LinearLayout>

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.example.R
 
-class LoadingAlertDialog(
+class LoadingAlertDialog private constructor(
         val sourceDialog: AlertDialog
 ) {
 

@@ -78,6 +78,12 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
                 setImageResource(R.drawable.avatar_placeholder)
                 setOnClickListener { presenter.onMenuAccountClick() }
             })
+
+            addRightView(AppCompatImageView(requireContext()).apply {
+                layoutParams = ViewGroup.LayoutParams(imageSize, imageSize)
+                setImageResource(R.drawable.ic_search)
+                setOnClickListener { presenter.onMenuSearchClick() }
+            })
         }
     }
 

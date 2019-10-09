@@ -31,4 +31,5 @@ interface UserRepository {
     fun removeFromFavorite(uid: String): Completable
 
     fun getInterests(): Maybe<List<Interest>>
+    fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
 }

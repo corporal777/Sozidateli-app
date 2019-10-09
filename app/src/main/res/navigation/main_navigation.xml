@@ -101,7 +101,7 @@
             app:destination="@id/chat_list_tabs_fragment" />
         <action
             android:id="@+id/main_to_search"
-            app:destination="@id/search_navigation" />
+            app:destination="@id/search_tabs_fragment" />
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
@@ -110,7 +110,7 @@
     <fragment
         android:id="@+id/request_fragment"
         android:name="com.example.ui.request.RequestFragment"
-        tools:layout="@layout/fragment_request"></fragment>
+        tools:layout="@layout/fragment_request" />
 
     <fragment
         android:id="@+id/event_tabs_fragment"
@@ -122,7 +122,7 @@
             app:destination="@id/chat_list_tabs_fragment" />
         <action
             android:id="@+id/main_to_search"
-            app:destination="@id/search_navigation" />
+            app:destination="@id/search_tabs_fragment" />
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
@@ -407,4 +407,9 @@
         android:id="@+id/user_status_fragment"
         android:name="com.example.ui.status.tabs.StatusPagesFragment"
         tools:layout="@layout/fragment_status_pages" />
+
+    <fragment
+        android:id="@+id/search_tabs_fragment"
+        android:name="com.example.ui.search.tabs.SearchTabsFragment"
+        tools:layout="@layout/fragment_search_tabs" />
 </navigation>
