@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:paddingStart="@dimen/profile_padding_start"
-    android:paddingEnd="@dimen/profile_padding_start"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/main_background">
+    android:paddingStart="@dimen/profile_padding_start"
+    android:paddingEnd="@dimen/profile_padding_start">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:id="@+id/etCode"
-        android:maxLength="10"
-        android:hint="@string/enter_code_hint"
-        android:paddingStart="15dp"
-        android:inputType="numberSigned"
-        android:background="@drawable/background_input_borders"
-        tools:ignore="Autofill,LabelFor,TextFields" />
-
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilCode"
+        style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:theme="@style/ViewBackgroundAccent"
-        android:id="@+id/btnSearch"
-        android:text="@string/search_label"
-        android:textColor="@android:color/white"
-        android:background="@drawable/background_corners"
-        />
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</LinearLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCode"
+            style="@style/Profile.Edit.Input.SingleLine"
+            android:hint="@string/code_input_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:textSize="17sp" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <TextView
+        android:id="@+id/tvNoCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/code_input_no_code"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilCode" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/background_action_button_selector"
+        android:text="@string/search_label"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color_action_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

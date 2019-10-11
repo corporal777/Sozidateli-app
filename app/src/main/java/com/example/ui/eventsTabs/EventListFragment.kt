@@ -15,6 +15,7 @@ import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import kotlinx.android.synthetic.main.fragment_events_tabs.*
 import javax.inject.Inject
@@ -70,18 +71,13 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-        val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
         toolbarContentActionBar.apply {
             addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
-            addRightView(AppCompatImageView(requireContext()).apply {
-                layoutParams = ViewGroup.LayoutParams(imageSize, imageSize)
-                setImageResource(R.drawable.avatar_placeholder)
+            addRightView(ToolbarButton(requireContext(), R.drawable.avatar_placeholder).apply {
                 setOnClickListener { presenter.onMenuAccountClick() }
             })
 
-            addRightView(AppCompatImageView(requireContext()).apply {
-                layoutParams = ViewGroup.LayoutParams(imageSize, imageSize)
-                setImageResource(R.drawable.ic_search)
+            addRightView(ToolbarButton(requireContext(), R.drawable.ic_search).apply {
                 setOnClickListener { presenter.onMenuSearchClick() }
             })
         }

@@ -6,11 +6,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isEmpty
 import androidx.navigation.fragment.findNavController
@@ -28,6 +26,7 @@ import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -35,7 +34,6 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_chat_list.*
-import setSelectableItemBackgroundBorderless
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -324,11 +322,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     override fun showUserMenuButton(show: Boolean) {
         if (show) {
-            val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
-            menuImageView = AppCompatImageButton(requireContext()).apply {
-                layoutParams = ViewGroup.LayoutParams(imageSize, ViewGroup.LayoutParams.MATCH_PARENT)
-                setSelectableItemBackgroundBorderless()
-                setImageResource(R.drawable.ic_menu)
+            menuImageView = ToolbarButton(requireContext(), R.drawable.ic_menu).apply {
                 setOnClickListener { presenter.onMenuButtonUserClick() }
             }
 

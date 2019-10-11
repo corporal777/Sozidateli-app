@@ -52,6 +52,10 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         viewState.clearFilter()
     }
 
+    protected open fun onShowFilterRequest() {
+        viewState.showFilter(tmpFilter)
+    }
+
     override fun onFilterCancel() {
         tmpFilter = copyFilter(filter)
     }
@@ -62,14 +66,9 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         if (isReallyChange) invalidateList()
     }
 
-    private fun onShowFilterRequest() {
-        viewState.showFilter(tmpFilter)
-    }
-
-    protected fun invalidateList() {
+    private fun invalidateList() {
         searchDisposable.clear()
         initSearchPagination()
-        paginationList.invalidate()
     }
 
     private fun initSearchPagination() {
@@ -78,6 +77,8 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
                 it.printStackTrace()
             }
                     .buildList()
+
+            viewState.showLoadingDialog()
         }
 
         if (searchDisposable.size() == 0) {

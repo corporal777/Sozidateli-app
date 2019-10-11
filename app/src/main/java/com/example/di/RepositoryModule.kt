@@ -27,4 +27,7 @@ class RepositoryModule {
 
     @Provides
     fun dataDataRepository(repository: DaDataRepositoryImp): DaDataRepository = repository
+
+    @Provides
+    fun commonRepository(repository: CommonRepositoryImpl): CommonRepository = repository
 }

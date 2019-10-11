@@ -20,10 +20,8 @@ class EventRepositoryImp
         appData: AppData
 ) : ApiRepository(appData), EventRepository {
 
-    override fun getEventList(limit: Int, offset: Int, name: String?, dateStart: String?,
-                              dateEnd: String?, category: List<String>?,
-                              organisation: List<String>?, qr: String?): Maybe<PaginationResponse<Event>> {
-        return callPagination(api.getEventList(limit, offset, name, dateStart, dateEnd, category, organisation, qr))
+    override fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>?): Maybe<PaginationResponse<Event>> {
+        return callPagination(api.getEventList(limit, offset, filter))
     }
 
     override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
@@ -115,5 +113,9 @@ class EventRepositoryImp
 
     override fun setEventRating(eventId: Int, value: Int): Completable {
         return call(api.setEventRating(eventId, value))
+    }
+
+    override fun getEventByCode(code: String): Single<Event> {
+        return call(api.getEventByCode(code))
     }
 }

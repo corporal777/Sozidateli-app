@@ -5,6 +5,7 @@ import com.example.data.models.Organization
 import com.example.data.models.SearchFilter
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
+import com.example.ui.search.event.SearchEventPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -24,9 +25,8 @@ class SearchOrganizationPresenter
         viewState.showOrganization(organization)
     }
 
-    private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>(
-            FILTER_CONTENT to searchText
-    ).apply {
+    private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
+        if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address
         if (!address.isNullOrEmpty()) put(FILTER_ADDRESS, address)
         val name = filter.name

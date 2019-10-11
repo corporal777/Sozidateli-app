@@ -134,4 +134,7 @@
     <color name="indicator_color_selected">@color/colorAccent</color>
 
     <color name="organization_logo_border">#33000000</color>
+
+    <color name="qr_scan_mask">#77000000</color>
+    <color name="qr_permission_background">#B3000000</color>
 </resources>

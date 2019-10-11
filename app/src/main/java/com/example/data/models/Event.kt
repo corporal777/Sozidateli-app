@@ -13,17 +13,18 @@ data class Event(
         val registration_start: String?,
         val registration_finish: String?,
         val status: Status?,
-        val place: Place?,
+        val place: List<Place>?,
         val organization: Organization?,
         val organization_id: String?,
         val event_code: String?
 
 ) {
     enum class Status {
-        WAIT_VERIFY_USER,
+        @SerializedName("pending")
         PENDING,
+        @SerializedName("approved")
         APPROVED,
-        DECLINED,
-        CONFERENCE_ENDS
+        @SerializedName("declined")
+        DECLINED
     }
 }

@@ -27,7 +27,7 @@ class EventItem(
         viewHolder.apply {
             itemContainer.apply {
                 clipToOutline = true
-                alpha = if (event.status === Event.Status.CONFERENCE_ENDS) 0.5f else 1f
+//                alpha = if (event.status === Event.Status.CONFERENCE_ENDS) 0.5f else 1f
 
                 setOnClickListener { onEventClick() }
 
@@ -95,11 +95,11 @@ class EventItem(
                         textBackground = R.color.red
                         textRes = R.string.event_status_decline
                     }
-                    Event.Status.CONFERENCE_ENDS -> {
-                        textColor = R.color.event_status_finished_text
-                        textBackground = R.color.event_status_finished_background
-                        textRes = R.string.event_status_finished
-                    }
+//                    Event.Status.CONFERENCE_ENDS -> {
+//                        textColor = R.color.event_status_finished_text
+//                        textBackground = R.color.event_status_finished_background
+//                        textRes = R.string.event_status_finished
+//                    }
                     else -> {
                         textColor = R.color.event_status_wait_confirmation_text
                         textBackground = R.color.event_status_wait_confirmation_background

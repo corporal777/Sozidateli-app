@@ -2,8 +2,7 @@ package com.example.ui.search.tabs
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -15,6 +14,7 @@ import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.user.SearchUserFragment
+import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
 import kotlinx.android.synthetic.main.fragment_search_tabs.*
@@ -41,8 +41,8 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
 
     private val pages by lazy {
         listOf(
-                SearchOrganizationFragment() to getString(R.string.search_events),
                 SearchEventFragment() to getString(R.string.search_organizations),
+                SearchOrganizationFragment() to getString(R.string.search_events),
                 SearchUserFragment() to getString(R.string.search_users)
         )
     }
@@ -68,18 +68,19 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-        val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
         toolbarContentActionBar.apply {
-            addRightView(AppCompatImageView(requireContext()).apply {
-                layoutParams = ViewGroup.LayoutParams(imageSize, imageSize)
-                setImageResource(R.drawable.ic_scan)
-                setOnClickListener { }
+            addRightView(ToolbarButton(requireContext(), R.drawable.ic_scan).apply {
+                setOnClickListener { presenter.onScanClick() }
             })
         }
     }
 
     override fun provideSearchInterface(): SearchInterface {
         return searchInterface
+    }
+
+    override fun showQrScanner() {
+        findNavController().navigate(SearchTabsFragmentDirections.searchTabsToQrScanner())
     }
 
     override fun layout() = R.layout.fragment_search_tabs

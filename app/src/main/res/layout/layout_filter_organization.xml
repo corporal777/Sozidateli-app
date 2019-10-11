@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:paddingBottom="@dimen/margin_horizontal_default"
     tools:paddingEnd="@dimen/margin_horizontal_default"
@@ -32,7 +31,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etOrganizationName"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_name"
+            android:hint="@string/search_filter_organization_name"
             android:inputType="textCapSentences" />
     </com.example.ui.views.CustomTextInputLayout>
 

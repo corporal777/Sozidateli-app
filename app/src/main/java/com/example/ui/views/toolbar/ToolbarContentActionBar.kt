@@ -2,9 +2,12 @@ package com.example.ui.views.toolbar
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SpinnerAdapter
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.R
+import com.example.extensions.dp
 import java.lang.ref.WeakReference
 
 class ToolbarContentActionBar(
@@ -13,11 +16,12 @@ class ToolbarContentActionBar(
 ) : ActionBar() {
 
     private val weakActivity = WeakReference(appCompatActivity)
-
     private val customView: ToolbarContentView = actionBar.customView as ToolbarContentView
+    private val iconLayoutParams: ViewGroup.LayoutParams
+        get() = ViewGroup.LayoutParams(48.dp, ViewGroup.LayoutParams.MATCH_PARENT)
 
     private val navigationIcon by lazy {
-        ToolbarBackButton(appCompatActivity).apply {
+        ToolbarButton(appCompatActivity, R.drawable.ic_back_arrow).apply {
             setOnClickListener { weakActivity.get()?.onSupportNavigateUp() }
         }
     }
@@ -41,9 +45,9 @@ class ToolbarContentActionBar(
         customView.getLeftViewContainer {
             if (view == navigationIcon && navigationIcon.parent == this) return@getLeftViewContainer
             if (position == 0 && view != navigationIcon && navigationIcon.parent == this) {
-                addView(view, 1)
+                addView(view, 1, iconLayoutParams)
             } else {
-                addView(view, position)
+                addView(view, position, iconLayoutParams)
             }
         }
     }
@@ -57,7 +61,7 @@ class ToolbarContentActionBar(
         }
     }
 
-    fun addRightView(view: View, position: Int = 0) = customView.getRightViewContainer { addView(view, position) }
+    fun addRightView(view: View, position: Int = 0) = customView.getRightViewContainer { addView(view, position, iconLayoutParams) }
     fun removeRightView(view: View) = customView.getRightViewContainer { removeView(view) }
     fun removeRightView(position: Int) = customView.getRightViewContainer { removeViewAt(position) }
     fun removeAllRightViews() = customView.getRightViewContainer { removeAllViews() }

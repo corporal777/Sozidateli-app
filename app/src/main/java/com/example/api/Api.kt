@@ -133,11 +133,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events")
-    fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int,
-                     @Field("name") name: String? = null, @Field("date_start") dateStart: String? = null,
-                     @Field("date_end") dateEnd: String? = null, @Field("category[]") category: List<String>? = null,
-                     @Field("organisation[]") organisation: List<String>? = null,
-                     @Field("qr") qr: String? = null): Maybe<ApiResponse<List<Event>>>
+    fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<Event>>>
 
     @FormUrlEncoded
     @POST("/v1/events/recommendations")
@@ -253,6 +249,9 @@ interface Api {
     @POST("/v1/events/{eventId}/rating/set")
     fun setEventRating(@Path("eventId") eventId: Int, @Field("rating_value") value: Int): Completable
 
-    @POST("/v1/users/interests")
+    @GET("/v1/events/qr/{code}")
+    fun getEventByCode(@Path("code") code: String): Single<ApiResponse<Event>>
+
+    @POST("/v1/common/interests")
     fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
 }

@@ -19,19 +19,21 @@
         android:id="@+id/viewsLeft"
         android:layout_width="96dp"
         android:layout_height="match_parent"
-        android:layout_marginEnd="12dp"
         android:gravity="left|center_vertical"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded" />
 
     <LinearLayout
         android:id="@+id/viewsRight"
         android:layout_width="96dp"
         android:layout_height="match_parent"
-        android:layout_marginEnd="12dp"
         android:gravity="right|center_vertical"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

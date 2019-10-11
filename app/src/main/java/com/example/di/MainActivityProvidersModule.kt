@@ -2,6 +2,7 @@ package com.example.di
 
 import androidx.fragment.app.FragmentActivity
 import com.example.util.rxtakephoto.RxTakePhoto
+import com.tbruyelle.rxpermissions2.RxPermissions
 import dagger.Module
 import dagger.Provides
 
@@ -11,5 +12,10 @@ class MainActivityProvidersModule {
     @Provides
     fun provideRxTakePhoto(activity: FragmentActivity): RxTakePhoto {
         return RxTakePhoto(activity)
+    }
+
+    @Provides
+    fun provideRxPermissions(activity: FragmentActivity): RxPermissions {
+        return RxPermissions(activity)
     }
 }

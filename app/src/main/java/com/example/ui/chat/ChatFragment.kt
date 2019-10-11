@@ -18,6 +18,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.setPadding
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewFragment
+import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.SimpleTextWatcher
@@ -328,12 +330,9 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun setUserAvatar(url: String) {
-        val imageSize = resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size)
-        val imagePadding = 8.dp
-        AppCompatImageView(requireContext()).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(imageSize, MATCH_PARENT)
+        ToolbarButton(requireContext()).apply {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
-            setPadding(imagePadding, imagePadding, imagePadding, imagePadding)
+            setPadding(8.dp)
             setCircleImage(url)
             toolbarContentActionBar.addRightView(this)
         }

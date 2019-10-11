@@ -243,13 +243,6 @@
         <item name="android:textColor">@color/toolbar_title_text</item>
     </style>
 
-    <style name="Toolbar.Custom.Button">
-        <item name="android:layout_width">@dimen/toolbar_content_button_size</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-    </style>
-
     <style name="Profile" />
 
     <style name="Profile.Title">
@@ -338,7 +331,9 @@
     </style>
 
     <style name="Profile.Edit.Input.SingleLine">
+        <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="Profile.Edit.Input.SingleLine.DropDown">

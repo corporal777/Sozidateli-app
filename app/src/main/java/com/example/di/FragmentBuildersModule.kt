@@ -39,7 +39,7 @@ import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.request.RequestFragment
-import com.example.ui.search.enterCode.EnterCodeFragment
+import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.qr.QrScannerFragment

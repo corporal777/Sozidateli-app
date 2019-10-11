@@ -27,6 +27,10 @@ class SearchTabsPresenter
         searchInterface.showFilterCallback?.invoke()
     }
 
+    override fun onScanClick() {
+        viewState.showQrScanner()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         searchInterface.showFilterCallback = null

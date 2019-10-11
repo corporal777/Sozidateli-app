@@ -411,5 +411,24 @@
     <fragment
         android:id="@+id/search_tabs_fragment"
         android:name="com.example.ui.search.tabs.SearchTabsFragment"
-        tools:layout="@layout/fragment_search_tabs" />
+        tools:layout="@layout/fragment_search_tabs">
+        <action
+            android:id="@+id/search_tabs_to_qr_scanner"
+            app:destination="@id/qr_scanner_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/qr_scanner_fragment"
+        android:name="com.example.ui.search.qr.QrScannerFragment"
+        tools:layout="@layout/fragment_qr_scanner">
+
+        <action
+            android:id="@+id/qr_scanner_to_enter_code"
+            app:destination="@id/enter_event_code_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/enter_event_code_fragment"
+        android:name="com.example.ui.search.code.EnterCodeFragment"
+        tools:layout="@layout/fragment_enter_code" />
 </navigation>

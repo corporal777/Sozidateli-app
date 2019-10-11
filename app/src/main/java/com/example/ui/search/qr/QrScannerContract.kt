@@ -1,32 +1,36 @@
 package com.example.ui.search.qr
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface QrScannerContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(SkipStrategy::class)
-        fun checkCameraPermission(grantedResult: (Boolean) -> Unit)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun requestCameraPermission()
-
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "preview")
         fun startPreview()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "preview")
+        fun showNoPermission()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAppSettings()
 
         @StateStrategyType(SkipStrategy::class)
         fun showEvent(event: Event)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEnterCode()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEventNotFoundError()
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onCameraPermissionGranted()
         fun onDecodeQrCode(code: String)
         fun onEnterCodeClick()
+        fun onRequestPermissionClick()
     }
 }

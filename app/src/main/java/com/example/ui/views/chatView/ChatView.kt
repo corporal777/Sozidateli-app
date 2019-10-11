@@ -3,10 +3,8 @@ package com.example.ui.views.chatView
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.MvpDelegate
@@ -16,6 +14,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
+import setSelectableItemBackgroundBorderless
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -53,11 +52,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        layoutParams = ViewGroup.LayoutParams(resources.getDimensionPixelSize(R.dimen.toolbar_content_button_size), ViewGroup.LayoutParams.MATCH_PARENT)
-        val outValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true)
-        setBackgroundResource(outValue.resourceId)
-
+        setSelectableItemBackgroundBorderless()
         (context.applicationContext as App).appComponent.inject(this)
     }
 

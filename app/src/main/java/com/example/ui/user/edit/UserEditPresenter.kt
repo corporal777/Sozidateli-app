@@ -9,6 +9,7 @@ import com.example.data.models.UserInterest
 import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
+import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
@@ -28,6 +29,7 @@ class UserEditPresenter
 @Inject constructor(
         private val appData: AppData,
         private val userRepository: UserRepository,
+        private val commonRepository: CommonRepository,
         private val takePhoto: RxTakePhoto
 ) : BasePresenter<UserEditContract.View>(), UserEditContract.Presenter {
 
@@ -263,7 +265,7 @@ class UserEditPresenter
 
     private fun setInterestsData(user: User) {
         if (isInterestsLoaded) return
-        compositeDisposable += userRepository.getInterests()
+        compositeDisposable += commonRepository.getInterests()
                 .map { groupUserInterests(user, it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

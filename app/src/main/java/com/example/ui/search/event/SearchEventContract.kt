@@ -10,13 +10,9 @@ interface SearchEventContract {
     interface View : SearchContract.View<Event, SearchFilter.Event> {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutEvent(event: Event)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEventRequest(event: Event)
     }
 
     interface Presenter : SearchContract.Presenter<Event> {
         fun onEventClick(event: Event)
-        fun onGoToEventClick(event: Event)
     }
 }

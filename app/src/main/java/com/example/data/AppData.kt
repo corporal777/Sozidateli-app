@@ -1,5 +1,6 @@
 package com.example.data
 
+import com.example.data.models.Interest
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
@@ -46,6 +47,8 @@ class AppData(
             field = value
             if (changed) notificationsCountSubject.onNext(value)
         }
+
+    var interests: List<Interest>? = null
 
     private var user: User? = null
 

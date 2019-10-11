@@ -10,8 +10,16 @@ sealed class SearchFilter {
     ) : SearchFilter()
 
     data class Event(
-            var name: String? = null
-    ) : SearchFilter()
+            var address: String? = null,
+            var name: String? = null,
+            var dateStart: String? = null,
+            var dateFinish: String? = null,
+            var registration: String? = null,
+            var specialization: Int? = null,
+            var theme: Int? = null
+    ) : SearchFilter() {
+        var interests:  Map<Interest, List<Interest>>? = null
+    }
 
     data class User(
             var name: String? = null

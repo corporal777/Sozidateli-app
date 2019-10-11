@@ -15,6 +15,6 @@ class OrganizationEventsPresenter
     lateinit var organizationId: String
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        eventRepository.getEventList(limit, offset, organisation = listOf(organizationId))
+        eventRepository.getEventList(limit, offset, mapOf("organization" to organizationId))
     }
 }

@@ -8,6 +8,7 @@ import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
+import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.CropCircleTransformation
@@ -27,6 +28,7 @@ class UserPresenter
         private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
+        private val commonRepository: CommonRepository,
         private val haChat: HAChat
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
@@ -50,7 +52,7 @@ class UserPresenter
                 .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
                 .observeOn(Schedulers.io())
 
-        compositeDisposable += userRepository.getInterests()
+        compositeDisposable += commonRepository.getInterests()
                 .flatMapObservable { interests ->
                     getUser.map {
                         val user = it.first

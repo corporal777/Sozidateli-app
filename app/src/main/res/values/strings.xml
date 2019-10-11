@@ -135,6 +135,12 @@
         <item>Есть подписка</item>
         <item>Нет подписки</item>
     </string-array>
+    <string-array name="registration_status">
+        <item>Подана заявка</item>
+        <item>Вы участник</item>
+        <item>Отказано</item>
+        <item>Заявка не подавалась</item>
+    </string-array>
 
     <string name="request_label">Заявка на участие</string>
     <string name="request_requires">Пожалуйста, заполните все поля, чтобы участвовать в мероприятии</string>
@@ -154,13 +160,18 @@
     <string name="search_users">Люди</string>
     <string name="search_input_hint">Введите название</string>
     <string name="search_filter_address">Область, край, район или город</string>
-    <string name="search_filter_name">Укажите название органзации</string>
+    <string name="search_filter_organization_name">Название органзации</string>
     <string name="search_filter_inn">ИНН</string>
     <string name="search_filter_type">Тип</string>
     <string name="search_filter_subscription">Подписка</string>
     <string name="search_filters">Фильтры</string>
     <string name="search_filters_find">Найти</string>
     <string name="search_filters_not_chosen">Не выбрано</string>
+    <string name="search_filter_event_name">Название мероприятия</string>
+    <string name="search_filter_event_dates">Период проведения мероприятия</string>
+    <string name="search_filter_specialization">Специализация</string>
+    <string name="search_filter_theme">Тема</string>
+    <string name="search_filter_registration">Регистрация</string>
 
     <string name="search_contact_section_favorites">Избранные</string>
     <string name="search_contact_section_chats">Вы ранее общались</string>
@@ -423,8 +434,6 @@
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 
-    <string name="by_qr_not_found_event">По этому коду не найдено ни одного мероприятия</string>
-
     <string name="empty_list_placeholder_message">Список пуст</string>
     <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
     <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
@@ -451,4 +460,15 @@
     <string name="organization_peoples_watch">Смотреть всех</string>
     <string name="organization_events">Мероприятия</string>
     <string name="organization_events_watch">Смотреть все мероприятия</string>
+
+    <string name="qr_scan_label">Поиск меропрятия</string>
+    <string name="qr_scan_for_event">Для поиска мероприятия\nотсканируйте QR-код</string>
+    <string name="qr_input_for_event">Или введите код\nмероприятия вручную</string>
+    <string name="qr_request_camera_permission">Для сканирования необходимо разрешение на доступ к камере</string>
+    <string name="qr_permission_request_apply">Разрешить</string>
+    <string name="qr_scan_not_found_event">По этому коду не найдено ни одного мероприятия</string>
+
+    <string name="code_input_label">Ввод кода</string>
+    <string name="code_input_hint">Введите код</string>
+    <string name="code_input_no_code">Если вы не видите код при входе в мероприятие - обратитесь к специалистам на информационной стойке</string>
 </resources>

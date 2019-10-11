@@ -1,4 +1,4 @@
-package com.example.ui.search.enterCode
+package com.example.ui.search.code
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -9,6 +9,9 @@ interface EnterCodeContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEvent(event: Event)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEventNotFoundError()
     }
 
     interface Presenter : BaseContract.Presenter {
