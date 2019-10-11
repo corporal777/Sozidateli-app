@@ -48,7 +48,6 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
     }
 
     override fun onFilterClearClick() {
-        tmpFilter = createFilter()
         viewState.clearFilter()
     }
 

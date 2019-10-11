@@ -5,10 +5,7 @@ import com.example.data.models.Organization
 import com.example.data.models.SearchFilter
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
-import com.example.ui.search.event.SearchEventPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
-import io.reactivex.rxkotlin.plusAssign
-import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState

@@ -102,6 +102,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     private fun initTheme(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, filter: SearchFilter.Event) {
         if (interests == null) {
             textView.isEnabled = false
+            textView.setText(filterNotChosenVariant)
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(filter.theme, interests)
@@ -129,6 +130,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
             etStart.text = null
             etFinish.text = null
             tvSubscription.setText(filterNotChosenVariant)
+            tvSpecialization.setText(filterNotChosenVariant)
+            tvTheme.setText(filterNotChosenVariant)
         }
     }
 }
