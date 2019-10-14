@@ -15,13 +15,28 @@ sealed class SearchFilter {
             var dateStart: String? = null,
             var dateFinish: String? = null,
             var registration: String? = null,
-            var specialization: Int? = null,
-            var theme: Int? = null
+            var theme: Int? = null,
+            var spec: Int? = null
     ) : SearchFilter() {
-        var interests:  Map<Interest, List<Interest>>? = null
+        var interests: Map<Interest, List<Interest>>? = null
     }
 
     data class User(
-            var name: String? = null
-    ) : SearchFilter()
+            var name: String? = null,
+            var address: String? = null,
+            var email: String? = null,
+            var phone: String? = null,
+            var theme: Int? = null,
+            var spec: Int? = null,
+            var ageFrom: Int? = null,
+            var ageTo: Int? = null,
+            var favorites: Boolean? = null
+    ) : SearchFilter() {
+        var interests: Map<Interest, List<Interest>>? = null
+
+        companion object{
+            const val AGE_MIN = 14
+            const val AGE_MAX = 80
+        }
+    }
 }

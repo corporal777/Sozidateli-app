@@ -135,6 +135,10 @@
         <item>Есть подписка</item>
         <item>Нет подписки</item>
     </string-array>
+    <string-array name="favorites_status">
+        <item>В избранном</item>
+        <item>Не в избранном</item>
+    </string-array>
     <string-array name="registration_status">
         <item>Подана заявка</item>
         <item>Вы участник</item>
@@ -172,6 +176,14 @@
     <string name="search_filter_specialization">Специализация</string>
     <string name="search_filter_theme">Тема</string>
     <string name="search_filter_registration">Регистрация</string>
+    <string name="search_filter_user_name">Имя</string>
+    <string name="search_filter_age">Возраст</string>
+    <string name="search_filter_email">E-mail</string>
+    <string name="search_filter_phone">Номер телефона</string>
+    <string name="search_filter_interests">Интересы</string>
+    <string name="search_filter_favorites">Избранное</string>
+    <string name="search_filter_age_from">от</string>
+    <string name="search_filter_age_to">до</string>
 
     <string name="search_contact_section_favorites">Избранные</string>
     <string name="search_contact_section_chats">Вы ранее общались</string>

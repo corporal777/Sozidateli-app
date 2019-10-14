@@ -61,6 +61,10 @@ interface Api {
     @GET("/v1/users/{id}")
     fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 
+    @FormUrlEncoded
+    @POST("/v1/users")
+    fun getUsersList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<User>>>
+
     @GET("/v1/user/notifications/last")
     fun getLastNotification(): Single<ApiResponse<List<Notification>>>
 
@@ -169,10 +173,10 @@ interface Api {
     @POST("/v1/events/{eventId}/docs")
     fun getEventDocs(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
 
-    @POST("/v1/speakers/{id}/favorite")
+    @POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
 
-    @POST("/v1/speakers/{id}/unfavorite")
+    @POST("/v1/users/{id}/unfavorite")
     fun userRemoveFromFavorite(@Path("id") uid: String): Completable
 
     @FormUrlEncoded

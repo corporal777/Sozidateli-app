@@ -42,7 +42,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
             initTextFilter(etAddress, filter.address) { filter.address = it }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }
-            initDropDownView(tvType, resources.getStringArray(R.array.organization_types).toList(), filter.type, { it }, { filter.type = it })
+            initDropDownView(tvType, resources.getStringArray(R.array.organization_types).toList(), filter.type, findValue = { it }, onVariantChange = { filter.type = it })
             initBiFilter(tvSubscription, resources.getStringArray(R.array.subscription_status).toList(), filter.subscription) { filter.subscription = it }
         }
     }

@@ -1,7 +1,10 @@
 package com.example.repository
 
 import android.graphics.Bitmap
-import com.example.data.models.*
+import com.example.data.models.AuthResponse
+import com.example.data.models.MarkedResponse
+import com.example.data.models.Notification
+import com.example.data.models.RemoteNotification
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.InstanceIdResult
@@ -31,4 +34,5 @@ interface UserRepository {
     fun removeFromFavorite(uid: String): Completable
 
     fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun usersList(limit: Int, offset: Int, searchMap: Map<String, Any>): Maybe<PaginationResponse<User>>
 }

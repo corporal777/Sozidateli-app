@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
 import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
+import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.ui.search.SearchPresenter
@@ -32,7 +33,9 @@ class SearchEventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += commonRepository.getInterests()
-                .map { groupInterests(it) }
+                .map { interests ->
+                    interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
+                }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     isInterestsLoaded = true
@@ -66,20 +69,6 @@ class SearchEventPresenter
         }
     }
 
-    private fun groupInterests(interests: List<Interest>): Map<Interest, List<Interest>> {
-        val group = linkedMapOf<Interest, MutableList<Interest>>()
-        interests.forEach { child ->
-            val key = interests.firstOrNull { it.id == child.parent }
-            if (key != null) {
-                group.getOrPut(key) { mutableListOf() }.apply {
-                    add(child)
-                }
-            }
-        }
-
-        return group
-    }
-
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
         if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address
@@ -92,7 +81,7 @@ class SearchEventPresenter
         if (dateStart != null) put(FILTER_DATE_START, dateStart)
         val dateFinish = filter.dateFinish
         if (dateFinish != null) put(FILTER_DATE_FINISH, dateFinish)
-        val category = filter.theme ?: filter.specialization
+        val category = filter.spec ?: filter.theme
         if (category != null) put(FILTER_CATEGORY, category)
     }
 

@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.AuthResponse
-import com.example.data.models.Interest
 import com.example.data.models.MarkedResponse
 import com.example.data.models.RemoteNotification
 import com.example.data.models.user.User
@@ -88,5 +87,9 @@ class UserRepositoryImp
 
     override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.chatSearch(searchMap, limit, offset))
+    }
+
+    override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User>> {
+        return callPagination(api.getUsersList(limit, offset, filter))
     }
 }

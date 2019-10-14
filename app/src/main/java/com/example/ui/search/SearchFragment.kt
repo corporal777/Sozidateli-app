@@ -1,12 +1,14 @@
 package com.example.ui.search
 
 import android.os.Bundle
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
@@ -113,26 +115,31 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }
     }
 
-    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Collection<String>, selectedVariant: String?, findValue: (String?) -> T?, onVariantChange: (T?) -> Unit) {
+    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Collection<String>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, findValue: (String?) -> T?, onVariantChange: (T?) -> Unit) {
         val variantsMap = linkedMapOf<String, T?>()
         variants.associateWithTo(variantsMap) { findValue(it) }
-        initDropDownView(textView, variantsMap, selectedVariant, onVariantChange)
+        initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
     }
 
-    protected fun <K, V> initDropDownView(textView: AutoCompleteTextView, variants: Collection<K>, selectedVariant: String?, transformKey: (K) -> String, findValue: (K?) -> V?, onVariantChange: (V?) -> Unit) {
+    protected fun <K, V> initDropDownView(textView: AutoCompleteTextView, variants: Collection<K>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, transformKey: (K) -> String, findValue: (K?) -> V?, onVariantChange: (V?) -> Unit) {
         val variantsMap = linkedMapOf<String, V?>()
         variants.associateTo(variantsMap, { transformKey(it) to findValue(it) })
-        initDropDownView(textView, variantsMap, selectedVariant, onVariantChange)
+        initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
     }
 
-    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T?>, selectedVariant: String?, onVariantChange: (T?) -> Unit) {
-        val fullFilter = variants.plus(filterNotChosenVariant to null)
+    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T?>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, onVariantChange: (T?) -> Unit) {
+        val fullFilter = if (notSelectedVariant != null) mutableMapOf<String, T?>(notSelectedVariant to null).apply {
+            putAll(variants)
+        }
+        else variants
+
         textView.apply {
             keyListener = null
             setAdapter(NoFilterArrayAdapter(requireContext(), R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
-            setText(selectedVariant ?: filterNotChosenVariant, false)
-            onTextChanged {
-                val variant = it.toString()
+            setText(selectedVariant ?: notSelectedVariant, false)
+            (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
+            tag = onTextChanged {
+                val variant = it?.toString()
                 onVariantChange(fullFilter[variant])
             }
         }
@@ -144,13 +151,71 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             false -> filter[1]
             else -> null
         }
-        initDropDownView(textView, filter.toList(), selectedValue, {
+
+        initDropDownView(textView, filter.toList(), selectedValue, findValue = {
             when (filter.indexOf(it)) {
                 0 -> true
                 1 -> false
                 else -> null
             }
-        }, onSubscriptionChange)
+        }, onVariantChange = onSubscriptionChange)
+    }
+
+    protected fun initInterests(interests: Map<Interest, List<Interest>>,
+                                tvTheme: AutoCompleteTextView,
+                                tilSpec: TextInputLayout, tvSpec: AutoCompleteTextView,
+                                theme: Int?, spec: Int?, onInterestChange: (theme: Int?, spec: Int?) -> Unit) {
+        var currentTheme = theme
+        var currentSpec: Int?
+
+        val onSpecChange: (Int?) -> Unit = {
+            currentSpec = it
+            onInterestChange(currentTheme, currentSpec)
+        }
+
+        val themes = interests.keys
+        val selectedTheme = findInterest(theme, themes)
+        initDropDownView(
+                tvTheme,
+                themes,
+                selectedTheme?.value,
+                transformKey = { it.value },
+                findValue = { it?.id },
+                onVariantChange = { id ->
+                    currentTheme = id
+                    currentSpec = null
+                    onInterestChange(id, null)
+                    val specs = findInterest(id, themes)?.let { interests[it] }
+                    initSpec(tilSpec, tvSpec, specs, null, onSpecChange)
+                }
+        )
+
+        val specs = selectedTheme?.let { interests[it] }
+        initSpec(tilSpec, tvSpec, specs, spec, onSpecChange)
+    }
+
+    private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
+        if (interests == null) {
+            textView.isEnabled = false
+            textView.setText(filterNotChosenVariant)
+            inputLayout.isEnabled = false
+        } else {
+            val selectedTheme = findInterest(spec, interests)
+            initDropDownView(
+                    textView,
+                    interests,
+                    selectedTheme?.value,
+                    transformKey = { it.value },
+                    findValue = { it?.id },
+                    onVariantChange = { onSpecChange(it) }
+            )
+            textView.isEnabled = true
+            inputLayout.isEnabled = true
+        }
+    }
+
+    private fun findInterest(id: Int?, interests: Collection<Interest>): Interest? {
+        return id?.let { interests.find { it.id == id } }
     }
 
     protected abstract fun createItem(itemData: I): Item

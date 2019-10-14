@@ -1,14 +1,13 @@
 package com.example.ui.search.event
 
 import android.view.View
-import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
-import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.holders.SearchEventItem
 import com.example.ui.search.SearchFragment
@@ -62,7 +61,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                     tvSubscription,
                     registrations.toList(),
                     value,
-                    {
+                    findValue = {
                         when (registrations.indexOf(it)) {
                             0 -> FILTER_REGISTRATION_PENDING
                             1 -> FILTER_REGISTRATION_APPROVED
@@ -71,57 +70,24 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                             else -> null
                         }
                     },
-                    { filter.registration = it }
+                    onVariantChange = { filter.registration = it }
             )
 
             val interests = filter.interests
-            if (!interests.isNullOrEmpty()) {
-                val specializations = interests.keys
-                val selectedSpecialization = findInterest(filter.specialization, specializations)
-                initDropDownView(
-                        tvSpecialization,
-                        specializations,
-                        selectedSpecialization?.value,
-                        { it.value },
-                        { it?.id },
-                        { id ->
-                            filter.specialization = id
-                            filter.theme = null
-                            val spec = findInterest(id, specializations)
-                            val themes = spec?.let { interests[it] }
-                            initTheme(tilTheme, tvTheme, themes, filter)
-                        }
-                )
-
-                val themes = selectedSpecialization?.let { interests[it] }
-                initTheme(tilTheme, tvTheme, themes, filter)
+            if (interests.isNullOrEmpty()) {
+                llTheme.isVisible = false
+                llSpec.isVisible = false
+            } else {
+                initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
+                    filter.theme = theme
+                    filter.spec = spec
+                }
+                llTheme.isVisible = true
+                llSpec.isVisible = true
             }
         }
     }
 
-    private fun initTheme(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, filter: SearchFilter.Event) {
-        if (interests == null) {
-            textView.isEnabled = false
-            textView.setText(filterNotChosenVariant)
-            inputLayout.isEnabled = false
-        } else {
-            val selectedTheme = findInterest(filter.theme, interests)
-            initDropDownView(
-                    textView,
-                    interests,
-                    selectedTheme?.value,
-                    { it.value },
-                    { it?.id },
-                    { filter.theme = it }
-            )
-            textView.isEnabled = true
-            inputLayout.isEnabled = true
-        }
-    }
-
-    private fun findInterest(id: Int?, interests: Collection<Interest>): Interest? {
-        return id?.let { interests.find { it.id == id } }
-    }
 
     override fun clearFilterView(filterView: View) {
         filterView.apply {
@@ -130,8 +96,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
             etStart.text = null
             etFinish.text = null
             tvSubscription.setText(filterNotChosenVariant)
-            tvSpecialization.setText(filterNotChosenVariant)
             tvTheme.setText(filterNotChosenVariant)
+            tvSpec.setText(filterNotChosenVariant)
         }
     }
 }
