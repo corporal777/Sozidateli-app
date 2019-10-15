@@ -96,6 +96,12 @@ interface Api {
     @POST("/v1/user/notifications/unregister")
     fun notificationsUnregister(@Field("token") token: String): Completable
 
+    @POST("/v1/user/notifications/{id}/answer/accept")
+    fun notificationsInviteAccept(@Path("id") id: String): Completable
+
+    @POST("/v1/user/notifications/{id}/answer/decline")
+    fun notificationsInviteDecline(@Path("id") id: String): Completable
+
     @FormUrlEncoded
     @POST("/v1/user/favorites/speakers")
     fun getUserFavoriteUsers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>

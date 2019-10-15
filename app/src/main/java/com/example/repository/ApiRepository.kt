@@ -2,9 +2,11 @@ package com.example.repository
 
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
+import com.example.extensions.NoInternetConnectionException
 import com.example.util.ApiErrorParser
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.*
+import java.net.ConnectException
 
 abstract class ApiRepository(
         private val appData: AppData
@@ -65,6 +67,8 @@ abstract class ApiRepository(
     }
 
     private fun processError(throwable: Throwable): Throwable {
+        if (throwable is ConnectException) return NoInternetConnectionException()
+
         return ApiErrorParser.parse(throwable)?.apply {
             session?.token?.let { saveSession(it) }
         } ?: throwable

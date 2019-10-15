@@ -21,6 +21,8 @@ interface UserRepository {
     fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
+    fun notificationsInviteAccept(id: String): Completable
+    fun notificationsInviteDecline(id: String): Completable
     fun updateUser(data: Map<String, Any?>): Single<User>
     fun uploadAvatar(photo: Bitmap?): Single<User>
     fun uploadRecommendationFile(file: String): Single<User>

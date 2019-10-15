@@ -112,7 +112,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    showDialog(getString(R.string.select_file_error))
+//                    showDialog(getString(R.string.select_file_error))
                 }
             }
         }

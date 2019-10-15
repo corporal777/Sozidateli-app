@@ -216,11 +216,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showDialogChangeEmailSuccess() {
-        showDialog(getString(R.string.email_change_confirm_success))
+//        showDialog(getString(R.string.email_change_confirm_success))
     }
 
     override fun showDialogChangeEmailError() {
-        showDialog(getString(R.string.email_change_confirm_error))
+//        showDialog(getString(R.string.email_change_confirm_error))
     }
 
     override fun showChat(chatId: String, userName: String) {

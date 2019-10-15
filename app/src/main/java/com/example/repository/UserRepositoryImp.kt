@@ -54,6 +54,14 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
+    override fun notificationsInviteAccept(id: String): Completable {
+        return call(api.notificationsInviteAccept(id))
+    }
+
+    override fun notificationsInviteDecline(id: String): Completable {
+        return call(api.notificationsInviteDecline(id))
+    }
+
     override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data))
 
     override fun uploadAvatar(photo: Bitmap?): Single<User> {

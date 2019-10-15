@@ -15,7 +15,6 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import timber.log.Timber
 import withLoadingDialog
 import java.util.*
 
@@ -150,7 +149,7 @@ constructor(
                 .subscribe({
                     invalidateDay()
                 }, {
-                    if (it == NO_NETWORK_CONNECTION_ERROR) viewState.showNoInternetDialog()
+                    //                    if (it == NO_NETWORK_CONNECTION_ERROR) viewState.showNoInternetDialog()
                 })
 
     }
@@ -163,7 +162,7 @@ constructor(
                     if (it) {
                         viewState.showSubEvent(event.id, subEvent.id)
                     } else {
-                        viewState.showNoInternetDialog()
+//                        viewState.showNoInternetDialog()
                     }
                 }, {})
     }

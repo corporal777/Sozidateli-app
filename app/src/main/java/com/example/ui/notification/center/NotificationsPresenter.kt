@@ -7,7 +7,6 @@ import com.example.data.models.RemoteNotification
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
-import com.example.ui.banned.BannedContract
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
@@ -16,8 +15,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import subscribeApi
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -87,30 +86,33 @@ class NotificationsPresenter
     }
 
     override fun onNotificationAcceptClick(id: Int) {
-        dummyCall {
-            notifications.find { it.id == id }?.apply {
-                acceptState = Notification.AcceptState.ACCEPTED
-            }
-            viewState.onNotificationNeedUpdate(id)
-        }
+        updateNotificationInvite(userRepository.notificationsInviteAccept(id.toString()), id, Notification.AcceptState.ACCEPTED)
     }
 
     override fun onNotificationCancelClick(id: Int) {
-        dummyCall {
-            notifications.find { it.id == id }?.apply {
-                acceptState = Notification.AcceptState.CANCELED
-            }
-            viewState.onNotificationNeedUpdate(id)
-        }
+        updateNotificationInvite(userRepository.notificationsInviteDecline(id.toString()), id, Notification.AcceptState.CANCELED)
+    }
+
+    private fun updateNotificationInvite(request: Completable, id: Int, newState: Notification.AcceptState) {
+        compositeDisposable += request
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeApi({
+                    notifications.find { it.id == id }?.apply {
+                        wasRead = true
+                        acceptState = newState
+                    }
+                    viewState.onNotificationNeedUpdate(id)
+                }, {
+                    viewState.showToast(it.toErrorsString())
+                })
     }
 
     override fun onNotificationChangeDecisionClick(id: Int) {
-        dummyCall {
-            notifications.find { it.id == id }?.apply {
-                acceptState = Notification.AcceptState.NONE
-            }
-            viewState.onNotificationNeedUpdate(id)
+        notifications.find { it.id == id }?.apply {
+            acceptState = Notification.AcceptState.NONE
         }
+        viewState.onNotificationNeedUpdate(id)
     }
 
     override fun onNotificationReadMoreClick(id: Int) {
@@ -123,14 +125,13 @@ class NotificationsPresenter
         compositeDisposable += readNotificationRequest(id)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
+                .subscribeApi({
                     notifications.find { it.id == id }?.apply {
                         wasRead = true
                     }
                     viewState.onNotificationNeedUpdate(id)
                 }, {
-                    it.printStackTrace()
-                    viewState.showToast(it.message ?: it.localizedMessage)
+                    viewState.showToast(it.toErrorsString())
                 })
     }
 
@@ -141,17 +142,15 @@ class NotificationsPresenter
     override fun onNotificationRatingChosen(id: Int, rating: Int) {
         val event = notifications.find { it.id == id }?.rateId ?: return
         compositeDisposable += eventRepository.setEventRating(event, rating)
-                .andThen(readNotificationRequest(id))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
+                .subscribeApi({
                     notifications.find { it.id == id }?.apply {
                         wasRead = true
                     }
                     viewState.onNotificationNeedUpdate(id)
                 }, {
-                    it.printStackTrace()
-                    viewState.showToast(it.message ?: it.localizedMessage)
+                    viewState.showToast(it.toErrorsString())
                 })
     }
 
@@ -159,16 +158,5 @@ class NotificationsPresenter
         return userRepository.markNotificationsAsRead(listOf(id))
                 .doOnSuccess { appData.notificationsCount -= it.countMarked }
                 .flatMapCompletable { Completable.complete() }
-    }
-
-    private fun dummyCall(onComplete: () -> Unit) {
-        compositeDisposable += Completable.complete()
-                .delay(1, TimeUnit.SECONDS)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.showToast("ОЖИДАЕТ РЕАЛИЗАЦИИ")
-                    onComplete()
-                }
     }
 }

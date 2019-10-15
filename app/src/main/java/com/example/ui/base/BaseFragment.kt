@@ -79,32 +79,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.navigateUp()
     }
 
-    override fun showDialog(message: String?) {
-        mActivity?.showDialog(message)
-    }
-
-    override fun showDialog(message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
-        mActivity?.showDialog(message, onOkClickListener)
-    }
-
-    override fun showDialog(title: String?, message: String?, onOkClickListener: DialogInterface.OnClickListener?) {
-        mActivity?.showDialog(title, message, onOkClickListener)
-    }
-
-    override fun showDialog(title: String?, message: String?) {
-        mActivity?.showDialog(title, message)
-    }
-
     override fun showToast(messagesIds: List<Int>) {
         mActivity?.showToast(messagesIds)
-    }
-
-    override fun showErrorDialog(messageIds: List<Int>, onDismissListener: DialogInterface.OnDismissListener?) {
-        mActivity?.showErrorDialog(messageIds, onDismissListener)
-    }
-
-    override fun showNoInternetDialog() {
-        mActivity?.showNoInternetDialog()
     }
 
     override fun onDestroyView() {

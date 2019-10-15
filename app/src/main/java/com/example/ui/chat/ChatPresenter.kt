@@ -83,7 +83,7 @@ class ChatPresenter
                     isMessagesInitialLoad = true
                 }, {
                     if (it is NoConnectionException) {
-                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
+//                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })
@@ -264,7 +264,7 @@ class ChatPresenter
                 }, {
                     if (reloadChat) viewState.hideLoadingDialog()
                     if (it is NoConnectionException) {
-                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
+//                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
                     }
                     it.printStackTrace()
                 })

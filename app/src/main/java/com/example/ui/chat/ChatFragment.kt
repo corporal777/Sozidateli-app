@@ -8,13 +8,10 @@ import android.text.Spanned
 import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
@@ -330,6 +327,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun setUserAvatar(url: String) {
+        toolbarContentActionBar.removeAllRightViews()
         ToolbarButton(requireContext()).apply {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
             setPadding(8.dp)

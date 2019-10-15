@@ -5,14 +5,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import retrofit2.HttpException
 import java.io.IOException
-import java.net.ConnectException
 
 class ApiErrorParser {
 
     companion object {
-
-        private const val API_CONNECTION_ERROR = "No internet connection, please try again later"
-
         fun parse(throwable: Throwable?): ApiError? {
             if (throwable == null) return null
             if (throwable is HttpException) {
@@ -27,16 +23,14 @@ class ApiErrorParser {
                 }
 
                 if (body != null) {
-                    return try {
-                        GsonBuilder().setLenient()
+                    try {
+                        return GsonBuilder().setLenient()
                                 .create()
                                 .fromJson(body, ApiError::class.java)
                     } catch (e: JsonSyntaxException) {
-                        ApiError(null, listOf(throwable.message()))
+                        // ignore
                     }
                 }
-            } else if (throwable is ConnectException) {
-                return ApiError(null, listOf(API_CONNECTION_ERROR))
             }
 
             return null

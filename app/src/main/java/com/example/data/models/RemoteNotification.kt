@@ -15,7 +15,7 @@ data class RemoteNotification(
         val extra: String?
 ) {
     companion object {
-        const val TYPE_RATE = "Оценка мероприятия"
+        const val TYPE_RATE = "event_poll"
         const val TYPE_INVITE = "Приглашение"
         const val TYPE_NOTIFICATION = "Уведомление"
 

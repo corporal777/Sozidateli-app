@@ -1,3 +1,4 @@
+import com.example.data.models.ApiError
 import com.example.ui.base.BaseContract
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -162,4 +163,14 @@ private fun <T> getHideLoadingConsumer(baseView: BaseContract.LoadingView, loadi
 private fun hideLoading(baseView: BaseContract.LoadingView, loading: Disposable) {
     if (loading.isDisposed) baseView.hideLoadingDialog()
     else loading.dispose()
+}
+
+fun Completable.subscribeApi(onComplete: () -> Unit, onApiError: (ApiError) -> Unit, onError: ((Throwable) -> Unit)? = null): Disposable {
+    return subscribe(onComplete, {
+        when {
+            it is ApiError -> onApiError(it)
+            onError != null -> onError(it)
+            else -> throw it
+        }
+    })
 }
