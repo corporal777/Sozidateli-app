@@ -43,7 +43,7 @@ import javax.inject.Provider
 class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
 
     override val title
-        get() = "Редактирование"
+        get() = getString(R.string.profile_edit_title)
 
     @InjectPresenter
     lateinit var presenter: UserEditPresenter

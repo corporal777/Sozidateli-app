@@ -2,36 +2,40 @@ package com.example.ui.status
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.asOptional
+import com.example.data.models.ApiError
 import com.example.data.models.user.User
+import com.example.data.models.user.User.Companion.FIELD_USER_PHONE_MOBILE
+import com.example.data.models.user.User.Companion.FIELD_USER_PHONE_WORK
+import com.example.data.models.user.User.Companion.FIELD_USER_STATUS_PHONE
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackground
 import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
 class StatusPresenter
 @Inject constructor(
-        private val appData: AppData
+        private val appData: AppData,
+        private val userRepository: UserRepository
 ) : BasePresenter<StatusContract.View>(), StatusContract.Presenter {
 
     lateinit var status: User.Status
 
-    private var phone = appData.getUser().user_phone
+    private var phone: String? = null
+    private var password: String? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userChangeSubject
-                .performOnBackground()
+                .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.cancelVerification()
                     val user = it.value
-                    phone = user?.user_phone
-                    viewState.setStatus(status, status == user?.user_status, phone, false)
+                    phone = if (user?.user_status_phone_confirmed == true) user.user_status_phone else null
+                    viewState.setStatus(status, status == user?.user_status, phone, user?.user_status_detail)
                 }, {
                     it.printStackTrace()
                 })
@@ -50,53 +54,85 @@ class StatusPresenter
     }
 
     override fun onPasswordInputComplete(password: String, action: Int) {
-        dummyCall {
-            when (action) {
-                VERIFICATION_ACTION_REMOVE -> viewState.showRemovePhone(phone ?: "")
-                else -> viewState.showChangePhone(action)
-            }
-        }
+        compositeDisposable += userRepository.checkPassword(password)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    this.password = password
+                    when (action) {
+                        VERIFICATION_ACTION_REMOVE -> viewState.showRemovePhone(phone ?: "")
+                        else -> viewState.showChangePhone(action)
+                    }
+                }, {
+                    if (it is ApiError && it.errors.contains(WRONG_PASSWORD_MESSAGE)) {
+                        viewState.showVerificationError(VERIFICATION_ERROR_WRONG_PASSWORD)
+                    } else {
+                        it.printStackTrace()
+                        viewState.showRequestError()
+                    }
+                })
     }
 
     override fun onPhoneInputComplete(phone: String, action: Int, saveFlag: Int) {
-        dummyCall { viewState.showCode(phone, action, saveFlag) }
+        val password = this.password ?: return
+        val updateMap = mutableMapOf(FIELD_USER_STATUS_PHONE to phone)
+        when (saveFlag) {
+            VERIFICATION_ADD_PHONE_MOBILE -> updateMap[FIELD_USER_PHONE_MOBILE] = phone
+            VERIFICATION_ADD_PHONE_WORK -> updateMap[FIELD_USER_PHONE_WORK] = phone
+        }
+        compositeDisposable += userRepository.updateUser(updateMap)
+                .flatMapCompletable { userRepository.sendStatusPhoneConfirmSms(password) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.showCode(phone, action, saveFlag)
+                }, {
+                    it.printStackTrace()
+                    viewState.showRequestError()
+                })
     }
 
     override fun onCodeInputComplete(phone: String, code: String, saveFlag: Int) {
-        dummyCall {
-            // for tests
-            appData.getUser().apply {
-                user_status = User.Status.MID_PROTECTION
-                user_phone = phone
-            }
-            appData.userChangeSubject.onNext(appData.getUser().asOptional())
-        }
+        compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
+                .andThen(userRepository.getUserFull())
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+
+                }, {
+                    if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
+                        viewState.showVerificationError(VERIFICATION_ERROR_WRONG_CODE)
+                    } else {
+                        it.printStackTrace()
+                        viewState.showRequestError()
+                    }
+                })
     }
 
     override fun onDoNotReceiveCodeClick(phone: String) {
-        dummyCall { viewState.showSentNewCodeMessage(phone) }
+        val password = this.password ?: return
+        compositeDisposable += userRepository.sendStatusPhoneConfirmSms(password)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.showSentNewCodeMessage(phone)
+                }, {
+                    it.printStackTrace()
+                    viewState.showRequestError()
+                })
     }
 
     override fun onPhoneRemoveAccept() {
-        dummyCall {
-            // for tests
-            appData.getUser().apply {
-                user_status = User.Status.LOW_PROTECTION
-                user_phone = null
-            }
-            appData.userChangeSubject.onNext(appData.getUser().asOptional())
-        }
-    }
-
-    private fun dummyCall(onComplete: () -> Unit) {
-        compositeDisposable += Completable.complete()
-                .delay(1, TimeUnit.SECONDS)
+        compositeDisposable += userRepository.updateUser(mapOf(FIELD_USER_STATUS_PHONE to ""))
+                .flatMapMaybe { userRepository.getUserFull() }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.showToast("ОЖИДАЕТ РЕАЛИЗАЦИИ")
-                    onComplete()
-                }
+                .subscribe({
+
+                }, {
+                    it.printStackTrace()
+                    viewState.showRequestError()
+                })
     }
 
     companion object {
@@ -110,5 +146,8 @@ class StatusPresenter
 
         const val VERIFICATION_ERROR_WRONG_PASSWORD = 1
         const val VERIFICATION_ERROR_WRONG_CODE = 2
+
+        private const val WRONG_PASSWORD_MESSAGE = "user_password is not match with stored"
+        private const val WRONG_CODE_MESSAGE = "User has already confirmed phone or code mismatch"
     }
 }

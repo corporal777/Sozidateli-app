@@ -92,4 +92,16 @@ class UserRepositoryImp
     override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User>> {
         return callPagination(api.getUsersList(limit, offset, filter))
     }
+
+    override fun checkPassword(password: String): Completable {
+        return call(api.checkPassword(password))
+    }
+
+    override fun sendStatusPhoneConfirmSms(password: String): Completable {
+        return call(api.sendStatusPhoneConfirmSms(password))
+    }
+
+    override fun sendStatusPhoneConfirmCode(password: String): Completable {
+        return call(api.sendStatusPhoneConfirmCode(password))
+    }
 }

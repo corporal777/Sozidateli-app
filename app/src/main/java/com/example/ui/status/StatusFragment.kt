@@ -7,6 +7,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -18,6 +19,7 @@ import androidx.core.widget.NestedScrollView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserStatusDetails
 import com.example.data.models.user.User
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.LoadingAlertDialog
@@ -69,7 +71,7 @@ class StatusFragment : BaseFragment(), StatusContract.View {
         scrollContainer.setOnScrollChangeListener(scrollListener)
     }
 
-    override fun setStatus(status: User.Status, isCurrentStatus: Boolean, phone: String?, isProfileComplete: Boolean) {
+    override fun setStatus(status: User.Status, isCurrentStatus: Boolean, phone: String?, details: UserStatusDetails?) {
         tvStatus.apply {
             setUserStatus(status)
         }
@@ -105,8 +107,22 @@ class StatusFragment : BaseFragment(), StatusContract.View {
         setCompleteIcon(tvSupport, isSupportComplete)
         setCompleteIcon(tvInvites, isInvitesComplete)
         setCompleteIcon(tvPhone, isPhoneComplete)
-        setCompleteIcon(tvProfile, isProfileComplete)
+        setCompleteIcon(tvProfile, details?.params?.let {
+            it.birthday.value
+                    && it.education.value
+                    && it.name.value
+                    && it.notes.value
+                    && it.socialLinks.value
+                    && it.work.value
+        } ?: false)
         setCompleteIcon(tvPhone, phone != null)
+
+//        setCounterBackgroundTint(tvNameCounter, details?.params?.name?.value ?: false)
+//        setCounterBackgroundTint(tvBirthdayCounter, details?.params?.birthday?.value ?: false)
+//        setCounterBackgroundTint(tvSnCounter, details?.params?.socialLinks?.value ?: false)
+//        setCounterBackgroundTint(tvEducationCounter, details?.params?.education?.value ?: false)
+//        setCounterBackgroundTint(tvWorkCounter, details?.params?.work?.value ?: false)
+//        setCounterBackgroundTint(tvAdditionalCounter, details?.params?.notes?.value ?: false)
 
         tvPhoneNumber.apply {
             text = phone
@@ -298,6 +314,10 @@ class StatusFragment : BaseFragment(), StatusContract.View {
 
     override fun showVerificationError(error: Int) {
         phoneVerificationErrorCallback?.invoke(error)
+    }
+
+    override fun showRequestError() {
+        Toast.makeText(requireContext(), R.string.request_execution_error, Toast.LENGTH_LONG).show()
     }
 
     override fun showLoadingDialog() {

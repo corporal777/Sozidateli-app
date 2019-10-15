@@ -11,12 +11,13 @@ abstract class ApiRepository(
 ) {
 
     fun call(request: Completable): Completable {
-        return request.doOnError { processError(it) }
+        return request
+                .onErrorResumeNext { t: Throwable -> Completable.error(processError(t)) }
     }
 
     fun <T> call(request: Single<ApiResponse<T>>): Single<T> {
         return request
-                .doOnError { processError(it) }
+                .onErrorResumeNext { t: Throwable -> Single.error(processError(t)) }
                 .doOnSuccess { saveSession(it) }
                 .map { it.response }
     }
@@ -24,28 +25,28 @@ abstract class ApiRepository(
 
     fun <T> call(request: Maybe<ApiResponse<T>>): Maybe<T> {
         return request
-                .doOnError { processError(it) }
+                .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }
                 .doOnSuccess { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T> call(request: Observable<ApiResponse<T>>): Observable<T> {
         return request
-                .doOnError { processError(it) }
+                .onErrorResumeNext { t: Throwable -> Observable.error(processError(t)) }
                 .doOnNext { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T> call(request: Flowable<ApiResponse<T>>): Flowable<T> {
         return request
-                .doOnError { processError(it) }
+                .onErrorResumeNext { t: Throwable -> Flowable.error(processError(t)) }
                 .doOnNext { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T, C : List<T>> callPagination(request: Maybe<ApiResponse<C>>): Maybe<PaginationResponse<T>> {
         return request
-                .doOnError { processError(it) }
+                .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }
                 .doOnSuccess { saveSession(it) }
                 .map {
                     PaginationResponse(
@@ -55,12 +56,17 @@ abstract class ApiRepository(
                 }
     }
 
-    protected fun saveSession(response: ApiResponse<*>?) {
-        response?.session?.run { appData.token = token }
+    private fun saveSession(response: ApiResponse<*>?) {
+        response?.session?.token?.let { saveSession(it) }
     }
 
-    protected fun processError(throwable: Throwable) {
-        val response = ApiErrorParser.parse(throwable)
-        saveSession(response)
+    private fun saveSession(token: String) {
+        appData.token = token
+    }
+
+    private fun processError(throwable: Throwable): Throwable {
+        return ApiErrorParser.parse(throwable)?.apply {
+            session?.token?.let { saveSession(it) }
+        } ?: throwable
     }
 }

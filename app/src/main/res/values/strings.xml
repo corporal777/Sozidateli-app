@@ -202,6 +202,7 @@
     <string name="event_map_tab_building_scheme">Схема комплекса</string>
 
     <string name="image_load_error">Ошибка загрузки изображения</string>
+    <string name="request_execution_error">Ошибка выолнения запроса</string>
     <string name="title_activity_maps">Map</string>
 
     <string name="subevent_list_member">Список участников</string>
@@ -350,6 +351,7 @@
     <string name="profile_work_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_notes">Примечания</string>
     <string name="profile_files">Файлы</string>
+    <string name="profile_edit_title">Редактирование</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
     <string name="profile_edit_user_surname">Фамилия</string>

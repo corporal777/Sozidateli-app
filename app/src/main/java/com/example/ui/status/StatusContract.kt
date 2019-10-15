@@ -2,6 +2,7 @@ package com.example.ui.status
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.UserStatusDetails
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -9,7 +10,7 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface StatusContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setStatus(status: User.Status, isCurrentStatus: Boolean, phone: String?, isProfileComplete: Boolean)
+        fun setStatus(status: User.Status, isCurrentStatus: Boolean, phone: String?, details: UserStatusDetails?)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "Phone verification")
         fun checkPassword(action: Int)
@@ -28,6 +29,9 @@ interface StatusContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showVerificationError(error: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRequestError()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSentNewCodeMessage(phone: String)

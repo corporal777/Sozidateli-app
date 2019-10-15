@@ -6,6 +6,7 @@ import com.example.data.models.user.User
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackground
+import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
@@ -19,7 +20,7 @@ class StatusTabsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userChangeSubject
-                .performOnBackground()
+                .performOnBackgroundOutOnMain()
                 .subscribe({
                     when (it.value?.user_status) {
                         User.Status.LOW_PROTECTION -> viewState.selectTab(0)

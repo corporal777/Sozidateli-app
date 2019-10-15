@@ -58,6 +58,18 @@ interface Api {
     @GET("/v1/user/info")
     fun getUserFull(): Maybe<ApiResponse<User>>
 
+    @FormUrlEncoded
+    @POST("/v1/user/check_pwd")
+    fun checkPassword(@Field("user_password") password: String): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/user/phone/sms")
+    fun sendStatusPhoneConfirmSms(@Field("user_password") password: String): Completable
+
+    @FormUrlEncoded
+    @POST("/v1/user/phone/confirm")
+    fun sendStatusPhoneConfirmCode(@Field("code") code: String): Completable
+
     @GET("/v1/users/{id}")
     fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 
