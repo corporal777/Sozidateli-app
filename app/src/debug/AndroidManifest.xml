@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="*.ha-slsp.ru"
+                    android:host="sozidateli-houseofapps.ru"
                     android:pathPrefix="/profile"
                     android:scheme="http" />
             </intent-filter>

@@ -38,7 +38,7 @@ class AuthRepositoryImp
 
         return userRequest
                 .flatMap {
-                    val checkStatus = checkSnRegisterStatus(snAuth.snType.code, it.id)
+                    val checkStatus = checkRegisterStatus(snAuth.snType.code, it.id, null)
                     Single.zip<RegisterStatus, SnUserData, Pair<RegisterStatus, SnUser>>(checkStatus, Single.just(it), BiFunction { status, snUser ->
                         status to SnUser(snAuth, snUser)
                     })
@@ -89,8 +89,8 @@ class AuthRepositoryImp
         return callAuthCompletable(api.setPassword(email, code, password))
     }
 
-    override fun checkSnRegisterStatus(snType: String, snId: String): Single<RegisterStatus> {
-        return call(api.registerStatus(null, snType, snId))
+    override fun checkRegisterStatus(snType: String?, snId: String?, email: String?): Single<RegisterStatus> {
+        return call(api.registerStatus(email, snType, snId))
     }
 
     override fun getVkUser(): Single<SnUserData> {

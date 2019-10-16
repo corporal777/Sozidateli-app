@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.ui.snAuth.SnAuth
 import com.example.util.ClickableSpan
@@ -129,8 +130,8 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun showEmailConfirmation(email: String, snAuth: SnAuth?) {
-        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email, snAuth))
+    override fun showEmailConfirmation(email: String, password: String, snUser: SnUser?) {
+        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email, password, snUser))
     }
 
     override fun layout() = R.layout.fragment_register

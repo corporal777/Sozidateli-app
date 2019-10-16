@@ -2,6 +2,7 @@ package com.example.ui.notification.center
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.ApiError
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.extensions.buildList
@@ -15,7 +16,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import subscribeApi
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -77,6 +77,10 @@ class NotificationsPresenter
         else pagination.invalidate()
     }
 
+    override fun onReceiveApiError(apiError: ApiError) {
+        viewState.showToast(apiError.toErrorsString())
+    }
+
     override fun onNotificationUrlClick(url: String) {
         viewState.showUrl(url)
     }
@@ -97,15 +101,13 @@ class NotificationsPresenter
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeApi({
+                .subscribeSimple {
                     notifications.find { it.id == id }?.apply {
                         wasRead = true
                         acceptState = newState
                     }
                     viewState.onNotificationNeedUpdate(id)
-                }, {
-                    viewState.showToast(it.toErrorsString())
-                })
+                }
     }
 
     override fun onNotificationChangeDecisionClick(id: Int) {
@@ -125,14 +127,12 @@ class NotificationsPresenter
         compositeDisposable += readNotificationRequest(id)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeApi({
+                .subscribeSimple {
                     notifications.find { it.id == id }?.apply {
                         wasRead = true
                     }
                     viewState.onNotificationNeedUpdate(id)
-                }, {
-                    viewState.showToast(it.toErrorsString())
-                })
+                }
     }
 
     override fun onNotificationRateClick(id: Int) {
@@ -144,14 +144,12 @@ class NotificationsPresenter
         compositeDisposable += eventRepository.setEventRating(event, rating)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeApi({
+                .subscribeSimple {
                     notifications.find { it.id == id }?.apply {
                         wasRead = true
                     }
                     viewState.onNotificationNeedUpdate(id)
-                }, {
-                    viewState.showToast(it.toErrorsString())
-                })
+                }
     }
 
     private fun readNotificationRequest(id: Int): Completable {

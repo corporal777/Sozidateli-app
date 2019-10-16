@@ -8,6 +8,7 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -125,14 +126,12 @@ class RegisterPresenter
         else authRepository.register(email, password, firstName, lastName)
 
         compositeDisposable += register
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.showEmailConfirmation(email, snUser?.snAuth)
-                }, {
-                    it.printStackTrace()
-                    viewState.showToast(it.message ?: it.localizedMessage)
-                })
+                .subscribeSimple {
+                    viewState.showEmailConfirmation(email, password, snUser)
+                }
     }
 
     override fun onContinueRegistration(snUser: SnUser) {

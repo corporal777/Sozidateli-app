@@ -241,7 +241,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showGreetings() = findNavController().navigate(R.id.welcome_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.welcome_fragment, false)
+            .setPopUpTo(R.id.main_navigation, true)
             .build())
 
     override fun showLogin() = findNavController().navigate(R.id.authorization_fragment, null, NavOptions.Builder()

@@ -81,8 +81,12 @@
             app:argType="string" />
 
         <argument
-            android:name="snAuth"
-            app:argType="com.example.ui.snAuth.SnAuth"
+            android:name="password"
+            app:argType="string" />
+
+        <argument
+            android:name="SnUser"
+            app:argType="com.example.data.models.SnUser"
             app:nullable="true" />
     </fragment>
 

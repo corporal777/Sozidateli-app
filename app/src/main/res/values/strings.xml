@@ -459,8 +459,7 @@
     <string name="invalid_phone_number_error">Введите правильный номер</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
 
-    <string name="no_internet_dialog_title">Ошибка</string>
-    <string name="no_internet_dialog_message">Отсутствует подключение к сети</string>
+    <string name="no_internet_error_message">Hет подключение к интернету</string>
     <string name="unread_message">Непрочитанные сообщения</string>
 
     <string name="banned_empty_message">Никого нет</string>

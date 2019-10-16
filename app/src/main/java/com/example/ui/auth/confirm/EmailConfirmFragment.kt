@@ -29,7 +29,8 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
     fun providePresenter(): EmailConfirmPresenter = presenterProvider.get().apply {
         EmailConfirmFragmentArgs.fromBundle(arguments!!).also {
             email = it.email
-            snAuth = it.snAuth
+            password = it.password
+            snUser = it.snUser
         }
     }
 

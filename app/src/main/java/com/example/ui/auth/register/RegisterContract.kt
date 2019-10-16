@@ -2,6 +2,7 @@ package com.example.ui.auth.register
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.base.BaseContract
 import com.example.ui.snAuth.SnAuth
@@ -15,7 +16,7 @@ interface RegisterContract {
         fun enableRegisterBtn(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailConfirmation(email: String, snAuth: SnAuth?)
+        fun showEmailConfirmation(email: String, password: String, snUser: SnUser?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)

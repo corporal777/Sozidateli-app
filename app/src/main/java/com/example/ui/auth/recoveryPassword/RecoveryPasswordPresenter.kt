@@ -6,6 +6,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -29,14 +30,10 @@ class RecoveryPasswordPresenter
     override fun onRecoveryClick() {
         if (isDataValid()) {
             compositeDisposable += authRepository.sendRecoveryEmail(email)
+                    .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.showRecoveryNotification(email)
-                    }, {
-                        it.printStackTrace()
-                        viewState.showToast(it.message ?: it.localizedMessage)
-                    })
+                    .subscribeSimple { viewState.showRecoveryNotification(email) }
         } else {
             viewState.showEmailError(true)
         }

@@ -22,7 +22,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
@@ -70,10 +69,6 @@ class MainPresenter
                         loadUser()
                     }
                 }
-
-        RxJavaPlugins.setErrorHandler {
-            it.printStackTrace()
-        }
     }
 
     private fun loadUser() {

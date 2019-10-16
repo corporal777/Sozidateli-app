@@ -1,14 +1,12 @@
 package com.example.ui.base
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import com.example.R
 import dagger.android.AndroidInjection
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
@@ -77,6 +75,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun showToast(messagesIds: List<Int>) {
         val messages = messagesIds.map { getString(it) }
         showToast(messages.joinToString(separator = "\n"))
+    }
+
+    override fun showNoConnectionMessage() {
+        Toast.makeText(this, R.string.no_internet_error_message, Toast.LENGTH_LONG).show()
     }
 
     abstract fun hideToolbar()

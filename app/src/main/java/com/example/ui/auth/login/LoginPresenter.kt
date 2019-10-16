@@ -8,6 +8,7 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -50,14 +51,10 @@ class LoginPresenter
 
     override fun onClickLogin(email: String, password: String) {
         compositeDisposable += authRepository.authEmail(email, password)
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    // do nothing
-                }, {
-                    it.printStackTrace()
-                    viewState.showToast(it.message ?: it.localizedMessage)
-                })
+                .subscribeSimple { }
     }
 
     private fun performDataChange() {

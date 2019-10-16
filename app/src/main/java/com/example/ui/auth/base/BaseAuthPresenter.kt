@@ -56,23 +56,29 @@ constructor(
     }
 
     override fun authVk() {
-        snAuthManager.apply {
-            addOnSnAuthListener(snAuthListener)
-            startAuthVk()
+        compositeDisposable += checkInternetAndRun {
+            snAuthManager.apply {
+                addOnSnAuthListener(snAuthListener)
+                startAuthVk()
+            }
         }
     }
 
     override fun authFb() {
-        snAuthManager.apply {
-            addOnSnAuthListener(snAuthListener)
-            startAuthFacebook()
+        compositeDisposable += checkInternetAndRun {
+            snAuthManager.apply {
+                addOnSnAuthListener(snAuthListener)
+                startAuthFacebook()
+            }
         }
     }
 
     override fun authOk() {
-        snAuthManager.apply {
-            addOnSnAuthListener(snAuthListener)
-            startAuthOk()
+        compositeDisposable += checkInternetAndRun {
+            snAuthManager.apply {
+                addOnSnAuthListener(snAuthListener)
+                startAuthOk()
+            }
         }
     }
 

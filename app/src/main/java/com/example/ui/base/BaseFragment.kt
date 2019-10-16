@@ -1,7 +1,6 @@
 package com.example.ui.base
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
@@ -81,6 +79,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     override fun showToast(messagesIds: List<Int>) {
         mActivity?.showToast(messagesIds)
+    }
+
+    override fun showNoConnectionMessage() {
+        mActivity?.showNoConnectionMessage()
     }
 
     override fun onDestroyView() {

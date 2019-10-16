@@ -1,6 +1,5 @@
 package com.example.ui.base
 
-import android.content.DialogInterface
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
@@ -29,6 +28,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showToast(messagesIds: List<Int>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNoConnectionMessage()
     }
 
     interface LoadingView {

@@ -1,13 +1,16 @@
 package com.example.ui.auth.confirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.snAuth.SnAuth
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Predicate
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -18,8 +21,9 @@ class EmailConfirmPresenter
         private val authRepository: AuthRepository
 ) : BasePresenter<EmailConfirmContract.View>(), EmailConfirmContract.Presenter {
 
-    var snAuth: SnAuth? = null
+    var snUser: SnUser? = null
     lateinit var email: String
+    lateinit var password: String
 
     private val timerCompositeDisposable = CompositeDisposable()
 
@@ -28,10 +32,11 @@ class EmailConfirmPresenter
         compositeDisposable += timerCompositeDisposable
         viewState.setEmail(email)
         startTimer()
+        checkConfirmed()
     }
 
     override fun onResendClick() {
-        val snAuth = this.snAuth
+        val snAuth = this.snUser?.snAuth
         val request = if (snAuth != null) {
             authRepository.registerSnResend(snAuth.snType.code, email, snAuth.token)
         } else {
@@ -39,13 +44,10 @@ class EmailConfirmPresenter
         }
 
         compositeDisposable += request
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    startTimer()
-                }, {
-                    it.printStackTrace()
-                })
+                .subscribeSimple { startTimer() }
     }
 
     private fun startTimer() {
@@ -68,6 +70,21 @@ class EmailConfirmPresenter
                 }, {
                     it.printStackTrace()
                 })
+    }
+
+    private fun checkConfirmed() {
+        compositeDisposable += Single.timer(5, TimeUnit.SECONDS)
+                .flatMap { authRepository.checkRegisterStatus(snUser?.snAuth?.snType?.code, snUser?.snUserData?.id, email) }
+                .map { it.user_by_email_confirmed_email || it.user_by_social_confirmed_email }
+                .doOnSuccess { if (!it) throw Throwable() }
+                .retry(Predicate { true })
+                .flatMapCompletable {
+                    val snUser = this.snUser
+                    if (snUser != null) authRepository.authSocialNetwork(snUser.snAuth.snType.code, snUser.snAuth.token)
+                    else authRepository.authEmail(email, password)
+                }
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {}
     }
 
     override fun onCloseClick() {

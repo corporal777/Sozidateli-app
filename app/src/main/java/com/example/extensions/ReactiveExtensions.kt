@@ -1,5 +1,6 @@
-import com.example.data.models.ApiError
+import com.example.extensions.NoInternetConnectionException
 import com.example.ui.base.BaseContract
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -165,12 +166,34 @@ private fun hideLoading(baseView: BaseContract.LoadingView, loading: Disposable)
     else loading.dispose()
 }
 
-fun Completable.subscribeApi(onComplete: () -> Unit, onApiError: (ApiError) -> Unit, onError: ((Throwable) -> Unit)? = null): Disposable {
-    return subscribe(onComplete, {
-        when {
-            it is ApiError -> onApiError(it)
-            onError != null -> onError(it)
-            else -> throw it
-        }
-    })
+fun Completable.withCheckInternetConnectivity(): Completable {
+    return ReactiveNetwork.checkInternetConnectivity()
+            .flatMapCompletable {
+                if (it) this
+                else Completable.error(NoInternetConnectionException())
+            }
+}
+
+fun <T> Single<T>.withCheckInternetConnectivity(): Single<T> {
+    return Completable.complete()
+            .withCheckInternetConnectivity()
+            .andThen(this)
+}
+
+fun <T> Maybe<T>.withCheckInternetConnectivity(): Maybe<T> {
+    return Completable.complete()
+            .withCheckInternetConnectivity()
+            .andThen(this)
+}
+
+fun <T> Observable<T>.withCheckInternetConnectivity(): Observable<T> {
+    return Completable.complete()
+            .withCheckInternetConnectivity()
+            .andThen(this)
+}
+
+fun <T> Flowable<T>.withCheckInternetConnectivity(): Flowable<T> {
+    return Completable.complete()
+            .withCheckInternetConnectivity()
+            .andThen(this)
 }
