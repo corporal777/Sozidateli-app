@@ -8,13 +8,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
+import com.example.data.models.Event.Companion.FILTER_REGISTRATION_APPROVED
+import com.example.data.models.Event.Companion.FILTER_REGISTRATION_DECLINED
+import com.example.data.models.Event.Companion.FILTER_REGISTRATION_NOT_REGISTERED
+import com.example.data.models.Event.Companion.FILTER_REGISTRATION_PENDING
 import com.example.data.models.SearchFilter
 import com.example.holders.SearchEventItem
 import com.example.ui.search.SearchFragment
-import com.example.ui.search.event.SearchEventPresenter.Companion.FILTER_REGISTRATION_APPROVED
-import com.example.ui.search.event.SearchEventPresenter.Companion.FILTER_REGISTRATION_DECLINED
-import com.example.ui.search.event.SearchEventPresenter.Companion.FILTER_REGISTRATION_NOT_REGISTERED
-import com.example.ui.search.event.SearchEventPresenter.Companion.FILTER_REGISTRATION_PENDING
 import com.example.util.ARG_EVENT
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.layout_filter_event.view.*

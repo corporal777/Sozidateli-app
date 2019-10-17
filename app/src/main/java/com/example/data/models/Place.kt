@@ -1,12 +1,15 @@
 package com.example.data.models
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class Place(
-        val coordinates: List<Double>,
-        val howToGet: String,
-        val schemeImage: String,
-        val scheme: String
-) : Parcelable
+        @SerializedName("event_place_id")
+        val id: String,
+        @SerializedName("event_id")
+        val event: String,
+        val name: String,
+        @SerializedName("int_scheme")
+        val image: String,
+        @SerializedName("int_scheme_descriptions")
+        val description: String
+)

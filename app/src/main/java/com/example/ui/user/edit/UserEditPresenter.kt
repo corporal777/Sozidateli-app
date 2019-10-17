@@ -315,8 +315,8 @@ class UserEditPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     appData.getUser().apply {
-                        user_status = it.user_status
-                        user_status_detail = it.user_status_detail
+                        it.user_status?.let { status -> user_status = status }
+                        it.user_status_detail?.let { details -> user_status_detail = details }
                     }
                     if (onComplete(it)) viewState.navigateUp()
                 }, {

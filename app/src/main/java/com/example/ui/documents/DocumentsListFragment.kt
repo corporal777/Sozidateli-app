@@ -18,8 +18,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, ToolbarFragment {
+
     override val title: String
-        get() = getString(R.string.about_event_documents)
+        get() = ""
 
     @InjectPresenter
     lateinit var presenter: DocumentsListPresenter

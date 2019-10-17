@@ -56,7 +56,7 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        compositeDisposable += eventRepository.setDefaultEvent(0)
+        compositeDisposable += eventRepository.setDefaultEvent("0")
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

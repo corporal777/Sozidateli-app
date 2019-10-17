@@ -1,8 +1,6 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
-import com.example.ui.aboutEvent.AboutEventFragment
-import com.example.ui.aboutForum.AboutForumFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
@@ -16,6 +14,7 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
+import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -26,8 +25,6 @@ import com.example.ui.image.ImageViewFragment
 import com.example.ui.mapTabs.MapTabsFragment
 import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
 import com.example.ui.mapTabs.map.MapFragment
-import com.example.ui.news.NewsFragment
-import com.example.ui.newsList.NewsListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragment
@@ -47,7 +44,6 @@ import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.speaker.SpeakerFragment
 import com.example.ui.speakers.event.EventSpeakersFragment
-import com.example.ui.speakers.favorite.FavoriteUsersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.status.StatusFragment
 import com.example.ui.status.tabs.StatusPagesFragment
@@ -55,6 +51,7 @@ import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.user.UserFragment
 import com.example.ui.user.edit.UserEditFragment
+import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -103,15 +100,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAboutEventFragment(): AboutEventFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeAboutForumFragment(): AboutForumFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeNewsListFragment(): NewsListFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeNewsFragment(): NewsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeDocumentsListFragment(): DocumentsListFragment

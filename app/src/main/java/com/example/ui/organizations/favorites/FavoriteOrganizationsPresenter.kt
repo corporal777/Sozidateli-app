@@ -2,6 +2,7 @@ package com.example.ui.organizations.favorites
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Organization
+import com.example.data.models.Organization.Companion.FIELD_IS_IN_FAVORITE
 import com.example.extensions.buildList
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
@@ -18,7 +19,7 @@ class FavoriteOrganizationsPresenter
         private val organizationRepository: OrganizationRepository
 ) : BasePresenter<FavoriteOrganizationsContract.View>(), FavoriteOrganizationsContract.Presenter {
 
-    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.getOrganizations(limit, offset) }
+    private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.getOrganizations(limit, offset, mapOf(FIELD_IS_IN_FAVORITE to true)) }
             .buildList()
 
     private var firstLaunch = true

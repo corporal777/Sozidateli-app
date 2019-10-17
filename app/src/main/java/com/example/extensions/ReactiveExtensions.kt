@@ -66,6 +66,13 @@ fun <T> Flowable<T>.performOnBackground(): Flowable<T> {
 }
 
 /**
+ * Extension function to subscribe on the background thread for a Maybe
+ * */
+fun <T> Maybe<T>.performOnBackground(): Maybe<T> {
+    return this.subscribeOn(Schedulers.io())
+}
+
+/**
  * Extension function to subscribe on the background thread for a Completable
  * */
 fun Completable.performOnBackground(): Completable {

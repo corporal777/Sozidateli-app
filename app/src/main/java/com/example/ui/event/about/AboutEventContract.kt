@@ -1,22 +1,27 @@
-package com.example.ui.aboutEvent
+package com.example.ui.event.about
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
+import com.example.data.models.EventPage
 import com.example.data.models.Partner
 import com.example.ui.base.BaseContract
 
 interface AboutEventContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setEventData(event: Event)
+        fun setEventData(
+                logo: String?,
+                organizationName: String?,
+                dates: String?,
+                description: String?,
+                pages: List<EventPage>,
+                partners: List<Partner>
+        )
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showAboutForum(event: Event)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showNews(event: Event)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setEventName(name: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDocuments(event: Event)
@@ -25,30 +30,17 @@ interface AboutEventContract {
         fun showContacts(event: Event)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showTransfer(event: Event)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPartner(partner:Partner)
+        fun showPartner(partner: Partner)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setVisibleButtonGoToEvent(isVisible:Boolean)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setPartners(partners:List<Partner>)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onAboutForumClick()
-        fun onNewsClick()
-        fun onDocumentsClick()
         fun onContactsClick()
-        fun onTransferClick()
+        fun onSpeakersClick()
         fun onGoToEventClick()
+        fun onPageClick(page: EventPage)
         fun onPartnerClick(partner: Partner)
-        fun onImageLoad()
-        fun onImageLoadError()
     }
 }

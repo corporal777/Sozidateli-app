@@ -3,14 +3,9 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class EventInfo(
-        val event: Event,
-        val tags: List<EventTag>,
-        val categories: List<EventCategory>,
-        val partners: List<Partner>?,
-        @SerializedName("activities_dates")
-        val dates: List<EventDate>,
-        @SerializedName("news_count")
-        val newsCount: Int,
-        @SerializedName("docs_count")
-        val docsCount: Int
+        val event: EventData,
+        @SerializedName("place")
+        val places: List<Partner>,
+        val partners: List<Partner>,
+        val pages: List<EventPage>
 )

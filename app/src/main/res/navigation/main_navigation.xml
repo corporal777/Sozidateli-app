@@ -5,6 +5,8 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/splash_fragment">
 
+    <include app:graph="@navigation/about_event_navigation" />
+
     <fragment
         android:id="@+id/splash_fragment"
         android:name="com.example.ui.splash.SplashFragment"

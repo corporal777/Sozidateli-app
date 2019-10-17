@@ -27,7 +27,7 @@ class EventItem(
         viewHolder.apply {
             itemContainer.apply {
                 clipToOutline = true
-//                alpha = if (event.status === Event.Status.CONFERENCE_ENDS) 0.5f else 1f
+//                alpha = if (event.status === Event.RegistrationStatus.CONFERENCE_ENDS) 0.5f else 1f
 
                 setOnClickListener { onEventClick() }
 
@@ -46,8 +46,8 @@ class EventItem(
             }
             tvEventLabel.text = event.name
             tvEventDate.apply {
-                val start = event.conference_start
-                val finish = event.conference_finish
+                val start = event.conferenceStart
+                val finish = event.conferenceFinish
 
                 val parser = defaultServerDateFormatter
                 val formatter = dateFormatterShortMothShortYear
@@ -85,17 +85,17 @@ class EventItem(
                 val textBackground: Int
                 val textRes: Int
                 when (event.status) {
-                    Event.Status.APPROVED -> {
+                    Event.RegistrationStatus.APPROVED -> {
                         textColor = R.color.event_status_approved_text
                         textBackground = R.color.event_status_approved_background
                         textRes = R.string.event_status_approved
                     }
-                    Event.Status.DECLINED -> {
+                    Event.RegistrationStatus.DECLINED -> {
                         textColor = R.color.event_status_wait_confirmation_text
                         textBackground = R.color.red
                         textRes = R.string.event_status_decline
                     }
-//                    Event.Status.CONFERENCE_ENDS -> {
+//                    Event.RegistrationStatus.CONFERENCE_ENDS -> {
 //                        textColor = R.color.event_status_finished_text
 //                        textBackground = R.color.event_status_finished_background
 //                        textRes = R.string.event_status_finished

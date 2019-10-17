@@ -70,7 +70,7 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
     }
 
     override fun showOrganization(organization: Organization) {
-        val args = OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+        val args = OrganizationFragmentArgs.Builder(organization.id).build().toBundle()
         findNavController().navigate(R.id.organization_fragment, args)
     }
 

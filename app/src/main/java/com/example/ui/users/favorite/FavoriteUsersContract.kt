@@ -1,4 +1,4 @@
-package com.example.ui.speakers.favorite
+package com.example.ui.users.favorite
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy

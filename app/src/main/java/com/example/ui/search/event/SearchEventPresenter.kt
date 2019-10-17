@@ -2,6 +2,13 @@ package com.example.ui.search.event
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Event
+import com.example.data.models.Event.Companion.FILTER_ADDRESS
+import com.example.data.models.Event.Companion.FILTER_CATEGORY
+import com.example.data.models.Event.Companion.FILTER_CONTENT
+import com.example.data.models.Event.Companion.FILTER_DATE_FINISH
+import com.example.data.models.Event.Companion.FILTER_DATE_START
+import com.example.data.models.Event.Companion.FILTER_NAME
+import com.example.data.models.Event.Companion.FILTER_REGISTRATION
 import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.extensions.groupByNotNull
@@ -87,19 +94,4 @@ class SearchEventPresenter
 
     override fun createFilter() = SearchFilter.Event()
     override fun copyFilter(filter: SearchFilter.Event) = filter.copy()
-
-    companion object {
-        private const val FILTER_CONTENT = "content"
-        private const val FILTER_ADDRESS = "address"
-        private const val FILTER_NAME = "name"
-        private const val FILTER_REGISTRATION = "is_registered"
-        private const val FILTER_DATE_START = "date_start"
-        private const val FILTER_DATE_FINISH = "date_end"
-        private const val FILTER_CATEGORY = "category"
-
-        const val FILTER_REGISTRATION_PENDING = "pending"
-        const val FILTER_REGISTRATION_APPROVED = "approved"
-        const val FILTER_REGISTRATION_DECLINED = "declined"
-        const val FILTER_REGISTRATION_NOT_REGISTERED = "not_registered"
-    }
 }

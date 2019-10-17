@@ -19,8 +19,8 @@ class SearchEventItem(
         viewHolder.apply {
             tvEventName.text = event.name
             tvEventDate.apply {
-                val start = event.conference_start
-                val finish = event.conference_finish
+                val start = event.conferenceStart
+                val finish = event.conferenceFinish
 
                 val parser = defaultServerDateFormatter
                 val formatter = dateFormatterShortMothShortYear

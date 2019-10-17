@@ -9,6 +9,7 @@ import com.example.data.models.Event
 import com.example.extensions.dp
 import com.example.holders.EventItem
 import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.util.ARG_EVENT
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
@@ -60,8 +61,8 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
 
-    override fun showAboutEvent(event: Event) {
-        findParentNavigation().navigate(R.id.about_event, bundleOf("event" to event))
+    override fun showAboutEvent(event: String) {
+        findParentNavigation().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun showEventRequest(event: Event) {

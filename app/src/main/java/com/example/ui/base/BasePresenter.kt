@@ -16,8 +16,6 @@ open class BasePresenter<V : BaseContract.View>
 @Inject constructor()
     : MvpPresenter<V>(), BaseContract.Presenter {
 
-    protected var hasNoInternetError = false
-
     protected val compositeDisposable = CompositeDisposable()
 
     override fun onDestroy() {
@@ -30,7 +28,6 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     protected open fun onReceiveNoInternetError() {
-        hasNoInternetError = true
         viewState.showNoConnectionMessage()
     }
 
@@ -47,33 +44,33 @@ open class BasePresenter<V : BaseContract.View>
                 }, onComplete = onComplete)
     }
 
-    private fun createOnErrorConsumer(onError: ((Throwable) -> Unit)?): Consumer<Throwable> {
+    private fun createOnErrorConsumer(onError: ((Throwable) -> Unit)?, onNoInternetConnectionException: (() -> Unit)?, onApiError: ((ApiError) -> Unit)?): Consumer<Throwable> {
         return Consumer {
-            if (it is NoInternetConnectionException) onReceiveNoInternetError()
-            else if (it is ApiError) onReceiveApiError(it)
+            if (it is NoInternetConnectionException) if (onNoInternetConnectionException != null) onNoInternetConnectionException() else onReceiveNoInternetError()
+            else if (it is ApiError) if (onApiError != null) onApiError(it) else onReceiveApiError(it)
 
             if (onError != null) onError(it)
             else onReceiveError(it)
         }
     }
 
-    fun Completable.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onComplete: () -> Unit): Disposable {
-        return subscribe(Action(onComplete), createOnErrorConsumer(onError))
+    fun Completable.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNoInternetConnectionException: (() -> Unit)? = null, onApiError: ((ApiError) -> Unit)? = null, onComplete: () -> Unit): Disposable {
+        return subscribe(Action(onComplete), createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError))
     }
 
-    fun <T> Single<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onSuccess: (T) -> Unit): Disposable {
-        return subscribe(Consumer(onSuccess), createOnErrorConsumer(onError))
+    fun <T> Single<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNoInternetConnectionException: (() -> Unit)? = null, onApiError: ((ApiError) -> Unit)? = null, onSuccess: (T) -> Unit): Disposable {
+        return subscribe(Consumer(onSuccess), createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError))
     }
 
-    fun <T> Maybe<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onSuccess: (T) -> Unit): Disposable {
-        return subscribe(Consumer(onSuccess), createOnErrorConsumer(onError))
+    fun <T> Maybe<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNoInternetConnectionException: (() -> Unit)? = null, onApiError: ((ApiError) -> Unit)? = null, onSuccess: (T) -> Unit): Disposable {
+        return subscribe(Consumer(onSuccess), createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError))
     }
 
-    fun <T> Observable<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNext: (T) -> Unit): Disposable {
-        return subscribe(Consumer(onNext), createOnErrorConsumer(onError))
+    fun <T> Observable<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNoInternetConnectionException: (() -> Unit)? = null, onApiError: ((ApiError) -> Unit)? = null, onNext: (T) -> Unit): Disposable {
+        return subscribe(Consumer(onNext), createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError))
     }
 
-    fun <T> Flowable<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNext: (T) -> Unit): Disposable {
-        return subscribe(Consumer(onNext), createOnErrorConsumer(onError))
+    fun <T> Flowable<T>.subscribeSimple(onError: ((Throwable) -> Unit)? = null, onNoInternetConnectionException: (() -> Unit)? = null, onApiError: ((ApiError) -> Unit)? = null, onNext: (T) -> Unit): Disposable {
+        return subscribe(Consumer(onNext), createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError))
     }
 }

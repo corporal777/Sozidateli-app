@@ -103,10 +103,6 @@ interface Api {
     fun notificationsInviteDecline(@Path("id") id: String): Completable
 
     @FormUrlEncoded
-    @POST("/v1/user/favorites/speakers")
-    fun getUserFavoriteUsers(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
-
-    @FormUrlEncoded
     @POST("/v1/user/chat/list")
     fun chatList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<ChatListResponse>>
 
@@ -180,16 +176,12 @@ interface Api {
     @POST("/v1/user/recovery_password/set_pwd")
     fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
 
-    @FormUrlEncoded
-    @POST("/v1/events/{eventId}/news")
-    fun getEventNewsList(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<News>>>
-
     @GET("/v1/events/{eventId}/news/{newsId}")
     fun getNewsById(@Path("eventId") eventId: Int, @Path("newsId") newsId: Int): Single<ApiResponse<News>>
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/docs")
-    fun getEventDocs(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
+    fun getEventDocs(@Path("eventId") eventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
 
     @POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
@@ -215,28 +207,24 @@ interface Api {
     fun organizationMembers(@Path("organizationId") orgId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<OrganizationMember>>>
 
     @GET("/v1/events/{eventId}/register/fields")
-    fun getEventRegisterField(@Path("eventId") eventId: Int): Single<ApiResponse<RegisterFieldResponse>>
+    fun getEventRegisterField(@Path("eventId") eventId: String): Single<ApiResponse<RegisterFieldResponse>>
 
     @Multipart
     @POST("/v1/events/{eventId}/register/save")
-    fun eventRegister(@Path("eventId") eventId: Int, @PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
+    fun eventRegister(@Path("eventId") eventId: String, @PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
 
     @GET("/v1/events/{eventId}/register")
-    fun getEventRegister(@Path("eventId") eventId: Int): Single<ApiResponse<EventRegisterResponse>>
+    fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}")
-    fun getEventInfo(@Path("eventId") eventId: Int): Maybe<ApiResponse<EventInfo>>
+    fun getEventInfo(@Path("eventId") eventId: String): Maybe<ApiResponse<EventInfo>>
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
     fun getEventActivity(@Path("eventId") eventId: Int, @Field("limit") limit: String = "all"): Maybe<ApiResponse<List<SubEvent>>>
 
-    @FormUrlEncoded
-    @POST("/v1/user/events/registrations")
-    fun getEventRegisterList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<EventRegisterResponse>>>
-
     @POST("v1/user/set_default_event/{eventId}")
-    fun setDefaultEvent(@Path("eventId") eventId: Int): Completable
+    fun setDefaultEvent(@Path("eventId") eventId: String): Completable
 
     @GET("/v1/events/{eventId}/activity/{subEventId}")
     fun getSubEvent(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Single<ApiResponse<SubeventInfo>>
@@ -246,13 +234,13 @@ interface Api {
     fun getSubEventUsers(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
-    fun addSubEventToCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+    fun addSubEventToCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: Int): Completable
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
-    fun removeSubEventFromCalendar(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Completable
+    fun removeSubEventFromCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: Int): Completable
 
     @GET("/v1/events/{eventId}/map")
-    fun getEventMapInfo(@Path("eventId") eventId: Int): Single<ApiResponse<MapInfo>>
+    fun getEventMapInfo(@Path("eventId") eventId: String): Single<ApiResponse<MapInfo>>
 
     @POST("/v1/events/{eventId}/partners")
     fun getPartnerListByEvent(@Path("eventId") eventId: Int): Single<ApiResponse<List<Partner>>>

@@ -94,11 +94,8 @@
     <string name="menu_item_account_label">Аккаунт</string>
     <string name="menu_item_search_contact">Поиск пользователя</string>
 
-    <string name="about_event_about_forum">О форуме</string>
-    <string name="about_event_news">Новости</string>
-    <string name="about_event_documents">Документы и презентации</string>
-    <string name="about_event_contacts">Контакты</string>
-    <string name="about_event_transfer">Трансфер</string>
+    <string name="about_event_contacts">Контакты мероприятия</string>
+    <string name="about_event_speakers">Спикеры мероприятия</string>
 
     <string name="news_read_more">Подробнее</string>
 

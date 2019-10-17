@@ -9,7 +9,7 @@ data class User(
         var user_modified: Boolean = false,
         var user_banned: Boolean = false,
         var user_suspended: Boolean = false,
-        var user_status: Status = Status.LOW_PROTECTION,
+        var user_status: Status? = null,
         var user_status_detail: UserStatusDetails? = null,
         var user_email: String? = null,
         var user_email_show: Boolean = false,
@@ -116,6 +116,7 @@ data class User(
         const val FIELD_USER_NOTES = "user_notes"
         const val FIELD_ATTACHED_FILES = "attached_recomendation_files"
         const val FIELD_USER_STATUS_PHONE = "user_status_phone"
+        const val FIELD_USER_IS_IN_FAVORITE = "is_in_favorite"
     }
 
     enum class Status {

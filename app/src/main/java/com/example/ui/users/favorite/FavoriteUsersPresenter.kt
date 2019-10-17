@@ -1,4 +1,4 @@
-package com.example.ui.speakers.favorite
+package com.example.ui.users.favorite
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.user.User

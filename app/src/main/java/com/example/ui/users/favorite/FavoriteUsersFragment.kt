@@ -1,4 +1,4 @@
-package com.example.ui.speakers.favorite
+package com.example.ui.users.favorite
 
 import android.os.Bundle
 import android.view.View

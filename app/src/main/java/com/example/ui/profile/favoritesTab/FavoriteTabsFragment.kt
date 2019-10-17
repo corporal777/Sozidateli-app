@@ -10,7 +10,7 @@ import com.example.adapters.TabsFragmentAdapter
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
-import com.example.ui.speakers.favorite.FavoriteUsersFragment
+import com.example.ui.users.favorite.FavoriteUsersFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
 import javax.inject.Provider

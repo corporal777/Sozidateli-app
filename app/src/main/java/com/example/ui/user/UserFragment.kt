@@ -112,7 +112,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 avatar,
                 user.fullName,
                 user.user_id,
-                user.user_status,
+                user.user_status ?: User.Status.LOW_PROTECTION,
                 { presenter.onEditMainDataClick() },
                 { presenter.onStatusClick() }
         )

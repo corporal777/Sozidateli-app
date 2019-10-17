@@ -43,7 +43,7 @@ interface EventScheduleContract {
         fun hideCurrentDay()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSubEvent(eventId: Int, subEventId: Int)
+        fun showSubEvent(eventId: String, subEventId: Int)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
         fun showDataFormCacheMessage(cacheDate: String)

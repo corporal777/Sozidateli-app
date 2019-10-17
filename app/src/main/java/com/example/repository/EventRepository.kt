@@ -12,19 +12,17 @@ import okhttp3.RequestBody
 interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event>>
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
-    fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
-    fun getEventDocuments(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
-    fun getEventRegisterField(eventId: Int): Single<RegisterFieldResponse>
-    fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
-    fun getEventRegister(eventId: Int): Single<EventRegisterResponse>
+    fun getEventDocuments(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
+    fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse>
+    fun eventRegister(eventId: String, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
+    fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>
-    fun getEventInfo(eventId: Int): Maybe<EventInfo>
-    fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
-    fun setDefaultEvent(eventId: Int): Completable
-    fun addEventToCalendar(eventId: Int, subEventId: Int): Completable
-    fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable
-    fun getEventMapInfo(eventId: Int): Single<MapInfo>
+    fun getEventInfo(eventId: String): Maybe<EventInfo>
+    fun setDefaultEvent(eventId: String): Completable
+    fun addEventToCalendar(eventId: String, subEventId: Int): Completable
+    fun removeEventFromCalendar(eventId: String, subEventId: Int): Completable
+    fun getEventMapInfo(eventId: String): Single<MapInfo>
     fun getPartnerListByEvent(eventId: Int): Single<List<Partner>>
     fun getPartnerById(partnerId: Int): Single<Partner>
     fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo>

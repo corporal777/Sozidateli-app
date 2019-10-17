@@ -2,9 +2,7 @@ package com.example.ui.partner
 
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Event
 import com.example.data.models.Partner
-import com.example.repository.DummyRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import performOnBackgroundOutOnMain
@@ -25,10 +23,10 @@ class PartnerPresenter
 
     override fun attachView(view: PartnerContract.View?) {
         super.attachView(view)
-        if (partner.description != null) {
-            viewState.setData(partner)
-            return
-        }
+//        if (partner.description != null) {
+//            viewState.setData(partner)
+//            return
+//        }
         eventRepository.getPartnerById(partner.id)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

@@ -18,7 +18,7 @@ class MyEventsPresenter
         private val eventRepository: EventRepository
 ) : EventListPresenter<MyEventsContract.View>(), MyEventsContract.Presenter {
 
-    override val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventRegisterList(limit, offset) }
+    override val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventList(limit, offset, mapOf(Event.FILTER_REGISTRATION to Event.FILTER_REGISTRATION_ANY_REGISTERED)) }
 
     override fun onEventClick(event: Event) {
         if (isCanSetDefault(event)) {
@@ -37,6 +37,6 @@ class MyEventsPresenter
     }
 
     private fun isCanSetDefault(event: Event): Boolean {
-        return event.status == Event.Status.APPROVED
+        return event.status == Event.RegistrationStatus.APPROVED
     }
 }

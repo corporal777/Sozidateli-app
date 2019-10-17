@@ -119,9 +119,9 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNav
         daySection.update(emptyList())
     }
 
-    override fun showSubEvent(eventId: Int, subEventId: Int) {
-        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-        findParentNavigation().navigate(R.id.subevent_fragment, args)
+    override fun showSubEvent(eventId: String, subEventId: Int) {
+//        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+//        findParentNavigation().navigate(R.id.subevent_fragment, args)
     }
 
     override fun showDataFormCacheMessage(cacheDate: String) {

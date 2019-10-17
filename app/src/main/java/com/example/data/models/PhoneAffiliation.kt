@@ -1,6 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 class PhoneAffiliation(
         val phone: String,
         val affiliation: String?
-)
+) : Parcelable

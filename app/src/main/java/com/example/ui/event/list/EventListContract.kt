@@ -16,7 +16,7 @@ interface EventListContract {
         fun scrollToPositionWithOffset(position: Int, offset: Int)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showAboutEvent(event: Event)
+        fun showAboutEvent(event: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)

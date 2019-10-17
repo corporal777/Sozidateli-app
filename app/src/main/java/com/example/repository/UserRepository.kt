@@ -36,7 +36,7 @@ interface UserRepository {
     fun removeFromFavorite(uid: String): Completable
 
     fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
-    fun usersList(limit: Int, offset: Int, searchMap: Map<String, Any>): Maybe<PaginationResponse<User>>
+    fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User>>
     fun checkPassword(password: String): Completable
     fun sendStatusPhoneConfirmSms(password: String): Completable
     fun sendStatusPhoneConfirmCode(password: String): Completable

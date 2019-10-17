@@ -1,12 +1,16 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Partner(
-        var id:Int,
-        var logo:String?,
-        var name:String?,
-        var description:String?
-):Parcelable
+        val id: Int,
+        @SerializedName("event_id")
+        val event: Int,
+        val logo: String?,
+        @SerializedName("bg_image")
+        val background: String?,
+        val name: String?
+) : Parcelable

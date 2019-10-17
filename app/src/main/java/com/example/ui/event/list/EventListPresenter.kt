@@ -38,7 +38,7 @@ abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>
     }
 
     override fun onEventClick(event: Event) {
-        viewState.showAboutEvent(event)
+        viewState.showAboutEvent(event.id)
     }
 
     override fun onGoToEventClick(event: Event) = viewState.showEventRequest(event)

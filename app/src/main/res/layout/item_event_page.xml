@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/subscription_background"
-    android:foreground="?attr/selectableItemBackground">
+    android:background="@drawable/background_highlight"
+    android:orientation="vertical"
+    android:theme="@style/ViewBackgroundAccent">
 
     <TextView
         android:id="@+id/tvLabel"
@@ -21,10 +21,18 @@
         android:textSize="16sp"
         tools:text="@tools:sample/lorem" />
 
-    <View
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLabel" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <View style="@style/ViewDivider.Horizontal" />
+
+    <FrameLayout
+        android:id="@+id/flAdditionalBottomPadding"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/main_background"
+        android:visibility="gone">
+
+        <View
+            style="@style/ViewDivider.Horizontal"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
+
+</LinearLayout>

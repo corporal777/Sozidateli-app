@@ -7,6 +7,7 @@ import com.example.data.models.AuthResponse
 import com.example.data.models.MarkedResponse
 import com.example.data.models.RemoteNotification
 import com.example.data.models.user.User
+import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.InstanceIdResult
@@ -78,7 +79,7 @@ class UserRepositoryImp
     }
 
     override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return callPagination(api.getUserFavoriteUsers(limit, offset))
+        return usersList(limit, offset, mapOf(FIELD_USER_IS_IN_FAVORITE to true))
     }
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {

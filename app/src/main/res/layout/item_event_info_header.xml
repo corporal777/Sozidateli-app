@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/tvOrganizationLabel"
+        fontPath="fonts/OpenSans-Bold.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:textSize="14sp"
+        tools:ignore="MissingPrefix"
+        tools:text="@tools:sample/lorem" />
+
+    <TextView
+        android:id="@+id/tvEventDate"
+        fontPath="fonts/OpenSans-Light.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:textSize="18sp"
+        tools:ignore="MissingPrefix"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <TextView
+        android:id="@+id/tvEventInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_marginBottom="24dp"
+        android:textSize="18sp"
+        tools:text="@tools:sample/lorem" />
+
+    <View style="@style/ViewDivider.Horizontal" />
+</LinearLayout>

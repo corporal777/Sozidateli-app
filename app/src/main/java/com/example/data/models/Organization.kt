@@ -1,7 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Organization(
         val id: String,
         val logo: String?,
@@ -27,4 +30,8 @@ data class Organization(
         val totalMembers: Int,
         @SerializedName("total_events")
         val totalEvents: Int
-)
+) : Parcelable {
+    companion object {
+                const val FIELD_IS_IN_FAVORITE = "is_in_favorite"
+    }
+}

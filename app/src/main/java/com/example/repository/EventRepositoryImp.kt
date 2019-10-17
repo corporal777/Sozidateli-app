@@ -28,28 +28,23 @@ class EventRepositoryImp
         return callPagination(api.getEventRecommendations(limit, offset))
     }
 
-    override fun getEventNewsList(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<News>> {
-        return callPagination(api.getEventNewsList(eventId, limit, offset))
-    }
-
     override fun getNewsById(eventId: Int, newsId: Int): Single<News> {
         return call(api.getNewsById(eventId, newsId))
     }
 
-    override fun getEventDocuments(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
+    override fun getEventDocuments(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
         return callPagination(api.getEventDocs(eventId, limit, offset))
     }
 
-
-    override fun getEventRegisterField(eventId: Int): Single<RegisterFieldResponse> {
+    override fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse> {
         return call(api.getEventRegisterField(eventId))
     }
 
-    override fun eventRegister(eventId: Int, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
+    override fun eventRegister(eventId: String, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
         return call(api.eventRegister(eventId, fields.let { if (it.isNullOrEmpty()) hashMapOf("_" to "_".toRequestBody("text/plain".toMediaTypeOrNull())) else it }, files.let { if (it.isNullOrEmpty()) null else it }))
     }
 
-    override fun getEventRegister(eventId: Int): Single<EventRegisterResponse> {
+    override fun getEventRegister(eventId: String): Single<EventRegisterResponse> {
         return call(api.getEventRegister(eventId))
     }
 
@@ -57,33 +52,23 @@ class EventRepositoryImp
         return call(api.getEventActivity(eventId))
     }
 
-    override fun getEventInfo(eventId: Int): Maybe<EventInfo> {
+    override fun getEventInfo(eventId: String): Maybe<EventInfo> {
         return call(api.getEventInfo(eventId))
     }
 
-    override fun getEventRegisterList(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
-        return callPagination(api.getEventRegisterList(limit, offset))
-                .map { response ->
-                    PaginationResponse(
-                            response.totalCount,
-                            response.data.mapNotNull { item -> item.event }
-                    )
-                }
-    }
-
-    override fun setDefaultEvent(eventId: Int): Completable {
+    override fun setDefaultEvent(eventId: String): Completable {
         return call(api.setDefaultEvent(eventId))
     }
 
-    override fun addEventToCalendar(eventId: Int, subEventId: Int): Completable {
+    override fun addEventToCalendar(eventId: String, subEventId: Int): Completable {
         return call(api.addSubEventToCalendar(eventId, subEventId))
     }
 
-    override fun removeEventFromCalendar(eventId: Int, subEventId: Int): Completable {
+    override fun removeEventFromCalendar(eventId: String, subEventId: Int): Completable {
         return call(api.removeSubEventFromCalendar(eventId, subEventId))
     }
 
-    override fun getEventMapInfo(eventId: Int): Single<MapInfo> {
+    override fun getEventMapInfo(eventId: String): Single<MapInfo> {
         return call(api.getEventMapInfo(eventId))
     }
 
