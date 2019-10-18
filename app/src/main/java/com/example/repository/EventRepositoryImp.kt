@@ -32,10 +32,6 @@ class EventRepositoryImp
         return call(api.getNewsById(eventId, newsId))
     }
 
-    override fun getEventDocuments(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>> {
-        return callPagination(api.getEventDocs(eventId, limit, offset))
-    }
-
     override fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse> {
         return call(api.getEventRegisterField(eventId))
     }
@@ -72,12 +68,12 @@ class EventRepositoryImp
         return call(api.getEventMapInfo(eventId))
     }
 
-    override fun getPartnerListByEvent(eventId: Int): Single<List<Partner>> {
+    override fun getPartnerListByEvent(eventId: String): Single<List<Partner>> {
         return call(api.getPartnerListByEvent(eventId))
     }
 
-    override fun getPartnerById(partnerId: Int): Single<Partner> {
-        return call(api.getPartnerById(partnerId))
+    override fun getPartnerById(eventId: String, partnerId: String): Single<Partner> {
+        return call(api.getPartnerById(eventId, partnerId))
     }
 
     override fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo> {
@@ -102,5 +98,9 @@ class EventRepositoryImp
 
     override fun getEventByCode(code: String): Single<Event> {
         return call(api.getEventByCode(code))
+    }
+
+    override fun getPage(event: String, page: String): Single<Page> {
+        return call(api.getEventPage(event, page))
     }
 }

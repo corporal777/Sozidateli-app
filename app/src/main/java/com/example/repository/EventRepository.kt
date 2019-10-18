@@ -13,7 +13,6 @@ interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event>>
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
-    fun getEventDocuments(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Document>>
     fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse>
     fun eventRegister(eventId: String, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
@@ -23,12 +22,13 @@ interface EventRepository {
     fun addEventToCalendar(eventId: String, subEventId: Int): Completable
     fun removeEventFromCalendar(eventId: String, subEventId: Int): Completable
     fun getEventMapInfo(eventId: String): Single<MapInfo>
-    fun getPartnerListByEvent(eventId: Int): Single<List<Partner>>
-    fun getPartnerById(partnerId: Int): Single<Partner>
+    fun getPartnerListByEvent(eventId: String): Single<List<Partner>>
+    fun getPartnerById(eventId: String, partnerId: String): Single<Partner>
     fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo>
     fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun getCategoriesList(): Single<List<Category>>
     fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
     fun setEventRating(eventId: Int, value: Int): Completable
     fun getEventByCode(code: String): Single<Event>
+    fun getPage(event: String, page: String): Single<Page>
 }

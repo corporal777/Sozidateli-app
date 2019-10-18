@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.item_event_partner.*
 class EventPartnerItem(
         private val id: Int,
         private val logo: String?,
-        private val name: String?
+        private val name: String?,
+        private val onClick: () -> Unit
 ) : Item(id.toLong()) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -30,7 +31,10 @@ class EventPartnerItem(
                     }
                 })
             }
-            itemView.clipToOutline = true
+            itemView.apply {
+                clipToOutline = true
+                setOnClickListener { onClick() }
+            }
         }
     }
 

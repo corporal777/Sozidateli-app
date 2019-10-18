@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.EventPage
-import com.example.data.models.Partner
+import com.example.data.models.EventParther
 import com.example.extensions.dp
 import com.example.holders.EventInfoHeaderItem
 import com.example.holders.EventPageItem
@@ -85,7 +85,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         }
     }
 
-    override fun setEventData(logo: String?, organizationName: String?, dates: String?, description: String?, pages: List<EventPage>, partners: List<Partner>) {
+    override fun setEventData(logo: String?, organizationName: String?, dates: String?, description: String?, pages: List<EventPage>, partners: List<EventParther>) {
         groupAdapter.update(listOf(
                 EventInfoHeaderItem(-100L, logo, organizationName, dates, description),
                 Section().apply {
@@ -96,7 +96,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     addAll(pages.map { EventPageItem(it.id, it.menu) { presenter.onPageClick(it) } })
                 },
                 Section().apply {
-                    addAll(partners.map { EventPartnerItem(it.id, it.logo, it.name) })
+                    addAll(partners.map { EventPartnerItem(it.id, it.logo, it.name) { presenter.onPartnerClick(it) } })
                 }
         ))
     }
@@ -105,16 +105,20 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         toolbarContentActionBar?.title = name
     }
 
-    override fun showDocuments(event: Event) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToDocumentsListFragment(event))
+    override fun showPage(eventId: String, pageId: String) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPageFragment(eventId, pageId))
+    }
+
+    override fun showDocuments(eventId: String, pageId: String) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToDocumentsListFragment(eventId, pageId))
     }
 
     override fun showContacts(event: Event) {
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(event))
     }
 
-    override fun showPartner(partner: Partner) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPartnerFragment(partner))
+    override fun showPartner(eventId: String, partnerId: String) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPartnerFragment(eventId, partnerId))
     }
 
     override fun showEventRequest(event: Event) {

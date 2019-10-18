@@ -1,15 +1,13 @@
-package com.example.ui.partner
+package com.example.ui.page
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Partner
 import com.example.ui.base.BaseContract
 
-interface PartnerContract {
+interface PageContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(partner: Partner)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setContent(logo: String?, content: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setTitle(title: String)

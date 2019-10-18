@@ -1,11 +1,11 @@
 package com.example.ui.partner
 
-import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Partner
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -15,25 +15,20 @@ class PartnerPresenter
         private val eventRepository: EventRepository
 ) : BasePresenter<PartnerContract.View>(), PartnerContract.Presenter {
 
-    lateinit var partner: Partner
+    lateinit var dataEventId: String
+    lateinit var dataPartnerId: String
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-    }
-
-    override fun attachView(view: PartnerContract.View?) {
-        super.attachView(view)
-//        if (partner.description != null) {
-//            viewState.setData(partner)
-//            return
-//        }
-        eventRepository.getPartnerById(partner.id)
+        compositeDisposable += eventRepository.getPartnerById(dataEventId, dataPartnerId)
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    partner = it
-                    viewState.setData(it)
-                }, {})
-                .call(compositeDisposable)
+                .subscribeSimple {
+                    viewState.apply {
+                        setTitle(it.name)
+                        setData(it)
+                    }
+                }
     }
 }

@@ -14,7 +14,7 @@ import com.example.adapters.ViewHolder
 import com.example.data.models.Speaker
 import com.example.ui.base.BaseFragment
 import com.example.util.ARG_SPEAKER
-import kotlinx.android.synthetic.main.fragment_news_list.*
+import kotlinx.android.synthetic.main.fragment_speakers.*
 import kotlinx.android.synthetic.main.item_speaker.*
 import setCircleImage
 

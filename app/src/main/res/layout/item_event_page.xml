@@ -5,13 +5,12 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_highlight"
     android:orientation="vertical"
-    android:theme="@style/ViewBackgroundAccent">
+    android:theme="@style/ViewBackgroundWhite">
 
     <TextView
         android:id="@+id/tvLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:drawableEnd="@drawable/ic_keyboard_arrow_right"
         android:drawablePadding="8dp"
         android:paddingStart="@dimen/profile_padding_start"

@@ -1,19 +1,22 @@
 package com.example.ui.documents
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.SimplePagingRecyclerViewAdapter
-import com.example.adapters.ViewHolder
 import com.example.data.models.Document
+import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_documents_list.*
-import kotlinx.android.synthetic.main.item_document.*
+import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.LayoutListWithPlaceholderUtil
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,44 +33,45 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, Toolba
 
     @ProvidePresenter
     fun providePresenter(): DocumentsListPresenter = presenterProvider.get().apply {
-        val data = DocumentsListFragmentArgs.fromBundle(arguments!!)
-        event = data.event
-    }
-
-    private val adapter: SimplePagingRecyclerViewAdapter<Document> by lazy {
-        object : SimplePagingRecyclerViewAdapter<Document>(
-                { oldItem, newItem -> oldItem.id == newItem.id },
-                { oldItem, newItem -> oldItem == newItem }
-        ) {
-            override fun getItemLayout(itemView: Int) = R.layout.item_document
-
-            override fun onBindItem(viewHolder: ViewHolder, item: Document?, position: Int) {
-                item!!
-                viewHolder.apply {
-                    itemView.setOnClickListener { presenter.onDocumentClick(item) }
-                    tvDocumentName.text = item.description
-                }
-            }
+        DocumentsListFragmentArgs.fromBundle(arguments!!).apply {
+            dataEventId = eventId
+            dataPageId = pageId
         }
     }
+
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
+    private var toolbarContentActionBar: ToolbarContentActionBar? = null
+
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            adapter = this@DocumentsListFragment.adapter
+            adapter = this@DocumentsListFragment.groupAdapter
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
-    override fun setData(documents: PagedList<Document>) {
-        adapter.submitList(documents)
+    override fun setData(documents: List<Document>) {
+        groupAdapter.update(documents.map { DocumentItem(it) { presenter.onDocumentClick(it) } })
+        placeholderUtil.isDataLoad = true
     }
 
     override fun openLinkInBrowser(link: String) {
-        /* val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-         startActivity(browserIntent)*/
-        showToast(link)
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        startActivity(browserIntent)
     }
 
-    override fun layout() = R.layout.fragment_documents_list
+    override fun setTitle(title: String) {
+        toolbarContentActionBar?.title = title
+    }
+
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
+    }
+
+    override fun layout() = R.layout.layout_list_with_placeholder
 }

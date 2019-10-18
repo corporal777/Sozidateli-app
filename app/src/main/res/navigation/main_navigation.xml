@@ -437,4 +437,18 @@
         android:id="@+id/enter_event_code_fragment"
         android:name="com.example.ui.search.code.EnterCodeFragment"
         tools:layout="@layout/fragment_enter_code" />
+
+    <fragment
+        android:id="@+id/page_fragment"
+        android:name="com.example.ui.page.PageFragment"
+        tools:layout="@layout/fragment_user">
+
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="pageId"
+            app:argType="string" />
+    </fragment>
 </navigation>

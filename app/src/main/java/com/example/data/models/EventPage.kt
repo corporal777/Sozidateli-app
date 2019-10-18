@@ -7,5 +7,7 @@ data class EventPage(
         @SerializedName("event_id")
         val event: String,
         val menu: String,
-        val sort: Int
+        val sort: Int,
+        @SerializedName("is_file_page")
+        val isFilePage: Boolean
 )

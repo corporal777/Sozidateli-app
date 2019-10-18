@@ -31,6 +31,7 @@ import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
+import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
@@ -214,4 +215,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeStatusFragment(): StatusFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePageFragment(): PageFragment
 }

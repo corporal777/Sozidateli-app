@@ -1,9 +1,11 @@
 package com.example.ui.event.about
 
+import android.util.SparseArray
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.EventInfo
 import com.example.data.models.EventPage
-import com.example.data.models.Partner
+import com.example.data.models.Page
+import com.example.data.models.EventParther
 import com.example.extensions.formatToDefaultDate
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -21,6 +23,8 @@ class AboutEventPresenter
 
     lateinit var eventId: String
     private lateinit var event: EventInfo
+
+    private val pages = SparseArray<Page>()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -53,11 +57,12 @@ class AboutEventPresenter
     }
 
     override fun onPageClick(page: EventPage) {
-
+        if (page.isFilePage) viewState.showDocuments(eventId, page.id.toString())
+        else viewState.showPage(eventId, page.id.toString())
     }
 
-    override fun onPartnerClick(partner: Partner) {
-        viewState.showPartner(partner)
+    override fun onPartnerClick(partner: EventParther) {
+        viewState.showPartner(eventId, partner.id.toString())
     }
 
     override fun onContactsClick() {

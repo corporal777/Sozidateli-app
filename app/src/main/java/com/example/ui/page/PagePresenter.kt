@@ -1,7 +1,6 @@
-package com.example.ui.documents
+package com.example.ui.page
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Document
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -11,10 +10,10 @@ import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
-class DocumentsListPresenter
+class PagePresenter
 @Inject constructor(
         private val eventRepository: EventRepository
-) : BasePresenter<DocumentsListContract.View>(), DocumentsListContract.Presenter {
+) : BasePresenter<PageContract.View>(), PageContract.Presenter {
 
     lateinit var dataEventId: String
     lateinit var dataPageId: String
@@ -27,11 +26,7 @@ class DocumentsListPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     viewState.setTitle(it.menu)
-                    viewState.setData(it.files)
+                    viewState.setContent(it.picture, it.content)
                 }
-    }
-
-    override fun onDocumentClick(document: Document) {
-        document.file?.let { viewState.openLinkInBrowser(it) }
     }
 }

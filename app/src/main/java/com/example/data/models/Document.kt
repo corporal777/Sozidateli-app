@@ -1,14 +1,15 @@
 package com.example.data.models
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class Document(
-        var id: Int,
-        var event_id: Int,
-        var public_date:String?,
-        var mime: String?,
-        var description:String?,
-        var file:String?
-) : Parcelable
+        @SerializedName("file_id")
+        val id: Int,
+        val public_date: String?,
+        val mime: String?,
+        val filename: String?,
+        val description: String?,
+        val file: String?,
+        @SerializedName("filesize")
+        val fileSize: Int?
+)

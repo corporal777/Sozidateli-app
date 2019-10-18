@@ -481,4 +481,11 @@
     <string name="code_input_label">Ввод кода</string>
     <string name="code_input_hint">Введите код</string>
     <string name="code_input_no_code">Если вы не видите код при входе в мероприятие - обратитесь к специалистам на информационной стойке</string>
+
+    <string name="size_b">Б</string>
+    <string name="size_kb">Kб</string>
+    <string name="size_mb">Мб</string>
+    <string name="size_gb">Гб</string>
+
+    <string name="partner_support_type">Вид поддержки</string>
 </resources>

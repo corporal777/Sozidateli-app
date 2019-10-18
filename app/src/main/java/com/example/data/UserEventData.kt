@@ -9,7 +9,7 @@ class UserEventData {
     var tags: List<EventTag>? = null
     var categories: List<EventCategory>? = null
     var mapInfo: MapInfo? = null
-    var partners: List<Partner>? = null
+    var partners: List<EventParther>? = null
     var subEvents: List<SubEvent>? = null
 
     var isStaticDataLoaded = false

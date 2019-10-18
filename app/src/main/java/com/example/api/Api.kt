@@ -179,10 +179,6 @@ interface Api {
     @GET("/v1/events/{eventId}/news/{newsId}")
     fun getNewsById(@Path("eventId") eventId: Int, @Path("newsId") newsId: Int): Single<ApiResponse<News>>
 
-    @FormUrlEncoded
-    @POST("/v1/events/{eventId}/docs")
-    fun getEventDocs(@Path("eventId") eventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Document>>>
-
     @POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
 
@@ -243,10 +239,10 @@ interface Api {
     fun getEventMapInfo(@Path("eventId") eventId: String): Single<ApiResponse<MapInfo>>
 
     @POST("/v1/events/{eventId}/partners")
-    fun getPartnerListByEvent(@Path("eventId") eventId: Int): Single<ApiResponse<List<Partner>>>
+    fun getPartnerListByEvent(@Path("eventId") eventId: String): Single<ApiResponse<List<Partner>>>
 
-    @GET("/v1/partners/{partnerId}")
-    fun getPartnerById(@Path("partnerId") partnerId: Int): Single<ApiResponse<Partner>>
+    @GET("/v1/events/{eventId}/partners/{partnerId}")
+    fun getPartnerById(@Path("eventId") eventId: String, @Path("partnerId") partnerId: String): Single<ApiResponse<Partner>>
 
     @GET("/v1/events/categories")
     fun getCategoriesList(): Single<ApiResponse<List<Category>>>
@@ -261,6 +257,9 @@ interface Api {
 
     @GET("/v1/events/qr/{code}")
     fun getEventByCode(@Path("code") code: String): Single<ApiResponse<Event>>
+
+    @GET("/v1/events/{event}/pages/{page}")
+    fun getEventPage(@Path("event") event: String, @Path("page") page: String): Single<ApiResponse<Page>>
 
     @POST("/v1/common/interests")
     fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>

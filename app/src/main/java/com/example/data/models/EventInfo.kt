@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class EventInfo(
         val event: EventData,
         @SerializedName("place")
-        val places: List<Partner>,
-        val partners: List<Partner>,
+        val places: List<EventParther>,
+        val partners: List<EventParther>,
         val pages: List<EventPage>
 )

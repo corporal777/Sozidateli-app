@@ -5,7 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Event
 import com.example.data.models.EventPage
-import com.example.data.models.Partner
+import com.example.data.models.EventParther
 import com.example.ui.base.BaseContract
 
 interface AboutEventContract {
@@ -17,20 +17,24 @@ interface AboutEventContract {
                 dates: String?,
                 description: String?,
                 pages: List<EventPage>,
-                partners: List<Partner>
+                partners: List<EventParther>
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventName(name: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDocuments(event: Event)
+        fun showPage(eventId: String, pageId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDocuments(eventId: String, pageId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPartner(eventId: String, partnerId: String)
+
 
         @StateStrategyType(SkipStrategy::class)
         fun showContacts(event: Event)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPartner(partner: Partner)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
@@ -41,6 +45,6 @@ interface AboutEventContract {
         fun onSpeakersClick()
         fun onGoToEventClick()
         fun onPageClick(page: EventPage)
-        fun onPartnerClick(partner: Partner)
+        fun onPartnerClick(partner: EventParther)
     }
 }

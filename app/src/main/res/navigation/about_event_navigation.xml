@@ -22,15 +22,21 @@
         <action
             android:id="@+id/action_about_event_fragment_to_partner_fragment"
             app:destination="@id/partner_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_page_fragment"
+            app:destination="@id/page_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/documents_list_fragment"
-        android:name="com.example.ui.documents.DocumentsListFragment"
-        tools:layout="@layout/fragment_documents_list">
+        android:name="com.example.ui.documents.DocumentsListFragment">
         <argument
-            android:name="event"
-            app:argType="com.example.data.models.Event" />
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="pageId"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -48,8 +54,27 @@
         android:name="com.example.ui.partner.PartnerFragment"
         android:label="@string/partners_label"
         tools:layout="@layout/fragment_partner">
+
         <argument
-            android:name="partner"
-            app:argType="com.example.data.models.Partner" />
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="partnerId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/page_fragment"
+        android:name="com.example.ui.page.PageFragment"
+        tools:layout="@layout/fragment_user">
+
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="pageId"
+            app:argType="string" />
     </fragment>
 </navigation>

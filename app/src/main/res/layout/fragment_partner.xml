@@ -1,46 +1,159 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dataContainer"
+    <LinearLayout
+        android:id="@+id/llContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:scaleType="centerCrop"
-            android:transitionName="logo"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/ivBackground"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <View
+                android:id="@+id/logoBorder"
+                android:layout_width="157.5dp"
+                android:layout_height="157.5dp"
+                android:background="@drawable/background_organization_logo_border"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+                app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+                app:layout_constraintStart_toStartOf="@+id/ivLogo"
+                app:layout_constraintTop_toTopOf="@+id/ivLogo"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="156dp"
+                android:layout_height="156dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/background_organization_logo"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ivLogo,ivBackground" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:textColor="@color/profile_name_text"
+                android:textSize="19sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrierImage"
+                tools:text="@tools:sample/full_names" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View style="@style/ViewDivider.Horizontal" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:autoLink="all"
+            android:textColor="@color/profile_name_text"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@id/btnLearnMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_goneMarginBottom="24dp"
+            tools:ignore="MissingPrefix"
+            tools:text="Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи. " />
 
         <TextView
-            android:id="@+id/tvInfo"
-            fontPath="fonts/OpenSans-Light.ttf"
-            android:layout_width="0dp"
+            android:id="@+id/tvLinks"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_padding_start"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/profile_padding_start"
-            android:layout_marginBottom="8dp"
-            android:textSize="16sp"
-            android:transitionName="organizationLabel"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:autoLink="all"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="@tools:sample/lorem" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/tvDescription"
+            app:layout_goneMarginBottom="24dp"
+            tools:ignore="MissingPrefix"
+            tools:text="https://organization.ru\n\nhttps://vk.com/antigaiandroid" />
+
+        <LinearLayout
+            android:id="@+id/llSupportType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:text="@string/partner_support_type"
+                android:textAllCaps="true"
+                android:textColor="@color/profile_name_text"
+                android:textSize="17sp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvSupportType"
+                fontPath="fonts/OpenSans-Light.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="16dp"
+                android:autoLink="all"
+                android:textColor="@color/profile_name_text"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="Софинансирование" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
