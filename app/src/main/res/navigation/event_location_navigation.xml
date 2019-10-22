@@ -2,13 +2,22 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tab_event_map"
-    app:startDestination="@id/map_tabs_fragment">
+    android:id="@+id/event_location"
+    app:startDestination="@id/event_location_fragment">
 
     <fragment
-        android:id="@+id/map_tabs_fragment"
-        android:name="com.example.ui.mapTabs.MapTabsFragment"
-        tools:layout="@layout/fragment_map_tabs" />
+        android:id="@+id/event_location_fragment"
+        android:name="com.example.ui.event.location.EventLocationFragment">
+
+        <argument
+            android:name="eventName"
+            app:argType="string" />
+
+        <argument
+            android:name="mapInfo"
+            app:argType="com.example.data.models.MapInfo"
+            app:nullable="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/image_view_fragment"
@@ -35,5 +44,4 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
-
 </navigation>

@@ -1,6 +1,5 @@
 package com.example.ui.request
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -16,8 +15,8 @@ import com.example.ui.base.BaseFragment
 import com.example.util.REQUEST_CODE_SELECT_PDF
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_request.*
 import java.io.File
 import javax.inject.Inject
@@ -35,7 +34,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
     @ProvidePresenter
     fun providePresenter(): RequestPresenter = presenterProvider.get().apply {
         arguments?.let {
-//            val arg = RequestFragmentArgs.fromBundle(it)
+            //            val arg = RequestFragmentArgs.fromBundle(it)
 //            event = arg.event
         }
     }
@@ -75,7 +74,7 @@ class RequestFragment : BaseFragment(), RequestContract.View {
         }
 
         section.setHeader(RegisterEventHeaderItem(presenter))
-        section.setFooter(ActionButtonItem(getString(R.string.go_to_event), View.OnClickListener { presenter.onRegisterClick() }))
+        section.setFooter(ActionButtonItem(-100L, 0) { presenter.onRegisterClick() })
         section.update(listFields)
     }
 

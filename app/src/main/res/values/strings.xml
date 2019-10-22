@@ -123,6 +123,8 @@
     <string name="revoke">Отменить</string>
     <string name="add_record">Добавить запись</string>
     <string name="add_file">Добавить файл</string>
+    <string name="site">Сайт</string>
+    <string name="social_networks">Соцсети</string>
 
     <string-array name="organization_types">
         <item>Некоммерческая</item>
@@ -488,4 +490,13 @@
     <string name="size_gb">Гб</string>
 
     <string name="partner_support_type">Вид поддержки</string>
+    <string name="event_contacts_site">Сайт</string>
+    <string name="event_contacts_social_networks">Соцсети</string>
+    <string name="event_contacts_address">Адрес проведения</string>
+    <string name="event_contacts_watch_on_map">Посмотреть на карте</string>
+
+    <string name="map_route">Mаршрут</string>
+    <string name="map_route_error">Не найдено приложение для постройки маршрута</string>
+    <string name="map_sharing">Публикация</string>
+    <string name="map_sharing_error">Не удалось выполнить публикацию</string>
 </resources>

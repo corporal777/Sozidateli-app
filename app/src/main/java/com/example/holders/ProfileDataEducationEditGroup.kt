@@ -2,7 +2,7 @@ package com.example.holders
 
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
-import com.example.holders.ProfileDataEditAddItem.Companion.ACTION_ADD_RECORD
+import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_RECORD
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
@@ -15,7 +15,7 @@ class ProfileDataEducationEditGroup(
 
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel)
     private val educations = mutableListOf<ProfileDataEducationEditItem>()
-    private val addItem = ProfileDataEditAddItem(0L, ACTION_ADD_RECORD) { add(createEducationItem(null)) }
+    private val addItem = ActionButtonItem(0L, ACTION_ADD_RECORD) { add(createEducationItem(null)) }
     private val saveItem = ProfileDataEditSaveItem(1L, {
         if (checkDataValid()) saveClickListener(getDataToSave())
     }, {

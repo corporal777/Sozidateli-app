@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/subscription_background"
-    android:foreground="?selectableItemBackground"
+    android:background="@drawable/background_highlight"
+    android:theme="@style/ViewBackgroundWhite"
     tools:context=".ui.main.MainActivity">
 
     <ImageView
@@ -53,32 +53,22 @@
         app:layout_constraintTop_toBottomOf="@+id/tvSpeakerName"
         tools:text="@tools:sample/lorem" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSubscribe"
-        android:layout_width="0dp"
+    <com.example.ui.views.UserSubscribeButton
+        android:id="@+id/btnAction"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="@string/sans_serif_light"
-        android:minHeight="0dp"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:textAllCaps="false"
-        android:textSize="14sp"
-        android:theme="@style/ViewBackgroundAccent"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="10dp"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ivSpeakerAvatar"
+        app:layout_constraintStart_toStartOf="@+id/tvSpeakerName"
         app:layout_constraintTop_toBottomOf="@+id/tvSpeakerInfo"
-        app:layout_constraintWidth_default="wrap"
-        tools:background="@drawable/background_action_button_selector"
-        tools:text="Добавить в избранное"
-        tools:textColor="@color/text_color_action_button" />
+        app:subscribeAction="favorite" />
 
     <ImageView
         android:id="@+id/ivNext"

@@ -1,9 +1,7 @@
 package com.example.ui.search.qr
 
 import android.Manifest
-import android.content.DialogInterface
 import com.arellomobile.mvp.InjectViewState
-import com.example.R
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions

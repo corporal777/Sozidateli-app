@@ -64,10 +64,6 @@ class EventRepositoryImp
         return call(api.removeSubEventFromCalendar(eventId, subEventId))
     }
 
-    override fun getEventMapInfo(eventId: String): Single<MapInfo> {
-        return call(api.getEventMapInfo(eventId))
-    }
-
     override fun getPartnerListByEvent(eventId: String): Single<List<Partner>> {
         return call(api.getPartnerListByEvent(eventId))
     }
@@ -88,7 +84,7 @@ class EventRepositoryImp
         return call(api.getCategoriesList())
     }
 
-    override fun getEventSpeakers(eventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
+    override fun getEventSpeakers(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
         return callPagination(api.getEventSpeakers(eventId, limit, offset))
     }
 

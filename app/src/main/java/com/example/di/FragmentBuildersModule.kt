@@ -15,6 +15,7 @@ import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -22,9 +23,9 @@ import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.image.ImageViewFragment
-import com.example.ui.mapTabs.MapTabsFragment
-import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
-import com.example.ui.mapTabs.map.MapFragment
+import com.example.ui.event.location.EventLocationFragment
+import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
+import com.example.ui.event.location.map.MapFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragment
@@ -43,8 +44,7 @@ import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.search.user.SearchUserFragment
-import com.example.ui.speaker.SpeakerFragment
-import com.example.ui.speakers.event.EventSpeakersFragment
+import com.example.ui.event.speakers.EventSpeakersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.status.StatusFragment
 import com.example.ui.status.tabs.StatusPagesFragment
@@ -148,7 +148,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeEventCompleteScheduleFragment(): EventCompleteScheduleFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeMapTabsFragment(): MapTabsFragment
+    abstract fun contributeMapTabsFragment(): EventLocationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeMapFragment(): MapFragment
@@ -158,9 +158,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeImageViewFragment(): ImageViewFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeSpeakerFragment(): SpeakerFragment
 
     @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
@@ -218,4 +215,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributePageFragment(): PageFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventContactsFragment(): EventContactsFragment
 }

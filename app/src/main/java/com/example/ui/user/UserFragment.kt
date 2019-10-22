@@ -193,7 +193,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 add(Section().apply {
                     setHeader(ProfileDataEducationLevelItem(educationLevel.let { if (it.isNullOrEmpty()) "-" else it }))
                     if (education.isEmpty() && editable) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
+                        add(ActionButtonItem(0L, ActionButtonItem.ACTION_ADD_RECORD, editClick))
                     } else {
                         addAll(education.map { ProfileDataEducationItem(it) })
                     }
@@ -213,7 +213,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             ).apply {
                 add(Section().apply {
                     if (work.isEmpty() && editable) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
+                        add(ActionButtonItem(0L, ActionButtonItem.ACTION_ADD_RECORD, editClick))
                     } else {
                         addAll(work.mapIndexed { index, socialRoles ->
                             ProfileDataWorkExperienceItem(socialRoles, index == 0)
@@ -235,7 +235,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             ).apply {
                 add(Section().apply {
                     if (nonNullInterests.isEmpty() && editable) {
-                        add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_RECORD, editClick))
+                        add(ActionButtonItem(0L, ActionButtonItem.ACTION_ADD_RECORD, editClick))
                     } else {
                         addAll(nonNullInterests.map {
                             val parent = it.key
@@ -262,7 +262,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
             if (files.isEmpty() && editable) {
-                add(ProfileDataEditAddItem(0L, ProfileDataEditAddItem.ACTION_ADD_FILE, editClick))
+                add(ActionButtonItem(0L, ActionButtonItem.ACTION_ADD_FILE, editClick))
             } else {
                 addAll(files.mapIndexed { index, file ->
                     ProfileDataFileItem(

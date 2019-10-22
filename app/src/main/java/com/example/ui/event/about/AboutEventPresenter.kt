@@ -1,11 +1,7 @@
 package com.example.ui.event.about
 
-import android.util.SparseArray
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.EventInfo
-import com.example.data.models.EventPage
-import com.example.data.models.Page
-import com.example.data.models.EventParther
+import com.example.data.models.*
 import com.example.extensions.formatToDefaultDate
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -23,8 +19,6 @@ class AboutEventPresenter
 
     lateinit var eventId: String
     private lateinit var event: EventInfo
-
-    private val pages = SparseArray<Page>()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -53,20 +47,43 @@ class AboutEventPresenter
     }
 
     override fun onSpeakersClick() {
-
+        checkInternetAndRun { viewState.showSpeakers(eventId) }
     }
 
     override fun onPageClick(page: EventPage) {
-        if (page.isFilePage) viewState.showDocuments(eventId, page.id.toString())
-        else viewState.showPage(eventId, page.id.toString())
+        checkInternetAndRun {
+            if (page.isFilePage) viewState.showDocuments(eventId, page.id.toString())
+            else viewState.showPage(eventId, page.id.toString())
+        }
     }
 
     override fun onPartnerClick(partner: EventParther) {
-        viewState.showPartner(eventId, partner.id.toString())
+        checkInternetAndRun { viewState.showPartner(eventId, partner.id.toString()) }
     }
 
     override fun onContactsClick() {
+        val event = event.event
+        viewState.showContacts(
+                event.name,
+                event.phone,
+                event.email,
+                event.web,
+                event.social,
+                event.address,
+                createMapInfo(event)
+        )
+    }
 
+    private fun createMapInfo(event: EventData): MapInfo? {
+        // TODO remove test data
+
+        val lat = event.placeLat ?: 55.753754
+        val lon = event.placeLon ?: 37.619667
+        val title = null ?: "Как добраться"
+        val description = event.placeHowToGet ?: (0..1000).joinToString("")
+
+        return if ((lat == null || lon == null) && description == null) null
+        else MapInfo(lat, lon, title, description)
     }
 
     override fun onGoToEventClick() {

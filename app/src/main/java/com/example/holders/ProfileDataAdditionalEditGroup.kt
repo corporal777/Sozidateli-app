@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.R
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
-import com.example.holders.ProfileDataEditAddItem.Companion.ACTION_ADD_FILE
+import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_FILE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
@@ -25,7 +25,7 @@ class ProfileDataAdditionalEditGroup(
     private val notesItem = ProfileDataNotesEditItem(ID_NOTES, notes, onNotesChange)
     private val notesExpandableGroup = ProfileExpandableSubtitleGroup(context.getString(R.string.profile_notes), true, onExpandChange)
     private val fileExpandableGroup = ProfileExpandableSubtitleGroup(context.getString(R.string.profile_files), true, onExpandChange)
-    private val addItem = ProfileDataEditAddItem(ID_ADD, ACTION_ADD_FILE, addFileClickListener)
+    private val addItem = ActionButtonItem(ID_ADD, ACTION_ADD_FILE, addFileClickListener)
     private val saveItem = ProfileDataEditSaveItem(ID_SAVE, {
         saveClickListener(mapOf(User.FIELD_USER_NOTES to notesItem.mNotes))
     }, {

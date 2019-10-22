@@ -54,8 +54,6 @@
     <color name="event_status_finished_text">#A7A9AC</color>
     <color name="event_status_finished_background">#E4E4E4</color>
 
-    <color name="subscription_background">#FFFFFF</color>
-
     <color name="auth_fb_color">#4968ac</color>
     <color name="auth_vk_color">#5376a3</color>
     <color name="auth_ok_color">#ed812b</color>
@@ -138,4 +136,6 @@
 
     <color name="qr_scan_mask">#77000000</color>
     <color name="qr_permission_background">#B3000000</color>
+
+    <color name="map_share_background">#B48C60</color>
 </resources>

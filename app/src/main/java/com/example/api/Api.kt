@@ -235,9 +235,6 @@ interface Api {
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
     fun removeSubEventFromCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: Int): Completable
 
-    @GET("/v1/events/{eventId}/map")
-    fun getEventMapInfo(@Path("eventId") eventId: String): Single<ApiResponse<MapInfo>>
-
     @POST("/v1/events/{eventId}/partners")
     fun getPartnerListByEvent(@Path("eventId") eventId: String): Single<ApiResponse<List<Partner>>>
 
@@ -249,7 +246,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/speakers")
-    fun getEventSpeakers(@Path("eventId") eventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
+    fun getEventSpeakers(@Path("eventId") eventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/rating/set")

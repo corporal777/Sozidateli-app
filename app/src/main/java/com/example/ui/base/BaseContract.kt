@@ -31,6 +31,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showNoConnectionMessage()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showRequestErrorMessage()
     }
 
     interface LoadingView {

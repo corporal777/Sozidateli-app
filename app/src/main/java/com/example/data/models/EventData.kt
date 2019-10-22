@@ -32,10 +32,9 @@ data class EventData(
         @SerializedName("place_how2get")
         val placeHowToGet: String?,
         @SerializedName("place_gps_lat")
-        val placeLat: String?,
+        val placeLat: Double?,
         @SerializedName("place_gps_lon")
-        val placeLon: String?,
-        @SerializedName("inner_place")
+        val placeLon: Double?,
         val phone: List<PhoneAffiliation>,
         val email: List<EmailAffiliation>,
         val web: List<String>,

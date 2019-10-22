@@ -42,7 +42,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
                 R.id.tab_event_my_schedule -> onMyScheduleTabSelected()
                 R.id.tab_event_schedule -> onScheduleTabSelected()
                 R.id.about_event -> onAboutSelected()
-                R.id.tab_event_map -> onMapTabsSelected()
+                R.id.event_location -> onMapTabsSelected()
                 R.id.to_list -> onToListSelected()
                 else -> return@OnNavigationItemSelectedListener false
             }
@@ -68,7 +68,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
 
     override fun showAboutTab() = selectTab(R.id.about_event)
 
-    override fun showMapTab() = selectTab(R.id.tab_event_map)
+    override fun showMapTab() = selectTab(R.id.event_location)
 
     override fun setCurrentDestinationOnStart() {
         val startDestination = currentNavController.graph.startDestination
@@ -148,7 +148,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
                 R.navigation.tab_event_my_schedule,
                 R.navigation.tab_event_schedule,
                 R.navigation.about_event_navigation,
-                R.navigation.tab_event_map
+                R.navigation.event_location_navigation
         )
 
         navGraphIds.forEachIndexed { index, navGraphId ->

@@ -14,8 +14,18 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
     var loadInitialFromStart: Boolean = false
 
+    private var lastTotalCount = 0
+
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<I>) {
-        callback.onResult(executeRequestData(params.loadSize, params.startPosition))
+        if (lastTotalCount <= params.startPosition) {
+            callback.onResult(emptyList())
+            return
+        }
+
+        val result = executeRequest(params.loadSize, params.startPosition)
+        val data = getDataFromResult(result)
+        result?.totalCount?.let { lastTotalCount = it }
+        callback.onResult(data)
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<I>) {
@@ -38,6 +48,7 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
             }
             if (totalCount == 0) dataPosition = 0
 
+            lastTotalCount = totalCount
             callback.onResult(data, dataPosition, totalCount)
         }
     }

@@ -1,4 +1,4 @@
-package com.example.ui.mapTabs.buildingScheme
+package com.example.ui.event.location.buildingScheme
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy

@@ -39,16 +39,16 @@ class SubeventPresenter @Inject constructor(
     }
 
     override fun onSpeakerChangeSubscriptionClick(speaker: Speaker) {
-        val id = speaker.id.toString()
-        compositeDisposable += (if (speaker.isInFavorite) userRepository.removeFromFavorite(id)
-        else userRepository.addToFavorite(id))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.updateSpeaker(speaker.apply { isInFavorite = !isInFavorite })
-                }, {
-                    it.printStackTrace()
-                })
+//        val id = speaker.id.toString()
+//        compositeDisposable += (if (speaker.isInFavorite) userRepository.removeFromFavorite(id)
+//        else userRepository.addToFavorite(id))
+//                .performOnBackgroundOutOnMain()
+//                .withLoadingDialog(viewState)
+//                .subscribe({
+//                    viewState.updateSpeaker(speaker.apply { isInFavorite = !isInFavorite })
+//                }, {
+//                    it.printStackTrace()
+//                })
     }
 
     override fun onOpenUserListClick() {

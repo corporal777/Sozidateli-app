@@ -13,7 +13,7 @@
         android:icon="@drawable/nav_3"
         android:title="@string/event_tab_about" />
     <item
-        android:id="@+id/tab_event_map"
+        android:id="@+id/event_location"
         android:title="@string/event_tab_map" />
     <item
         android:id="@+id/to_list"

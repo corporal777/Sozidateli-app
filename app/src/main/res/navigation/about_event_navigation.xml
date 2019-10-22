@@ -5,6 +5,8 @@
     android:id="@+id/about_event"
     app:startDestination="@id/about_event_fragment">
 
+    <include app:graph="@navigation/event_location_navigation" />
+
     <fragment
         android:id="@+id/about_event_fragment"
         android:name="com.example.ui.event.about.AboutEventFragment"
@@ -25,6 +27,9 @@
         <action
             android:id="@+id/action_about_event_fragment_to_page_fragment"
             app:destination="@id/page_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_contacts_fragment"
+            app:destination="@id/contacts_fragment" />
     </fragment>
 
     <fragment
@@ -41,12 +46,11 @@
 
     <fragment
         android:id="@+id/speakers_list_fragment"
-        android:name="com.example.ui.speakers.event.EventSpeakersFragment"
-        android:label="@string/speakers"
-        tools:layout="@layout/fragment_speakers">
+        android:name="com.example.ui.event.speakers.EventSpeakersFragment"
+        android:label="@string/speakers">
         <argument
-            android:name="event"
-            app:argType="com.example.data.models.Event" />
+            android:name="eventId"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -76,5 +80,40 @@
         <argument
             android:name="pageId"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contacts_fragment"
+        android:name="com.example.ui.event.contacts.EventContactsFragment">
+
+        <argument
+            android:name="eventName"
+            app:argType="string" />
+
+        <argument
+            android:name="phones"
+            app:argType="com.example.data.models.PhoneAffiliation[]" />
+
+        <argument
+            android:name="emails"
+            app:argType="com.example.data.models.EmailAffiliation[]" />
+
+        <argument
+            android:name="webLinks"
+            app:argType="string[]" />
+
+        <argument
+            android:name="socialLinks"
+            app:argType="string[]" />
+
+        <argument
+            android:name="address"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="mapInfo"
+            app:argType="com.example.data.models.MapInfo"
+            app:nullable="true" />
     </fragment>
 </navigation>

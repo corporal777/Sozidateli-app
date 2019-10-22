@@ -59,7 +59,7 @@ class BadgeDrawable(
                 (bounds.top + badgeTextSize * 2 + badgeTextPadding * 2).toInt()
         )
 
-        shapeDrawable.setCornerRadius(shapeDrawable.bounds.width() / 2f)
+        shapeDrawable.setCornerSize(shapeDrawable.bounds.width() / 2f)
     }
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {

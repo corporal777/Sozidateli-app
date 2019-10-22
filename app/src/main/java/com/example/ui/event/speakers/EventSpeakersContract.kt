@@ -1,0 +1,25 @@
+package com.example.ui.event.speakers
+
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.Speaker
+import com.example.ui.base.BaseContract
+import com.example.util.pagination.PaginationListGroupAdapter
+
+interface EventSpeakersContract {
+    interface View : BaseContract.View {
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setData(data: List<Speaker>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSpeaker(speaker: Speaker)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateSpeaker(speaker: Speaker)
+    }
+
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+        fun onSpeakerClick(speaker: Speaker)
+        fun onSpeakerFavoriteChangeClick(speaker: Speaker)
+    }
+}

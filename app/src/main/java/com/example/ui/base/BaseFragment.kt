@@ -85,6 +85,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.showNoConnectionMessage()
     }
 
+    override fun showRequestErrorMessage() {
+        mActivity?.showRequestErrorMessage()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         hideKeyboard()

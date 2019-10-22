@@ -1,4 +1,4 @@
-package com.example.ui.mapTabs
+package com.example.ui.event.location
 
 import android.os.Bundle
 import android.view.View
@@ -6,23 +6,32 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.TabsFragmentAdapter
+import com.example.data.models.MapInfo
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseNestedNavigationFragment
-import com.example.ui.mapTabs.buildingScheme.BuildingSchemeFragment
-import com.example.ui.mapTabs.map.MapFragment
+import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
+import com.example.ui.event.location.map.MapFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
+class EventLocationFragment : BaseNestedNavigationFragment(), EventLocationContract.View, ToolbarFragment {
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = "MapTabsPresenter")
-    lateinit var presenter: MapTabsPresenter
+    override val title: CharSequence
+        get() = EventLocationFragmentArgs.fromBundle(arguments!!).eventName
+
+    @InjectPresenter(type = PresenterType.WEAK, tag = "EventLocationPresenter")
+    lateinit var presenter: EventLocationPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<MapTabsPresenter>
+    lateinit var presenterProvider: Provider<EventLocationPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = "MapTabsPresenter")
-    fun providePresenter(): MapTabsPresenter = presenterProvider.get()
+    @ProvidePresenter(type = PresenterType.WEAK, tag = "EventLocationPresenter")
+    fun providePresenter(): EventLocationPresenter = presenterProvider.get().apply {
+        val args = EventLocationFragmentArgs.fromBundle(arguments!!)
+        mapInfo = args.mapInfo
+    }
 
     private val pageChangeListener = object : androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
@@ -38,16 +47,16 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
         }
     }
 
-    override fun initPages() {
+    override fun initPages(mapInfo: MapInfo) {
         val fragments by lazy {
             listOf<Pair<androidx.fragment.app.Fragment, String>>(
-                    MapFragment() to getString(R.string.event_map_tab_how_to_get),
+                    MapFragment.newInstance(mapInfo) to getString(R.string.event_map_tab_how_to_get),
                     BuildingSchemeFragment() to getString(R.string.event_map_tab_building_scheme)
             )
         }
 
         viewPager.apply {
-            adapter = TabsAdapter(fragments, childFragmentManager)
+            adapter = TabsFragmentAdapter(fragments, childFragmentManager)
             offscreenPageLimit = fragments.size
         }
     }
@@ -57,16 +66,4 @@ class MapTabsFragment : BaseNestedNavigationFragment(), MapTabsContract.View {
     }
 
     override fun layout() = R.layout.fragment_map_tabs
-
-    private inner class TabsAdapter(
-            private val fragments: List<Pair<androidx.fragment.app.Fragment, String>>,
-            fragmentManager: androidx.fragment.app.FragmentManager
-    ) : androidx.fragment.app.FragmentPagerAdapter(fragmentManager) {
-
-        override fun getItem(position: Int) = fragments[position].first
-
-        override fun getPageTitle(position: Int) = fragments[position].second
-
-        override fun getCount() = fragments.size
-    }
 }

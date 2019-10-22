@@ -24,7 +24,7 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     protected open fun onReceiveError(error: Throwable) {
-
+        error.printStackTrace()
     }
 
     protected open fun onReceiveNoInternetError() {

@@ -1,4 +1,4 @@
-package com.example.ui.mapTabs.buildingScheme
+package com.example.ui.event.location.buildingScheme
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
@@ -11,14 +11,10 @@ class BuildingSchemePresenter
         userEventData: UserEventData
 ) : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
 
-    private val mapInfo = userEventData.mapInfo
     private var scroll = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        mapInfo?.let {
-            viewState.setSchemeData(it.int_scheme,it.int_scheme_descriptions)
-        }
     }
 
     override fun attachView(view: BuildingSchemeContract.View?) {
@@ -26,13 +22,9 @@ class BuildingSchemePresenter
         viewState.changeScrollY(scroll)
     }
 
-    override fun onImageClick(){
-        mapInfo?.int_scheme?.let {
-            viewState.showImage(it)
-        }
+    override fun onImageClick() {
     }
 
     override fun onScrollPositionChange(scroll: Int) {
-        this.scroll = scroll
     }
 }

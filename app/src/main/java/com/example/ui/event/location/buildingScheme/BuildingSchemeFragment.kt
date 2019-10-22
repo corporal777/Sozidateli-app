@@ -1,4 +1,4 @@
-package com.example.ui.mapTabs.buildingScheme
+package com.example.ui.event.location.buildingScheme
 
 import android.os.Bundle
 import android.view.View

@@ -3,9 +3,7 @@ package com.example.ui.event.about
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Event
-import com.example.data.models.EventPage
-import com.example.data.models.EventParther
+import com.example.data.models.*
 import com.example.ui.base.BaseContract
 
 interface AboutEventContract {
@@ -32,9 +30,11 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showPartner(eventId: String, partnerId: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showSpeakers(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showContacts(event: Event)
+        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)

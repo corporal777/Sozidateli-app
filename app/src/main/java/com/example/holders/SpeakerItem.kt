@@ -1,11 +1,11 @@
 package com.example.holders
 
-import android.graphics.Color
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Speaker
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_speaker.view.*
 import setCircleImage
 
@@ -14,24 +14,18 @@ open class SpeakerItem(
         private val onSpeakerClick: (Speaker) -> Unit,
         private val onFavoriteChangeClick: (Speaker) -> Unit
 ) : Item(speaker.id.toLong()) {
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            ivSpeakerAvatar.setCircleImage(speaker.photo, R.drawable.avatar_placeholder)
+            ivSpeakerAvatar.setCircleImage(speaker.user.user_avatar, R.drawable.avatar_placeholder)
 
-            tvSpeakerName.text = speaker.name
-            tvSpeakerInfo.text = speaker.position
+            tvSpeakerName.text = speaker.user.fullName
+            tvSpeakerInfo.apply {
+                text = speaker.description
+                isVisible = !speaker.description.isNullOrEmpty()
+            }
 
-            btnSubscribe.apply {
-                text = if (speaker.isInFavorite) {
-                    setBackgroundResource(R.drawable.background_corners_border)
-                    setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    context.getString(R.string.remove_from_favorites)
-                } else {
-                    setBackgroundResource(R.drawable.background_corners)
-                    setTextColor(Color.WHITE)
-                    context.getString(R.string.add_to_favorites)
-                }
-
+            btnAction.apply {
+                btnAction.setAction(if (speaker.user.is_in_favorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
                 setOnClickListener { onFavoriteChangeClick(speaker) }
             }
 
@@ -42,6 +36,15 @@ open class SpeakerItem(
     fun updateSpeaker(speaker: Speaker) {
         this.speaker = speaker
         notifyChanged()
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (this === other) return true
+        if (other !is SpeakerItem) return false
+
+        if (speaker != other.speaker) return false
+
+        return true
     }
 
     override fun getLayout() = R.layout.item_speaker

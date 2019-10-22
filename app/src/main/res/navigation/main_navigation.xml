@@ -162,17 +162,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/speaker_fragment"
-        android:name="com.example.ui.speaker.SpeakerFragment">
-        <argument
-            android:name="speaker"
-            app:argType="com.example.data.models.Speaker" />
-        <action
-            android:id="@+id/speaker_fragment_to_chat"
-            app:destination="@id/chat_fragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/subevent_fragment"
         android:name="com.example.ui.subevent.SubeventFragment">
         <argument

@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Event
-import com.example.data.models.EventPage
-import com.example.data.models.EventParther
+import com.example.data.models.*
 import com.example.extensions.dp
 import com.example.holders.EventInfoHeaderItem
 import com.example.holders.EventPageItem
@@ -113,12 +111,24 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToDocumentsListFragment(eventId, pageId))
     }
 
-    override fun showContacts(event: Event) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(event))
-    }
-
     override fun showPartner(eventId: String, partnerId: String) {
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPartnerFragment(eventId, partnerId))
+    }
+
+    override fun showSpeakers(eventId: String) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(eventId))
+    }
+
+    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToContactsFragment(
+                eventName,
+                phones.toTypedArray(),
+                emails.toTypedArray(),
+                webLinks.toTypedArray(),
+                socialLinks.toTypedArray(),
+                address,
+                mapInfo
+        ))
     }
 
     override fun showEventRequest(event: Event) {
