@@ -10,7 +10,7 @@ import com.example.ui.base.BaseContract
 interface BuildingSchemeContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray)
+        fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray, page: Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun showImage(url: String)
@@ -19,5 +19,6 @@ interface BuildingSchemeContract {
     interface Presenter : BaseContract.Presenter {
         fun onImageClick(place: Place, position: Int)
         fun onScrollPositionChange(scroll: Int, position: Int)
+        fun onPageChange(position: Int)
     }
 }

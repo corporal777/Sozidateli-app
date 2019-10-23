@@ -15,9 +15,11 @@ class BuildingSchemePresenter
 
     private val placeScrollPosition = SparseIntArray()
 
+    private var pagePosition: Int = 0
+
     override fun attachView(view: BuildingSchemeContract.View?) {
         super.attachView(view)
-        viewState.setPlaces(places.filter { !it.image.isNullOrEmpty() }, placeScrollPosition)
+        viewState.setPlaces(places.filter { !it.image.isNullOrEmpty() }, placeScrollPosition, pagePosition)
     }
 
     override fun onImageClick(place: Place, position: Int) {
@@ -26,5 +28,9 @@ class BuildingSchemePresenter
 
     override fun onScrollPositionChange(scroll: Int, position: Int) {
         placeScrollPosition[position] = scroll
+    }
+
+    override fun onPageChange(position: Int) {
+        pagePosition = position
     }
 }

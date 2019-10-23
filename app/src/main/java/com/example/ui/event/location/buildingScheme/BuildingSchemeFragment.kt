@@ -74,6 +74,7 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager.apply {
+            setOnTouchListener(pageIndicator)
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     pageIndicator.onPageScrollStateChanged(state)
@@ -85,6 +86,7 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
 
                 override fun onPageSelected(position: Int) {
                     pageIndicator.setSelected(position)
+                    presenter.onPageChange(position)
                 }
             })
         }
@@ -94,8 +96,11 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
         }
     }
 
-    override fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray) {
-        viewPager.adapter = PlacePagerAdapter(places, scrollPositions)
+    override fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray, page: Int) {
+        viewPager.apply {
+            adapter = PlacePagerAdapter(places, scrollPositions)
+            setCurrentItem(page, false)
+        }
 
         pageIndicator.apply {
             val pagesCount = places.size
