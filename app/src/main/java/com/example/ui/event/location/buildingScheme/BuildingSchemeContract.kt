@@ -1,6 +1,7 @@
 package com.example.ui.event.location.buildingScheme
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import android.util.SparseIntArray
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Place
@@ -8,19 +9,15 @@ import com.example.ui.base.BaseContract
 
 interface BuildingSchemeContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setSchemeData(image:String?,description:String?)
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray)
 
         @StateStrategyType(SkipStrategy::class)
         fun showImage(url: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun changeScrollY(scroll: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onImageClick()
-        fun onScrollPositionChange(scroll: Int)
+        fun onImageClick(place: Place, position: Int)
+        fun onScrollPositionChange(scroll: Int, position: Int)
     }
 }

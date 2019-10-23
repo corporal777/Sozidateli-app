@@ -138,4 +138,6 @@
     <color name="qr_permission_background">#B3000000</color>
 
     <color name="map_share_background">#B48C60</color>
+    <color name="scheme_page_selected">#E3CCAA</color>
+    <color name="scheme_page">#FFFFFF</color>
 </resources>

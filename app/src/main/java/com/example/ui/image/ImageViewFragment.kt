@@ -17,6 +17,7 @@ import androidx.transition.TransitionSet.ORDERING_TOGETHER
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -24,7 +25,9 @@ import kotlinx.android.synthetic.main.fragment_image_view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ImageViewFragment : BaseFragment(), ImageViewContract.View {
+class ImageViewFragment : BaseFragment(), ImageViewContract.View, ToolbarFragment {
+
+    override val title = ""
 
     @InjectPresenter
     lateinit var presenter: ImageViewPresenter

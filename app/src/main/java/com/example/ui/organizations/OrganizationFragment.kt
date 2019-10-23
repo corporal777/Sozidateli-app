@@ -19,6 +19,7 @@ import com.example.holders.EventItem
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.ARG_EVENT
 import com.rd.animation.type.AnimationType
@@ -236,7 +237,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event, bundleOf(ARG_EVENT to event))
+        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun showEventRequest(event: Event) {

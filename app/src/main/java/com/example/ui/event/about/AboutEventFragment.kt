@@ -119,7 +119,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(eventId))
     }
 
-    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?) {
+    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?, places: List<Place>?) {
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToContactsFragment(
                 eventName,
                 phones.toTypedArray(),
@@ -127,7 +127,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 webLinks.toTypedArray(),
                 socialLinks.toTypedArray(),
                 address,
-                mapInfo
+                mapInfo,
+                places?.toTypedArray()
         ))
     }
 

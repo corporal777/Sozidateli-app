@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/flSchemeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivScheme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:transitionName="image"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bottom_gradient" />
+
+            <com.rd.PageIndicatorView
+                android:id="@+id/pageIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="20dp"
+                app:piv_padding="21dp"
+                app:piv_radius="5.3dp"
+                app:piv_selectedColor="@color/scheme_page_selected"
+                app:piv_unselectedColor="@color/scheme_page" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvDescriptionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/profile_padding_start"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="@dimen/profile_padding_start"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="17sp"
+            tools:ignore="MissingPrefix"
+            tools:text="1 этаж" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            fontPath="fonts/OpenSans-Light.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/profile_padding_start"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/profile_padding_start"
+            android:layout_marginBottom="20dp"
+            android:autoLink="all"
+            android:textSize="16sp"
+            tools:ignore="MissingPrefix"
+            tools:text="@tools:sample/lorem/random" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

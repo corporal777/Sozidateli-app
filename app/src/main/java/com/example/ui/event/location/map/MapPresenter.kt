@@ -20,9 +20,10 @@ class MapPresenter
     lateinit var mapInfo: MapInfo
 
     private var mapInitializeDisposable: Disposable? = null
+    private var isMapContentSet = false
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    override fun attachView(view: MapContract.View?) {
+        super.attachView(view)
         viewState.setDescription(mapInfo.title, mapInfo.description)
 
         val lat = mapInfo.lat
@@ -39,8 +40,13 @@ class MapPresenter
 
     override fun onMapReady() {
         mapInitializeDisposable?.dispose()
+        if (isMapContentSet) {
+            viewState.showContent()
+            return
+        }
 
         val setContent: (Boolean) -> Unit = {
+            isMapContentSet = true
             viewState.apply {
                 enableCurrentLocation(it)
                 setMarker(mapInfo.lat!!, mapInfo.lon!!)

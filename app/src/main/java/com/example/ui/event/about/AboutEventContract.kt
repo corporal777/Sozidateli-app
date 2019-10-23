@@ -34,7 +34,7 @@ interface AboutEventContract {
         fun showSpeakers(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?)
+        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?, places: List<Place>?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)

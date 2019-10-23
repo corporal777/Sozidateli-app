@@ -1,30 +1,30 @@
 package com.example.ui.event.location.buildingScheme
 
+import android.util.SparseIntArray
+import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.UserEventData
+import com.example.data.models.Place
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class BuildingSchemePresenter
-@Inject constructor(
-        userEventData: UserEventData
-) : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
+@Inject constructor() : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
 
-    private var scroll = 0
+    lateinit var places: List<Place>
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-    }
+    private val placeScrollPosition = SparseIntArray()
 
     override fun attachView(view: BuildingSchemeContract.View?) {
         super.attachView(view)
-        viewState.changeScrollY(scroll)
+        viewState.setPlaces(places.filter { !it.image.isNullOrEmpty() }, placeScrollPosition)
     }
 
-    override fun onImageClick() {
+    override fun onImageClick(place: Place, position: Int) {
+        viewState.showImage(place.image!!)
     }
 
-    override fun onScrollPositionChange(scroll: Int) {
+    override fun onScrollPositionChange(scroll: Int, position: Int) {
+        placeScrollPosition[position] = scroll
     }
 }

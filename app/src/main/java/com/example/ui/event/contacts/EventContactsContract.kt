@@ -5,16 +5,17 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
+import com.example.data.models.Place
 import com.example.ui.base.BaseContract
 
 interface EventContactsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?)
+        fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, canShowOnMap: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showMap(eventName: String, mapInfo: MapInfo?)
+        fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?)
     }
 
     interface Presenter : BaseContract.Presenter {

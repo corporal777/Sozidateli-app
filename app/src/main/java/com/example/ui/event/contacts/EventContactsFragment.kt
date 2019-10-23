@@ -9,6 +9,7 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
+import com.example.data.models.Place
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_SHOW_ON_MAP
 import com.example.holders.ProfileFieldTextItem
@@ -43,6 +44,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         socialLinks = args.socialLinks.toList()
         address = args.address
         mapInfo = args.mapInfo
+        places = args.places
     }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -54,7 +56,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         }
     }
 
-    override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?) {
+    override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, canShowOnMap: Boolean) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone) })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
@@ -65,14 +67,15 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
             if (!address.isNullOrEmpty())
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_address), address))
 
-            add(ActionButtonItem(size.toLong(), ACTION_SHOW_ON_MAP) {
-                presenter.onShowOnMapClick()
-            })
+            if (canShowOnMap)
+                add(ActionButtonItem(size.toLong(), ACTION_SHOW_ON_MAP) {
+                    presenter.onShowOnMapClick()
+                })
         })
     }
 
-    override fun showMap(eventName: String, mapInfo: MapInfo?) {
-        findNavController().navigate(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo).build().toBundle())
+    override fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) {
+        findNavController().navigate(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
     }
 
     override fun layout() = R.layout.fragment_event_contacts

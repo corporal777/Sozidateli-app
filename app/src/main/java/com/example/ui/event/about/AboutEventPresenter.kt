@@ -62,25 +62,24 @@ class AboutEventPresenter
     }
 
     override fun onContactsClick() {
-        val event = event.event
+        val eventData = event.event
         viewState.showContacts(
-                event.name,
-                event.phone,
-                event.email,
-                event.web,
-                event.social,
-                event.address,
-                createMapInfo(event)
+                eventData.name,
+                eventData.phone,
+                eventData.email,
+                eventData.web,
+                eventData.social,
+                eventData.address,
+                createMapInfo(eventData),
+                event.places
         )
     }
 
     private fun createMapInfo(event: EventData): MapInfo? {
-        // TODO remove test data
-
-        val lat = event.placeLat ?: 55.753754
-        val lon = event.placeLon ?: 37.619667
-        val title = null ?: "Как добраться"
-        val description = event.placeHowToGet ?: (0..1000).joinToString("")
+        val lat = event.placeLat
+        val lon = event.placeLon
+        val title = null
+        val description = event.placeHowToGet
 
         return if ((lat == null || lon == null) && description == null) null
         else MapInfo(lat, lon, title, description)

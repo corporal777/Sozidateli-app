@@ -17,6 +17,11 @@
             android:name="mapInfo"
             app:argType="com.example.data.models.MapInfo"
             app:nullable="true" />
+
+        <argument
+            android:name="places"
+            app:argType="com.example.data.models.Place[]"
+            app:nullable="true" />
     </fragment>
 
     <fragment
