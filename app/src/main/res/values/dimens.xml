@@ -51,4 +51,6 @@
     <dimen name="mtrl_textinput_box_stroke_width_focused" tools:override="true">1dp</dimen>
 
     <dimen name="organization_logo_corners_radius">4dp</dimen>
+
+    <dimen name="building_scheme_bottom_gradient_height">50dp</dimen>
 </resources>

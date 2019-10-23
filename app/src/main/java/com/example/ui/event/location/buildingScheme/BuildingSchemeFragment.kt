@@ -3,6 +3,7 @@ package com.example.ui.event.location.buildingScheme
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.SparseIntArray
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
@@ -14,6 +15,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.ChangeImageTransform
 import androidx.transition.ChangeTransform
 import androidx.transition.TransitionSet
+import androidx.viewpager2.widget.ViewPager2
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -23,6 +25,7 @@ import com.example.data.models.Place
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.image.ImageViewFragment.Companion.ARG_TRANSITION_NAME
+import com.rd.animation.type.AnimationType
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_building_scheme.*
 import kotlinx.android.synthetic.main.item_building_scheme.*
@@ -68,8 +71,37 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewPager.apply {
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    pageIndicator.onPageScrollStateChanged(state)
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    pageIndicator.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                }
+
+                override fun onPageSelected(position: Int) {
+                    pageIndicator.setSelected(position)
+                }
+            })
+        }
+
+        pageIndicator.apply {
+            setAnimationType(AnimationType.COLOR)
+        }
+    }
+
     override fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray) {
         viewPager.adapter = PlacePagerAdapter(places, scrollPositions)
+
+        pageIndicator.apply {
+            val pagesCount = places.size
+            isVisible = pagesCount > 1
+            count = pagesCount
+        }
     }
 
     override fun showImage(url: String) {
@@ -100,14 +132,11 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
         override fun onBindItem(holder: ViewHolder, item: Place?, position: Int) {
             val place = item!!
             holder.apply {
-                flSchemeContainer.apply {
+                ivScheme.apply {
                     updateLayoutParams {
                         height = imageHeight
                         width = imageWidth
                     }
-                }
-
-                ivScheme.apply {
                     transitionName = place.image
 
                     Picasso.get()
@@ -116,15 +145,6 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
                             .into(this)
 
                     setOnClickListener { presenter.onImageClick(place, position) }
-                }
-
-                pageIndicator.apply {
-                    val pagesCount = itemCount
-                    isVisible = pagesCount > 1
-                    if (isVisible) {
-                        count = pagesCount
-                        setSelected(position)
-                    }
                 }
 
                 val title = place.name
