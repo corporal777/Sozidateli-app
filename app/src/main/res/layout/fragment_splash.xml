@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/auth_logo_height"
         android:contentDescription="@string/content_description_logo"
         android:src="@drawable/ic_app_logo_white"
         app:layout_constraintBottom_toTopOf="@+id/progressBar2"
