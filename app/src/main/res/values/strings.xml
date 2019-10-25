@@ -441,9 +441,6 @@
     <string name="partners_label">Партнеры</string>
 
     <string name="error_title">Ошибка</string>
-    <string name="request_event_required_field">Заполните все поля</string>
-    <string name="request_event_register_end">Регистрация на мероприятие окончена</string>
-    <string name="request_event_file_error">Ошибка прикрипления файла</string>
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 
@@ -499,4 +496,12 @@
     <string name="map_route_error">Не найдено приложение для постройки маршрута</string>
     <string name="map_sharing">Публикация</string>
     <string name="map_sharing_error">Не удалось выполнить публикацию</string>
+
+    <string name="event_register_passport">Паспортные данные</string>
+    <string name="event_register_serial">Серия*</string>
+    <string name="event_register_number">Номер*</string>
+    <string name="event_register_agency">Кем выдано*</string>
+    <string name="event_register_code">Код подразделения*</string>
+    <string name="event_register_date">Дата выдачи*</string>
+    <string name="event_register_personal_data_file">Файл, разрешающий обработку перс.данных</string>
 </resources>

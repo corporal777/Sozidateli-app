@@ -2,7 +2,7 @@ package com.example.ui.event.about
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.*
-import com.example.extensions.formatToDefaultDate
+import com.example.extensions.formatToInterval
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -38,7 +38,7 @@ class AboutEventPresenter
             setEventData(
                     event.logo,
                     event.organization?.name,
-                    "${event.conferenceStart?.formatToDefaultDate()} - ${event.conferenceFinish?.formatToDefaultDate()}",
+                    event.conferenceStart?.formatToInterval(event.conferenceFinish),
                     event.description,
                     eventInfo.pages,
                     eventInfo.partners
@@ -78,7 +78,7 @@ class AboutEventPresenter
     private fun createMapInfo(event: EventData): MapInfo? {
         val lat = event.placeLat
         val lon = event.placeLon
-        val title = null
+        val title = event.placeHowToGetTitle
         val description = event.placeHowToGet
 
         return if ((lat == null || lon == null) && description == null) null

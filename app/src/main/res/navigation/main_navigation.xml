@@ -116,7 +116,11 @@
     <fragment
         android:id="@+id/request_fragment"
         android:name="com.example.ui.request.RequestFragment"
-        tools:layout="@layout/fragment_request" />
+        tools:layout="@layout/fragment_request">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/event_tabs_fragment"

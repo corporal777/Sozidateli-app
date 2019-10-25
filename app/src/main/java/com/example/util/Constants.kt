@@ -16,6 +16,7 @@ const val FIELD_MESSAGE_ID = "messageId"
 
 
 const val DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%d.%02d.%d"
+const val DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%d.%02d.%d %02d:%02d"
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "d.MM.yyyy"
 const val DATE_FORMAT_SHORT_MONTH_NO_YEAR = "d.MM"
 const val DATE_FORMAT_SHORT_MONTH_SHORT_YEAR = "d.MM.yy"

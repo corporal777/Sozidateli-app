@@ -3,7 +3,6 @@ package com.example.ui.event.about
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +16,7 @@ import com.example.holders.EventPageItem
 import com.example.holders.EventPartnerItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.request.RequestFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -133,7 +133,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, bundleOf("event" to event))
+        findNavController().navigate(R.id.request_fragment, RequestFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

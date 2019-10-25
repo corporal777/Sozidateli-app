@@ -1,13 +1,11 @@
 package com.example.ui.search
 
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import com.example.R
-import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.extensions.defaultDateFormatter
@@ -22,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
+import initDropDownView
 import kotlinx.android.synthetic.main.fragment_search.*
 import onTextChanged
 
@@ -115,36 +114,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }
     }
 
-    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Collection<String>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, findValue: (String?) -> T?, onVariantChange: (T?) -> Unit) {
-        val variantsMap = linkedMapOf<String, T?>()
-        variants.associateWithTo(variantsMap) { findValue(it) }
-        initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
-    }
-
-    protected fun <K, V> initDropDownView(textView: AutoCompleteTextView, variants: Collection<K>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, transformKey: (K) -> String, findValue: (K?) -> V?, onVariantChange: (V?) -> Unit) {
-        val variantsMap = linkedMapOf<String, V?>()
-        variants.associateTo(variantsMap, { transformKey(it) to findValue(it) })
-        initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
-    }
-
-    protected fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T?>, selectedVariant: String?, notSelectedVariant: String? = filterNotChosenVariant, onVariantChange: (T?) -> Unit) {
-        val fullFilter = if (notSelectedVariant != null) mutableMapOf<String, T?>(notSelectedVariant to null).apply {
-            putAll(variants)
-        }
-        else variants
-
-        textView.apply {
-            keyListener = null
-            setAdapter(NoFilterArrayAdapter(requireContext(), R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
-            setText(selectedVariant ?: notSelectedVariant, false)
-            (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
-            tag = onTextChanged {
-                val variant = it?.toString()
-                onVariantChange(fullFilter[variant])
-            }
-        }
-    }
-
     protected fun initBiFilter(textView: AutoCompleteTextView, filter: List<String>, boolean: Boolean?, onSubscriptionChange: (Boolean?) -> Unit) {
         val selectedValue = when (boolean) {
             true -> filter[0]
@@ -152,7 +121,8 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             else -> null
         }
 
-        initDropDownView(textView, filter.toList(), selectedValue, findValue = {
+        initDropDownView(textView, filter.toList(), selectedValue,
+                filterNotChosenVariant, findValue = {
             when (filter.indexOf(it)) {
                 0 -> true
                 1 -> false
@@ -179,6 +149,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                 tvTheme,
                 themes,
                 selectedTheme?.value,
+                filterNotChosenVariant,
                 transformKey = { it.value },
                 findValue = { it?.id },
                 onVariantChange = { id ->
@@ -205,6 +176,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                     textView,
                     interests,
                     selectedTheme?.value,
+                    filterNotChosenVariant,
                     transformKey = { it.value },
                     findValue = { it?.id },
                     onVariantChange = { onSpecChange(it) }

@@ -200,7 +200,7 @@
                         android:clickable="false"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
-                        android:theme="@style/CheckBoxTheme" />
+                        android:theme="@style/CheckBox" />
                 </FrameLayout>
 
                 <TextView

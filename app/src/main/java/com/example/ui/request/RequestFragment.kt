@@ -1,29 +1,36 @@
 package com.example.ui.request
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FieldType
-import com.example.data.models.RegisterFieldResponse
-import com.example.holders.ActionButtonItem
+import com.example.data.models.RegisterEventFieldData
+import com.example.data.models.RegistrationEvent
+import com.example.extensions.forEachGroups
+import com.example.extensions.formatToInterval
+import com.example.extensions.setRequired
 import com.example.holders.registerEvent.*
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.REQUEST_CODE_SELECT_PDF
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import fileName
 import kotlinx.android.synthetic.main.fragment_request.*
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Provider
 
+class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
 
-class RequestFragment : BaseFragment(), RequestContract.View {
+    override val title: CharSequence
+        get() = getString(R.string.request_label)
 
     @InjectPresenter
     lateinit var presenter: RequestPresenter
@@ -33,95 +40,130 @@ class RequestFragment : BaseFragment(), RequestContract.View {
 
     @ProvidePresenter
     fun providePresenter(): RequestPresenter = presenterProvider.get().apply {
-        arguments?.let {
-            //            val arg = RequestFragmentArgs.fromBundle(it)
-//            event = arg.event
-        }
+        eventId = RequestFragmentArgs.fromBundle(arguments!!).eventId
     }
 
+    private val section = Section()
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(section) } }
 
-    private val section = Section()
+    private val personalDataFileClickListener: OnPersonalDataFileClickListener = { presenter.onPersonalDataFileClick(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply { adapter = this@RequestFragment.adapter }
     }
 
-    override fun setFields(fieldResponse: RegisterFieldResponse) {
-        val listFields = arrayListOf<Item>()
-        fieldResponse.fields?.let {
+    override fun setFields(event: RegistrationEvent, fieldsData: List<RegisterEventFieldData<*>>) {
+        section.apply {
+            setHeader(RegisterEventHeaderItem(
+                    -100L,
+                    event.organization?.name,
+                    event.conferenceStart?.formatToInterval(event.conferenceFinish),
+                    event.description,
+                    event.registrationName,
+                    event.registrationSubtitle
+            ))
 
-            it.forEach {
-                val baseItem: BaseRegisterItem
-                when (it.type) {
-                    FieldType.STRING.code -> baseItem = RegisterEventStringItem(it, presenter)
-                    FieldType.NUMBER.code -> baseItem = RegisterEventNumberItem(it, presenter)
-                    FieldType.DATE.code -> baseItem = RegisterEventDateItem(it, false, presenter, fragmentManager!!)
-                    FieldType.DATETIME.code -> baseItem = RegisterEventDateItem(it, true, presenter, fragmentManager!!)
-                    FieldType.CHECKBOX.code -> baseItem = RegisterEventSelectBoxItem(it, presenter)
-                    FieldType.SELECTBOX.code -> baseItem = RegisterEventRadioBoxItem(it, presenter)
-                    FieldType.FILE.code -> baseItem = RegisterEventFileItem(it, presenter)
-                    FieldType.SELECTGEO.code -> baseItem = RegisterEventNumberItem(it, presenter)
-                    else -> baseItem = RegisterEventStringItem(it, presenter)
+            addAll(fieldsData.map {
+                when (it) {
+                    is RegisterEventFieldData.String ->
+                        RegisterEventStringItem(it).createFieldItemFrom(it)
+                    is RegisterEventFieldData.Date ->
+                        RegisterEventDateItem(it).createFieldItemFrom(it)
+                    is RegisterEventFieldData.SelectBox ->
+                        RegisterEventSelectBoxItem(it).createFieldItemFrom(it)
+                    is RegisterEventFieldData.RadioBox ->
+                        RegisterEventRadioBoxItem(it).createFieldItemFrom(it)
+                    is RegisterEventFieldData.Checkbox ->
+                        RegisterEventCheckboxItem(it).createFieldItemFrom(it)
+                    is RegisterEventFieldData.Boolean ->
+                        RegisterEventBooleanItem(it).createFieldItemFrom(it, withTitle = false)
+                    is RegisterEventFieldData.Passport ->
+                        RegisterEventPassportItem(it).createFieldItemFrom(it, getString(R.string.event_register_passport))
+                    is RegisterEventFieldData.File ->
+                        EventRegistrationFileGroup(it) { presenter.onAddFileClick(it.field.id) }.createFieldItemFrom(it)
                 }
-                listFields.add(baseItem)
-            }
+            })
         }
+    }
 
-        if (fieldResponse.categories.isNotEmpty()) {
-            listFields.add(RegisterEventDropDownCategoryItem(fieldResponse.categories, presenter, fieldResponse.selectedCategory))
+    private fun Group.createFieldItemFrom(
+            fieldData: RegisterEventFieldData<*>,
+            customTitle: String? = null,
+            withTitle: Boolean = true,
+            withFile: Boolean = true
+    ): Group {
+        val field = fieldData.field
+        return let {
+            if (withTitle) {
+                val title = customTitle ?: field.name
+                it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
+            } else it
         }
+                .let {
+                    if (withFile) {
+                        val file = field.rightFile
+                        it.withEventRegistrationPersonalDataFile(file?.file, field.rightFileDescription
+                                ?: file?.filename, personalDataFileClickListener)
+                    } else it
+                }
+    }
 
-        section.setHeader(RegisterEventHeaderItem(presenter))
-        section.setFooter(ActionButtonItem(-100L, 0) { presenter.onRegisterClick() })
-        section.update(listFields)
+    override fun openUrl(url: String) {
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.error_title, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun openFileSelector() {
-//        Permissions.check(context, Manifest.permission.READ_EXTERNAL_STORAGE, null, object : PermissionHandler() {
-//            override fun onGranted() {
-//                val intent = Intent()
-//                        .setType("*/*")
-//                        .setAction(Intent.ACTION_OPEN_DOCUMENT)
-//                        .addCategory(Intent.CATEGORY_OPENABLE)
-//
-//                startActivityForResult(Intent.createChooser(intent, "Select a file"), REQUEST_CODE_SELECT_PDF)
-//            }
-//        })
-
+        startActivityForResult(Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_OPEN_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE), REQUEST_CODE_FILE)
     }
 
-    override fun updateFileField(position: Int, path: String) {
-        val item = section.getItem(position)
-        if (item is RegisterEventFileItem) {
-            item.updateFile(File(path))
-            item.notifyChanged()
+    override fun updateFileField(fieldId: String, path: String) {
+        adapter.forEachGroups {
+            val fileGroup = if (it is NestedGroup) findEventRegistrationFileGroup(it, fieldId)
+            else null
+            if (fileGroup != null) {
+                fileGroup.addFile(Uri.parse(path).fileName(requireContext()) ?: path, path)
+                return@forEachGroups
+            }
         }
+    }
+
+    private fun findEventRegistrationFileGroup(parent: NestedGroup, fieldId: String): EventRegistrationFileGroup? {
+        if (parent is EventRegistrationFileGroup) return parent
+        for (i in 0 until parent.groupCount) {
+            val group = parent.getGroup(i)
+            if (group is EventRegistrationFileGroup && group.fieldData.field.id == fieldId) return group
+            else if (group is NestedGroup) {
+                val child = findEventRegistrationFileGroup(group, fieldId)
+                if (child != null) return child
+            }
+        }
+
+        return null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         super.onActivityResult(requestCode, resultCode, result)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_SELECT_PDF) {
-                val uri = result?.data
-                try {
-                    uri?.let {
-                        presenter.onFileSelected(uri.toString())
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-//                    showDialog(getString(R.string.select_file_error))
-                }
-            }
+        if (requestCode == REQUEST_CODE_FILE) {
+            val url = if (resultCode == RESULT_OK) {
+                result?.data?.toString()
+            } else null
+
+            if (url != null) presenter.onFileSelected(url)
+            else presenter.onFileSelectionCancel()
         }
     }
 
     override fun showSuccessRegister() {
-        recyclerView.visibility = View.GONE
-        rlSuccess.visibility = View.VISIBLE
-        btnToEvents.setOnClickListener { presenter.onGoTeEventListClick() }
-        btnClose.setOnClickListener { presenter.onCloseClick() }
+
     }
 
     override fun enableActionButton(enable: Boolean) {
@@ -143,5 +185,10 @@ class RequestFragment : BaseFragment(), RequestContract.View {
          }*/
     }
 
+
     override fun layout() = R.layout.fragment_request
+
+    companion object {
+        private const val REQUEST_CODE_FILE = 100
+    }
 }

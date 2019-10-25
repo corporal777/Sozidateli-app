@@ -1,61 +1,37 @@
 package com.example.holders.registerEvent
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import com.example.R
-import com.example.data.models.EventRegisterResponseField
-import com.example.data.models.RegisterEventField
-import com.example.ui.request.RequestPresenter
+import com.example.data.models.RegisterEventFieldData
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.register_event_with_conteiner_item.view.*
+import kotlinx.android.synthetic.main.item_register_event_radio.*
 
-open class RegisterEventRadioBoxItem(private val fieldRegister: RegisterEventField, presenter: RequestPresenter) : BaseRegisterItem(presenter) {
+open class RegisterEventRadioBoxItem(
+        private val fieldData: RegisterEventFieldData<String>
+) : BaseRegisterItem(fieldData) {
 
-    private var selected: String? = null
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        val values = field.values ?: emptyList()
+        viewHolder.apply {
+            radioGroup.apply {
+                removeAllViews()
+                values.forEachIndexed { index, value ->
+                    addView((LayoutInflater.from(context).inflate(R.layout.item_radio_button, this, false) as RadioButton).apply {
+                        id = index
+                        text = value
 
-
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        if (isFirstBind) {
-            fieldRegister.dataFromServer?.let {
-                //val data = parseField(it, EventRegisterResponseField::class.java)
-
-                if (it.value is String) {
-                    selected = it.value as String
-                }
-
-            }
-            isFirstBind = false
-        }
-
-        viewHolder.itemView.apply {
-            tvTitle.text = fieldRegister.name
-            fieldRegister.values?.let {
-                llContainer.removeAllViews()
-
-                val radioGroup = RadioGroup(context)
-                llContainer.addView(radioGroup)
-                it.forEach { value ->
-                    val radioButton = RadioButton(context)
-                    radioButton.id = it.indexOf(value)
-                    radioButton.text = value
-                    selected?.let {
-                        if(selected == value){
-                            radioButton.isChecked = true
-                            onDataChange(fieldRegister.field_id, value)
+                        fieldData.value?.let {
+                            if (it == value) isChecked = true
                         }
-                    }
-                    radioGroup.addView(radioButton)
+                    }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
                 }
 
-                radioGroup.setOnCheckedChangeListener { radioGroup, id ->
-                    val text = radioGroup.findViewById<RadioButton>(id).text
-                    onDataChange(fieldRegister.field_id, text)
-                }
+                setOnCheckedChangeListener { _, id -> fieldData.value = values[id] }
             }
-
-
         }
     }
 
-    override fun getLayout() = R.layout.register_event_with_conteiner_item
+    override fun getLayout() = R.layout.item_register_event_radio
 }

@@ -1,80 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingBottom="32dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:itemCount="6"
-        tools:listitem="@layout/register_event_input" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="16dp"
-        android:visibility="gone"
-        android:paddingEnd="16dp"
-        android:id="@+id/rlSuccess">
-        <ImageButton
-            android:id="@+id/btnClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_close_black_24dp"
-            android:layout_alignParentEnd="true"
-            tools:ignore="ContentDescription" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/colorAccent"
-                android:gravity="center"
-                android:text="@string/success_register_event_title"
-                android:layout_gravity="center"
-                fontPath='fonts/OpenSans-Light.ttf'
-                android:textSize="32sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                fontPath='fonts/OpenSans-Light.ttf'
-                android:text="@string/success_register_event_msg"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginTop="20dp"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnToEvents"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="35dp"
-            android:background="@drawable/background_action_button_selector"
-            android:text="@string/success_register_event_btn"
-            android:textColor="@color/text_color_action_button" />
-
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="wrap_content"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:itemCount="6"
+    tools:listitem="@layout/item_register_event_input" />

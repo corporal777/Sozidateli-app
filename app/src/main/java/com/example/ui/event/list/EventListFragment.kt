@@ -2,7 +2,7 @@ package com.example.ui.event.list
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.Event
@@ -10,7 +10,7 @@ import com.example.extensions.dp
 import com.example.holders.EventItem
 import com.example.ui.base.BaseNestedNavigationFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.util.ARG_EVENT
+import com.example.ui.request.RequestFragmentArgs
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -66,7 +66,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
     }
 
     override fun showEventRequest(event: Event) {
-        findParentNavigation().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
+        findNavController().navigate(R.id.request_fragment, RequestFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list_with_placeholder

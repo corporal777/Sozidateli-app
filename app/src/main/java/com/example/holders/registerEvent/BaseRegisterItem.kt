@@ -1,25 +1,11 @@
 package com.example.holders.registerEvent
 
-import com.example.ui.request.RequestPresenter
+import com.example.data.models.RegisterEventFieldData
 import com.xwray.groupie.kotlinandroidextensions.Item
-import java.io.File
 
-abstract class BaseRegisterItem(private val presenter: RequestPresenter) : Item() {
+abstract class BaseRegisterItem(
+        fieldData: RegisterEventFieldData<*>
+) : Item(fieldData.field.id.toLong()) {
 
-    protected var isFirstBind = true
-
-    fun onDataChange(id: String, data: Any?, subId: String? = null) {
-        var field = "field[$id]"
-        var forRemove: String? = null
-        subId?.let {
-            field += "[$subId]"
-        }
-
-        if (data is File) {
-            field = "file[${id}]"
-            forRemove = "field[$id]"
-        }
-
-        presenter.onDataChange(field, data, forRemove)
-    }
+    protected val field = fieldData.field
 }

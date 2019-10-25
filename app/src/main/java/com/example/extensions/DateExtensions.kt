@@ -56,15 +56,9 @@ fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
     return parseToDate(parser)?.let { formatter.format(it) }
 }
 
-fun String.formatDefaultServerTimeToDefaultTimeInterval(to: String, formatter: DateFormat = defaultServerDateTimeFormatter, withTime: Boolean = true): String? {
-    val start = formatter.parse(this)
-    val finish = formatter.parse(to)
-    return start.calendar().formatToDefaultTimeInterval(finish.calendar(), withTime)
-}
-
-fun String?.formatServerDateOrDefault(format: String, default: String): String {
+fun String?.parseAndFormatOrDefault(parser: DateFormat, formatter: DateFormat, default: String?): String? {
     val date = this ?: return default
-    val parsed = with(defaultServerDateFormatter) {
+    val parsed = with(parser) {
         try {
             parse(date)
         } catch (e: Throwable) {
@@ -72,10 +66,19 @@ fun String?.formatServerDateOrDefault(format: String, default: String): String {
         }
     } ?: return default
 
-    return SimpleDateFormat(format, Locale.getDefault()).format(parsed)
+    return formatter.format(parsed)
 }
 
-fun Calendar.formatToDefaultTimeInterval(to: Calendar, withTime: Boolean): String {
+fun String?.formatToInterval(to: String?, parser: DateFormat = defaultServerDateFormatter, withTime: Boolean = false): String? {
+    if (this == null || to == null) return null
+
+    val start = parser.parse(this)
+    val finish = parser.parse(to)
+
+    return start.calendar().formatToInterval(finish.calendar(), withTime)
+}
+
+fun Calendar.formatToInterval(to: Calendar, withTime: Boolean): String {
     val formatter = if (withTime) {
         if (isSameYear(to)) {
             if (isSameDay(to)) defaultTimeFormatter

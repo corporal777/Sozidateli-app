@@ -62,7 +62,7 @@ abstract class ApiRepository(
         response?.session?.token?.let { saveSession(it) }
     }
 
-    private fun saveSession(token: String) {
+    private fun saveSession(token: String?) {
         appData.token = token
     }
 
@@ -70,7 +70,7 @@ abstract class ApiRepository(
         if (throwable is ConnectException) return NoInternetConnectionException()
 
         return ApiErrorParser.parse(throwable)?.apply {
-            session?.token?.let { saveSession(it) }
+            saveSession(session?.token)
         } ?: throwable
     }
 }

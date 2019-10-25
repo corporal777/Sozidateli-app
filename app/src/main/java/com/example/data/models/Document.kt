@@ -7,7 +7,7 @@ data class Document(
         val id: Int,
         val public_date: String?,
         val mime: String?,
-        val filename: String?,
+        val filename: String,
         val description: String?,
         val file: String?,
         @SerializedName("filesize")

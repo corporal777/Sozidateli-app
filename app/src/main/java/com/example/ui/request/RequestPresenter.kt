@@ -1,125 +1,105 @@
 package com.example.ui.request
 
-import call
+import android.Manifest
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Event
-import com.example.data.models.EventRegisterResponse
-import com.example.data.models.RegisterFieldResponse
-import com.example.events.OnUpdateMyEventsEvent
+import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.rxtakephoto.PermissionNotGrantedException
+import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import io.reactivex.internal.operators.completable.CompletableFromAction
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.greenrobot.eventbus.EventBus
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.subjects.MaybeSubject
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
-import java.io.File
 import javax.inject.Inject
 
 @InjectViewState
 class RequestPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
+        private val eventRepository: EventRepository,
+        private val rxPermissions: RxPermissions
 ) : BasePresenter<RequestContract.View>(), RequestContract.Presenter {
 
-    lateinit var event: Event
+    lateinit var eventId: String
 
-    private var data = HashMap<String, RequestBody?>()
-    private var files = HashMap<String, MultipartBody.Part?>()
-
-    private var currentFileSelectorPosition = -1
+    private var takeFileMaybe: MaybeSubject<String>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.enableActionButton(true)
 
-        val loadCustField = eventRepository.getEventRegisterField(event.id)
-        val loadRegister = eventRepository.getEventRegister(event.id)
+        val loadFields = eventRepository.getEventRegisterField(eventId)
+        val loadRegister = eventRepository.getEventRegister(eventId)
 
-
-        Single.zip(loadCustField, loadRegister, BiFunction<RegisterFieldResponse, EventRegisterResponse, Pair<RegisterFieldResponse, EventRegisterResponse>> { t1, t2 ->
-            Pair(t1, t2)
-        }).map {
-            it.second.custom_fields?.let { fillingFieldArray ->
-                fillingFieldArray.forEach { fillingField ->
-
-                    it.first.fields?.let { arrayFields ->
-                        arrayFields.forEach {
-                            if (fillingField.field_id == it.field_id) {
-                                it.dataFromServer = fillingField
-                            }
-                        }
-                    }
-
+        compositeDisposable += Single.zip(loadFields, loadRegister, BiFunction<RegisterFieldsData, EventRegisterResponse, Pair<RegistrationEvent, List<RegisterEventFieldData<*>>?>> { fields, registration ->
+            val fieldsData = fields.fields?.map {
+                when (it.type) {
+                    RegisterEventField.Type.STRING,
+                    RegisterEventField.Type.TEXT_AREA,
+                    RegisterEventField.Type.NUMBER -> RegisterEventFieldData.String(it, null)
+                    RegisterEventField.Type.DATE,
+                    RegisterEventField.Type.DATETIME -> RegisterEventFieldData.Date(it, null)
+                    RegisterEventField.Type.CHECKBOX -> RegisterEventFieldData.Checkbox(it, null)
+                    RegisterEventField.Type.SELECT_BOX -> RegisterEventFieldData.SelectBox(it, null)
+                    RegisterEventField.Type.RADIO_BOX -> RegisterEventFieldData.RadioBox(it, null)
+                    RegisterEventField.Type.FILE -> RegisterEventFieldData.File(it, null)
+                    RegisterEventField.Type.BOOLEAN -> RegisterEventFieldData.Boolean(it, null)
+                    RegisterEventField.Type.PASSPORT -> RegisterEventFieldData.Passport(it, null)
                 }
-                it.first.selectedCategory = it.second.group
             }
-            return@map it.first
-        }
+
+            registration.event to fieldsData
+        })
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.setFields(it)
-                }, {
+                .subscribeSimple({
                     it.printStackTrace()
-                }).call(compositeDisposable)
+                }) {
+                    viewState.setFields(it.first, it.second ?: emptyList())
+                }
     }
 
     override fun onDataChange(field: String, value: Any?, fieldForRemove: String?) {
-        val requestBody: RequestBody
 
-        if (value != null) {
-            if (value is File) {
-                requestBody = value.asRequestBody("application/octet-stream".toMediaTypeOrNull())
-                files[field] = MultipartBody.Part.createFormData(field, value.name, requestBody)
-                //data.remove(fieldForRemove)
-            } else {
-                requestBody = value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-                data[field] = requestBody
-            }
-        }
-
-        if (value == null) {
-            data.remove(field)
-            files.remove(field)
-        }
-    }
-
-    override fun onClickOpenFileSelector(position: Int) {
-        currentFileSelectorPosition = position
-        viewState.openFileSelector()
-    }
-
-    override fun onFileSelected(path: String) {
-        CompletableFromAction.complete()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    viewState.updateFileField(currentFileSelectorPosition, path)
-                }.call(compositeDisposable)
     }
 
     override fun onRegisterClick() {
-        eventRepository.eventRegister(event.id, data, files.map { it.value })
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.showSuccessRegister()
-                    EventBus.getDefault().postSticky(OnUpdateMyEventsEvent())
-                }, {
-                    it.printStackTrace()
-                }).call(compositeDisposable)
+
     }
 
     override fun onGoTeEventListClick() {
         viewState.navigateUp()
+    }
+
+    override fun onPersonalDataFileClick(url: String) {
+        viewState.openUrl(url)
+    }
+
+    override fun onAddFileClick(fieldId: String) {
+        takeFileMaybe?.onComplete()
+        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .flatMapMaybe {
+                    if (it) {
+                        viewState.openFileSelector()
+                        MaybeSubject.create<String>().apply { takeFileMaybe = this }
+                    } else Maybe.error<String>(PermissionNotGrantedException())
+                }
+                .subscribeSimple {
+                    viewState.updateFileField(fieldId, it)
+                }
+    }
+
+    override fun onFileSelected(path: String) {
+        takeFileMaybe?.onSuccess(path)
+    }
+
+    override fun onFileSelectionCancel() {
+        takeFileMaybe?.onComplete()
     }
 
     override fun onCloseClick() = viewState.navigateUp()

@@ -32,7 +32,7 @@ class EventRepositoryImp
         return call(api.getNewsById(eventId, newsId))
     }
 
-    override fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse> {
+    override fun getEventRegisterField(eventId: String): Single<RegisterFieldsData> {
         return call(api.getEventRegisterField(eventId))
     }
 

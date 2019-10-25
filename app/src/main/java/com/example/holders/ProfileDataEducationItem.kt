@@ -2,21 +2,25 @@ package com.example.holders
 
 import com.example.R
 import com.example.data.models.user.SocialRoles
-import com.example.extensions.formatServerDateOrDefault
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_education.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ProfileDataEducationItem(
         private val education: SocialRoles
 ) : Item() {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvDates.apply {
-                val startYear = education.begin.formatServerDateOrDefault(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, "")
-                val endYear = education.end.formatServerDateOrDefault(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, resources.getString(R.string.profile_date_present))
+                val format = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, Locale.getDefault())
+                val startYear = education.begin.parseAndFormatOrDefault(defaultServerDateFormatter, format, "")
+                val endYear = education.end.parseAndFormatOrDefault(defaultServerDateFormatter, format, resources.getString(R.string.profile_date_present))
                 val years = resources.getString(R.string.profile_dates, startYear, endYear)
                 text = years
             }

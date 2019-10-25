@@ -12,6 +12,7 @@ import com.example.data.models.user.User
 import com.example.holders.SearchUserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
+import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import javax.inject.Inject
 import javax.inject.Provider

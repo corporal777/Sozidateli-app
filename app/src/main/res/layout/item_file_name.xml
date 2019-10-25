@@ -24,5 +24,6 @@
 
     <View
         android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal" />
+        style="@style/ViewDivider.Horizontal"
+        android:visibility="gone" />
 </LinearLayout>

@@ -9,6 +9,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.dateFormatterShortMothShortYear
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.formatToInterval
 import com.example.extensions.parseAndFormat
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -52,7 +53,7 @@ class EventItem(
                 val parser = defaultServerDateFormatter
                 val formatter = dateFormatterShortMothShortYear
                 text = if (start != null && finish != null) {
-                    "${start.parseAndFormat(parser, formatter)} - ${finish.parseAndFormat(parser, formatter)}"
+                    event.conferenceStart?.formatToInterval(event.conferenceFinish)
                 } else {
                     start?.parseAndFormat(parser, formatter)
                 }

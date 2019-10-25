@@ -17,6 +17,7 @@ import com.example.holders.SearchEventItem
 import com.example.ui.search.SearchFragment
 import com.example.util.ARG_EVENT
 import com.xwray.groupie.kotlinandroidextensions.Item
+import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -61,6 +62,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                     tvSubscription,
                     registrations.toList(),
                     value,
+                    filterNotChosenVariant,
                     findValue = {
                         when (registrations.indexOf(it)) {
                             0 -> FILTER_REGISTRATION_PENDING

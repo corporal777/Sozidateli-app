@@ -26,7 +26,7 @@ class RxTakePhoto(
                 .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .flatMap {
                     if (it) rxImagePicker.openCamera(context)
-                    else throw PermissionNotGrantedException()
+                    else Observable.error(PermissionNotGrantedException())
                 }
                 .findRotation()
     }

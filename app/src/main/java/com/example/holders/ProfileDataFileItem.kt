@@ -1,14 +1,11 @@
 package com.example.holders
 
-import android.text.Spanned
-import android.text.style.UnderlineSpan
 import android.view.View
-import androidx.core.text.toSpannable
 import com.example.R
-import com.example.data.models.user.RecommendationFile
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.example.extensions.setUnderlineSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_data_file.*
+import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.item_file_name.*
 
 class ProfileDataFileItem(
         private val name: String,
@@ -16,15 +13,13 @@ class ProfileDataFileItem(
         private val onFileClick: () -> Unit
 ) : Item() {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvFileName.text = name.toSpannable().apply {
-                setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
+            tvFileName.text = name.setUnderlineSpan()
             divider.visibility = if (compactBottom) View.GONE else View.VISIBLE
             tvFileName.setOnClickListener { onFileClick() }
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_data_file
+    override fun getLayout() = R.layout.item_file_name
 }

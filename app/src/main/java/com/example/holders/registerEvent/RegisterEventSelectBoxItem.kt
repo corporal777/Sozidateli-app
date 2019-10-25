@@ -1,57 +1,30 @@
 package com.example.holders.registerEvent
 
-import android.util.TypedValue
-import android.widget.CheckBox
 import com.example.R
-import com.example.data.models.EventRegisterResponseField
-import com.example.data.models.RegisterEventField
-import com.example.ui.request.RequestPresenter
-import com.google.gson.internal.LinkedTreeMap
+import com.example.data.models.RegisterEventFieldData
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.register_event_with_conteiner_item.view.*
+import initDropDownView
+import kotlinx.android.synthetic.main.item_register_event_selector.*
 
-open class RegisterEventSelectBoxItem(private val fieldRegister:RegisterEventField, presenter: RequestPresenter) : BaseRegisterItem(presenter) {
+open class RegisterEventSelectBoxItem(
+        private val fieldData: RegisterEventFieldData<String>
+) : BaseRegisterItem(fieldData) {
 
-    var selected = LinkedTreeMap<String,String>()
-
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-
-        if (isFirstBind) {
-            fieldRegister.dataFromServer?.let {
-
-                if (it.value is LinkedTreeMap<*,*>) {
-                    selected = it.value as LinkedTreeMap<String,String>
-                }
-
-            }
-            isFirstBind = false
-        }
-
-        viewHolder.itemView.apply {
-            tvTitle.text = fieldRegister.name
-            fieldRegister.values?.let {
-                llContainer.removeAllViews()
-                it.forEach {value->
-
-                    val checkBox = CheckBox(context)
-                    checkBox.setTextSize(TypedValue.COMPLEX_UNIT_SP,15f)
-                    checkBox.text = value
-                    checkBox.id = it.indexOf(value)
-
-                    if(selected.containsKey(checkBox.id.toString())){
-                        checkBox.isChecked = true
-                        onDataChange(fieldRegister.field_id,value,checkBox.id.toString())
-                    }
-
-                    llContainer.addView(checkBox)
-
-                    checkBox.setOnCheckedChangeListener { compoundButton, isChecked ->
-                        onDataChange(fieldRegister.field_id,if(isChecked) compoundButton.text.toString() else null,compoundButton.id.toString())
-                    }
-                }
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        val values = field.values ?: emptyList()
+        viewHolder.apply {
+            autoCompleteTextView.apply {
+                initDropDownView(
+                        this,
+                        values,
+                        fieldData.value,
+                        if (field.required) null else resources.getString(R.string.search_filters_not_chosen),
+                        { it },
+                        { fieldData.value = it }
+                )
             }
         }
     }
 
-    override fun getLayout() = R.layout.register_event_with_conteiner_item
+    override fun getLayout() = R.layout.item_register_event_selector
 }

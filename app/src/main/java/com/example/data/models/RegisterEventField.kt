@@ -1,25 +1,44 @@
 package com.example.data.models
 
-import com.google.gson.JsonElement
+import com.google.gson.annotations.SerializedName
 
 data class RegisterEventField(
-        var field_id: String,
-        var name: String?,
-        var sort: Int,
-        var type: String,
-        var description: String?,
-        var values: ArrayList<String>?,
-        var dataFromServer: EventRegisterResponseField?
-)
+        @SerializedName("field_id")
+        val id: String,
+        val name: String?,
+        val sort: Int,
+        val type: Type,
+        val required: Boolean,
+        val description: String?,
+        val values: List<String>?,
+        @SerializedName("right_file")
+        val rightFile: Document?,
+        @SerializedName("right_file_description")
+        val rightFileDescription: String?
+) {
 
-enum class FieldType(val code: String) {
-    STRING("string"),
-    NUMBER("number"),
-    DATE("date"),
-    DATETIME("datetime"),
-    CHECKBOX("checkbox"),
-    SELECTBOX("selectbox"),
-    FILE("file"),
-    SELECTGEO("selectgeo")
-
+    enum class Type {
+        @SerializedName("string")
+        STRING,
+        @SerializedName("number")
+        NUMBER,
+        @SerializedName("date")
+        DATE,
+        @SerializedName("datetime")
+        DATETIME,
+        @SerializedName("checkbox")
+        CHECKBOX,
+        @SerializedName("selectbox")
+        SELECT_BOX,
+        @SerializedName("radiobox")
+        RADIO_BOX,
+        @SerializedName("file")
+        FILE,
+        @SerializedName("textarea")
+        TEXT_AREA,
+        @SerializedName("boolean")
+        BOOLEAN,
+        @SerializedName("passport")
+        PASSPORT
+    }
 }

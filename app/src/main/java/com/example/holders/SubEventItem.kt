@@ -7,7 +7,8 @@ import com.example.R
 import com.example.data.models.SubEvent
 import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
-import com.example.extensions.formatDefaultServerTimeToDefaultTimeInterval
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.formatToInterval
 import com.example.ui.views.TagChip
 import com.example.util.weak
 import com.google.android.material.chip.Chip
@@ -28,7 +29,7 @@ open class SubEventItem(
 
     override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvTime.text = subEvent.start.formatDefaultServerTimeToDefaultTimeInterval(subEvent.finish)
+            tvTime.text = subEvent.start.formatToInterval(subEvent.finish, defaultServerDateTimeFormatter, true)
             tvStatus.text = subEvent.title
 
             val visibilityIsSpeaker: Int = if (subEvent.isSpeaker) View.VISIBLE else View.GONE

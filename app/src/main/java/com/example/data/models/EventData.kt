@@ -29,6 +29,8 @@ data class EventData(
         @SerializedName("address_federal")
         val addressFederal: String?,
         val place: String?,
+        @SerializedName("place_how2get_title")
+        val placeHowToGetTitle: String?,
         @SerializedName("place_how2get")
         val placeHowToGet: String?,
         @SerializedName("place_gps_lat")

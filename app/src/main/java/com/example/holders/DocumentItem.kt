@@ -1,14 +1,12 @@
 package com.example.holders
 
 import android.content.Context
-import android.text.Spanned
-import android.text.style.UnderlineSpan
 import android.webkit.MimeTypeMap
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Document
 import com.example.extensions.formatToDefaultDate
+import com.example.extensions.setUnderlineSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_document.*
@@ -28,9 +26,7 @@ class DocumentItem(
                 isVisible = date != null
             }
             tvDocumentName.apply {
-                text = (document.description ?: document.filename ?: "file").toSpannable().apply {
-                    setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                }
+                text = (document.description ?: document.filename ?: "file").setUnderlineSpan()
             }
 
             tvFileData.apply {

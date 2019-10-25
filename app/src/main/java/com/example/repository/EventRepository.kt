@@ -13,7 +13,7 @@ interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event>>
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
-    fun getEventRegisterField(eventId: String): Single<RegisterFieldResponse>
+    fun getEventRegisterField(eventId: String): Single<RegisterFieldsData>
     fun eventRegister(eventId: String, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>

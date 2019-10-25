@@ -28,6 +28,7 @@ data class Event(
         val userRegistration: RegistrationStatus
 
 ) : Parcelable {
+
     enum class RegistrationStatus {
         @SerializedName("pending")
         PENDING,

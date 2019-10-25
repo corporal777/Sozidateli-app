@@ -1,8 +1,11 @@
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.InputFilter
 import android.text.Layout
@@ -11,6 +14,7 @@ import android.text.style.URLSpan
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
@@ -22,6 +26,7 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import com.example.R
+import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
@@ -205,13 +210,34 @@ fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null):
 }
 
 fun TextInputLayout.initAsDatePicker(startDate: Date?, transformDate: (year: Int, month: Int, day: Int) -> String?) {
+    initAsDatePicker(startDate, false) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
+}
+
+fun TextInputLayout.initAsDateTimePicker(startDate: Date?, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
+    initAsDatePicker(startDate, true) { year, month, dayOfMonth, hour, minute -> transformDate(year, month, dayOfMonth, hour, minute) }
+}
+
+private fun TextInputLayout.initAsDatePicker(startDate: Date?, includeTime: Boolean, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
+    val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
+    val showTimePicker: (year: Int, month: Int, day: Int, startHour: Int, startMinute: Int) -> Unit = { year, month, day, startHour: Int, startMinute: Int ->
+        TimePickerDialog(context, R.style.AlertDialogTheme, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            calendar.set(year, month, day, hour, minute)
+            editText?.setText(transformDate(year, month, day, hour, minute))
+        }, startHour, startMinute, true)
+                .show()
+    }
+
     val showDatePicker = {
-        val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
         DatePickerDialog(context, R.style.AlertDialogTheme, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            editText?.setText(transformDate(year, month, dayOfMonth))
+            if (includeTime) showTimePicker(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+            else {
+                calendar.set(year, month, dayOfMonth)
+                editText?.setText(transformDate(year, month, dayOfMonth, 0, 0))
+            }
         }, calendar.get(YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
                 .show()
     }
+
     setEndIconDrawable(R.drawable.ic_calendar)
     setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
     setEndIconOnClickListener { showDatePicker() }
@@ -223,4 +249,51 @@ fun TextInputLayout.initAsDatePicker(startDate: Date?, transformDate: (year: Int
             true
         }
     }
+}
+
+fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Collection<String>, selectedVariant: String?, notSelectedVariant: String? = null, findValue: (String?) -> T?, onVariantChange: (T?) -> Unit) {
+    val variantsMap = linkedMapOf<String, T?>()
+    variants.associateWithTo(variantsMap) { findValue(it) }
+    initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
+}
+
+fun <K, V> initDropDownView(textView: AutoCompleteTextView, variants: Collection<K>, selectedVariant: String?, notSelectedVariant: String? = null, transformKey: (K) -> String, findValue: (K?) -> V?, onVariantChange: (V?) -> Unit) {
+    val variantsMap = linkedMapOf<String, V?>()
+    variants.associateTo(variantsMap, { transformKey(it) to findValue(it) })
+    initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
+}
+
+fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T?>, selectedVariant: String?, notSelectedVariant: String? = null, onVariantChange: (T?) -> Unit) {
+    val fullFilter = if (notSelectedVariant != null) mutableMapOf<String, T?>(notSelectedVariant to null).apply {
+        putAll(variants)
+    }
+    else variants
+
+    textView.apply {
+        keyListener = null
+        setAdapter(NoFilterArrayAdapter(context, R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
+        setText(selectedVariant ?: notSelectedVariant, false)
+        (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
+        tag = onTextChanged {
+            val variant = it?.toString()
+            onVariantChange(fullFilter[variant])
+        }
+
+        isCursorVisible = false
+        isFocusableInTouchMode = false
+
+    }
+}
+
+fun Uri.fileName(context: Context): String? {
+    val cursor = context.contentResolver?.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+    var filename: String? = null
+
+    cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)?.also { nameIndex ->
+        cursor.moveToFirst()
+        if (nameIndex >= 0) filename = cursor.getString(nameIndex)
+        cursor.close()
+    }
+
+    return filename
 }

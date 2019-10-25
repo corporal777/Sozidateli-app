@@ -11,6 +11,7 @@ import com.example.data.models.SearchFilter
 import com.example.holders.OrganizationItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
+import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_organization.view.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -42,7 +43,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
             initTextFilter(etAddress, filter.address) { filter.address = it }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }
-            initDropDownView(tvType, resources.getStringArray(R.array.organization_types).toList(), filter.type, findValue = { it }, onVariantChange = { filter.type = it })
+            initDropDownView(tvType, resources.getStringArray(R.array.organization_types).toList(), filter.type, filterNotChosenVariant, findValue = { it }, onVariantChange = { filter.type = it })
             initBiFilter(tvSubscription, resources.getStringArray(R.array.subscription_status).toList(), filter.subscription) { filter.subscription = it }
         }
     }
