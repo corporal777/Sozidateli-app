@@ -6,9 +6,10 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initDropDownView
 import kotlinx.android.synthetic.main.item_register_event_selector.*
 
-open class RegisterEventSelectBoxItem(
-        private val fieldData: RegisterEventFieldData<String>
-) : BaseRegisterItem(fieldData) {
+open class EventRegistrationSelectBoxItem(
+        private val fieldData: RegisterEventFieldData<String>,
+        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         val values = field.values ?: emptyList()
@@ -20,7 +21,10 @@ open class RegisterEventSelectBoxItem(
                         fieldData.value,
                         if (field.required) null else resources.getString(R.string.search_filters_not_chosen),
                         { it },
-                        { fieldData.value = it }
+                        {
+                            fieldData.value = it
+                            onDataChange()
+                        }
                 )
             }
         }

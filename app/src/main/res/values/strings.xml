@@ -498,10 +498,15 @@
     <string name="map_sharing_error">Не удалось выполнить публикацию</string>
 
     <string name="event_register_passport">Паспортные данные</string>
-    <string name="event_register_serial">Серия*</string>
-    <string name="event_register_number">Номер*</string>
-    <string name="event_register_agency">Кем выдано*</string>
-    <string name="event_register_code">Код подразделения*</string>
-    <string name="event_register_date">Дата выдачи*</string>
+    <string name="event_register_serial">Серия</string>
+    <string name="event_register_number">Номер</string>
+    <string name="event_register_agency">Кем выдано</string>
+    <string name="event_register_code">Код подразделения</string>
+    <string name="event_register_date">Дата выдачи</string>
     <string name="event_register_personal_data_file">Файл, разрешающий обработку перс.данных</string>
+    <string name="event_register_request">Подать заявку</string>
+    <string name="event_register_file_extension_wrong">Можно добавить только файлы с раширением: %s</string>
+    <string name="event_register_file_no_permission">Для добавления файла необходимо разрешение на доступ к памяти устройства</string>
+    <string name="event_register_form_request_error">Не удалось разместить заявку</string>
+    <string name="event_register_already_approved_error">Заявка уже была подтверждена ранее</string>
 </resources>

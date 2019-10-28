@@ -1,6 +1,6 @@
 package com.example.data.models
 
-data class Category(
+data class EventGroup(
         val id: String,
         val name: String
 )

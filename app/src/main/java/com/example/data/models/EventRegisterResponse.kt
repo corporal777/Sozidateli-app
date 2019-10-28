@@ -8,9 +8,9 @@ data class EventRegisterResponse(
         val eventId: String,
         val event: RegistrationEvent,
         @SerializedName("custom_fields")
-        val fields: List<EventRegisterResponseField>?,
+        val fields: List<EventRegisterResponseField?>?,
         val group_id: String?,
-        val group: Category?,
+        val group: EventGroup?,
         @SerializedName("user_id")
         val userId: String?,
         val created: String?,

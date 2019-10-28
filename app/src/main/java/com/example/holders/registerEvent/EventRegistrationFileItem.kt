@@ -10,6 +10,7 @@ import onTextChanged
 open class EventRegistrationFileItem(
         id: Long,
         private val filename: String,
+        private val editable: Boolean,
         private val onRemoveFileClick: () -> Unit,
         private val onNameChange: (String) -> Unit
 ) : Item(id) {
@@ -21,6 +22,7 @@ open class EventRegistrationFileItem(
             textInputEditText.apply {
                 setText(filename)
                 textWatcher = onTextChanged { text?.toString()?.let { onNameChange(it) } }
+                isEnabled = editable
             }
 
             btnDelete.setOnClickListener { onRemoveFileClick() }

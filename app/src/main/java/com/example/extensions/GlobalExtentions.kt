@@ -1,5 +1,6 @@
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
@@ -271,9 +272,9 @@ fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T
 
     textView.apply {
         keyListener = null
+        (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
         setAdapter(NoFilterArrayAdapter(context, R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
         setText(selectedVariant ?: notSelectedVariant, false)
-        (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
         tag = onTextChanged {
             val variant = it?.toString()
             onVariantChange(fullFilter[variant])
@@ -285,15 +286,12 @@ fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T
     }
 }
 
-fun Uri.fileName(context: Context): String? {
-    val cursor = context.contentResolver?.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-    var filename: String? = null
-
-    cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)?.also { nameIndex ->
-        cursor.moveToFirst()
-        if (nameIndex >= 0) filename = cursor.getString(nameIndex)
-        cursor.close()
+fun Uri.fileName(contentResolver: ContentResolver): String? {
+    return contentResolver.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { nameIndex ->
+            cursor.moveToFirst()
+            if (nameIndex >= 0) cursor.getString(nameIndex)
+            else null
+        }
     }
-
-    return filename
 }

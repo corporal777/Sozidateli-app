@@ -64,4 +64,7 @@ class AppModule {
     @Singleton
     @Provides
     fun providesSnAuthManager(context: Context) = SnAuthManager(context)
+
+    @Provides
+    fun providesContentResolver(context: Context) = context.contentResolver
 }

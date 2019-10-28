@@ -9,8 +9,9 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_register_event_checkbox.*
 
 open class RegisterEventCheckboxItem(
-        private val fieldData: RegisterEventFieldData<Set<String>>
-) : BaseRegisterItem(fieldData) {
+        private val fieldData: RegisterEventFieldData<Set<String>>,
+        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         val values = field.values ?: emptyList()
@@ -33,6 +34,7 @@ open class RegisterEventCheckboxItem(
 
                             if (isChecked) valuesData.add(value)
                             else valuesData.remove(value)
+                            onDataChange()
                         }
 
                         fieldData.value?.let {

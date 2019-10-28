@@ -8,10 +8,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -36,8 +33,8 @@ class EventRepositoryImp
         return call(api.getEventRegisterField(eventId))
     }
 
-    override fun eventRegister(eventId: String, fields: Map<String, RequestBody?>, files: List<MultipartBody.Part?>?): Completable {
-        return call(api.eventRegister(eventId, fields.let { if (it.isNullOrEmpty()) hashMapOf("_" to "_".toRequestBody("text/plain".toMediaTypeOrNull())) else it }, files.let { if (it.isNullOrEmpty()) null else it }))
+    override fun eventRegister(eventId: String, body: MultipartBody): Single<EventRegisterResponse> {
+        return call(api.eventRegister(eventId, body))
     }
 
     override fun getEventRegister(eventId: String): Single<EventRegisterResponse> {
@@ -80,7 +77,7 @@ class EventRepositoryImp
         return callPagination(api.getSubEventUsers(eventId, subEventId, limit, offset))
     }
 
-    override fun getCategoriesList(): Single<List<Category>> {
+    override fun getCategoriesList(): Single<List<EventGroup>> {
         return call(api.getCategoriesList())
     }
 

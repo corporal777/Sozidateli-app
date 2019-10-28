@@ -9,8 +9,9 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_register_event_radio.*
 
 open class RegisterEventRadioBoxItem(
-        private val fieldData: RegisterEventFieldData<String>
-) : BaseRegisterItem(fieldData) {
+        private val fieldData: RegisterEventFieldData<String>,
+        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         val values = field.values ?: emptyList()
@@ -28,7 +29,10 @@ open class RegisterEventRadioBoxItem(
                     }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
                 }
 
-                setOnCheckedChangeListener { _, id -> fieldData.value = values[id] }
+                setOnCheckedChangeListener { _, id ->
+                    fieldData.value = values[id]
+                    onDataChange()
+                }
             }
         }
     }

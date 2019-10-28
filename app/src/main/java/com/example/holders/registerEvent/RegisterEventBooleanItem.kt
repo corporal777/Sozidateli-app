@@ -9,8 +9,9 @@ import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.item_checkbox.*
 
 open class RegisterEventBooleanItem(
-        private val fieldData: RegisterEventFieldData<Boolean>
-) : BaseRegisterItem(fieldData) {
+        private val fieldData: RegisterEventFieldData<Boolean>,
+        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -19,6 +20,7 @@ open class RegisterEventBooleanItem(
                 isChecked = fieldData.value ?: false
                 setOnCheckedChangeListener { _, isChecked ->
                     fieldData.value = isChecked
+                    onDataChange()
                 }
             }
 

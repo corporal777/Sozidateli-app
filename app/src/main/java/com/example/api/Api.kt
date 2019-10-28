@@ -205,9 +205,8 @@ interface Api {
     @GET("/v1/events/{eventId}/register/fields")
     fun getEventRegisterField(@Path("eventId") eventId: String): Single<ApiResponse<RegisterFieldsData>>
 
-    @Multipart
     @POST("/v1/events/{eventId}/register/save")
-    fun eventRegister(@Path("eventId") eventId: String, @PartMap map: Map<String, @JvmSuppressWildcards RequestBody?>, @Part data: List<MultipartBody.Part?>?): Completable
+    fun eventRegister(@Path("eventId") eventId: String, @Body body: RequestBody): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
@@ -242,7 +241,7 @@ interface Api {
     fun getPartnerById(@Path("eventId") eventId: String, @Path("partnerId") partnerId: String): Single<ApiResponse<Partner>>
 
     @GET("/v1/events/categories")
-    fun getCategoriesList(): Single<ApiResponse<List<Category>>>
+    fun getCategoriesList(): Single<ApiResponse<List<EventGroup>>>
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/speakers")

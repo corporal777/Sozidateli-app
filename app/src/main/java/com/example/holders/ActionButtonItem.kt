@@ -11,6 +11,8 @@ class ActionButtonItem(
         private val addClickListener: () -> Unit
 ) : Item(id) {
 
+    var isEnabled = true
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.btnAdd.apply {
             setOnClickListener { addClickListener() }
@@ -29,6 +31,10 @@ class ActionButtonItem(
                     actionText = R.string.event_contacts_watch_on_map
                     actionIcon = R.drawable.ic_location
                 }
+                ACTION_EVENT_REQUEST -> {
+                    actionText = R.string.event_register_request
+                    actionIcon = 0
+                }
                 else -> {
                     actionText = R.string.add_record
                     actionIcon = R.drawable.ic_add_sn
@@ -37,6 +43,7 @@ class ActionButtonItem(
 
             text = resources.getString(actionText)
             setCompoundDrawablesWithIntrinsicBounds(actionIcon, 0, 0, 0)
+            isEnabled = this@ActionButtonItem.isEnabled
         }
     }
 
@@ -47,9 +54,20 @@ class ActionButtonItem(
         else -> R.layout.item_action_button
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (this === other) return true
+        if (other !is ActionButtonItem) return false
+
+        if (action != other.action) return false
+        if (isEnabled != other.isEnabled) return false
+
+        return true
+    }
+
     companion object {
         const val ACTION_ADD_RECORD = 0
         const val ACTION_ADD_FILE = 1
         const val ACTION_SHOW_ON_MAP = 2
+        const val ACTION_EVENT_REQUEST = 3
     }
 }

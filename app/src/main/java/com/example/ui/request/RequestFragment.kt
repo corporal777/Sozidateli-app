@@ -9,11 +9,14 @@ import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.EventGroup
 import com.example.data.models.RegisterEventFieldData
 import com.example.data.models.RegistrationEvent
 import com.example.extensions.forEachGroups
 import com.example.extensions.formatToInterval
 import com.example.extensions.setRequired
+import com.example.holders.ActionButtonItem
+import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -22,8 +25,8 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import fileName
 import kotlinx.android.synthetic.main.fragment_request.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -45,15 +48,21 @@ class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
 
     private val section = Section()
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(section) } }
+    private val saveButtonItem by lazy {
+        ActionButtonItem(-200L, ACTION_EVENT_REQUEST) {
+            presenter.onRegisterClick()
+        }
+    }
 
     private val personalDataFileClickListener: OnPersonalDataFileClickListener = { presenter.onPersonalDataFileClick(it) }
+    private val onFieldDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit = { presenter.onDataChange(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply { adapter = this@RequestFragment.adapter }
     }
 
-    override fun setFields(event: RegistrationEvent, fieldsData: List<RegisterEventFieldData<*>>) {
+    override fun setFields(event: RegistrationEvent, selectedGroup: String?, groups: List<EventGroup>, fieldsData: List<RegisterEventFieldData<*>>) {
         section.apply {
             setHeader(RegisterEventHeaderItem(
                     -100L,
@@ -64,24 +73,30 @@ class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
                     event.registrationSubtitle
             ))
 
+            setFooter(saveButtonItem)
+
+            add(EventRegistrationGroupsItem(-90L, groups, selectedGroup) {
+                presenter.onSelectedGroupChange(it)
+            })
+
             addAll(fieldsData.map {
                 when (it) {
                     is RegisterEventFieldData.String ->
-                        RegisterEventStringItem(it).createFieldItemFrom(it)
+                        RegisterEventStringItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is RegisterEventFieldData.Date ->
-                        RegisterEventDateItem(it).createFieldItemFrom(it)
+                        RegisterEventDateItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is RegisterEventFieldData.SelectBox ->
-                        RegisterEventSelectBoxItem(it).createFieldItemFrom(it)
+                        EventRegistrationSelectBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is RegisterEventFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it).createFieldItemFrom(it)
+                        RegisterEventRadioBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is RegisterEventFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it).createFieldItemFrom(it)
+                        RegisterEventCheckboxItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is RegisterEventFieldData.Boolean ->
-                        RegisterEventBooleanItem(it).createFieldItemFrom(it, withTitle = false)
+                        RegisterEventBooleanItem(it, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
                     is RegisterEventFieldData.Passport ->
-                        RegisterEventPassportItem(it).createFieldItemFrom(it, getString(R.string.event_register_passport))
+                        RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
                     is RegisterEventFieldData.File ->
-                        EventRegistrationFileGroup(it) { presenter.onAddFileClick(it.field.id) }.createFieldItemFrom(it)
+                        EventRegistrationFileGroup(it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
                 }
             })
         }
@@ -125,15 +140,21 @@ class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
                 .addCategory(Intent.CATEGORY_OPENABLE), REQUEST_CODE_FILE)
     }
 
-    override fun updateFileField(fieldId: String, path: String) {
+    override fun updateFileField(fieldId: String) {
         adapter.forEachGroups {
             val fileGroup = if (it is NestedGroup) findEventRegistrationFileGroup(it, fieldId)
             else null
             if (fileGroup != null) {
-                fileGroup.addFile(Uri.parse(path).fileName(requireContext()) ?: path, path)
+                fileGroup.checkFile()
                 return@forEachGroups
             }
         }
+    }
+
+    override fun showWrongFileExtensions(availableExtensions: List<String>) {
+        val message = getString(R.string.event_register_file_extension_wrong)
+                .format(availableExtensions.joinToString { it.toLowerCase(Locale.getDefault()) })
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     private fun findEventRegistrationFileGroup(parent: NestedGroup, fieldId: String): EventRegistrationFileGroup? {
@@ -154,7 +175,7 @@ class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
         super.onActivityResult(requestCode, resultCode, result)
         if (requestCode == REQUEST_CODE_FILE) {
             val url = if (resultCode == RESULT_OK) {
-                result?.data?.toString()
+                result?.data
             } else null
 
             if (url != null) presenter.onFileSelected(url)
@@ -167,24 +188,13 @@ class RequestFragment : BaseFragment(), RequestContract.View, ToolbarFragment {
     }
 
     override fun enableActionButton(enable: Boolean) {
-        /* btnSendRequest.apply {
-             isEnabled = enable
-
-             val background: Int
-             val textColor: Int
-             if (enable) {
-                 background = R.drawable.background_corners
-                 textColor = Color.WHITE
-             } else {
-                 background = R.drawable.background_edittext_login
-                 textColor = Color.DKGRAY
-             }
-
-             setBackgroundResource(background)
-             setTextColor(textColor)
-         }*/
+        saveButtonItem.apply {
+            if (isEnabled != enable) {
+                isEnabled = enable
+                notifyChanged()
+            }
+        }
     }
-
 
     override fun layout() = R.layout.fragment_request
 

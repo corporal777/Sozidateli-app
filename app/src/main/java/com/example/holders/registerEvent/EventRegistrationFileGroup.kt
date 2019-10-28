@@ -1,6 +1,7 @@
 package com.example.holders.registerEvent
 
-import com.example.data.models.Document
+import android.net.Uri
+import com.example.data.models.EventFile
 import com.example.data.models.RegisterEventFieldData
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_FILE
@@ -8,29 +9,26 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventRegistrationFileGroup(
-        val fieldData: RegisterEventFieldData<Document>,
+        val fieldData: RegisterEventFieldData<EventFile?>,
+        private val onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit,
         onAddClick: () -> Unit
 ) : NestedGroup() {
 
     private var fileItem: EventRegistrationFileItem? = null
     private val fileAddItem = ActionButtonItem(FILE_ADD_ITEM_ID, ACTION_ADD_FILE, onAddClick)
 
-    private var fileName: String? = null
-    private var filePath: String? = null
-
     init {
-        val document = fieldData.value
-        if (document != null) {
-            fileName = document.filename
-            filePath = document.file
-            fileItem = createFileItem(document.filename)
-        }
+        checkFile()
     }
 
-    fun addFile(name: String, path: String) {
-        fileName = name
-        filePath = path
-        fileItem = createFileItem(name)
+    fun checkFile() {
+        val document = fieldData.value
+        fileItem = if (document != null) {
+            createFileItem(document.name, document.path)
+        } else {
+            null
+        }
+        onDataChange(fieldData)
         notifyItemChanged(0)
     }
 
@@ -49,13 +47,15 @@ class EventRegistrationFileGroup(
 
     override fun getGroupCount() = 1
 
-    private fun createFileItem(fileName: String): EventRegistrationFileItem {
-        return EventRegistrationFileItem(FILE_ITEM_ID, fileName, {
-            this.fileName = null
-            this.filePath = null
+    private fun createFileItem(fileName: String, path: Uri): EventRegistrationFileItem {
+        return EventRegistrationFileItem(FILE_ITEM_ID, fileName, path.scheme?.startsWith("http") != true, {
+            fieldData.value = null
             this.fileItem = null
             notifyItemChanged(0)
-        }) { this.fileName = it }
+            onDataChange(fieldData)
+        }, {
+            fieldData.value?.name = it
+        })
     }
 
     companion object {

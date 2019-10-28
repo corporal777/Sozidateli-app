@@ -17,14 +17,14 @@ import timber.log.Timber
 
 
 open class RegisterEventDateItem(
-        private val fieldData: RegisterEventFieldData<String>
-) : BaseRegisterItem(fieldData) {
+        private val fieldData: RegisterEventFieldData<String>,
+        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+) : BaseRegisterItem(fieldData, onDataChange) {
 
     private val textChangeListener: (CharSequence?) -> Unit = {
         fieldData.value = if (field.type == RegisterEventField.Type.DATE) it?.toString()?.formatToDefaultServerDate()
         else it?.toString()?.parseAndFormat(defaultDateTimeFormatter, defaultServerDateTimeFormatter)
-
-        Timber.tag("REGISTER_T").d("${field.id}/${field.type}: ${fieldData.value}")
+        onDataChange()
     }
 
     private var textWatcher: TextWatcher? = null
@@ -33,7 +33,7 @@ open class RegisterEventDateItem(
         viewHolder.apply {
             textInputEditText.apply {
                 val valueString = fieldData.value
-                val date = valueString?.let { defaultDateFormatter.parse(it) }
+                val date = valueString?.let { defaultServerDateFormatter.parse(it) }
                 val value: String?
                 when (field.type) {
                     RegisterEventField.Type.DATE -> {
