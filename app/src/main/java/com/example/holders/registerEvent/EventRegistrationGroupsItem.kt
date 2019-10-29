@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.item_register_event_selector.*
 
 open class EventRegistrationGroupsItem(
         id: Long,
+        private val description: String?,
         private val groups: List<EventGroup>,
         private var selectedGroupId: String?,
         private val onDataChange: (String?) -> Unit
@@ -18,11 +19,13 @@ open class EventRegistrationGroupsItem(
         val values = groups
         viewHolder.apply {
             autoCompleteTextView.apply {
+                val notSelectedVariant = resources.getString(R.string.search_filters_not_chosen)
+                hint = description
                 initDropDownView(
                         this,
                         values.map { it.name },
                         groups.find { it.id == selectedGroupId }?.name,
-                        resources.getString(R.string.search_filters_not_chosen),
+                        notSelectedVariant,
                         { name -> values.find { it.name == name }?.id },
                         {
                             selectedGroupId = it

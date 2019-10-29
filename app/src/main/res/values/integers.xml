@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="profile_transition_duration">300</integer>
+    <integer name="slide_from_bottom_transition_duration">400</integer>
+    <integer name="slide_from_bottom_alpha_duration">300</integer>
 </resources>

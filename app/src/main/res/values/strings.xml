@@ -24,7 +24,7 @@
     <string name="tab_subscriptions_title">Подписки</string>
     <string name="tab_events_title">Мои мероприятия</string>
 
-    <string name="event_status_approved">Одобрено</string>
+    <string name="event_status_approved">Участие одобрено</string>
     <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
     <string name="event_status_finished">Завершено</string>
     <string name="event_status_decline">Отклонено</string>
@@ -509,4 +509,13 @@
     <string name="event_register_file_no_permission">Для добавления файла необходимо разрешение на доступ к памяти устройства</string>
     <string name="event_register_form_request_error">Не удалось разместить заявку</string>
     <string name="event_register_already_approved_error">Заявка уже была подтверждена ранее</string>
+    <string name="event_register_closed_error">Регистрация закрыта</string>
+    <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
+    <string name="event_register_sent_moderate_title">Ваша заявка успешно подана!</string>
+    <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистраци на мероприятие</string>
+    <string name="event_register_sent_moderate_message">Модератор подтвердит ваше участие в течении 2 рабочих дней</string>
+    <string name="event_register_sent_moderate_button">К списку мероприятий</string>
+    <string name="event_register_sent_title">Заявка успешно отправлена</string>
+    <string name="event_register_sent_message">Теперь вы можете перейти к мероприятию  и составить свой календарь событий</string>
+    <string name="event_register_sent_button">К мероприятию</string>
 </resources>

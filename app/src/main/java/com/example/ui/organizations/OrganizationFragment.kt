@@ -2,7 +2,6 @@ package com.example.ui.organizations
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -20,8 +19,8 @@ import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.ARG_EVENT
 import com.rd.animation.type.AnimationType
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -241,7 +240,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, bundleOf(ARG_EVENT to event))
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun showUsers(organizationId: String) {

@@ -37,7 +37,7 @@ import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.settingChat.SettingChatFragment
-import com.example.ui.request.RequestFragment
+import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
@@ -124,7 +124,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeFavoriteFragment(): FavoriteTabsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeRequestFragment(): RequestFragment
+    abstract fun contributeRequestFragment(): EventRegistrationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSearchTabsFragment(): SearchTabsFragment

@@ -32,6 +32,9 @@ import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import com.squareup.picasso.Picasso
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -274,15 +277,20 @@ fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T
         keyListener = null
         (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
         setAdapter(NoFilterArrayAdapter(context, R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
-        setText(selectedVariant ?: notSelectedVariant, false)
+        setText(selectedVariant, false)
         tag = onTextChanged {
+            if (notSelectedVariant != null && it.toString() == notSelectedVariant) {
+                val watcher = tag as? TextWatcher
+                removeTextChangedListener(watcher)
+                text = null
+                addTextChangedListener(watcher)
+            }
             val variant = it?.toString()
             onVariantChange(fullFilter[variant])
         }
 
         isCursorVisible = false
         isFocusableInTouchMode = false
-
     }
 }
 
@@ -294,4 +302,14 @@ fun Uri.fileName(contentResolver: ContentResolver): String? {
             else null
         }
     }
+}
+
+inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? = null): T? {
+    if (this == null) return null
+    return GsonBuilder()
+            .apply {
+                if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
+            }
+            .create()
+            .fromJson(this, T::class.java)
 }

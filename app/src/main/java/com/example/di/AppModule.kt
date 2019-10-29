@@ -1,6 +1,7 @@
 package com.example.di
 
 import android.app.Application
+import android.content.ContentResolver
 import android.content.Context
 import android.net.NetworkInfo
 import com.example.R
@@ -66,5 +67,5 @@ class AppModule {
     fun providesSnAuthManager(context: Context) = SnAuthManager(context)
 
     @Provides
-    fun providesContentResolver(context: Context) = context.contentResolver
+    fun providesContentResolver(context: Context): ContentResolver = context.contentResolver
 }

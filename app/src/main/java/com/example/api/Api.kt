@@ -203,7 +203,7 @@ interface Api {
     fun organizationMembers(@Path("organizationId") orgId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<OrganizationMember>>>
 
     @GET("/v1/events/{eventId}/register/fields")
-    fun getEventRegisterField(@Path("eventId") eventId: String): Single<ApiResponse<RegisterFieldsData>>
+    fun getEventRegisterField(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterForm>>
 
     @POST("/v1/events/{eventId}/register/save")
     fun eventRegister(@Path("eventId") eventId: String, @Body body: RequestBody): Single<ApiResponse<EventRegisterResponse>>

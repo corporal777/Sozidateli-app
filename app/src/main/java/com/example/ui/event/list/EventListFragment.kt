@@ -3,21 +3,22 @@ package com.example.ui.event.list
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.dp
 import com.example.holders.EventItem
-import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.request.RequestFragmentArgs
+import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 
-abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNavigationFragment(), EventListContract.View {
+abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(), EventListContract.View {
 
     abstract var presenter: P
 
@@ -62,11 +63,18 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseNestedNa
     }
 
     override fun showAboutEvent(event: String) {
-        findParentNavigation().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, RequestFragmentArgs.Builder(event.id).build().toBundle())
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle(), navOptions {
+            //            anim {
+//                enter = R.anim.slide_from_bottom_enter
+//                exit = R.anim.slide_from_bottom_exit
+//                popEnter = R.anim.slide_from_bottom_popup_enter
+//                popExit = R.anim.slide_from_bottom_popup_exit
+//            }
+        })
     }
 
     override fun layout() = R.layout.layout_list_with_placeholder

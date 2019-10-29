@@ -11,14 +11,14 @@ import com.example.adapters.TabsFragmentAdapter
 import com.example.data.models.MapInfo
 import com.example.data.models.Place
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.map.MapFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventLocationFragment : BaseNestedNavigationFragment(), EventLocationContract.View, ToolbarFragment {
+class EventLocationFragment : BaseFragment(), EventLocationContract.View, ToolbarFragment {
 
     override val title: CharSequence
         get() = EventLocationFragmentArgs.fromBundle(arguments!!).eventName

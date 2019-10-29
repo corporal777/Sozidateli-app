@@ -2,6 +2,7 @@ package com.example.ui.subevent
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -10,7 +11,7 @@ import com.example.data.models.SubeventInfo
 import com.example.holders.SpeakerItem
 import com.example.holders.SpeakersListHeaderItem
 import com.example.holders.SubeventInfoItem
-import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.subevent.users.SubeventUserListFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_subevent.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
+class SubeventFragment : BaseFragment(), SubeventContract.View {
 
     @InjectPresenter
     lateinit var presenter: SubeventPresenter
@@ -73,7 +74,7 @@ class SubeventFragment : BaseNestedNavigationFragment(), SubeventContract.View {
 
     override fun openUserList(eventId: Int, subEventId: Int) {
         val args = SubeventUserListFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-        findParentNavigation().navigate(R.id.subevent_user_list_fragment, args)
+        findNavController().navigate(R.id.subevent_user_list_fragment, args)
     }
 
     override fun updateSpeaker(speaker: Speaker) {

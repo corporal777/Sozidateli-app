@@ -15,11 +15,15 @@ interface AboutEventContract {
                 dates: String?,
                 description: String?,
                 pages: List<EventPage>,
-                partners: List<EventParther>
+                partners: List<EventParther>,
+                showContacts: Boolean
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventName(name: String)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun showRegisterButton(show: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPage(eventId: String, pageId: String)
@@ -37,7 +41,7 @@ interface AboutEventContract {
         fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?, places: List<Place>?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventRequest(event: Event)
+        fun showEventRequest(event: String)
     }
 
     interface Presenter : BaseContract.Presenter {

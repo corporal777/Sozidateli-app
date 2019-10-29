@@ -2,7 +2,7 @@ package com.example.data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class RegistrationEvent(
+data class EventRegistration(
         @SerializedName("event_id")
         val id: String,
         @SerializedName("event_code")
@@ -29,5 +29,7 @@ data class RegistrationEvent(
         @SerializedName("registration_headline")
         val registrationHeadline: String?,
         @SerializedName("registration_subtitle")
-        val registrationSubtitle: String?
+        val registrationSubtitle: String?,
+        @SerializedName("is_require_moderate_requests")
+        val isRequireModerate: Boolean?
 )

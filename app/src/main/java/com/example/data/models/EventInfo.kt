@@ -7,5 +7,7 @@ data class EventInfo(
         @SerializedName("place")
         val places: List<Place>,
         val partners: List<EventParther>,
-        val pages: List<EventPage>
+        val pages: List<EventPage>,
+        @SerializedName("user_registration")
+        val userRegistration: EventUserRegistration?
 )

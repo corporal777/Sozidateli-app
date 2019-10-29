@@ -1,10 +1,10 @@
 package com.example.holders
 
 import android.graphics.PorterDuff
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.dateFormatterShortMothShortYear
@@ -28,10 +28,7 @@ class EventItem(
         viewHolder.apply {
             itemContainer.apply {
                 clipToOutline = true
-//                alpha = if (event.status === Event.RegistrationStatus.CONFERENCE_ENDS) 0.5f else 1f
-
                 setOnClickListener { onEventClick() }
-
                 if (isInHorizontalParent) {
                     layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
@@ -59,60 +56,62 @@ class EventItem(
                 }
             }
 
-            when (event.status) {
-                null -> showRegisterToEvent(viewHolder)
-                else -> showApproveStatus(viewHolder, event)
-            }
+            if (event.isCanRegister()) showRegisterToEvent(viewHolder)
+            else showEventStatus(viewHolder, event)
         }
     }
 
     private fun showRegisterToEvent(viewHolder: GroupieViewHolder) {
         viewHolder.apply {
-            tvStatus.visibility = View.GONE
+            tvStatus.isVisible = false
             btnGoToEvent.apply {
                 setOnClickListener { onGoToEventClick() }
-                visibility = View.VISIBLE
+                isVisible = true
             }
         }
     }
 
-    private fun showApproveStatus(viewHolder: GroupieViewHolder, event: Event) {
+    private fun showEventStatus(viewHolder: GroupieViewHolder, event: Event) {
         viewHolder.apply {
-            btnGoToEvent.apply { visibility = View.GONE }
+            btnGoToEvent.isVisible = false
             tvStatus.apply {
-                visibility = View.VISIBLE
-
                 val textColor: Int
                 val textBackground: Int
                 val textRes: Int
                 when (event.status) {
-                    Event.RegistrationStatus.APPROVED -> {
-                        textColor = R.color.event_status_approved_text
-                        textBackground = R.color.event_status_approved_background
-                        textRes = R.string.event_status_approved
+                    Event.Status.CONFERENCE_ENDS -> {
+                        textColor = R.color.event_status_finished_text
+                        textBackground = R.color.event_status_finished_background
+                        textRes = R.string.event_status_finished
                     }
-                    Event.RegistrationStatus.DECLINED -> {
-                        textColor = R.color.event_status_wait_confirmation_text
-                        textBackground = R.color.red
-                        textRes = R.string.event_status_decline
+                    else -> when (event.userRegistration) {
+                        Event.RegistrationStatus.APPROVED -> {
+                            textColor = R.color.event_status_approved_text
+                            textBackground = R.color.event_status_approved_background
+                            textRes = R.string.event_status_approved
+                        }
+                        Event.RegistrationStatus.PENDING -> {
+                            textColor = R.color.event_status_wait_confirmation_text
+                            textBackground = R.color.event_status_wait_confirmation_background
+                            textRes = R.string.event_status_wait_confirmation
+                        }
+                        Event.RegistrationStatus.CANCELLED,
+                        Event.RegistrationStatus.DECLINED -> {
+                            textColor = R.color.event_status_wait_confirmation_text
+                            textBackground = R.color.attention_action
+                            textRes = R.string.event_status_decline
+                        }
+                        else -> {
+                            tvStatus.isVisible = false
+                            return
+                        }
                     }
-//                    Event.RegistrationStatus.CONFERENCE_ENDS -> {
-//                        textColor = R.color.event_status_finished_text
-//                        textBackground = R.color.event_status_finished_background
-//                        textRes = R.string.event_status_finished
-//                    }
-                    else -> {
-                        textColor = R.color.event_status_wait_confirmation_text
-                        textBackground = R.color.event_status_wait_confirmation_background
-                        textRes = R.string.event_status_wait_confirmation
-                    }
-
-
                 }
 
                 text = resources.getString(textRes)
                 setTextColor(ContextCompat.getColor(context, textColor))
                 setBackgroundColor(ContextCompat.getColor(context, textBackground))
+                isVisible = true
             }
         }
     }

@@ -5,10 +5,13 @@ import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
+import com.google.gson.JsonElement
+import fromJson
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import okhttp3.MultipartBody
+import io.reactivex.functions.BiFunction
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -29,11 +32,11 @@ class EventRepositoryImp
         return call(api.getNewsById(eventId, newsId))
     }
 
-    override fun getEventRegisterField(eventId: String): Single<RegisterFieldsData> {
+    override fun getEventRegisterField(eventId: String): Single<EventRegisterForm> {
         return call(api.getEventRegisterField(eventId))
     }
 
-    override fun eventRegister(eventId: String, body: MultipartBody): Single<EventRegisterResponse> {
+    override fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse> {
         return call(api.eventRegister(eventId, body))
     }
 
@@ -95,5 +98,43 @@ class EventRepositoryImp
 
     override fun getPage(event: String, page: String): Single<Page> {
         return call(api.getEventPage(event, page))
+    }
+
+    override fun loadEventRegistrationData(eventId: String): Single<EventRegisterData> {
+        val loadFields = getEventRegisterField(eventId)
+        val loadRegister = getEventRegister(eventId)
+
+        return Single.zip(loadFields, loadRegister, BiFunction<EventRegisterForm, EventRegisterResponse, EventRegisterData> { fields, registration ->
+            val findRegistrationDataValue: (EventRegisterField) -> JsonElement? = { field -> registration.fields?.find { field.id == it?.id }?.value }
+
+            var group: EventRegisterField? = null
+            val fieldsData = fields.fields?.mapNotNull { field ->
+                when (field.type) {
+                    EventRegisterField.Type.STRING,
+                    EventRegisterField.Type.TEXT_AREA,
+                    EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, findRegistrationDataValue(field).fromJson<String>())
+                    EventRegisterField.Type.DATE,
+                    EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, findRegistrationDataValue(field).fromJson<String>())
+                    EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, findRegistrationDataValue(field).fromJson<Set<String>>())
+                    EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, findRegistrationDataValue(field).fromJson<String>())
+                    EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, findRegistrationDataValue(field).fromJson<String>())
+                    EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, findRegistrationDataValue(field).fromJson(EventFile.Deserializer()))
+                    EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, findRegistrationDataValue(field).fromJson<Boolean>())
+                    EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, findRegistrationDataValue(field).fromJson<EventPassport>())
+                    EventRegisterField.Type.GROUP -> {
+                        group = field
+                        null
+                    }
+                }
+            }
+
+            EventRegisterData(
+                    registration.event,
+                    group,
+                    registration.group_id,
+                    fields.groups ?: emptyList(),
+                    fieldsData ?: emptyList()
+            )
+        })
     }
 }

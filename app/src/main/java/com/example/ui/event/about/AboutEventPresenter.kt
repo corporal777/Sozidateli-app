@@ -41,8 +41,10 @@ class AboutEventPresenter
                     event.conferenceStart?.formatToInterval(event.conferenceFinish),
                     event.description,
                     eventInfo.pages,
-                    eventInfo.partners
+                    eventInfo.partners,
+                    hasContacts()
             )
+            showRegisterButton(Event.isCanRegister(event.status, eventInfo.userRegistration?.status))
         }
     }
 
@@ -85,7 +87,19 @@ class AboutEventPresenter
         else MapInfo(lat, lon, title, description)
     }
 
-    override fun onGoToEventClick() {
+    private fun hasContacts(): Boolean {
+        val eventData = event.event
+        return eventData.name.isNotEmpty()
+                && eventData.phone.isNotEmpty()
+                && eventData.email.isNotEmpty()
+                && eventData.web.isNotEmpty()
+                && eventData.social.isNotEmpty()
+                && eventData.address?.isNotEmpty() ?: false
+                && createMapInfo(eventData) != null
+                && event.places.isNotEmpty()
+    }
 
+    override fun onGoToEventClick() {
+        viewState.showEventRequest(eventId)
     }
 }

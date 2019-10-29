@@ -7,13 +7,14 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event>>
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>>
     fun getNewsById(eventId: Int, newsId: Int): Single<News>
-    fun getEventRegisterField(eventId: String): Single<RegisterFieldsData>
-    fun eventRegister(eventId: String, body: MultipartBody): Single<EventRegisterResponse>
+    fun getEventRegisterField(eventId: String): Single<EventRegisterForm>
+    fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse>
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>
     fun getEventInfo(eventId: String): Maybe<EventInfo>
@@ -29,4 +30,6 @@ interface EventRepository {
     fun setEventRating(eventId: Int, value: Int): Completable
     fun getEventByCode(code: String): Single<Event>
     fun getPage(event: String, page: String): Single<Page>
+
+    fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>
 }

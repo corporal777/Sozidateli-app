@@ -2,7 +2,7 @@ package com.example.data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterEventField(
+data class EventRegisterField(
         @SerializedName("field_id")
         val id: String,
         val name: String?,
@@ -39,6 +39,8 @@ data class RegisterEventField(
         @SerializedName("boolean")
         BOOLEAN,
         @SerializedName("passport")
-        PASSPORT
+        PASSPORT,
+        @SerializedName("group")
+        GROUP
     }
 }

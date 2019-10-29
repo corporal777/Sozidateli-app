@@ -1,4 +1,4 @@
-import com.example.extensions.NoInternetConnectionException
+import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.base.BaseContract
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.*

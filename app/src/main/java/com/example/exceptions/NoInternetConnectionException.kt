@@ -1,3 +1,3 @@
-package com.example.extensions
+package com.example.exceptions
 
 class NoInternetConnectionException : Exception()

@@ -13,9 +13,10 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BottomDialog
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -28,12 +29,10 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     abstract var presenter: P
 
-    private var filterDialog: BottomDialog? = null
+    private var filterDialog: BottomSheetDialog? = null
     private var filterView: View? = null
 
-    protected val filterNotChosenVariant by lazy {
-        getString(R.string.search_filters_not_chosen)
-    }
+    protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
     protected val adapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
@@ -76,8 +75,11 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             findViewById<View>(R.id.btnClose).setOnClickListener { filterDialog?.dismiss() }
         }
 
-        filterDialog = BottomDialog(requireContext(), filterContainer)
+        filterDialog = BottomSheetDialog(requireContext())
                 .apply {
+                    setContentView(filterContainer)
+                    val behavior = BottomSheetBehavior.from(filterContainer.parent as View)
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
                     setOnDismissListener { presenter.onFilterCancel() }
                     show()
                 }
@@ -168,7 +170,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
         if (interests == null) {
             textView.isEnabled = false
-            textView.setText(filterNotChosenVariant)
+            textView.text = null
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(spec, interests)

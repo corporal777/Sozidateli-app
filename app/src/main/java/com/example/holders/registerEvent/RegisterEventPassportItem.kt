@@ -3,7 +3,7 @@ package com.example.holders.registerEvent
 import android.text.TextWatcher
 import com.example.R
 import com.example.data.models.EventPassport
-import com.example.data.models.RegisterEventFieldData
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.item_register_event_passport.*
 import onTextChanged
 
 class RegisterEventPassportItem(
-        private val fieldData: RegisterEventFieldData<EventPassport>,
-        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+        private val fieldData: EventRegisterFieldData<EventPassport>,
+        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
     private var serialTextWatcher: TextWatcher? = null

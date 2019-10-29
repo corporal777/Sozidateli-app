@@ -1,10 +1,9 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
-import android.widget.TextView
 import com.example.R
-import com.example.data.models.RegisterEventField
-import com.example.data.models.RegisterEventFieldData
+import com.example.data.models.EventRegisterField
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.*
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -13,16 +12,15 @@ import initAsDatePicker
 import initAsDateTimePicker
 import kotlinx.android.synthetic.main.item_register_event_input.*
 import onTextChanged
-import timber.log.Timber
 
 
 open class RegisterEventDateItem(
-        private val fieldData: RegisterEventFieldData<String>,
-        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+        private val fieldData: EventRegisterFieldData<String>,
+        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
     private val textChangeListener: (CharSequence?) -> Unit = {
-        fieldData.value = if (field.type == RegisterEventField.Type.DATE) it?.toString()?.formatToDefaultServerDate()
+        fieldData.value = if (field.type == EventRegisterField.Type.DATE) it?.toString()?.formatToDefaultServerDate()
         else it?.toString()?.parseAndFormat(defaultDateTimeFormatter, defaultServerDateTimeFormatter)
         onDataChange()
     }
@@ -36,13 +34,13 @@ open class RegisterEventDateItem(
                 val date = valueString?.let { defaultServerDateFormatter.parse(it) }
                 val value: String?
                 when (field.type) {
-                    RegisterEventField.Type.DATE -> {
+                    EventRegisterField.Type.DATE -> {
                         value = valueString?.formatToDefaultDate()
                         textInputLayout.initAsDatePicker(date) { year, month, day ->
                             String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
                         }
                     }
-                    RegisterEventField.Type.DATETIME -> {
+                    EventRegisterField.Type.DATETIME -> {
                         value = valueString?.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
                         textInputLayout.initAsDateTimePicker(date) { year, month, day, hour, minute ->
                             String.format(DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year, hour, minute)

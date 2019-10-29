@@ -1,20 +1,28 @@
-package com.example.ui.request
+package com.example.ui.event.registration
 
 import android.net.Uri
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EventFile
-import com.example.data.models.EventGroup
-import com.example.data.models.RegisterEventFieldData
-import com.example.data.models.RegistrationEvent
+import com.example.data.models.*
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
-interface RequestContract {
+interface EventRegistrationContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
-        fun setFields(event: RegistrationEvent, selectedGroup: String?, groups: List<EventGroup>, fieldsData: List<RegisterEventFieldData<*>>)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun setFields(
+                event: EventRegistration,
+                groupField: EventRegisterField?,
+                selectedGroup: String?,
+                groups: List<EventGroup>,
+                fieldsData: List<EventRegisterFieldData<*>>,
+                withConfirm: Boolean
+        )
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun showEventRegisterConfirmation()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)
@@ -29,19 +37,30 @@ interface RequestContract {
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSuccessRegister()
+        fun showSuccessRegister(canGoToEvent: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun openUrl(url: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventLists()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEvent()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onPersonalDataFileClick(url: String)
-        fun onAddFileClick(field: RegisterEventFieldData<EventFile?>)
+        fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
         fun onFileSelected(path: Uri)
         fun onFileSelectionCancel()
         fun onRegisterClick()
-        fun onDataChange(field: RegisterEventFieldData<*>)
+        fun onRegisterCancelClick()
+        fun onDataChange(field: EventRegisterFieldData<*>)
         fun onSelectedGroupChange(groupId: String?)
+
+        fun onSuccessCancel()
+        fun onSuccessGoToList()
+        fun onSuccessGoToEvent()
     }
 }

@@ -1,14 +1,14 @@
 package com.example.holders.registerEvent
 
 import com.example.R
-import com.example.data.models.RegisterEventFieldData
+import com.example.data.models.EventRegisterFieldData
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initDropDownView
 import kotlinx.android.synthetic.main.item_register_event_selector.*
 
 open class EventRegistrationSelectBoxItem(
-        private val fieldData: RegisterEventFieldData<String>,
-        onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit
+        private val fieldData: EventRegisterFieldData<String>,
+        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {

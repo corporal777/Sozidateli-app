@@ -15,14 +15,13 @@ import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.DayHeaderItem
 import com.example.holders.SubEventItem
 import com.example.holders.TagsHorizontalListItem
-import com.example.ui.base.BaseNestedNavigationFragment
-import com.example.ui.subevent.SubeventFragmentArgs
+import com.example.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_event_schedule.*
 
-abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseNestedNavigationFragment(), EventScheduleContract.View {
+abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(), EventScheduleContract.View {
 
     abstract var presenter: P
 

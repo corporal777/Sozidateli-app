@@ -23,11 +23,18 @@ data class Event(
         val registrationStart: String?,
         @SerializedName("registration_finish")
         val registrationFinish: String?,
-        val status: RegistrationStatus?,
+        val status: Status?,
         @SerializedName("user_registration")
-        val userRegistration: RegistrationStatus
+        val userRegistration: RegistrationStatus?
 
 ) : Parcelable {
+
+    fun isCanRegister() = isCanRegister(status, userRegistration)
+
+    enum class Status {
+        CONFERENCE_ENDS,
+        REGISTRATION_PARTICIPANTS
+    }
 
     enum class RegistrationStatus {
         @SerializedName("pending")
@@ -35,7 +42,9 @@ data class Event(
         @SerializedName("approved")
         APPROVED,
         @SerializedName("declined")
-        DECLINED
+        DECLINED,
+        @SerializedName("cancelled")
+        CANCELLED
     }
 
     companion object {
@@ -52,5 +61,11 @@ data class Event(
         const val FILTER_REGISTRATION_DECLINED = "declined"
         const val FILTER_REGISTRATION_NOT_REGISTERED = "not_registered"
         const val FILTER_REGISTRATION_ANY_REGISTERED = "any"
+
+        fun isCanRegister(eventStatus: Status?, registrationStatus: RegistrationStatus?): Boolean {
+            return eventStatus == Status.REGISTRATION_PARTICIPANTS
+                    && registrationStatus != RegistrationStatus.APPROVED
+                    && registrationStatus != RegistrationStatus.PENDING
+        }
     }
 }

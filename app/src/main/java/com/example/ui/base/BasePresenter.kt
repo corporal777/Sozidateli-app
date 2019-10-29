@@ -2,7 +2,7 @@ package com.example.ui.base
 
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.models.ApiError
-import com.example.extensions.NoInternetConnectionException
+import com.example.exceptions.NoInternetConnectionException
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

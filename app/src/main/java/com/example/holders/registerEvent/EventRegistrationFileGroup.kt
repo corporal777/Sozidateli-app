@@ -2,15 +2,15 @@ package com.example.holders.registerEvent
 
 import android.net.Uri
 import com.example.data.models.EventFile
-import com.example.data.models.RegisterEventFieldData
+import com.example.data.models.EventRegisterFieldData
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_FILE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventRegistrationFileGroup(
-        val fieldData: RegisterEventFieldData<EventFile?>,
-        private val onDataChange: (fieldData: RegisterEventFieldData<*>) -> Unit,
+        val fieldData: EventRegisterFieldData<EventFile?>,
+        private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit,
         onAddClick: () -> Unit
 ) : NestedGroup() {
 

@@ -23,7 +23,7 @@ class EventContactsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(phones, emails, webLinks, socialLinks, address, mapInfo != null || places != null)
+        viewState.setData(phones, emails, webLinks, socialLinks, address, mapInfo != null || !places.isNullOrEmpty())
     }
 
     override fun onShowOnMapClick() {

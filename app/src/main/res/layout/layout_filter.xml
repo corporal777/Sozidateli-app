@@ -86,12 +86,11 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnApply"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/action_button_height"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_corners"
-            android:minHeight="52dp"
             android:text="@string/search_filters_find"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

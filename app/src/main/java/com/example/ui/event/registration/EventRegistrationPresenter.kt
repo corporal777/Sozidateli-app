@@ -1,23 +1,23 @@
-package com.example.ui.request
+package com.example.ui.event.registration
 
 import android.Manifest
 import android.content.ContentResolver
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.ApiError
+import com.example.data.models.EventFile
+import com.example.data.models.EventPassport
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
 import fileName
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -30,86 +30,60 @@ import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
-class RequestPresenter
+class EventRegistrationPresenter
 @Inject constructor(
         private val eventRepository: EventRepository,
         private val rxPermissions: RxPermissions,
         private val contentResolver: ContentResolver
-) : BasePresenter<RequestContract.View>(), RequestContract.Presenter {
+) : BasePresenter<EventRegistrationContract.View>(), EventRegistrationContract.Presenter {
 
     lateinit var eventId: String
 
     private var selectedGroup: String? = null
-    private var fieldsData: List<RegisterEventFieldData<*>> = emptyList()
-    private var invalidFieldsData: MutableSet<RegisterEventFieldData<*>> = mutableSetOf()
+    private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
+    private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
     private var takeFileMaybe: MaybeSubject<Uri>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.enableActionButton(true)
 
-        val loadFields = eventRepository.getEventRegisterField(eventId)
-        val loadRegister = eventRepository.getEventRegister(eventId)
-
-        compositeDisposable += Single.zip(loadFields, loadRegister, BiFunction<RegisterFieldsData, EventRegisterResponse, Pair<RegistrationEvent, List<EventGroup>>> { fields, registration ->
-            val findRegistrationDataValue: (RegisterEventField) -> JsonElement? = { field -> registration.fields?.find { field.id == it?.id }?.value }
-
-            val fieldsData = fields.fields?.map { field ->
-                when (field.type) {
-                    RegisterEventField.Type.STRING,
-                    RegisterEventField.Type.TEXT_AREA,
-                    RegisterEventField.Type.NUMBER -> RegisterEventFieldData.String(field, parseRegistrationData<String>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.DATE,
-                    RegisterEventField.Type.DATETIME -> RegisterEventFieldData.Date(field, parseRegistrationData<String>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.CHECKBOX -> RegisterEventFieldData.Checkbox(field, parseRegistrationData<Set<String>>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.SELECT_BOX -> RegisterEventFieldData.SelectBox(field, parseRegistrationData<String>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.RADIO_BOX -> RegisterEventFieldData.RadioBox(field, parseRegistrationData<String>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.FILE -> RegisterEventFieldData.File(field, parseRegistrationData(findRegistrationDataValue(field), EventFile.Deserializer()))
-                    RegisterEventField.Type.BOOLEAN -> RegisterEventFieldData.Boolean(field, parseRegistrationData<Boolean>(findRegistrationDataValue(field)))
-                    RegisterEventField.Type.PASSPORT -> RegisterEventFieldData.Passport(field, parseRegistrationData<EventPassport>(findRegistrationDataValue(field)))
-                }
-            } ?: emptyList()
-
-            selectedGroup = registration.group_id
-            this.fieldsData = fieldsData
-            this.invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
-
-            registration.event to (fields.groups ?: emptyList())
-        })
+        compositeDisposable += eventRepository.loadEventRegistrationData(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    it.printStackTrace()
-                }) {
+                .subscribeSimple {
                     viewState.apply {
-                        setFields(it.first, selectedGroup, it.second, fieldsData)
-                        checkDataValid()
+                        val hasForm = it.groups.isNotEmpty() || it.fieldsData.isNotEmpty()
+
+                        selectedGroup = it.selectedGroup
+                        fieldsData = it.fieldsData
+                        invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
+                        setFields(it.event, it.groupField, it.selectedGroup, it.groups, it.fieldsData, hasForm)
+
+                        if (hasForm) {
+                            checkDataValid()
+                        } else {
+                            viewState.showEventRegisterConfirmation()
+                        }
                     }
                 }
     }
 
-    private inline fun <reified T> parseRegistrationData(value: JsonElement?, deserializer: JsonDeserializer<T>? = null): T? {
-        if (value == null) return null
-        return GsonBuilder()
-                .apply {
-                    if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
-                }
-                .create()
-                .fromJson(value, T::class.java)
-    }
-
-    override fun onDataChange(field: RegisterEventFieldData<*>) {
+    override fun onDataChange(field: EventRegisterFieldData<*>) {
         if (field.isValid()) invalidFieldsData.remove(field) else invalidFieldsData.add(field)
         checkDataValid()
     }
 
     override fun onRegisterClick() {
         compositeDisposable += Single.fromCallable {
+            val group = selectedGroup
+            val fieldsData = fieldsData
+            if (group == null && fieldsData.isEmpty()) return@fromCallable "".toRequestBody()
+
             MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .apply {
-                        val group = selectedGroup
                         if (group != null) addFormDataPart("category_id", group)
 
                         fieldsData.forEach { fieldData ->
@@ -117,7 +91,7 @@ class RequestPresenter
                             val value = fieldData.value ?: return@forEach
 
                             when (fieldData) {
-                                is RegisterEventFieldData.File -> fieldData.value?.let {
+                                is EventRegisterFieldData.File -> fieldData.value?.let {
                                     val path = it.path
                                     if (path.scheme?.startsWith("http") != true) {
                                         val name = "${it.name}.${it.extension}"
@@ -142,7 +116,8 @@ class RequestPresenter
                                 }
                             }
                         }
-                    }.build()
+                    }
+                    .build()
         }
                 .flatMap { eventRepository.eventRegister(eventId, it) }
                 .withCheckInternetConnectivity()
@@ -150,19 +125,32 @@ class RequestPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onError = {
+                            if (it !is ApiError) viewState.showToast(R.string.request_execution_error)
                             it.printStackTrace()
-                        },
-                        onApiError = { apiError ->
-                            val toast = when {
-                                apiError.errors.contains(API_ERROR_ALREADY_APPROVED) -> R.string.event_register_already_approved_error
-                                else -> R.string.event_register_form_request_error
-                            }
 
-                            viewState.showToast(toast)
+                            val group = selectedGroup
+                            val fieldsData = fieldsData
+                            if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
                         },
                         onSuccess = {
-
+                            viewState.showSuccessRegister(it.event.isRequireModerate == false)
                         })
+    }
+
+    override fun onSuccessCancel() {
+        viewState.navigateUp()
+    }
+
+    override fun onSuccessGoToList() {
+        viewState.showEventLists()
+    }
+
+    override fun onSuccessGoToEvent() {
+        viewState.showEvent()
+    }
+
+    override fun onRegisterCancelClick() {
+        viewState.navigateUp()
     }
 
     override fun onSelectedGroupChange(groupId: String?) {
@@ -178,7 +166,7 @@ class RequestPresenter
         viewState.openUrl(url)
     }
 
-    override fun onAddFileClick(field: RegisterEventFieldData<EventFile?>) {
+    override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) {
         takeFileMaybe?.onComplete()
         compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .flatMapMaybe {
@@ -187,7 +175,12 @@ class RequestPresenter
                         MaybeSubject.create<Uri>().apply { takeFileMaybe = this }
                     } else Maybe.error<Uri>(PermissionNotGrantedException())
                 }
-                .subscribeSimple { path ->
+                .subscribeSimple(
+                        onError = {
+                            if (it is PermissionNotGrantedException) {
+                                viewState.showToast(R.string.event_register_file_no_permission)
+                            }
+                        }, onNext = { path ->
                     val nameAndExtension = (path.fileName(contentResolver)
                             ?: path.toString()).getFileNameAndExtension()
 
@@ -206,7 +199,7 @@ class RequestPresenter
                     } else {
                         viewState.showWrongFileExtensions(availableExtensions)
                     }
-                }
+                })
     }
 
     override fun onFileSelected(path: Uri) {
@@ -217,14 +210,19 @@ class RequestPresenter
         takeFileMaybe?.onComplete()
     }
 
-    override fun onReceiveError(error: Throwable) {
-        super.onReceiveError(error)
-        if (error is PermissionNotGrantedException) {
-            viewState.showToast(R.string.event_register_file_no_permission)
+    override fun onReceiveApiError(apiError: ApiError) {
+        super.onReceiveApiError(apiError)
+        val toast = when {
+            apiError.errors.contains(API_ERROR_ALREADY_APPROVED) -> R.string.event_register_already_approved_error
+            apiError.errors.contains(API_ERROR_REGISTRATION_CLOSED) -> R.string.event_register_closed_error
+            else -> R.string.event_register_form_request_error
         }
+
+        viewState.showToast(toast)
     }
 
     companion object {
         private const val API_ERROR_ALREADY_APPROVED = "Registration is approved before"
+        private const val API_ERROR_REGISTRATION_CLOSED = "registration is not carried out"
     }
 }

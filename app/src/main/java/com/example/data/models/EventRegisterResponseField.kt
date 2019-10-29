@@ -7,6 +7,6 @@ data class EventRegisterResponseField(
         @SerializedName("field_id")
         val id: String,
         @SerializedName("field_type")
-        val type: RegisterEventField.Type,
+        val type: EventRegisterField.Type,
         val value: JsonElement?
 )

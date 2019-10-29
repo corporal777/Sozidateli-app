@@ -6,7 +6,7 @@ data class EventRegisterResponse(
         val id: String,
         @SerializedName("event_id")
         val eventId: String,
-        val event: RegistrationEvent,
+        val event: EventRegistration,
         @SerializedName("custom_fields")
         val fields: List<EventRegisterResponseField?>?,
         val group_id: String?,

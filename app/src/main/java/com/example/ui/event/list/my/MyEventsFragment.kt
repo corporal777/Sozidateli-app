@@ -1,6 +1,7 @@
 package com.example.ui.event.list.my
 
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -27,7 +28,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContrac
     fun providePresenter(): MyEventsPresenter = presenterProvider.get()
 
     override fun selectEvent(event: Event) {
-        findParentNavigation().apply {
+        findNavController().apply {
             graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
                     .setPopUpTo(R.id.event_list_fragment, true)

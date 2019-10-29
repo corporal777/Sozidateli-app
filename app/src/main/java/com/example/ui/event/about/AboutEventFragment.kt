@@ -3,6 +3,8 @@ package com.example.ui.event.about
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +18,14 @@ import com.example.holders.EventPageItem
 import com.example.holders.EventPartnerItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.request.RequestFragmentArgs
+import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_about_event.*
+import kotlinx.android.synthetic.main.fragment_search.recyclerView
+import kotlinx.android.synthetic.main.item_action_button.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -81,13 +85,26 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 })
             }
         }
+
+        btnRegister.btnAdd.apply {
+            text = getString(R.string.go_to_event)
+            setOnClickListener { presenter.onGoToEventClick() }
+        }
     }
 
-    override fun setEventData(logo: String?, organizationName: String?, dates: String?, description: String?, pages: List<EventPage>, partners: List<EventParther>) {
+    override fun setEventData(
+            logo: String?,
+            organizationName: String?,
+            dates: String?,
+            description: String?,
+            pages: List<EventPage>,
+            partners: List<EventParther>,
+            showContacts: Boolean
+    ) {
         groupAdapter.update(listOf(
                 EventInfoHeaderItem(-100L, logo, organizationName, dates, description),
                 Section().apply {
-                    add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
+                    if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() }.apply {
                         hasBottomPadding = pages.isNotEmpty()
                     })
@@ -101,6 +118,13 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun setEventName(name: String) {
         toolbarContentActionBar?.title = name
+    }
+
+    override fun showRegisterButton(show: Boolean) {
+        btnRegister.isVisible = show
+        recyclerView.updatePadding(bottom = if (show) with(resources) {
+            getDimensionPixelSize(R.dimen.action_button_height) + getDimensionPixelSize(R.dimen.action_button_margin_vertical) * 2
+        } else 20.dp)
     }
 
     override fun showPage(eventId: String, pageId: String) {
@@ -132,8 +156,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         ))
     }
 
-    override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, RequestFragmentArgs.Builder(event.id).build().toBundle())
+    override fun showEventRequest(event: String) {
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

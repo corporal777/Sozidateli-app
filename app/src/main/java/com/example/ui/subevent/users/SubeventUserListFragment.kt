@@ -9,14 +9,14 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.holders.PagedListGroup
 import com.example.holders.UserItem
-import com.example.ui.base.BaseNestedNavigationFragment
+import com.example.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_subevent_users.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SubeventUserListFragment : BaseNestedNavigationFragment(), SubeventUserListContract.View {
+class SubeventUserListFragment : BaseFragment(), SubeventUserListContract.View {
 
     @InjectPresenter
     lateinit var presenter: SubeventUserListPresenter
