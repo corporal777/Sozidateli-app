@@ -1,22 +1,37 @@
 package com.example.holders.registerEvent
 
-import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.example.R
 import com.example.extensions.setUnderlineSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.item_event_registration_field_title.*
 
 class EventRegistrationPersonalDataFileItem(
-        private val url: String,
-        private val description: String,
+        private val url: String?,
+        private val description: String?,
         private val onFileClickListener: OnPersonalDataFileClickListener
 ) : Item((url.hashCode() + description.hashCode()).toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        (viewHolder.itemView as TextView).apply {
-            text = description.setUnderlineSpan()
+        viewHolder.apply {
+            val hasText = !description.isNullOrEmpty()
+            textContainer.apply {
+                updatePadding(
+                        top = if (hasText) resources.getDimensionPixelSize(R.dimen.event_registration_file_margin_top) else 0,
+                        bottom = resources.getDimensionPixelSize(R.dimen.event_registration_file_margin_bottom)
+                )
+            }
 
-            setOnClickListener { onFileClickListener(url) }
+            textView.apply {
+                text = description?.setUnderlineSpan()
+                isVisible = hasText
+            }
+
+            itemView.apply {
+                setOnClickListener { url?.let { onFileClickListener(it) } }
+            }
         }
     }
 
@@ -26,6 +41,7 @@ class EventRegistrationPersonalDataFileItem(
         if (this === other) return true
         if (other !is EventRegistrationPersonalDataFileItem) return false
 
+        if (description != other.description) return false
         if (url != other.url) return false
 
         return true

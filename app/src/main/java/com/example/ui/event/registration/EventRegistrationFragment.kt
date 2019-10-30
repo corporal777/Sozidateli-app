@@ -125,17 +125,13 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
     ): Group {
         val field = fieldData.field
         return let {
-            if (withTitle) {
-                val title = customTitle ?: field.name
-                it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
-            } else it
+            val title = if (withTitle) customTitle ?: field.name else null
+            it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
         }
                 .let {
-                    if (withFile) {
-                        val file = field.rightFile
-                        it.withEventRegistrationPersonalDataFile(file?.file, field.rightFileDescription
-                                ?: file?.filename, personalDataFileClickListener)
-                    } else it
+                    val file = if (withFile) field.rightFile else null
+                    it.withEventRegistrationPersonalDataFile(file?.file, field.rightFileDescription
+                            ?: file?.filename, personalDataFileClickListener)
                 }
     }
 

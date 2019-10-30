@@ -4,7 +4,7 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventRegistrationTitleGroup(
-        title: String,
+        title: String?,
         private val data: Group
 ) : NestedGroup() {
 
@@ -32,6 +32,5 @@ class EventRegistrationTitleGroup(
 }
 
 fun Group.withEventRegistrationTitle(title: String?): Group {
-    return if (title == null) this
-    else EventRegistrationTitleGroup(title, this)
+    return EventRegistrationTitleGroup(title, this)
 }

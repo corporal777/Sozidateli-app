@@ -32,6 +32,8 @@ class NotificationsPresenter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotifications(limit, offset).map { response ->
+            response.totalCount?.let { appData.notificationsCount = it }
+
             PaginationResponse(response.totalCount, response.data.map {
                 Notification(
                         it.id,

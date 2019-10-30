@@ -10,7 +10,6 @@ import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -46,24 +45,17 @@ class NotificationPresenter
     }
 
     override fun onNotificationAcceptClick() {
-        dummyCall {
-            notification.acceptState = Notification.AcceptState.ACCEPTED
-            viewState.setData(notification)
-        }
+        updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id.toString()), Notification.AcceptState.ACCEPTED)
     }
 
     override fun onNotificationCancelClick() {
-        dummyCall {
-            notification.acceptState = Notification.AcceptState.CANCELED
-            viewState.setData(notification)
-        }
+        updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id.toString()), Notification.AcceptState.CANCELED)
+
     }
 
     override fun onNotificationChangeDecisionClick() {
-        dummyCall {
-            notification.acceptState = Notification.AcceptState.NONE
-            viewState.setData(notification)
-        }
+        notification.acceptState = Notification.AcceptState.NONE
+        viewState.setData(notification)
     }
 
     override fun onNotificationRateClick() {
@@ -84,14 +76,16 @@ class NotificationPresenter
                 })
     }
 
-    private fun dummyCall(onComplete: () -> Unit) {
-        compositeDisposable += Completable.complete()
-                .delay(1, TimeUnit.SECONDS)
+    private fun updateNotificationInvite(request: Completable, newState: Notification.AcceptState) {
+        compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.showToast("ОЖИДАЕТ РЕАЛИЗАЦИИ")
-                    onComplete()
+                .subscribeSimple {
+                    notification.apply {
+                        wasRead = true
+                        acceptState = newState
+                    }
+                    viewState.setData(notification)
                 }
     }
 }

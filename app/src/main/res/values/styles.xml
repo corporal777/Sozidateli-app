@@ -512,4 +512,12 @@
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
         <item name="android:theme">@style/SelectorTheme</item>
     </style>
+
+    <style name="EventRegistrationItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:orientation">vertical</item>
+    </style>
 </resources>

@@ -4,8 +4,8 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventRegistrationPersonalDataFileGroup(
-        url: String,
-        description: String,
+        url: String?,
+        description: String?,
         private val data: Group,
         onFileClickListener: OnPersonalDataFileClickListener
 ) : NestedGroup() {
@@ -34,6 +34,5 @@ class EventRegistrationPersonalDataFileGroup(
 }
 
 fun Group.withEventRegistrationPersonalDataFile(url: String?, description: String?, onFileClickListener: OnPersonalDataFileClickListener): Group {
-    return if (description == null || url == null) this
-    else EventRegistrationPersonalDataFileGroup(url, description, this, onFileClickListener)
+    return EventRegistrationPersonalDataFileGroup(url, description, this, onFileClickListener)
 }
