@@ -1,5 +1,6 @@
 include ':app', ':filepicker'
-
+//include ':chat'
+//
 //project(':chat').projectDir = new File(getExternalModuleDir())
 //
 //def getExternalModuleDir() {

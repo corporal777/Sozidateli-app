@@ -69,7 +69,8 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         toolbarContentActionBar.apply {
-            addRightView(ToolbarButton(requireContext(), R.drawable.ic_scan).apply {
+            addRightView(ToolbarButton(requireContext()).apply {
+                setImageResource(R.drawable.ic_scan)
                 setOnClickListener { presenter.onScanClick() }
             })
         }

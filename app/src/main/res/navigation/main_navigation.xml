@@ -282,11 +282,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/profile_setting_chat_fragment"
-        android:name="com.example.ui.profile.settingChat.SettingChatFragment"
-        android:label="@string/setting_chat_title" />
-
-    <fragment
         android:id="@+id/notifications_fragment"
         android:name="com.example.ui.notification.center.NotificationsFragment"
         android:label="@string/notifications_label">

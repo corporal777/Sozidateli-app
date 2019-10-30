@@ -67,7 +67,7 @@ class AppData(
     }
 
     fun getUser(): User = user
-            ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+            ?: throw UninitializedPropertyAccessException("\"UserShort\" was queried before being initialized")
 
     fun logout() {
         user = null

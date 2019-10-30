@@ -51,6 +51,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @ProvidePresenter
     fun providePresenter(): MainPresenter = presenterProvider.get().apply {
         photoMessageText = getString(R.string.chat_photo_message_text)
+        chatAcceptMessageText = getString(R.string.chat_accepted)
     }
 
     private val startDestinations = arrayOf(

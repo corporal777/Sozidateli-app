@@ -1,10 +1,10 @@
 package com.example.ui.views.accountView
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -15,11 +15,12 @@ class AccountViewPresenter @Inject constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
+    private var userAvatar: String? = null
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
         viewState.showCounter(false)
-        appData.notificationsCountSubject
+        compositeDisposable += appData.notificationsCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.apply {
@@ -34,7 +35,18 @@ class AccountViewPresenter @Inject constructor(
                 }, {
                     viewState.showCounter(false)
                 })
-                .call(compositeDisposable)
+
+        compositeDisposable += appData.userChangeSubject
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val avatar = it.value?.user_avatar
+                    if (userAvatar != avatar) {
+                        userAvatar = avatar
+                        viewState.setAvatar(avatar)
+                    }
+                }, {
+                    viewState.setAvatar(null)
+                })
     }
 
     override fun onDestroy() {

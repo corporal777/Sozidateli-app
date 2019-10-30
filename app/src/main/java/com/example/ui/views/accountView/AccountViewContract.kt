@@ -13,6 +13,9 @@ class AccountViewContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun showCounter(show: Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setAvatar(url: String?)
     }
 
     interface Presenter : BaseContract.Presenter

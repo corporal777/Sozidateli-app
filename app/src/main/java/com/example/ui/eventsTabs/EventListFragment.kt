@@ -2,18 +2,17 @@ package com.example.ui.eventsTabs
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.TabsFragmentAdapter
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
+import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -37,19 +36,15 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
 
     private val tabsContent by lazy {
         listOf(
-                getString(R.string.tab_recommended_title) to RecommendationsFragment(),
-                getString(R.string.tab_subscriptions_title) to FavoriteOrganizationsFragment(),
-                getString(R.string.tab_events_title) to MyEventsFragment()
+                RecommendationsFragment() to getString(R.string.tab_recommended_title),
+                FavoriteOrganizationsFragment() to getString(R.string.tab_subscriptions_title),
+                MyEventsFragment() to getString(R.string.tab_events_title)
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager.adapter = object : FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-            override fun getPageTitle(position: Int) = tabsContent[position].first
-            override fun getItem(position: Int) = tabsContent[position].second
-            override fun getCount() = tabsContent.size
-        }
+        viewPager.adapter = TabsFragmentAdapter(tabsContent, childFragmentManager)
 
         viewPager.run {
             offscreenPageLimit = tabsContent.size
@@ -73,11 +68,9 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
         super.setupToolbarContent(toolbarContentActionBar)
         toolbarContentActionBar.apply {
             addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
-            addRightView(ToolbarButton(requireContext(), R.drawable.avatar_placeholder).apply {
-                setOnClickListener { presenter.onMenuAccountClick() }
-            })
-
-            addRightView(ToolbarButton(requireContext(), R.drawable.ic_search).apply {
+            addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
+            addRightView(ToolbarButton(requireContext()).apply {
+                setImageResource(R.drawable.ic_search)
                 setOnClickListener { presenter.onMenuSearchClick() }
             })
         }

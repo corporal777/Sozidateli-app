@@ -36,7 +36,6 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
-import com.example.ui.profile.settingChat.SettingChatFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
@@ -161,9 +160,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeSettingChatFragment(): SettingChatFragment
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment

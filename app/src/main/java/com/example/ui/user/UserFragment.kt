@@ -322,7 +322,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     override fun showUserMenuButton(show: Boolean) {
         if (show) {
-            menuImageView = ToolbarButton(requireContext(), R.drawable.ic_menu).apply {
+            menuImageView = ToolbarButton(requireContext()).apply {
+                setImageResource(R.drawable.ic_menu)
                 setOnClickListener { presenter.onMenuButtonUserClick() }
             }
 

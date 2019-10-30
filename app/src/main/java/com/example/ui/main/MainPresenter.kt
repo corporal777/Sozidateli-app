@@ -6,16 +6,15 @@ import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
+import com.example.data.models.ChatMessageAdditionalData
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.ACTION_REQUEST_COUNT
-import com.example.util.AuthBackground
-import com.example.util.ChatHelper
-import com.example.util.UserEventLoadingHelper
+import com.example.util.*
+import fromJson
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -49,6 +48,7 @@ class MainPresenter
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
+    lateinit var chatAcceptMessageText: String
 
     private val chatCompositeDisposable = CompositeDisposable()
 
@@ -195,11 +195,11 @@ class MainPresenter
                     if (connected) {
                         EventBus.getDefault().post(OnSocketConnectEvent())
 
-                    }
-                    if (connected && chatCompositeDisposable.size() == 1) {
-                        subscribeChatNewMessage()
-                        subscribeChatUnreadCount()
-                        subscribeChatRequestsCount()
+                        if (chatCompositeDisposable.size() == 1) {
+                            subscribeChatNewMessage()
+                            subscribeChatUnreadCount()
+                            subscribeChatRequestsCount()
+                        }
                     }
                 }, {
                     it.printStackTrace()
@@ -253,25 +253,30 @@ class MainPresenter
         val chatId = newMessage.room
         val messageId = newMessage.message._id
         val message = when (newMessage.message.type) {
+            Message.Type.SERVICE -> if (newMessage.message.message == CHAT_SERVICE_MESSAGE_ACCEPT) chatAcceptMessageText else return
             Message.Type.IMAGE -> photoMessageText
             else -> newMessage.message.message
         }
 
         val senderId = newMessage.message.senderKey
 
-        compositeDisposable += userRepository.getUserById(senderId)
+        compositeDisposable += Maybe.fromCallable {
+            newMessage.message.additionalData?.fromJson<ChatMessageAdditionalData>()
+                    ?: throw NullPointerException("Additional data is null")
+        }
+                .onErrorResumeNext(userRepository.getUserById(senderId).map {
+                    ChatMessageAdditionalData(it.user_id, it.user_name, it.user_last_name, it.user_avatar)
+                })
                 .performOnBackgroundOutOnMain()
-                .subscribe({
+                .subscribeSimple {
                     chatHelper.showNotificationIfCan(
                             chatId = chatId,
                             messageId = messageId,
                             message = message,
                             senderId = senderId,
-                            senderName = it.fullName,
-                            avatarUrl = it.user_avatar)
-                }, {
-                    it.printStackTrace()
-                })
+                            senderName = "${it.name ?: ""} ${it.lastName ?: ""}",
+                            avatarUrl = it.avatar)
+                }
     }
 
     private fun unsubscribeChat() {

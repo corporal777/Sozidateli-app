@@ -21,7 +21,8 @@ class ToolbarContentActionBar(
         get() = ViewGroup.LayoutParams(48.dp, ViewGroup.LayoutParams.MATCH_PARENT)
 
     private val navigationIcon by lazy {
-        ToolbarButton(appCompatActivity, R.drawable.ic_back_arrow).apply {
+        ToolbarButton(appCompatActivity).apply {
+            setImageResource(R.drawable.ic_back_arrow)
             setOnClickListener { weakActivity.get()?.onSupportNavigateUp() }
         }
     }

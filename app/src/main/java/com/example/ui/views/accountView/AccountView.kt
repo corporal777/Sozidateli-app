@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
+import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -20,10 +21,6 @@ class AccountView : FrameLayout, AccountViewContract.View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    companion object {
-        private const val ACCOUNT_TAG_VIEW = "account_view_tag"
-    }
 
     private val mvpDelegate by lazy { MvpDelegate<AccountView>(this) }
 
@@ -37,7 +34,11 @@ class AccountView : FrameLayout, AccountViewContract.View {
     fun providePresenter(): AccountViewPresenter = presenterProvider.get()
 
     private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
-        ivImage.setImageResource(R.drawable.avatar_placeholder)
+        ivImage.setImageResource(PLACEHOLDER)
+    }
+
+    init {
+        (context.applicationContext as App).appComponent.inject(this)
     }
 
     override fun setCount(count: String) {
@@ -48,8 +49,8 @@ class AccountView : FrameLayout, AccountViewContract.View {
         view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    init {
-        (context.applicationContext as App).appComponent.inject(this)
+    override fun setAvatar(url: String?) {
+        ivImage.setCircleImage(url, PLACEHOLDER)
     }
 
     override fun onAttachedToWindow() {
@@ -66,4 +67,13 @@ class AccountView : FrameLayout, AccountViewContract.View {
         mvpDelegate.onDestroy()
     }
 
+    override fun setOnClickListener(l: OnClickListener?) {
+        ivImage.setOnClickListener(l)
+    }
+
+    companion object {
+        private const val ACCOUNT_TAG_VIEW = "account_view_tag"
+
+        private const val PLACEHOLDER = R.drawable.avatar_placeholder
+    }
 }

@@ -11,12 +11,10 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnNextLayout
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Event
 import com.example.data.models.user.User
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -63,9 +61,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     override fun highlightNotifications(notificationCount: Int) {
         ivNotificationIcon.apply {
             if (!::notificationBadge.isInitialized) notificationBadge = BadgeDrawable(notificationCount)
-
             doOnNextLayout {
-                addBadge(notificationBadge) { badgeWidth, badgeHeight, anchorRect ->
+                addBadge(notificationBadge.apply { number = notificationCount }) { badgeWidth, badgeHeight, anchorRect ->
                     val badgeCenterX = anchorRect.right
                     val badgeCenterY = anchorRect.top + anchorRect.height() / 3
 

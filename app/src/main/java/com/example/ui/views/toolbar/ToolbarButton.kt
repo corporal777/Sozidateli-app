@@ -2,22 +2,22 @@ package com.example.ui.views.toolbar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.annotation.DrawableRes
+import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.view.setPadding
 import com.example.extensions.dp
 import setSelectableItemBackgroundBorderless
 
 @SuppressLint("ViewConstructor")
-class ToolbarButton(
-        context: Context,
-        @DrawableRes imageRes: Int = 0
-) : AppCompatImageButton(context) {
+class ToolbarButton : AppCompatImageButton {
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         setPadding(8.dp)
         scaleType = ScaleType.CENTER_INSIDE
-        if (imageRes != 0) setImageResource(imageRes)
         setSelectableItemBackgroundBorderless()
     }
 }

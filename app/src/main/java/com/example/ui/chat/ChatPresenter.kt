@@ -2,9 +2,9 @@ package com.example.ui.chat
 
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
-import com.example.R
 import com.example.data.AppData
 import com.example.data.models.ChatMessage
+import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.UserChat
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.calendar
@@ -13,10 +13,11 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_INVITE
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
-import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.ChatHelper
+import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -26,10 +27,12 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.json.JSONObject
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.util.*
 import javax.inject.Inject
@@ -253,21 +256,21 @@ class ChatPresenter
         val reloadChat = !isChatHasMessages
         if (reloadChat) viewState.showLoadingDialog()
 
-        compositeDisposable += haChat.sendMessage(chatId, type, message)
+        compositeDisposable += haChat.sendMessage(chatId, type, message, additionalData = createMessageAdditionalData())
                 .flatMapCompletable {
                     if (reloadChat) getChat().ignoreElement()
                     else Completable.complete()
                 }
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    if (reloadChat) viewState.hideLoadingDialog()
-                }, {
-                    if (reloadChat) viewState.hideLoadingDialog()
-                    if (it is NoConnectionException) {
-//                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
-                    }
-                    it.printStackTrace()
-                })
+                .subscribeSimple(
+                        onError = {
+                            if (reloadChat) viewState.hideLoadingDialog()
+                        },
+                        onComplete = {
+                            if (reloadChat) viewState.hideLoadingDialog()
+                        }
+                )
     }
 
     override fun onLoadPreviousMessagesRequest() {
@@ -316,7 +319,7 @@ class ChatPresenter
     override fun onAcceptChatClick() {
         val recipient = chat?.user?.user_id?.toString() ?: return
         compositeDisposable += chatRepository.chatAccept(chatId)
-                .andThen(haChat.sendMessage(chatId, Message.Type.SERVICE, CHAT_SERVICE_MESSAGE_ACCEPT, recipient))
+                .andThen(haChat.sendMessage(chatId, Message.Type.SERVICE, CHAT_SERVICE_MESSAGE_ACCEPT, recipient, createMessageAdditionalData()))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.showChatInput(true) }, {})
@@ -359,6 +362,12 @@ class ChatPresenter
         super.onDestroy()
         haChat.leaveRoom(chatId)
         EventBus.getDefault().unregister(this)
+    }
+
+    private fun createMessageAdditionalData(): JSONObject {
+        val currentUser = appData.getUser()
+        val data = ChatMessageAdditionalData(currentUser.user_id, currentUser.user_name, currentUser.user_last_name, currentUser.user_avatar)
+        return JSONObject(Gson().toJson(data))
     }
 
     companion object {

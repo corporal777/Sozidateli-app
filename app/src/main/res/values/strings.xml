@@ -516,6 +516,6 @@
     <string name="event_register_sent_moderate_message">Модератор подтвердит ваше участие в течении 2 рабочих дней</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
-    <string name="event_register_sent_message">Теперь вы можете перейти к мероприятию  и составить свой календарь событий</string>
+    <string name="event_register_sent_message">Теперь вы можете перейти к мероприятию и составить свой календарь событий</string>
     <string name="event_register_sent_button">К мероприятию</string>
 </resources>

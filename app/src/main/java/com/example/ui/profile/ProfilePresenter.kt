@@ -33,7 +33,7 @@ class ProfilePresenter
     }
 
     private fun updateNotification() {
-        val unreadNotifications = appData.getUser().notification_unread
+        val unreadNotifications = appData.notificationsCount
         viewState.apply {
             if (unreadNotifications > 0) highlightNotifications(unreadNotifications)
             else hideLastNotification()

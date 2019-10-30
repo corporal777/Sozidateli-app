@@ -52,7 +52,6 @@ class ChatView : FrameLayout, ChatViewContract.View {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        setSelectableItemBackgroundBorderless()
         (context.applicationContext as App).appComponent.inject(this)
     }
 
@@ -88,5 +87,9 @@ class ChatView : FrameLayout, ChatViewContract.View {
 
     override fun hideCounter() {
         view.tvBadge.visibility = View.GONE
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        ivImage.setOnClickListener(l)
     }
 }

@@ -75,8 +75,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
             chatSection.apply {
-                if (groupCount == 0 || getGroup(0) != CHAT_SECTION_HEADER) {
-                    setHeader(CHAT_SECTION_HEADER)
+                if (groupCount == 0 || getGroup(0) !is ListSectionNameItem) {
+                    setHeader(ListSectionNameItem(-300L))
                 }
                 update(chats.map { chat ->
                     UserChatItem(
@@ -131,8 +131,4 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun layout() = R.layout.fragment_chat_list
-
-    companion object {
-        private val CHAT_SECTION_HEADER = ListSectionNameItem(-300L)
-    }
 }

@@ -329,8 +329,6 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     override fun setUserAvatar(url: String) {
         toolbarContentActionBar.removeAllRightViews()
         ToolbarButton(requireContext()).apply {
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
-            setPadding(8.dp)
             setCircleImage(url)
             toolbarContentActionBar.addRightView(this)
         }

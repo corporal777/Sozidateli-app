@@ -22,9 +22,6 @@ class MyEventsPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         eventRepository.getEventList(limit, offset, mapOf(Event.FILTER_REGISTRATION to Event.FILTER_REGISTRATION_ANY_REGISTERED))
-                .doOnSuccess {
-                    Timber.tag("EVENT_T").d(it.data.joinToString("\n"))
-                }
     }
 
     override fun onEventClick(event: Event) {

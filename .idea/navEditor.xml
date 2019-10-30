@@ -885,18 +885,6 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="profile_setting_chat_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="2548" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="qr_scanner_fragment">
                     <value>
                       <LayoutPositions>

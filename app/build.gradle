@@ -101,11 +101,11 @@ dependencies {
     // support
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
     implementation 'androidx.core:core-ktx:1.1.0'
 
     // google
-    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
@@ -170,8 +170,7 @@ dependencies {
     implementation 'com.github.qingmei2:rximagepicker:2.5.1'
     implementation 'com.isseiaoki:simplecropview:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-    implementation 'org.bitbucket.houseofapps:chatlibrary-android:0.3.1'
-//    implementation project(':chat')
+    implementation 'org.bitbucket.houseofapps:chatlibrary-android:0.3.2'
     implementation 'io.michaelrocks:libphonenumber-android:8.10.16'
 
 
@@ -179,12 +178,12 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
     implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
     // sn
-    implementation 'com.vk:androidsdk:1.6.7'
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.vk:androidsdk:1.6.9'
+    implementation 'com.facebook.android:facebook-android-sdk:5.9.0'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
 
     // crashlytics
