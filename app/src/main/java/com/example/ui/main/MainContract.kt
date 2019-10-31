@@ -4,25 +4,27 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
+import com.example.util.OneExecutionByTagStateStrategy
 
 interface MainContract {
     interface View : BaseContract.View {
         @StateStrategyType(SkipStrategy::class)
         fun showBackButton(show: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showLogin()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showEventList(popUpTo: Int)
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showEvent()
 
-        @StateStrategyType(SkipStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showGreetings()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showChat(chatId: String, userName: String)
 
         @StateStrategyType(SkipStrategy::class)
@@ -46,7 +48,7 @@ interface MainContract {
         fun onHandleRecoverPasswordLink(email: String, code: String)
         fun onHandleChangeEmailConfirm(email: String, code: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
-        fun onHandleSocialNetworkConfirm(snType:String,id:String,code:String)
+        fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String)
         fun onSetPassword(email: String, code: String, password: String)
     }
 }

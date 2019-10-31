@@ -36,6 +36,7 @@ import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
