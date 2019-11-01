@@ -11,8 +11,11 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
 import androidx.core.view.doOnNextLayout
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,7 +80,17 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     private val chatAdapter = GroupAdapter<GroupieViewHolder>()
 
     private val imageClickListener = { url: String, imageView: ImageView ->
-        presenter.onImageClick(url, imageView)
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair(imageView, imageView.transitionName)
+        )
+
+        findNavController().navigate(
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build().toBundle(),
+                null,
+                ActivityNavigatorExtras(options)
+        )
     }
 
     private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }

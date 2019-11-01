@@ -10,7 +10,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.core.view.isEmpty
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -25,6 +28,7 @@ import com.example.extensions.formatToDefaultDate
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -109,18 +113,24 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
         return ProfileDataUserEditableItem(
                 HEADER_ITEM_ID,
+                user.user_avatar,
                 avatar,
                 user.fullName,
                 user.user_id,
                 user.user_status ?: User.Status.LOW_PROTECTION,
                 { presenter.onEditMainDataClick() },
-                { presenter.onStatusClick() }
+                { presenter.onStatusClick() },
+                { imageView ->
+                    val url = user.user_avatar ?: return@ProfileDataUserEditableItem
+                    onAvatarClick(imageView, url)
+                }
         )
     }
 
     private fun initProfileItem(user: User, avatar: Bitmap?): ProfileDataUserItem {
         return ProfileDataUserItem(
                 HEADER_ITEM_ID,
+                user.user_avatar,
                 avatar,
                 user.fullName,
                 user.user_id,
@@ -141,7 +151,26 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 },
                 {
                     presenter.onWriteMessageClick()
-                })
+                },
+                { imageView ->
+                    val url = user.user_avatar ?: return@ProfileDataUserItem
+                    onAvatarClick(imageView, url)
+                }
+        )
+    }
+
+    private fun onAvatarClick(imageView: ImageView, url: String) {
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair(imageView, imageView.transitionName)
+        )
+
+        findNavController().navigate(
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build().toBundle(),
+                null,
+                ActivityNavigatorExtras(options)
+        )
     }
 
     private fun initPersonalDataItem(user: User, editable: Boolean): Group? {

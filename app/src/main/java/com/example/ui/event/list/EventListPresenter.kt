@@ -9,7 +9,6 @@ import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 
 abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>(), EventListContract.Presenter {
 
@@ -17,18 +16,18 @@ abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>
     private var scrollOffset = 0
 
     protected abstract val pagination: PaginationDataSourceFactory<Event>
-    private lateinit var paginationList: PaginationList<Event>
+    private lateinit var paginationList: PaginationList<out Event?>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setData(listOf(null))
         paginationList = pagination.applyErrorHandler {
             it.printStackTrace()
         }
-                .buildList()
+                .buildList(enablePlaceholders = true)
 
         compositeDisposable += Observable.create(paginationList)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
                 .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
     }
 

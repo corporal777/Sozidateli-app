@@ -1,7 +1,6 @@
 package com.example.ui.search.event
 
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -14,8 +13,8 @@ import com.example.data.models.Event.Companion.FILTER_REGISTRATION_NOT_REGISTERE
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION_PENDING
 import com.example.data.models.SearchFilter
 import com.example.holders.SearchEventItem
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.example.util.ARG_EVENT
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
@@ -34,7 +33,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event, bundleOf(ARG_EVENT to event))
+        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun createItem(itemData: Event): Item {

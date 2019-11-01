@@ -3,12 +3,12 @@ package com.example.ui.event.list
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.dp
 import com.example.holders.EventItem
+import com.example.holders.EventItemPlaceholder
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -47,9 +47,10 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
-    override fun setData(events: List<Event>) {
+    override fun setData(events: List<Event?>) {
         adapter.update(events.map {
-            EventItem(
+            if (it == null) EventItemPlaceholder()
+            else EventItem(
                     it,
                     { presenter.onEventClick(it) },
                     { presenter.onGoToEventClick(it) }
@@ -67,14 +68,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle(), navOptions {
-            //            anim {
-//                enter = R.anim.slide_from_bottom_enter
-//                exit = R.anim.slide_from_bottom_exit
-//                popEnter = R.anim.slide_from_bottom_popup_enter
-//                popExit = R.anim.slide_from_bottom_popup_exit
-//            }
-        })
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list_with_placeholder

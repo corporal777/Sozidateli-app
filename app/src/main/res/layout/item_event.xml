@@ -7,9 +7,9 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/profile_padding_start"
     android:layout_marginEnd="@dimen/profile_padding_start"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/event_item_margin_bottom"
     android:background="@drawable/background_event"
-    android:minHeight="262dp">
+    android:minHeight="@dimen/event_item_height">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,10 +34,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:textColor="@color/event_item_text"
-            android:textSize="13sp"
+            android:textSize="@dimen/event_item_organization_name_text_size"
             android:transitionName="organizationLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,17 +51,34 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/event_item_content_margin_top"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:textColor="@color/event_item_text"
-            android:textSize="17sp"
+            android:textSize="@dimen/event_item_date_text_size"
             android:transitionName="eventDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvOrganizationLabel"
             tools:ignore="MissingPrefix"
             tools:text="5.02.19 - 30.06.19" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventType"
+            fontPath="fonts/Roboto-Bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="@dimen/event_item_content_margin_top"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/event_item_text"
+            android:textSize="@dimen/event_item_event_name_text_size"
+            android:transitionName="eventLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventDate"
+            tools:text="Круглый стол" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvEventLabel"
@@ -69,36 +86,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="@dimen/event_item_content_margin_top"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/event_item_text"
-            android:textSize="17sp"
+            android:textSize="@dimen/event_item_event_name_text_size"
             android:transitionName="eventLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventType"
             tools:text="Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. " />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvShowMore"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/background_button_underline"
-            android:minHeight="48dp"
-            android:text="@string/show_more"
-            android:textColor="@color/event_item_text"
-            android:textSize="15sp"
-            android:transitionName="eventLabel"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventLabel" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnGoToEvent"
@@ -118,10 +116,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvShowMore"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventLabel"
             app:layout_constraintVertical_bias="1.0"
             tools:background="@color/colorAccent"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvStatus"
@@ -136,7 +134,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvShowMore"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventLabel"
             app:layout_constraintVertical_bias="1.0"
             tools:background="@color/event_status_approved_background"
             tools:text="@string/event_status_approved"

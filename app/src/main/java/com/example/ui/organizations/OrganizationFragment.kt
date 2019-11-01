@@ -2,10 +2,13 @@ package com.example.ui.organizations
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -20,6 +23,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.rd.animation.type.AnimationType
 import com.squareup.picasso.Callback
@@ -103,6 +107,20 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                                 isVisible = false
                             }
                         })
+            }
+
+            setOnClickListener {
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(),
+                        Pair(this, this.transitionName)
+                )
+
+                findNavController().navigate(
+                        R.id.image_view_activity,
+                        ImageViewActivityArgs.Builder(organization.logo, null, null, this.transitionName).build().toBundle(),
+                        null,
+                        ActivityNavigatorExtras(options)
+                )
             }
         }
 

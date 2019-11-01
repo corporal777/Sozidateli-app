@@ -1,12 +1,17 @@
 package com.example.ui.partner
 
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Partner
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -67,6 +72,20 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
                                 isVisible = false
                             }
                         })
+
+                setOnClickListener {
+                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            requireActivity(),
+                            Pair(this, this.transitionName)
+                    )
+
+                    findNavController().navigate(
+                            R.id.image_view_activity,
+                            ImageViewActivityArgs.Builder(partner.logo, null, null, this.transitionName).build().toBundle(),
+                            null,
+                            ActivityNavigatorExtras(options)
+                    )
+                }
             }
         }
 

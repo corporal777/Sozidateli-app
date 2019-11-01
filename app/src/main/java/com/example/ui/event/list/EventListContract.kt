@@ -10,7 +10,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(events: List<Event>)
+        fun setData(events: List<Event?>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)

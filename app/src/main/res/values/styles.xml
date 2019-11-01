@@ -167,6 +167,10 @@
         <item name="viewBackground">@color/input_border</item>
     </style>
 
+    <style name="ViewPlaceholder">
+        <item name="viewBackground">@color/placeholder</item>
+    </style>
+
     <style name="ProfileFieldTextView">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>

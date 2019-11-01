@@ -56,6 +56,8 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.showStories()
+
         compositeDisposable += appData.tokenChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->
@@ -87,8 +89,6 @@ class MainPresenter
                         }
 
                         checkIntent()
-
-                        showStories()
                     }
 
                     AuthBackground.clear()
