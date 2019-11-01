@@ -10,7 +10,6 @@
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
-        <item name="android:windowReturnTransition">@android:transition/explode</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>

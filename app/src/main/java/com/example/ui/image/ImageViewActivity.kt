@@ -4,13 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.transition.ChangeBounds
-import android.transition.ChangeImageTransform
-import android.transition.ChangeTransform
-import android.transition.TransitionSet
-import android.transition.TransitionSet.ORDERING_TOGETHER
 import android.view.MenuItem
-import android.view.Window
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -53,20 +47,6 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
-        with(window) {
-            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            val transition = TransitionSet().apply {
-                ordering = ORDERING_TOGETHER
-                addTransition(ChangeBounds())
-                addTransition(ChangeTransform())
-                addTransition(ChangeImageTransform())
-            }
-
-            sharedElementEnterTransition = transition
-            sharedElementReturnTransition = transition
-            sharedElementExitTransition = transition
-        }
-
         super.onCreate(savedInstanceState)
         overridePendingTransition(0, 0)
         postponeEnterTransition()
@@ -120,11 +100,6 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
 
     override fun findImageBitmap(url: String) = Picasso.get().load(url).into(dummyTarget)
     override fun findImageBitmap(resource: Int) = Picasso.get().load(resource).into(dummyTarget)
-
-
-    override fun onBackPressed() {
-        finish()
-    }
 
     override fun finish() {
         super.finish()
