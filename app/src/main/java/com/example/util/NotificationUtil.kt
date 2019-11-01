@@ -3,23 +3,24 @@ package com.example.util
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.graphics.Bitmap
+import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import com.example.R
+import com.example.ui.main.MainActivity
+import javax.inject.Inject
 
-object NotificationUtil {
+class NotificationUtil @Inject constructor(
+        private val context: Context
+) {
 
     fun createNotification(
-            context: Context,
             channel: String,
             notificationId: Int,
-            title: String? = null,
-            message: String? = null,
-            intent: PendingIntent?,
-            largeIcon: Bitmap? = null,
-            groupId: String? = null
+            groupId: String? = null,
+            builder: (NotificationCompat.Builder.() -> Unit)
     ) {
         val smallIcon = R.mipmap.ic_launcher_round
 
@@ -27,15 +28,11 @@ object NotificationUtil {
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(smallIcon)
                 .setGroup(groupId)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setTicker(message)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-                .setLargeIcon(largeIcon)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(intent)
+
+        builder(notificationBuilder)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -47,11 +44,24 @@ object NotificationUtil {
                     .setSound(null)
                     .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                     .setGroupSummary(true)
-                    .setContentIntent(intent)
 
             notificationManager.notify(groupId.hashCode(), summaryNotificationBuilder.build())
         }
 
         notificationManager.notify(notificationId, notificationBuilder.build())
+    }
+
+    companion object {
+        fun createNotificationIntent(
+                context: Context,
+                bundle: Bundle? = null
+        ): PendingIntent {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                bundle?.let { putExtras(it) }
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+
+            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 }

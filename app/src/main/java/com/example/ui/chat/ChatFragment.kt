@@ -8,14 +8,12 @@ import android.text.Spanned
 import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.setPadding
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +29,7 @@ import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.image.ImageViewFragment
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -71,21 +70,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
         }
     }
 
-    override val title: CharSequence
-        get() {
-            val userName = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
-            val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
-                it.setBounds(0, 0, 12.dp, 12.dp)
-                ImageSpan(it, ImageSpan.ALIGN_BASELINE)
-            }
-            return SpannableStringBuilder(userName)
-                    .apply {
-                        imageSpan?.let {
-                            append("  ")
-                            setSpan(it, this.length - 1, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-        }
+    override val title = ""
 
     val chatId: String?
         get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
@@ -99,11 +84,6 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -326,12 +306,33 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
         findNavController().navigate(ChatFragmentDirections.actionChatFragmentToUserFragment(uid.toString()))
     }
 
+    override fun showEvent(event: String) {
+        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+    }
+
     override fun setUserAvatar(url: String) {
         toolbarContentActionBar.removeAllRightViews()
         ToolbarButton(requireContext()).apply {
             setCircleImage(url)
+            isEnabled = false
+            isClickable = false
             toolbarContentActionBar.addRightView(this)
         }
+    }
+
+    override fun setTitle(title: String) {
+        val userName = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
+        val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
+            it.setBounds(0, 0, 12.dp, 12.dp)
+            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+        }
+        toolbarContentActionBar.title = SpannableStringBuilder(userName)
+                .apply {
+                    imageSpan?.let {
+                        append("  ")
+                        setSpan(it, this.length - 1, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                }
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

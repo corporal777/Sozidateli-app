@@ -3,7 +3,6 @@ package com.example.ui.main
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +15,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -28,6 +27,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.splash.SplashFragment
@@ -36,7 +36,6 @@ import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -61,10 +60,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             R.id.splash_fragment,
             R.id.event_tabs_fragment
     )
-
-    private val navigatedListener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
-
-    }
 
     private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
@@ -103,7 +98,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             setDisplayShowTitleEnabled(false)
             setCustomView(ToolbarContentView(this@MainActivity), ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
         }
-        findNavController().addOnDestinationChangedListener(navigatedListener)
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
         subscribeOnNotificationChanel()
     }
@@ -134,9 +128,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents()) return
         val appLinkAction = intent.action
-        val appLinkData: Uri? = intent.data
         if (Intent.ACTION_VIEW == appLinkAction) {
-            appLinkData?.also {
+            intent.data?.also {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
@@ -158,13 +151,17 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             }
         } else {
-            val chatData = intent.getBundleExtra(FIELD_CHAT)
-            chatData?.let {
+            intent.getBundleExtra(FIELD_CHAT)?.let {
                 val chatId = it.getString(FIELD_CHAT_ID, null)
                 val userName = it.getString(FIELD_LABEL, null)
-                val notifiactionId = it.getString(FIELD_NOTIFICATION_ID, null)
+                val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
                 if (chatId != null && userName != null)
-                    presenter.onHandleChat(chatId, userName, notifiactionId)
+                    presenter.onHandleChat(chatId, userName, notificationId)
+            }
+
+            intent.getBundleExtra(FIELD_EVENT)?.let {
+                val event = it.getString(FIELD_EVENT_ID, null)
+                if (event != null) presenter.onHandleEvent(event)
             }
         }
     }
@@ -264,6 +261,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
+    override fun showEvent(event: String) {
+        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+    }
+
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
     override fun showToolbar() {
@@ -304,7 +305,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onDestroy() {
-        findNavController().removeOnDestinationChangedListener(navigatedListener)
         navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
         super.onDestroy()
     }

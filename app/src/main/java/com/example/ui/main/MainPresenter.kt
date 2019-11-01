@@ -82,7 +82,6 @@ class MainPresenter
                     viewState.apply {
                         hideLoadingDialog()
                         connectToSocket(appData.getUser().user_id)
-
                         when (showAction) {
                             SHOW_EVENT_LIST -> showEventList(R.id.splash_fragment)
                             SHOW_EVENT_LIST_AFTER_GREETINGS -> showEventList(R.id.welcome_fragment)
@@ -178,6 +177,10 @@ class MainPresenter
                 })
     }
 
+    override fun onHandleEvent(event: String) {
+        viewState.showEvent(event)
+    }
+
     override fun onSetPassword(email: String, code: String, password: String) {
         authRepository.setPassword(email, code, password)
                 .performOnBackgroundOutOnMain()
@@ -258,24 +261,17 @@ class MainPresenter
             else -> newMessage.message.message
         }
 
-        val senderId = newMessage.message.senderKey
-
         compositeDisposable += Maybe.fromCallable {
             newMessage.message.additionalData?.fromJson<ChatMessageAdditionalData>()
                     ?: throw NullPointerException("Additional data is null")
         }
-                .onErrorResumeNext(userRepository.getUserById(senderId).map {
+                .onErrorResumeNext(userRepository.getUserById(newMessage.message.senderKey).map {
                     ChatMessageAdditionalData(it.user_id, it.user_name, it.user_last_name, it.user_avatar)
                 })
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {
-                    chatHelper.showNotificationIfCan(
-                            chatId = chatId,
-                            messageId = messageId,
-                            message = message,
-                            senderId = senderId,
-                            senderName = "${it.name ?: ""} ${it.lastName ?: ""}",
-                            avatarUrl = it.avatar)
+                    val senderName = "${it.name ?: ""} ${it.lastName ?: ""}"
+                    chatHelper.showNotificationIfCan(chatId, messageId, senderName, message, senderName, it.avatar)
                 }
     }
 

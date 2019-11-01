@@ -30,7 +30,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
-import ru.houseofapps.chat.exceptions.NoConnectionException
 import ru.houseofapps.chat.models.Message
 import withCheckInternetConnectivity
 import withLoadingDialog
@@ -49,6 +48,7 @@ class ChatPresenter
 
     lateinit var chatId: String
     var userAvatar: String? = null
+    var userName: String? = null
 
     private var chat: UserChat? = null
 
@@ -65,31 +65,31 @@ class ChatPresenter
         EventBus.getDefault().register(this)
 
         userAvatar?.let { viewState.setUserAvatar(it) }
+        userName?.let { viewState.setTitle(it) }
 
         subscribeToChatEvents()
 
         compositeDisposable += getChat()
                 .flatMapCompletable {
                     haChat.joinToRoom(chatId)
-                            .andThen(haChat.addUsersToRoom(chatId, listOf(it.user.user_id.toString())))
+                            .andThen(
+                                    if (!it.isEventChat) haChat.addUsersToRoom(chatId, listOf(it.user.user_id.toString()))
+                                    else Completable.complete()
+                            )
                 }
                 .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ messages ->
-                    val lastUnreadIndex = findLastUnreadMessageIndex(messages)
-                    val chatMessages = createChatMessages(messages)
+                .subscribeSimple {
+                    val lastUnreadIndex = findLastUnreadMessageIndex(it)
+                    val chatMessages = createChatMessages(it)
                             .addDates()
                             .addUnreadMessagesItem(lastUnreadIndex)
                     viewState.updateMessages(chatMessages)
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
                     isMessagesInitialLoad = true
-                }, {
-                    if (it is NoConnectionException) {
-//                        viewState.showErrorDialog(listOf(R.string.not_connection_error), null)
-                    }
-                    it.printStackTrace()
-                })
+                }
     }
 
     private fun subscribeToChatEvents() {
@@ -126,7 +126,14 @@ class ChatPresenter
 
                         val avatarFromChat = it.user.user_avatar
                         if (userAvatar != avatarFromChat && avatarFromChat != null) {
+                            userAvatar = avatarFromChat
                             setUserAvatar(avatarFromChat)
+                        }
+
+                        val name = it.user.fullName
+                        if (userName != name) {
+                            userName = name
+                            setTitle(name)
                         }
 
                         isChatHasMessages = it.lastMessage != null
@@ -355,6 +362,8 @@ class ChatPresenter
     override fun onUserClick() {
         if (chat?.isEventChat != true) {
             chat?.user?.user_id?.let { viewState.showUser(it) }
+        } else {
+            chat?.eventId?.let { viewState.showEvent(it) }
         }
     }
 

@@ -11,6 +11,7 @@ import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.ChatHelper
+import com.example.util.NotificationUtil
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import dagger.Module
 import dagger.Provides
@@ -40,7 +41,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideChatData(context: Context): ChatHelper = ChatHelper(context)
+    fun provideChatData(context: Context, notificationUtil: NotificationUtil): ChatHelper = ChatHelper(context, notificationUtil)
 
     @Provides
     @Singleton

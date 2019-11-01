@@ -4,7 +4,6 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
-import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.OneExecutionByTagStateStrategy
 
 interface MainContract {
@@ -26,6 +25,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showChat(chatId: String, userName: String)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showEvent(event: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
@@ -49,6 +51,7 @@ interface MainContract {
         fun onHandleChangeEmailConfirm(email: String, code: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String)
+        fun onHandleEvent(event: String)
         fun onSetPassword(email: String, code: String, password: String)
     }
 }

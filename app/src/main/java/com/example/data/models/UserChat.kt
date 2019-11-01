@@ -33,5 +33,7 @@ data class UserChat(
         var isBannedByYou: Boolean,
         @SerializedName("is_event_chat")
         var isEventChat: Boolean,
+        @SerializedName("event_id")
+        var eventId: String?,
         var unreadMessageCount: Int = 0
 )

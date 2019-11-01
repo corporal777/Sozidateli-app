@@ -57,6 +57,9 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setUserAvatar(url: String)
 
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setTitle(title: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun removeChatMessage(message: ChatMessage)
 
@@ -71,6 +74,9 @@ interface ChatContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showUser(uid: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEvent(event: String)
     }
 
     interface Presenter : BaseContract.Presenter {

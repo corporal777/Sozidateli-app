@@ -1,20 +1,5 @@
 package com.example.util
 
-const val COLLECTION_CHATS = "chats"
-const val COLLECTION_MESSAGES = "messages"
-const val COLLECTION_USERS = "users"
-const val FIELD_TEXT = "text"
-const val FIELD_SENDER_ID = "senderId"
-const val FIELD_SEND_AT = "sendAt"
-const val FIELD_IMAGE = "image"
-const val FIELD_IS_READ = "isRead"
-const val FIELD_UNREAD_MESSAGE_COUNT = "unreadMessageCount"
-const val FIELD_USER_NAME = "userName"
-const val FIELD_AVATAR = "avatar"
-const val FIELD_IS_SHOWED = "isShowed"
-const val FIELD_MESSAGE_ID = "messageId"
-
-
 const val DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%d.%02d.%d"
 const val DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%d.%02d.%d %02d:%02d"
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "d.MM.yyyy"
@@ -70,11 +55,13 @@ const val RECOVERY_EMAIL = "recover_email"
 const val CHANGE_EMAIL = "change"
 
 
-const val FIELD_CHAT_ID = "chatId"
 const val FIELD_CHAT = "chat"
+const val FIELD_CHAT_ID = "chatId"
 const val FIELD_LABEL = "label"
 const val FIELD_USER_ID = "userId"
 const val FIELD_NOTIFICATION_ID = "notification_id"
+const val FIELD_EVENT = "event"
+const val FIELD_EVENT_ID = "event_id"
 
 const val REQUEST_CODE_SELECT_PDF = 12
 const val REQUEST_CODE_PERMISSION_READ_FILE = 13
