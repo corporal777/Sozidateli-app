@@ -148,17 +148,15 @@ dependencies {
     implementation "com.xwray:groupie:2.6.0"
     implementation "com.xwray:groupie-kotlin-android-extensions:2.6.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
     implementation 'org.sufficientlysecure:html-textview:3.6'
     implementation 'me.saket:better-link-movement-method:2.2.0'
-    implementation 'com.github.chuross:flinglayout:0.5.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.hbb20:ccp:2.2.9'
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
-    implementation 'me.srodrigo:androidhintspinner:1.0.0'
     implementation 'com.romandanylyk:pageindicatorview:1.0.3'
+    implementation 'com.github.shts:StoriesProgressView:3.0.0'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

@@ -42,6 +42,9 @@ interface AboutEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showLogoImage(url: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -50,5 +53,6 @@ interface AboutEventContract {
         fun onGoToEventClick()
         fun onPageClick(page: EventPage)
         fun onPartnerClick(partner: EventParther)
+        fun onLogoClick(url: String)
     }
 }

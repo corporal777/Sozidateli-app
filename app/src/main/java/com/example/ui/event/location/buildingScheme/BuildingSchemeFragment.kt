@@ -4,12 +4,14 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.SparseIntArray
 import android.view.View
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
+import androidx.core.util.Pair
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.ChangeBounds
 import androidx.transition.ChangeImageTransform
@@ -23,8 +25,7 @@ import com.example.adapters.SimpleRecyclerViewAdapter
 import com.example.adapters.ViewHolder
 import com.example.data.models.Place
 import com.example.ui.base.BaseFragment
-import com.example.ui.image.ImageViewFragment
-import com.example.ui.image.ImageViewFragment.Companion.ARG_TRANSITION_NAME
+import com.example.ui.image.ImageViewActivityArgs
 import com.rd.animation.type.AnimationType
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_building_scheme.*
@@ -110,11 +111,15 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
     }
 
     override fun showImage(url: String) {
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair(ivScheme, ivScheme.transitionName)
+        )
         findNavController().navigate(
-                R.id.image_view_fragment,
-                bundleOf(ImageViewFragment.ARG_IMAGE_URL to url, ARG_TRANSITION_NAME to url),
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, ivScheme.transitionName).build().toBundle(),
                 null,
-                FragmentNavigatorExtras(ivScheme to url)
+                ActivityNavigatorExtras(options)
         )
     }
 

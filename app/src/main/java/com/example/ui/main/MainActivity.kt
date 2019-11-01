@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -79,12 +78,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 hideToolbar()
             }
 
-            val bg = if (f is BackgroundImageFragment) f.getFragmentBackgroundDrawable() else null
+            val bg = if (f is BackgroundImageFragment) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.decorView.systemUiVisibility = if (f.isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+                }
+                f.getFragmentBackgroundDrawable()
+            } else null
             root.background = bg
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.decorView.systemUiVisibility = if (bg == null) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
-            }
         }
     }
 
@@ -263,6 +263,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showEvent(event: String) {
         findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+    }
+
+    override fun showStories() {
+        findNavController().navigate(R.id.stories_fragment)
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)

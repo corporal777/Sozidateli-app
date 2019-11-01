@@ -102,4 +102,8 @@ class AboutEventPresenter
     override fun onGoToEventClick() {
         viewState.showEventRequest(eventId)
     }
+
+    override fun onLogoClick(url: String) {
+        viewState.showLogoImage(url)
+    }
 }

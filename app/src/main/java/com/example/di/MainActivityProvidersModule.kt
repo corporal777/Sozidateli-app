@@ -5,6 +5,8 @@ import com.example.util.rxtakephoto.RxTakePhoto
 import com.tbruyelle.rxpermissions2.RxPermissions
 import dagger.Module
 import dagger.Provides
+import io.reactivex.subjects.CompletableSubject
+import javax.inject.Singleton
 
 @Module
 class MainActivityProvidersModule {

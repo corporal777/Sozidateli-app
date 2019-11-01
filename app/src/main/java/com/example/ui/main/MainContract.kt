@@ -40,6 +40,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun checkIntent()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showStories()
     }
 
     interface Presenter : BaseContract.Presenter {

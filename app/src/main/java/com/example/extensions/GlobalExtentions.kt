@@ -313,3 +313,7 @@ inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? 
             .create()
             .fromJson(this, T::class.java)
 }
+
+fun View.setOnClickListener(listener: () -> Unit) {
+    setOnClickListener { listener() }
+}

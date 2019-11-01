@@ -77,6 +77,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.image.ImageViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent" />
+
         <service android:name=".util.FcmMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

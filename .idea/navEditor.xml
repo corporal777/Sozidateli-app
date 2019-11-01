@@ -323,7 +323,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="image_view_fragment">
+                  <entry key="image_view_activity">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -675,12 +675,12 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="image_view_fragment">
+                  <entry key="image_view_activity">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="984" />
+                            <option name="x" value="12" />
                             <option name="y" value="12" />
                           </Point>
                         </option>

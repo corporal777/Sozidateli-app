@@ -18,14 +18,15 @@ import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
-import com.example.ui.event.schedule.my.EventMyScheduleFragment
-import com.example.ui.eventTabs.EventTabsFragment
-import com.example.ui.eventsTabs.EventListFragment
-import com.example.ui.image.ImageViewFragment
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.map.MapFragment
+import com.example.ui.event.registration.EventRegistrationFragment
+import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
+import com.example.ui.event.schedule.my.EventMyScheduleFragment
+import com.example.ui.event.speakers.EventSpeakersFragment
+import com.example.ui.eventTabs.EventTabsFragment
+import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragment
@@ -36,17 +37,16 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
-import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.search.user.SearchUserFragment
-import com.example.ui.event.speakers.EventSpeakersFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.status.StatusFragment
 import com.example.ui.status.tabs.StatusPagesFragment
+import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.user.UserFragment
@@ -156,9 +156,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeBuildingSchemeFragment(): BuildingSchemeFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeImageViewFragment(): ImageViewFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
 
     @ContributesAndroidInjector
@@ -214,4 +211,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEventContactsFragment(): EventContactsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeStoriesFragment(): StoriesFragment
 }

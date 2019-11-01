@@ -11,6 +11,8 @@ import javax.inject.Provider
 
 class SplashFragment : BaseFragment(), BackgroundImageFragment, SplashContract.View {
 
+    override val isLightStatus = true
+
     @InjectPresenter
     lateinit var presenter: SplashPresenter
 

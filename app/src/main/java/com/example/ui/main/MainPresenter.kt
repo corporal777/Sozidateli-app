@@ -62,9 +62,7 @@ class MainPresenter
                     unsubscribeChat()
                     if (token.value == null) {
                         isAuthRequired = true
-                        viewState.apply {
-                            showLogin()
-                        }
+                        viewState.showLogin()
                     } else {
                         loadUser()
                     }
@@ -89,6 +87,8 @@ class MainPresenter
                         }
 
                         checkIntent()
+
+                        showStories()
                     }
 
                     AuthBackground.clear()

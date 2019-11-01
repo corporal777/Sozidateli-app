@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
 import com.squareup.picasso.Picasso
@@ -12,15 +13,18 @@ class EventInfoHeaderItem(
         private val logo: String?,
         private val organizationName: String?,
         private val dates: String?,
-        private val description: String?
+        private val description: String?,
+        private val onLogoClick: (ImageView, String) -> Unit
 ) : Item(id) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             ivLogo.apply {
-                val canLoad = !logo.isNullOrEmpty()
-                isVisible = canLoad
-                if (canLoad) Picasso.get().load(logo).into(this)
+                isVisible = if (!logo.isNullOrEmpty()) {
+                    Picasso.get().load(logo).into(this)
+                    setOnClickListener { onLogoClick(ivLogo, logo) }
+                    true
+                } else false
             }
             tvOrganizationLabel.apply {
                 isVisible = !organizationName.isNullOrEmpty()

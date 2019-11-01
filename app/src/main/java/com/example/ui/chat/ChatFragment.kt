@@ -12,7 +12,6 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -30,7 +29,7 @@ import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.image.ImageViewFragment
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PositionOffsetScrollListener
@@ -292,11 +291,8 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     override fun openImageFullScreen(url: String, imageView: ImageView) {
         val transitionName = imageView.transitionName
         findNavController().navigate(
-                R.id.image_view_fragment,
-                bundleOf(
-                        ImageViewFragment.ARG_IMAGE_URL to url,
-                        ImageViewFragment.ARG_TRANSITION_NAME to transitionName
-                ),
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, transitionName).build().toBundle(),
                 null,
                 FragmentNavigatorExtras(imageView to transitionName)
         )

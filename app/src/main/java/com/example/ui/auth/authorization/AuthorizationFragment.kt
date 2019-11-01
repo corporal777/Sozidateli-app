@@ -17,6 +17,8 @@ import javax.inject.Provider
 
 class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, AuthorizationContract.View {
 
+    override val isLightStatus = true
+
     @InjectPresenter
     lateinit var presenter: AuthorizationPresenter
 

@@ -3,8 +3,11 @@ package com.example.ui.event.about
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +22,7 @@ import com.example.holders.EventPartnerItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -50,6 +54,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
         spanCount = 12
     }
+
+    private var eventHeaderItem: EventInfoHeaderItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,7 +108,21 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             showContacts: Boolean
     ) {
         groupAdapter.update(listOf(
-                EventInfoHeaderItem(-100L, logo, organizationName, dates, description),
+                EventInfoHeaderItem(-100L, logo, organizationName, dates, description) { iv, url ->
+                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            requireActivity(),
+                            Pair(iv, iv.transitionName)
+                    )
+
+                    findNavController().navigate(
+                            R.id.image_view_activity,
+                            ImageViewActivityArgs.Builder(url, null, null, iv.transitionName).build().toBundle(),
+                            null,
+                            ActivityNavigatorExtras(options)
+                    )
+                }.apply {
+                    eventHeaderItem = this
+                },
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() }.apply {
@@ -158,6 +178,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun showEventRequest(event: String) {
         findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+    }
+
+    override fun showLogoImage(url: String) {
+
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

@@ -24,10 +24,10 @@
             app:nullable="true" />
     </fragment>
 
-    <fragment
-        android:id="@+id/image_view_fragment"
-        android:name="com.example.ui.image.ImageViewFragment"
-        tools:layout="@layout/fragment_image_view">
+    <activity
+        android:id="@+id/image_view_activity"
+        android:name="com.example.ui.image.ImageViewActivity"
+        tools:layout="@layout/activity_image_view">
 
         <argument
             android:name="url"
@@ -48,5 +48,5 @@
             android:name="transition_name"
             app:argType="string"
             app:nullable="true" />
-    </fragment>
+    </activity>
 </navigation>
