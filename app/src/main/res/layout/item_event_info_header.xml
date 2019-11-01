@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/tvOrganizationLabel"
-        fontPath="fonts/OpenSans-Bold.ttf"
+        fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/tvEventDate"
-        fontPath="fonts/OpenSans-Light.ttf"
+        fontPath="fonts/Robotoans-Light.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"

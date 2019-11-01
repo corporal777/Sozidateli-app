@@ -97,7 +97,7 @@
 
             <TextView
                 android:id="@+id/tvDescriptionShort"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -158,7 +158,7 @@
 
             <TextView
                 android:id="@+id/tvAddress"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -197,7 +197,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLearnMore"
-                fontPath="fonts/OpenSans-Semibold.ttf"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -249,7 +249,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPeoples"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -316,7 +316,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnEvents"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"

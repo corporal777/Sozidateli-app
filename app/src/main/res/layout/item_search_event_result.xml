@@ -14,7 +14,7 @@
         android:id="@+id/tvOrganizationName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        fontPath="fonts/OpenSans-Bold.ttf"
+        fontPath="fonts/Roboto-Bold.ttf"
         app:layout_constraintEnd_toStartOf="@id/ivArrow"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Fond temp" />
@@ -38,7 +38,7 @@
         android:layout_marginTop="5dp"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        fontPath="fonts/OpenSans-Light.ttf"
+        fontPath="fonts/Robotoans-Light.ttf"
         app:layout_constraintEnd_toStartOf="@id/ivArrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEventName"

@@ -34,7 +34,7 @@ class UserSubscribeButton : AppCompatButton {
     }
 
     init {
-        CalligraphyUtils.applyFontToTextView(context, this, "fonts/OpenSans-Semibold.ttf")
+        CalligraphyUtils.applyFontToTextView(context, this, "fonts/Roboto-Medium.ttf")
     }
 
     private fun obtainAttributes(attrs: AttributeSet?) {

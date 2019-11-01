@@ -27,7 +27,7 @@
 
         <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/tvInfo"
-            fontPath="fonts/OpenSans-Light.ttf"
+            fontPath="fonts/Robotoans-Light.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/profile_padding_start"

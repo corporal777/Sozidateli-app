@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/tvEventDate"
-        fontPath="fonts/OpenSans-Light.ttf"
+        fontPath="fonts/Robotoans-Light.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="15sp"

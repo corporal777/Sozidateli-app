@@ -155,7 +155,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         val usersCountText = "${organization.totalMembers}"
         val peoplesText = getString(R.string.organization_peoples)
         val peoplesSpannable = "$peoplesText $usersCountText".toSpannable().apply {
-            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/OpenSans-Bold.ttf"))
+            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/Roboto-Bold.ttf"))
             val start = peoplesText.length + 1
             val end = start + usersCountText.length
             set(start, end, typefaceSpan)
@@ -179,7 +179,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         val eventsCountText = "${organization.totalEvents}"
         val eventsText = getString(R.string.organization_events)
         val eventsSpannable = "$eventsText $eventsCountText".toSpannable().apply {
-            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/OpenSans-Bold.ttf"))
+            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/Roboto-Bold.ttf"))
             val start = eventsText.length + 1
             val end = start + eventsCountText.length
             set(start, end, typefaceSpan)

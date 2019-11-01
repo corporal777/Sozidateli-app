@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/tvRegisterTitle"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -192,7 +192,7 @@
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/cbAgree"
-                        fontPath="fonts/OpenSans-Light.ttf"
+                        fontPath="fonts/Robotoans-Light.ttf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -257,7 +257,7 @@
 
             <TextView
                 android:id="@+id/tvSnRegistration"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

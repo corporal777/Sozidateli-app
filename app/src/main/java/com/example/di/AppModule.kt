@@ -51,7 +51,7 @@ class AppModule {
     @Singleton
     fun provideCalligraphyDefaultConfig(): CalligraphyConfig {
         return CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/OpenSans-Regular.ttf")
+                .setDefaultFontPath("fonts/Roboto-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build()
     }

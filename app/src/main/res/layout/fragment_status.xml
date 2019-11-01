@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/tvYourStatus"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -26,7 +26,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvStatus"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -51,7 +51,7 @@
             <TextView
                 android:id="@+id/tvSecurity"
                 style="@style/Status.Description"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:text="@string/status_security"
                 tools:drawableStart="@drawable/ic_status_complete"
                 tools:ignore="MissingPrefix" />
@@ -59,7 +59,7 @@
             <TextView
                 android:id="@+id/tvSupport"
                 style="@style/Status.Description"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:text="@string/status_support"
                 tools:drawableStart="@drawable/ic_status_complete"
                 tools:ignore="MissingPrefix" />
@@ -67,13 +67,13 @@
             <TextView
                 android:id="@+id/tvInvites"
                 style="@style/Status.Description"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:text="@string/status_invites"
                 tools:drawableStart="@drawable/ic_status_complete"
                 tools:ignore="MissingPrefix" />
 
             <TextView
-                fontPath="fonts/OpenSans-Semibold.ttf"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
@@ -86,7 +86,7 @@
             <TextView
                 android:id="@+id/tvPhone"
                 style="@style/Status.Description"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_marginTop="16dp"
                 android:text="@string/status_verified_phone"
                 tools:drawableStart="@drawable/ic_status_complete"
@@ -94,7 +94,7 @@
 
             <TextView
                 android:id="@+id/tvPhoneNumber"
-                fontPath="fonts/OpenSans-Bold.ttf"
+                fontPath="fonts/Roboto-Bold.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -111,7 +111,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAction"
-                    fontPath="fonts/OpenSans-Bold.ttf"
+                    fontPath="fonts/Roboto-Bold.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -127,7 +127,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnRemove"
-                    fontPath="fonts/OpenSans-Bold.ttf"
+                    fontPath="fonts/Roboto-Bold.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -146,7 +146,7 @@
             <TextView
                 android:id="@+id/tvProfile"
                 style="@style/Status.Description"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_marginTop="0dp"
                 android:text="@string/status_fill_profile"
                 tools:drawableStart="@drawable/ic_status_uncomplete"
@@ -162,13 +162,13 @@
                 <TextView
                     android:id="@+id/tvNameCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="1"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_name"
                     tools:ignore="MissingPrefix" />
@@ -184,13 +184,13 @@
                 <TextView
                     android:id="@+id/tvBirthdayCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="2"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_birthday"
                     tools:ignore="MissingPrefix" />
@@ -206,13 +206,13 @@
                 <TextView
                     android:id="@+id/tvSnCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="3"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_sn"
                     tools:ignore="MissingPrefix" />
@@ -228,13 +228,13 @@
                 <TextView
                     android:id="@+id/tvEducationCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="4"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_education"
                     tools:ignore="MissingPrefix" />
@@ -250,13 +250,13 @@
                 <TextView
                     android:id="@+id/tvWorkCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="5"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_work_experience"
                     tools:ignore="MissingPrefix" />
@@ -272,13 +272,13 @@
                 <TextView
                     android:id="@+id/tvAdditionalCounter"
                     style="@style/Status.Counter"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:text="6"
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <TextView
                     style="@style/Status.Description.Profile"
-                    fontPath="fonts/OpenSans-Light.ttf"
+                    fontPath="fonts/Robotoans-Light.ttf"
                     android:layout_gravity="center_vertical"
                     android:text="@string/status_profile_additional_data"
                     tools:ignore="MissingPrefix" />

@@ -30,7 +30,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvGreeting"
-        fontPath="fonts/OpenSans-Semibold.ttf"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"

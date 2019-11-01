@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/textView"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -60,7 +60,7 @@
 
             <TextView
                 android:id="@+id/tvSocialNetworks"
-                fontPath="fonts/OpenSans-Semibold.ttf"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -121,7 +121,7 @@
 
             <TextView
                 android:id="@+id/tvEmail"
-                fontPath="fonts/OpenSans-Semibold.ttf"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/tvLogin"
-                fontPath="fonts/OpenSans-Semibold.ttf"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

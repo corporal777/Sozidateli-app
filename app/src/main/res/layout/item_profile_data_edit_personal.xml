@@ -43,7 +43,7 @@
         <!--suppress AndroidUnknownAttribute -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChangeEmail"
-            fontPath="fonts/OpenSans-Bold.ttf"
+            fontPath="fonts/Roboto-Bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -61,7 +61,7 @@
         <!--suppress AndroidUnknownAttribute -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChangePassword"
-            fontPath="fonts/OpenSans-Bold.ttf"
+            fontPath="fonts/Roboto-Bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"

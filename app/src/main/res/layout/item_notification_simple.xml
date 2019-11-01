@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tvDate"
         style="@style/Notification.Date"
-        fontPath="fonts/OpenSans-Light.ttf"
+        fontPath="fonts/Robotoans-Light.ttf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,7 @@
     <TextView
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
-        fontPath="fonts/OpenSans-Light.ttf"
+        fontPath="fonts/Robotoans-Light.ttf"
         android:ellipsize="end"
         android:maxLength="200"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
@@ -44,7 +44,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReadMore"
         style="@style/Notification.ReadMore"
-        fontPath="fonts/OpenSans-Bold.ttf"
+        fontPath="fonts/Roboto-Bold.ttf"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/tvWasRead"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
     <TextView
         android:id="@+id/tvWasRead"
         style="@style/Notification.Action"
-        fontPath="fonts/OpenSans-Semibold.ttf"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_marginBottom="10dp"
         android:text="@string/notifications_was_read"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,7 +68,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnMarkAsRead"
         style="@style/Notification.ActionButton"
-        fontPath="fonts/OpenSans-Bold.ttf"
+        fontPath="fonts/Roboto-Bold.ttf"
         android:text="@string/notifications_mark_as_read"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"

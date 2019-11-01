@@ -142,7 +142,7 @@
 
             <TextView
                 android:id="@+id/tvSupportType"
-                fontPath="fonts/OpenSans-Light.ttf"
+                fontPath="fonts/Robotoans-Light.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"

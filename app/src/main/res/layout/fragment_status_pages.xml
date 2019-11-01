@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            fontPath="fonts/OpenSans-Semibold.ttf"
+            fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/profile_status_your_status"

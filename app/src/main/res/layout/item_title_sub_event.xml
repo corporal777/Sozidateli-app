@@ -9,7 +9,7 @@
     android:layout_marginStart="@dimen/profile_padding_start"
     android:textColor="@android:color/black"
     android:textSize="16sp"
-    fontPath="fonts/OpenSans-Bold.ttf"
+    fontPath="fonts/Roboto-Bold.ttf"
     >
 
 </TextView>

@@ -36,7 +36,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        fontPath="fonts/OpenSans-Semibold.ttf"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -93,7 +93,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnResend"
-        fontPath="fonts/OpenSans-Semibold.ttf"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
