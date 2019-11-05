@@ -75,23 +75,14 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
             paginationList = pagination.applyErrorHandler {
                 it.printStackTrace()
             }
-                    .buildList()
-
-            viewState.showLoadingDialog()
+                    .buildList(enablePlaceholders = true)
         }
 
         if (searchDisposable.size() == 0) {
+            viewState.setData(List(20) { null })
             searchDisposable += Observable.create(paginationList)
                     .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        viewState.apply {
-                            setData(it)
-                            hideAllLoadingDialogs()
-                        }
-                    }, {
-                        viewState.hideAllLoadingDialogs()
-                        it.printStackTrace()
-                    })
+                    .subscribeSimple { viewState.setData(it) }
         }
     }
 

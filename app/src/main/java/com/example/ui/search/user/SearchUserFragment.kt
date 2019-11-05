@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.user.User
+import com.example.holders.PlaceholderItem
 import com.example.holders.SearchUserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -28,8 +29,9 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
     @ProvidePresenter
     fun providePresenter(): SearchUserPresenter = presenterProvider.get()
 
-    override fun createItem(itemData: User): Item {
-        return SearchUserItem(
+    override fun createItem(itemData: User?): Item {
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
+        else SearchUserItem(
                 itemData.user_id,
                 itemData.fullName,
                 itemData.user_avatar,

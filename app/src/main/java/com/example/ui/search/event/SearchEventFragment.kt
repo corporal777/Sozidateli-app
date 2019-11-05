@@ -12,6 +12,7 @@ import com.example.data.models.Event.Companion.FILTER_REGISTRATION_DECLINED
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION_NOT_REGISTERED
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION_PENDING
 import com.example.data.models.SearchFilter
+import com.example.holders.PlaceholderItem
 import com.example.holders.SearchEventItem
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.search.SearchFragment
@@ -36,8 +37,9 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
         findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
     }
 
-    override fun createItem(itemData: Event): Item {
-        return SearchEventItem(
+    override fun createItem(itemData: Event?): Item {
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
+        else SearchEventItem(
                 itemData
         ) { presenter.onEventClick(itemData) }
     }

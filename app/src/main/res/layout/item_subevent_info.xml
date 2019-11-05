@@ -9,7 +9,7 @@
     <!--suppress AndroidUnknownAttribute -->
     <TextView
         android:id="@+id/tvTime"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
@@ -34,7 +34,7 @@
     <!--suppress AndroidUnknownAttribute -->
     <TextView
         android:id="@+id/tvDescription"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"

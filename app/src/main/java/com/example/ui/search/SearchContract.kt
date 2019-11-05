@@ -9,7 +9,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface SearchContract {
     interface View<I, F : SearchFilter> : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(data: List<I>)
+        fun setData(data: List<I?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFilter(filter: F)

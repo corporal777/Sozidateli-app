@@ -60,7 +60,7 @@
 
         <TextView
             android:id="@+id/tvRegisterWithEmail"
-            fontPath="fonts/Robotoans-Light.ttf"
+            fontPath="fonts/Roboto-Light.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -181,7 +181,7 @@
 
             <TextView
                 android:id="@+id/tvSnRegistration"
-                fontPath="fonts/Robotoans-Light.ttf"
+                fontPath="fonts/Roboto-Light.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

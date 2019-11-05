@@ -3,6 +3,7 @@ package com.example.ui.main
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -78,12 +79,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 hideToolbar()
             }
 
-            val bg = if (f is BackgroundImageFragment) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    window.decorView.systemUiVisibility = if (f.isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
-                }
-                f.getFragmentBackgroundDrawable()
-            } else null
+            val isLightStatus: Boolean
+            val bg: Drawable?
+            if (f is BackgroundImageFragment) {
+                bg = f.getFragmentBackgroundDrawable()
+                isLightStatus = f.isLightStatus
+            } else {
+                bg = null
+                isLightStatus = true
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+            }
+
             root.background = bg
         }
     }

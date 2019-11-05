@@ -24,7 +24,6 @@ import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.RoomUnreadMessageCount
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -43,7 +42,7 @@ class ChatListPresenter
         }
     }
             .applyErrorHandler { viewState.showToast(it.message ?: it.localizedMessage) }
-            .buildList()
+            .buildList(enablePlaceholders = true)
 
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()
@@ -60,6 +59,7 @@ class ChatListPresenter
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
 
+        viewState.setChatsData(List(20) { null }, emptyList())
         compositeDisposable += appData.chatMessageCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -73,7 +73,6 @@ class ChatListPresenter
                 .subscribe(chatUnreadMessageConsumer, Consumer {})
 
         compositeDisposable += Observable.create(chatsPagination)
-                .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.apply {
                         checkScrollPosition()
@@ -89,8 +88,8 @@ class ChatListPresenter
         else chatsPagination.invalidate()
     }
 
-    private fun dispatchChatsListUpdate(data: List<ChatListDataItem>) {
-        val chats = mutableListOf<UserChat>()
+    private fun dispatchChatsListUpdate(data: List<ChatListDataItem?>) {
+        val chats = mutableListOf<UserChat?>()
         val favorites = mutableListOf<User>()
 
         data.forEach {
@@ -99,6 +98,7 @@ class ChatListPresenter
                     unreadMessageCount = chatUnreadMessageCounters[id, 0]
                 })
                 is ChatListDataItem.User -> favorites.add(it.user)
+                null -> chats.add(null)
             }
         }
 

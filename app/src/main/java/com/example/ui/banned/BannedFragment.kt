@@ -7,6 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
@@ -54,16 +55,13 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             adapter = this@BannedFragment.adapter
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
-            doNotShowUntilDataLoad = true
-            setMessage(getString(R.string.banned_empty_message))
-            setImage(R.drawable.ic_neutral_face)
-        }
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
-    override fun setItems(userChats: List<UserChat>) {
+    override fun setItems(userChats: List<UserChat?>) {
         usersSection.update(userChats.map {
-            UserItem(
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+            else UserItem(
                     it.id,
                     it.user.fullName,
                     it.user.user_avatar,

@@ -12,7 +12,7 @@ interface InviteListContract {
         fun openChat(chatId: Int, userName: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setInvitesData(chats: List<UserChat>)
+        fun setInvitesData(chats: List<UserChat?>)
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -57,6 +57,7 @@ class EventItem(
             }
 
             tvEventType.apply {
+                text = event.format?.name
             }
 
             if (event.isCanRegister()) showRegisterToEvent(viewHolder)

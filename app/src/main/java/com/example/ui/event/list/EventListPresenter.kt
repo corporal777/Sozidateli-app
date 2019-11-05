@@ -20,7 +20,7 @@ abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(listOf(null))
+        viewState.setData(List(20) { null })
         paginationList = pagination.applyErrorHandler {
             it.printStackTrace()
         }

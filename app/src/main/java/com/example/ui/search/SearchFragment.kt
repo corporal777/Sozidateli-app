@@ -14,6 +14,7 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,6 +45,8 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }
     }
 
+    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
+
     override fun onResume() {
         super.onResume()
         (parentFragment as? SearchInterfaceProvider)?.apply {
@@ -56,10 +59,13 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         recyclerView.apply {
             adapter = this@SearchFragment.adapter
         }
+
+        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
-    override fun setData(data: List<I>) {
+    override fun setData(data: List<I?>) {
         adapter.update(data.map(::createItem))
+        placeholderUtil.isDataLoad = true
     }
 
     override fun showFilter(filter: F) {
@@ -192,9 +198,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         return id?.let { interests.find { it.id == id } }
     }
 
-    protected abstract fun createItem(itemData: I): Item
+    protected abstract fun createItem(itemData: I?): Item
     protected abstract fun createFilterView(filter: F): View
     protected abstract fun clearFilterView(filterView: View)
 
-    override fun layout() = R.layout.fragment_search
+    override fun layout() = R.layout.layout_list_with_placeholder
 }

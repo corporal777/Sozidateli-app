@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.holders.ListSectionNameItem
+import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
@@ -63,9 +64,10 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
         }
     }
 
-    override fun setInvitesData(chats: List<UserChat>) {
+    override fun setInvitesData(chats: List<UserChat?>) {
         inviteSection.update(chats.map { chat ->
-            UserChatItem(
+            if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+            else UserChatItem(
                     chat,
                     { presenter.onChatClick(it) }
             )

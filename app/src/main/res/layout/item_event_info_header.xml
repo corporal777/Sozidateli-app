@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/tvEventDate"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"

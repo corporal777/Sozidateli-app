@@ -18,7 +18,7 @@ import javax.inject.Provider
 
 class StoriesFragment : BaseFragment(), StoriesContract.View, BackgroundImageFragment {
 
-    override val isLightStatus = true
+    override val isLightStatus = false
 
     @InjectPresenter
     lateinit var presenter: StoriesPresenter

@@ -10,7 +10,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface FavoriteUsersContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(data: List<User>)
+        fun setData(data: List<User?>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showUser(user: User)

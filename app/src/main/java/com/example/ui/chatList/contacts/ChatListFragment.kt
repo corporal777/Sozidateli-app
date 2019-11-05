@@ -69,7 +69,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
     }
 
-    override fun setChatsData(chats: List<UserChat>, favorites: List<User>) {
+    override fun setChatsData(chats: List<UserChat?>, favorites: List<User>) {
         if (chats.isEmpty()) {
             chatSection.removeHeader()
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
@@ -79,7 +79,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                     setHeader(ListSectionNameItem(-300L))
                 }
                 update(chats.map { chat ->
-                    UserChatItem(
+                    if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+                    else UserChatItem(
                             chat,
                             { presenter.onChatClick(it) },
                             { presenter.onChatOnScreen(chat.id) },

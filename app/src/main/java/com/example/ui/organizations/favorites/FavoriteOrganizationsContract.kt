@@ -10,7 +10,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface FavoriteOrganizationsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setOrganizations(organizations: List<Organization>)
+        fun setOrganizations(organizations: List<Organization?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showOrganization(organization: Organization)

@@ -20,16 +20,18 @@ class FavoriteOrganizationsPresenter
 ) : BasePresenter<FavoriteOrganizationsContract.View>(), FavoriteOrganizationsContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset -> organizationRepository.getOrganizations(limit, offset, mapOf(FIELD_IS_IN_FAVORITE to true)) }
-            .buildList()
+            .buildList(enablePlaceholders = true)
 
     private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setOrganizations(List(20) { null })
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ viewState.setOrganizations(it) }, { it.printStackTrace() })
+                .subscribeSimple {
+                    viewState.setOrganizations(it)
+                }
     }
 
     override fun attachView(view: FavoriteOrganizationsContract.View?) {

@@ -18,7 +18,7 @@ interface ChatListContract {
         fun openSearch()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setChatsData(chats: List<UserChat>, favorites: List<User>)
+        fun setChatsData(chats: List<UserChat?>, favorites: List<User>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatUnreadMessageCount(chatId: String, count: Int)

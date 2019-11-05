@@ -8,7 +8,7 @@ import com.example.ui.base.BaseContract
 interface BannedContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setItems(userChats: List<UserChat>)
+        fun setItems(userChats: List<UserChat?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openUserInfo(userId: String)

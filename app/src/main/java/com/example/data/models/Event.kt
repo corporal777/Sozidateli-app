@@ -25,7 +25,8 @@ data class Event(
         val registrationFinish: String?,
         val status: Status?,
         @SerializedName("user_registration")
-        val userRegistration: RegistrationStatus?
+        val userRegistration: RegistrationStatus?,
+        val format: EventFormat?
 
 ) : Parcelable {
 

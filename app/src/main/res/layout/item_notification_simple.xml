@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tvDate"
         style="@style/Notification.Date"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,7 @@
     <TextView
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         android:ellipsize="end"
         android:maxLength="200"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"

@@ -38,12 +38,12 @@ class InviteListPresenter
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
 
+        viewState.setInvitesData(List(20) { null })
         compositeDisposable += appData.chatRequestsCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({ invitesPagination.invalidate() }, { invitesPagination.invalidate() })
 
         compositeDisposable += Observable.create(invitesPagination)
-                .withLoadingDialog(viewState)
                 .subscribe({
                     dispatchInvitesListUpdate(it)
                 }, { it.printStackTrace() })

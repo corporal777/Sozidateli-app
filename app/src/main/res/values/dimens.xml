@@ -69,4 +69,8 @@
     <dimen name="event_item_organization_name_text_size">13sp</dimen>
     <dimen name="event_item_date_text_size">17sp</dimen>
     <dimen name="event_item_event_name_text_size">17sp</dimen>
+
+    <dimen name="organization_item_logo_size">82dp</dimen>
+
+    <dimen name="user_item_avatar_size">63dp</dimen>
 </resources>

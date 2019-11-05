@@ -19,12 +19,12 @@ class FavoriteUsersPresenter
 ) : BasePresenter<FavoriteUsersContract.View>(), FavoriteUsersContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset -> userRepository.getFavoriteUsers(limit, offset) }
-            .buildList()
+            .buildList(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-                .withLoadingDialog(viewState)
                 .subscribe({ viewState.setData(it) }, { it.printStackTrace() })
     }
 

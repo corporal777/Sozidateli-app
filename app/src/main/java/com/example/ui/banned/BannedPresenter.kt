@@ -27,9 +27,9 @@ class BannedPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setItems(List(20) { null })
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.setItems(it)
                 }, {

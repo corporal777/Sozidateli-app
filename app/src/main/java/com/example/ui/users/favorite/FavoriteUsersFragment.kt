@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.user.User
+import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
@@ -58,9 +59,10 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         }
     }
 
-    override fun setData(data: List<User>) {
+    override fun setData(data: List<User?>) {
         usersSection.update(data.map {
-            UserItem(
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+            else UserItem(
                     it.user_id,
                     it.fullName,
                     it.user_avatar,

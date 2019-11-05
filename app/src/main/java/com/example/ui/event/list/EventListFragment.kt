@@ -8,7 +8,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.dp
 import com.example.holders.EventItem
-import com.example.holders.EventItemPlaceholder
+import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -49,7 +49,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
 
     override fun setData(events: List<Event?>) {
         adapter.update(events.map {
-            if (it == null) EventItemPlaceholder()
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventItem(
                     it,
                     { presenter.onEventClick(it) },

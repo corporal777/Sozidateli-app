@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/tvDescription"
-        fontPath="fonts/Robotoans-Light.ttf"
+        fontPath="fonts/Roboto-Light.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

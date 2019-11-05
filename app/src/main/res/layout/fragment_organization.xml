@@ -98,7 +98,7 @@
 
             <TextView
                 android:id="@+id/tvDescriptionShort"
-                fontPath="fonts/Robotoans-Light.ttf"
+                fontPath="fonts/Roboto-Light.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/tvAddress"
-                fontPath="fonts/Robotoans-Light.ttf"
+                fontPath="fonts/Roboto-Light.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"

@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Organization
 import com.example.holders.OrganizationItem
+import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.ui.base.BaseFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
@@ -58,9 +59,10 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
         }
     }
 
-    override fun setOrganizations(organizations: List<Organization>) {
+    override fun setOrganizations(organizations: List<Organization?>) {
         organizationSection.update(organizations.map {
-            OrganizationItem(
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
+            else OrganizationItem(
                     it,
                     { presenter.onOrganizationClick(it) },
                     { presenter.onRemoveFromFavoriteClick(it) }
