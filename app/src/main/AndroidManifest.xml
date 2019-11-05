@@ -82,11 +82,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent" />
 
-        <service android:name=".util.FcmMessagingService">
+        <service android:name=".services.FcmMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".services.NotificationClickJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".receivers.NotificationClickBroadcastReceiver" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -1,12 +1,17 @@
-package com.example.util
+package com.example.services
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.R
 import com.example.data.prefs.AppPrefs
+import com.example.receivers.NotificationClickBroadcastReceiver
 import com.example.repository.ChatRepository
+import com.example.services.NotificationClickJobService.Companion.JOB_ID_MARK_AS_READ
+import com.example.util.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.android.AndroidInjection
@@ -49,10 +54,10 @@ class FcmMessagingService : FirebaseMessagingService() {
 
         when (data[DATA_TYPE]) {
             TYPE_CHAT_MESSAGE -> processChatMessage(data)
-            TYPE_REGISTRATION_APPROVE -> processSimpleNotification(data)
-            TYPE_REGISTRATION_DECLINE -> processSimpleNotification(data)
+            TYPE_REGISTRATION_APPROVE,
+            TYPE_REGISTRATION_DECLINE,
             TYPE_REGISTRATION_CANCELLED -> processSimpleNotification(data)
-            TYPE_NOTIFICATION -> processChatMessage(data)
+            TYPE_NOTIFICATION -> processNotification(data)
             else -> sendNoTypeNotification(remoteMessage.messageId.hashCode(),
                     remoteMessage.notification?.title ?: data[DATA_TITLE],
                     remoteMessage.notification?.body ?: data[DATA_BODY]
@@ -76,20 +81,19 @@ class FcmMessagingService : FirebaseMessagingService() {
         val title = data[DATA_TITLE] ?: return
         val body = data[DATA_BODY] ?: return
 
-        val notificationId = data[DATA_NOTIFICATION_ID] ?: return
+        val notificationId = data[DATA_NOTIFICATION_ID]?.toIntOrNull() ?: return
         val eventId = data[DATA_EVENT_ID] ?: return
-        val eventLogo = data[DATA_EVENT_LOGO] ?: return
+        val eventLogo = data[DATA_EVENT_LOGO]
 
         val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to bundleOf(
-                FIELD_EVENT_ID to eventId,
-                FIELD_NOTIFICATION_ID to notificationId
+                FIELD_EVENT_ID to eventId
         )))
 
         setMessageToMainThread {
             val send: (Bitmap?) -> Unit = { bitmap ->
                 notificationUtil.createNotification(
                         channel = channel,
-                        notificationId = notificationId.hashCode()
+                        notificationId = notificationId
                 ) {
                     setContentTitle(title)
                     setContentText(body)
@@ -97,11 +101,26 @@ class FcmMessagingService : FirebaseMessagingService() {
                     setStyle(NotificationCompat.BigTextStyle().bigText(body))
                     setContentIntent(intent)
                     if (bitmap != null) setLargeIcon(bitmap)
+
+                    val actionIntent = PendingIntent.getBroadcast(
+                            this@FcmMessagingService,
+                            notificationId,
+                            Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
+                                putExtras(bundleOf(FIELD_JOB_ID to JOB_ID_MARK_AS_READ))
+                                putExtras(bundleOf(FIELD_NOTIFICATION_ID to notificationId))
+                            },
+                            PendingIntent.FLAG_CANCEL_CURRENT
+                    )
+                    addAction(0, getString(R.string.notifications_mark_as_read), actionIntent)
                 }
             }
 
             eventLogo.loadBitmap(listOf(CropCircleTransformation()), send)
         }
+    }
+
+    private fun processNotification(data: Map<String, String>) {
+
     }
 
     private fun sendNoTypeNotification(id: Int, title: String?, body: String?) {

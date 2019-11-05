@@ -12,7 +12,7 @@ import javax.inject.Provider
 
 class WelcomeFragment : BaseFragment(), BackgroundImageFragment, WelcomeContract.View {
 
-    override val isLightStatus = true
+    override val isLightStatus = false
 
     @InjectPresenter
     lateinit var presenter: WelcomePresenter
