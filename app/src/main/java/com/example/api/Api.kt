@@ -86,7 +86,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/mark_as_read")
-    fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<MarkedResponse>>
+    fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<UnreadCountResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/register")
@@ -97,10 +97,10 @@ interface Api {
     fun notificationsUnregister(@Field("token") token: String): Completable
 
     @POST("/v1/user/notifications/{id}/answer/accept")
-    fun notificationsInviteAccept(@Path("id") id: String): Completable
+    fun notificationsInviteAccept(@Path("id") id: Int): Maybe<ApiResponse<UnreadCountResponse>>
 
     @POST("/v1/user/notifications/{id}/answer/decline")
-    fun notificationsInviteDecline(@Path("id") id: String): Completable
+    fun notificationsInviteDecline(@Path("id") id: Int): Maybe<ApiResponse<UnreadCountResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/list")

@@ -18,8 +18,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.EventRatingDialog
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
@@ -85,9 +85,10 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
     }
 
-    override fun setData(notifications: List<Notification>) {
+    override fun setData(notifications: List<Notification?>) {
         adapter.update(notifications.map {
-            when (it.type) {
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
+            else when (it.type) {
                 Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, linkClickListener, readClickListener)
                 Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, linkClickListener, acceptClickListener, changeDecisionClickListener)
                 Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener)

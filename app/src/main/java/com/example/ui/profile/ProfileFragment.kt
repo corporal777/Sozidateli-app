@@ -61,8 +61,9 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     override fun highlightNotifications(notificationCount: Int) {
         ivNotificationIcon.apply {
             if (!::notificationBadge.isInitialized) notificationBadge = BadgeDrawable(notificationCount)
+            notificationBadge.number = notificationCount
             doOnNextLayout {
-                addBadge(notificationBadge.apply { number = notificationCount }) { badgeWidth, badgeHeight, anchorRect ->
+                addBadge(notificationBadge) { badgeWidth, badgeHeight, anchorRect ->
                     val badgeCenterX = anchorRect.right
                     val badgeCenterY = anchorRect.top + anchorRect.height() / 3
 

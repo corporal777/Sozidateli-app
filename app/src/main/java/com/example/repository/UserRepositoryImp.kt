@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.AuthResponse
-import com.example.data.models.MarkedResponse
+import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
@@ -37,8 +37,11 @@ class UserRepositoryImp
         return callPagination(api.getUserNotifications(limit, offset))
     }
 
-    override fun markNotificationsAsRead(ids: List<Int>): Maybe<MarkedResponse> {
-        return call(api.markNotificationsAsRead(ids))
+    override fun markNotificationsAsRead(ids: List<Int>): Completable {
+        return call(api.markNotificationsAsRead(ids)).doOnSuccess {
+            appData.notificationsCount = it.unreadCount
+            ids.forEach { id -> appData.notificationReadSubject.onNext(id to Notification.AcceptState.NONE) }
+        }.ignoreElement()
     }
 
     override fun getFcmToken(): Maybe<InstanceIdResult> {
@@ -55,12 +58,18 @@ class UserRepositoryImp
         return call(api.notificationsUnregister(token))
     }
 
-    override fun notificationsInviteAccept(id: String): Completable {
-        return call(api.notificationsInviteAccept(id))
+    override fun notificationsInviteAccept(id: Int): Completable {
+        return call(api.notificationsInviteAccept(id)).doOnSuccess {
+            appData.notificationsCount = it.unreadCount
+            appData.notificationReadSubject.onNext(id to Notification.AcceptState.ACCEPTED)
+        }.ignoreElement()
     }
 
-    override fun notificationsInviteDecline(id: String): Completable {
-        return call(api.notificationsInviteDecline(id))
+    override fun notificationsInviteDecline(id: Int): Completable {
+        return call(api.notificationsInviteDecline(id)).doOnSuccess {
+            appData.notificationsCount = it.unreadCount
+            appData.notificationReadSubject.onNext(id to Notification.AcceptState.CANCELED)
+        }.ignoreElement()
     }
 
     override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data))

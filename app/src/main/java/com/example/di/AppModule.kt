@@ -1,6 +1,7 @@
 package com.example.di
 
 import android.app.Application
+import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.net.NetworkInfo
@@ -69,4 +70,7 @@ class AppModule {
 
     @Provides
     fun providesContentResolver(context: Context): ContentResolver = context.contentResolver
+
+    @Provides
+    fun providesNotificationManager(context: Context): NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 }

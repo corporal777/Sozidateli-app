@@ -1,11 +1,13 @@
 package com.example.data
 
 import com.example.data.models.Interest
+import com.example.data.models.Notification
 import com.example.data.models.Optional
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class AppData(
         private val appPrefs: AppPrefs
@@ -44,7 +46,7 @@ class AppData(
     var notificationsCount = 0
         set(value) {
             val changed = field != value
-            field = value
+            field = if (value < 0) 0 else value
             if (changed) notificationsCountSubject.onNext(value)
         }
 
@@ -57,6 +59,7 @@ class AppData(
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
+    val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
 
     fun setUser(user: User) {
         val changed = this.user != user

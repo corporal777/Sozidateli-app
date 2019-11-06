@@ -1,5 +1,6 @@
 package com.example.ui.notification
 
+import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Notification
@@ -17,7 +18,8 @@ class NotificationPresenter
 @Inject constructor(
         private val userRepository: UserRepository,
         private val eventRepository: EventRepository,
-        private val appData: AppData
+        private val appData: AppData,
+        private val notificationManager: NotificationManager
 ) : BasePresenter<NotificationContract.View>(), NotificationContract.Presenter {
 
     lateinit var notification: Notification
@@ -27,8 +29,6 @@ class NotificationPresenter
         viewState.setData(notification)
         if (!notification.wasRead && notification.type != Notification.Type.RATE) {
             compositeDisposable += userRepository.markNotificationsAsRead(listOf(notification.id))
-                    .doOnSuccess { appData.notificationsCount -= it.countMarked }
-                    .flatMapCompletable { Completable.complete() }
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribe({
@@ -38,6 +38,20 @@ class NotificationPresenter
                         viewState.showToast(it.message ?: it.localizedMessage)
                     })
         }
+
+        compositeDisposable += appData.notificationReadSubject
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    val id = it.first
+                    val state = it.second
+                    if (id == notification.id) {
+                        notification.apply {
+                            wasRead = true
+                            acceptState = state
+                        }
+                        viewState.setData(notification)
+                    }
+                }
     }
 
     override fun onNotificationUrlClick(url: String) {
@@ -45,12 +59,11 @@ class NotificationPresenter
     }
 
     override fun onNotificationAcceptClick() {
-        updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id.toString()), Notification.AcceptState.ACCEPTED)
+        updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
     }
 
     override fun onNotificationCancelClick() {
-        updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id.toString()), Notification.AcceptState.CANCELED)
-
+        updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
     }
 
     override fun onNotificationChangeDecisionClick() {
@@ -67,25 +80,13 @@ class NotificationPresenter
         compositeDisposable += eventRepository.setEventRating(event, rating)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    notification.wasRead = true
-                    viewState.setData(notification)
-                }, {
-                    it.printStackTrace()
-                    viewState.showToast(it.message ?: it.localizedMessage)
-                })
+                .subscribeSimple { }
     }
 
-    private fun updateNotificationInvite(request: Completable, newState: Notification.AcceptState) {
+    private fun updateNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notification.apply {
-                        wasRead = true
-                        acceptState = newState
-                    }
-                    viewState.setData(notification)
-                }
+                .subscribeSimple { notificationManager.cancel(notificationId) }
     }
 }

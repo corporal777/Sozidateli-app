@@ -2,20 +2,20 @@ package com.example.services
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import com.example.repository.EventRepository
+import com.example.data.AppData
 import com.example.repository.UserRepository
+import com.example.util.FIELD_ACTION
 import com.example.util.FIELD_NOTIFICATION_ID
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import timber.log.Timber
 import javax.inject.Inject
 
 class NotificationClickJobService : JobService() {
 
     @Inject
-    lateinit var eventRepository: EventRepository
+    lateinit var appData: AppData
 
     @Inject
     lateinit var userRepository: UserRepository
@@ -27,22 +27,21 @@ class NotificationClickJobService : JobService() {
         super.onCreate()
     }
 
-    override fun onStartJob(params: JobParameters?): Boolean {
-        Timber.tag("NOTIFICATIONS_T").d("START SERVICE")
-        compositeDisposable += when (params?.jobId) {
-            JOB_ID_MARK_AS_READ -> {
-                val extras = params.extras
-                val ids = extras.getInt(FIELD_NOTIFICATION_ID)
-                userRepository.markNotificationsAsRead(listOf(ids))
-            }
+    override fun onStartJob(params: JobParameters): Boolean {
+        val extras = params.extras ?: return false
+        val action = extras.getString(FIELD_ACTION) ?: return false
+        val notificationId = extras.getInt(FIELD_NOTIFICATION_ID)
+
+        compositeDisposable += when (action) {
+            ACTION_MARK_AS_READ -> userRepository.markNotificationsAsRead(listOf(notificationId))
+            ACTION_ACCEPT -> userRepository.notificationsInviteAccept(notificationId)
+            ACTION_DECLINE -> userRepository.notificationsInviteDecline(notificationId)
             else -> return false
         }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    Timber.tag("NOTIFICATIONS_T").d("SERVICE COMPLETE")
                     jobFinished(params, false)
                 }, {
-                    Timber.tag("NOTIFICATIONS_T").d("SERVICE ERROR ${it.message}")
                     jobFinished(params, false)
                 })
 
@@ -50,11 +49,12 @@ class NotificationClickJobService : JobService() {
     }
 
     override fun onStopJob(params: JobParameters?): Boolean {
-        Timber.tag("NOTIFICATIONS_T").d("STOP SERVICE")
         return false
     }
 
     companion object {
-        const val JOB_ID_MARK_AS_READ = 1
+        const val ACTION_MARK_AS_READ = "mark as read"
+        const val ACTION_ACCEPT = "accept"
+        const val ACTION_DECLINE = "decline"
     }
 }

@@ -9,7 +9,7 @@ import com.example.ui.base.BaseContract
 interface NotificationsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(notifications: List<Notification>)
+        fun setData(notifications: List<Notification?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUrl(url: String)

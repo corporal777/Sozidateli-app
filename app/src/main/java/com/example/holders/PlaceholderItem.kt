@@ -6,7 +6,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 
 class PlaceholderItem(
         private val type: Type
-) : Item(type.hashCode().toLong()) {
+) : Item() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
 
@@ -18,6 +18,7 @@ class PlaceholderItem(
         Type.ORGANIZATION -> R.layout.item_organization_placeholder
         Type.USER -> R.layout.item_user_placeholder
         Type.CHAT_LIST -> R.layout.item_user_chat_placeholder
+        Type.NOTIFICATION -> R.layout.item_notification_placeholder
     }
 
     enum class Type {
@@ -25,6 +26,7 @@ class PlaceholderItem(
         ORGANIZATION,
         SEARCH_EVENT,
         USER,
-        CHAT_LIST
+        CHAT_LIST,
+        NOTIFICATION
     }
 }

@@ -62,7 +62,7 @@ const val FIELD_USER_ID = "userId"
 const val FIELD_NOTIFICATION_ID = "notification_id"
 const val FIELD_EVENT = "event"
 const val FIELD_EVENT_ID = "event_id"
-const val FIELD_JOB_ID = "job_id"
+const val FIELD_ACTION = "action"
 
 const val REQUEST_CODE_SELECT_PDF = 12
 const val REQUEST_CODE_PERMISSION_READ_FILE = 13

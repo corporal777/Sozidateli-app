@@ -1,5 +1,6 @@
 package com.example.ui.notification.center
 
+import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ApiError
@@ -13,10 +14,12 @@ import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -24,11 +27,13 @@ class NotificationsPresenter
 @Inject constructor(
         private val userRepository: UserRepository,
         private val eventRepository: EventRepository,
-        private val appData: AppData
+        private val appData: AppData,
+        private val notificationManager: NotificationManager
 ) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
 
     private var firstLaunch = true
     private var notifications: List<Notification> = emptyList()
+    private var blockInvalidation = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotifications(limit, offset).map { response ->
@@ -58,10 +63,27 @@ class NotificationsPresenter
         }
     }
             .applyErrorHandler { viewState.showToast(it.message ?: it.localizedMessage) }
-            .buildList()
+            .buildList(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        compositeDisposable += appData.notificationsCountSubject
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple { if (!blockInvalidation) pagination.invalidate() }
+
+        compositeDisposable += appData.notificationReadSubject
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    val id = it.first
+                    val state = it.second
+                    notifications.find { notification -> notification.id == id }?.apply {
+                        wasRead = true
+                        acceptState = state
+                        viewState.onNotificationNeedUpdate(id)
+                    }
+                }
+
+        viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
                 .subscribe({
                     notifications = it
@@ -90,24 +112,11 @@ class NotificationsPresenter
     }
 
     override fun onNotificationAcceptClick(id: Int) {
-        updateNotificationInvite(userRepository.notificationsInviteAccept(id.toString()), id, Notification.AcceptState.ACCEPTED)
+        updateNotification(userRepository.notificationsInviteAccept(id), id)
     }
 
     override fun onNotificationCancelClick(id: Int) {
-        updateNotificationInvite(userRepository.notificationsInviteDecline(id.toString()), id, Notification.AcceptState.CANCELED)
-    }
-
-    private fun updateNotificationInvite(request: Completable, id: Int, newState: Notification.AcceptState) {
-        compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notifications.find { it.id == id }?.apply {
-                        wasRead = true
-                        acceptState = newState
-                    }
-                    viewState.onNotificationNeedUpdate(id)
-                }
+        updateNotification(userRepository.notificationsInviteDecline(id), id)
     }
 
     override fun onNotificationChangeDecisionClick(id: Int) {
@@ -124,15 +133,7 @@ class NotificationsPresenter
     }
 
     override fun onNotificationReadClick(id: Int) {
-        compositeDisposable += readNotificationRequest(id)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notifications.find { it.id == id }?.apply {
-                        wasRead = true
-                    }
-                    viewState.onNotificationNeedUpdate(id)
-                }
+        updateNotification(userRepository.markNotificationsAsRead(listOf(id)), id)
     }
 
     override fun onNotificationRateClick(id: Int) {
@@ -152,9 +153,16 @@ class NotificationsPresenter
                 }
     }
 
-    private fun readNotificationRequest(id: Int): Completable {
-        return userRepository.markNotificationsAsRead(listOf(id))
-                .doOnSuccess { appData.notificationsCount -= it.countMarked }
-                .flatMapCompletable { Completable.complete() }
+    private fun updateNotification(request: Completable, notificationId: Int) {
+        compositeDisposable += Completable.fromAction { blockInvalidation = true }
+                .andThen(request)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(onError = {
+                    blockInvalidation = false
+                }, onComplete = {
+                    blockInvalidation = false
+                    notificationManager.cancel(notificationId)
+                })
     }
 }

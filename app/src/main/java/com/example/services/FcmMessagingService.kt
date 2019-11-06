@@ -7,13 +7,15 @@ import android.os.Handler
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.R
-import com.example.data.prefs.AppPrefs
+import com.example.data.AppData
+import com.example.data.models.RemoteNotification
+import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
 import com.example.receivers.NotificationClickBroadcastReceiver
 import com.example.repository.ChatRepository
-import com.example.services.NotificationClickJobService.Companion.JOB_ID_MARK_AS_READ
 import com.example.util.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,7 +32,7 @@ class FcmMessagingService : FirebaseMessagingService() {
     lateinit var chatRepository: ChatRepository
 
     @Inject
-    lateinit var appPrefs: AppPrefs
+    lateinit var appData: AppData
 
     private lateinit var channel: String
 
@@ -82,11 +84,13 @@ class FcmMessagingService : FirebaseMessagingService() {
         val body = data[DATA_BODY] ?: return
 
         val notificationId = data[DATA_NOTIFICATION_ID]?.toIntOrNull() ?: return
+        appData.notificationsCount += 1
+
         val eventId = data[DATA_EVENT_ID] ?: return
         val eventLogo = data[DATA_EVENT_LOGO]
 
         val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to bundleOf(
-                FIELD_EVENT_ID to eventId
+                FIELD_NOTIFICATION_ID to notificationId
         )))
 
         setMessageToMainThread {
@@ -104,10 +108,12 @@ class FcmMessagingService : FirebaseMessagingService() {
 
                     val actionIntent = PendingIntent.getBroadcast(
                             this@FcmMessagingService,
-                            notificationId,
+                            notificationId + NotificationClickJobService.ACTION_MARK_AS_READ.hashCode(),
                             Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
-                                putExtras(bundleOf(FIELD_JOB_ID to JOB_ID_MARK_AS_READ))
-                                putExtras(bundleOf(FIELD_NOTIFICATION_ID to notificationId))
+                                putExtras(bundleOf(
+                                        FIELD_NOTIFICATION_ID to notificationId,
+                                        FIELD_ACTION to NotificationClickJobService.ACTION_MARK_AS_READ
+                                ))
                             },
                             PendingIntent.FLAG_CANCEL_CURRENT
                     )
@@ -120,7 +126,56 @@ class FcmMessagingService : FirebaseMessagingService() {
     }
 
     private fun processNotification(data: Map<String, String>) {
+        val objectJson = data[DATA_OBJECT] ?: return
+        val notification = Gson().fromJson(objectJson, RemoteNotification::class.java) ?: return
+        val notificationId = notification.id
+        appData.notificationsCount += 1
 
+        val title = data[DATA_TITLE] ?: return
+        val body = data[DATA_BODY] ?: return
+
+        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to bundleOf(
+                FIELD_NOTIFICATION_ID to notificationId
+        )))
+
+        notificationUtil.createNotification(
+                channel = channel,
+                notificationId = notificationId
+        ) {
+            setContentTitle(title)
+            setContentText(body)
+            setTicker(body)
+            setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            setContentIntent(intent)
+
+            if (notification.type == TYPE_INVITE) {
+                val actionAcceptIntent = PendingIntent.getBroadcast(
+                        this@FcmMessagingService,
+                        notificationId + NotificationClickJobService.ACTION_ACCEPT.hashCode(),
+                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
+                            putExtras(bundleOf(
+                                    FIELD_NOTIFICATION_ID to notificationId,
+                                    FIELD_ACTION to NotificationClickJobService.ACTION_ACCEPT
+                            ))
+                        },
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                )
+                addAction(0, getString(R.string.notifications_accept), actionAcceptIntent)
+
+                val actionDeclineIntent = PendingIntent.getBroadcast(
+                        this@FcmMessagingService,
+                        notificationId + NotificationClickJobService.ACTION_DECLINE.hashCode(),
+                        Intent(this@FcmMessagingService, NotificationClickBroadcastReceiver::class.java).apply {
+                            putExtras(bundleOf(
+                                    FIELD_NOTIFICATION_ID to notificationId,
+                                    FIELD_ACTION to NotificationClickJobService.ACTION_DECLINE
+                            ))
+                        },
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                )
+                addAction(0, getString(R.string.notifications_cancel), actionDeclineIntent)
+            }
+        }
     }
 
     private fun sendNoTypeNotification(id: Int, title: String?, body: String?) {
@@ -163,5 +218,7 @@ class FcmMessagingService : FirebaseMessagingService() {
         private const val DATA_EVENT_ID = "event_id"
         private const val DATA_EVENT_LOGO = "event_logo"
         private const val DATA_EVENT_NAME = "event_name"
+
+        private const val DATA_OBJECT = "object"
     }
 }
