@@ -57,6 +57,7 @@
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
     <string name="auth_register_with_sn">или зарегистрируйтесь с помощью соцсети</string>
     <string name="auth_action_register">Зарегистрироваться</string>
+    <string name="auth_action_continue">Далее</string>
     <string name="auth_error_no_first_name">Введите имя</string>
     <string name="auth_error_no_last_name">Введите фамилию</string>
     <string name="auth_error_wrong_email">Введите корректный e-mail</string>

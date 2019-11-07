@@ -101,7 +101,7 @@ class AuthRepositoryImp
                         it.parse(response.json)
                         it[0]
                     }
-                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name))
+                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, null, null))
                 }
 
                 override fun onError(error: VKError?) {
@@ -119,7 +119,7 @@ class AuthRepositoryImp
                     override fun onCurrentProfileChanged(oldProfile: Profile?, currentProfile: Profile?) {
                         stopTracking()
                         if (currentProfile != null) {
-                            emitter.onSuccess(SnUserData(currentProfile.id, currentProfile.firstName, currentProfile.lastName))
+                            emitter.onSuccess(SnUserData(currentProfile.id, currentProfile.firstName, currentProfile.lastName, null, null))
                         } else {
                             emitter.onError(SnAuthError("No fb profile error"))
                         }
@@ -128,7 +128,7 @@ class AuthRepositoryImp
             }
                     .timeout(5, TimeUnit.SECONDS, Single.error(SnAuthError("No fb profile error")))
         } else {
-            Single.just(SnUserData(profile.id, profile.firstName, profile.lastName))
+            Single.just(SnUserData(profile.id, profile.firstName, profile.lastName, null, null))
         }
     }
 
@@ -143,7 +143,9 @@ class AuthRepositoryImp
                     val id = json.getString("uid")
                     val firstName = json.getString("first_name")
                     val lastName = json.getString("last_name")
-                    emitter.onSuccess(SnUserData(id, firstName, lastName))
+                    val avatar = json.getString("pic_3") ?: json.getString("pic_2")
+                    ?: json.getString("pic_1")
+                    emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, null))
                 }
             })
         }

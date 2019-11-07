@@ -7,5 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class SnUserData(
         val id: String,
         val firstName: String?,
-        val lastName: String?
+        val lastName: String?,
+        val avatar: String?,
+        val email: String?
 ) : Parcelable

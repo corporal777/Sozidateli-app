@@ -1,4 +1,4 @@
-package com.example.ui.auth.register
+package com.example.ui.auth.register.email
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.SnUser
@@ -13,21 +13,11 @@ import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
-class RegisterPresenter
+class RegisterEmailPresenter
 @Inject constructor(
         private val authRepository: AuthRepository,
         snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterContract.View>(authRepository, snAuthManager), RegisterContract.Presenter {
-
-    var snUser: SnUser? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                firstName = value.snUserData.firstName
-                lastName = value.snUserData.lastName
-                email = value.snAuth.email
-            }
-        }
+) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager), RegisterEmailContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null
@@ -36,14 +26,13 @@ class RegisterPresenter
     private var passwordConfirm: String? = null
     private var isAgree: Boolean = false
 
-    override fun attachView(view: RegisterContract.View?) {
+    override fun attachView(view: RegisterEmailContract.View?) {
         super.attachView(view)
         initData()
     }
 
     private fun initData() {
         viewState.setData(email, firstName, lastName, password, passwordConfirm, isAgree)
-        viewState.showSnRegistration(snUser == null)
         performDataChange()
     }
 
@@ -121,21 +110,16 @@ class RegisterPresenter
     }
 
     private fun register(email: String, firstName: String, lastName: String, password: String) {
-        val snUser = this.snUser
-        val register = if (snUser != null) authRepository.authSocialNetwork(snUser.snAuth.snType.code, snUser.snAuth.token, email, firstName, lastName, password)
-        else authRepository.register(email, password, firstName, lastName)
-
-        compositeDisposable += register
+        compositeDisposable += authRepository.register(email, password, firstName, lastName)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.showEmailConfirmation(email, password, snUser)
+                    viewState.showEmailConfirmation(email, password)
                 }
     }
 
-    override fun onContinueRegistration(snUser: SnUser) {
-        this.snUser = snUser
-        initData()
+    override fun onContinueWithSnRegistration(snUser: SnUser) {
+        viewState.showSnRegistration(snUser)
     }
 }

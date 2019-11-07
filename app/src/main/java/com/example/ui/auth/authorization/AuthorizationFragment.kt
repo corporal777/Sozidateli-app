@@ -17,7 +17,7 @@ import javax.inject.Provider
 
 class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, AuthorizationContract.View {
 
-    override val isLightStatus = true
+    override val isLightStatus = false
 
     @InjectPresenter
     lateinit var presenter: AuthorizationPresenter
@@ -41,8 +41,12 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
         findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction())
     }
 
-    override fun showRegistration(snUser: SnUser?) {
-        findNavController().navigate(AuthorizationFragmentDirections.actionAuthorizationFragmentToRegisterFragment(snUser))
+    override fun showEmailRegistration() {
+        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
+    }
+
+    override fun showSnRegistration(snUser: SnUser) {
+        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterSnFragment(snUser))
     }
 
     override fun getFragmentBackgroundDrawable(): Drawable? {

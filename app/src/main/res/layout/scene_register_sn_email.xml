@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llInput"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilEmail"
+        style="@style/Profile.Edit.InputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
+        app:errorIconDrawable="@null">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            style="@style/Profile.Edit.Input.SingleLine"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/auth_input_email_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textEmailAddress" />
+    </com.example.ui.views.CustomTextInputLayout>
+</LinearLayout>

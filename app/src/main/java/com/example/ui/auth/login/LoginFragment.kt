@@ -3,7 +3,6 @@ package com.example.ui.auth.login
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
@@ -44,8 +43,6 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         ibFacebook.setOnClickListener { presenter.authFb() }
         ibOk.setOnClickListener { presenter.authOk() }
         ibClose.setOnClickListener { presenter.onClickBack() }
-        btnConfirm.setOnClickListener { presenter.onRegistrationConfirm() }
-        btnCancel.setOnClickListener { presenter.onRegistrationCancel() }
     }
 
     override fun setEmailAndPassword(email: String, password: String) {
@@ -57,21 +54,16 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         ibLogin.isEnabled = isEnable
     }
 
-    override fun showRegistrationConfirmation(show: Boolean) {
-        TransitionManager.beginDelayedTransition(content, Slide(Gravity.BOTTOM))
-        actionContainer.isVisible = show
+    override fun showEmailRegistration() {
+        findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailAction())
     }
 
-    override fun showRegistration(snUser: SnUser?) {
-        findNavController().navigate(LoginFragmentDirections.loginToRegisterAction(snUser))
+    override fun showSnRegistration(snUser: SnUser) {
+        findNavController().navigate(LoginFragmentDirections.loginToRegisterSnAction(snUser))
     }
 
     override fun showRecoveryPassword(email: String) {
         findNavController().navigate(LoginFragmentDirections.loginToRecoveryAction(email))
-    }
-
-    override fun showRegister() {
-
     }
 
     override fun showEmailError(show: Boolean) {

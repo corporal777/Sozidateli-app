@@ -9,4 +9,8 @@ class ApiError(
     fun toErrorsString(): String {
         return errors.joinToString("\n")
     }
+
+    fun hasError(error: String): Boolean {
+        return error.contains(error)
+    }
 }

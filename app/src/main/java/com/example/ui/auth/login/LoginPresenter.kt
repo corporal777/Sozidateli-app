@@ -22,8 +22,6 @@ class LoginPresenter
     var email = ""
     var password = ""
 
-    private var snUserToRegister: SnUser? = null
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState?.apply {
@@ -66,18 +64,7 @@ class LoginPresenter
                 && password.isNotEmpty()
     }
 
-    override fun onContinueRegistration(snUser: SnUser) {
-        snUserToRegister = snUser
-        viewState.showRegistrationConfirmation(true)
-    }
-
-    override fun onRegistrationCancel() {
-        snUserToRegister = null
-        viewState.showRegistrationConfirmation(false)
-    }
-
-    override fun onRegistrationConfirm() {
-        viewState.showRegistrationConfirmation(false)
-        viewState.showRegistration(snUserToRegister)
+    override fun onContinueWithSnRegistration(snUser: SnUser) {
+        viewState.showSnRegistration(snUser)
     }
 }

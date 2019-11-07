@@ -1,4 +1,4 @@
-package com.example.ui.auth.register
+package com.example.ui.auth.register.email
 
 import android.os.Bundle
 import android.text.SpannableString
@@ -8,32 +8,28 @@ import android.view.View
 import androidx.core.text.clearSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
-import com.example.ui.snAuth.SnAuth
 import com.example.util.ClickableSpan
-import kotlinx.android.synthetic.main.fragment_register.*
+import kotlinx.android.synthetic.main.fragment_register_email.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RegisterFragment : BaseFragment(), RegisterContract.View {
+class RegisterEmailFragment : BaseFragment(), RegisterEmailContract.View {
 
     @InjectPresenter
-    lateinit var presenter: RegisterPresenter
+    lateinit var presenter: RegisterEmailPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<RegisterPresenter>
+    lateinit var presenterProvider: Provider<RegisterEmailPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): RegisterPresenter = presenterProvider.get().apply {
-        snUser = arguments?.let { RegisterFragmentArgs.fromBundle(it).snUser }
-    }
+    fun providePresenter(): RegisterEmailPresenter = presenterProvider.get()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,11 +90,6 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         cbAgree.isChecked = isAgree
     }
 
-    override fun showSnRegistration(show: Boolean) {
-        clSn.isVisible = show
-        tvRegisterTitle.text = getString(if (show) R.string.auth_register else R.string.auth_register_sn)
-    }
-
     override fun showFirstNameError(show: Boolean) {
         tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
     }
@@ -130,9 +121,13 @@ class RegisterFragment : BaseFragment(), RegisterContract.View {
         ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun showEmailConfirmation(email: String, password: String, snUser: SnUser?) {
-        findNavController().navigate(RegisterFragmentDirections.emailRegisterToEmailConfirm(email, password, snUser))
+    override fun showEmailConfirmation(email: String, password: String) {
+        findNavController().navigate(RegisterEmailFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
     }
 
-    override fun layout() = R.layout.fragment_register
+    override fun showSnRegistration(snUser: SnUser) {
+        findNavController().navigate(RegisterEmailFragmentDirections.emailRegisterToSnRegister(snUser))
+    }
+
+    override fun layout() = R.layout.fragment_register_email
 }

@@ -21,8 +21,11 @@
             android:id="@+id/login_to_login_email_action"
             app:destination="@id/login_fragment" />
         <action
-            android:id="@+id/action_authorization_fragment_to_register_fragment"
-            app:destination="@id/register_fragment" />
+            android:id="@+id/authorization_fragment_to_register_email_fragment"
+            app:destination="@id/register_email_fragment" />
+        <action
+            android:id="@+id/authorization_fragment_to_register_sn_fragment"
+            app:destination="@id/register_sn_fragment" />
     </fragment>
 
     <fragment
@@ -31,8 +34,13 @@
         android:label="Login email">
 
         <action
-            android:id="@+id/login_to_register_action"
-            app:destination="@id/register_fragment"
+            android:id="@+id/login_to_register_email_action"
+            app:destination="@id/register_email_fragment"
+            app:popUpTo="@id/authorization_fragment" />
+
+        <action
+            android:id="@+id/login_to_register_sn_action"
+            app:destination="@id/register_sn_fragment"
             app:popUpTo="@id/authorization_fragment" />
 
         <action
@@ -58,20 +66,36 @@
     </fragment>
 
     <fragment
-        android:id="@+id/register_fragment"
-        android:name="com.example.ui.auth.register.RegisterFragment"
+        android:id="@+id/register_email_fragment"
+        android:name="com.example.ui.auth.register.email.RegisterEmailFragment"
         android:label="Register">
 
         <action
             android:id="@+id/email_register_to_email_confirm"
             app:destination="@id/email_confirm_fragment"
-            app:popUpTo="@id/email_confirm_fragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/authorization_fragment" />
+
+        <action
+            android:id="@+id/email_register_to_sn_register"
+            app:destination="@id/register_sn_fragment"
+            app:popUpTo="@id/authorization_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_sn_fragment"
+        android:name="com.example.ui.auth.register.sn.RegisterSnFragment"
+        android:label="Register">
 
         <argument
             android:name="snUser"
             app:argType="com.example.data.models.SnUser"
-            app:nullable="true" />
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/sn_register_to_email_confirm"
+            app:destination="@id/email_confirm_fragment"
+            app:popUpTo="@id/register_sn_fragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -84,7 +108,8 @@
 
         <argument
             android:name="password"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
 
         <argument
             android:name="SnUser"
@@ -212,11 +237,9 @@
             app:destination="@+id/favorite_fragment" />
 
         <action
-            android:id="@+id/profile_to_setting"
-            app:destination="@+id/profile_setting_chat_fragment" />
-        <action
             android:id="@+id/action_profile_fragment_to_notifications_fragment"
             app:destination="@id/notifications_fragment" />
+
         <action
             android:id="@+id/action_profile_fragment_to_banned_fragment"
             app:destination="@id/banned_fragment" />

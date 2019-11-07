@@ -241,13 +241,5 @@
                 app:layout_constraintStart_toEndOf="@+id/ibVk"
                 app:layout_constraintTop_toTopOf="@+id/ibVk" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <include
-            android:id="@+id/actionContainer"
-            layout="@layout/layout_login_sn_register_confirmation"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -11,7 +11,10 @@ interface AuthorizationContract {
         fun showLogin()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRegistration(snUser: SnUser? = null)
+        fun showEmailRegistration()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSnRegistration(snUser: SnUser)
     }
 
     interface Presenter : BaseAuthContract.Presenter {

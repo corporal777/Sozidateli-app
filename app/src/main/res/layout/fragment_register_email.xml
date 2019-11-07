@@ -42,21 +42,21 @@
         <TextView
             android:id="@+id/tvRegisterTitle"
             fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
+            android:text="@string/auth_register"
             android:textColor="@color/auth_title_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/llInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-            tools:ignore="MissingPrefix"
-            tools:text="@string/auth_register" />
+            tools:ignore="MissingPrefix" />
 
         <LinearLayout
             android:id="@+id/llInput"

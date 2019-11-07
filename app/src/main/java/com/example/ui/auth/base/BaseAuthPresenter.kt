@@ -32,11 +32,12 @@ constructor(
                 .subscribe({
                     val snUser = it.second
                     val status = it.first
-                    if (!status.social_auth_found || !status.user_by_social_confirmed_email) {
-                        viewState.hideLoadingDialog()
-                        onContinueRegistration(snUser)
+
+                    if (status.social_auth_found && status.user_by_social_confirmed_email) {
+                        authorize(snUser)
                     } else {
-                        authorize(snUser.snAuth)
+                        viewState.hideLoadingDialog()
+                        onContinueWithSnRegistration(snUser)
                     }
                 }, {
                     viewState.hideLoadingDialog()
@@ -44,14 +45,15 @@ constructor(
                 })
     }
 
-    private fun authorize(snAuth: SnAuth) {
+    private fun authorize(snUser: SnUser) {
+        val snAuth = snUser.snAuth
         compositeDisposable += authRepository.authSocialNetwork(snAuth.snType.code, snAuth.token)
                 .performOnBackgroundOutOnMain()
-                .subscribe({
+                .subscribeSimple(onApiError = {
                     viewState.hideLoadingDialog()
-                }, {
+                    if (it.hasError(ERROR_NEED_REGISTRATION)) onContinueWithSnRegistration(snUser)
+                }, onComplete = {
                     viewState.hideLoadingDialog()
-                    it.printStackTrace()
                 })
     }
 
@@ -82,10 +84,14 @@ constructor(
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun detachView(view: V) {
+        super.detachView(view)
         snAuthManager.removeOnSnAuthListener(snAuthListener)
     }
 
-    abstract fun onContinueRegistration(snUser: SnUser)
+    abstract fun onContinueWithSnRegistration(snUser: SnUser)
+
+    companion object {
+        private const val ERROR_NEED_REGISTRATION = "NEED_REGISTRATION"
+    }
 }

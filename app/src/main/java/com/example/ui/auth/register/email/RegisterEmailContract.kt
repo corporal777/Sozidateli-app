@@ -1,13 +1,11 @@
-package com.example.ui.auth.register
+package com.example.ui.auth.register.email
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
-import com.example.ui.base.BaseContract
-import com.example.ui.snAuth.SnAuth
 
-interface RegisterContract {
+interface RegisterEmailContract {
     interface View : BaseAuthContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean)
@@ -16,7 +14,10 @@ interface RegisterContract {
         fun enableRegisterBtn(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailConfirmation(email: String, password: String, snUser: SnUser?)
+        fun showSnRegistration(snUser: SnUser)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEmailConfirmation(email: String, password: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)
@@ -35,9 +36,6 @@ interface RegisterContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAgreementError(show: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSnRegistration(show: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {

@@ -19,10 +19,10 @@ class AuthorizationPresenter
     }
 
     override fun onEmailClick() {
-        viewState.showRegistration()
+        viewState.showEmailRegistration()
     }
 
-    override fun onContinueRegistration(snUser: SnUser) {
-        viewState.showRegistration(snUser)
+    override fun onContinueWithSnRegistration(snUser: SnUser) {
+        viewState.showSnRegistration(snUser)
     }
 }
