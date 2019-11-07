@@ -6,6 +6,7 @@ import com.example.ui.base.BasePresenter
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnAuthManager
+import com.vk.sdk.VKScope
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 
@@ -15,7 +16,7 @@ constructor(
         private val snAuthManager: SnAuthManager
 ) : BasePresenter<V>(), BaseAuthContract.Presenter {
 
-    private val snAuthListener = object : SnAuthManager.OnSnAuthListener {
+    protected val snAuthListener = object : SnAuthManager.OnSnAuthListener {
         override fun onSnAuthComplete(snAuth: SnAuth) {
             checkSnRegistration(snAuth)
         }
@@ -61,7 +62,7 @@ constructor(
         compositeDisposable += checkInternetAndRun {
             snAuthManager.apply {
                 addOnSnAuthListener(snAuthListener)
-                startAuthVk()
+                startAuthVk(arrayOf(VKScope.EMAIL))
             }
         }
     }
@@ -84,8 +85,8 @@ constructor(
         }
     }
 
-    override fun detachView(view: V) {
-        super.detachView(view)
+    override fun onDestroy() {
+        super.onDestroy()
         snAuthManager.removeOnSnAuthListener(snAuthListener)
     }
 

@@ -40,6 +40,7 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -316,4 +317,8 @@ inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? 
 
 fun View.setOnClickListener(listener: () -> Unit) {
     setOnClickListener { listener() }
+}
+
+fun JSONObject.getStringOrNull(name: String): String? {
+    return if (has(name)) getString(name) else null
 }

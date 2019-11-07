@@ -122,8 +122,8 @@ class SnAuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun authComplete(snUser: SnAuth) {
-        snAuthManager.onSnAuthComplete(snUser)
+    private fun authComplete(snAuth: SnAuth) {
+        snAuthManager.onSnAuthComplete(snAuth)
         finish()
     }
 

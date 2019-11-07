@@ -11,14 +11,16 @@ import javax.inject.Inject
 class AuthorizationPresenter
 @Inject constructor(
         authRepository: AuthRepository,
-        snAuthManager: SnAuthManager
+        private val snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<AuthorizationContract.View>(authRepository, snAuthManager), AuthorizationContract.Presenter {
 
     override fun onLoginClick() {
+        snAuthManager.removeOnSnAuthListener(snAuthListener)
         viewState.showLogin()
     }
 
     override fun onEmailClick() {
+        snAuthManager.removeOnSnAuthListener(snAuthListener)
         viewState.showEmailRegistration()
     }
 

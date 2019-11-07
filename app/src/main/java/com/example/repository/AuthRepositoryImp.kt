@@ -1,25 +1,26 @@
 package com.example.repository
 
+import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
-import com.facebook.Profile
-import com.facebook.ProfileTracker
+import com.facebook.AccessToken
+import com.facebook.GraphRequest
 import com.vk.sdk.api.VKApi
 import com.vk.sdk.api.VKError
 import com.vk.sdk.api.VKRequest
 import com.vk.sdk.api.VKResponse
 import com.vk.sdk.api.model.VKUsersArray
+import getStringOrNull
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.json.JSONObject
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -95,13 +96,15 @@ class AuthRepositoryImp
 
     override fun getVkUser(): Single<SnUserData> {
         return Single.create { emitter ->
-            VKApi.users().get().executeWithListener(object : VKRequest.VKRequestListener() {
+            VKApi.users().get().apply {
+                addExtraParameter("fields", "photo_100")
+            }.executeWithListener(object : VKRequest.VKRequestListener() {
                 override fun onComplete(response: VKResponse) {
                     val user = VKUsersArray().let {
                         it.parse(response.json)
                         it[0]
                     }
-                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, null, null))
+                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, user.photo_100, null))
                 }
 
                 override fun onError(error: VKError?) {
@@ -112,23 +115,21 @@ class AuthRepositoryImp
     }
 
     override fun getFbUser(): Single<SnUserData> {
-        val profile = Profile.getCurrentProfile()
-        return if (profile == null) {
-            Single.create<SnUserData> { emitter ->
-                object : ProfileTracker() {
-                    override fun onCurrentProfileChanged(oldProfile: Profile?, currentProfile: Profile?) {
-                        stopTracking()
-                        if (currentProfile != null) {
-                            emitter.onSuccess(SnUserData(currentProfile.id, currentProfile.firstName, currentProfile.lastName, null, null))
-                        } else {
-                            emitter.onError(SnAuthError("No fb profile error"))
-                        }
-                    }
-                }
+        val accessToken = AccessToken.getCurrentAccessToken()
+                ?: return Single.error(SnAuthError("No fb access token error"))
+
+        return Single.create<SnUserData> { emitter ->
+            GraphRequest.newMeRequest(accessToken) { json, _ ->
+                val id = json.getString("id")
+                val firstName = json.getStringOrNull("first_name")
+                val lastName = json.getStringOrNull("last_name")
+                val email = json.getStringOrNull("email")
+                val avatar = "https://graph.facebook.com/$id/picture"
+                emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, email))
+            }.apply {
+                parameters = bundleOf("fields" to "id,first_name,last_name,email")
+                executeAndWait()
             }
-                    .timeout(5, TimeUnit.SECONDS, Single.error(SnAuthError("No fb profile error")))
-        } else {
-            Single.just(SnUserData(profile.id, profile.firstName, profile.lastName, null, null))
         }
     }
 
@@ -141,11 +142,12 @@ class AuthRepositoryImp
 
                 override fun onSuccess(json: JSONObject) {
                     val id = json.getString("uid")
-                    val firstName = json.getString("first_name")
-                    val lastName = json.getString("last_name")
-                    val avatar = json.getString("pic_3") ?: json.getString("pic_2")
-                    ?: json.getString("pic_1")
-                    emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, null))
+                    val firstName = json.getStringOrNull("first_name")
+                    val lastName = json.getStringOrNull("last_name")
+                    val avatar = json.getStringOrNull("pic_3") ?: json.getStringOrNull("pic_2")
+                    ?: json.getStringOrNull("pic_1")
+                    val email = json.getStringOrNull("email")
+                    emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, email))
                 }
             })
         }

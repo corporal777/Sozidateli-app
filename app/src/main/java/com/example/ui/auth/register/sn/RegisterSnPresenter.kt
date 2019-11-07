@@ -32,7 +32,7 @@ class RegisterSnPresenter
         super.onFirstViewAttach()
         viewState.apply {
             setUserData(snUser.snAuth.snType, "${snUser.snUserData.firstName} ${snUser.snUserData.lastName}", snUser.snUserData.avatar)
-            setEmail(snUser.snUserData.email)
+            setEmail(snUser.snUserData.email ?: snUser.snAuth.email)
             performDataChange()
         }
     }
