@@ -30,9 +30,10 @@ class RegisterSnPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        email = snUser.snUserData.email ?: snUser.snAuth.email
         viewState.apply {
             setUserData(snUser.snAuth.snType, "${snUser.snUserData.firstName} ${snUser.snUserData.lastName}", snUser.snUserData.avatar)
-            setEmail(snUser.snUserData.email ?: snUser.snAuth.email)
+            setEmail(email)
             performDataChange()
         }
     }

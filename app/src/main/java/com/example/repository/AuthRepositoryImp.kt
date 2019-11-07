@@ -97,14 +97,14 @@ class AuthRepositoryImp
     override fun getVkUser(): Single<SnUserData> {
         return Single.create { emitter ->
             VKApi.users().get().apply {
-                addExtraParameter("fields", "photo_100")
+                addExtraParameter("fields", "photo_200")
             }.executeWithListener(object : VKRequest.VKRequestListener() {
                 override fun onComplete(response: VKResponse) {
                     val user = VKUsersArray().let {
                         it.parse(response.json)
                         it[0]
                     }
-                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, user.photo_100, null))
+                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, user.photo_200, null))
                 }
 
                 override fun onError(error: VKError?) {
@@ -124,7 +124,7 @@ class AuthRepositoryImp
                 val firstName = json.getStringOrNull("first_name")
                 val lastName = json.getStringOrNull("last_name")
                 val email = json.getStringOrNull("email")
-                val avatar = "https://graph.facebook.com/$id/picture"
+                val avatar = "https://graph.facebook.com/$id/picture?width=200&height=200"
                 emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, email))
             }.apply {
                 parameters = bundleOf("fields" to "id,first_name,last_name,email")

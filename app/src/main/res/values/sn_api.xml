@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="com_vk_sdk_AppId">7185627</integer>
+    <integer name="com_vk_sdk_AppId">7199756</integer>
     <string name="facebook_app_id">1274443886060668</string>
 </resources>

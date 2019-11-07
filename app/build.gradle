@@ -119,7 +119,7 @@ dependencies {
 
     // rx
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
     // dagger 2
