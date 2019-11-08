@@ -19,13 +19,10 @@ interface EventTabsContract {
         fun showScheduleTab()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
-        fun showAboutTab()
+        fun showAboutTab(eventId: String)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showMapTab()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setCurrentDestinationOnStart()
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventList()
@@ -37,13 +34,7 @@ interface EventTabsContract {
         fun showChat()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSearch()
-
-        @StateStrategyType(SkipStrategy::class)
         fun showAccount()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun finish()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -54,9 +45,6 @@ interface EventTabsContract {
         fun onToListSelected()
 
         fun onMenuChatClick()
-        fun onMenuSearchClick()
         fun onMenuAccountClick()
-
-        fun onClickBackWhenCurrentNavigationOnTop()
     }
 }

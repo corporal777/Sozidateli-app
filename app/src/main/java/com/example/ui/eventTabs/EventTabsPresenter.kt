@@ -7,7 +7,6 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
@@ -17,42 +16,26 @@ class EventTabsPresenter
         private val eventRepository: EventRepository
 ) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
 
-    private val tabSelectStack = Stack<TabSelectCommand>()
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
             initialNavigationSetup()
-            setLabel(eventData.event!!.name ?: "")
+            setLabel(eventData.event!!.name)
         }
 
-        selectTab(TabSelectCommand.MySchedule)
+        onMyScheduleTabSelected()
     }
 
-    override fun onMyScheduleTabSelected() = selectTab(TabSelectCommand.MySchedule)
+    override fun onMyScheduleTabSelected() = viewState.showMyScheduleTab()
 
-    override fun onScheduleTabSelected() = selectTab(TabSelectCommand.Schedule)
+    override fun onScheduleTabSelected() = viewState.showScheduleTab()
 
-    override fun onAboutSelected() = selectTab(TabSelectCommand.AboutEvent)
-
-    override fun onMapTabsSelected() = selectTab(TabSelectCommand.Map)
-
-    override fun onClickBackWhenCurrentNavigationOnTop() {
-        if (tabSelectStack.size > 1) {
-            tabSelectStack.pop()
-            tabSelectStack.peek().execute(viewState)
-        } else {
-            viewState.finish()
-        }
+    override fun onAboutSelected() {
+        eventData.event?.id?.let { viewState.showAboutTab(it) }
     }
 
-    private fun selectTab(command: TabSelectCommand) {
-        if (tabSelectStack.isNotEmpty() && command == tabSelectStack.peek()) {
-            viewState.setCurrentDestinationOnStart()
-        } else {
-            tabSelectStack.remove(command)
-            tabSelectStack.push(command.apply { execute(viewState) })
-        }
+    override fun onMapTabsSelected() {
+        eventData.event?.id?.let { viewState.showMapTab() }
     }
 
     override fun onToListSelected() {
@@ -69,40 +52,10 @@ class EventTabsPresenter
 
     override fun onMenuChatClick() = viewState.showChat()
 
-    override fun onMenuSearchClick() = viewState.showSearch()
-
     override fun onMenuAccountClick() = viewState.showAccount()
 
     override fun onDestroy() {
         super.onDestroy()
         eventData.clear()
-    }
-
-    private sealed class TabSelectCommand {
-        abstract fun execute(view: EventTabsContract.View?)
-
-        object MySchedule : TabSelectCommand() {
-            override fun execute(view: EventTabsContract.View?) {
-                view?.showMyScheduleTab()
-            }
-        }
-
-        object Schedule : TabSelectCommand() {
-            override fun execute(view: EventTabsContract.View?) {
-                view?.showScheduleTab()
-            }
-        }
-
-        object AboutEvent : TabSelectCommand() {
-            override fun execute(view: EventTabsContract.View?) {
-                view?.showAboutTab()
-            }
-        }
-
-        object Map : TabSelectCommand() {
-            override fun execute(view: EventTabsContract.View?) {
-                view?.showMapTab()
-            }
-        }
     }
 }

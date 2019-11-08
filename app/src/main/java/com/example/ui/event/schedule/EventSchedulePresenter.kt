@@ -76,7 +76,7 @@ constructor(
     private fun loadEventScheduleStaticData(forceLoading: Boolean): Completable {
         return if (forceLoading || !userEventData.isStaticDataLoaded)
             UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
-                    .flatMapCompletable { Completable.complete() }
+                    .ignoreElement()
         else Completable.complete()
     }
 

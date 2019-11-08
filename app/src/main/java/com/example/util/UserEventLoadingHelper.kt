@@ -41,7 +41,7 @@ class UserEventLoadingHelper(
 //                .onErrorReturn { false }
     }
 
-    private fun loadEventCache(event: Int): Maybe<UserEvent> {
+    private fun loadEventCache(event: String): Maybe<UserEvent> {
         return userEventDao.getById(event)
                 .doOnSuccess { it.isDataFromLocalStorage = true }
     }

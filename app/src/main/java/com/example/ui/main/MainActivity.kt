@@ -303,11 +303,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onBackPressed() {
-        if ((getCurrentFragment() as? OnBackPressedListener)?.onBackPressed() == true) return
-        if (findNavController().currentDestination?.id?.let { isStartDestination(it) } == true) {
-            finish()
-            return
-        }
+//        if ((getCurrentFragment() as? OnBackPressedListener)?.onBackPressed() == true) return
+//        if (findNavController().currentDestination?.id?.let { isStartDestination(it) } == true) {
+//            finish()
+//            return
+//        }
 
         super.onBackPressed()
     }

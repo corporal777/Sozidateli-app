@@ -16,7 +16,7 @@ interface EventRepository {
     fun getEventRegisterField(eventId: String): Single<EventRegisterForm>
     fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse>
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
-    fun getEventActivity(eventId: Int): Maybe<List<SubEvent>>
+    fun getEventActivity(eventId: String): Maybe<List<SubEvent>>
     fun getEventInfo(eventId: String): Maybe<EventInfo>
     fun setDefaultEvent(eventId: String): Completable
     fun addEventToCalendar(eventId: String, subEventId: Int): Completable

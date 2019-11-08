@@ -75,7 +75,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     }
 
     override fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) {
-        findNavController().navigate(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
+        findNavController().navigate(R.id.event_location_fragment, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
     }
 
     override fun layout() = R.layout.fragment_event_contacts

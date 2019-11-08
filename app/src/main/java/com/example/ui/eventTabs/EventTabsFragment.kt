@@ -1,28 +1,34 @@
 package com.example.ui.eventTabs
 
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.forEach
-import androidx.core.util.set
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.get
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.OnBackPressedListener
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.location.EventLocationFragment
+import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
+import com.example.ui.event.schedule.my.EventMyScheduleFragment
+import com.example.ui.views.accountView.AccountView
+import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.BottomNavigationViewHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedListener {
+class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment {
+
+    override val title = ""
 
     @InjectPresenter
     lateinit var presenter: EventTabsPresenter
@@ -32,9 +38,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
 
     @ProvidePresenter
     fun providePresenter(): EventTabsPresenter = presenterProvider.get()
-
-    private val graphIdToTagMap = SparseArray<String>()
-    private lateinit var currentNavController: NavController
 
     private val bottomNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
         presenter.apply {
@@ -51,6 +54,8 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
         return@OnNavigationItemSelectedListener true
     }
 
+    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         BottomNavigationViewHelper(bottomNavigation).removeShiftMode()
@@ -59,34 +64,62 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
     }
 
     override fun initialNavigationSetup() {
-        setupFragments()
+
     }
 
     override fun showMyScheduleTab() = selectTab(R.id.tab_event_my_schedule)
 
     override fun showScheduleTab() = selectTab(R.id.tab_event_schedule)
 
-    override fun showAboutTab() = selectTab(R.id.about_event)
+    override fun showAboutTab(eventId: String) = selectTab(R.id.about_event, AboutEventFragmentArgs.Builder(eventId).build().toBundle())
 
     override fun showMapTab() = selectTab(R.id.event_location)
 
-    override fun setCurrentDestinationOnStart() {
-        val startDestination = currentNavController.graph.startDestination
-        if (currentNavController.currentDestination?.id != startDestination)
-            currentNavController.popBackStack(startDestination, false)
+    private fun selectTab(tabId: Int, args: Bundle? = null) {
+        val fragmentTag = generateFragmentTag(tabId)
+        val newFragment = childFragmentManager.findFragmentByTag(fragmentTag)
+                ?: createTabFragment(tabId, args)
+
+        childFragmentManager.beginTransaction()
+                .apply {
+                    if (!newFragment.isAdded) add(navHostContainer.id, newFragment, fragmentTag)
+                }
+                .attach(newFragment)
+                .apply {
+                    for (fragment in childFragmentManager.fragments) {
+                        if (fragment != newFragment) detach(fragment)
+                    }
+                }
+                .setCustomAnimations(
+                        R.anim.nav_default_enter_anim,
+                        R.anim.nav_default_exit_anim,
+                        R.anim.nav_default_pop_enter_anim,
+                        R.anim.nav_default_pop_exit_anim)
+                .setReorderingAllowed(true)
+                .commitNow()
     }
 
-    override fun onBackPressed(): Boolean {
-        if (!currentNavController.navigateUp()) presenter.onClickBackWhenCurrentNavigationOnTop()
-        return true
+    private fun createTabFragment(tabId: Int, args: Bundle?): Fragment {
+        val fragment = when (tabId) {
+            R.id.tab_event_my_schedule -> EventMyScheduleFragment()
+            R.id.tab_event_schedule -> EventCompleteScheduleFragment()
+            R.id.about_event -> AboutEventFragment()
+            R.id.event_location -> EventLocationFragment()
+            else -> throw IllegalArgumentException("No fragment fo tab $tabId")
+        }
+
+        findNavController().apply {
+            val fragmentNavigator = navigatorProvider.get<FragmentNavigator>("fragment")
+        }
+
+        args?.let { fragment.arguments = it }
+        return fragment
     }
+
+    private fun generateFragmentTag(tabId: Int): String = "tabFragment#$tabId"
 
     override fun showChat() {
         findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatListTabsFragment())
-    }
-
-    override fun showSearch() {
-        findNavController().navigate(EventTabsFragmentDirections.mainToSearch())
     }
 
     override fun showAccount() {
@@ -103,93 +136,18 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, OnBackPressedL
         }
     }
 
-    override fun finish() {
-        activity?.finish()
-    }
-
     override fun setLabel(label: String) {
-        (activity as AppCompatActivity?)?.supportActionBar?.title = label
+        toolbarContentActionBar.title = label
     }
 
-    private fun selectTab(id: Int) {
-        val newTabTag = graphIdToTagMap[id]
-        val selectedFragment = childFragmentManager.findFragmentByTag(newTabTag)
-                as NavHostFragment
-
-        childFragmentManager.beginTransaction()
-                .attach(selectedFragment)
-                .setPrimaryNavigationFragment(selectedFragment)
-                .apply {
-                    // Detach all other Fragments
-                    graphIdToTagMap.forEach { _, fragmentTag ->
-                        if (fragmentTag != newTabTag) {
-                            detach(childFragmentManager.findFragmentByTag(fragmentTag)!!)
-                        }
-                    }
-                }
-                .setCustomAnimations(
-                        R.anim.nav_default_enter_anim,
-                        R.anim.nav_default_exit_anim,
-                        R.anim.nav_default_pop_enter_anim,
-                        R.anim.nav_default_pop_exit_anim)
-                .setReorderingAllowed(true)
-                .commit()
-
-        currentNavController = selectedFragment.navController
-        bottomNavigation.apply {
-            setOnNavigationItemSelectedListener(null)
-            selectedItemId = id
-            setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
+        toolbarContentActionBar.apply {
+            addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
+            addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
         }
     }
-
-    private fun setupFragments() {
-        val navGraphIds = listOf(
-                R.navigation.tab_event_my_schedule,
-                R.navigation.tab_event_schedule,
-                R.navigation.about_event_navigation,
-                R.navigation.event_location_navigation
-        )
-
-        navGraphIds.forEachIndexed { index, navGraphId ->
-            val fragmentTag = getFragmentTag(index)
-
-            // Find or create the Navigation host fragment
-            val navHostFragment = obtainNavHostFragment(
-                    childFragmentManager,
-                    fragmentTag,
-                    navGraphId,
-                    R.id.nav_host_container
-            )
-
-            // Obtain its id
-            val graphId = navHostFragment.navController.graph.id
-
-            // Save to the map
-            graphIdToTagMap[graphId] = fragmentTag
-        }
-    }
-
-    private fun obtainNavHostFragment(
-            fragmentManager: FragmentManager,
-            fragmentTag: String,
-            navGraphId: Int,
-            containerId: Int
-    ): NavHostFragment {
-        // If the Nav Host fragment exists, return it
-        val existingFragment = fragmentManager.findFragmentByTag(fragmentTag) as NavHostFragment?
-        existingFragment?.let { return it }
-
-        // Otherwise, create it and return it.
-        val navHostFragment = NavHostFragment.create(navGraphId)
-        fragmentManager.beginTransaction()
-                .add(containerId, navHostFragment, fragmentTag)
-                .detach(navHostFragment)
-                .commitNow()
-        return navHostFragment
-    }
-
-    private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
 
     override fun layout() = R.layout.fragment_event_tabs
 }

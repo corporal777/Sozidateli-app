@@ -10,7 +10,7 @@ import com.example.data.database.converters.UserEventConverter
 @TypeConverters(UserEventConverter::class)
 data class UserEvent(
         @PrimaryKey(autoGenerate = false)
-        val eventId: Int,
+        val eventId: String,
         val eventInfo: EventInfo,
         val subEvents: List<SubEvent>,
         val updatedAt: Long

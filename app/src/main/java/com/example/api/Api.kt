@@ -216,7 +216,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
-    fun getEventActivity(@Path("eventId") eventId: Int, @Field("limit") limit: String = "all"): Maybe<ApiResponse<List<SubEvent>>>
+    fun getEventActivity(@Path("eventId") eventId: String, @Field("limit") limit: String = "all"): Maybe<ApiResponse<List<SubEvent>>>
 
     @POST("v1/user/set_default_event/{eventId}")
     fun setDefaultEvent(@Path("eventId") eventId: String): Completable

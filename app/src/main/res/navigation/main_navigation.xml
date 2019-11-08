@@ -5,8 +5,6 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/splash_fragment">
 
-    <include app:graph="@navigation/about_event_navigation" />
-
     <fragment
         android:id="@+id/splash_fragment"
         android:name="com.example.ui.splash.SplashFragment"
@@ -161,7 +159,21 @@
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
-
+        <action
+            android:id="@id/action_about_event_fragment_to_documents_list_fragment"
+            app:destination="@id/documents_list_fragment" />
+        <action
+            android:id="@id/action_about_event_fragment_to_speakers_list_fragment"
+            app:destination="@id/speakers_list_fragment" />
+        <action
+            android:id="@id/action_about_event_fragment_to_partner_fragment"
+            app:destination="@id/partner_fragment" />
+        <action
+            android:id="@id/action_about_event_fragment_to_page_fragment"
+            app:destination="@id/page_fragment" />
+        <action
+            android:id="@id/action_about_event_fragment_to_contacts_fragment"
+            app:destination="@id/contacts_fragment" />
     </fragment>
 
     <activity
@@ -450,6 +462,71 @@
         tools:layout="@layout/fragment_enter_code" />
 
     <fragment
+        android:id="@+id/stories_fragment"
+        android:name="com.example.ui.stories.StoriesFragment" />
+
+    <fragment
+        android:id="@+id/about_event_fragment"
+        android:name="com.example.ui.event.about.AboutEventFragment"
+        tools:layout="@layout/fragment_about_event">
+        <argument
+            android:name="eventId"
+            app:argType="string"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_documents_list_fragment"
+            app:destination="@id/documents_list_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_speakers_list_fragment"
+            app:destination="@id/speakers_list_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_partner_fragment"
+            app:destination="@id/partner_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_page_fragment"
+            app:destination="@id/page_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_contacts_fragment"
+            app:destination="@id/contacts_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/documents_list_fragment"
+        android:name="com.example.ui.documents.DocumentsListFragment">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="pageId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/speakers_list_fragment"
+        android:name="com.example.ui.event.speakers.EventSpeakersFragment"
+        android:label="@string/speakers">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/partner_fragment"
+        android:name="com.example.ui.partner.PartnerFragment"
+        android:label="@string/partners_label"
+        tools:layout="@layout/fragment_partner">
+
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+
+        <argument
+            android:name="partnerId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/page_fragment"
         android:name="com.example.ui.page.PageFragment"
         tools:layout="@layout/fragment_user">
@@ -464,6 +541,62 @@
     </fragment>
 
     <fragment
-        android:id="@+id/stories_fragment"
-        android:name="com.example.ui.stories.StoriesFragment" />
+        android:id="@+id/contacts_fragment"
+        android:name="com.example.ui.event.contacts.EventContactsFragment">
+
+        <argument
+            android:name="eventName"
+            app:argType="string" />
+
+        <argument
+            android:name="phones"
+            app:argType="com.example.data.models.PhoneAffiliation[]" />
+
+        <argument
+            android:name="emails"
+            app:argType="com.example.data.models.EmailAffiliation[]" />
+
+        <argument
+            android:name="webLinks"
+            app:argType="string[]" />
+
+        <argument
+            android:name="socialLinks"
+            app:argType="string[]" />
+
+        <argument
+            android:name="address"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="mapInfo"
+            app:argType="com.example.data.models.MapInfo"
+            app:nullable="true" />
+
+        <argument
+            android:name="places"
+            app:argType="com.example.data.models.Place[]"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/event_location_fragment"
+        android:name="com.example.ui.event.location.EventLocationFragment">
+
+        <argument
+            android:name="eventName"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="mapInfo"
+            app:argType="com.example.data.models.MapInfo"
+            app:nullable="true" />
+
+        <argument
+            android:name="places"
+            app:argType="com.example.data.models.Place[]"
+            app:nullable="true" />
+    </fragment>
 </navigation>

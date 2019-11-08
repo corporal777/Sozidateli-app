@@ -29,7 +29,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContrac
 
     override fun selectEvent(event: Event) {
         findNavController().apply {
-            graph.startDestination = R.id.event_tabs_fragment
+//            graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
                     .setPopUpTo(R.id.event_list_fragment, true)
                     .build()

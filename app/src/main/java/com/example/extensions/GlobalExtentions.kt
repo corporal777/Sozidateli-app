@@ -12,6 +12,7 @@ import android.text.InputFilter
 import android.text.Layout
 import android.text.TextWatcher
 import android.text.style.URLSpan
+import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
@@ -321,4 +322,14 @@ fun View.setOnClickListener(listener: () -> Unit) {
 
 fun JSONObject.getStringOrNull(name: String): String? {
     return if (has(name)) getString(name) else null
+}
+
+fun <E> SparseArray<E>.getOrPut(key: Int, put: () -> E): E {
+    var value = get(key)
+    if (value == null) {
+        value = put()
+        put(key, value)
+    }
+
+    return value
 }

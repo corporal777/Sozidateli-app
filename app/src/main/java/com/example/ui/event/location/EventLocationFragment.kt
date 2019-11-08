@@ -21,7 +21,7 @@ import javax.inject.Provider
 class EventLocationFragment : BaseFragment(), EventLocationContract.View, ToolbarFragment {
 
     override val title: CharSequence
-        get() = EventLocationFragmentArgs.fromBundle(arguments!!).eventName
+        get() = EventLocationFragmentArgs.fromBundle(arguments!!).eventName ?: ""
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "EventLocationPresenter")
     lateinit var presenter: EventLocationPresenter

@@ -44,7 +44,7 @@ class EventRepositoryImp
         return call(api.getEventRegister(eventId))
     }
 
-    override fun getEventActivity(eventId: Int): Maybe<List<SubEvent>> {
+    override fun getEventActivity(eventId: String): Maybe<List<SubEvent>> {
         return call(api.getEventActivity(eventId))
     }
 

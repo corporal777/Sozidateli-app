@@ -9,5 +9,5 @@ import io.reactivex.Maybe
 interface UserEventDao : BaseDao<UserEvent> {
 
     @Query("SELECT * FROM UserEvent WHERE eventId= :id")
-    fun getById(id: Int): Maybe<UserEvent>
+    fun getById(id: String): Maybe<UserEvent>
 }

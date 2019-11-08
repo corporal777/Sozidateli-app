@@ -39,6 +39,7 @@ class EventRegistrationPresenter
 
     lateinit var eventId: String
 
+    private var hasGroup = false
     private var selectedGroup: String? = null
     private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
@@ -55,7 +56,7 @@ class EventRegistrationPresenter
                 .subscribeSimple {
                     viewState.apply {
                         val hasForm = it.groups.isNotEmpty() || it.fieldsData.isNotEmpty()
-
+                        hasGroup = it.groupField != null
                         selectedGroup = it.selectedGroup
                         fieldsData = it.fieldsData
                         invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
@@ -159,7 +160,7 @@ class EventRegistrationPresenter
     }
 
     private fun checkDataValid() {
-        viewState.enableActionButton(selectedGroup != null && invalidFieldsData.isEmpty())
+        viewState.enableActionButton((!hasGroup || selectedGroup != null) && invalidFieldsData.isEmpty())
     }
 
     override fun onPersonalDataFileClick(url: String) {
