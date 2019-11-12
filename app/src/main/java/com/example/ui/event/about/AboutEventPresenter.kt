@@ -1,10 +1,12 @@
 package com.example.ui.event.about
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.UserEventData
 import com.example.data.models.*
 import com.example.extensions.formatToInterval
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -14,7 +16,8 @@ import javax.inject.Inject
 @InjectViewState
 class AboutEventPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
+        private val eventRepository: EventRepository,
+        private val userEventData: UserEventData
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     lateinit var eventId: String
@@ -23,10 +26,15 @@ class AboutEventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showLoadingDialog()
-        compositeDisposable += eventRepository.getEventInfo(eventId)
+
+        val userEventInfo = userEventData.userEvent?.eventInfo
+
+        val eventInfoMaybe = if (userEventInfo?.event?.id == eventId) Maybe.just(userEventInfo)
+        else eventRepository.getEventInfo(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
+        compositeDisposable += eventInfoMaybe
                 .subscribeSimple(onSuccess = ::setEventInfoData)
     }
 
@@ -72,31 +80,21 @@ class AboutEventPresenter
                 eventData.web,
                 eventData.social,
                 eventData.address,
-                createMapInfo(eventData),
+                eventData.createMapInfo(),
                 event.places
         )
-    }
-
-    private fun createMapInfo(event: EventData): MapInfo? {
-        val lat = event.placeLat
-        val lon = event.placeLon
-        val title = event.placeHowToGetTitle
-        val description = event.placeHowToGet
-
-        return if ((lat == null || lon == null) && description == null) null
-        else MapInfo(lat, lon, title, description)
     }
 
     private fun hasContacts(): Boolean {
         val eventData = event.event
         return eventData.name.isNotEmpty()
-                && eventData.phone.isNotEmpty()
-                && eventData.email.isNotEmpty()
-                && eventData.web.isNotEmpty()
-                && eventData.social.isNotEmpty()
-                && eventData.address?.isNotEmpty() ?: false
-                && createMapInfo(eventData) != null
-                && event.places.isNotEmpty()
+                || eventData.phone.isNotEmpty()
+                || eventData.email.isNotEmpty()
+                || eventData.web.isNotEmpty()
+                || eventData.social.isNotEmpty()
+                || eventData.address?.isNotEmpty() ?: false
+                || eventData.createMapInfo() != null
+                || event.places.isNotEmpty()
     }
 
     override fun onGoToEventClick() {

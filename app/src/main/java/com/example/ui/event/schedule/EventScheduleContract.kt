@@ -43,22 +43,27 @@ interface EventScheduleContract {
         fun hideCurrentDay()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSubEvent(eventId: String, subEventId: Int)
+        fun showSubEvent(title: String, eventId: String, subEventId: String)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
         fun showDataFormCacheMessage(cacheDate: String)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
         fun hideDataFormCacheMessage()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAllTags()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onDaySelected(day: EventScheduleCalendarDay)
-        fun onTagSelectedListChange(tags: List<Tag>)
+        fun onTagSelectedListChange()
         fun onDayChanged(date: Long)
 
         fun onSubEventClick(subEvent: SubEvent)
         fun onAddToScheduleClick(subEvent: SubEvent)
         fun onRemoveFromScheduleClick(subEvent: SubEvent)
+
+        fun onShowAllTagsClick()
     }
 }

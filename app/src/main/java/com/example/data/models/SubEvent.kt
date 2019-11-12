@@ -3,17 +3,16 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class SubEvent(
-        val id: Int,
+        val id: String,
         val title: String,
         val start: String,
         val finish: String,
-        val for_everyone: Boolean,
         @SerializedName("is_visitor")
         val isVisitor: Boolean,
-        @SerializedName("is_speaker")
-        val isSpeaker: Boolean,
-        @SerializedName("is_in_calendar")
+        @SerializedName("for_everyone")
+        val forEveryone: Boolean,
+        @SerializedName("in_calendar")
         var isInCalendar: Boolean,
-        val categories: List<EventCategory>,
-        val tags: List<EventTag>
+        val groups: List<Tag.Group>,
+        val tags: List<Tag.EventTag>
 )

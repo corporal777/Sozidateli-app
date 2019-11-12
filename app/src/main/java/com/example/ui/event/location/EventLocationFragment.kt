@@ -53,7 +53,7 @@ class EventLocationFragment : BaseFragment(), EventLocationContract.View, Toolba
     override fun initPages(mapInfo: MapInfo?, places: Array<Place>?) {
         val fragments = mutableListOf<Pair<androidx.fragment.app.Fragment, String>>()
         if (mapInfo != null) fragments.add(MapFragment.newInstance(mapInfo) to getString(R.string.event_map_tab_how_to_get))
-        if (places != null) fragments.add(BuildingSchemeFragment.newInstance(places) to getString(R.string.event_map_tab_building_scheme))
+        if (places?.isNotEmpty() == true) fragments.add(BuildingSchemeFragment.newInstance(places) to getString(R.string.event_map_tab_building_scheme))
 
         if (fragments.size == 1) {
             tabLayout.isVisible = false

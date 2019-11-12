@@ -17,6 +17,7 @@ open class BasePresenter<V : BaseContract.View>
     : MvpPresenter<V>(), BaseContract.Presenter {
 
     protected val compositeDisposable = CompositeDisposable()
+    protected var hasNoConnectionError = false
 
     override fun onDestroy() {
         super.onDestroy()
@@ -28,6 +29,7 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     protected open fun onReceiveNoInternetError() {
+        hasNoConnectionError = true
         viewState.showNoConnectionMessage()
     }
 

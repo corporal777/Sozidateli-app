@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class SubeventInfo(
         val id: Int,
         val title: String,
-        val description: String,
-        val location: String,
+        val description: String?,
+        val location: String?,
         val start: String,
         val finish: String,
         @SerializedName("for_everyone")
@@ -17,7 +17,8 @@ data class SubeventInfo(
         val isSpeaker: Boolean,
         @SerializedName("is_in_calendar")
         val isInCalendar: Boolean,
-        val categories: List<EventCategory>,
-        val tags: List<EventTag>,
-        val speakers: List<Speaker>
+        val groups: List<Tag.Group>,
+        val tags: List<Tag.EventTag>,
+        val speakers: List<Speaker>,
+        val auditoriums: List<Auditorium>
 )

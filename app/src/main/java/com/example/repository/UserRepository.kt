@@ -25,7 +25,7 @@ interface UserRepository {
     fun updateUser(data: Map<String, Any?>): Single<User>
     fun uploadAvatar(photo: Bitmap?): Single<User>
     fun uploadRecommendationFile(file: String): Single<User>
-    fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
@@ -35,7 +35,7 @@ interface UserRepository {
     fun removeFromFavorite(uid: String): Completable
 
     fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
-    fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User>>
+    fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>>
     fun checkPassword(password: String): Completable
     fun sendStatusPhoneConfirmSms(password: String): Completable
     fun sendStatusPhoneConfirmCode(password: String): Completable

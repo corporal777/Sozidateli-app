@@ -12,18 +12,17 @@ interface SubeventContract {
         fun setData(subEvent: SubeventInfo)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSpeakers(speakers: List<Speaker>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSpeakerProfile(speaker: Speaker)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSpeaker(speaker: Speaker)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun openUserList(eventId: Int, subEventId: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onSpeakerClick(speaker: Speaker)
         fun onSpeakerChangeSubscriptionClick(speaker: Speaker)
-        fun onOpenUserListClick()
     }
 }

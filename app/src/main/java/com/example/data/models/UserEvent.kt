@@ -12,7 +12,7 @@ data class UserEvent(
         @PrimaryKey(autoGenerate = false)
         val eventId: String,
         val eventInfo: EventInfo,
-        val subEvents: List<SubEvent>,
+        val activity: EventActivity,
         val updatedAt: Long
 ) {
 

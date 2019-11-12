@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class EventData(
         @SerializedName("event_id")
-        val id: Int,
+        val id: String,
         @SerializedName("event_code")
         val code: String,
         @SerializedName("organization_id")
@@ -40,3 +40,13 @@ data class EventData(
         val web: List<String>,
         val social: List<String>
 )
+
+fun EventData.createMapInfo(): MapInfo? {
+        val lat = placeLat
+        val lon = placeLon
+        val title = placeHowToGetTitle
+        val description = placeHowToGet
+
+        return if ((lat == null || lon == null) && description == null) null
+        else MapInfo(lat, lon, title, description)
+}

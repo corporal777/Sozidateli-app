@@ -87,7 +87,7 @@ class UserRepositoryImp
                 }))
     }
 
-    override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+    override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
         return usersList(limit, offset, mapOf(FIELD_USER_IS_IN_FAVORITE to true))
     }
 
@@ -107,7 +107,7 @@ class UserRepositoryImp
         return callPagination(api.chatSearch(searchMap, limit, offset))
     }
 
-    override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User>> {
+    override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>> {
         return callPagination(api.getUsersList(limit, offset, filter))
     }
 

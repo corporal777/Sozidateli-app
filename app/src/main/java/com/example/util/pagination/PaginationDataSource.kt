@@ -35,8 +35,12 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         }
 
         val result = executeRequest(params.requestedLoadSize, startPosition)
+        if (result == null) {
+            callback.onResult(emptyList(), startPosition, 0)
+            return
+        }
         var data = getDataFromResult(result)
-        val totalCount = result?.totalCount
+        val totalCount = result.totalCount
 
         if (totalCount == null) {
             callback.onResult(data, startPosition)

@@ -50,6 +50,7 @@ import com.example.ui.status.tabs.StatusPagesFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
+import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
 import com.example.ui.user.edit.UserEditFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
@@ -218,4 +219,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeStoriesFragment(): StoriesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeTagsFragment(): TagsFragment
 }

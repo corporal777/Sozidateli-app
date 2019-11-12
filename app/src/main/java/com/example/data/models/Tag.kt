@@ -1,6 +1,13 @@
 package com.example.data.models
 
-interface Tag {
-    fun getTagId(): Int
-    fun getTagName(): String
+sealed class Tag(
+        open val id: String,
+        open val name: String
+) {
+
+    var isSelected = false
+
+    class EventTag(id: String, name: String) : Tag(id, name)
+
+    class Group(id: String, name: String) : Tag(id, name)
 }

@@ -1,83 +1,70 @@
 package com.example.ui.event.schedule
 
 import com.example.data.UserEventData
-import com.example.data.database.Db
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.Tag
 import com.example.extensions.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.UserEventLoadingHelper
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.util.*
 
 abstract class EventSchedulePresenter
 constructor(
         private val eventRepository: EventRepository,
-        private val userEventData: UserEventData,
-        private val db: Db,
-        private val connectivity: Observable<Boolean>
-) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter {
+        private val userEventData: UserEventData
+) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter, UserEventData.OnDataUpdateListener {
 
-    protected val event = userEventData.event!!
+    private val userEvent = userEventData.userEvent!!
 
     protected var currentDay: EventScheduleCalendarDay? = null
-    protected var selectedTags: List<Tag> = emptyList()
+    protected var tags: List<Tag> = emptyList()
 
-    private val loadingCompleteAction = Consumer<Boolean> {
+    private var firstAttach = true
+
+    private val onLoadingComplete: () -> Unit = {
         viewState.apply {
-            if (userEventData.isDataFromLocalStorage) showDataFormCacheMessage(userEventData.dataLoadingDate.calendar().formatToDefaultTime())
+            if (userEventData.isDataFromLocalStorage) showDataFormCacheMessage(userEventData.dataLoadingDate.let { defaultDateFormatter.format(it) })
             else hideDataFormCacheMessage()
 
-            userEventData.apply {
-                setDays(days)
-                setTags(tags as List<Tag>)
-                currentDay?.let { day ->
-                    selectDay(day)
-                    scrollToDay(day)
-                }
+            tags = userEvent.activity.groups.plus(userEvent.activity.tags)
+            setDays(userEventData.days)
+            setTags(tags)
+            currentDay?.let { day ->
+                selectDay(day)
+                scrollToDay(day)
             }
         }
 
         invalidateDay()
     }
 
-    private val loadingErrorConsumer = Consumer<Throwable> {
-        it.printStackTrace()
-        viewState.apply { showEmptyEventPlaceholder() }
-    }
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += connectivity
-                .flatMapSingle {
-                    val completable = if (it) loadData(userEventData.isDataFromLocalStorage)
-                    else if (!userEventData.isStaticDataLoaded) loadData(true)
-                    else findNearestDayFromEventDays(System.currentTimeMillis())
-
-                    completable.toSingleDefault(it)
-                }
+        userEventData.addOnDataUpdateListener(this)
+        compositeDisposable += findNearestDayFromEventDays(System.currentTimeMillis())
                 .performOnBackgroundOutOnMain()
-                .subscribe(loadingCompleteAction, loadingErrorConsumer)
+                .subscribeSimple(onError = {
+                    it.printStackTrace()
+                    viewState.apply { showEmptyEventPlaceholder() }
+                }, onComplete = onLoadingComplete)
     }
 
-    private fun loadData(forceLoading: Boolean = false): Completable {
-        return loadEventScheduleStaticData(forceLoading)
-                .andThen(findNearestDayFromEventDays(System.currentTimeMillis()))
+    override fun onDataUpdated() {
+        compositeDisposable += Completable.complete()
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple(onComplete = onLoadingComplete)
     }
 
-    private fun loadEventScheduleStaticData(forceLoading: Boolean): Completable {
-        return if (forceLoading || !userEventData.isStaticDataLoaded)
-            UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
-                    .ignoreElement()
-        else Completable.complete()
+    override fun attachView(view: EventScheduleContract.View?) {
+        super.attachView(view)
+        if (firstAttach) firstAttach = false
+        else invalidateDay()
     }
 
     private fun findNearestDayFromEventDays(date: Long): Completable {
@@ -88,23 +75,24 @@ constructor(
             currentDay = days.find {
                 it.hasEvents &&
                         (dateCalendar.isSameDay(other.apply { timeInMillis = it.millis }) || it.millis - date > 0)
-            }
+            } ?: days.lastOrNull()
         }
     }
 
     private fun invalidateDay() {
         val day = currentDay ?: return daySubEventsError()
-        val subEvents = userEventData.subEvents?.let {
+        val selectedTags = tags.filter { it.isSelected }
+        val subEvents = userEvent.activity.activities.let {
             it.filter { event ->
                 val date = defaultServerDateTimeFormatter.parse(event.start)
                 filterSubEvent(event)
-                        && (if (selectedTags.isNotEmpty()) event.tags.any { tag -> selectedTags.contains(tag) } else true)
+                        && filterTags(event, selectedTags)
                         && date.time > day.millis.startOfDay() && date.time < day.millis.endOfDay()
             }
-        } ?: return daySubEventsError()
+        }
 
         viewState.apply {
-            setSubEvents(subEvents, selectedTags)
+            setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
             if (subEvents.isEmpty()) {
                 showEmptyDayPlaceholder()
                 hideCurrentDay()
@@ -113,6 +101,12 @@ constructor(
                 hidePlaceholder()
             }
         }
+    }
+
+    private fun filterTags(event: SubEvent, selectedTags: List<Tag>): Boolean {
+        if (!mustFilterTags() || selectedTags.isEmpty()) return true
+        return selectedTags.any { tag -> event.tags.any { eventTag -> eventTag.id == tag.id } }
+                || selectedTags.any { tag -> event.groups.any { eventTag -> eventTag.id == tag.id } }
     }
 
     private fun daySubEventsError() {
@@ -128,8 +122,7 @@ constructor(
         invalidateDay()
     }
 
-    override fun onTagSelectedListChange(tags: List<Tag>) {
-        selectedTags = tags
+    override fun onTagSelectedListChange() {
         invalidateDay()
     }
 
@@ -139,52 +132,43 @@ constructor(
     }
 
     protected open fun processChangeEventInCalendarStatusRequest(request: Completable) {
-        compositeDisposable += ReactiveNetwork.checkInternetConnectivity()
-                .flatMapCompletable {
-                    if (it) request
-                    else Completable.error(NO_NETWORK_CONNECTION_ERROR)
-                }
+        compositeDisposable += request
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    invalidateDay()
-                }, {
-                    //                    if (it == NO_NETWORK_CONNECTION_ERROR) viewState.showNoInternetDialog()
-                })
+                .subscribeSimple { invalidateDay() }
 
     }
 
     override fun onSubEventClick(subEvent: SubEvent) {
-        compositeDisposable += ReactiveNetwork.checkInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    if (it) {
-                        viewState.showSubEvent(event.id, subEvent.id)
-                    } else {
-//                        viewState.showNoInternetDialog()
-                    }
-                }, {})
+        checkInternetAndRun {
+            viewState.showSubEvent(userEvent.eventInfo.event.name, userEvent.eventId, subEvent.id)
+        }
     }
 
     override fun onAddToScheduleClick(subEvent: SubEvent) {
         processChangeEventInCalendarStatusRequest(
-                eventRepository.addEventToCalendar(event.id, subEvent.id)
+                eventRepository.addEventToCalendar(userEvent.eventId, subEvent.id)
                         .andThen(Completable.fromAction { subEvent.isInCalendar = true })
         )
     }
 
     override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
         processChangeEventInCalendarStatusRequest(
-                eventRepository.removeEventFromCalendar(event.id, subEvent.id)
+                eventRepository.removeEventFromCalendar(userEvent.eventId, subEvent.id)
                         .andThen(Completable.fromAction { subEvent.isInCalendar = false })
         )
     }
 
-    abstract fun filterSubEvent(subEvent: SubEvent): Boolean
-
-    companion object {
-
-        private val NO_NETWORK_CONNECTION_ERROR = Throwable("No network connection")
+    override fun onShowAllTagsClick() {
+        viewState.showAllTags()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userEventData.removeOnDataUpdateListener(this)
+    }
+
+    abstract fun filterSubEvent(subEvent: SubEvent): Boolean
+    abstract fun mustFilterTags(): Boolean
 }

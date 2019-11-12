@@ -118,8 +118,11 @@ fun TextView.calculateTextLinesCount(text: String): Int {
     return (textWidth / width).roundToInt()
 }
 
-val TextView.maxLength: Int
+var TextView.maxLength: Int
     get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
+    set(value) {
+        filters = arrayOf(InputFilter.LengthFilter(value))
+    }
 
 fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
     val statusTextRes: Int

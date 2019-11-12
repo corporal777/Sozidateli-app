@@ -1,34 +1,52 @@
 package com.example.ui.event.list
 
 import com.example.data.models.Event
+import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationList
+import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import java.net.UnknownHostException
 
-abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>(), EventListContract.Presenter {
+abstract class EventListPresenter<V : EventListContract.View>(
+        @Connectivity private val connectivity: Observable<Boolean>
+) : BasePresenter<V>(), EventListContract.Presenter {
 
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    protected abstract val pagination: PaginationDataSourceFactory<Event>
-    private lateinit var paginationList: PaginationList<out Event?>
+    private val pagination: PaginationDataSourceFactory<Event?> = PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<Event?>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
         paginationList = pagination.applyErrorHandler {
-            it.printStackTrace()
+            if (it.cause is UnknownHostException)
+                hasNoConnectionError = true
         }
                 .buildList(enablePlaceholders = true)
 
         compositeDisposable += Observable.create(paginationList)
                 .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.apply { setData(it) } }, { it.printStackTrace() })
+                .subscribeSimple {
+                    viewState.setData(it)
+                }
+
+        compositeDisposable += connectivity
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    if (hasNoConnectionError && it) {
+                        hasNoConnectionError = false
+                        paginationList.invalidate()
+                    }
+                }
     }
 
     override fun attachView(view: V?) {
@@ -50,4 +68,6 @@ abstract class EventListPresenter<V : EventListContract.View> : BasePresenter<V>
     override fun onItemTake(position: Int) {
         paginationList.onItemTake(position)
     }
+
+    protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
 }

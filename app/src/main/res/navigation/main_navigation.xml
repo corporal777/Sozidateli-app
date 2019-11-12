@@ -206,11 +206,14 @@
         android:id="@+id/subevent_fragment"
         android:name="com.example.ui.subevent.SubeventFragment">
         <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
             android:name="eventId"
-            app:argType="integer" />
+            app:argType="string" />
         <argument
             android:name="subeventId"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -218,10 +221,10 @@
         android:name="com.example.ui.subevent.users.SubeventUserListFragment">
         <argument
             android:name="eventId"
-            app:argType="integer" />
+            app:argType="string" />
         <argument
             android:name="subeventId"
-            app:argType="integer" />
+            app:argType="string" />
 
         <action
             android:id="@+id/subevent_user_list_fragment_to_chat"
@@ -599,4 +602,8 @@
             app:argType="com.example.data.models.Place[]"
             app:nullable="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/event_tags_fragment"
+        android:name="com.example.ui.tags.TagsFragment" />
 </navigation>

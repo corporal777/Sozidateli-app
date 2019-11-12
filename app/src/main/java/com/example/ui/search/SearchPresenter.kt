@@ -13,9 +13,9 @@ import performOnBackgroundOutOnMain
 
 abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter> : BasePresenter<V>(), SearchContract.Presenter<I> {
 
-    private lateinit var paginationList: PaginationList<I>
+    private lateinit var paginationList: PaginationList<I?>
     private lateinit var searchInterface: SearchInterface
-    protected abstract val pagination: PaginationDataSourceFactory<I>
+    protected abstract val pagination: PaginationDataSourceFactory<I?>
     protected lateinit var searchText: String
     protected lateinit var filter: F
     protected lateinit var tmpFilter: F

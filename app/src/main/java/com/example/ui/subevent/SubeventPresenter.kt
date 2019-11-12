@@ -16,22 +16,26 @@ class SubeventPresenter @Inject constructor(
         private val userRepository: UserRepository
 ) : BasePresenter<SubeventContract.View>(), SubeventContract.Presenter {
 
-    var event: Int = ID_INVALID
-    var subevent: Int = ID_INVALID
+    lateinit var event: String
+    lateinit var subevent: String
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    private var firstLoading = true
+
+    override fun attachView(view: SubeventContract.View?) {
+        super.attachView(view)
         val eventId = event
         val subeventId = subevent
-        if (eventId == ID_INVALID || subeventId == ID_INVALID) throw IllegalArgumentException("Invalid id: event: $eventId, subeventId: $subeventId")
         compositeDisposable += eventRepository.getSubevent(eventId, subeventId)
-                .withLoadingDialog(viewState)
+                .let {
+                    if (firstLoading) it.withLoadingDialog(viewState)
+                    else it
+                }
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.setData(it)
-                }, {
-
-                })
+                .subscribeSimple {
+                    if (firstLoading) viewState.setData(it)
+                    firstLoading = false
+                    viewState.setSpeakers(it.speakers)
+                }
     }
 
     override fun onSpeakerClick(speaker: Speaker) {
@@ -39,23 +43,17 @@ class SubeventPresenter @Inject constructor(
     }
 
     override fun onSpeakerChangeSubscriptionClick(speaker: Speaker) {
-//        val id = speaker.id.toString()
-//        compositeDisposable += (if (speaker.isInFavorite) userRepository.removeFromFavorite(id)
-//        else userRepository.addToFavorite(id))
-//                .performOnBackgroundOutOnMain()
-//                .withLoadingDialog(viewState)
-//                .subscribe({
-//                    viewState.updateSpeaker(speaker.apply { isInFavorite = !isInFavorite })
-//                }, {
-//                    it.printStackTrace()
-//                })
-    }
+        val id = speaker.user.user_id.toString()
+        val request = if (!speaker.user.is_in_favorite) userRepository.addToFavorite(id)
+        else userRepository.removeFromFavorite(id)
 
-    override fun onOpenUserListClick() {
-        viewState.openUserList(event, subevent)
-    }
-
-    companion object {
-        private const val ID_INVALID = -1
+        compositeDisposable += request.performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple({
+                    viewState.showRequestErrorMessage()
+                }) {
+                    speaker.user.is_in_favorite = !speaker.user.is_in_favorite
+                    viewState.updateSpeaker(speaker)
+                }
     }
 }

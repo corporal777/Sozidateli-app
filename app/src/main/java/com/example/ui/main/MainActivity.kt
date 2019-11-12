@@ -263,7 +263,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().apply {
             graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .setPopUpTo(R.id.splash_fragment, true)
                     .build()
             navigate(R.id.event_tabs_fragment, null, opts)
         }

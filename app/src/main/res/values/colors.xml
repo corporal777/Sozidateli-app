@@ -54,6 +54,7 @@
     <color name="event_status_wait_confirmation_background">@color/colorAccent</color>
     <color name="event_status_finished_text">#A7A9AC</color>
     <color name="event_status_finished_background">#E4E4E4</color>
+    <color name="event_calendar_day_background">#7D9D57</color>
 
     <color name="auth_fb_color">#4968ac</color>
     <color name="auth_vk_color">#5376a3</color>
@@ -74,11 +75,11 @@
 
     <color name="search_edit_text_bg">#f8f8f8</color>
 
-    <color name="tag_selected_background">#404041</color>
+    <color name="tag_selected_background">#9096A0</color>
     <color name="tag_background">#00404041</color>
     <color name="tag_selected_text">#FFFFFF</color>
-    <color name="tag_text">#000000</color>
-    <color name="tag_border">#000000</color>
+    <color name="tag_text">#939598</color>
+    <color name="tag_border">#939598</color>
 
     <color name="tab_text">#E6000000</color>
     <color name="tab_text_selected">@color/colorAccent</color>

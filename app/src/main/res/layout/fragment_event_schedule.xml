@@ -43,18 +43,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView">
 
-        <ImageView
-            android:id="@+id/ivFace"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:src="@drawable/ic_neutral_face"
-            app:layout_constraintBottom_toTopOf="@+id/tvMessage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:ignore="ContentDescription" />
-
         <!--suppress AndroidUnknownAttribute -->
         <TextView
             android:id="@+id/tvMessage"
@@ -71,7 +59,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivFace"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix"
             tools:text="У вас нет событий  добавьте их из списка " />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -214,25 +214,24 @@ interface Api {
     @GET("/v1/events/{eventId}")
     fun getEventInfo(@Path("eventId") eventId: String): Maybe<ApiResponse<EventInfo>>
 
-    @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity")
-    fun getEventActivity(@Path("eventId") eventId: String, @Field("limit") limit: String = "all"): Maybe<ApiResponse<List<SubEvent>>>
+    fun getEventActivity(@Path("eventId") eventId: String): Maybe<ApiResponse<EventActivity>>
+
+    @GET("/v1/events/{eventId}/activity/{subEventId}")
+    fun getSubEvent(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Single<ApiResponse<SubeventInfo>>
 
     @POST("v1/user/set_default_event/{eventId}")
     fun setDefaultEvent(@Path("eventId") eventId: String): Completable
 
-    @GET("/v1/events/{eventId}/activity/{subEventId}")
-    fun getSubEvent(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int): Single<ApiResponse<SubeventInfo>>
-
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity/{subEventId}/contacts")
-    fun getSubEventUsers(@Path("eventId") eventId: Int, @Path("subEventId") subEventId: Int, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
+    fun getSubEventUsers(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
-    fun addSubEventToCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: Int): Completable
+    fun addSubEventToCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Completable
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
-    fun removeSubEventFromCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: Int): Completable
+    fun removeSubEventFromCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Completable
 
     @POST("/v1/events/{eventId}/partners")
     fun getPartnerListByEvent(@Path("eventId") eventId: String): Single<ApiResponse<List<Partner>>>
@@ -240,7 +239,7 @@ interface Api {
     @GET("/v1/events/{eventId}/partners/{partnerId}")
     fun getPartnerById(@Path("eventId") eventId: String, @Path("partnerId") partnerId: String): Single<ApiResponse<Partner>>
 
-    @GET("/v1/events/categories")
+    @GET("/v1/events/groups")
     fun getCategoriesList(): Single<ApiResponse<List<EventGroup>>>
 
     @FormUrlEncoded

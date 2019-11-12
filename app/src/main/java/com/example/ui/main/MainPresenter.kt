@@ -13,7 +13,10 @@ import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.*
+import com.example.util.ACTION_REQUEST_COUNT
+import com.example.util.AuthBackground
+import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
+import com.example.util.ChatHelper
 import fromJson
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
@@ -120,12 +123,9 @@ class MainPresenter
 
     private fun checkUserEvent(isGreetingShown: Boolean): Maybe<Int> {
         return appData.getUser().default_event?.let { event ->
-            UserEventLoadingHelper(userEventData, eventRepository, db.userEventDao()).load(event)
-                    .doOnSuccess { if (it) userEventData.event = event }
-                    .flatMap {
-                        if (it) Maybe.just(if (isGreetingShown) SHOW_USER_EVENT_AFTER_GREETINGS else SHOW_USER_EVENT)
-                        else Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
-                    }
+            userEventData.load(event.id)
+                    .andThen(Maybe.just(if (isGreetingShown) SHOW_USER_EVENT_AFTER_GREETINGS else SHOW_USER_EVENT))
+                    .onErrorReturn { if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST }
         } ?: Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
     }
 

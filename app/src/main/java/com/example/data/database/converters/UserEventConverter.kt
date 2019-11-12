@@ -1,6 +1,7 @@
 package com.example.data.database.converters
 
 import androidx.room.TypeConverter
+import com.example.data.models.EventActivity
 import com.example.data.models.EventInfo
 import com.example.data.models.SubEvent
 import com.google.gson.reflect.TypeToken
@@ -14,8 +15,8 @@ class UserEventConverter : Converter() {
     fun jsonStringToEventInfo(json: String?): EventInfo? = fromJson(json, TypeToken.get(EventInfo::class.java).type)
 
     @TypeConverter
-    fun subEventsToStringJson(value: List<SubEvent>?): String? = toJson(value, object : TypeToken<List<SubEvent>?>() {}.type)
+    fun eventActivityToJson(value: EventActivity?): String? = toJson(value, TypeToken.get(EventActivity::class.java).type)
 
     @TypeConverter
-    fun jsonStringToSubEvents(json: String?): List<SubEvent>? = fromJsonList(json, object : TypeToken<List<SubEvent>?>() {}.type)
+    fun jsonStringToEventActivity(json: String?): EventActivity? = fromJson(json, TypeToken.get(EventActivity::class.java).type)
 }

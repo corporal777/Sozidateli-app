@@ -19,13 +19,12 @@ class SubeventUserListPresenter @Inject constructor(
         private val chatRepository: ChatRepository
 ) : BasePresenter<SubeventUserListContract.View>(), SubeventUserListContract.Presenter {
 
-    var event: Int = ID_INVALID
-    var subevent: Int = ID_INVALID
+    lateinit var event: String
+    lateinit var subevent: String
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         val eventId = event
         val subeventId = subevent
-        if (eventId == ID_INVALID || subeventId == ID_INVALID) throw IllegalArgumentException("Invalid id: event: $eventId, subeventId: $subeventId")
         eventRepository.getSubeventUsers(eventId, subeventId, limit, offset)
     }.map { UserItem(it.user_id, it.fullName, it.user_avatar, { onUserClick(it) }) }
 
@@ -52,9 +51,5 @@ class SubeventUserListPresenter @Inject constructor(
                 .subscribe({
                     viewState.openChat(user.fullName, user.user_avatar, it.chat_id.toString())
                 }, { it.printStackTrace() })
-    }
-
-    companion object {
-        private const val ID_INVALID = -1
     }
 }

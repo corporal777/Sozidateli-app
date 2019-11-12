@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
@@ -16,6 +17,7 @@ import com.example.holders.DayHeaderItem
 import com.example.holders.SubEventItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -66,19 +68,21 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
 
     override fun setTags(tags: List<Tag>?) {
         if (tags == null || tags.isEmpty()) tagsSection.update(emptyList())
-        else tagsSection.update(listOf(TagsHorizontalListItem(tags) {
-            presenter.onTagSelectedListChange(it)
-        }))
+        else tagsSection.update(listOf(TagsHorizontalListItem(tags, {
+            presenter.onTagSelectedListChange()
+        }, {
+            presenter.onShowAllTagsClick()
+        })))
     }
 
     override fun setDays(days: List<EventScheduleCalendarDay>?) {
-        if (days == null) {
+        calendarItem = if (days == null) {
             calendarSection.update(emptyList())
-            calendarItem = null
+            null
         } else {
             val item = CalendarHorizontalListItem(days) { presenter.onDaySelected(it) }
             calendarSection.update(listOf(item))
-            calendarItem = item
+            item
         }
     }
 
@@ -98,16 +102,16 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
 
     override fun showEmptyEventPlaceholder() {
         tvMessage.text = getString(R.string.schedule_empty_event_placeholder)
-        placeholder.visibility = View.VISIBLE
+        placeholder.visibility = VISIBLE
     }
 
     override fun showEmptyDayPlaceholder() {
         tvMessage.text = getEmptyDayPlaceholderText()
-        placeholder.visibility = View.VISIBLE
+        placeholder.visibility = VISIBLE
     }
 
     override fun hidePlaceholder() {
-        placeholder.visibility = View.GONE
+        placeholder.visibility = GONE
     }
 
     override fun showCurrentDay(day: EventScheduleCalendarDay) {
@@ -118,9 +122,13 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         daySection.update(emptyList())
     }
 
-    override fun showSubEvent(eventId: String, subEventId: Int) {
-//        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-//        findParentNavigation().navigate(R.id.subevent_fragment, args)
+    override fun showSubEvent(title: String, eventId: String, subEventId: String) {
+        val args = SubeventFragmentArgs.Builder(title, eventId, subEventId).build().toBundle()
+        findNavController().navigate(R.id.subevent_fragment, args)
+    }
+
+    override fun showAllTags() {
+        findNavController().navigate(R.id.event_tags_fragment)
     }
 
     override fun showDataFormCacheMessage(cacheDate: String) {

@@ -2,7 +2,6 @@ package com.example.ui.event.schedule.my
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
-import com.example.data.database.Db
 import com.example.data.models.SubEvent
 import com.example.di.Connectivity
 import com.example.events.OnDayChangeFromCompleteSchedule
@@ -20,10 +19,8 @@ import javax.inject.Inject
 class EventMySchedulePresenter
 @Inject constructor(
         eventRepository: EventRepository,
-        userEventData: UserEventData,
-        db: Db,
-        @Connectivity connectivity: Observable<Boolean>
-) : EventSchedulePresenter(eventRepository, userEventData, db, connectivity) {
+        userEventData: UserEventData
+) : EventSchedulePresenter(eventRepository, userEventData) {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -31,6 +28,8 @@ class EventMySchedulePresenter
     }
 
     override fun filterSubEvent(subEvent: SubEvent): Boolean = subEvent.isInCalendar
+
+    override fun mustFilterTags() = false
 
     override fun processChangeEventInCalendarStatusRequest(request: Completable) {
         super.processChangeEventInCalendarStatusRequest(request.doFinally {

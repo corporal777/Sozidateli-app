@@ -11,8 +11,9 @@ import com.example.data.models.SubeventInfo
 import com.example.holders.SpeakerItem
 import com.example.holders.SpeakersListHeaderItem
 import com.example.holders.SubeventInfoItem
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.subevent.users.SubeventUserListFragmentArgs
+import com.example.ui.user.UserFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -20,7 +21,10 @@ import kotlinx.android.synthetic.main.fragment_subevent.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SubeventFragment : BaseFragment(), SubeventContract.View {
+class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment {
+
+    override val title: CharSequence
+        get() = SubeventFragmentArgs.fromBundle(arguments!!).title
 
     @InjectPresenter
     lateinit var presenter: SubeventPresenter
@@ -50,31 +54,23 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
     }
 
     override fun setData(subEvent: SubeventInfo) {
-        infoSection.update(listOf(SubeventInfoItem(subEvent) {
-            presenter.onOpenUserListClick()
-        }))
+        infoSection.update(listOf(SubeventInfoItem(subEvent)))
+    }
 
+    override fun setSpeakers(speakers: List<Speaker>) {
         speakersSection.apply {
-            if (subEvent.speakers.isEmpty()) {
-                removeHeader()
+            if (speakers.isEmpty()) {
                 update(emptyList())
             } else {
-                setHeader(SpeakersListHeaderItem())
-                update(subEvent.speakers.map { speaker ->
+                update(listOf(SpeakersListHeaderItem()).plus(speakers.map { speaker ->
                     SpeakerItem(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
-                })
+                }))
             }
         }
     }
 
     override fun showSpeakerProfile(speaker: Speaker) {
-//        val args = SpeakerFragmentArgs.Builder(speaker).build().toBundle()
-//        findParentNavigation().navigate(R.id.speaker_fragment, args)
-    }
-
-    override fun openUserList(eventId: Int, subEventId: Int) {
-        val args = SubeventUserListFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-        findNavController().navigate(R.id.subevent_user_list_fragment, args)
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.uid).build().toBundle())
     }
 
     override fun updateSpeaker(speaker: Speaker) {

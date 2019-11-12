@@ -12,8 +12,8 @@ import com.example.extensions.formatToInterval
 import com.example.ui.views.TagChip
 import com.example.util.weak
 import com.google.android.material.chip.Chip
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_sub_event.*
 
 open class SubEventItem(
@@ -27,26 +27,24 @@ open class SubEventItem(
 
     private val clickListener by weak(clickListener)
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvTime.text = subEvent.start.formatToInterval(subEvent.finish, defaultServerDateTimeFormatter, true)
             tvStatus.text = subEvent.title
-
-            val visibilityIsSpeaker: Int = if (subEvent.isSpeaker) View.VISIBLE else View.GONE
-            tvIsSpeaker.visibility = visibilityIsSpeaker
-            ivStar.visibility = visibilityIsSpeaker
 
             btnAdd.apply {
                 if (subEvent.isInCalendar) {
                     setBackgroundResource(R.drawable.background_corners_border)
                     setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    text = context.getString(R.string.remove)
+                    text = context.getString(R.string.sub_event_remove_from_schedule)
                     isAllCaps = false
+                    setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                 } else {
                     setBackgroundResource(R.drawable.background_corners)
                     setTextColor(Color.WHITE)
                     text = context.getString(R.string.sub_event_add_to_schedule)
                     isAllCaps = true
+                    setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_plus, 0, 0, 0)
                 }
 
                 setOnClickListener {
@@ -62,17 +60,17 @@ open class SubEventItem(
             tagGroup.apply {
                 val createChip: (Tag) -> Chip = {
                     TagChip(context).apply {
-                        text = it.getTagName()
+                        text = it.name
                         isCheckable = true
-                        isChecked = selectedTags.contains(it)
+                        isChecked = selectedTags.any { selectedTag -> selectedTag.id == it.id }
                         isClickable = false
                         isEnabled = false
                     }
                 }
 
                 removeAllViews()
-                val categories = subEvent.categories
-                val tags = subEvent.tags
+                val categories = subEvent.groups
+                val tags = subEvent.groups.plus(subEvent.tags)
                 categories.forEach { addView(createChip(it)) }
                 tags.forEach { addView(createChip(it)) }
             }

@@ -4,7 +4,7 @@ import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
-class SpeakersListHeaderItem : Item() {
+class SpeakersListHeaderItem : Item(-100L) {
     override fun bind(viewHolder:GroupieViewHolder, position: Int) {
 
     }

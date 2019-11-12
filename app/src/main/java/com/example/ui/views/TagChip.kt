@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.extensions.dp
+import com.example.extensions.sp
 import com.google.android.material.chip.Chip
 
 class TagChip : Chip {
@@ -22,6 +23,7 @@ class TagChip : Chip {
         setChipStrokeColorResource(R.color.tag_border)
         chipStrokeWidth = 1f.dp
         checkedIcon = null
+        textSize = 15f
         super.setOnCheckedChangeListener { _, _ ->
             processCheckedState()
             checkedChangeListener?.onCheckedChanged(this, isChecked)

@@ -197,6 +197,7 @@
 
     <string name="sub_event_register_users">Регистрация участников форума</string>
     <string name="sub_event_add_to_schedule">Добавить в расписание</string>
+    <string name="sub_event_remove_from_schedule">Удалить из расписания</string>
 
     <string name="event_map_tab_how_to_get">Как добраться</string>
     <string name="event_map_tab_building_scheme">Схема комплекса</string>
@@ -433,9 +434,11 @@
     <string name="select_file_error">Возможно файл не существует или вы выбрали его из облака. Для загрузки используйте файлы хранящиеся на устройстве.</string>
 
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
-    <string name="schedule_my_empty_day_placeholder">У вас нет событий добавьте их из списка</string>
+    <string name="schedule_my_empty_day_placeholder">У вас еще нет событий. Добавьте к себе в расписание из списка.</string>
     <string name="schedule_complete_empty_day_placeholder">В этот день нет событий</string>
     <string name="schedule_cache_data">Отсутствует связь с сервером. Показаны данные актуальные на %s</string>
+    <string name="schedule_search_by_tags">Поиск по тегам</string>
+    <string name="schedule_show_all_tags">Смотреть все</string>
 
     <string name="auth_sn_set_email_title">Установите email</string>
 
@@ -456,7 +459,7 @@
     <string name="invalid_phone_number_error">Введите правильный номер</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
 
-    <string name="no_internet_error_message">Hет подключение к интернету</string>
+    <string name="no_internet_error_message">Hет подключения к интернету</string>
     <string name="unread_message">Непрочитанные сообщения</string>
 
     <string name="banned_empty_message">Никого нет</string>

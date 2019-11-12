@@ -20,11 +20,11 @@ class EventRepositoryImp
         appData: AppData
 ) : ApiRepository(appData), EventRepository {
 
-    override fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>?): Maybe<PaginationResponse<Event>> {
+    override fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>?): Maybe<PaginationResponse<Event?>> {
         return callPagination(api.getEventList(limit, offset, filter))
     }
 
-    override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event>> {
+    override fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
         return callPagination(api.getEventRecommendations(limit, offset))
     }
 
@@ -44,7 +44,7 @@ class EventRepositoryImp
         return call(api.getEventRegister(eventId))
     }
 
-    override fun getEventActivity(eventId: String): Maybe<List<SubEvent>> {
+    override fun getEventActivity(eventId: String): Maybe<EventActivity> {
         return call(api.getEventActivity(eventId))
     }
 
@@ -56,11 +56,11 @@ class EventRepositoryImp
         return call(api.setDefaultEvent(eventId))
     }
 
-    override fun addEventToCalendar(eventId: String, subEventId: Int): Completable {
+    override fun addEventToCalendar(eventId: String, subEventId: String): Completable {
         return call(api.addSubEventToCalendar(eventId, subEventId))
     }
 
-    override fun removeEventFromCalendar(eventId: String, subEventId: Int): Completable {
+    override fun removeEventFromCalendar(eventId: String, subEventId: String): Completable {
         return call(api.removeSubEventFromCalendar(eventId, subEventId))
     }
 
@@ -72,11 +72,11 @@ class EventRepositoryImp
         return call(api.getPartnerById(eventId, partnerId))
     }
 
-    override fun getSubevent(eventId: Int, subEventId: Int): Single<SubeventInfo> {
+    override fun getSubevent(eventId: String, subEventId: String): Single<SubeventInfo> {
         return call(api.getSubEvent(eventId, subEventId))
     }
 
-    override fun getSubeventUsers(eventId: Int, subEventId: Int, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+    override fun getSubeventUsers(eventId: String, subEventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.getSubEventUsers(eventId, subEventId, limit, offset))
     }
 

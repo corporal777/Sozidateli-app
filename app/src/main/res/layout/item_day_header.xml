@@ -7,16 +7,15 @@
     android:background="@color/main_background"
     android:orientation="vertical">
 
-    <!--suppress AndroidUnknownAttribute -->
     <TextView
         android:id="@+id/tvDate"
-        fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="8dp"
+        android:textAllCaps="false"
         android:textColor="@color/text_color_calendar_day"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"

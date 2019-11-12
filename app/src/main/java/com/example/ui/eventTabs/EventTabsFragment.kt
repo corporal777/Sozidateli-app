@@ -4,17 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.get
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.MapInfo
+import com.example.data.models.Place
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.location.EventLocationFragment
+import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.views.accountView.AccountView
@@ -73,7 +74,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     override fun showAboutTab(eventId: String) = selectTab(R.id.about_event, AboutEventFragmentArgs.Builder(eventId).build().toBundle())
 
-    override fun showMapTab() = selectTab(R.id.event_location)
+    override fun showMapTab(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) = selectTab(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
 
     private fun selectTab(tabId: Int, args: Bundle? = null) {
         val fragmentTag = generateFragmentTag(tabId)
@@ -106,10 +107,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             R.id.about_event -> AboutEventFragment()
             R.id.event_location -> EventLocationFragment()
             else -> throw IllegalArgumentException("No fragment fo tab $tabId")
-        }
-
-        findNavController().apply {
-            val fragmentNavigator = navigatorProvider.get<FragmentNavigator>("fragment")
         }
 
         args?.let { fragment.arguments = it }
