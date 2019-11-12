@@ -63,12 +63,12 @@
     <dimen name="event_registration_file_margin_bottom">12dp</dimen>
 
     <dimen name="event_item_margin_bottom">16dp</dimen>
-    <dimen name="event_item_height">262dp</dimen>
+    <dimen name="event_item_height">292dp</dimen>
     <dimen name="event_item_content_margin_top">12dp</dimen>
     <dimen name="event_item_organization_name_margin_top">21dp</dimen>
-    <dimen name="event_item_organization_name_text_size">13sp</dimen>
-    <dimen name="event_item_date_text_size">17sp</dimen>
-    <dimen name="event_item_event_name_text_size">17sp</dimen>
+    <dimen name="event_item_type_text_size">12sp</dimen>
+    <dimen name="event_item_date_text_size">14sp</dimen>
+    <dimen name="event_item_event_name_text_size">16sp</dimen>
 
     <dimen name="organization_item_logo_size">82dp</dimen>
 

@@ -132,12 +132,14 @@
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/tvAgreeError"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sceneRoot"
             app:layout_constraintVertical_bias="1.0"
-            app:layout_constraintVertical_chainStyle="packed">
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:visibility="visible">
 
             <FrameLayout
                 android:id="@+id/flAgree"

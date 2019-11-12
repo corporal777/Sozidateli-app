@@ -7,14 +7,16 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
-import com.example.extensions.dateFormatterShortMothShortYear
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.formatToInterval
 import com.example.extensions.parseAndFormat
+import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event.*
+import parseColor
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EventItem(
         private val event: Event,
@@ -35,25 +37,22 @@ class EventItem(
             }
 
             ivBackground.apply {
-                Picasso.get().load(event.logo).placeholder(R.mipmap.ic_launcher_background).into(this)
-                setColorFilter(ResourcesCompat.getColor(resources, R.color.auth_background_overlay, null), PorterDuff.Mode.DARKEN)
+                val overlay = ResourcesCompat.getColor(resources, R.color.auth_background_overlay, null)
+                val color = event.backgroundColor.parseColor() ?: overlay
+                setBackgroundColor(color)
+                Picasso.get().load(event.logo).into(this)
+                setColorFilter(overlay, PorterDuff.Mode.DARKEN)
             }
 
-            tvOrganizationLabel.apply {
-                text = event.organization?.name
+            tvEventAddress.apply {
+                text = event.address
             }
             tvEventLabel.text = event.name
             tvEventDate.apply {
                 val start = event.conferenceStart
-                val finish = event.conferenceFinish
-
-                val parser = defaultServerDateFormatter
-                val formatter = dateFormatterShortMothShortYear
-                text = if (start != null && finish != null) {
-                    event.conferenceStart?.formatToInterval(event.conferenceFinish)
-                } else {
-                    start?.parseAndFormat(parser, formatter)
-                }
+                val formatted = start?.parseAndFormat(defaultServerDateFormatter, SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault()))
+                val date = "$formatted г."
+                text = date
             }
 
             tvEventType.apply {

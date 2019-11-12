@@ -3,6 +3,7 @@ import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -335,4 +336,14 @@ fun <E> SparseArray<E>.getOrPut(key: Int, put: () -> E): E {
     }
 
     return value
+}
+
+fun String?.parseColor(): Int? {
+    if (this == null) return null
+
+    return try {
+        Color.parseColor(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 }

@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.clearSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Scene
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -20,15 +21,9 @@ import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.ui.snAuth.SnType
 import com.example.util.ClickableSpan
-import kotlinx.android.synthetic.main.fragment_register_email.*
-import kotlinx.android.synthetic.main.fragment_register_email.cbAgree
-import kotlinx.android.synthetic.main.fragment_register_email.flAgree
-import kotlinx.android.synthetic.main.fragment_register_email.ibRegister
-import kotlinx.android.synthetic.main.fragment_register_email.ivClose
-import kotlinx.android.synthetic.main.fragment_register_email.tvAgree
-import kotlinx.android.synthetic.main.fragment_register_email.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_register_sn.*
 import kotlinx.android.synthetic.main.scene_register_sn_email.view.*
+import kotlinx.android.synthetic.main.scene_register_sn_password.*
 import kotlinx.android.synthetic.main.scene_register_sn_password.view.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
@@ -136,6 +131,8 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
 
             enter()
         }
+
+        llAgree.isVisible = true
     }
 
     override fun showPasswordError(show: Boolean) {

@@ -29,25 +29,41 @@
             tools:ignore="ContentDescription" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvOrganizationLabel"
-            fontPath="fonts/Roboto-Bold.ttf"
+            android:id="@+id/tvEventType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:textColor="@color/event_item_text"
-            android:textSize="@dimen/event_item_organization_name_text_size"
+            android:textSize="@dimen/event_item_type_text_size"
             android:transitionName="organizationLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix"
-            tools:text="Фонд Росконгресс" />
+            tools:text="Акселерационная программа" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventLabel"
+            fontPath="fonts/Roboto-Bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="@dimen/event_item_content_margin_top"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="@color/event_item_text"
+            android:textSize="@dimen/event_item_event_name_text_size"
+            android:transitionName="eventLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventType"
+            tools:text="Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. " />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvEventDate"
-            fontPath="fonts/Roboto-Light.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -58,45 +74,27 @@
             android:transitionName="eventDate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvOrganizationLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventLabel"
             tools:ignore="MissingPrefix"
-            tools:text="5.02.19 - 30.06.19" />
+            tools:text="25 марта 2019 г." />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvEventType"
-            fontPath="fonts/Roboto-Bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="@dimen/event_item_content_margin_top"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/event_item_text"
-            android:textSize="@dimen/event_item_event_name_text_size"
-            android:transitionName="eventLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventDate"
-            tools:text="Круглый стол" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvEventLabel"
+            android:id="@+id/tvEventAddress"
             fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginTop="@dimen/event_item_content_margin_top"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/event_item_text"
-            android:textSize="@dimen/event_item_event_name_text_size"
-            android:transitionName="eventLabel"
+            android:textSize="@dimen/event_item_date_text_size"
+            android:transitionName="eventDate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventType"
-            tools:text="Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. " />
+            app:layout_constraintTop_toBottomOf="@+id/tvEventDate"
+            tools:ignore="MissingPrefix"
+            tools:text="г. Тула, Нижнекамский район, 13-километр, порт Новоселовск, 14-А/23" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnGoToEvent"

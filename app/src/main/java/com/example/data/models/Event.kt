@@ -13,8 +13,11 @@ data class Event(
         @SerializedName("organization_id")
         val organizationId: String?,
         val organization: Organization?,
+        val address: String?,
         val name: String,
         val logo: String?,
+        @SerializedName("bg_color")
+        val backgroundColor: String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")

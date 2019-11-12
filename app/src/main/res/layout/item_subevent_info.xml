@@ -67,7 +67,7 @@
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
-        android:drawableStart="@drawable/ic_location"
+        android:drawableStart="@drawable/ic_location_dark"
         android:drawablePadding="10dp"
         android:textAllCaps="true"
         android:textColor="@color/text_title"

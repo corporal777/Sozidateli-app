@@ -22,7 +22,7 @@
             <View
                 android:id="@+id/tvOrganizationLabel"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/event_item_organization_name_text_size"
+                android:layout_height="@dimen/event_item_type_text_size"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
                 android:background="@color/placeholder"
