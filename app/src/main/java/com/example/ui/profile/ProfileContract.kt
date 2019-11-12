@@ -36,6 +36,12 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBanned()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun openSupportEmail(uid: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun openPlayMarket()
     }
 
     interface Presenter : BaseContract.Presenter {

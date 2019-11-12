@@ -1,7 +1,10 @@
 package com.example.ui.profile
 
+import android.content.Intent
+import android.content.Intent.*
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.ColorRes
@@ -14,6 +17,7 @@ import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.user.User
 import com.example.interfaces.ToolbarFragment
@@ -24,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     override val title: CharSequence
@@ -137,6 +142,35 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun showNotifications() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToNotificationsFragment())
+    }
+
+    override fun openSupportEmail(uid: String) {
+        val intent = Intent(ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
+        intent.putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
+        intent.putExtra(EXTRA_TEXT, buildEmailText(uid))
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    private fun buildEmailText(uid: String): String {
+        val os = "os: Android ${android.os.Build.VERSION.SDK_INT}"
+        val appVersion = "app version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
+        val userId = "user id: $uid"
+        val dividers = "---------------"
+        return listOf(dividers, os, appVersion, userId).joinToString(separator = "\n", prefix = "\n\n\n")
+    }
+
+    override fun openPlayMarket() {
+        val appPackageName = requireContext().packageName
+        try {
+            startActivity(Intent(ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+        } catch (e: android.content.ActivityNotFoundException) {
+            startActivity(Intent(ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+        }
+
     }
 
     override fun layout() = R.layout.fragment_profile

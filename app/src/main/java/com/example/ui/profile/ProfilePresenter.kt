@@ -59,11 +59,11 @@ class ProfilePresenter
     override fun onBannedClick() = viewState.showBanned()
 
     override fun onSupportClick() {
-        TODO("not implemented")
+        viewState.openSupportEmail(appData.getUser().user_id.toString())
     }
 
     override fun onRateClick() {
-        TODO("not implemented")
+        viewState.openPlayMarket()
     }
 
     override fun onLogoutClick() {

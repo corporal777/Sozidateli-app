@@ -522,4 +522,7 @@
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
     <string name="event_register_sent_message">Теперь вы можете перейти к мероприятию и составить свой календарь событий</string>
     <string name="event_register_sent_button">К мероприятию</string>
+
+    <string name="support_email_title">Запрос тех. поддержки</string>
+    <string name="support_email">support@sozidateli.ru</string>
 </resources>
