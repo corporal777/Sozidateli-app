@@ -22,7 +22,7 @@ class NotificationUtil @Inject constructor(
             groupId: String? = null,
             builder: (NotificationCompat.Builder.() -> Unit)
     ) {
-        val smallIcon = R.mipmap.ic_launcher_round
+        val smallIcon = R.mipmap.ic_launcher
 
         val notificationBuilder = NotificationCompat.Builder(context, channel)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
