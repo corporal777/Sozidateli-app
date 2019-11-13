@@ -129,5 +129,9 @@ class RegisterEmailFragment : BaseFragment(), RegisterEmailContract.View {
         findNavController().navigate(RegisterEmailFragmentDirections.emailRegisterToSnRegister(snUser))
     }
 
+    override fun showUserAgreement() {
+        findNavController().navigate(R.id.agreement_fragment)
+    }
+
     override fun layout() = R.layout.fragment_register_email
 }

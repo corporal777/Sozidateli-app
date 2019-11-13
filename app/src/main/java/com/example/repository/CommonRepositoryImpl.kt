@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.models.Agreement
 import com.example.data.models.Interest
 import io.reactivex.Maybe
 import javax.inject.Inject
@@ -17,5 +18,9 @@ class CommonRepositoryImpl
         return if (cachedInterests.isNullOrEmpty()) call(api.getInterestsList())
                 .doOnSuccess { appData.interests = it }
         else Maybe.just(cachedInterests)
+    }
+
+    override fun getAgreement(): Maybe<Agreement> {
+        return call(api.getUserAgreement())
     }
 }

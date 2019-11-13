@@ -6,17 +6,22 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_user_item">
 
-    <ImageView
-        android:id="@+id/ivOrganizationImage"
-        style="@style/UserItem.Avatar"
-        android:layout_width="82dp"
-        android:layout_height="82dp"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvOrganizationImageName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/background_organization_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivOrganizationImage"
+        app:layout_constraintEnd_toEndOf="@+id/ivOrganizationImage"
+        app:layout_constraintStart_toStartOf="@+id/ivOrganizationImage"
+        app:layout_constraintTop_toTopOf="@+id/ivOrganizationImage"
         tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars" />
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/tvOrganizationName"
@@ -28,6 +33,18 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginBottom="17dp"
         tools:text="@tools:sample/full_names" />
+
+    <ImageView
+        android:id="@+id/ivOrganizationImage"
+        style="@style/UserItem.Avatar"
+        android:layout_width="82dp"
+        android:layout_height="82dp"
+        android:background="@drawable/background_organization_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/avatars" />
 
     <com.example.ui.views.UserSubscribeButton
         android:id="@+id/btnAction"

@@ -1,5 +1,8 @@
 package com.example.holders
 
+import android.content.res.ColorStateList
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
@@ -8,6 +11,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_organization.*
+import parseColor
 
 class OrganizationItem(
         private val organization: Organization,
@@ -27,13 +31,18 @@ class OrganizationItem(
                 } else {
                     false
                 }
+            }
 
+            tvOrganizationImageName.apply {
+                text = organization.name
+                clipToOutline = true
+                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
+                        ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
             ivOrganizationImage.apply {
                 clipToOutline = true
-                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it })
-                        .into(this)
+                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it }).into(this)
             }
         }
     }

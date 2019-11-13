@@ -1,14 +1,16 @@
 package com.example.ui.auth.register.sn
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.snAuth.SnType
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface RegisterSnContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun setUserData(snType: SnType, name: String?, avatar: String?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -17,7 +19,7 @@ interface RegisterSnContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setPassword(password: String?, passwordConfirm: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableContinueButton(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -31,6 +33,9 @@ interface RegisterSnContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAgreementError(show: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUserAgreement()
     }
 
     interface Presenter : BaseAuthContract.Presenter {

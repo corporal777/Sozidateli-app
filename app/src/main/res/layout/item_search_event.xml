@@ -6,6 +6,23 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_user_item">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvImageName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/background_organization_logo"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+        app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+        app:layout_constraintStart_toStartOf="@+id/ivLogo"
+        app:layout_constraintTop_toTopOf="@+id/ivLogo"
+        tools:ignore="ContentDescription"
+        tools:text="@tools:sample/full_names" />
+
     <ImageView
         android:id="@+id/ivLogo"
         style="@style/UserItem.Avatar"

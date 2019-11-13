@@ -339,7 +339,7 @@ fun <E> SparseArray<E>.getOrPut(key: Int, put: () -> E): E {
 }
 
 fun String?.parseColor(): Int? {
-    if (this == null) return null
+    if (this == null || isEmpty()) return null
 
     return try {
         Color.parseColor(this)

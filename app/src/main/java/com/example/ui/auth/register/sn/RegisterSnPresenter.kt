@@ -38,17 +38,25 @@ class RegisterSnPresenter
         }
     }
 
+    override fun attachView(view: RegisterSnContract.View?) {
+        super.attachView(view)
+        return when (step) {
+            STEP_EMAIL -> viewState.setEmail(email)
+            STEP_PASSWORD -> viewState.setPassword(password, passwordConfirm)
+            else -> Unit
+        }
+    }
+
     override fun onClickClose() {
         viewState.navigateUp()
     }
 
     override fun onClickUserAgreement() {
-
+        viewState.showUserAgreement()
     }
 
     override fun onClickContinue() {
         if (!isDataValid()) return
-
         when (step) {
             STEP_EMAIL -> checkEmailRegistered()
             STEP_PASSWORD -> register()

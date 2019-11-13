@@ -10,6 +10,8 @@ data class Organization(
         val logo: String?,
         @SerializedName("bg_image")
         val background: String?,
+        @SerializedName("bg_color")
+        val backgroundColor: String?,
         val name: String,
         @SerializedName("small_description")
         val descriptionShort: String?,
@@ -32,6 +34,6 @@ data class Organization(
         val totalEvents: Int
 ) : Parcelable {
     companion object {
-                const val FIELD_IS_IN_FAVORITE = "is_in_favorite"
+        const val FIELD_IS_IN_FAVORITE = "is_in_favorite"
     }
 }

@@ -1,8 +1,14 @@
 package com.example.ui.partner
 
+import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.Optional
+import com.example.data.models.Partner
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.loadBitmap
+import io.reactivex.Maybe
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -21,14 +27,27 @@ class PartnerPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += eventRepository.getPartnerById(dataEventId, dataPartnerId)
+
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
+                .flatMap {
+                    Maybe.zip(it.logo.loadBitmap(), it.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, PartnerAndImages> { logo, bg ->
+                        PartnerAndImages(it, logo.value, bg.value)
+                    })
+                            .toSingle()
+                }
                 .subscribeSimple {
                     viewState.apply {
-                        setTitle(it.name)
-                        setData(it)
+                        setTitle(it.partner.name)
+                        setData(it.partner, it.logo, it.background)
                     }
                 }
     }
+
+    private class PartnerAndImages(
+            val partner: Partner,
+            val logo: Bitmap?,
+            val background: Bitmap?
+    )
 }

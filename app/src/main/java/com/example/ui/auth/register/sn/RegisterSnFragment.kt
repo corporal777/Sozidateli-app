@@ -119,13 +119,13 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
         Scene.getSceneForLayout(sceneRoot, R.layout.scene_register_sn_password, requireContext()).apply {
             setEnterAction {
                 sceneRoot.etPassword.apply {
-                    setText(password)
                     onTextChanged { text -> text?.toString()?.let { presenter.onChangePasswordText(it) } }
+                    setText(password)
                     requestFocus()
                 }
                 sceneRoot.etPasswordConfirm.apply {
-                    setText(password)
                     onTextChanged { text -> text?.toString()?.let { presenter.onChangePasswordConfirmText(it) } }
+                    setText(passwordConfirm)
                 }
             }
 
@@ -156,6 +156,10 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
 
     override fun showEmailConfirmation(email: String, snUser: SnUser?) {
         findNavController().navigate(RegisterSnFragmentDirections.snRegisterToEmailConfirm(email, null, snUser))
+    }
+
+    override fun showUserAgreement() {
+        findNavController().navigate(R.id.agreement_fragment)
     }
 
     override fun layout() = R.layout.fragment_register_sn

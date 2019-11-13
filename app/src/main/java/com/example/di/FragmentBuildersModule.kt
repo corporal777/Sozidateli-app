@@ -1,6 +1,7 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
+import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
@@ -222,4 +223,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeTagsFragment(): TagsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserAgreementFragment(): UserAgreementFragment
 }

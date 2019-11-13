@@ -36,6 +36,9 @@ interface RegisterEmailContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAgreementError(show: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUserAgreement()
     }
 
     interface Presenter : BaseAuthContract.Presenter {

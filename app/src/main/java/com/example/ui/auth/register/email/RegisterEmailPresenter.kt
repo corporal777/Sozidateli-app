@@ -41,7 +41,7 @@ class RegisterEmailPresenter
     }
 
     override fun onClickUserAgreement() {
-
+        viewState.showUserAgreement()
     }
 
     override fun onClickRegister(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {

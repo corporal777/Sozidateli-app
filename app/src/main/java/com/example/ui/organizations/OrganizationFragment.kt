@@ -1,11 +1,14 @@
 package com.example.ui.organizations
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.ActivityNavigatorExtras
@@ -34,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_organization.*
 import kotlinx.android.synthetic.main.fragment_organization.btnAction
 import kotlinx.android.synthetic.main.fragment_organization.llContent
 import kotlinx.android.synthetic.main.fragment_status.scrollContainer
+import parseColor
 import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
 import uk.co.chrisjenx.calligraphy.TypefaceUtils
 import javax.inject.Inject
@@ -92,36 +96,36 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
         ivLogo.apply {
             clipToOutline = true
-            if (organization.logo.isNullOrEmpty()) {
-                isVisible = false
-            } else {
-                Picasso.get().load(organization.logo)
-                        .noFade()
-                        .into(this, object : Callback {
-                            override fun onSuccess() {
-                                logoBorder.isVisible = true
+            Picasso.get().load(organization.logo)
+                    .noFade()
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            setOnClickListener {
+                                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                        requireActivity(),
+                                        Pair(it, it.transitionName)
+                                )
+
+                                findNavController().navigate(
+                                        R.id.image_view_activity,
+                                        ImageViewActivityArgs.Builder(organization.logo, null, null, it.transitionName).build().toBundle(),
+                                        null,
+                                        ActivityNavigatorExtras(options)
+                                )
                             }
+                        }
 
-                            override fun onError(e: java.lang.Exception?) {
-                                logoBorder.isVisible = false
-                                isVisible = false
-                            }
-                        })
-            }
+                        override fun onError(e: java.lang.Exception?) {
 
-            setOnClickListener {
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        requireActivity(),
-                        Pair(this, this.transitionName)
-                )
+                        }
+                    })
+        }
 
-                findNavController().navigate(
-                        R.id.image_view_activity,
-                        ImageViewActivityArgs.Builder(organization.logo, null, null, this.transitionName).build().toBundle(),
-                        null,
-                        ActivityNavigatorExtras(options)
-                )
-            }
+        tvOrganizationImageName.apply {
+            text = organization.name
+            clipToOutline = true
+            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
+                    ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
         }
 
         tvName.text = organization.name

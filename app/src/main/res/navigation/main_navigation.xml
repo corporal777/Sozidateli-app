@@ -531,8 +531,7 @@
 
     <fragment
         android:id="@+id/page_fragment"
-        android:name="com.example.ui.page.PageFragment"
-        tools:layout="@layout/fragment_user">
+        android:name="com.example.ui.page.PageFragment">
 
         <argument
             android:name="eventId"
@@ -542,6 +541,10 @@
             android:name="pageId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/agreement_fragment"
+        android:name="com.example.ui.agreement.UserAgreementFragment" />
 
     <fragment
         android:id="@+id/contacts_fragment"

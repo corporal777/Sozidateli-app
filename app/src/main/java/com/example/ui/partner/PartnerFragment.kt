@@ -1,5 +1,6 @@
 package com.example.ui.partner
 
+import android.graphics.Bitmap
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -39,40 +40,19 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
 
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
-    override fun setData(partner: Partner) {
+    override fun setData(partner: Partner, logo: Bitmap?, background: Bitmap?) {
         ivBackground.apply {
-            if (partner.background.isNullOrEmpty()) {
+            if (background == null) {
                 isVisible = false
             } else {
-                Picasso.get().load(partner.background).into(this, object : Callback {
-                    override fun onSuccess() {
-
-                    }
-
-                    override fun onError(e: Exception?) {
-                        isVisible = false
-                    }
-                })
+                setImageBitmap(background)
             }
         }
         ivLogo.apply {
-            clipToOutline = true
-            if (partner.logo.isNullOrEmpty()) {
+            if (logo == null) {
                 isVisible = false
             } else {
-                Picasso.get().load(partner.logo)
-                        .noFade()
-                        .into(this, object : Callback {
-                            override fun onSuccess() {
-                                logoBorder.isVisible = true
-                            }
-
-                            override fun onError(e: java.lang.Exception?) {
-                                logoBorder.isVisible = false
-                                isVisible = false
-                            }
-                        })
-
+                setImageBitmap(logo)
                 setOnClickListener {
                     val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                             requireActivity(),
