@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
+import com.example.data.models.UserEventCalendar
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.InstanceIdResult
@@ -39,4 +40,7 @@ interface UserRepository {
     fun checkPassword(password: String): Completable
     fun sendStatusPhoneConfirmSms(password: String): Completable
     fun sendStatusPhoneConfirmCode(password: String): Completable
+
+    fun userEventCalendar(): Maybe<List<UserEventCalendar>>
+    fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 }

@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.AuthResponse
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
+import com.example.data.models.UserEventCalendar
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
 import com.example.util.pagination.PaginationResponse
@@ -121,5 +122,13 @@ class UserRepositoryImp
 
     override fun sendStatusPhoneConfirmCode(password: String): Completable {
         return call(api.sendStatusPhoneConfirmCode(password))
+    }
+
+    override fun userEventCalendar(): Maybe<List<UserEventCalendar>> {
+        return call(api.eventCalendar())
+    }
+
+    override fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable {
+        return call(api.setUserAtEvent(events, atEvent, lat, lon))
     }
 }

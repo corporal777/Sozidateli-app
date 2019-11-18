@@ -149,6 +149,13 @@ interface Api {
     @POST("/v1/user/update")
     fun updateUser(@Body map: Map<String, @JvmSuppressWildcards Any?>): Single<ApiResponse<User>>
 
+    @POST("/v1/user/event_calendar")
+    fun eventCalendar(): Maybe<ApiResponse<List<UserEventCalendar>>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/geo")
+    fun setUserAtEvent(@Field("event[]") events: List<Int>, @Field("at_event[]") atEvent: List<Boolean>, @Field("lat") lat: Double, @Field("lon") lon: Double): Completable
+
     @FormUrlEncoded
     @POST("/v1/events")
     fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<Event>>>

@@ -15,6 +15,8 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.util.ChatHelper
 import com.example.util.NotificationUtil
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
@@ -74,4 +76,7 @@ class AppModule {
 
     @Provides
     fun providesNotificationManager(context: Context): NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    @Provides
+    fun providesEventLocationAlarmHelper(context: Context): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 }

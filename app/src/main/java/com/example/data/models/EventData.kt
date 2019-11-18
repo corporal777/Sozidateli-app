@@ -47,6 +47,6 @@ fun EventData.createMapInfo(): MapInfo? {
         val title = placeHowToGetTitle
         val description = placeHowToGet
 
-        return if ((lat == null || lon == null) && description == null) null
+        return if (lat == null || lon == null) null
         else MapInfo(lat, lon, title, description)
 }

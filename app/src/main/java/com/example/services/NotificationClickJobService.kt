@@ -49,6 +49,7 @@ class NotificationClickJobService : JobService() {
     }
 
     override fun onStopJob(params: JobParameters?): Boolean {
+        compositeDisposable.clear()
         return false
     }
 

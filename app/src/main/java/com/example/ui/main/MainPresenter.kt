@@ -1,27 +1,29 @@
 package com.example.ui.main
 
+import android.Manifest
+import android.location.Location
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.database.Db
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
-import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.ACTION_REQUEST_COUNT
 import com.example.util.AuthBackground
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.tbruyelle.rxpermissions2.RxPermissions
 import fromJson
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -44,10 +46,10 @@ class MainPresenter
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
         private val haChat: HAChat,
-        private val eventRepository: EventRepository,
-        private val db: Db,
         private val appData: AppData,
-        private val chatRepository: ChatRepository
+        private val chatRepository: ChatRepository,
+        private val locationProviderClient: FusedLocationProviderClient,
+        private val rxPermissions: RxPermissions
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -74,8 +76,10 @@ class MainPresenter
 
     private fun loadUser() {
         if (isAuthRequired) viewState.showLoadingDialog()
-        compositeDisposable += userRepository.getUserShort()
-                .flatMapCompletable { subscribeToNotifications() }
+        val loadUser = userRepository.getUserShort().ignoreElement()
+        val loadCalendar = checkUserLocation()
+        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
+                .andThen(subscribeToNotifications())
                 .andThen(checkShowGreetings())
                 .flatMap { checkUserEvent(it) }
                 .performOnBackgroundOutOnMain()
@@ -127,6 +131,75 @@ class MainPresenter
                     .andThen(Maybe.just(if (isGreetingShown) SHOW_USER_EVENT_AFTER_GREETINGS else SHOW_USER_EVENT))
                     .onErrorReturn { if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST }
         } ?: Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
+    }
+
+    private fun checkUserLocation(): Completable {
+        return userRepository.userEventCalendar()
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { calendar ->
+                    if (calendar.isEmpty()) Maybe.empty()
+                    else getLocation()
+                            .timeout(10, TimeUnit.SECONDS)
+                            .map { calendar to it }
+                }
+                .observeOn(Schedulers.io())
+                .onErrorComplete()
+                .flatMapCompletable {
+                    val now = System.currentTimeMillis()
+                    val location = it.second
+                    Observable.fromIterable(it.first)
+                            .filter { calendar ->
+                                calendar.time.any { time -> time.end > now && time.start <= now }
+                            }
+                            .toList()
+                            .flatMapCompletable { calendar ->
+                                val ids = calendar.map { calendarItem -> calendarItem.eventId }
+                                val atEvents = calendar.map { calendarItem ->
+                                    checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
+                                }
+                                userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
+                            }
+                }
+                .onErrorComplete()
+    }
+
+    private fun getLocation(): Maybe<Location> {
+        return rxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION)
+                .firstElement()
+                .flatMap {
+                    if (it) {
+                        Maybe.create<Location> {emitter ->
+                            val locationRequest = LocationRequest.create()
+                                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                                    .setNumUpdates(1)
+
+                            val callback = object : LocationCallback() {
+                                override fun onLocationResult(location: LocationResult) {
+                                    emitter.onSuccess(location.lastLocation)
+                                }
+                            }
+                            locationProviderClient.requestLocationUpdates(locationRequest, callback, null)
+
+                            emitter.setCancellable {
+                                locationProviderClient.removeLocationUpdates(callback)
+                            }
+                        }
+                    } else Maybe.empty()
+                }
+    }
+
+    private fun checkUserLocationInEventArea(userLocation: Location, areaLat: Double, areaLon: Double): Boolean {
+        val distance = FloatArray(1).apply {
+            Location.distanceBetween(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    areaLat,
+                    areaLon,
+                    this
+            )
+        }
+
+        return distance[0] <= EVENT_AREA_DISTANCE
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -305,5 +378,7 @@ class MainPresenter
         private const val SHOW_EVENT_LIST_AFTER_GREETINGS = 1
         private const val SHOW_USER_EVENT = 2
         private const val SHOW_USER_EVENT_AFTER_GREETINGS = 3
+
+        private const val EVENT_AREA_DISTANCE = 500
     }
 }
