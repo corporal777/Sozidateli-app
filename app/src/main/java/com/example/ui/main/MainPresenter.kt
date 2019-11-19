@@ -139,39 +139,38 @@ class MainPresenter
 
     private fun checkUserLocation(): Completable {
         return userRepository.userEventCalendar()
+                .flatMapObservable { Observable.fromIterable(it) }
+                .filter { calendar ->
+                    val now = System.currentTimeMillis()
+                    calendar.time.any { time -> time.end > now && time.start <= now }
+                }
+                .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { calendar ->
+                .flatMapMaybe { calendar ->
                     if (calendar.isEmpty()) Maybe.empty()
                     else getLocation()
-                            .timeout(10, TimeUnit.SECONDS)
+                            .timeout(5, TimeUnit.SECONDS)
                             .map { calendar to it }
                 }
                 .observeOn(Schedulers.io())
                 .onErrorComplete()
                 .flatMapCompletable {
-                    val now = System.currentTimeMillis()
+                    val calendar = it.first
                     val location = it.second
-                    Observable.fromIterable(it.first)
-                            .filter { calendar ->
-                                calendar.time.any { time -> time.end > now && time.start <= now }
-                            }
-                            .toList()
-                            .flatMapCompletable { calendar ->
-                                val ids = calendar.map { calendarItem -> calendarItem.eventId }
-                                val atEvents = calendar.map { calendarItem ->
-                                    checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
-                                }
-                                userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
-                            }
+                    val ids = calendar.map { calendarItem -> calendarItem.eventId }
+                    val atEvents = calendar.map { calendarItem ->
+                        checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
+                    }
+                    userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
                 .onErrorComplete()
     }
 
     private fun getLocation(): Maybe<Location> {
-        return rxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION)
+        return rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .firstElement()
-                .flatMap {
-                    if (it) {
+                .flatMap { isGranted ->
+                    if (isGranted) {
                         Maybe.create<Location> { emitter ->
                             val locationRequest = LocationRequest.create()
                                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -183,6 +182,10 @@ class MainPresenter
                                 }
                             }
                             locationProviderClient.requestLocationUpdates(locationRequest, callback, null)
+                                    .addOnFailureListener {
+                                        emitter.onError(it)
+                                        it.printStackTrace()
+                                    }
 
                             emitter.setCancellable {
                                 locationProviderClient.removeLocationUpdates(callback)
