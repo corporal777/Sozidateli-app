@@ -53,7 +53,7 @@ interface Api {
     fun registerSnResend(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @GET("/v1/user/info/short")
-    fun getUserShort(): Maybe<ApiResponse<User>>
+    fun getUserShort(): Maybe<ApiResponse<UserShort>>
 
     @GET("/v1/user/info")
     fun getUserFull(): Maybe<ApiResponse<User>>

@@ -3,10 +3,7 @@ package com.example.repository
 import android.graphics.Bitmap
 import com.example.api.Api
 import com.example.data.AppData
-import com.example.data.models.AuthResponse
-import com.example.data.models.Notification
-import com.example.data.models.RemoteNotification
-import com.example.data.models.UserEventCalendar
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
 import com.example.util.pagination.PaginationResponse
@@ -29,7 +26,10 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUserShort(): Maybe<User> = call(api.getUserShort()).doOnSuccess { appData.setUser(it) }
+    override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
+        appData.setUserShort(it)
+    }
+
     override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())

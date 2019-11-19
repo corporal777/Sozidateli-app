@@ -22,4 +22,30 @@ data class Notification(
     enum class AcceptState {
         NONE, ACCEPTED, CANCELED, DISABLED
     }
+
+    companion object {
+        fun fromRemoteNotification(remoteNotification: RemoteNotification): Notification {
+            return Notification(
+                    remoteNotification.id,
+                    remoteNotification.type,
+                    remoteNotification.text,
+                    remoteNotification.time,
+                    when (remoteNotification.type) {
+                        RemoteNotification.TYPE_RATE -> Type.RATE
+                        RemoteNotification.TYPE_INVITE -> Type.ACCEPTABLE
+                        else -> Type.SIMPLE
+                    },
+                    remoteNotification.status != RemoteNotification.STATUS_NONE,
+                    when (remoteNotification.status) {
+                        RemoteNotification.STATUS_ACKNOWLEDGED,
+                        RemoteNotification.STATUS_NONE -> AcceptState.NONE
+                        RemoteNotification.STATUS_ACCEPTED -> AcceptState.ACCEPTED
+                        RemoteNotification.STATUS_DECLINED -> AcceptState.CANCELED
+                        RemoteNotification.STATUS_CANCELLED -> AcceptState.DISABLED
+                        else -> AcceptState.NONE
+                    },
+                    remoteNotification.event_id
+            )
+        }
+    }
 }

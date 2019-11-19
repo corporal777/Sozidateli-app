@@ -3,6 +3,7 @@ package com.example.ui.main
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.Notification
 import com.example.ui.base.BaseContract
 import com.example.util.OneExecutionByTagStateStrategy
 
@@ -15,7 +16,7 @@ interface MainContract {
         fun showLogin()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showEventList(popUpTo: Int)
+        fun showEventList()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showEvent()
@@ -43,6 +44,12 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showStories()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showInapp(inapp: Notification)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideInapp()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -56,5 +63,10 @@ interface MainContract {
         fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String)
         fun onHandleEvent(event: String)
         fun onSetPassword(email: String, code: String, password: String)
+
+        fun onInappHidden()
+        fun onInappAcceptClick(inapp: Notification)
+        fun onInappCancelClick(inapp: Notification)
+        fun onInappOkClick()
     }
 }

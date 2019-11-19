@@ -5,7 +5,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.Notification
-import com.example.data.models.RemoteNotification
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -14,12 +13,10 @@ import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -38,27 +35,7 @@ class NotificationsPresenter
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotifications(limit, offset).map { response ->
             PaginationResponse(response.totalCount, response.data.map {
-                Notification(
-                        it.id,
-                        it.type,
-                        it.text,
-                        it.time,
-                        when (it.type) {
-                            RemoteNotification.TYPE_RATE -> Notification.Type.RATE
-                            RemoteNotification.TYPE_INVITE -> Notification.Type.ACCEPTABLE
-                            else -> Notification.Type.SIMPLE
-                        },
-                        it.status != RemoteNotification.STATUS_NONE,
-                        when (it.status) {
-                            RemoteNotification.STATUS_ACKNOWLEDGED,
-                            RemoteNotification.STATUS_NONE -> Notification.AcceptState.NONE
-                            RemoteNotification.STATUS_ACCEPTED -> Notification.AcceptState.ACCEPTED
-                            RemoteNotification.STATUS_DECLINED -> Notification.AcceptState.CANCELED
-                            RemoteNotification.STATUS_CANCELLED -> Notification.AcceptState.DISABLED
-                            else -> Notification.AcceptState.NONE
-                        },
-                        it.event_id
-                )
+                Notification.fromRemoteNotification(it)
             })
         }
     }

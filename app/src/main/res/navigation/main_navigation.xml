@@ -337,6 +337,11 @@
             android:name="notification"
             app:argType="com.example.data.models.Notification"
             app:nullable="false" />
+
+        <argument
+            android:name="showButtons"
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 
     <fragment

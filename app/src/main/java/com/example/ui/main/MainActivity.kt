@@ -13,7 +13,11 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
@@ -21,8 +25,8 @@ import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.Notification
 import com.example.interfaces.BackgroundImageFragment
-import com.example.interfaces.OnBackPressedListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
@@ -30,15 +34,18 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
+import com.example.ui.notification.NotificationFragment
+import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
+import kotlinx.android.synthetic.main.layout_inapp.*
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
@@ -53,13 +60,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         photoMessageText = getString(R.string.chat_photo_message_text)
         chatAcceptMessageText = getString(R.string.chat_accepted)
     }
-
-    private val startDestinations = arrayOf(
-            R.id.event_list_fragment,
-            R.id.authorization_fragment,
-            R.id.splash_fragment,
-            R.id.event_tabs_fragment
-    )
 
     private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
@@ -98,6 +98,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
+    private lateinit var inappBehavior: BottomSheetBehavior<ConstraintLayout>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         super.setSupportActionBar(toolbar)
@@ -108,6 +110,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
         subscribeOnNotificationChanel()
+        inappBehavior = ScrollingChildBehavior.from(inappContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN -> {
+                            dimContent(false)
+                            presenter.onInappHidden()
+                        }
+                        else -> dimContent(true)
+                    }
+                }
+            })
+        }
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
@@ -134,7 +152,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private fun handleIntent(intent: Intent) {
-        if (wasLaunchedFromResents()) return
+        if (wasLaunchedFromResents(intent)) return
+
         val appLinkAction = intent.action
         if (Intent.ACTION_VIEW == appLinkAction) {
             intent.data?.also {
@@ -154,8 +173,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 } else if (it.getQueryParameter(SET_EMAIL_USER_SOCIAL) != null) {
                     val id = it.getQueryParameter(ID)
                     val snType = it.getQueryParameter(SN_PROVIDER)
-                    if (snType != null && id != null && authCode != null)
+                    if (snType != null && id != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(snType, id, authCode)
+                    }
                 }
             }
         } else {
@@ -163,18 +183,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val chatId = it.getString(FIELD_CHAT_ID, null)
                 val userName = it.getString(FIELD_LABEL, null)
                 val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
-                if (chatId != null && userName != null)
+                if (chatId != null && userName != null) {
                     presenter.onHandleChat(chatId, userName, notificationId)
+                }
             }
 
             intent.getBundleExtra(FIELD_EVENT)?.let {
                 val event = it.getString(FIELD_EVENT_ID, null)
-                if (event != null) presenter.onHandleEvent(event)
+                if (event != null) {
+                    presenter.onHandleEvent(event)
+                }
             }
         }
     }
 
-    private fun wasLaunchedFromResents(): Boolean {
+    private fun wasLaunchedFromResents(intent: Intent): Boolean {
         return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
     }
 
@@ -252,22 +275,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showLogin() = findNavController().navigate(R.id.authorization_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.splash_fragment, true)
+            .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showEventList(popUpTo: Int) = findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
-            .setPopUpTo(popUpTo, true)
+    override fun showEventList() = findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showEvent() {
-        findNavController().apply {
-            graph.startDestination = R.id.event_tabs_fragment
-            val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.splash_fragment, true)
-                    .build()
-            navigate(R.id.event_tabs_fragment, null, opts)
-        }
-    }
+    override fun showEvent() = findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.main_navigation, true)
+            .build())
 
     override fun showEvent(event: String) {
         findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
@@ -296,6 +313,60 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         toolbarDivider.visibility = View.GONE
     }
 
+    override fun showInapp(inapp: Notification) {
+        supportFragmentManager.beginTransaction()
+                .replace(flNotificationContainer.id, createNotificationFragment(inapp))
+                .commitNowAllowingStateLoss()
+
+        when (inapp.type) {
+            Notification.Type.SIMPLE -> {
+                btnPositive.apply {
+                    isVisible = true
+                    text = getString(R.string.ok)
+                    setOnClickListener { presenter.onInappOkClick() }
+                }
+                btnNegative.apply {
+                    isVisible = false
+                }
+            }
+            Notification.Type.ACCEPTABLE -> {
+                btnPositive.apply {
+                    isVisible = true
+                    text = getString(R.string.notifications_accept)
+                    setOnClickListener { presenter.onInappAcceptClick(inapp) }
+                }
+                btnNegative.apply {
+                    isVisible = true
+                    text = getString(R.string.notifications_cancel)
+                    setOnClickListener { presenter.onInappCancelClick(inapp) }
+                }
+            }
+            Notification.Type.RATE -> {
+
+            }
+        }
+
+        llButtons.doOnLayout {
+            flNotificationContainer.updatePadding(bottom = llButtons.height - llButtons.paddingTop / 2)
+        }
+
+        inappBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    override fun hideInapp() {
+        inappBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun createNotificationFragment(inapp: Notification): NotificationFragment {
+        return NotificationFragment().apply {
+            arguments = NotificationFragmentArgs.Builder(inapp).apply { showButtons = false }.build().toBundle()
+        }
+    }
+
+    private fun dimContent(dim: Boolean) {
+        inappDim.setBackgroundResource(if (dim) R.color.dim else 0)
+    }
+
     override fun navigateUp() {
         onSupportNavigateUp()
     }
@@ -303,13 +374,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onBackPressed() {
-//        if ((getCurrentFragment() as? OnBackPressedListener)?.onBackPressed() == true) return
-//        if (findNavController().currentDestination?.id?.let { isStartDestination(it) } == true) {
-//            finish()
-//            return
-//        }
-
-        super.onBackPressed()
+        if (inappBehavior.state == BottomSheetBehavior.STATE_HIDDEN) super.onBackPressed()
+        else inappBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun showBackButton(show: Boolean) {
@@ -319,12 +385,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onDestroy() {
         navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
         super.onDestroy()
-    }
-
-    private fun isStartDestination(destination: Int?) = startDestinations.contains(destination)
-
-    private fun getCurrentFragment(): Fragment? {
-        return navHostFragment.childFragmentManager.primaryNavigationFragment
     }
 
     override fun getLoadingView(): View = flLoading

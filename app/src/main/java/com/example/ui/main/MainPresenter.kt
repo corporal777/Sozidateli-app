@@ -1,13 +1,15 @@
 package com.example.ui.main
 
 import android.Manifest
+import android.app.NotificationManager
 import android.location.Location
 import call
 import com.arellomobile.mvp.InjectViewState
-import com.example.R
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.ChatMessageAdditionalData
+import com.example.data.models.Notification
+import com.example.data.models.RemoteNotification
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -24,6 +26,7 @@ import com.google.android.gms.location.LocationResult
 import com.tbruyelle.rxpermissions2.RxPermissions
 import fromJson
 import io.reactivex.*
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -35,6 +38,7 @@ import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
 import withLoadingDialog
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -49,7 +53,8 @@ class MainPresenter
         private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val locationProviderClient: FusedLocationProviderClient,
-        private val rxPermissions: RxPermissions
+        private val rxPermissions: RxPermissions,
+        private val notificationManager: NotificationManager
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -58,6 +63,7 @@ class MainPresenter
     private val chatCompositeDisposable = CompositeDisposable()
 
     private var isAuthRequired = false
+    private var inappList: Deque<RemoteNotification>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -76,24 +82,23 @@ class MainPresenter
 
     private fun loadUser() {
         if (isAuthRequired) viewState.showLoadingDialog()
-        val loadUser = userRepository.getUserShort().ignoreElement()
+        val loadUser = userRepository.getUserShort()
+                .doOnSuccess { inappList = LinkedList(it.inapps) }
+                .ignoreElement()
         val loadCalendar = checkUserLocation()
         compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
                 .andThen(subscribeToNotifications())
-                .andThen(checkShowGreetings())
-                .flatMap { checkUserEvent(it) }
+                .doOnComplete { connectToSocket(appData.getUser().user_id) }
+                .andThen(Completable.defer { checkShowGreetings() })
+                .andThen(Maybe.defer { checkUserEvent() })
                 .performOnBackgroundOutOnMain()
-                .subscribe({ showAction ->
+                .subscribe({ isMustShowEvent ->
                     viewState.apply {
                         hideLoadingDialog()
-                        connectToSocket(appData.getUser().user_id)
-                        when (showAction) {
-                            SHOW_EVENT_LIST -> showEventList(R.id.splash_fragment)
-                            SHOW_EVENT_LIST_AFTER_GREETINGS -> showEventList(R.id.welcome_fragment)
-                            SHOW_USER_EVENT -> showEvent()
-                        }
-
+                        if (isMustShowEvent) showEvent()
+                        else showEventList()
                         checkIntent()
+                        showNextInapp()
                     }
 
                     AuthBackground.clear()
@@ -108,7 +113,7 @@ class MainPresenter
                 })
     }
 
-    private fun checkShowGreetings(): Maybe<Boolean> {
+    private fun checkShowGreetings(): Completable {
         return if (isAuthRequired) {
             isAuthRequired = false
             Completable.fromAction {
@@ -119,18 +124,17 @@ class MainPresenter
             }
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
-                    .andThen(Maybe.just(true))
         } else {
-            Maybe.just(false)
+            Completable.complete()
         }
     }
 
-    private fun checkUserEvent(isGreetingShown: Boolean): Maybe<Int> {
+    private fun checkUserEvent(): Maybe<Boolean> {
         return appData.getUser().default_event?.let { event ->
             userEventData.load(event.id)
-                    .andThen(Maybe.just(if (isGreetingShown) SHOW_USER_EVENT_AFTER_GREETINGS else SHOW_USER_EVENT))
-                    .onErrorReturn { if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST }
-        } ?: Maybe.just(if (isGreetingShown) SHOW_EVENT_LIST_AFTER_GREETINGS else SHOW_EVENT_LIST)
+                    .andThen(Maybe.just(true))
+                    .onErrorReturn { false }
+        } ?: Maybe.just(false)
     }
 
     private fun checkUserLocation(): Completable {
@@ -168,7 +172,7 @@ class MainPresenter
                 .firstElement()
                 .flatMap {
                     if (it) {
-                        Maybe.create<Location> {emitter ->
+                        Maybe.create<Location> { emitter ->
                             val locationRequest = LocationRequest.create()
                                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                                     .setNumUpdates(1)
@@ -200,6 +204,36 @@ class MainPresenter
         }
 
         return distance[0] <= EVENT_AREA_DISTANCE
+    }
+
+    private fun showNextInapp() {
+        inappList?.pollFirst()?.let { viewState.showInapp(Notification.fromRemoteNotification(it)) }
+    }
+
+    override fun onInappHidden() {
+        showNextInapp()
+    }
+
+    override fun onInappAcceptClick(inapp: Notification) {
+        updateNotificationInvite(userRepository.notificationsInviteAccept(inapp.id), inapp.id)
+    }
+
+    override fun onInappCancelClick(inapp: Notification) {
+        updateNotificationInvite(userRepository.notificationsInviteDecline(inapp.id), inapp.id)
+    }
+
+    private fun updateNotificationInvite(request: Completable, notificationId: Int) {
+        compositeDisposable += request
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    notificationManager.cancel(notificationId)
+                    viewState.hideInapp()
+                }
+    }
+
+    override fun onInappOkClick() {
+        viewState.hideInapp()
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -374,11 +408,6 @@ class MainPresenter
     }
 
     companion object {
-        private const val SHOW_EVENT_LIST = 0
-        private const val SHOW_EVENT_LIST_AFTER_GREETINGS = 1
-        private const val SHOW_USER_EVENT = 2
-        private const val SHOW_USER_EVENT_AFTER_GREETINGS = 3
-
         private const val EVENT_AREA_DISTANCE = 500
     }
 }

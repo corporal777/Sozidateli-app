@@ -27,7 +27,7 @@ class ProfilePresenter
         compositeDisposable += userRepository.getUserShort()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.setUser(it)
+                    viewState.setUser(it.toUser())
                     updateNotification()
                 }, { it.printStackTrace() })
     }

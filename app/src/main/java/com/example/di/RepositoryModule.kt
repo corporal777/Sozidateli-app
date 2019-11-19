@@ -14,9 +14,6 @@ class RepositoryModule {
     fun authRepository(repository: AuthRepositoryImp): AuthRepository = repository
 
     @Provides
-    fun dummyRepository(repository: DummyRepositoryImpl): DummyRepository = repository
-
-    @Provides
     fun userRepository(repository: UserRepositoryImp): UserRepository = repository
 
     @Provides

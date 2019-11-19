@@ -64,7 +64,7 @@ class RetrofitModule {
                     Timber.tag("API_T").d(message)
                 }
             })
-            logInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            logInterceptor.level = HttpLoggingInterceptor.Level.BASIC
             clientBuilder.addInterceptor(logInterceptor)
         }
 

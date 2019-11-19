@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.example.ui.main.MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context="com.example.ui.main.MainActivity">
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
@@ -54,6 +55,8 @@
         </FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <include layout="@layout/layout_inapp" />
+
     <FrameLayout
         android:id="@+id/flLoading"
         android:layout_width="match_parent"
@@ -62,7 +65,7 @@
         android:focusable="true"
         android:visibility="gone">
 
-        <FrameLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.5"
@@ -73,4 +76,4 @@
             android:layout_height="40dp"
             android:layout_gravity="center" />
     </FrameLayout>
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

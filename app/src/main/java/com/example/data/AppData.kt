@@ -1,9 +1,6 @@
 package com.example.data
 
-import com.example.data.models.Interest
-import com.example.data.models.Notification
-import com.example.data.models.Optional
-import com.example.data.models.asOptional
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.subjects.BehaviorSubject
@@ -67,6 +64,10 @@ class AppData(
         appPrefs.userId = user.user_id
         if (changed) userChangeSubject.onNext(user.asOptional())
         notificationsCount = user.notification_unread
+    }
+
+    fun setUserShort(userShort: UserShort) {
+        setUser(userShort.toUser())
     }
 
     fun getUser(): User = user

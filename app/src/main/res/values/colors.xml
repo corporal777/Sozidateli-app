@@ -17,6 +17,7 @@
     <color name="input_border_background_disabled">#1A000000</color>
     <color name="input_background">#FFFFFF</color>
     <color name="placeholder">#dddddd</color>
+    <color name="dim">#93000000</color>
 
     <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>

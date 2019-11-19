@@ -156,11 +156,12 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     private fun buildEmailText(uid: String): String {
-        val os = "os: Android ${android.os.Build.VERSION.SDK_INT}"
-        val appVersion = "app version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
-        val userId = "user id: $uid"
-        val dividers = "---------------"
-        return listOf(dividers, os, appVersion, userId).joinToString(separator = "\n", prefix = "\n\n\n")
+        val os = "OS: Android"
+        val api = "API: ${android.os.Build.VERSION.SDK_INT}"
+        val appVersion = "App version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
+        val userId = "User id: $uid"
+        val postfix = "\n---------------\nПожалуйста, опишите проблему ниже.\n\n"
+        return listOf(os, api, appVersion, userId).joinToString(separator = "\n", postfix = postfix)
     }
 
     override fun openPlayMarket() {

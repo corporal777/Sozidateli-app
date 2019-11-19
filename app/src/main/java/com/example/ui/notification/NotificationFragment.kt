@@ -2,7 +2,9 @@ package com.example.ui.notification
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.text.util.Linkify
+import android.view.View
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -33,7 +35,10 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
     @ProvidePresenter
     fun providePresenter(): NotificationPresenter = presenterProvider.get().apply {
-        notification = NotificationFragmentArgs.fromBundle(arguments!!).notification
+        NotificationFragmentArgs.fromBundle(arguments!!).let {
+            notification = it.notification
+            showButtons = it.showButtons
+        }
     }
 
     private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
@@ -41,7 +46,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         true
     }
 
-    override fun setData(notification: Notification) {
+    override fun setData(notification: Notification, showButtons: Boolean) {
         tvDate.apply {
             val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
             text = parsedDate
@@ -58,6 +63,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         var canRate = false
         var canAccept = false
         var canChangeAccept = false
+
         when (notification.type) {
             Notification.Type.SIMPLE -> {
                 titleRes = R.string.notifications_simple_title
@@ -69,21 +75,21 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         actionTextRes = R.string.notifications_state_disabled
                     }
                     Notification.AcceptState.ACCEPTED -> {
-                        canChangeAccept = true
+                        canChangeAccept = showButtons
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
-                        canChangeAccept = true
+                        canChangeAccept = showButtons
                         actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
-                        canAccept = true
+                        canAccept = showButtons
                     }
                 }
             }
             Notification.Type.RATE -> {
                 titleRes = R.string.notifications_rate_title
-                canRate = !notification.wasRead
+                canRate = showButtons && !notification.wasRead
             }
         }
 
@@ -115,6 +121,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
             isVisible = canChangeAccept
             setOnClickListener { presenter.onNotificationChangeDecisionClick() }
         }
+
+        divider.isVisible = showButtons
     }
 
     override fun showUrl(url: String) {
