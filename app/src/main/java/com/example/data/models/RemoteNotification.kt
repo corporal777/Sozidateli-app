@@ -1,19 +1,23 @@
 package com.example.data.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class RemoteNotification(
         val id: Int,
         val user_id: Int,
         val organization_id: Int,
         val assistance_id: Int,
         val project_id: Int,
-        val event_id: Int?,
+        val event_id: Int,
         val code: String?,
         val type: String,
         val time: String,
         val text: String?,
         val status: String?,
         val extra: String?
-) {
+) : Parcelable {
     companion object {
         const val TYPE_RATE = "event_poll"
         const val TYPE_INVITE = "Приглашение"

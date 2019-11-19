@@ -89,7 +89,7 @@ class FcmMessagingService : FirebaseMessagingService() {
         val eventId = data[DATA_EVENT_ID] ?: return
         val eventLogo = data[DATA_EVENT_LOGO]
 
-        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to bundleOf(
+        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_NOTIFICATION to bundleOf(
                 FIELD_NOTIFICATION_ID to notificationId
         )))
 
@@ -134,10 +134,7 @@ class FcmMessagingService : FirebaseMessagingService() {
         val title = data[DATA_TITLE] ?: return
         val body = data[DATA_BODY] ?: return
 
-        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to bundleOf(
-                FIELD_NOTIFICATION_ID to notificationId
-        )))
-
+        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_NOTIFICATION to notification))
         notificationUtil.createNotification(
                 channel = channel,
                 notificationId = notificationId

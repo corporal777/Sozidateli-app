@@ -10,6 +10,7 @@ import com.example.data.UserEventData
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
+import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -285,8 +286,15 @@ class MainPresenter
                 })
     }
 
-    override fun onHandleEvent(event: String) {
-        viewState.showEvent(event)
+    override fun onHandleNotification(notification: RemoteNotification) {
+        val eventId = notification.event_id
+        val organizationId = notification.organization_id
+        when {
+            notification.type == TYPE_INVITE -> viewState.showNotification(Notification.fromRemoteNotification(notification))
+            eventId != 0 -> viewState.showEvent(eventId.toString())
+            organizationId != 0 -> viewState.showOrganization(organizationId.toString())
+            else -> viewState.showNotification(Notification.fromRemoteNotification(notification))
+        }
     }
 
     override fun onSetPassword(email: String, code: String, password: String) {

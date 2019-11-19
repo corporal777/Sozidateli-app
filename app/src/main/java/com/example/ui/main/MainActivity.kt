@@ -26,6 +26,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
+import com.example.data.models.RemoteNotification
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
@@ -36,6 +37,7 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
+import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
@@ -179,19 +181,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             }
         } else {
-            intent.getBundleExtra(FIELD_CHAT)?.let {
-                val chatId = it.getString(FIELD_CHAT_ID, null)
-                val userName = it.getString(FIELD_LABEL, null)
-                val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
-                if (chatId != null && userName != null) {
-                    presenter.onHandleChat(chatId, userName, notificationId)
-                }
-            }
+            val extras = intent.extras ?: return
 
-            intent.getBundleExtra(FIELD_EVENT)?.let {
-                val event = it.getString(FIELD_EVENT_ID, null)
-                if (event != null) {
-                    presenter.onHandleEvent(event)
+            if (extras.containsKey(FIELD_CHAT)) {
+                intent.getBundleExtra(FIELD_CHAT)?.let {
+                    val chatId = it.getString(FIELD_CHAT_ID, null)
+                    val userName = it.getString(FIELD_LABEL, null)
+                    val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
+                    if (chatId != null && userName != null) {
+                        presenter.onHandleChat(chatId, userName, notificationId)
+                    }
+                }
+            } else if (extras.containsKey(FIELD_NOTIFICATION)) {
+                intent.getParcelableExtra<RemoteNotification>(FIELD_NOTIFICATION)?.let {
+                    presenter.onHandleNotification(it)
                 }
             }
         }
@@ -292,6 +295,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showStories() {
         findNavController().navigate(R.id.stories_fragment)
+    }
+
+    override fun showOrganization(organization: String) {
+        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization).build().toBundle())
+    }
+
+    override fun showNotification(notification: Notification) {
+        findNavController().navigate(R.id.notification_fragment, NotificationFragmentArgs.Builder(notification).build().toBundle())
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
