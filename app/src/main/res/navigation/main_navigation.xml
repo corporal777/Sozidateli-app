@@ -146,6 +146,15 @@
     </fragment>
 
     <fragment
+        android:id="@+id/event_rating_fragment"
+        android:name="com.example.ui.event.rating.EventRatingFragment"
+        tools:layout="@layout/fragment_event_rating">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/event_tabs_fragment"
         android:name="com.example.ui.eventTabs.EventTabsFragment"
         tools:layout="@layout/fragment_event_tabs">

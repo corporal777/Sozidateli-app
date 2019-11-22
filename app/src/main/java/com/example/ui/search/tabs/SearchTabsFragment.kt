@@ -57,7 +57,10 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
         etSearch.apply {
             SearchInput(this).apply {
                 setOnTextChange { presenter.onSearchTextChange(it) }
-                setOnTextChangeDone { presenter.onSearchTextSubmit(it) }
+                setOnTextChangeDone {
+                    presenter.onSearchTextSubmit(it)
+                    hideKeyboard(etSearch)
+                }
             }
         }
 

@@ -32,12 +32,9 @@ class NotificationPresenter
             compositeDisposable += userRepository.markNotificationsAsRead(listOf(notification.id))
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribe({
+                    .subscribeSimple {
                         notification.wasRead = true
-                    }, {
-                        it.printStackTrace()
-                        viewState.showToast(it.message ?: it.localizedMessage)
-                    })
+                    }
         }
 
         compositeDisposable += appData.notificationReadSubject

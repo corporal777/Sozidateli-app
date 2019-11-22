@@ -6,59 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/containerUser"
+        layout="@layout/item_profile_data_current_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_highlight"
-        android:paddingStart="@dimen/margin_horizontal_default"
-        android:paddingTop="20dp"
-        android:paddingEnd="@dimen/margin_horizontal_default"
-        android:paddingBottom="20dp"
-        android:theme="@style/ViewBackgroundPrimary">
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
-            android:contentDescription="@string/content_description_avatar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
-
-        <TextView
-            android:id="@+id/tvUserName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:textSize="18sp"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivNext"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@tools:sample/full_names" />
-
-        <ImageView
-            android:id="@+id/ivNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_keyboard_arrow_right"
-            android:tint="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View style="@style/ViewDivider.Horizontal" />
+        android:background="?attr/selectableItemBackground" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerNotification"

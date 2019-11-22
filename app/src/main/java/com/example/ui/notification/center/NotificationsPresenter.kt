@@ -76,10 +76,6 @@ class NotificationsPresenter
         else pagination.invalidate()
     }
 
-    override fun onReceiveApiError(apiError: ApiError) {
-        viewState.showToast(apiError.toErrorsString())
-    }
-
     override fun onNotificationUrlClick(url: String) {
         viewState.showUrl(url)
     }

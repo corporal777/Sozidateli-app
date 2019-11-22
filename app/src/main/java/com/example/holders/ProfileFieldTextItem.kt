@@ -1,5 +1,6 @@
 package com.example.holders
 
+import androidx.core.view.isVisible
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -12,7 +13,10 @@ class ProfileFieldTextItem(
 ) : Item() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvTitle.text = title
+            tvTitle.apply {
+                isVisible = title.isNotEmpty()
+                text = title
+            }
             tvData.apply {
                 text = data
                 removeUrlUnderline()

@@ -24,10 +24,10 @@ class ProfilePresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({ updateNotification() }, {})
 
-        compositeDisposable += userRepository.getUserShort()
+        compositeDisposable += userRepository.getUserFull()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    viewState.setUser(it.toUser())
+                    viewState.setUser(it)
                     updateNotification()
                 }, { it.printStackTrace() })
     }

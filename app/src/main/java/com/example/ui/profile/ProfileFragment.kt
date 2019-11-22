@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
@@ -14,18 +15,23 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.user.User
+import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BadgeDrawable
 import com.example.ui.views.addBadge
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.item_profile_data_current_user.*
 import setCircleImage
+import setUserStatus
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -60,7 +66,18 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun setUser(user: User) {
         ivAvatar.setCircleImage(user.user_avatar, R.drawable.avatar_placeholder)
-        tvUserName.text = user.fullName
+        tvName.text = user.fullName
+        tvId.apply { text = resources.getString(R.string.profile_uid, user.user_id) }
+
+        btnEdit.isVisible = false
+
+        btnStatus.apply {
+            val status = user.user_status
+            if (status != null) {
+                setUserStatus(status, resources.getString(R.string.profile_user_status))
+                setOnClickListener { findNavController().navigate(R.id.user_status_fragment) }
+            }
+        }
     }
 
     override fun highlightNotifications(notificationCount: Int) {

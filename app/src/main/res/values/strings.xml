@@ -511,7 +511,7 @@
     <string name="event_register_request">Подать заявку</string>
     <string name="event_register_file_extension_wrong">Можно добавить только файлы с раширением: %s</string>
     <string name="event_register_file_no_permission">Для добавления файла необходимо разрешение на доступ к памяти устройства</string>
-    <string name="event_register_form_request_error">Не удалось разместить заявку</string>
+    <string name="event_register_form_request_error">Произошла ошибка, пожалуйста, попробуйте позже.</string>
     <string name="event_register_already_approved_error">Заявка уже была подтверждена ранее</string>
     <string name="event_register_closed_error">Регистрация закрыта</string>
     <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
