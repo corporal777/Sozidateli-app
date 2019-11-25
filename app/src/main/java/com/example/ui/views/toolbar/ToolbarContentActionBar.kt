@@ -4,10 +4,12 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SpinnerAdapter
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.R
 import com.example.extensions.dp
+import kotlinx.android.synthetic.main.view_toolbar_content.view.*
 import java.lang.ref.WeakReference
 
 class ToolbarContentActionBar(
@@ -27,6 +29,8 @@ class ToolbarContentActionBar(
         }
     }
 
+    fun getTitleView(block: TextView.() -> Unit) = customView.getTitleView(block)
+
     override fun setDisplayHomeAsUpEnabled(showHomeAsUp: Boolean) {
         if (showHomeAsUp) addLeftView(navigationIcon, 0)
         else (removeLeftView(navigationIcon))
@@ -40,7 +44,11 @@ class ToolbarContentActionBar(
 
     override fun setTitle(title: CharSequence?) = customView.getTitleView { text = title }
 
-    override fun setTitle(resId: Int) = customView.getTitleView { text = title }
+    override fun setTitle(resId: Int) {
+        weakActivity.get()?.let {
+            title = it.getString(resId)
+        }
+    }
 
     fun addLeftView(view: View, position: Int = 0) {
         customView.getLeftViewContainer {
@@ -233,7 +241,6 @@ class ToolbarContentActionBar(
     override fun getSelectedNavigationIndex(): Int {
         throw UnsupportedOperationException("Do not supported by ToolbarContentActionBar")
     }
-
 }
 
 typealias OnToolbarClickListener = () -> Unit

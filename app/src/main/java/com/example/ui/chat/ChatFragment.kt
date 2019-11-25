@@ -5,10 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
@@ -96,6 +98,13 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
+
+    val imageSpan by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
+            it.setBounds(0, 0, 12.dp, 12.dp)
+            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -316,7 +325,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun setUserAvatar(url: String) {
@@ -330,18 +339,18 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun setTitle(title: String) {
-        val userName = arguments!!.let { ChatFragmentArgs.fromBundle(it).label }
-        val imageSpan = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
-            it.setBounds(0, 0, 12.dp, 12.dp)
-            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+        toolbarContentActionBar.apply {
+            getTitleView { setTitle(ellipsizeTitle(this, title)) }
         }
-        toolbarContentActionBar.title = SpannableStringBuilder(userName)
-                .apply {
-                    imageSpan?.let {
-                        append("  ")
-                        setSpan(it, this.length - 1, this.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
-                }
+    }
+
+    private fun ellipsizeTitle(titleView: TextView, title: CharSequence): CharSequence {
+        return titleView.let {
+            val titleSpannable = SpannableStringBuilder(title).apply {
+                if (imageSpan != null) append("  ").setSpan(imageSpan, length - 1, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+            TextUtils.ellipsize(titleSpannable, it.paint, (it.width - it.paddingRight - it.paddingLeft).toFloat(), TextUtils.TruncateAt.END)
+        }
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

@@ -9,11 +9,11 @@ data class UserShort(
         @SerializedName("user_email")
         val email: String?,
         @SerializedName("user_name")
-        val name: String,
+        val name: String?,
         @SerializedName("user_middle_name")
-        val middleName: String,
+        val middleName: String?,
         @SerializedName("user_last_name")
-        val lastName: String,
+        val lastName: String?,
         @SerializedName("user_avatar")
         val avatar: String?,
         @SerializedName("default_event")
@@ -26,9 +26,9 @@ data class UserShort(
     fun toUser() = User().apply {
         user_id = id
         user_email = email
-        user_name = name
-        user_last_name = lastName
-        user_middle_name = middleName
+        user_name = name ?: ""
+        user_last_name = lastName ?: ""
+        user_middle_name = middleName ?: ""
         user_avatar = avatar
         default_event = event
         notification_unread = notificationsUnreadCount

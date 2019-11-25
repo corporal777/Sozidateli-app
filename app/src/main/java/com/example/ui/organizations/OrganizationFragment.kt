@@ -258,7 +258,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun showEventRequest(event: Event) {

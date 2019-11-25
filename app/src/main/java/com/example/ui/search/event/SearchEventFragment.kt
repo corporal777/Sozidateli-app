@@ -34,7 +34,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
     }
 
     override fun createItem(itemData: Event?): Item {

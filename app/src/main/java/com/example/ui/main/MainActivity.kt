@@ -290,7 +290,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun showStories() {
