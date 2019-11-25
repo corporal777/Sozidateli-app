@@ -183,9 +183,6 @@ interface Api {
     @POST("/v1/user/recovery_password/set_pwd")
     fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
 
-    @GET("/v1/events/{eventId}/news/{newsId}")
-    fun getNewsById(@Path("eventId") eventId: Int, @Path("newsId") newsId: Int): Single<ApiResponse<News>>
-
     @POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
 
@@ -217,6 +214,12 @@ interface Api {
 
     @GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
+
+    @GET("/v1/events/{eventId}/rating/fields")
+    fun getEventRatingForm(@Path("eventId") eventId: String): Single<ApiResponse<List<EventRegisterField>>>
+
+    @POST("/v1/events/{eventId}/rating/set")
+    fun setEventRating(@Path("eventId") eventId: String, @Body body: RequestBody): Completable
 
     @GET("/v1/events/{eventId}")
     fun getEventInfo(@Path("eventId") eventId: String): Maybe<ApiResponse<EventInfo>>
@@ -252,10 +255,6 @@ interface Api {
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/speakers")
     fun getEventSpeakers(@Path("eventId") eventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
-
-    @FormUrlEncoded
-    @POST("/v1/events/{eventId}/rating/set")
-    fun setEventRating(@Path("eventId") eventId: Int, @Field("rating_value") value: Int): Completable
 
     @GET("/v1/events/qr/{code}")
     fun getEventByCode(@Path("code") code: String): Single<ApiResponse<Event>>

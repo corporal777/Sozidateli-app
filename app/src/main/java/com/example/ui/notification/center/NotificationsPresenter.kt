@@ -3,7 +3,6 @@ package com.example.ui.notification.center
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.ApiError
 import com.example.data.models.Notification
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -109,21 +108,8 @@ class NotificationsPresenter
         updateNotification(userRepository.markNotificationsAsRead(listOf(id)), id)
     }
 
-    override fun onNotificationRateClick(id: Int) {
-        viewState.showRatingChooser(id)
-    }
-
-    override fun onNotificationRatingChosen(id: Int, rating: Int) {
-        val event = notifications.find { it.id == id }?.rateId ?: return
-        compositeDisposable += eventRepository.setEventRating(event, rating)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notifications.find { it.id == id }?.apply {
-                        wasRead = true
-                    }
-                    viewState.onNotificationNeedUpdate(id)
-                }
+    override fun onNotificationRateClick(eventId: String) {
+        viewState.showRating(eventId)
     }
 
     private fun updateNotification(request: Completable, notificationId: Int) {

@@ -20,21 +20,21 @@ class RateNotificationItem(
         private val rateClickListener: OnNotificationRateClickListener
 ) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
             btnRate.apply {
-                setOnClickListener { rateClickListener(notification.id) }
+                setOnClickListener { notification.rateId?.let { rateClickListener(it) } }
                 isVisible = !notification.wasRead
             }
         }
     }
 
-    override fun getTitleView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvTitle
-    override fun getMessageView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvMessage
-    override fun getDateView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvDate
-    override fun getReadMoreView(viewHolder:GroupieViewHolder): View = viewHolder.btnReadMore
+    override fun getTitleView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvTitle
+    override fun getMessageView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessage
+    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvDate
+    override fun getReadMoreView(viewHolder: GroupieViewHolder): View = viewHolder.btnReadMore
     override fun getLayout() = R.layout.item_notification_rate
 }
 
-typealias OnNotificationRateClickListener = (id: Int) -> Unit
+typealias OnNotificationRateClickListener = (rateId: String) -> Unit

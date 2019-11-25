@@ -5,7 +5,6 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
-import com.example.data.models.ApiError
 import com.example.data.models.EventFile
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
@@ -39,34 +38,26 @@ class EventRatingPresenter
 
     lateinit var eventId: String
 
-    private var hasGroup = false
-    private var selectedGroup: String? = null
     private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
     private var takeFileMaybe: MaybeSubject<Uri>? = null
+
+    private var rating = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.enableActionButton(true)
 
-        compositeDisposable += eventRepository.loadEventRegistrationData(eventId)
+        compositeDisposable += eventRepository.loadEventRatingData(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     viewState.apply {
-                        val hasForm = it.groups.isNotEmpty() || it.fieldsData.isNotEmpty()
-                        hasGroup = it.groupField != null
-                        selectedGroup = it.selectedGroup
                         fieldsData = it.fieldsData
                         invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
-                        setFields(it.event, it.groupField, it.selectedGroup, it.groups, it.fieldsData, hasForm)
-
-                        if (hasForm) {
-                            checkDataValid()
-                        } else {
-                            viewState.showEventRegisterConfirmation()
-                        }
+                        setFields(it.event, fieldsData)
+                        checkDataValid()
                     }
                 }
     }
@@ -76,17 +67,13 @@ class EventRatingPresenter
         checkDataValid()
     }
 
-    override fun onRegisterClick() {
+    override fun onSendClick() {
         compositeDisposable += Single.fromCallable {
-            val group = selectedGroup
             val fieldsData = fieldsData
-            if (group == null && fieldsData.isEmpty()) return@fromCallable "".toRequestBody()
-
             MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .apply {
-                        if (group != null) addFormDataPart("category_id", group)
-
+                        addFormDataPart("rating_value", rating.toString())
                         fieldsData.forEach { fieldData ->
                             val key = fieldData.field.id
                             val value = fieldData.value ?: return@forEach
@@ -120,47 +107,22 @@ class EventRatingPresenter
                     }
                     .build()
         }
-                .flatMap { eventRepository.eventRegister(eventId, it) }
+                .flatMapCompletable { eventRepository.setEventRating(eventId, it) }
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
-                        onError = {
-                            if (it !is ApiError) viewState.showToast(R.string.request_execution_error)
-                            it.printStackTrace()
-
-                            val group = selectedGroup
-                            val fieldsData = fieldsData
-                            if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
-                        },
-                        onSuccess = {
-                            viewState.showSuccessRegister(it.event.isRequireModerate == false)
-                        })
-    }
-
-    override fun onSuccessCancel() {
-        viewState.navigateUp()
-    }
-
-    override fun onSuccessGoToList() {
-        viewState.showEventLists()
-    }
-
-    override fun onSuccessGoToEvent() {
-        viewState.showEvent()
-    }
-
-    override fun onRegisterCancelClick() {
-        viewState.navigateUp()
-    }
-
-    override fun onSelectedGroupChange(groupId: String?) {
-        selectedGroup = groupId
-        checkDataValid()
+                        onComplete = {
+                            viewState.apply {
+                                showSuccessRate()
+                                navigateUp()
+                            }
+                        }
+                )
     }
 
     private fun checkDataValid() {
-        viewState.enableActionButton((!hasGroup || selectedGroup != null) && invalidFieldsData.isEmpty())
+        viewState.enableActionButton(rating > 0 && invalidFieldsData.isEmpty())
     }
 
     override fun onPersonalDataFileClick(url: String) {
@@ -211,19 +173,8 @@ class EventRatingPresenter
         takeFileMaybe?.onComplete()
     }
 
-    override fun onReceiveApiError(apiError: ApiError) {
-        super.onReceiveApiError(apiError)
-        val toast = when {
-            apiError.errors.contains(API_ERROR_ALREADY_APPROVED) -> R.string.event_register_already_approved_error
-            apiError.errors.contains(API_ERROR_REGISTRATION_CLOSED) -> R.string.event_register_closed_error
-            else -> R.string.event_register_form_request_error
-        }
-
-        viewState.showToast(toast)
-    }
-
-    companion object {
-        private const val API_ERROR_ALREADY_APPROVED = "Registration is approved before"
-        private const val API_ERROR_REGISTRATION_CLOSED = "registration is not carried out"
+    override fun onRatingChange(rating: Int) {
+        this.rating = rating
+        checkDataValid()
     }
 }

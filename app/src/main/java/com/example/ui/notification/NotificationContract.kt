@@ -15,7 +15,7 @@ interface NotificationContract {
         fun showUrl(url: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRatingChooser()
+        fun showRating(eventId: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -24,6 +24,5 @@ interface NotificationContract {
         fun onNotificationCancelClick()
         fun onNotificationChangeDecisionClick()
         fun onNotificationRateClick()
-        fun onNotificationRatingChosen(rating: Int)
     }
 }

@@ -336,6 +336,10 @@
         <action
             android:id="@+id/notifications_center_to_notification"
             app:destination="@id/notification_fragment" />
+
+        <action
+            android:id="@+id/notifications_center_to_event_rating"
+            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <fragment
@@ -351,6 +355,10 @@
             android:name="showButtons"
             android:defaultValue="true"
             app:argType="boolean" />
+
+        <action
+            android:id="@+id/notification_to_event_rating"
+            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <fragment

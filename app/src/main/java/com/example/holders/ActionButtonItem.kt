@@ -35,6 +35,10 @@ class ActionButtonItem(
                     actionText = R.string.event_register_request
                     actionIcon = 0
                 }
+                ACTION_SEND -> {
+                    actionText = R.string.send
+                    actionIcon = 0
+                }
                 else -> {
                     actionText = R.string.add_record
                     actionIcon = R.drawable.ic_add_sn
@@ -69,5 +73,6 @@ class ActionButtonItem(
         const val ACTION_ADD_FILE = 1
         const val ACTION_SHOW_ON_MAP = 2
         const val ACTION_EVENT_REQUEST = 3
+        const val ACTION_SEND = 4
     }
 }

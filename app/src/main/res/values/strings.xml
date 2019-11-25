@@ -126,6 +126,7 @@
     <string name="add_file">Добавить файл</string>
     <string name="site">Сайт</string>
     <string name="social_networks">Соцсети</string>
+    <string name="send">Отправить</string>
 
     <string-array name="organization_types">
         <item>Некоммерческая</item>
@@ -525,4 +526,7 @@
 
     <string name="support_email_title">Запрос тех. поддержки</string>
     <string name="support_email">support@sozidateli-houseofapps.ru</string>
+
+    <string name="event_rating_title">Анкета оценки</string>
+    <string name="event_rating_success">Оценка отправлена</string>
 </resources>

@@ -18,7 +18,7 @@ interface NotificationsContract {
         fun onNotificationNeedUpdate(id: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRatingChooser(id: Int)
+        fun showRating(eventId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNotification(notification: Notification)
@@ -33,7 +33,6 @@ interface NotificationsContract {
         fun onNotificationAcceptClick(id: Int)
         fun onNotificationCancelClick(id: Int)
         fun onNotificationChangeDecisionClick(id: Int)
-        fun onNotificationRateClick(id: Int)
-        fun onNotificationRatingChosen(id: Int, rating: Int)
+        fun onNotificationRateClick(eventId: String)
     }
 }

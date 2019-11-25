@@ -38,7 +38,11 @@ data class EventData(
         val phone: List<PhoneAffiliation>,
         val email: List<EmailAffiliation>,
         val web: List<String>,
-        val social: List<String>
+        val social: List<String>,
+        @SerializedName("rating_headline")
+        val ratingHeadline: String?,
+        @SerializedName("rating_subtitle")
+        val ratingSubtitle: String?
 )
 
 fun EventData.createMapInfo(): MapInfo? {

@@ -629,6 +629,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="event_rating_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="event_tabs_fragment">
                     <value>
                       <LayoutPositions>
@@ -787,6 +799,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="notifications_center_to_event_rating">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="notifications_center_to_notification">
                               <value>
                                 <LayoutPositions />

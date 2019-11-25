@@ -15,7 +15,6 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.EventRatingDialog
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -24,7 +23,6 @@ import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.roundToInt
 
 
 class NotificationsFragment : BaseFragment(), NotificationsContract.View, ToolbarFragment {
@@ -114,8 +112,8 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         }
     }
 
-    override fun showRatingChooser(id: Int) {
-        EventRatingDialog.show(requireContext()) { presenter.onNotificationRatingChosen(id, it.roundToInt()) }
+    override fun showRating(eventId: String) {
+        findNavController().navigate(NotificationsFragmentDirections.notificationsCenterToEventRating(eventId))
     }
 
 

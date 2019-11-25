@@ -28,10 +28,6 @@ class EventRepositoryImp
         return callPagination(api.getEventRecommendations(limit, offset))
     }
 
-    override fun getNewsById(eventId: Int, newsId: Int): Single<News> {
-        return call(api.getNewsById(eventId, newsId))
-    }
-
     override fun getEventRegisterField(eventId: String): Single<EventRegisterForm> {
         return call(api.getEventRegisterField(eventId))
     }
@@ -42,6 +38,10 @@ class EventRepositoryImp
 
     override fun getEventRegister(eventId: String): Single<EventRegisterResponse> {
         return call(api.getEventRegister(eventId))
+    }
+
+    override fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>> {
+        return call(api.getEventRatingForm(eventId))
     }
 
     override fun getEventActivity(eventId: String): Maybe<EventActivity> {
@@ -88,8 +88,8 @@ class EventRepositoryImp
         return callPagination(api.getEventSpeakers(eventId, limit, offset))
     }
 
-    override fun setEventRating(eventId: Int, value: Int): Completable {
-        return call(api.setEventRating(eventId, value))
+    override fun setEventRating(eventId: String, body: RequestBody): Completable {
+        return call(api.setEventRating(eventId, body))
     }
 
     override fun getEventByCode(code: String): Single<Event> {
@@ -134,6 +134,32 @@ class EventRepositoryImp
                     registration.group_id,
                     fields.groups ?: emptyList(),
                     fieldsData ?: emptyList()
+            )
+        })
+    }
+
+    override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
+        return Single.zip(getEventInfo(eventId).toSingle(), getEventRatingForm(eventId), BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
+            val fieldsData = fields.mapNotNull { field ->
+                when (field.type) {
+                    EventRegisterField.Type.STRING,
+                    EventRegisterField.Type.TEXT_AREA,
+                    EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, null)
+                    EventRegisterField.Type.DATE,
+                    EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, null)
+                    EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, null)
+                    EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, null)
+                    EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, null)
+                    EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, null)
+                    EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, null)
+                    EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, null)
+                    else -> null
+                }
+            }
+
+            return@BiFunction EventRatingData(
+                    eventInfo.event,
+                    fieldsData
             )
         })
     }

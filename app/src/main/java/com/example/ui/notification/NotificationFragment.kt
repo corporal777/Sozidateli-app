@@ -2,11 +2,10 @@ package com.example.ui.notification
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.text.util.Linkify
-import android.view.View
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -16,12 +15,10 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.EventRatingDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.roundToInt
 
 class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarFragment {
 
@@ -131,8 +128,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         })
     }
 
-    override fun showRatingChooser() {
-        EventRatingDialog.show(requireContext()) { presenter.onNotificationRatingChosen(it.roundToInt()) }
+    override fun showRating(eventId: String) {
+        findNavController().navigate(NotificationFragmentDirections.notificationToEventRating(eventId))
     }
 
     override fun layout() = R.layout.fragment_notification

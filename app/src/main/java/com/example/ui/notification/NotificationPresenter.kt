@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Notification
-import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
@@ -17,7 +16,6 @@ import javax.inject.Inject
 class NotificationPresenter
 @Inject constructor(
         private val userRepository: UserRepository,
-        private val eventRepository: EventRepository,
         private val appData: AppData,
         private val notificationManager: NotificationManager
 ) : BasePresenter<NotificationContract.View>(), NotificationContract.Presenter {
@@ -70,15 +68,7 @@ class NotificationPresenter
     }
 
     override fun onNotificationRateClick() {
-        viewState.showRatingChooser()
-    }
-
-    override fun onNotificationRatingChosen(rating: Int) {
-        val event = notification.rateId ?: return
-        compositeDisposable += eventRepository.setEventRating(event, rating)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { }
+        notification.rateId?.let { viewState.showRating(it) }
     }
 
     private fun updateNotificationInvite(request: Completable, notificationId: Int) {

@@ -6,25 +6,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EventGroup
-import com.example.data.models.EventRegisterField
+import com.example.data.models.EventData
 import com.example.data.models.EventRegisterFieldData
-import com.example.data.models.EventRegistration
 import com.example.extensions.forEachGroups
 import com.example.extensions.formatToInterval
 import com.example.extensions.setRequired
 import com.example.holders.ActionButtonItem
-import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
+import com.example.holders.ActionButtonItem.Companion.ACTION_SEND
+import com.example.holders.RatingItem
 import com.example.holders.registerEvent.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BottomDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
@@ -38,7 +33,7 @@ import javax.inject.Provider
 class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFragment {
 
     override val title: CharSequence
-        get() = getString(R.string.request_label)
+        get() = getString(R.string.event_rating_title)
 
     @InjectPresenter
     lateinit var presenter: EventRatingPresenter
@@ -54,45 +49,33 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
     private val section = Section()
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(section) } }
     private val saveButtonItem by lazy {
-        ActionButtonItem(-200L, ACTION_EVENT_REQUEST) {
-            presenter.onRegisterClick()
+        ActionButtonItem(-200L, ACTION_SEND) {
+            presenter.onSendClick()
         }
     }
 
     private val personalDataFileClickListener: OnPersonalDataFileClickListener = { presenter.onPersonalDataFileClick(it) }
     private val onFieldDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit = { presenter.onDataChange(it) }
 
-    private var bottomDialog: BottomDialog? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply { adapter = this@EventRatingFragment.adapter }
     }
 
-    override fun setFields(event: EventRegistration,
-                           groupField: EventRegisterField?,
-                           selectedGroup: String?,
-                           groups: List<EventGroup>,
-                           fieldsData: List<EventRegisterFieldData<*>>,
-                           withConfirm: Boolean) {
+    override fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>) {
         section.apply {
             setHeader(RegisterEventHeaderItem(
                     -100L,
                     event.organization?.name,
                     event.conferenceStart?.formatToInterval(event.conferenceFinish),
                     event.description,
-                    event.registrationName,
-                    event.registrationSubtitle
+                    event.ratingHeadline,
+                    event.ratingSubtitle
             ))
 
-            if (withConfirm) setFooter(saveButtonItem)
+            setFooter(saveButtonItem)
 
-            if (groups.isNotEmpty()) {
-                add(EventRegistrationGroupsItem(groupField?.id?.toLong()
-                        ?: -90L, groupField?.description, groups, selectedGroup) {
-                    presenter.onSelectedGroupChange(it)
-                }.withEventRegistrationTitle(groupField?.name))
-            }
+            add(RatingItem { presenter.onRatingChange(it) })
 
             addAll(fieldsData.map {
                 when (it) {
@@ -133,49 +116,6 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                     it.withEventRegistrationPersonalDataFile(file?.file, field.rightFileDescription
                             ?: file?.filename, personalDataFileClickListener)
                 }
-    }
-
-    override fun showEventRegisterConfirmation() {
-        bottomDialog?.dismiss()
-        BottomDialog(requireContext()).apply {
-            setTitle(getString(R.string.event_register_no_form_confirmation_title))
-            setMessage(getString(R.string.event_register_no_form_confirmation_message))
-            positiveButton {
-                text = getString(R.string.event_register_request)
-                clickListener = {
-                    presenter.onRegisterClick()
-                    true
-                }
-            }
-
-            negativeButton {
-                text = getString(R.string.cancel)
-                clickListener = {
-                    presenter.onRegisterCancelClick()
-                    true
-                }
-            }
-            setCancelable(false)
-            bottomDialog = this
-        }.show()
-    }
-
-    override fun showSuccessRegister(canGoToEvent: Boolean) {
-        bottomDialog?.dismiss()
-        BottomDialog(requireContext()).apply {
-            setTitle(getString(if (canGoToEvent) R.string.event_register_sent_title else R.string.event_register_sent_moderate_title))
-            setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
-            positiveButton {
-                text = getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
-                clickListener = {
-                    if (canGoToEvent) presenter.onSuccessGoToEvent() else presenter.onSuccessGoToList()
-                    true
-                }
-            }
-
-            setOnCancelListener { presenter.onSuccessCancel() }
-            bottomDialog = this
-        }.show()
     }
 
     override fun openUrl(url: String) {
@@ -246,22 +186,8 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
         }
     }
 
-    override fun showEventLists() {
-        if (!findNavController().popBackStack(R.id.event_list_fragment, false)) {
-            findNavController().navigate(R.id.event_list_fragment, null, navOptions {
-                popUpTo(R.id.request_fragment) { inclusive = true }
-            })
-        }
-    }
-
-    override fun showEvent() {
-        findNavController().apply {
-            graph.startDestination = R.id.event_tabs_fragment
-            val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_list_fragment, true)
-                    .build()
-            navigate(R.id.event_tabs_fragment, null, opts)
-        }
+    override fun showSuccessRate() {
+        Toast.makeText(requireContext(), getString(R.string.event_rating_success), Toast.LENGTH_LONG).show()
     }
 
     override fun layout() = R.layout.fragment_request

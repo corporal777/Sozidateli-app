@@ -5,24 +5,16 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventData
+import com.example.data.models.EventFile
+import com.example.data.models.EventRegisterFieldData
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventRatingContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setFields(
-                event: EventRegistration,
-                groupField: EventRegisterField?,
-                selectedGroup: String?,
-                groups: List<EventGroup>,
-                fieldsData: List<EventRegisterFieldData<*>>,
-                withConfirm: Boolean
-        )
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun showEventRegisterConfirmation()
+        fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)
@@ -37,16 +29,10 @@ interface EventRatingContract {
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSuccessRegister(canGoToEvent: Boolean)
+        fun showSuccessRate()
 
         @StateStrategyType(SkipStrategy::class)
         fun openUrl(url: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showEventLists()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showEvent()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -54,13 +40,8 @@ interface EventRatingContract {
         fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
         fun onFileSelected(path: Uri)
         fun onFileSelectionCancel()
-        fun onRegisterClick()
-        fun onRegisterCancelClick()
+        fun onSendClick()
         fun onDataChange(field: EventRegisterFieldData<*>)
-        fun onSelectedGroupChange(groupId: String?)
-
-        fun onSuccessCancel()
-        fun onSuccessGoToList()
-        fun onSuccessGoToEvent()
+        fun onRatingChange(rating: Int)
     }
 }

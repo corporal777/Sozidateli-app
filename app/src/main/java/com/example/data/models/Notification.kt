@@ -12,7 +12,7 @@ data class Notification(
         val type: Type,
         var wasRead: Boolean,
         var acceptState: AcceptState = AcceptState.NONE,
-        val rateId: Int? = null
+        val rateId: String? = null
 ) : Parcelable {
 
     enum class Type {
@@ -44,7 +44,7 @@ data class Notification(
                         RemoteNotification.STATUS_CANCELLED -> AcceptState.DISABLED
                         else -> AcceptState.NONE
                     },
-                    remoteNotification.event_id
+                    if (remoteNotification.event_id == 0) null else remoteNotification.event_id.toString()
             )
         }
     }

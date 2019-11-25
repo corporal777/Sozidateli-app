@@ -11,10 +11,11 @@ import okhttp3.RequestBody
 interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event?>>
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
-    fun getNewsById(eventId: Int, newsId: Int): Single<News>
     fun getEventRegisterField(eventId: String): Single<EventRegisterForm>
     fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse>
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
+    fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>>
+    fun setEventRating(eventId: String, body: RequestBody): Completable
     fun getEventActivity(eventId: String): Maybe<EventActivity>
     fun getEventInfo(eventId: String): Maybe<EventInfo>
     fun setDefaultEvent(eventId: String): Completable
@@ -26,9 +27,9 @@ interface EventRepository {
     fun getSubeventUsers(eventId: String, subEventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun getCategoriesList(): Single<List<EventGroup>>
     fun getEventSpeakers(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
-    fun setEventRating(eventId: Int, value: Int): Completable
     fun getEventByCode(code: String): Single<Event>
     fun getPage(event: String, page: String): Single<Page>
 
     fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>
+    fun loadEventRatingData(eventId: String): Single<EventRatingData>
 }
