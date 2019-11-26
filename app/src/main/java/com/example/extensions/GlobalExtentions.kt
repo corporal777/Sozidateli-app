@@ -283,12 +283,12 @@ fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T
         keyListener = null
         (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
         setAdapter(NoFilterArrayAdapter(context, R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
-        setText(selectedVariant, false)
+        setText(selectedVariant ?: notSelectedVariant, false)
         tag = onTextChanged {
             if (notSelectedVariant != null && it.toString() == notSelectedVariant) {
                 val watcher = tag as? TextWatcher
                 removeTextChangedListener(watcher)
-                text = null
+                setText(notSelectedVariant)
                 addTextChangedListener(watcher)
             }
             val variant = it?.toString()

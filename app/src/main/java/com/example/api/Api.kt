@@ -267,4 +267,7 @@ interface Api {
 
     @GET("/v1/common/page_agreement")
     fun getUserAgreement(): Maybe<ApiResponse<Agreement>>
+
+    @POST("/v1/common/formats")
+    fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>
 }

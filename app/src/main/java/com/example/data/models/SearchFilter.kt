@@ -16,9 +16,11 @@ sealed class SearchFilter {
             var dateFinish: String? = null,
             var registration: String? = null,
             var theme: Int? = null,
-            var spec: Int? = null
+            var spec: Int? = null,
+            var format: Int? = null
     ) : SearchFilter() {
         var interests: Map<Interest, List<Interest>>? = null
+        var formats: List<EventFormat>? = null
     }
 
     data class User(
@@ -34,7 +36,7 @@ sealed class SearchFilter {
     ) : SearchFilter() {
         var interests: Map<Interest, List<Interest>>? = null
 
-        companion object{
+        companion object {
             const val AGE_MIN = 14
             const val AGE_MAX = 80
         }

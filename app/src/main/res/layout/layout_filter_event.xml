@@ -36,6 +36,29 @@
     </com.example.ui.views.CustomTextInputLayout>
 
     <LinearLayout
+        android:id="@+id/llFormat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:text="@string/search_filter_format" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilFormat"
+            style="@style/Profile.Edit.InputLayout.DropDown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvFormat"
+                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

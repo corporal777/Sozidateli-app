@@ -88,6 +88,22 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 llTheme.isVisible = true
                 llSpec.isVisible = true
             }
+
+            val formats = filter.formats
+            if (formats.isNullOrEmpty()) {
+                llFormat.isVisible = false
+            } else {
+                llFormat.isVisible = true
+                initDropDownView(
+                        tvFormat,
+                        formats,
+                        formats.find { it.id == filter.format }?.name,
+                        filterNotChosenVariant,
+                        { it.name },
+                        { it?.id },
+                        { filter.format = it }
+                )
+            }
         }
     }
 
@@ -101,6 +117,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
             tvSubscription.setText(filterNotChosenVariant)
             tvTheme.setText(filterNotChosenVariant)
             tvSpec.setText(filterNotChosenVariant)
+            tvFormat.setText(filterNotChosenVariant)
         }
     }
 }

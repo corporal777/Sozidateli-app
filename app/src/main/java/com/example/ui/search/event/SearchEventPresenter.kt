@@ -7,8 +7,10 @@ import com.example.data.models.Event.Companion.FILTER_CATEGORY
 import com.example.data.models.Event.Companion.FILTER_CONTENT
 import com.example.data.models.Event.Companion.FILTER_DATE_FINISH
 import com.example.data.models.Event.Companion.FILTER_DATE_START
+import com.example.data.models.Event.Companion.FILTER_FORMAT
 import com.example.data.models.Event.Companion.FILTER_NAME
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION
+import com.example.data.models.EventFormat
 import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.extensions.groupByNotNull
@@ -17,6 +19,8 @@ import com.example.repository.EventRepository
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -34,23 +38,29 @@ class SearchEventPresenter
         eventRepository.getEventList(limit, offset, buildFilter())
     }
 
-    private var isInterestsLoaded = false
+    private var isCommonDataLoaded = false
     private var interests: Map<Interest, List<Interest>>? = null
+    private var formats: List<EventFormat>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += commonRepository.getInterests()
+        val loadInterests = commonRepository.getInterests()
                 .map { interests ->
                     interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
                 }
+        compositeDisposable += Maybe.zip(loadInterests, commonRepository.getEventFormats(), BiFunction<Map<Interest, List<Interest>>, List<EventFormat>, Unit> { interests, formats ->
+            this.interests = interests
+            this.formats = formats
+        })
                 .performOnBackgroundOutOnMain()
-                .subscribe({
-                    isInterestsLoaded = true
-                    this.interests = it
-                }, {
-                    it.printStackTrace()
-                    isInterestsLoaded = true
-                })
+                .subscribeSimple(
+                        onError = {
+                            it.printStackTrace()
+                            isCommonDataLoaded = true
+                        },
+                        onSuccess = {
+                            isCommonDataLoaded = true
+                        })
     }
 
     override fun onEventClick(event: Event) {
@@ -60,9 +70,10 @@ class SearchEventPresenter
     override fun onShowFilterRequest() {
         val showFilter = {
             tmpFilter.interests = this.interests
+            tmpFilter.formats = this.formats
             super.onShowFilterRequest()
         }
-        if (isInterestsLoaded) showFilter()
+        if (isCommonDataLoaded) showFilter()
         else {
             compositeDisposable += Completable.complete()
                     .timeout(3, TimeUnit.SECONDS)
@@ -90,6 +101,8 @@ class SearchEventPresenter
         if (dateFinish != null) put(FILTER_DATE_FINISH, dateFinish)
         val category = filter.spec ?: filter.theme
         if (category != null) put(FILTER_CATEGORY, category)
+        val format = filter.format
+        if (format != null) put(FILTER_FORMAT, format)
     }
 
     override fun createFilter() = SearchFilter.Event()

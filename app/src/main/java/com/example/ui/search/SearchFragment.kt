@@ -176,7 +176,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
         if (interests == null) {
             textView.isEnabled = false
-            textView.text = null
+            textView.setText(filterNotChosenVariant)
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(spec, interests)
