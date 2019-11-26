@@ -63,6 +63,7 @@ interface MainContract {
         fun onOpenStartDestination()
         fun onOpenNotStartDestination()
         fun onOpenChatDestination(chatId: String?)
+        fun onOpenCheckConnectionDestination(check: Boolean)
         fun onHandleAuthLink(email: String, code: String)
         fun onHandleRecoverPasswordLink(email: String, code: String)
         fun onHandleChangeEmailConfirm(email: String, code: String)

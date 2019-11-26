@@ -1,6 +1,7 @@
 package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.createMapInfo
 import com.example.di.Connectivity
@@ -18,6 +19,7 @@ class EventTabsPresenter
 @Inject constructor(
         private val eventData: UserEventData,
         private val eventRepository: EventRepository,
+        private val appData: AppData,
         @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
 
@@ -73,10 +75,11 @@ class EventTabsPresenter
                 .subscribeSimple(
                         onComplete = {
                             eventData.clear()
+                            appData.getUser().default_event = null
                             viewState.showEventList()
                         },
                         onNoInternetConnectionException = {
-                            viewState.showNoConnectionMessage()
+                            viewState.showNoConnectionMessage(true)
                         })
     }
 

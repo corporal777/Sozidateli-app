@@ -81,8 +81,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.showToast(messagesIds)
     }
 
-    override fun showNoConnectionMessage() {
-        mActivity?.showNoConnectionMessage()
+    override fun showNoConnectionMessage(show: Boolean) {
+        mActivity?.showNoConnectionMessage(show)
     }
 
     override fun showRequestErrorMessage() {

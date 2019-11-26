@@ -16,10 +16,10 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etAddress"
+            android:id="@+id/etName"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_address"
-            android:inputType="textCapWords" />
+            android:hint="@string/search_filter_event_name"
+            android:inputType="textCapSentences" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout
@@ -29,10 +29,10 @@
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etName"
+            android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_event_name"
-            android:inputType="textCapSentences" />
+            android:hint="@string/search_filter_address"
+            android:inputType="textCapWords" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <LinearLayout

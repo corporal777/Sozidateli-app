@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -28,6 +29,7 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.interfaces.BackgroundImageFragment
+import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
@@ -43,6 +45,7 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import kotlinx.android.synthetic.main.layout_inapp.*
@@ -71,6 +74,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     is SplashFragment, is AuthorizationFragment, is EventListFragment, is EventTabsFragment -> onOpenStartDestination()
                     else -> onOpenNotStartDestination()
                 }
+
+                onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
             }
 
             if (f is ToolbarFragment) {
@@ -101,6 +106,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private lateinit var inappBehavior: BottomSheetBehavior<ConstraintLayout>
+
+    private var noInternetDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -376,6 +383,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun dimContent(dim: Boolean) {
         inappDim.setBackgroundResource(if (dim) R.color.dim else 0)
+    }
+
+    override fun showNoConnectionMessage(show: Boolean) {
+        if (show) {
+            BottomSheetDialog(this).apply {
+                setContentView(R.layout.layout_no_internet)
+                setCancelable(false)
+                setOnKeyListener { _, keyCode, _ ->
+                    if (keyCode == KeyEvent.KEYCODE_BACK) finish()
+                    true
+                }
+                noInternetDialog = this
+            }.show()
+        } else {
+            noInternetDialog?.dismiss()
+        }
     }
 
     override fun navigateUp() {

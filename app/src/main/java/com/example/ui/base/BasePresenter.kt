@@ -31,7 +31,6 @@ open class BasePresenter<V : BaseContract.View>
 
     protected open fun onReceiveNoInternetError() {
         hasNoConnectionError = true
-        viewState.showNoConnectionMessage()
     }
 
     protected open fun onReceiveApiError(apiError: ApiError) {

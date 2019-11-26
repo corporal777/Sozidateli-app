@@ -77,10 +77,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         showToast(messages.joinToString(separator = "\n"))
     }
 
-    override fun showNoConnectionMessage() {
-        Toast.makeText(this, R.string.no_internet_error_message, Toast.LENGTH_LONG).show()
-    }
-
     override fun showRequestErrorMessage() {
         Toast.makeText(this, R.string.request_execution_error, Toast.LENGTH_LONG).show()
     }

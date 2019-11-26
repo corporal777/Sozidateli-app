@@ -30,7 +30,7 @@ interface BaseContract {
         fun showToast(messagesIds: List<Int>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showNoConnectionMessage()
+        fun showNoConnectionMessage(show: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showRequestErrorMessage()

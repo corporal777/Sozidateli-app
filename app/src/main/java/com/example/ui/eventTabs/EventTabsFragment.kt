@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MapInfo
 import com.example.data.models.Place
+import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_event_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment {
+class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment, DoNotCheckConnectionFragment {
 
     override val title = ""
 
@@ -144,6 +145,10 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
             addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
         }
+    }
+
+    override fun showNoConnectionMessage(show: Boolean) {
+
     }
 
     override fun layout() = R.layout.fragment_event_tabs

@@ -11,6 +11,7 @@ import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
+import com.example.di.Connectivity
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -55,7 +56,8 @@ class MainPresenter
         private val chatRepository: ChatRepository,
         private val locationProviderClient: FusedLocationProviderClient,
         private val rxPermissions: RxPermissions,
-        private val notificationManager: NotificationManager
+        private val notificationManager: NotificationManager,
+        @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -65,6 +67,10 @@ class MainPresenter
 
     private var isAuthRequired = false
     private var inappList: Deque<RemoteNotification>? = null
+
+    private var isDoNotCheckConnectionFragmentOpened = false
+    private var isInternetConnected = false
+    private var canCheckInternetConnection = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -79,6 +85,15 @@ class MainPresenter
                         loadUser()
                     }
                 }
+
+        compositeDisposable += connectivity
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    isInternetConnected = it
+                    checkInternetConnection()
+                }, {
+
+                })
     }
 
     private fun loadUser() {
@@ -101,6 +116,8 @@ class MainPresenter
                         checkIntent()
                         showNextInapp()
                     }
+                    canCheckInternetConnection = true
+                    checkInternetConnection()
 
                     AuthBackground.clear()
                 }, {
@@ -416,6 +433,17 @@ class MainPresenter
     override fun onOpenChatDestination(chatId: String?) {
         viewState.showBackButton(true)
         chatHelper.currentChatId = chatId
+    }
+
+    override fun onOpenCheckConnectionDestination(check: Boolean) {
+        isDoNotCheckConnectionFragmentOpened = check
+        checkInternetConnection()
+    }
+
+    private fun checkInternetConnection() {
+        if (canCheckInternetConnection){
+            viewState.showNoConnectionMessage(!isInternetConnected && !isDoNotCheckConnectionFragmentOpened)
+        }
     }
 
     companion object {
