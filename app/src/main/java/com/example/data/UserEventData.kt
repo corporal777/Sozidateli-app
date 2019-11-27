@@ -11,6 +11,7 @@ import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
@@ -53,7 +54,7 @@ class UserEventData(
             UserEvent(eventId, info, activity, System.currentTimeMillis())
         })
                 .doOnSuccess { userEventDao.insert(it) }
-                .onErrorResumeNext(loadEventCache(eventId))
+                .onErrorResumeNext(loadEventCache(eventId).toMaybe())
                 .doOnSuccess {
                     val dateFormat = defaultServerDateFormatter
                     days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
@@ -64,7 +65,7 @@ class UserEventData(
                 .ignoreElement()
     }
 
-    private fun loadEventCache(event: String): Maybe<UserEvent> {
+    private fun loadEventCache(event: String): Single<UserEvent> {
         return userEventDao.getById(event)
                 .doOnSuccess { it.isDataFromLocalStorage = true }
     }

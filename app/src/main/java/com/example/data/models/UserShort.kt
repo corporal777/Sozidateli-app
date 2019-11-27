@@ -21,7 +21,9 @@ data class UserShort(
         @SerializedName("notification_unread")
         val notificationsUnreadCount: Int,
         @SerializedName("notification_inapp")
-        val inapps: List<RemoteNotification>
+        val inapps: List<RemoteNotification>,
+        @SerializedName("user_status")
+        val status: User.Status?
 ) {
     fun toUser() = User().apply {
         user_id = id
@@ -32,5 +34,6 @@ data class UserShort(
         user_avatar = avatar
         default_event = event
         notification_unread = notificationsUnreadCount
+        user_status = status
     }
 }

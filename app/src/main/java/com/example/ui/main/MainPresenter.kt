@@ -11,16 +11,12 @@ import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
-import com.example.di.Connectivity
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.ACTION_REQUEST_COUNT
-import com.example.util.AuthBackground
-import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
-import com.example.util.ChatHelper
+import com.example.util.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -57,7 +53,7 @@ class MainPresenter
         private val locationProviderClient: FusedLocationProviderClient,
         private val rxPermissions: RxPermissions,
         private val notificationManager: NotificationManager,
-        @Connectivity private val connectivity: Observable<Boolean>
+        private val connectivityProvider: ConnectivityProvider
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var photoMessageText: String
@@ -70,7 +66,6 @@ class MainPresenter
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = false
-    private var canCheckInternetConnection = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -85,15 +80,6 @@ class MainPresenter
                         loadUser()
                     }
                 }
-
-        compositeDisposable += connectivity
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    isInternetConnected = it
-                    checkInternetConnection()
-                }, {
-
-                })
     }
 
     private fun loadUser() {
@@ -103,6 +89,7 @@ class MainPresenter
                 .ignoreElement()
         val loadCalendar = checkUserLocation()
         compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
+                .andThen(Completable.defer { checkInternetConnected() })
                 .andThen(subscribeToNotifications())
                 .doOnComplete { connectToSocket(appData.getUser().user_id) }
                 .andThen(Completable.defer { checkShowGreetings() })
@@ -116,9 +103,8 @@ class MainPresenter
                         checkIntent()
                         showNextInapp()
                     }
-                    canCheckInternetConnection = true
-                    checkInternetConnection()
 
+                    initInternetConnectionCheck()
                     AuthBackground.clear()
                 }, {
                     it.printStackTrace()
@@ -128,7 +114,38 @@ class MainPresenter
                         showLogin()
                         checkIntent()
                     }
+                    initInternetConnectionCheck()
                 })
+    }
+
+    private fun initInternetConnectionCheck() {
+        compositeDisposable += connectivityProvider.observeNetworkConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    isInternetConnected = it
+                    checkInternetConnection()
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    private fun checkInternetConnected(): Completable {
+        return Completable.create { emitter ->
+            val connection = connectivityProvider.observeNetworkConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        isInternetConnected = it
+                        if (it || appData.getUser().default_event != null) {
+                            if (!emitter.isDisposed) emitter.onComplete()
+                        } else {
+                            checkInternetConnection()
+                        }
+                    }, {
+                        if (!emitter.isDisposed) emitter.onError(it)
+                    })
+
+            emitter.setDisposable(connection)
+        }
     }
 
     private fun checkShowGreetings(): Completable {
@@ -440,10 +457,19 @@ class MainPresenter
         checkInternetConnection()
     }
 
+    override fun onRetryConnectionClick() {
+        compositeDisposable += connectivityProvider.checkInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    isInternetConnected = it
+                    checkInternetConnection()
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
     private fun checkInternetConnection() {
-        if (canCheckInternetConnection){
-            viewState.showNoConnectionMessage(!isInternetConnected && !isDoNotCheckConnectionFragmentOpened)
-        }
+        viewState.showNoConnectionMessage(!isInternetConnected && !isDoNotCheckConnectionFragmentOpened)
     }
 
     companion object {

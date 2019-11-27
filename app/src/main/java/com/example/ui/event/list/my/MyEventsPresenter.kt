@@ -5,6 +5,7 @@ import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
@@ -20,12 +21,14 @@ class MyEventsPresenter
 @Inject constructor(
         private val eventData: UserEventData,
         private val eventRepository: EventRepository,
+        private val userRepository: UserRepository,
         @Connectivity connectivity: Observable<Boolean>
 ) : EventListPresenter<MyEventsContract.View>(connectivity), MyEventsContract.Presenter {
 
     override fun onEventClick(event: Event) {
         if (isCanSetDefault(event)) {
             compositeDisposable += eventRepository.setDefaultEvent(event.id)
+                    .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
                     .andThen(eventData.load(event.id))
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()

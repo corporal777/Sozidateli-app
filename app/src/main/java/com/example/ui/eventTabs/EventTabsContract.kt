@@ -1,7 +1,6 @@
 package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.MapInfo
@@ -11,8 +10,6 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventTabsContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun initialNavigationSetup()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "tab")
         fun showMyScheduleTab()

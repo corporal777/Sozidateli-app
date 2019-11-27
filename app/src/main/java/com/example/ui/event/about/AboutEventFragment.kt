@@ -92,7 +92,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             }
         }
 
-        btnRegister.btnAdd.apply {
+        btnRegister.btnAction.apply {
             text = getString(R.string.go_to_event)
             setOnClickListener { presenter.onGoToEventClick() }
         }

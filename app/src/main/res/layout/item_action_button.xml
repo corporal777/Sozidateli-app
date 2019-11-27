@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAdd"
+        android:id="@+id/btnAction"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_button_height"
         android:layout_marginStart="@dimen/profile_padding_start"

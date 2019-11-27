@@ -32,7 +32,7 @@ open class SubEventItem(
             tvTime.text = subEvent.start.formatToInterval(subEvent.finish, defaultServerDateTimeFormatter, true)
             tvStatus.text = subEvent.title
 
-            btnAdd.apply {
+            btnAction.apply {
                 if (subEvent.isInCalendar) {
                     setBackgroundResource(R.drawable.background_corners_border)
                     setTextColor(ContextCompat.getColor(context, R.color.colorAccent))

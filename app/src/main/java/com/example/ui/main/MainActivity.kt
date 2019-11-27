@@ -1,5 +1,6 @@
 package com.example.ui.main
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
@@ -48,6 +49,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
+import kotlinx.android.synthetic.main.item_action_button.view.*
 import kotlinx.android.synthetic.main.layout_inapp.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -385,10 +387,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         inappDim.setBackgroundResource(if (dim) R.color.dim else 0)
     }
 
+    @SuppressLint("InflateParams")
     override fun showNoConnectionMessage(show: Boolean) {
-        if (show) {
+        if (show && noInternetDialog?.isShowing != true) {
+            val tabsNode = findNavController().graph.findNode(R.id.event_tabs_fragment)
+            val mustGoToEvent = tabsNode != null
             BottomSheetDialog(this).apply {
-                setContentView(R.layout.layout_no_internet)
+                val layout = LayoutInflater.from(this@MainActivity).inflate(R.layout.layout_no_internet, null).apply {
+                    this.btnAction.text = getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
+                    this.btnAction.setOnClickListener {
+                        if (mustGoToEvent) this@MainActivity.findNavController().popBackStack(R.id.event_tabs_fragment, false)
+                        else presenter.onRetryConnectionClick()
+                    }
+                }
+                setContentView(layout)
                 setCancelable(false)
                 setOnKeyListener { _, keyCode, _ ->
                     if (keyCode == KeyEvent.KEYCODE_BACK) finish()
@@ -396,7 +408,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
                 noInternetDialog = this
             }.show()
-        } else {
+        } else if (!show) {
             noInternetDialog?.dismiss()
         }
     }

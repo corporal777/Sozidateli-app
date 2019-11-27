@@ -205,7 +205,7 @@
     <string name="event_map_tab_building_scheme">Схема комплекса</string>
 
     <string name="image_load_error">Ошибка загрузки изображения</string>
-    <string name="request_execution_error">Ошибка выолнения запроса</string>
+    <string name="request_execution_error">Ошибка выполнения запроса</string>
     <string name="title_activity_maps">Map</string>
 
     <string name="subevent_list_member">Список участников</string>
@@ -464,6 +464,8 @@
     <string name="no_internet_error_message">Hет подключения к интернету</string>
     <string name="no_internet_title">Hет подключения\nк интернету</string>
     <string name="no_internet_message">Для доступа, пожалуйста, проверьте ваше интернет-соединение</string>
+    <string name="no_internet_action_retry">Попробовать заново</string>
+    <string name="no_internet_action_to_calendar">Перейти в календарь</string>
     <string name="unread_message">Непрочитанные сообщения</string>
 
     <string name="banned_empty_message">Никого нет</string>

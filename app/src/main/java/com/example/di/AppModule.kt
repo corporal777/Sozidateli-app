@@ -13,6 +13,7 @@ import com.example.data.prefs.AppPrefs
 import com.example.repository.EventRepository
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.ChatHelper
+import com.example.util.ConnectivityProvider
 import com.example.util.NotificationUtil
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -66,6 +67,9 @@ class AppModule {
             ReactiveNetwork.observeNetworkConnectivity(context)
                     .map { it.state() == NetworkInfo.State.CONNECTED }
                     .share()
+
+    @Provides
+    fun provideConnectivityProvider(context: Context): ConnectivityProvider = ConnectivityProvider(context)
 
     @Singleton
     @Provides

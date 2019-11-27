@@ -75,8 +75,6 @@ data class User(
         var notification_unread: Int = -1,
         var is_in_favorite: Boolean = false,
         var is_has_chat: Boolean = false
-
-
 ) {
     val fullName: String
         get() = "$user_name $user_last_name"

@@ -785,6 +785,15 @@
                             <option name="y" value="1216" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="notification_to_event_rating">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>

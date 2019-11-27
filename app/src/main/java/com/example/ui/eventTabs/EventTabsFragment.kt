@@ -1,8 +1,12 @@
 package com.example.ui.eventTabs
 
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -24,7 +28,9 @@ import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.BottomNavigationViewHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_event_tabs.*
+import kotlinx.android.synthetic.main.item_action_button.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -41,6 +47,8 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     @ProvidePresenter
     fun providePresenter(): EventTabsPresenter = presenterProvider.get()
 
+    private var noInternetDialog: BottomSheetDialog? = null
+
     private val bottomNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
         presenter.apply {
             when (it.itemId) {
@@ -56,6 +64,30 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         return@OnNavigationItemSelectedListener true
     }
 
+    private val childFragmentCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            val tabId = when (f) {
+                is EventMyScheduleFragment -> R.id.tab_event_my_schedule
+                is EventCompleteScheduleFragment -> R.id.tab_event_schedule
+                is AboutEventFragment -> R.id.about_event
+                is EventLocationFragment -> R.id.event_location
+                else -> throw IllegalArgumentException("No tab fo fragment $f")
+            }
+
+            bottomNavigation.apply {
+                setOnNavigationItemSelectedListener(null)
+                selectedItemId = tabId
+                setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
+            }
+        }
+    }
+
+    private val backPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+
+        }
+    }
+
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,10 +95,9 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         BottomNavigationViewHelper(bottomNavigation).removeShiftMode()
         setHasOptionsMenu(true)
         bottomNavigation.apply { setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener) }
-    }
 
-    override fun initialNavigationSetup() {
-
+        childFragmentManager.registerFragmentLifecycleCallbacks(childFragmentCallback, false)
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
     override fun showMyScheduleTab() = selectTab(R.id.tab_event_my_schedule)
@@ -125,13 +156,9 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     override fun showEventList() {
-        findNavController().apply {
-            graph.startDestination = R.id.event_list_fragment
-            val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_tabs_fragment, true)
-                    .build()
-            navigate(R.id.event_list_fragment, null, opts)
-        }
+        findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
     }
 
     override fun setLabel(label: String) {
@@ -148,7 +175,25 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     override fun showNoConnectionMessage(show: Boolean) {
-
+        if (show && noInternetDialog?.isShowing != true) {
+            BottomSheetDialog(requireContext()).apply {
+                val layout = LayoutInflater.from(requireContext()).inflate(R.layout.layout_no_internet, null).apply {
+                    this.btnAction.text = getString(R.string.no_internet_action_to_calendar)
+                    this.btnAction.setOnClickListener {
+                        presenter.onMyScheduleTabSelected()
+                    }
+                }
+                setContentView(layout)
+                setCancelable(false)
+                setOnKeyListener { _, keyCode, _ ->
+                    if (keyCode == KeyEvent.KEYCODE_BACK) requireActivity().finish()
+                    true
+                }
+                noInternetDialog = this
+            }.show()
+        } else if (!show) {
+            noInternetDialog?.dismiss()
+        }
     }
 
     override fun layout() = R.layout.fragment_event_tabs

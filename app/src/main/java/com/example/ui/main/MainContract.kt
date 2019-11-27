@@ -28,13 +28,13 @@ interface MainContract {
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showChat(chatId: String, userName: String)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEvent(event: String)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showOrganization(organization: String)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNotification(notification: Notification)
 
         @StateStrategyType(SkipStrategy::class)
@@ -76,5 +76,7 @@ interface MainContract {
         fun onInappAcceptClick(inapp: Notification)
         fun onInappCancelClick(inapp: Notification)
         fun onInappOkClick()
+
+        fun onRetryConnectionClick()
     }
 }

@@ -14,7 +14,7 @@ class ActionButtonItem(
     var isEnabled = true
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.btnAdd.apply {
+        viewHolder.btnAction.apply {
             setOnClickListener { addClickListener() }
             val actionText: Int
             val actionIcon: Int
