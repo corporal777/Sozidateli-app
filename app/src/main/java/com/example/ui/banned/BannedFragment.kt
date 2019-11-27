@@ -56,6 +56,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setItems(userChats: List<UserChat?>) {
@@ -71,6 +72,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             )
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun openUserInfo(userId: String) {

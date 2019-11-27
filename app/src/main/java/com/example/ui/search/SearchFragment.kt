@@ -24,6 +24,8 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
 import initDropDownView
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search.recyclerView
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import onTextChanged
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> : BaseFragment(), SearchContract.View<I, F> {
@@ -61,11 +63,13 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(data: List<I?>) {
         adapter.update(data.map(::createItem))
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun showFilter(filter: F) {

@@ -54,6 +54,7 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(members: List<OrganizationMember>) {
@@ -62,6 +63,7 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
             OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onMemberClick(it) }
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {

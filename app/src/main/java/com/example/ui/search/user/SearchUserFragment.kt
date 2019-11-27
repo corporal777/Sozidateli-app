@@ -14,7 +14,15 @@ import com.example.holders.SearchUserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initDropDownView
+import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
+import kotlinx.android.synthetic.main.layout_filter_user.view.etAddress
+import kotlinx.android.synthetic.main.layout_filter_user.view.etName
+import kotlinx.android.synthetic.main.layout_filter_user.view.tilSpec
+import kotlinx.android.synthetic.main.layout_filter_user.view.tvSpec
+import kotlinx.android.synthetic.main.layout_filter_user.view.tvSubscription
+import kotlinx.android.synthetic.main.layout_filter_user.view.tvTheme
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -46,7 +54,10 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
     override fun createFilterView(filter: SearchFilter.User): View {
         return layoutInflater.inflate(R.layout.layout_filter_user, null).apply {
             initTextFilter(etName, filter.name) { filter.name = it }
-            initTextFilter(etAddress, filter.address) { filter.address = it }
+            etAddress.apply {
+                setTextWithoutSearch(filter.address)
+                onTextChanged { filter.address = it.toString() }
+            }
             initTextFilter(etEmail, filter.email) { filter.email = it }
             initTextFilter(etPhone, filter.phone) { filter.phone = it }
             initBiFilter(tvSubscription, resources.getStringArray(R.array.favorites_status).toList(), filter.favorites) { filter.favorites = it }

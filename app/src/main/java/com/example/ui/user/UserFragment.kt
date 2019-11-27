@@ -37,7 +37,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.fragment_chat_list.*
+import kotlinx.android.synthetic.main.fragment_user.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -93,6 +93,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         recyclerView.apply {
             adapter = this@UserFragment.adapter
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setUser(profileUserData: ProfileUserData) {
@@ -108,6 +109,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
         interestsDataSection.update(listOfNotNull(initInterests(interests, editable)))
         additionalDataSection.update(listOfNotNull(initAdditionalInformation(user, editable)))
+        swipeToRefresh.isRefreshing = false
     }
 
     private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
@@ -194,7 +196,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val mobilePhone = user.user_phone
         val gender = user.user_gender
         val birthday = user.user_birthday?.formatToDefaultDate()
-        val city = user.user_address_city
+        val city = user.user_address
         val socialNetworks = user.social_links
 
         return ProfileDataPersonalItem(

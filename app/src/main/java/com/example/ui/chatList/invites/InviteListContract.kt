@@ -18,5 +18,6 @@ interface InviteListContract {
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
         fun onItemTake(position: Int)
+        fun onRefreshRequest()
     }
 }

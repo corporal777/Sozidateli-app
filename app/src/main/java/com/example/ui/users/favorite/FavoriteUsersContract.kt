@@ -19,5 +19,6 @@ interface FavoriteUsersContract {
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onUserClick(user: User)
         fun onUserRemoveFromFavoritesClick(user: User)
+        fun onRefreshRequest()
     }
 }

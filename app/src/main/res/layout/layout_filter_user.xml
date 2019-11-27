@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,13 +26,17 @@
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:endIconMode="none">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address"
-            android:inputType="textCapWords" />
+            android:inputType="textCapSentences"
+            android:minHeight="48dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <LinearLayout

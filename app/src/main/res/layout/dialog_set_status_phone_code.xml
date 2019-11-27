@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@drawable/background_button_underline"
+        android:minWidth="0dp"
         android:text="@string/status_profile_status_code_do_not_receive"
         android:textAllCaps="false"
         android:textColor="@color/text_title"

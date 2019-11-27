@@ -27,6 +27,7 @@ interface NotificationsContract {
     interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
         fun onItemTake(position: Int)
+        fun onRefreshRequest()
 
         fun onNotificationReadMoreClick(id: Int)
         fun onNotificationReadClick(id: Int)

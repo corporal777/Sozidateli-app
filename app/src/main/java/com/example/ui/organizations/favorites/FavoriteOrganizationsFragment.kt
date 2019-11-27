@@ -57,6 +57,7 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
                 setImage(R.drawable.ic_neutral_face)
             }
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setOrganizations(organizations: List<Organization?>) {
@@ -69,6 +70,7 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
             )
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun showOrganization(organization: Organization) {

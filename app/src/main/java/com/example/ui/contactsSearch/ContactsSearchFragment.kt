@@ -109,6 +109,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
             setMessage(getString(R.string.search_empty_list))
             setImage(R.drawable.ic_neutral_face)
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     private fun findItemPositionWithoutHeaders(position: Int): Int {
@@ -132,6 +133,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
         chatsSection.update(chats.map(mapToItem))
         anotherSection.update(another.map(mapToItem))
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun clearItems() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,29 +11,33 @@
     tools:paddingTop="@dimen/margin_horizontal_default">
 
     <com.example.ui.views.CustomTextInputLayout
-        style="@style/Profile.Edit.InputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etAddress"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_address"
-            android:inputType="textCapWords" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilOrganizationName"
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etOrganizationName"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_organization_name"
             android:inputType="textCapSentences" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        style="@style/Profile.Edit.InputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:endIconMode="none">
+
+        <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+            android:id="@+id/etAddress"
+            style="@style/Profile.Edit.Input.SingleLine"
+            android:hint="@string/search_filter_address"
+            android:inputType="textCapSentences"
+            android:minHeight="48dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout

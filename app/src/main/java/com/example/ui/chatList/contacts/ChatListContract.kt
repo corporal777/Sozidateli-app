@@ -39,5 +39,6 @@ interface ChatListContract {
         fun onEmptyChatsButtonAddChatClick()
         fun onItemTake(position: Int)
         fun onChatScrollChange(isTopPosition: Boolean)
+        fun onRefreshRequest()
     }
 }

@@ -21,6 +21,10 @@ class OrganizationPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        loadData()
+    }
+
+    private fun loadData() {
         compositeDisposable += organizationRepository.getOrganizationById(organizationId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -81,5 +85,9 @@ class OrganizationPresenter
 
     override fun onUserClick(user: User) {
         viewState.showUser(user.user_id.toString())
+    }
+
+    override fun onRefreshRequest() {
+        loadData()
     }
 }

@@ -40,5 +40,6 @@ interface ContactsSearchContract {
         fun onQueryTextChange(text: String)
         fun onSearchCollapsed()
         fun onUserClick(user: User)
+        fun onRefreshRequest()
     }
 }

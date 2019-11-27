@@ -73,5 +73,7 @@ interface UserContract {
         fun onEditWorkClick()
         fun onEditInterestsClick()
         fun onEditAdditionalDataClick()
+
+        fun onRefreshRequest()
     }
 }

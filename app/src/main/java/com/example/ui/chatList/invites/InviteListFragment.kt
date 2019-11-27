@@ -15,7 +15,7 @@ import com.example.ui.base.BaseFragment
 import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
-import kotlinx.android.synthetic.main.fragment_chat_list.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -62,6 +62,7 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
             setMessage(getString(R.string.invite_list_empty))
             setImage(R.drawable.ic_neutral_face)
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
@@ -74,6 +75,7 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
         })
 
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun openChat(chatId: Int, userName: String) {

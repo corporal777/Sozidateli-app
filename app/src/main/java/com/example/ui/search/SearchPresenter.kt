@@ -41,6 +41,10 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         paginationList.onItemTake(position)
     }
 
+    override fun onRefreshRequest() {
+        pagination.invalidate()
+    }
+
     override fun onFilterApplyClick() {
         filter = copyFilter(tmpFilter)
         invalidateList()

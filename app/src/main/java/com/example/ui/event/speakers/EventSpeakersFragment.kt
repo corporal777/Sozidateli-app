@@ -56,12 +56,14 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
 
     override fun setData(data: List<Speaker>) {
         groupAdapter.update(data.map { SpeakerItem(it, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerFavoriteChangeClick(it) }) })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun updateSpeaker(speaker: Speaker) {

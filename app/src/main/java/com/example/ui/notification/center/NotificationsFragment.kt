@@ -81,6 +81,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(notifications: List<Notification?>) {
@@ -93,6 +94,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
             }
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun showNotification(notification: Notification) {

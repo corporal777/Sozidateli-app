@@ -69,5 +69,9 @@ abstract class EventListPresenter<V : EventListContract.View>(
         paginationList.onItemTake(position)
     }
 
+    override fun onRefreshRequest() {
+        paginationList.invalidate()
+    }
+
     protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
 }

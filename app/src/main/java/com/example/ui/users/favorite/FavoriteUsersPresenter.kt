@@ -41,4 +41,8 @@ class FavoriteUsersPresenter
     override fun onItemTake(position: Int) {
         pagination.onItemTake(position)
     }
+
+    override fun onRefreshRequest() {
+        pagination.invalidate()
+    }
 }

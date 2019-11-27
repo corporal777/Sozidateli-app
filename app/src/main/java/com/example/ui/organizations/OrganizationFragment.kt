@@ -76,6 +76,8 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                 }
             }
         }
+
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setOrganization(organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
@@ -245,6 +247,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
 
         llContent.isVisible = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun setSubscribed(isSubscribed: Boolean) {

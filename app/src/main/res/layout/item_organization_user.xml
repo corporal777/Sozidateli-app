@@ -24,6 +24,7 @@
         app:layout_constraintStart_toEndOf="@+id/ivUserAvatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="8dp"
         tools:text="@tools:sample/full_names" />
 
     <TextView

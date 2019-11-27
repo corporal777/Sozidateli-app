@@ -14,7 +14,9 @@ data class UserAddress(
         val settlement: String? = null,
         val street: String? = null,
         val house: String? = null,
-        val flat: String? = null
+        val flat: String? = null,
+        val lat: Double? = null,
+        val lon: Double? = null
 ) {
 
     companion object {
@@ -43,7 +45,9 @@ data class UserAddress(
                 item.data.settlement,
                 item.data.street,
                 item.data.house,
-                item.data.flat
+                item.data.flat,
+                item.data.geo_lat,
+                item.data.geo_lon
         )
     }
 }

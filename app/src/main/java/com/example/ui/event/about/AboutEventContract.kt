@@ -54,5 +54,6 @@ interface AboutEventContract {
         fun onPageClick(page: EventPage)
         fun onPartnerClick(partner: EventParther)
         fun onLogoClick(url: String)
+        fun onRefreshRequest()
     }
 }

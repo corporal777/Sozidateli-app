@@ -1,5 +1,6 @@
 package com.example.ui.search.organization
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,7 @@ import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_organization.view.*
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,16 +35,20 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     }
 
     override fun createItem(itemData: Organization?): Item {
-        return if (itemData == null)  PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else OrganizationItem(
                 itemData,
                 { presenter.onOrganizationClick(itemData) }
         )
     }
 
+    @SuppressLint("InflateParams")
     override fun createFilterView(filter: SearchFilter.Organization): View {
         return layoutInflater.inflate(R.layout.layout_filter_organization, null).apply {
-            initTextFilter(etAddress, filter.address) { filter.address = it }
+            etAddress.apply {
+                setTextWithoutSearch(filter.address)
+                onTextChanged { filter.address = it.toString() }
+            }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }
             initDropDownView(tvType, resources.getStringArray(R.array.organization_types).toList(), filter.type, filterNotChosenVariant, findValue = { it }, onVariantChange = { filter.type = it })

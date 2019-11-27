@@ -1,305 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollContainer"
+    android:id="@+id/swipeToRefresh"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/llContent"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white">
-
-            <ImageView
-                android:id="@+id/ivBackground"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"
-                tools:src="@tools:sample/backgrounds/scenic" />
-
-            <View
-                android:id="@+id/logoBorder"
-                android:layout_width="157.5dp"
-                android:layout_height="157.5dp"
-                android:background="@drawable/background_organization_logo_border"
-                app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
-                app:layout_constraintEnd_toEndOf="@+id/ivLogo"
-                app:layout_constraintStart_toStartOf="@+id/ivLogo"
-                app:layout_constraintTop_toTopOf="@+id/ivLogo" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvOrganizationImageName"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/background_organization_logo"
-                android:gravity="center"
-                android:maxLines="3"
-                android:padding="4dp"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
-                app:layout_constraintEnd_toEndOf="@+id/ivLogo"
-                app:layout_constraintStart_toStartOf="@+id/ivLogo"
-                app:layout_constraintTop_toTopOf="@+id/ivLogo"
-                tools:ignore="ContentDescription"
-                tools:text="@tools:sample/full_names" />
-
-            <ImageView
-                android:id="@+id/ivLogo"
-                android:layout_width="156dp"
-                android:layout_height="156dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/background_organization_logo"
-                android:scaleType="centerCrop"
-                android:transitionName="@string/image_transition_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"
-                tools:src="@tools:sample/avatars" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrierImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="ivLogo,ivBackground" />
-
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:gravity="center"
-                android:textColor="@color/profile_name_text"
-                android:textSize="19sp"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrierImage"
-                tools:text="@tools:sample/full_names" />
-
-            <com.example.ui.views.UserSubscribeButton
-                android:id="@+id/btnAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:drawablePadding="10dp"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvName" />
-
-            <TextView
-                android:id="@+id/tvDescriptionShort"
-                fontPath="fonts/Roboto-Light.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="24dp"
-                android:gravity="center"
-                android:textColor="@color/profile_name_text"
-                android:textSize="17sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnAction"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="MissingPrefix"
-                tools:text="@tools:sample/lorem" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View style="@style/ViewDivider.Horizontal" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tvMainData"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:text="@string/organization_main_data"
-                android:textAllCaps="true"
-                android:textColor="@color/profile_name_text"
-                android:textSize="17sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingPrefix" />
-
-            <TextView
-                android:id="@+id/tvLinks"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:autoLink="all"
-                android:textColor="@color/colorAccent"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvAddress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvMainData"
-                app:layout_goneMarginBottom="24dp"
-                tools:ignore="MissingPrefix"
-                tools:text="https://organization.ru\n\nhttps://vk.com/antigaiandroid" />
-
-            <TextView
-                android:id="@+id/tvAddress"
-                fontPath="fonts/Roboto-Light.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:autoLink="all"
-                android:textColor="@color/profile_name_text"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvDescription"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLinks"
-                app:layout_constraintVertical_bias="0.0"
-                app:layout_goneMarginBottom="24dp"
-                tools:ignore="MissingPrefix"
-                tools:text="420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14\n(904) 669-66-21\nsupport@donorsearch.org" />
-
-            <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:autoLink="all"
-                android:textColor="@color/profile_name_text"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@id/btnLearnMore"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvAddress"
-                app:layout_constraintVertical_bias="0.0"
-                app:layout_goneMarginBottom="24dp"
-                tools:ignore="MissingPrefix"
-                tools:text="Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи. " />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLearnMore"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:text="@string/learn_more"
-                android:textColor="@color/colorAccent"
-                android:textSize="15sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View style="@style/ViewDivider.Horizontal" />
-
-        <TextView
-            android:id="@+id/tvPeoples"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="20dp"
-            android:textAllCaps="true"
-            android:textColor="@color/profile_name_text"
-            android:textSize="17sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="MissingPrefix"
-            tools:text="@string/organization_peoples" />
-
-        <View style="@style/ViewDivider.Horizontal" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPeoples"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_organization_user" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPeoples"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="20dp"
-            android:background="?attr/selectableItemBackground"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/organization_peoples_watch"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
-
-        <View
-            android:id="@+id/dividerPeoples"
-            style="@style/ViewDivider.Horizontal" />
+        android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/llContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/ivBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+                <View
+                    android:id="@+id/logoBorder"
+                    android:layout_width="157.5dp"
+                    android:layout_height="157.5dp"
+                    android:background="@drawable/background_organization_logo_border"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+                    app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+                    app:layout_constraintStart_toStartOf="@+id/ivLogo"
+                    app:layout_constraintTop_toTopOf="@+id/ivLogo" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvOrganizationImageName"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/background_organization_logo"
+                    android:gravity="center"
+                    android:maxLines="3"
+                    android:padding="4dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+                    app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+                    app:layout_constraintStart_toStartOf="@+id/ivLogo"
+                    app:layout_constraintTop_toTopOf="@+id/ivLogo"
+                    tools:ignore="ContentDescription"
+                    tools:text="@tools:sample/full_names" />
+
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/background_organization_logo"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/image_transition_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/avatars" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="ivLogo,ivBackground" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:gravity="center"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="19sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barrierImage"
+                    tools:text="@tools:sample/full_names" />
+
+                <com.example.ui.views.UserSubscribeButton
+                    android:id="@+id/btnAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawablePadding="10dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.496"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+                <TextView
+                    android:id="@+id/tvDescriptionShort"
+                    fontPath="fonts/Roboto-Light.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAction"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@tools:sample/lorem" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/ViewDivider.Horizontal" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvMainData"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:text="@string/organization_main_data"
+                    android:textAllCaps="true"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/tvLinks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:autoLink="all"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvMainData"
+                    app:layout_goneMarginBottom="24dp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="https://organization.ru\n\nhttps://vk.com/antigaiandroid" />
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    fontPath="fonts/Roboto-Light.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:autoLink="all"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvDescription"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLinks"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_goneMarginBottom="24dp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14\n(904) 669-66-21\nsupport@donorsearch.org" />
+
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:autoLink="all"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@id/btnLearnMore"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvAddress"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_goneMarginBottom="24dp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи. " />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnLearnMore"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="@string/learn_more"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/ViewDivider.Horizontal" />
 
             <TextView
-                android:id="@+id/tvEvents"
+                android:id="@+id/tvPeoples"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="20dp"
                 android:textAllCaps="true"
                 android:textColor="@color/profile_name_text"
                 android:textSize="17sp"
@@ -308,45 +256,103 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingPrefix"
-                tools:text="@string/organization_events" />
+                tools:text="@string/organization_peoples" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vpEvents"
+            <View style="@style/ViewDivider.Horizontal" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPeoples"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_organization_user" />
 
-            <com.rd.PageIndicatorView
-                android:id="@+id/eventPageIndicator"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPeoples"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="6dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:layout_marginBottom="20dp"
-                app:piv_padding="21dp"
-                app:piv_radius="5.3dp"
-                app:piv_selectedColor="@color/indicator_color_selected"
-                app:piv_unselectedColor="@color/indicator_color" />
+                android:background="?attr/selectableItemBackground"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/organization_peoples_watch"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+
+            <View
+                android:id="@+id/dividerPeoples"
+                style="@style/ViewDivider.Horizontal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:layout_marginBottom="16dp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/organization_events" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.rd.PageIndicatorView
+                    android:id="@+id/eventPageIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp"
+                    app:piv_padding="21dp"
+                    app:piv_radius="5.3dp"
+                    app:piv_selectedColor="@color/indicator_color_selected"
+                    app:piv_unselectedColor="@color/indicator_color" />
+            </LinearLayout>
+
+            <View style="@style/ViewDivider.Horizontal" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEvents"
+                fontPath="fonts/Roboto-Medium.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/organization_events_watch"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
         </LinearLayout>
-
-        <View style="@style/ViewDivider.Horizontal" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnEvents"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/organization_events_watch"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

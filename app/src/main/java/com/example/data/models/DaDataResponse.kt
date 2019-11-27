@@ -21,5 +21,7 @@ data class DaDataInformation(
         val street: String?,
         val house: String?,
         val flat: String?,
-        val fias_id: String?
+        val fias_id: String?,
+        val geo_lat: Double?,
+        val geo_lon: Double?
 )

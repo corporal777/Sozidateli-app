@@ -41,6 +41,21 @@ class UserPresenter
             showUserMenuButton(!isCurrentUser())
         }
 
+        loadUserData()
+
+        compositeDisposable += haChat.subscribeToExcludeFlagChange()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
+                        viewState.apply {
+                            if (it.exclude) setActionUnblock()
+                            else setActionSubscribe()
+                        }
+                    }
+                }, { it.printStackTrace() })
+    }
+
+    private fun loadUserData() {
         val getUser = if (isCurrentUser()) {
             userRepository.getUserFull()
                     .flatMapObservable { appData.userChangeSubject }
@@ -69,17 +84,6 @@ class UserPresenter
                     )
                     viewState.apply {
                         setUser(profileUserData)
-                    }
-                }, { it.printStackTrace() })
-
-        compositeDisposable += haChat.subscribeToExcludeFlagChange()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
-                        viewState.apply {
-                            if (it.exclude) setActionUnblock()
-                            else setActionSubscribe()
-                        }
                     }
                 }, { it.printStackTrace() })
     }
@@ -195,4 +199,8 @@ class UserPresenter
     }
 
     private fun isCurrentUser() = userId == appData.getUser().user_id.toString()
+
+    override fun onRefreshRequest() {
+        loadUserData()
+    }
 }

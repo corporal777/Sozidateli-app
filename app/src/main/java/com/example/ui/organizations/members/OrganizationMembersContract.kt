@@ -22,5 +22,6 @@ interface OrganizationMembersContract {
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onMemberClick(member: OrganizationMember)
         fun onScrollChange(position: Int, offset: Int)
+        fun onRefreshRequest()
     }
 }

@@ -17,5 +17,6 @@ interface BannedContract {
     interface Presenter : BaseContract.Presenter {
         fun onUserClick(userChat: UserChat)
         fun onUnblockLick(userChat: UserChat)
+        fun onRefreshRequest()
     }
 }

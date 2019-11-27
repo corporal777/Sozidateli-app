@@ -1,5 +1,6 @@
 package com.example.ui.search.event
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import com.example.ui.search.SearchFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -44,9 +46,13 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
         ) { presenter.onEventClick(itemData) }
     }
 
+    @SuppressLint("InflateParams")
     override fun createFilterView(filter: SearchFilter.Event): View {
         return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
-            initTextFilter(etAddress, filter.address) { filter.address = it }
+            etAddress.apply {
+                setTextWithoutSearch(filter.address)
+                onTextChanged { filter.address = it.toString() }
+            }
             initTextFilter(etName, filter.name) { filter.name = it }
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
             initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }

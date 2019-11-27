@@ -45,6 +45,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(events: List<Event?>) {
@@ -57,6 +58,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             )
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {

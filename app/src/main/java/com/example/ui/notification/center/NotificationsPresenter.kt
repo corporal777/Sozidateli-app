@@ -83,6 +83,10 @@ class NotificationsPresenter
         pagination.onItemTake(position)
     }
 
+    override fun onRefreshRequest() {
+        pagination.invalidate()
+    }
+
     override fun onNotificationAcceptClick(id: Int) {
         updateNotification(userRepository.notificationsInviteAccept(id), id)
     }

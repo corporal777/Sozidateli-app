@@ -116,6 +116,10 @@ class ContactsSearchPresenter
         }
     }
 
+    override fun onRefreshRequest() {
+        pagination.invalidate()
+    }
+
     companion object {
         private const val MIN_SYMBOLS_TO_SEARCH = 3
     }

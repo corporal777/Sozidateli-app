@@ -28,8 +28,10 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_about_event.*
+import kotlinx.android.synthetic.main.fragment_about_event.swipeToRefresh
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -96,6 +98,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             text = getString(R.string.go_to_event)
             setOnClickListener { presenter.onGoToEventClick() }
         }
+
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setEventData(
@@ -134,6 +138,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     addAll(partners.map { EventPartnerItem(it.id, it.logo, it.name) { presenter.onPartnerClick(it) } })
                 }
         ))
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun setEventName(name: String) {

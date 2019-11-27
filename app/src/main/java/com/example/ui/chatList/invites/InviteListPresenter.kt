@@ -68,6 +68,10 @@ class InviteListPresenter
         invitesPagination.onItemTake(position)
     }
 
+    override fun onRefreshRequest() {
+        invitesPagination.invalidate()
+    }
+
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
         invitesPagination.invalidate()

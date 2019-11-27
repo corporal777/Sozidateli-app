@@ -26,5 +26,6 @@ interface SearchContract {
         fun onFilterApplyClick()
         fun onFilterClearClick()
         fun onFilterCancel()
+        fun onRefreshRequest()
     }
 }

@@ -53,7 +53,7 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
     override fun setSuggested(list: List<DaDataItem>) {
         adapter.apply {
             clear()
-            addAll(list.map { it.unrestricted_value })
+            addAll(list.map { it.value })
             notifyDataSetChanged()
         }
     }

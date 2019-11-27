@@ -57,6 +57,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                 setImage(R.drawable.ic_neutral_face)
             }
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(data: List<User?>) {
@@ -72,6 +73,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
             )
         })
         placeholderUtil.isDataLoad = true
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun showUser(user: User) {

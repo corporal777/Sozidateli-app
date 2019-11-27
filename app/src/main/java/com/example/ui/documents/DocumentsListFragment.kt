@@ -52,6 +52,7 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, Toolba
         }
 
         placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
+        swipeToRefresh.isEnabled = false
     }
 
     override fun setData(documents: List<Document>) {

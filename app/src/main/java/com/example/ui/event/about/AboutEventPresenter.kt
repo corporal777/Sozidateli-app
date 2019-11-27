@@ -104,4 +104,12 @@ class AboutEventPresenter
     override fun onLogoClick(url: String) {
         viewState.showLogoImage(url)
     }
+
+    override fun onRefreshRequest() {
+        compositeDisposable += eventRepository.getEventInfo(eventId)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(onSuccess = ::setEventInfoData)
+    }
 }

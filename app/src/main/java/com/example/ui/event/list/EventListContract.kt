@@ -26,5 +26,6 @@ interface EventListContract {
         fun onEventClick(event: Event)
         fun onGoToEventClick(event: Event)
         fun onScrollChange(position: Int, offset: Int)
+        fun onRefreshRequest()
     }
 }

@@ -49,5 +49,6 @@ interface OrganizationContract {
         fun onUnsubscribeClick()
 
         fun onScrollPositionChange(scroll: Int)
+        fun onRefreshRequest()
     }
 }

@@ -19,5 +19,6 @@ interface FavoriteOrganizationsContract {
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onOrganizationClick(organization: Organization)
         fun onRemoveFromFavoriteClick(organization: Organization)
+        fun onRefreshRequest()
     }
 }

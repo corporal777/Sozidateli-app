@@ -21,5 +21,6 @@ interface EventSpeakersContract {
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSpeakerClick(speaker: Speaker)
         fun onSpeakerFavoriteChangeClick(speaker: Speaker)
+        fun onRefreshRequest()
     }
 }

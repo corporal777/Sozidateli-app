@@ -19,6 +19,9 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
+import kotlinx.android.synthetic.main.fragment_chat_list.recyclerView
+import kotlinx.android.synthetic.main.fragment_chat_list.swipeToRefresh
+import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -67,6 +70,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         fabNewChat.apply {
             setOnClickListener { presenter.onFabAddChatClick() }
         }
+        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setChatsData(chats: List<UserChat?>, favorites: List<User>) {
@@ -96,6 +100,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                 presenter.onUserClick(it.user_id, it.fullName)
             })
         })
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {

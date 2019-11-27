@@ -29,7 +29,7 @@ data class User(
         var user_status_phone_short: String = "",
         var user_status_phone_confirmed: Boolean = false,
         var user_name: String = "",
-        var user_middle_name: String = "",
+        var user_middle_name: String? = "",
         var user_last_name: String = "",
         var user_birthday: String? = null,
         var user_age: Int = -1,
@@ -77,7 +77,9 @@ data class User(
         var is_has_chat: Boolean = false
 ) {
     val fullName: String
-        get() = "$user_name $user_last_name"
+        get() {
+            return "$user_name $user_last_name${user_middle_name?.let { if (it == "-") "" else " $it" } ?: ""}"
+        }
 
     companion object {
         const val FIELD_USER_NAME = "user_name"
@@ -99,6 +101,8 @@ data class User(
         const val FIELD_USER_ADDRESS_REGION = "user_address_region"
         const val FIELD_USER_ADDRESS_AREA = "user_address_area"
         const val FIELD_USER_ADDRESS_CITY = "user_address_city"
+        const val FIELD_USER_ADDRESS_CITY_GPS_LAT = "user_address_city_gps_lat"
+        const val FIELD_USER_ADDRESS_CITY_GPS_LON = "user_address_city_gps_lon"
         const val FIELD_USER_ADDRESS_DISTRICT = "user_address_district"
         const val FIELD_USER_ADDRESS_SETTLEMENT = "user_address_settlement"
         const val FIELD_USER_ADDRESS_STREET = "user_address_street"

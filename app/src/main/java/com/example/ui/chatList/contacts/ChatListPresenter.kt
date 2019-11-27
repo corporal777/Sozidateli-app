@@ -154,4 +154,8 @@ class ChatListPresenter
         super.onDestroy()
         EventBus.getDefault().unregister(this)
     }
+
+    override fun onRefreshRequest() {
+        chatsPagination.invalidate()
+    }
 }
