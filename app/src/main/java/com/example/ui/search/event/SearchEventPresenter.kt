@@ -55,8 +55,8 @@ class SearchEventPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
                         onError = {
-                            it.printStackTrace()
                             isCommonDataLoaded = true
+                            onReceiveError(it)
                         },
                         onSuccess = {
                             isCommonDataLoaded = true

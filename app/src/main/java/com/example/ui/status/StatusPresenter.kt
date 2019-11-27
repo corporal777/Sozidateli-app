@@ -68,7 +68,7 @@ class StatusPresenter
                         viewState.showVerificationError(VERIFICATION_ERROR_WRONG_PASSWORD)
                     } else {
                         it.printStackTrace()
-                        viewState.showRequestError()
+                        viewState.showRequestErrorMessage()
                     }
                 })
     }
@@ -88,7 +88,7 @@ class StatusPresenter
                     viewState.showCode(phone, action, saveFlag)
                 }, {
                     it.printStackTrace()
-                    viewState.showRequestError()
+                    viewState.showRequestErrorMessage()
                 })
     }
 
@@ -104,7 +104,7 @@ class StatusPresenter
                         viewState.showVerificationError(VERIFICATION_ERROR_WRONG_CODE)
                     } else {
                         it.printStackTrace()
-                        viewState.showRequestError()
+                        viewState.showRequestErrorMessage()
                     }
                 })
     }
@@ -118,7 +118,7 @@ class StatusPresenter
                     viewState.showSentNewCodeMessage(phone)
                 }, {
                     it.printStackTrace()
-                    viewState.showRequestError()
+                    viewState.showRequestErrorMessage()
                 })
     }
 
@@ -131,7 +131,7 @@ class StatusPresenter
 
                 }, {
                     it.printStackTrace()
-                    viewState.showRequestError()
+                    viewState.showRequestErrorMessage()
                 })
     }
 

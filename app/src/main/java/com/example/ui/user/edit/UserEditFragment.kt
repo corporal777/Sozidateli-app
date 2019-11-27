@@ -330,7 +330,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         try {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
-            showToast(R.string.error_title)
+            showRequestErrorMessage()
         }
     }
 

@@ -34,14 +34,12 @@ class SubeventUserListPresenter @Inject constructor(
         compositeDisposable += pagination.build()
                 .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
-                .subscribe({
+                .subscribeSimple {
                     viewState.apply {
                         if (it.isEmpty()) showEmptyListPlaceholder()
                         else viewState.setUsers(it)
                     }
-                }, {
-                    viewState.showToast(it.localizedMessage)
-                })
+                }
     }
 
     override fun onUserClick(user: User) {

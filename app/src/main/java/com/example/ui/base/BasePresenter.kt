@@ -1,7 +1,6 @@
 package com.example.ui.base
 
 import com.arellomobile.mvp.MvpPresenter
-import com.example.R
 import com.example.data.models.ApiError
 import com.example.exceptions.NoInternetConnectionException
 import io.reactivex.*
@@ -27,6 +26,7 @@ open class BasePresenter<V : BaseContract.View>
 
     protected open fun onReceiveError(error: Throwable) {
         error.printStackTrace()
+        viewState.showRequestErrorMessage()
     }
 
     protected open fun onReceiveNoInternetError() {
@@ -34,7 +34,7 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     protected open fun onReceiveApiError(apiError: ApiError) {
-        viewState.showToast(R.string.request_execution_error)
+
     }
 
     fun checkInternetAndRun(onComplete: () -> Unit): Disposable {

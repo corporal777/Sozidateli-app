@@ -12,6 +12,9 @@ interface BaseContract {
         fun showToast(@StringRes message: Int)
 
         @StateStrategyType(SkipStrategy::class)
+        fun showToast(message: String)
+
+        @StateStrategyType(SkipStrategy::class)
         fun navigateUp()
 
         @StateStrategyType(SkipStrategy::class)
@@ -22,12 +25,6 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showKeyboard()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showToast(message: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showToast(messagesIds: List<Int>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showNoConnectionMessage(show: Boolean)

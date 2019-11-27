@@ -38,7 +38,7 @@ class NotificationsPresenter
             })
         }
     }
-            .applyErrorHandler { viewState.showToast(it.message ?: it.localizedMessage) }
+            .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
@@ -119,6 +119,7 @@ class NotificationsPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple(onError = {
                     blockInvalidation = false
+                    onReceiveError(it)
                 }, onComplete = {
                     blockInvalidation = false
                     notificationManager.cancel(notificationId)

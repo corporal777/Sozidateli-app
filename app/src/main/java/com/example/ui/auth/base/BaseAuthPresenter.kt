@@ -22,7 +22,7 @@ constructor(
         }
 
         override fun onSnAuthError(error: SnAuthError) {
-            error.message?.let { errorMessage -> viewState.showToast(errorMessage) }
+            error.message?.let { errorMessage -> viewState.showRequestErrorMessage() }
         }
     }
 

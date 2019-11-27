@@ -60,6 +60,9 @@ class MainPresenter
     lateinit var chatAcceptMessageText: String
 
     private val chatCompositeDisposable = CompositeDisposable()
+    private val errorMessageDisposable = CompositeDisposable().apply {
+        compositeDisposable += this
+    }
 
     private var isAuthRequired = false
     private var inappList: Deque<RemoteNotification>? = null
@@ -470,6 +473,23 @@ class MainPresenter
 
     private fun checkInternetConnection() {
         viewState.showNoConnectionMessage(!isInternetConnected && !isDoNotCheckConnectionFragmentOpened)
+    }
+
+    override fun onRequestShowErrorMessage(message: String) {
+        errorMessageDisposable.clear()
+        errorMessageDisposable += Completable.fromAction { viewState.showErrorMessage(message) }
+                .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.hideErrorMessage()
+                }, {
+                    viewState.hideErrorMessage()
+                })
+    }
+
+    override fun onRequestHideErrorMessage() {
+        errorMessageDisposable.clear()
+        viewState.hideErrorMessage()
     }
 
     companion object {

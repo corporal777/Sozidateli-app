@@ -57,6 +57,12 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideInapp()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
+        fun showErrorMessage(message: String)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
+        fun hideErrorMessage()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -78,5 +84,8 @@ interface MainContract {
         fun onInappOkClick()
 
         fun onRetryConnectionClick()
+
+        fun onRequestShowErrorMessage(message: String)
+        fun onRequestHideErrorMessage()
     }
 }

@@ -7,10 +7,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
+import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +21,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -137,6 +136,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             })
         }
+
+        ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
@@ -415,6 +416,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         } else if (!show) {
             noInternetDialog?.dismiss()
         }
+    }
+
+    override fun showRequestErrorMessage() {
+        presenter.onRequestShowErrorMessage(getString(R.string.request_execution_error))
+    }
+
+    override fun showErrorMessage(message: String) {
+        tvErrorMessage.text = message
+        TransitionManager.beginDelayedTransition(root, Slide(Gravity.TOP))
+        errorContainer.isVisible = true
+    }
+
+    override fun hideErrorMessage() {
+        TransitionManager.beginDelayedTransition(root, Slide(Gravity.TOP))
+        errorContainer.isVisible = false
     }
 
     override fun navigateUp() {

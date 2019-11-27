@@ -126,12 +126,10 @@ class EventRegistrationPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onError = {
-                            if (it !is ApiError) viewState.showToast(R.string.request_execution_error)
-                            it.printStackTrace()
-
                             val group = selectedGroup
                             val fieldsData = fieldsData
                             if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
+                            onReceiveError(it)
                         },
                         onSuccess = {
                             viewState.showSuccessRegister(it.event.isRequireModerate == false)

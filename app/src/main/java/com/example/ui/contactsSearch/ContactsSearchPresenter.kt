@@ -31,7 +31,7 @@ class ContactsSearchPresenter
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.searchUser(getUserFilter(), limit, offset)
     }
-            .applyErrorHandler { it.message?.let { message -> viewState.showToast(message) } }
+            .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList()
 
     override fun onFirstViewAttach() {

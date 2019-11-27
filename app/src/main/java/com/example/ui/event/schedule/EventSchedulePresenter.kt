@@ -49,10 +49,12 @@ constructor(
         userEventData.addOnDataUpdateListener(this)
         compositeDisposable += findNearestDayFromEventDays(System.currentTimeMillis())
                 .performOnBackgroundOutOnMain()
-                .subscribeSimple(onError = {
-                    it.printStackTrace()
-                    viewState.apply { showEmptyEventPlaceholder() }
-                }, onComplete = onLoadingComplete)
+                .subscribeSimple(
+                        onError = {
+                            viewState.apply { showEmptyEventPlaceholder() }
+                            onReceiveError(it)
+                        },
+                        onComplete = onLoadingComplete)
     }
 
     override fun onDataUpdated() {

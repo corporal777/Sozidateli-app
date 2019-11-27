@@ -77,10 +77,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.navigateUp()
     }
 
-    override fun showToast(messagesIds: List<Int>) {
-        mActivity?.showToast(messagesIds)
-    }
-
     override fun showNoConnectionMessage(show: Boolean) {
         mActivity?.showNoConnectionMessage(show)
     }

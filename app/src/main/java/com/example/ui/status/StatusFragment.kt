@@ -316,10 +316,6 @@ class StatusFragment : BaseFragment(), StatusContract.View {
         phoneVerificationErrorCallback?.invoke(error)
     }
 
-    override fun showRequestError() {
-        Toast.makeText(requireContext(), R.string.request_execution_error, Toast.LENGTH_LONG).show()
-    }
-
     override fun showLoadingDialog() {
         phoneVerificationAlertDialog?.showLoading(true)
     }

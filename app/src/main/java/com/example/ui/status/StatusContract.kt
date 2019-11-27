@@ -31,9 +31,6 @@ interface StatusContract {
         fun showVerificationError(error: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRequestError()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSentNewCodeMessage(phone: String)
     }
 

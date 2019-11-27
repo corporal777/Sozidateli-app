@@ -41,7 +41,7 @@ class ChatListPresenter
             PaginationResponse(response.response_detail?.total, items)
         }
     }
-            .applyErrorHandler { viewState.showToast(it.message ?: it.localizedMessage) }
+            .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList(enablePlaceholders = true)
 
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()

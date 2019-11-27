@@ -273,6 +273,7 @@ class ChatPresenter
                 .subscribeSimple(
                         onError = {
                             if (reloadChat) viewState.hideLoadingDialog()
+                            onReceiveError(it)
                         },
                         onComplete = {
                             if (reloadChat) viewState.hideLoadingDialog()

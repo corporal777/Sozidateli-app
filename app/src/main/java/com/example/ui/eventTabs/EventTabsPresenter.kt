@@ -37,8 +37,6 @@ class EventTabsPresenter
                         viewState.showNoConnectionMessage(false)
                         if (eventData.isDataFromLocalStorage) loadData()
                     }
-                }, onError = {
-                    it.printStackTrace()
                 })
 
         viewState.apply {

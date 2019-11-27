@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.example.R
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -70,15 +71,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     fun showKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    override fun showToast(messagesIds: List<Int>) {
-        val messages = messagesIds.map { getString(it) }
-        showToast(messages.joinToString(separator = "\n"))
-    }
-
-    override fun showRequestErrorMessage() {
-        Toast.makeText(this, R.string.request_execution_error, Toast.LENGTH_LONG).show()
     }
 
     abstract fun hideToolbar()
