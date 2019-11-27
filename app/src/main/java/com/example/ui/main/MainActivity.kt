@@ -390,8 +390,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @SuppressLint("InflateParams")
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {
-            val tabsNode = findNavController().graph.findNode(R.id.event_tabs_fragment)
-            val mustGoToEvent = tabsNode != null
+            val mustGoToEvent = try {
+                findNavController().getBackStackEntry(R.id.event_tabs_fragment)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
+            }
             BottomSheetDialog(this).apply {
                 val layout = LayoutInflater.from(this@MainActivity).inflate(R.layout.layout_no_internet, null).apply {
                     this.btnAction.text = getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
