@@ -70,6 +70,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         recyclerView.apply {
             adapter = this@UserEditFragment.adapter
         }
+
+        swipeToRefresh.isEnabled = false
     }
 
     override fun setMainData(user: User, avatar: Bitmap?) {

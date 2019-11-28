@@ -41,7 +41,7 @@ class UserPresenter
             showUserMenuButton(!isCurrentUser())
         }
 
-        loadUserData()
+        loadUserData(true)
 
         compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
@@ -55,7 +55,7 @@ class UserPresenter
                 }, { it.printStackTrace() })
     }
 
-    private fun loadUserData() {
+    private fun loadUserData(withLoading: Boolean) {
         val getUser = if (isCurrentUser()) {
             userRepository.getUserFull()
                     .flatMapObservable { appData.userChangeSubject }
@@ -76,7 +76,10 @@ class UserPresenter
                     }
                 }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .let {
+                    if (withLoading) it.withLoadingDialog(viewState)
+                    else it
+                }
                 .subscribe({
                     profileUserData = ProfileUserData(
                             it,
@@ -201,6 +204,6 @@ class UserPresenter
     private fun isCurrentUser() = userId == appData.getUser().user_id.toString()
 
     override fun onRefreshRequest() {
-        loadUserData()
+        loadUserData(false)
     }
 }
