@@ -17,7 +17,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import dagger.android.AndroidInjection
-import timber.log.Timber
 import javax.inject.Inject
 
 class FcmMessagingService : FirebaseMessagingService() {
@@ -48,12 +47,6 @@ class FcmMessagingService : FirebaseMessagingService() {
 
     private fun processMessage(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
-        Timber.tag("NOTIFICATIONS_T").d("RECEIVE MESSAGE: ${remoteMessage.notification?.title}/${remoteMessage.notification?.body}")
-        data.forEach {
-            Timber.tag("NOTIFICATIONS_T").d("${it.key}: ${it.value}")
-        }
-        Timber.tag("NOTIFICATIONS_T").d("==============")
-
         when (data[DATA_TYPE]) {
             TYPE_CHAT_MESSAGE -> processChatMessage(data)
             TYPE_REGISTRATION_APPROVE,

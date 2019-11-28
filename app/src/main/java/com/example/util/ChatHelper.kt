@@ -27,7 +27,7 @@ class ChatHelper @Inject constructor(
             label: String,
             icon: String?
     ) {
-        if (isCanSendMessage(chatId, messageId) && showedMessages.add(messageId)) {
+        if (isCanSendMessage(chatId, messageId)) {
             val intent = NotificationUtil.createNotificationIntent(context, bundleOf(FIELD_CHAT to bundleOf(
                     FIELD_CHAT_ID to chatId,
                     FIELD_LABEL to label,
@@ -37,7 +37,7 @@ class ChatHelper @Inject constructor(
             val channel = context.getString(R.string.app_name)
 
             val send: (Bitmap?) -> Unit = { bitmap ->
-                if (isCanSendMessage(chatId, messageId))
+                if (isCanSendMessage(chatId, messageId) && showedMessages.add(messageId))
                     notificationUtil.createNotification(
                             channel = channel,
                             notificationId = messageId.hashCode(),
