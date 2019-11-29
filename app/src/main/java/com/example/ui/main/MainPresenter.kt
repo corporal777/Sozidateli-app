@@ -56,6 +56,7 @@ class MainPresenter
         private val connectivityProvider: ConnectivityProvider
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
+    lateinit var newMessageTitleText: String
     lateinit var photoMessageText: String
     lateinit var chatAcceptMessageText: String
 
@@ -385,7 +386,7 @@ class MainPresenter
         chatCompositeDisposable += haChat.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    processNewMessageMessage(it)
+                    processNewChatMessage(it)
                 }, {
                     it.printStackTrace()
                 })
@@ -405,7 +406,7 @@ class MainPresenter
                 .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
     }
 
-    private fun processNewMessageMessage(newMessage: NewMessage) {
+    private fun processNewChatMessage(newMessage: NewMessage) {
         val chatId = newMessage.room
         val messageId = newMessage.message._id
         val message = when (newMessage.message.type) {
@@ -419,12 +420,14 @@ class MainPresenter
                     ?: throw NullPointerException("Additional data is null")
         }
                 .onErrorResumeNext(userRepository.getUserById(newMessage.message.senderKey).map {
-                    ChatMessageAdditionalData(it.user_id, it.user_name, it.user_last_name, it.user_avatar)
+                    ChatMessageAdditionalData(it.user_id, it.user_name, it.user_last_name, it.user_middle_name, it.user_avatar)
                 })
                 .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    val senderName = "${it.name ?: ""} ${it.lastName ?: ""}"
-                    chatHelper.showNotificationIfCan(chatId, messageId, senderName, message, senderName, it.avatar)
+                .subscribeSimple { messageData ->
+                    val senderName = "${messageData.name} ${messageData.lastName}${messageData.middleName?.let { if (it == "-") "" else " $it" }
+                            ?: ""}"
+                    val title = "$newMessageTitleText $senderName"
+                    chatHelper.showNotificationIfCan(chatId, messageId, title, message, title, messageData.avatar)
                 }
     }
 

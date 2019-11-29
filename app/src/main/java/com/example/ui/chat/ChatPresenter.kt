@@ -376,7 +376,7 @@ class ChatPresenter
 
     private fun createMessageAdditionalData(): JSONObject {
         val currentUser = appData.getUser()
-        val data = ChatMessageAdditionalData(currentUser.user_id, currentUser.user_name, currentUser.user_last_name, currentUser.user_avatar)
+        val data = ChatMessageAdditionalData(currentUser.user_id, currentUser.user_name, currentUser.user_last_name, currentUser.user_middle_name, currentUser.user_avatar)
         return JSONObject(Gson().toJson(data))
     }
 

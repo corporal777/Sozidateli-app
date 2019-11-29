@@ -254,6 +254,7 @@
     <string name="chat_you_banned">Пользователь ограничил сообщения</string>
     <string name="chat_banned_by_you">Вы ограничили отправку сообщений</string>
     <string name="chat_confirm">Одобрить</string>
+    <string name="chat_new_message_title_text">Новое сообщение от</string>
     <string name="chat_photo_message_text">Изображение</string>
     <string name="chat_accepted">Пользователь подтвердил чат</string>
     <string name="chat_accept_by_me">Вы подтвердили чат</string>

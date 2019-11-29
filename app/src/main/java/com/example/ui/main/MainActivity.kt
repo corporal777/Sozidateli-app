@@ -63,6 +63,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     @ProvidePresenter
     fun providePresenter(): MainPresenter = presenterProvider.get().apply {
+        newMessageTitleText = getString(R.string.chat_new_message_title_text)
         photoMessageText = getString(R.string.chat_photo_message_text)
         chatAcceptMessageText = getString(R.string.chat_accepted)
     }

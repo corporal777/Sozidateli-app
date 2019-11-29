@@ -7,5 +7,7 @@ data class ChatMessageAdditionalData(
         val name: String?,
         @SerializedName("last_name")
         val lastName: String?,
+        @SerializedName("middle_name")
+        val middleName: String?,
         val avatar: String?
 )

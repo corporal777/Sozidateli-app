@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import com.example.R
 import javax.inject.Inject
@@ -49,6 +51,11 @@ class ChatHelper @Inject constructor(
                         setStyle(NotificationCompat.BigTextStyle().bigText(message))
                         setContentIntent(intent)
                         if (bitmap != null) setLargeIcon(bitmap)
+                        else {
+                            ContextCompat.getDrawable(context, R.drawable.avatar_placeholder)?.let {
+                                setLargeIcon(it.toBitmap())
+                            }
+                        }
                     }
             }
 
