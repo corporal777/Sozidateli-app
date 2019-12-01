@@ -9,7 +9,6 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.R
 import com.example.extensions.dp
-import kotlinx.android.synthetic.main.view_toolbar_content.view.*
 import java.lang.ref.WeakReference
 
 class ToolbarContentActionBar(
@@ -24,7 +23,7 @@ class ToolbarContentActionBar(
 
     private val navigationIcon by lazy {
         ToolbarButton(appCompatActivity).apply {
-            setImageResource(R.drawable.ic_back_arrow)
+            setImageResource(R.drawable.ic_back)
             setOnClickListener { weakActivity.get()?.onSupportNavigateUp() }
         }
     }

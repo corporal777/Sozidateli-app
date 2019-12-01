@@ -13,10 +13,9 @@ import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -39,7 +38,6 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, Toolba
         }
     }
 
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -51,13 +49,11 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, Toolba
             if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, VERTICAL))
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
         swipeToRefresh.isEnabled = false
     }
 
     override fun setData(documents: List<Document>) {
         groupAdapter.update(documents.map { DocumentItem(it) { presenter.onDocumentClick(it) } })
-        placeholderUtil.isDataLoad = true
     }
 
     override fun openLinkInBrowser(link: String) {
@@ -74,5 +70,5 @@ class DocumentsListFragment : BaseFragment(), DocumentsListContract.View, Toolba
         this.toolbarContentActionBar = toolbarContentActionBar
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

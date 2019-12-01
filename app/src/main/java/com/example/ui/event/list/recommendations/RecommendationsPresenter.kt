@@ -20,4 +20,14 @@ class RecommendationsPresenter
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
         return eventRepository.getEventRecommendations(limit, offset)
     }
+
+    override fun onSearchClick() = viewState.showSearch()
+
+    override fun onOrganizationsClick() = viewState.showOrganizations()
+
+    override fun onMyEventsClick() = viewState.showMyEvents()
+
+    override fun onMenuChatClick() = viewState.showChat()
+
+    override fun onMenuAccountClick() = viewState.showAccount()
 }

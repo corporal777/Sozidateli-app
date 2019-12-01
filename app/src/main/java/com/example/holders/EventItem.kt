@@ -1,7 +1,8 @@
 package com.example.holders
 
-import android.graphics.PorterDuff
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -9,7 +10,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormat
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
+import com.example.extensions.parseToDate
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -20,8 +21,7 @@ import java.util.*
 
 class EventItem(
         private val event: Event,
-        private val onEventClick: () -> Unit,
-        private val onGoToEventClick: () -> Unit
+        private val onEventClickListener: OnEventClickListener
 ) : Item(event.id.toLong()) {
 
     var isInHorizontalParent = false
@@ -29,95 +29,149 @@ class EventItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             itemContainer.apply {
-                clipToOutline = true
-                setOnClickListener { onEventClick() }
                 if (isInHorizontalParent) {
                     layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
+
+                alpha = if (event.status == Event.Status.CONFERENCE_ENDS) 0.4f else 1f
             }
 
-            ivBackground.apply {
-                val overlay = ResourcesCompat.getColor(resources, R.color.auth_background_overlay, null)
-                val color = event.backgroundColor.parseColor() ?: overlay
+            flAction.apply {
+                clipToOutline = true
+                setOnClickListener { onEventClickListener.onShowEventClick(event) }
+            }
+
+            ivLogo.apply {
+                val color = event.backgroundColor.parseColor()
+                        ?: ResourcesCompat.getColor(resources, R.color.event_item_no_image_background, null)
                 setBackgroundColor(color)
                 Picasso.get().load(event.logo).into(this)
-                setColorFilter(overlay, PorterDuff.Mode.DARKEN)
             }
+
+            tvEventFormat.apply {
+                val format = event.format?.name
+                text = format
+                isVisible = !format.isNullOrEmpty()
+                setOnClickListener { onEventClickListener.onShowFilterClick(event) }
+            }
+
+            setApproveStatus(tvStatus)
+
+            tvFinished.isVisible = event.status == Event.Status.CONFERENCE_ENDS
+
+            setAction(btnEventAction)
 
             tvEventAddress.apply {
                 text = event.address
             }
             tvEventLabel.text = event.name
+
+            val dateStart = event.conferenceStart?.parseToDate(defaultServerDateFormatter)
+
+            tvEventDay.apply {
+                val formatter = SimpleDateFormat("d", Locale("ru", "RU"))
+                val day = formatter.format(dateStart)
+                text = day
+            }
+
             tvEventDate.apply {
-                val start = event.conferenceStart
-                val formatted = start?.parseAndFormat(defaultServerDateFormatter, SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault()))
-                val date = "$formatted г."
-                text = date
-            }
-
-            tvEventType.apply {
-                text = event.format?.name
-            }
-
-            if (event.isCanRegister()) showRegisterToEvent(viewHolder)
-            else showEventStatus(viewHolder, event)
-        }
-    }
-
-    private fun showRegisterToEvent(viewHolder: GroupieViewHolder) {
-        viewHolder.apply {
-            tvStatus.isVisible = false
-            btnGoToEvent.apply {
-                setOnClickListener { onGoToEventClick() }
-                isVisible = true
+                val formatter = SimpleDateFormat("MMM\n''yy", Locale("ru", "RU"))
+                val formatted = event.conferenceStart?.parseAndFormat(defaultServerDateFormatter, formatter)
+                val result = formatted?.split("\n")?.mapIndexed { index, part ->
+                    if (index == 0 && part.length > 3) part.substring(0, 3)
+                    else part
+                }?.joinToString("\n")
+                text = result
             }
         }
     }
 
-    private fun showEventStatus(viewHolder: GroupieViewHolder, event: Event) {
-        viewHolder.apply {
-            btnGoToEvent.isVisible = false
-            tvStatus.apply {
-                val textColor: Int
-                val textBackground: Int
-                val textRes: Int
-                when (event.status) {
-                    Event.Status.CONFERENCE_ENDS -> {
-                        textColor = R.color.event_status_finished_text
-                        textBackground = R.color.event_status_finished_background
-                        textRes = R.string.event_status_finished
+    private fun setApproveStatus(tvStatus: TextView) {
+        tvStatus.apply {
+            val textBackground: Int
+            val textRes: Int
+            when (event.userRegistration) {
+                Event.RegistrationStatus.APPROVED -> {
+                    textBackground = R.color.event_status_approved_background
+                    textRes = R.string.event_status_approved
+                }
+                Event.RegistrationStatus.CANCELLED,
+                Event.RegistrationStatus.PENDING -> {
+                    textBackground = R.color.event_status_wait_confirmation_background
+                    textRes = R.string.event_status_wait_confirmation
+                }
+                Event.RegistrationStatus.DECLINED -> {
+                    textBackground = R.color.event_status_declined_background
+                    textRes = R.string.event_status_decline
+                }
+                else -> {
+                    isVisible = false
+                    return
+                }
+            }
+
+            text = resources.getString(textRes)
+            backgroundTintList = ContextCompat.getColorStateList(context, textBackground)
+            isVisible = true
+        }
+    }
+
+    private fun setAction(btnAction: Button) {
+        btnAction.apply {
+            val textBackground: Int
+            val textRes: Int
+            val clickAction: () -> Unit
+            if (event.status == Event.Status.CONFERENCE_ENDS) {
+                isVisible = false
+                return@apply
+            } else when (event.userRegistration) {
+                Event.RegistrationStatus.PENDING -> {
+                    textBackground = R.color.event_item_action_background
+                    textRes = R.string.event_action_cancel_request
+                    clickAction = { onEventClickListener.onActionCancel(event) }
+                }
+                Event.RegistrationStatus.DECLINED -> {
+                    if (event.organization?.emails.isNullOrEmpty()) {
+                        isVisible = false
+                        return@apply
                     }
-                    else -> when (event.userRegistration) {
-                        Event.RegistrationStatus.APPROVED -> {
-                            textColor = R.color.event_status_approved_text
-                            textBackground = R.color.event_status_approved_background
-                            textRes = R.string.event_status_approved
-                        }
-                        Event.RegistrationStatus.PENDING -> {
-                            textColor = R.color.event_status_wait_confirmation_text
-                            textBackground = R.color.event_status_wait_confirmation_background
-                            textRes = R.string.event_status_wait_confirmation
-                        }
-                        Event.RegistrationStatus.CANCELLED,
-                        Event.RegistrationStatus.DECLINED -> {
-                            textColor = R.color.event_status_wait_confirmation_text
-                            textBackground = R.color.attention_action
-                            textRes = R.string.event_status_decline
-                        }
-                        else -> {
-                            tvStatus.isVisible = false
-                            return
-                        }
+
+                    textBackground = R.color.event_item_action_background
+                    textRes = R.string.event_action_write_to_organisation
+                    clickAction = { onEventClickListener.onActionWriteToOrganization(event) }
+                }
+                Event.RegistrationStatus.APPROVED -> {
+                    textBackground = R.color.event_item_action_background_show_event
+                    textRes = R.string.event_action_show_event
+                    clickAction = { onEventClickListener.onActionShowEvent(event) }
+                }
+                else -> {
+                    if (event.isCanRegister()) {
+                        textBackground = R.color.event_item_action_background
+                        textRes = R.string.event_action_participate
+                        clickAction = { onEventClickListener.onActionRegister(event) }
+                    } else {
+                        isVisible = false
+                        return@apply
                     }
                 }
-
-                text = resources.getString(textRes)
-                setTextColor(ContextCompat.getColor(context, textColor))
-                setBackgroundColor(ContextCompat.getColor(context, textBackground))
-                isVisible = true
             }
+
+            text = resources.getString(textRes)
+            backgroundTintList = ContextCompat.getColorStateList(context, textBackground)
+            isVisible = true
+            setOnClickListener { clickAction() }
         }
     }
 
     override fun getLayout() = R.layout.item_event
+
+    interface OnEventClickListener {
+        fun onActionRegister(event: Event)
+        fun onActionShowEvent(event: Event)
+        fun onActionCancel(event: Event)
+        fun onActionWriteToOrganization(event: Event)
+        fun onShowEventClick(event: Event)
+        fun onShowFilterClick(event: Event)
+    }
 }

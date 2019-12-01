@@ -13,10 +13,9 @@ import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,8 +29,6 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
 
     @ProvidePresenter
     fun providePresenter(): FavoriteUsersPresenter = presenterProvider.get()
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val usersSection = TitledSection(-100L)
 
@@ -50,12 +47,6 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@FavoriteUsersFragment.adapter
-
-            placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
-                doNotShowUntilDataLoad = true
-                setMessage(getString(R.string.banned_empty_message))
-                setImage(R.drawable.ic_neutral_face)
-            }
         }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
@@ -72,7 +63,6 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                     { presenter.onUserRemoveFromFavoritesClick(it) }
             )
         })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -80,5 +70,5 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.user_id.toString()))
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

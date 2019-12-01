@@ -59,6 +59,32 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         organizationId = OrganizationFragmentArgs.fromBundle(arguments!!).organizationId
     }
 
+    private val onEventClickListener = object : EventItem.OnEventClickListener {
+        override fun onActionRegister(event: Event) {
+
+        }
+
+        override fun onActionShowEvent(event: Event) {
+
+        }
+
+        override fun onActionCancel(event: Event) {
+
+        }
+
+        override fun onActionWriteToOrganization(event: Event) {
+
+        }
+
+        override fun onShowEventClick(event: Event) {
+
+        }
+
+        override fun onShowFilterClick(event: Event) {
+
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scrollContainer.setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
@@ -81,7 +107,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun setOrganization(organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
-        ivBackground.apply {
+        ivLogo.apply {
             if (organization.background.isNullOrEmpty()) {
                 isVisible = false
             } else {
@@ -213,11 +239,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         vpEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 addAll(events.map {
-                    EventItem(
-                            it,
-                            { presenter.onEventClick(it) },
-                            { presenter.onGoToEventClick(it) }
-                    ).apply { isInHorizontalParent = true }
+                    EventItem(it, onEventClickListener).apply { isInHorizontalParent = true }
                 })
             }
 

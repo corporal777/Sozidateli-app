@@ -35,9 +35,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
     @ProvidePresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
     fun providePresenter(): ChatViewPresenter = presenterProvider.get()
 
-    private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
-        ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_chat))
-    }
+    private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true)
 
     private val badgeBackgroundMessages by lazy {
         ContextCompat.getDrawable(context, R.drawable.background_badge_attention_high)!!
@@ -79,7 +77,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
 
     private fun showBadge(count: String, backgroundDrawable: Drawable) {
         view.tvBadge.apply {
-            text = count
+//            text = count
             background = backgroundDrawable
             visibility = View.VISIBLE
         }

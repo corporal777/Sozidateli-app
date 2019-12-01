@@ -21,7 +21,7 @@
             android:background="@android:color/white">
 
             <ImageView
-                android:id="@+id/ivBackground"
+                android:id="@+id/ivLogo"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="ivLogo,ivBackground" />
+                app:constraint_referenced_ids="ivLogo,ivLogo" />
 
             <TextView
                 android:id="@+id/tvName"

@@ -15,11 +15,10 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
@@ -38,8 +37,6 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     @ProvidePresenter
     fun providePresenter(): NotificationsPresenter = presenterProvider.get()
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val readMoreClickListener: OnNotificationReadMoreClickListener = { presenter.onNotificationReadMoreClick(it) }
 
@@ -80,7 +77,6 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
             if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -93,7 +89,6 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
                 Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener)
             }
         })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -119,5 +114,5 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     }
 
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

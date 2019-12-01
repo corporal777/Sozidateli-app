@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="20dp"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="18sp"
         tools:ignore="MissingPrefix"
         tools:text="9:00-10:00" />
@@ -26,7 +26,7 @@
         android:layout_marginStart="@dimen/profile_padding_start"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="18sp"
         tools:text="Прикладная че то там сессия" />
 
@@ -39,7 +39,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:maxLength="200"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="16sp"
         tools:ignore="MissingPrefix"
         tools:text="Прикладная че то там сессия" />
@@ -57,7 +57,7 @@
         android:paddingEnd="8dp"
         android:text="@string/show_more"
         android:textAllCaps="false"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="15sp" />
 
     <TextView
@@ -71,7 +71,7 @@
         android:drawableStart="@drawable/ic_location_dark"
         android:drawablePadding="10dp"
         android:textAllCaps="true"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="12sp"
         tools:ignore="MissingPrefix"
         tools:text="Павильон 1" />

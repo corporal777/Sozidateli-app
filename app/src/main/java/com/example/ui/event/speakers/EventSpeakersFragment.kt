@@ -13,10 +13,9 @@ import com.example.holders.SpeakerItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.user.UserFragmentArgs
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -46,8 +45,6 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         }
     }
 
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
@@ -55,14 +52,12 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
             if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
 
     override fun setData(data: List<Speaker>) {
         groupAdapter.update(data.map { SpeakerItem(it, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerFavoriteChangeClick(it) }) })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -77,5 +72,5 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.uid).build().toBundle())
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

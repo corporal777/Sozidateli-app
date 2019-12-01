@@ -12,10 +12,9 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.ui.base.BaseFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -29,9 +28,6 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
 
     @ProvidePresenter
     fun providePresenter(): FavoriteOrganizationsPresenter = presenterProvider.get()
-
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val organizationSection = TitledSection(-100L)
 
@@ -50,12 +46,6 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@FavoriteOrganizationsFragment.adapter
-
-            placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
-                doNotShowUntilDataLoad = true
-                setMessage(getString(R.string.banned_empty_message))
-                setImage(R.drawable.ic_neutral_face)
-            }
         }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
@@ -69,7 +59,6 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
                     { presenter.onRemoveFromFavoriteClick(it) }
             )
         })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -78,5 +67,5 @@ class FavoriteOrganizationsFragment : BaseFragment(), FavoriteOrganizationsContr
         findNavController().navigate(R.id.organization_fragment, args)
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

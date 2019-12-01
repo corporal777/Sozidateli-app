@@ -44,6 +44,6 @@
         android:minWidth="0dp"
         android:text="@string/status_profile_status_code_do_not_receive"
         android:textAllCaps="false"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="15sp" />
 </LinearLayout>

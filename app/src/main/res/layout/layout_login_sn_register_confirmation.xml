@@ -58,7 +58,7 @@
         android:background="?attr/selectableItemBackground"
         android:text="@string/cancel"
         android:textAllCaps="false"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="16sp"
         android:theme="@style/ViewBackgroundAttention"
         app:layout_constraintBottom_toBottomOf="parent"

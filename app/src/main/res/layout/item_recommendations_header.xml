@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/etSearch"
+        style="@style/Input.Search"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:gravity="center_vertical"
+        android:hint="@string/search_input_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="textFilter" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnOrganizations"
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/background_corners_large"
+                android:backgroundTint="@color/action_button_change_screen_background"
+                android:minHeight="38dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/tab_organizations_title"
+                android:textAllCaps="false"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnMyEvents"
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:background="@drawable/background_corners_large"
+                android:backgroundTint="@color/action_button_change_screen_background"
+                android:minHeight="38dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/my_events_title"
+                android:textAllCaps="false"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        fontPath="fonts/Roboto-Bold.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="16dp"
+        android:text="@string/tab_recommended_subtitle"
+        android:textSize="21sp"
+        tools:ignore="MissingPrefix" />
+</LinearLayout>

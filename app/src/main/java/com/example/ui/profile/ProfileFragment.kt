@@ -146,7 +146,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showEvents() {
-        findNavController().navigate(ProfileFragmentDirections.profileToMyEvents())
+//        findNavController().navigate(ProfileFragmentDirections.profileToMyEvents())
     }
 
     override fun showAboutApp() {

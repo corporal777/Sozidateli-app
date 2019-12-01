@@ -36,7 +36,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
         compositeDisposable += Observable.create(paginationList)
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {
-                    viewState.setData(it)
+                    if (it.isEmpty()) viewState.showEmptyListPlaceholder()
+                    else viewState.setData(it)
                 }
 
         compositeDisposable += connectivity
@@ -54,11 +55,15 @@ abstract class EventListPresenter<V : EventListContract.View>(
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
     }
 
-    override fun onEventClick(event: Event) {
-        viewState.showAboutEvent(event.id)
-    }
+    override fun onActionRegister(event: Event) = viewState.showEventRequest(event)
 
-    override fun onGoToEventClick(event: Event) = viewState.showEventRequest(event)
+    override fun onActionCancel(event: Event) = viewState.showAboutEvent(event.id)
+
+    override fun onActionWriteToOrganization(event: Event) = viewState.showAboutEvent(event.id)
+
+    override fun onShowEventClick(event: Event) = viewState.showAboutEvent(event.id)
+
+    override fun onShowFilterClick(event: Event) = viewState.showAboutEvent(event.id)
 
     override fun onScrollChange(position: Int, offset: Int) {
         scrollPosition = position

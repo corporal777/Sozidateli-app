@@ -14,8 +14,6 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_partner.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -41,7 +39,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     override fun setData(partner: Partner, logo: Bitmap?, background: Bitmap?) {
-        ivBackground.apply {
+        ivLogo.apply {
             if (background == null) {
                 isVisible = false
             } else {

@@ -20,14 +20,23 @@
     <string name="content_description_close">Закрыть</string>
 
     <string name="events_tabs_title">Мероприятия</string>
-    <string name="tab_recommended_title">Рекомендуемые</string>
-    <string name="tab_subscriptions_title">Подписки</string>
-    <string name="tab_events_title">Мои мероприятия</string>
+    <string name="tab_recommended_title">Что посетить?</string>
+    <string name="tab_recommended_subtitle">Рекомендуемые мероприятия</string>
+    <string name="tab_organizations_title">Организаторы</string>
+
+    <string name="my_events_title">Мои мероприятия</string>
+    <string name="my_events_accepted">Участие одобрено</string>
+    <string name="my_events_pending">Заявка на рассмотрении</string>
+    <string name="my_events_declined">Участие отклонено</string>
 
     <string name="event_status_approved">Участие одобрено</string>
-    <string name="event_status_wait_confirmation">Ожидается подтверждение</string>
-    <string name="event_status_finished">Завершено</string>
-    <string name="event_status_decline">Отклонено</string>
+    <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
+    <string name="event_status_finished">Мероприятие завершено</string>
+    <string name="event_status_decline">Заявка отклонена</string>
+    <string name="event_action_show_event">Перейти в мероприятие</string>
+    <string name="event_action_write_to_organisation">Написать организатору</string>
+    <string name="event_action_participate">Участвовать</string>
+    <string name="event_action_cancel_request">Отозвать заявку</string>
 
     <string name="auth_title_login">Присоединяйтесь\nк Сообществу лидеров\nсоциальных проектов</string>
     <string name="auth_with_social_network">С помощью социальных сетей</string>
@@ -163,7 +172,7 @@
     <string name="search_organizations">Мероприятия</string>
     <string name="search_events">Организации</string>
     <string name="search_users">Люди</string>
-    <string name="search_input_hint">Введите название</string>
+    <string name="search_input_hint">Поиск</string>
     <string name="search_filter_address">Область, край, район или город</string>
     <string name="search_filter_organization_name">Название органзации</string>
     <string name="search_filter_inn">ИНН</string>
@@ -451,7 +460,7 @@
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 
-    <string name="empty_list_placeholder_message">Список пуст</string>
+    <string name="empty_list_placeholder_message">Список пуст.</string>
     <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
     <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
     <string name="success_register_event_btn">К списку мероприятий</string>

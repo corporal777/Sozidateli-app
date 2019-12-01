@@ -34,10 +34,6 @@
                 app:contentInsetRight="0dp"
                 app:contentInsetStart="0dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-            <View
-                android:id="@+id/toolbarDivider"
-                style="@style/ViewDivider.Horizontal" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout

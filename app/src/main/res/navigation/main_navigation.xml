@@ -137,6 +137,49 @@
     </fragment>
 
     <fragment
+        android:id="@+id/recommendations_fragment"
+        android:name="com.example.ui.event.list.recommendations.RecommendationsFragment">
+
+        <action
+            android:id="@+id/recommendations_fragment_to_search_fragment"
+            app:destination="@id/search_tabs_fragment" />
+
+        <action
+            android:id="@+id/recommendations_fragment_to_favorite_organizations_fragment"
+            app:destination="@id/favorite_organizations_fragment" />
+
+        <action
+            android:id="@+id/recommendations_fragment_to_my_events_fragment"
+            app:destination="@id/my_events_fragment" />
+
+        <action
+            android:id="@+id/recommendations_fragment_to_chat_list_tabs_fragment"
+            app:destination="@id/chat_list_tabs_fragment" />
+
+        <action
+            android:id="@+id/recommendations_fragment_to_profile_fragment"
+            app:destination="@id/profile_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favorite_organizations_fragment"
+        android:name="com.example.ui.organizations.favorites.FavoriteOrganizationsFragment"></fragment>
+
+    <fragment
+        android:id="@+id/my_events_fragment"
+        android:name="com.example.ui.event.list.my.MyEventsFragment">
+
+        <argument
+            android:name="filter"
+            app:argType="com.example.data.models.MyEventsFilter"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/my_events_fragment_to_self"
+            app:destination="@id/my_events_fragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/request_fragment"
         android:name="com.example.ui.event.registration.EventRegistrationFragment"
         tools:layout="@layout/fragment_request">
@@ -268,12 +311,6 @@
             android:id="@+id/action_profile_fragment_to_banned_fragment"
             app:destination="@id/banned_fragment" />
     </fragment>
-
-
-    <fragment
-        android:id="@+id/my_events_fragment"
-        android:name="com.example.ui.event.list.my.MyEventsFragment"
-        android:label="@string/profile_me_events" />
 
     <fragment
         android:id="@+id/about_fragment"

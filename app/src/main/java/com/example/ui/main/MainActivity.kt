@@ -35,8 +35,8 @@ import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.eventTabs.EventTabsFragment
-import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
@@ -73,7 +73,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             presenter.apply {
                 when (f) {
                     is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
-                    is SplashFragment, is AuthorizationFragment, is EventListFragment, is EventTabsFragment -> onOpenStartDestination()
+                    is SplashFragment,
+                    is AuthorizationFragment,
+                    is RecommendationsFragment,
+                    is EventTabsFragment -> onOpenStartDestination()
                     else -> onOpenNotStartDestination()
                 }
 
@@ -292,7 +295,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showEventList() = findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
+    override fun showRecommendations() = findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
@@ -320,7 +323,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showToolbar() {
         supportActionBar?.show()
-        toolbarDivider.visibility = View.VISIBLE
     }
 
     override fun hideToolbar() {
@@ -332,7 +334,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 removeAllRightViews()
             }
         }
-        toolbarDivider.visibility = View.GONE
     }
 
     override fun showInapp(inapp: Notification) {

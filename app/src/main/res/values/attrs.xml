@@ -7,11 +7,6 @@
         <attr name="password_hint_state_incorrect" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="AutoPlaceholderRecyclerView">
-        <attr name="placeholder" format="reference" />
-        <attr name="hideOnEmpty" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="UserSubscribeButton">
         <attr name="subscribeAction">
             <enum name="subscribe" value="0" />

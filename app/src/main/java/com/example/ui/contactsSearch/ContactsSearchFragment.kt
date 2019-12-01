@@ -15,13 +15,12 @@ import com.example.holders.ListSectionNameItem
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -41,8 +40,6 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
         val args = arguments?.let { ContactsSearchFragmentArgs.fromBundle(it) }
         startAction = args?.searchAction ?: SEARCH_ACTION_NONE
     }
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val favoritesSection by lazy {
         Section().apply {
@@ -104,11 +101,6 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
             this.view.hint = getString(R.string.contacts_search_input_hint)
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
-            doNotShowUntilDataLoad = true
-            setMessage(getString(R.string.search_empty_list))
-            setImage(R.drawable.ic_neutral_face)
-        }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -132,12 +124,10 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
         favoritesSection.update(favorites.map(mapToItem))
         chatsSection.update(chats.map(mapToItem))
         anotherSection.update(another.map(mapToItem))
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
     override fun clearItems() {
-        placeholderUtil.isDataLoad = false
         favoritesSection.update(emptyList())
         chatsSection.update(emptyList())
         anotherSection.update(emptyList())

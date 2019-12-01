@@ -12,10 +12,9 @@ import com.example.holders.ListSectionNameItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -29,8 +28,6 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): InviteListPresenter = presenterProvider.get()
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val inviteSection by lazy {
         Section().apply {
@@ -57,11 +54,6 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
             adapter = this@InviteListFragment.adapter
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply {
-            doNotShowUntilDataLoad = true
-            setMessage(getString(R.string.invite_list_empty))
-            setImage(R.drawable.ic_neutral_face)
-        }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -74,7 +66,6 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
             )
         })
 
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -82,5 +73,5 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
         findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

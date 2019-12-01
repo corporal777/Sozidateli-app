@@ -103,7 +103,7 @@ class MainPresenter
                     viewState.apply {
                         hideLoadingDialog()
                         if (isMustShowEvent) showEvent()
-                        else showEventList()
+                        else showRecommendations()
                         checkIntent()
                         showNextInapp()
                     }

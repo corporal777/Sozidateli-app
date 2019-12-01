@@ -13,10 +13,9 @@ import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,8 +32,6 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
 
     @ProvidePresenter
     fun providePresenter(): BannedPresenter = presenterProvider.get()
-
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
 
     private val usersSection = TitledSection(-100L)
 
@@ -55,7 +52,6 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             adapter = this@BannedFragment.adapter
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -71,7 +67,6 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
                     { presenter.onUnblockLick(it) }
             )
         })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -79,5 +74,5 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
         findNavController().navigate(BannedFragmentDirections.bannedFragmentToUserFragment(userId))
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

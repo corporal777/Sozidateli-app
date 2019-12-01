@@ -11,11 +11,10 @@ import com.example.data.models.OrganizationMember
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.LayoutListWithPlaceholderUtil
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -34,8 +33,6 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
         organizationId = OrganizationMembersFragmentArgs.fromBundle(arguments!!).organizationId
     }
 
-    private lateinit var placeholderUtil: LayoutListWithPlaceholderUtil
-
     val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
@@ -53,7 +50,6 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
             })
         }
 
-        placeholderUtil = LayoutListWithPlaceholderUtil(view).apply { setDefault() }
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -62,7 +58,6 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
             val user = it.user
             OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onMemberClick(it) }
         })
-        placeholderUtil.isDataLoad = true
         swipeToRefresh.isRefreshing = false
     }
 
@@ -74,5 +69,5 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
         findNavController().navigate(OrganizationMembersFragmentDirections.organizationMembersToUser(userId))
     }
 
-    override fun layout() = R.layout.layout_list_with_placeholder
+    override fun layout() = R.layout.layout_list
 }

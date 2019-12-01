@@ -50,7 +50,7 @@
         android:minWidth="0dp"
         android:text="@string/edit"
         android:textAllCaps="false"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_color_default"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

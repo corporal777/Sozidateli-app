@@ -17,7 +17,7 @@ interface MainContract {
         fun showLogin()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showEventList()
+        fun showRecommendations()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showEvent()

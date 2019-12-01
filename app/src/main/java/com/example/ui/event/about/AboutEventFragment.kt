@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.fragment_about_event.swipeToRefresh
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
-import kotlinx.android.synthetic.main.layout_list_with_placeholder.*
+import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 

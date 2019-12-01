@@ -10,7 +10,7 @@
     <dimen name="auth_block_label_text_size">12sp</dimen>
     <dimen name="auth_block_login_label_text_size">14sp</dimen>
 
-    <dimen name="margin_horizontal_default">20dp</dimen>
+    <dimen name="margin_horizontal_default">16dp</dimen>
 
     <dimen name="chat_list_button_padding_left">8dp</dimen>
     <dimen name="chat_list_button_padding_right">8dp</dimen>
@@ -20,6 +20,9 @@
     <dimen name="chat_message_padding_vertical">10dp</dimen>
 
     <dimen name="background_default_corners_radius">4dp</dimen>
+    <dimen name="background_large_corners_radius">10dp</dimen>
+    <dimen name="background_input_corners_radius">10dp</dimen>
+    <dimen name="background_input_padding">12dp</dimen>
 
     <dimen name="event_item_border_width">1dp</dimen>
 
@@ -54,7 +57,7 @@
 
     <dimen name="building_scheme_bottom_gradient_height">50dp</dimen>
 
-    <dimen name="action_button_height">52dp</dimen>
+    <dimen name="action_button_height">42dp</dimen>
     <dimen name="action_button_margin_vertical">20dp</dimen>
 
     <dimen name="event_registration_form_title_margin_top">14dp</dimen>
@@ -62,8 +65,9 @@
     <dimen name="event_registration_file_margin_top">12dp</dimen>
     <dimen name="event_registration_file_margin_bottom">12dp</dimen>
 
-    <dimen name="event_item_margin_bottom">16dp</dimen>
+    <dimen name="event_item_margin_bottom">38dp</dimen>
     <dimen name="event_item_height">292dp</dimen>
+    <dimen name="event_item_image_height">192dp</dimen>
     <dimen name="event_item_content_margin_top">12dp</dimen>
     <dimen name="event_item_organization_name_margin_top">21dp</dimen>
     <dimen name="event_item_type_text_size">12sp</dimen>

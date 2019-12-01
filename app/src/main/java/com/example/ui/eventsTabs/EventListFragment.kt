@@ -37,8 +37,8 @@ class EventListFragment : BaseFragment(), EventListContract.View, ToolbarFragmen
     private val tabsContent by lazy {
         listOf(
                 RecommendationsFragment() to getString(R.string.tab_recommended_title),
-                FavoriteOrganizationsFragment() to getString(R.string.tab_subscriptions_title),
-                MyEventsFragment() to getString(R.string.tab_events_title)
+                FavoriteOrganizationsFragment() to getString(R.string.tab_organizations_title),
+                MyEventsFragment() to getString(R.string.my_events_title)
         )
     }
 

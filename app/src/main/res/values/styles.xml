@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/divider</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -17,6 +17,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -55,7 +56,7 @@
     </style>
 
     <style name="AlertButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
@@ -123,7 +124,7 @@
     </style>
 
     <style name="ViewBackgroundBlack">
-        <item name="viewBackground">@color/text_title</item>
+        <item name="viewBackground">@color/text_color_default</item>
     </style>
 
     <style name="ViewBackgroundAttention">
@@ -221,7 +222,7 @@
     </style>
 
     <style name="TextTitle">
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">22sp</item>
     </style>
 
@@ -334,8 +335,7 @@
         <item name="android:layout_marginBottom">6dp</item>
     </style>
 
-    <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">@color/input_border_color</item>
+    <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@color/input_background</item>
         <item name="hintEnabled">false</item>
         <item name="errorTextColor">@color/attention_action</item>
@@ -349,18 +349,25 @@
     <style name="Profile.Edit.Input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/text_color_profile_data</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:background">@drawable/background_input</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
         <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlActivated">@color/colorAccent</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="android:minHeight">38dp</item>
     </style>
 
     <style name="Profile.Edit.Input.SingleLine">
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="Input.Search" parent="Profile.Edit.Input.SingleLine">
+        <item name="android:drawableStart">@drawable/ic_search</item>
+        <item name="android:drawablePadding">5dp</item>
     </style>
 
     <style name="Profile.Edit.Input.SingleLine.DropDown">
@@ -426,7 +433,7 @@
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">15sp</item>
     </style>
 
@@ -436,7 +443,7 @@
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginTop">6dp</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">19sp</item>
     </style>
 
@@ -446,7 +453,7 @@
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginTop">18dp</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">15sp</item>
     </style>
 
@@ -464,7 +471,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">12dp</item>
         <item name="android:layout_marginEnd">12dp</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:minWidth">0dp</item>
@@ -476,7 +483,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">12dp</item>
         <item name="android:layout_marginEnd">12dp</item>
-        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textColor">@color/text_color_default</item>
         <item name="android:textSize">15sp</item>
         <item name="android:background">@drawable/background_corners</item>
         <item name="android:theme">@style/ViewBackgroundTransparent</item>
