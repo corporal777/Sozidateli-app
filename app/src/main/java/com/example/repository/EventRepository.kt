@@ -13,6 +13,7 @@ interface EventRepository {
     fun getEventRecommendations(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
     fun getEventRegisterField(eventId: String): Single<EventRegisterForm>
     fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse>
+    fun eventRegisterCancel(eventId: String): Completable
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>>
     fun setEventRating(eventId: String, body: RequestBody): Completable

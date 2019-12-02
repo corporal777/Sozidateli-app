@@ -25,7 +25,7 @@ class OrganizationItem(
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
-                    setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNSUBSCRIBE else UserSubscribeButton.Action.SUBSCRIBE)
+                    setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
                     setOnClickListener { onSubscribeClick.invoke() }
                     true
                 } else {

@@ -121,22 +121,6 @@
         android:label="Welcome" />
 
     <fragment
-        android:id="@+id/event_list_fragment"
-        android:name="com.example.ui.eventsTabs.EventListFragment"
-        android:label="@string/events_tabs_title"
-        tools:layout="@layout/fragment_events_tabs">
-        <action
-            android:id="@+id/action_events_tabs_fragment_to_chat_list_tabs_fragment"
-            app:destination="@id/chat_list_tabs_fragment" />
-        <action
-            android:id="@+id/main_to_search"
-            app:destination="@id/search_tabs_fragment" />
-        <action
-            android:id="@+id/main_to_profile"
-            app:destination="@id/profile_fragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/recommendations_fragment"
         android:name="com.example.ui.event.list.recommendations.RecommendationsFragment">
 
@@ -146,7 +130,7 @@
 
         <action
             android:id="@+id/recommendations_fragment_to_favorite_organizations_fragment"
-            app:destination="@id/favorite_organizations_fragment" />
+            app:destination="@id/organizations_fragment" />
 
         <action
             android:id="@+id/recommendations_fragment_to_my_events_fragment"
@@ -162,8 +146,18 @@
     </fragment>
 
     <fragment
-        android:id="@+id/favorite_organizations_fragment"
-        android:name="com.example.ui.organizations.favorites.FavoriteOrganizationsFragment"></fragment>
+        android:id="@+id/organizations_fragment"
+        android:name="com.example.ui.organizations.list.OrganizationsFragment">
+
+        <argument
+            android:name="filter"
+            app:argType="com.example.data.models.OrganizationsFilter"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/organizations_fragment_to_self"
+            app:destination="@id/organizations_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/my_events_fragment"

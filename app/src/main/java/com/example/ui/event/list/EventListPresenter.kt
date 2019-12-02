@@ -1,8 +1,12 @@
 package com.example.ui.event.list
 
+import com.example.data.UserEventData
+import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.di.Connectivity
 import com.example.extensions.buildList
+import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationList
@@ -12,9 +16,14 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
+import withLoadingDialog
 import java.net.UnknownHostException
 
 abstract class EventListPresenter<V : EventListContract.View>(
+        private val eventData: UserEventData,
+        private val eventRepository: EventRepository,
+        private val userRepository: UserRepository,
         @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<V>(), EventListContract.Presenter {
 
@@ -57,9 +66,33 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onActionRegister(event: Event) = viewState.showEventRequest(event)
 
-    override fun onActionCancel(event: Event) = viewState.showAboutEvent(event.id)
+    override fun onActionCancel(event: Event) {
+        compositeDisposable += eventRepository.eventRegisterCancel(event.id)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    paginationList.invalidate()
+                }
+    }
 
-    override fun onActionWriteToOrganization(event: Event) = viewState.showAboutEvent(event.id)
+    override fun onActionWriteToOrganization(event: Event) {
+        val emails = event.organization?.emails
+        if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
+    }
+
+    override fun onWriteToOrganizationEmailChosen(email: EmailAffiliation) {
+        viewState.showWriteToOrganization(email)
+    }
+
+    override fun onActionShowEvent(event: Event) {
+        compositeDisposable += eventRepository.setDefaultEvent(event.id)
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event.id))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }
+    }
 
     override fun onShowEventClick(event: Event) = viewState.showAboutEvent(event.id)
 

@@ -8,7 +8,9 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.updatePadding
 import com.example.R
+import com.example.extensions.dp
 import uk.co.chrisjenx.calligraphy.CalligraphyUtils
 
 class UserSubscribeButton : AppCompatButton {
@@ -16,8 +18,8 @@ class UserSubscribeButton : AppCompatButton {
     private val actionSubscribeTextColor by lazy { ContextCompat.getColor(context, R.color.profile_action_subscribe) }
     private val actionUnblockTextColor by lazy { ContextCompat.getColor(context, R.color.profile_action_ban) }
 
-    private val actionSubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_star) }
-    private val actionUnsubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_star_filled) }
+    private val actionSubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_favorite) }
+    private val actionUnsubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_favorite_in) }
 
     private val actionSubscribeText by lazy { resources.getString(R.string.subscribe) }
     private val actionUnsubscribeText by lazy { resources.getString(R.string.unsubscribe) }
@@ -31,6 +33,10 @@ class UserSubscribeButton : AppCompatButton {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         obtainAttributes(attrs)
+        isAllCaps = false
+        compoundDrawablePadding = 8.dp
+        updatePadding(left = 8.dp, right = 8.dp, top = 0, bottom = 0)
+        textSize = 12f
     }
 
     init {

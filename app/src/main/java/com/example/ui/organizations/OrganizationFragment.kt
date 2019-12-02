@@ -187,7 +187,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             organization.emails?.let { list ->
                 if (list.isNotEmpty()) {
                     if (length > 0) append("\n")
-                    append(list.joinToString(separator = "\n") { if (!it.affiliation.isNullOrBlank()) "${it.affiliation}: ${it.email}" else it.email })
+                    append(list.joinToString(separator = "\n") { it.getAffiliationString() })
                 }
             }
         }

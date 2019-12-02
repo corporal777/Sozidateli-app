@@ -156,7 +156,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     override fun showEventList() {
-        findNavController().navigate(R.id.event_list_fragment, null, NavOptions.Builder()
+        findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build())
     }

@@ -29,12 +29,11 @@ import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.event.speakers.EventSpeakersFragment
 import com.example.ui.eventTabs.EventTabsFragment
-import com.example.ui.eventsTabs.EventListFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
-import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
+import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
@@ -91,9 +90,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeWelcomeFragment(): WelcomeFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeEventsTabsFragment(): EventListFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeRecommendationsFragment(): RecommendationsFragment
 
     @ContributesAndroidInjector
@@ -124,7 +120,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeOrganizationMembersFragment(): OrganizationMembersFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
+    abstract fun contributeFavoriteOrganizationsFragment(): OrganizationsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteTabsFragment

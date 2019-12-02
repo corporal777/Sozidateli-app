@@ -8,14 +8,13 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MyEventsFilter
+import com.example.data.models.OrganizationsFilter
 import com.example.holders.RecommendationsHeaderItem
 import com.example.holders.ScreenLabelItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
-import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
-import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import javax.inject.Inject
 import javax.inject.Provider
@@ -50,7 +49,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
     }
 
     override fun showOrganizations() {
-        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToFavoriteOrganizationsFragment())
+        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToFavoriteOrganizationsFragment(OrganizationsFilter.NONE))
     }
 
     override fun showMyEvents() {

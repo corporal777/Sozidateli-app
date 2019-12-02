@@ -3,7 +3,6 @@ package com.example.ui.event.list.my
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
@@ -81,9 +80,8 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContrac
 
     override fun selectEvent(event: Event) {
         findNavController().apply {
-            //            graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .setPopUpTo(R.id.main_navigation, true)
                     .build()
             navigate(R.id.event_tabs_fragment, null, opts)
         }

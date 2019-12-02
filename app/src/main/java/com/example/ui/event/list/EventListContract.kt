@@ -2,6 +2,7 @@ package com.example.ui.event.list
 
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -23,6 +24,15 @@ interface EventListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showWriteToOrganization(email: EmailAffiliation)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun selectEvent()
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
@@ -32,7 +42,10 @@ interface EventListContract {
         fun onActionRegister(event: Event)
         fun onActionCancel(event: Event)
         fun onActionWriteToOrganization(event: Event)
+        fun onActionShowEvent(event: Event)
         fun onShowEventClick(event: Event)
         fun onShowFilterClick(event: Event)
+
+        fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
     }
 }

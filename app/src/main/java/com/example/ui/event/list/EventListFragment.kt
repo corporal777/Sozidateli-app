@@ -1,13 +1,17 @@
 package com.example.ui.event.list
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AlertDialog
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
+import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
-import com.example.extensions.dp
 import com.example.holders.EventItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -32,15 +36,16 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         add(dataGroup)
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
-                if (position < headGroup.itemCount) return
-                presenter.onItemTake(position)
+                val headCount = headGroup.itemCount
+                if (position < headCount) return
+                presenter.onItemTake(position - headCount)
             }
         })
     }
 
     private val onEventClickListener = object : EventItem.OnEventClickListener {
         override fun onActionRegister(event: Event) = presenter.onActionRegister(event)
-        override fun onActionShowEvent(event: Event) = presenter.onShowEventClick(event)
+        override fun onActionShowEvent(event: Event) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: Event) = presenter.onActionCancel(event)
         override fun onActionWriteToOrganization(event: Event) = presenter.onActionWriteToOrganization(event)
         override fun onShowEventClick(event: Event) = presenter.onShowEventClick(event)
@@ -55,9 +60,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
-
-            clipToPadding = false
-            setPadding(0, 16.dp, 0, 0)
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -76,6 +78,26 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         swipeToRefresh.isRefreshing = false
     }
 
+    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+        AlertDialog.Builder(requireContext())
+                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                    val email = emails[which]
+                    presenter.onWriteToOrganizationEmailChosen(email)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
+    override fun showWriteToOrganization(email: EmailAffiliation) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
     }
@@ -86,6 +108,12 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
 
     override fun showEventRequest(event: Event) {
         findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
+    }
+
+    override fun selectEvent() {
+        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
     }
 
     override fun layout() = R.layout.layout_list

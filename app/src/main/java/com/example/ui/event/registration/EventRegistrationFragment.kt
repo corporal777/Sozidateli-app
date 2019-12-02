@@ -87,11 +87,10 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
 
             if (withConfirm) setFooter(saveButtonItem)
 
-            if (groups.isNotEmpty()) {
-                add(EventRegistrationGroupsItem(groupField?.id?.toLong()
-                        ?: -90L, groupField?.description, groups, selectedGroup) {
+            if (groupField != null) {
+                add(EventRegistrationGroupsItem(groupField.id.toLong(), groupField.description, groups, selectedGroup) {
                     presenter.onSelectedGroupChange(it)
-                }.withEventRegistrationTitle(groupField?.name))
+                }.withEventRegistrationTitle(groupField.name))
             }
 
             addAll(fieldsData.map {
@@ -247,8 +246,8 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
     }
 
     override fun showEventLists() {
-        if (!findNavController().popBackStack(R.id.event_list_fragment, false)) {
-            findNavController().navigate(R.id.event_list_fragment, null, navOptions {
+        if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
+            findNavController().navigate(R.id.recommendations_fragment, null, navOptions {
                 popUpTo(R.id.request_fragment) { inclusive = true }
             })
         }
@@ -258,7 +257,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
         findNavController().apply {
             graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.event_list_fragment, true)
+                    .setPopUpTo(R.id.recommendations_fragment, true)
                     .build()
             navigate(R.id.event_tabs_fragment, null, opts)
         }

@@ -407,8 +407,8 @@
         <item name="android:layout_width">@dimen/user_item_avatar_size</item>
         <item name="android:layout_height">@dimen/user_item_avatar_size</item>
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginTop">14dp</item>
-        <item name="android:layout_marginBottom">14dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 

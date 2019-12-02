@@ -77,4 +77,6 @@
     <dimen name="organization_item_logo_size">82dp</dimen>
 
     <dimen name="user_item_avatar_size">63dp</dimen>
+
+    <dimen name="subscribe_button_icon_inset">6dp</dimen>
 </resources>

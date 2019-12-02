@@ -15,7 +15,7 @@ class NoDataItem(
             tvTitle.text = title
             tvDescription.apply {
                 text = description
-                isVisible = description.isNullOrEmpty()
+                isVisible = !description.isNullOrEmpty()
             }
         }
     }

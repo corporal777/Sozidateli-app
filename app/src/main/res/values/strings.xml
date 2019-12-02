@@ -29,6 +29,9 @@
     <string name="my_events_pending">Заявка на рассмотрении</string>
     <string name="my_events_declined">Участие отклонено</string>
 
+    <string name="organizations_favorites">Избранные</string>
+    <string name="organizations_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке организаций</string>
+
     <string name="event_status_approved">Участие одобрено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
     <string name="event_status_finished">Мероприятие завершено</string>
@@ -110,8 +113,8 @@
     <string name="news_read_more">Подробнее</string>
 
     <string name="speakers">Спикеры</string>
-    <string name="add_to_favorites">Добавить в избранные</string>
-    <string name="remove_from_favorites">Удалить из избранных</string>
+    <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="remove_from_favorites">В избранном</string>
     <string name="block">Заблокировать</string>
     <string name="unblock">Разблокировать</string>
     <string name="change">Изменить</string>

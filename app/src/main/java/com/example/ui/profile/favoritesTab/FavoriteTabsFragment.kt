@@ -9,7 +9,7 @@ import com.example.R
 import com.example.adapters.TabsFragmentAdapter
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.organizations.favorites.FavoriteOrganizationsFragment
+import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragm
 
         val fragments = listOf<Pair<Fragment, String>>(
                 FavoriteUsersFragment() to getString(R.string.favorites_users),
-                FavoriteOrganizationsFragment() to getString(R.string.favorites_organizations)
+                OrganizationsFragment() to getString(R.string.favorites_organizations)
         )
 
         viewPager.run {

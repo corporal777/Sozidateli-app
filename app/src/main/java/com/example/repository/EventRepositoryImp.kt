@@ -36,6 +36,10 @@ class EventRepositoryImp
         return call(api.eventRegister(eventId, body))
     }
 
+    override fun eventRegisterCancel(eventId: String): Completable {
+        return call(api.eventRegisterCancel(eventId))
+    }
+
     override fun getEventRegister(eventId: String): Single<EventRegisterResponse> {
         return call(api.getEventRegister(eventId))
     }

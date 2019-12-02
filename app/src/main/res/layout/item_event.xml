@@ -134,6 +134,7 @@
                     android:elevation="0dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:theme="@style/ViewBackgroundBlack"
                     android:minHeight="@dimen/action_button_height"
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"

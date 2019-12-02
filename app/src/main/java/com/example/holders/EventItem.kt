@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.graphics.Color
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -119,6 +120,7 @@ class EventItem(
     private fun setAction(btnAction: Button) {
         btnAction.apply {
             val textBackground: Int
+            var textColor = Color.BLACK
             val textRes: Int
             val clickAction: () -> Unit
             if (event.status == Event.Status.CONFERENCE_ENDS) {
@@ -144,6 +146,7 @@ class EventItem(
                     textBackground = R.color.event_item_action_background_show_event
                     textRes = R.string.event_action_show_event
                     clickAction = { onEventClickListener.onActionShowEvent(event) }
+                    textColor = Color.WHITE
                 }
                 else -> {
                     if (event.isCanRegister()) {
@@ -158,6 +161,7 @@ class EventItem(
             }
 
             text = resources.getString(textRes)
+            setTextColor(textColor)
             backgroundTintList = ContextCompat.getColorStateList(context, textBackground)
             isVisible = true
             setOnClickListener { clickAction() }

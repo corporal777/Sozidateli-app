@@ -1,10 +1,12 @@
 package com.example.ui.event.list.my
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.MyEventsFilter
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
@@ -14,9 +16,11 @@ import javax.inject.Inject
 @InjectViewState
 class MyEventsPresenter
 @Inject constructor(
+        eventData: UserEventData,
         private val eventRepository: EventRepository,
+        userRepository: UserRepository,
         @Connectivity connectivity: Observable<Boolean>
-) : EventListPresenter<MyEventsContract.View>(connectivity), MyEventsContract.Presenter {
+) : EventListPresenter<MyEventsContract.View>(eventData, eventRepository, userRepository, connectivity), MyEventsContract.Presenter {
 
     lateinit var filter: MyEventsFilter
 

@@ -85,7 +85,11 @@ class EventRegistrationPresenter
             MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .apply {
-                        if (group != null) addFormDataPart("category_id", group)
+                        var added = false
+                        if (group != null) {
+                            addFormDataPart("category_id", group)
+                            added = true
+                        }
 
                         fieldsData.forEach { fieldData ->
                             val key = fieldData.field.id
@@ -99,12 +103,16 @@ class EventRegistrationPresenter
                                         contentResolver.openInputStream(path)?.buffered()?.use { stream -> stream.readBytes() }?.let { bytes ->
                                             val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                             addFormDataPart("file[$key]", name, body)
+                                            added = true
                                         }
                                     }
                                 }
                                 else -> {
                                     if (value is Iterable<*>) value.forEachIndexed { index, any ->
-                                        if (any != null) addFormDataPart("field[$key][$index]", any.toString())
+                                        if (any != null) {
+                                            addFormDataPart("field[$key][$index]", any.toString())
+                                            added = true
+                                        }
                                     } else {
                                         val data = when (value) {
                                             is EventPassport ->
@@ -112,10 +120,17 @@ class EventRegistrationPresenter
                                                 else null
                                             else -> value.toString()
                                         }
-                                        if (data != null) addFormDataPart("field[$key]", data)
+                                        if (data != null) {
+                                            addFormDataPart("field[$key]", data)
+                                            added = true
+                                        }
                                     }
                                 }
                             }
+                        }
+
+                        if (!added) {
+                            return@fromCallable "".toRequestBody()
                         }
                     }
                     .build()
