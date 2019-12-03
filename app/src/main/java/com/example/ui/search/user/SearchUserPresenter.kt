@@ -69,6 +69,19 @@ class SearchUserPresenter
         viewState.showUser(user)
     }
 
+    override fun onUserActionCLick(user: User) {
+        val id = user.user_id.toString()
+        val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
+        else userRepository.addToFavorite(id)
+        compositeDisposable += request
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    user.is_in_favorite = !user.is_in_favorite
+                    viewState.updateUser(user)
+                }
+    }
+
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
         if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address

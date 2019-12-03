@@ -30,11 +30,17 @@ class UserSubscribeButton : AppCompatButton {
     var action = Action.FAVORITE
         private set
 
+    var showText = true
+        set(value) {
+            field = value
+            compoundDrawablePadding = if (value) 8.dp else 0
+            setAction(action)
+        }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         obtainAttributes(attrs)
         isAllCaps = false
-        compoundDrawablePadding = 8.dp
         updatePadding(left = 8.dp, right = 8.dp, top = 0, bottom = 0)
         textSize = 12f
     }
@@ -46,9 +52,11 @@ class UserSubscribeButton : AppCompatButton {
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.UserSubscribeButton)
         val action = a.getInt(R.styleable.UserSubscribeButton_subscribeAction, 0)
+        val showText = a.getBoolean(R.styleable.UserSubscribeButton_showText, true)
 
         a.recycle()
 
+        this.showText = showText
         setAction(Action.values()[action])
     }
 
@@ -88,7 +96,7 @@ class UserSubscribeButton : AppCompatButton {
     }
 
     private fun changeAction(text: String, textColor: Int, drawable: Drawable?) {
-        this.text = text
+        this.text = if (showText) text else null
         this.setTextColor(textColor)
         this.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
     }
@@ -96,7 +104,8 @@ class UserSubscribeButton : AppCompatButton {
     override fun onSaveInstanceState(): Parcelable? {
         return bundleOf(
                 STATE_SUPER to super.onSaveInstanceState(),
-                STATE_ACTION to action
+                STATE_ACTION to action,
+                STATE_SHOW_TEXT to showText
         )
     }
 
@@ -104,6 +113,8 @@ class UserSubscribeButton : AppCompatButton {
         val bundle = state as? Bundle
         if (bundle != null) {
             super.onRestoreInstanceState(bundle.getParcelable(STATE_SUPER))
+            val showText = bundle.getBoolean(STATE_SHOW_TEXT)
+            this.showText = showText
             val action = bundle.getSerializable(STATE_ACTION) as Action
             setAction(action)
         } else {
@@ -114,6 +125,7 @@ class UserSubscribeButton : AppCompatButton {
     companion object {
         private const val STATE_SUPER = "UserSubscribeButton:super"
         private const val STATE_ACTION = "UserSubscribeButton:action"
+        private const val STATE_SHOW_TEXT = "UserSubscribeButton:showText"
     }
 
     enum class Action {

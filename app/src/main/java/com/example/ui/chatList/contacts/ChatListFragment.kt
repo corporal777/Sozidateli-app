@@ -19,9 +19,6 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
-import kotlinx.android.synthetic.main.fragment_chat_list.recyclerView
-import kotlinx.android.synthetic.main.fragment_chat_list.swipeToRefresh
-import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -96,7 +93,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
 
         favoritesSection.update(favorites.map {
-            UserItem(it.user_id, it.fullName, it.user_avatar, {
+            UserItem(it.user_id, it.fullName, null, it.user_avatar, {
                 presenter.onUserClick(it.user_id, it.fullName)
             })
         })

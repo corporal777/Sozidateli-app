@@ -26,164 +26,102 @@
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         app:endIconMode="none">
 
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address"
-            android:inputType="textCapSentences"
-            android:minHeight="48dp"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp" />
+            android:inputType="textCapSentences" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilFormat"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvFormat"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_format" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilTheme"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvTheme"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_theme" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilSpec"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvSpec"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_specialization" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <LinearLayout
-        android:id="@+id/llFormat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_format" />
+        android:layout_marginTop="24dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilFormat"
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvFormat"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
-        </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_event_dates" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/tilStart"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            app:endIconMode="custom">
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilStart"
-                style="@style/Profile.Edit.InputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:endIconMode="custom">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etStart"
-                    style="@style/Profile.Edit.Input.SingleLine"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <View
-                android:layout_width="16dp"
-                android:layout_height="1dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="#404041" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilFinish"
-                style="@style/Profile.Edit.InputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:endIconMode="custom">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFinish"
-                    style="@style/Profile.Edit.Input.SingleLine"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false" />
-            </com.example.ui.views.CustomTextInputLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llTheme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_theme" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilTheme"
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvTheme"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etStart"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/search_filter_start" />
         </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llSpec"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_specialization" />
+        <View
+            android:layout_width="16dp"
+            android:layout_height="1dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="#404041" />
 
         <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilSpec"
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/tilFinish"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:endIconMode="custom">
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvSpec"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
-        </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_registration" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvSubscription"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFinish"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/search_filter_finish" />
         </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 </LinearLayout>

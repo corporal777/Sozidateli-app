@@ -15,5 +15,6 @@
             <enum name="unfavorite" value="3" />
             <enum name="unblock" value="4" />
         </attr>
+        <attr name="showText" format="boolean" />
     </declare-styleable>
 </resources>

@@ -61,6 +61,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             else UserItem(
                     it.id,
                     it.user.fullName,
+                    null,
                     it.user.user_avatar,
                     { presenter.onUserClick(it) },
                     UserSubscribeButton.Action.UNBLOCK,

@@ -1,7 +1,8 @@
 package com.example.ui.search.event
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.Event
+import com.example.data.UserEventData
+import com.example.data.models.*
 import com.example.data.models.Event.Companion.FILTER_ADDRESS
 import com.example.data.models.Event.Companion.FILTER_CATEGORY
 import com.example.data.models.Event.Companion.FILTER_CONTENT
@@ -10,12 +11,10 @@ import com.example.data.models.Event.Companion.FILTER_DATE_START
 import com.example.data.models.Event.Companion.FILTER_FORMAT
 import com.example.data.models.Event.Companion.FILTER_NAME
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION
-import com.example.data.models.EventFormat
-import com.example.data.models.Interest
-import com.example.data.models.SearchFilter
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Completable
@@ -23,6 +22,7 @@ import io.reactivex.Maybe
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -30,7 +30,9 @@ import javax.inject.Inject
 @InjectViewState
 class SearchEventPresenter
 @Inject constructor(
+        private val eventData: UserEventData,
         private val eventRepository: EventRepository,
+        private val userRepository: UserRepository,
         private val commonRepository: CommonRepository
 ) : SearchPresenter<SearchEventContract.View, Event, SearchFilter.Event>(), SearchEventContract.Presenter {
 
@@ -63,8 +65,43 @@ class SearchEventPresenter
                         })
     }
 
-    override fun onEventClick(event: Event) {
-        viewState.showAboutEvent(event)
+    override fun onActionRegister(event: Event) = viewState.showEventRequest(event)
+
+    override fun onActionCancel(event: Event) {
+        compositeDisposable += eventRepository.eventRegisterCancel(event.id)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    pagination.invalidate()
+                }
+    }
+
+    override fun onActionWriteToOrganization(event: Event) {
+        val emails = event.organization?.emails
+        if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
+    }
+
+    override fun onWriteToOrganizationEmailChosen(email: EmailAffiliation) {
+        viewState.showWriteToOrganization(email)
+    }
+
+    override fun onActionShowEvent(event: Event) {
+        compositeDisposable += eventRepository.setDefaultEvent(event.id)
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event.id))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }
+    }
+
+    override fun onShowEventClick(event: Event) = viewState.showAboutEvent(event.id)
+
+    override fun onShowFormatClick(event: Event) {
+        val format = event.format ?: return
+        filter.format = format.id
+        tmpFilter.format = format.id
+        pagination.invalidateFromStart()
     }
 
     override fun onShowFilterRequest() {

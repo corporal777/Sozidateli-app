@@ -172,11 +172,12 @@
     <string name="search_date_hint">DD/MM/YYYY</string>
     <string name="search_scan_qr_btn">Или сканируйте QR-код</string>
     <string name="search_empty_list">Ничего не найдено</string>
-    <string name="search_organizations">Мероприятия</string>
-    <string name="search_events">Организации</string>
+    <string name="search_organizations">Организации</string>
+    <string name="search_events">Мероприятия</string>
     <string name="search_users">Люди</string>
     <string name="search_input_hint">Поиск</string>
     <string name="search_filter_address">Область, край, район или город</string>
+    <string name="search_filter_organization_address">Адрес</string>
     <string name="search_filter_organization_name">Название органзации</string>
     <string name="search_filter_inn">ИНН</string>
     <string name="search_filter_type">Тип</string>
@@ -187,7 +188,7 @@
     <string name="search_filter_event_name">Название мероприятия</string>
     <string name="search_filter_event_dates">Период проведения мероприятия</string>
     <string name="search_filter_specialization">Специализация</string>
-    <string name="search_filter_theme">Тема</string>
+    <string name="search_filter_theme">Тематика мероприятия</string>
     <string name="search_filter_registration">Регистрация</string>
     <string name="search_filter_user_name">Имя</string>
     <string name="search_filter_age">Возраст</string>
@@ -197,7 +198,11 @@
     <string name="search_filter_favorites">Избранное</string>
     <string name="search_filter_age_from">от</string>
     <string name="search_filter_age_to">до</string>
-    <string name="search_filter_format">Формат</string>
+    <string name="search_filter_format">Формат мероприятия</string>
+    <string name="search_filter_start">Начало</string>
+    <string name="search_filter_finish">Окончание</string>
+    <string name="search_no_data_text">Ничего не найдено.</string>
+    <string name="search_no_data_description">Пожалуйста, уточните поисковой запрос и попробуйте еще раз.</string>
 
     <string name="search_contact_section_favorites">Избранные</string>
     <string name="search_contact_section_chats">Вы ранее общались</string>

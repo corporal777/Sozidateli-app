@@ -9,19 +9,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.user.User
+import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
-import com.example.holders.SearchUserItem
+import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
+import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.Item
-import initDropDownView
-import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
-import kotlinx.android.synthetic.main.layout_filter_user.view.etAddress
-import kotlinx.android.synthetic.main.layout_filter_user.view.etName
-import kotlinx.android.synthetic.main.layout_filter_user.view.tilSpec
-import kotlinx.android.synthetic.main.layout_filter_user.view.tvSpec
-import kotlinx.android.synthetic.main.layout_filter_user.view.tvSubscription
-import kotlinx.android.synthetic.main.layout_filter_user.view.tvTheme
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -39,12 +33,21 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
 
     override fun createItem(itemData: User?): Item {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
-        else SearchUserItem(
+        else UserItem(
                 itemData.user_id,
                 itemData.fullName,
+                itemData.user_city,
                 itemData.user_avatar,
-                itemData.user_address
-        ) { presenter.onUserClick(itemData) }
+                { presenter.onUserClick(itemData) },
+                if (itemData.is_in_favorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE,
+                { presenter.onUserActionCLick(itemData) }
+        )
+    }
+
+    override fun updateUser(user: User) {
+        val idLong = user.user_id.toLong()
+        val item = adapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
+        item.notifyChanged(if (user.is_in_favorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
     }
 
     override fun showUser(user: User) {
@@ -53,49 +56,31 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
 
     override fun createFilterView(filter: SearchFilter.User): View {
         return layoutInflater.inflate(R.layout.layout_filter_user, null).apply {
-            initTextFilter(etName, filter.name) { filter.name = it }
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
                 onTextChanged { filter.address = it.toString() }
             }
-            initTextFilter(etEmail, filter.email) { filter.email = it }
-            initTextFilter(etPhone, filter.phone) { filter.phone = it }
-            initBiFilter(tvSubscription, resources.getStringArray(R.array.favorites_status).toList(), filter.favorites) { filter.favorites = it }
 
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
-                llInterests.isVisible = false
+                tilTheme.isVisible = false
+                tilSpec.isVisible = false
             } else {
                 initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
                     filter.theme = theme
                     filter.spec = spec
                 }
-                llInterests.isVisible = true
-            }
-
-            val ageFrom = getString(R.string.search_filter_age_from)
-            val ageTo = getString(R.string.search_filter_age_to)
-            val availableAges = SearchFilter.User.AGE_MIN..SearchFilter.User.AGE_MAX
-            initDropDownView(tvAgeFrom, availableAges.associateBy { "$ageFrom $it" }, filter.ageFrom?.let { "$ageFrom $it" }, null) {
-                filter.ageFrom = it
-            }
-            initDropDownView(tvAgeTo, availableAges.associateBy { "$ageTo $it" }, filter.ageTo?.let { "$ageTo $it" }, null) {
-                filter.ageTo = it
+                tilTheme.isVisible = true
+                tilSpec.isVisible = true
             }
         }
     }
 
     override fun clearFilterView(filterView: View) {
         filterView.apply {
-            etName.text = null
             etAddress.text = null
-            etEmail.text = null
-            etPhone.text = null
-            tvSubscription.setText(filterNotChosenVariant)
-            tvTheme.setText(filterNotChosenVariant)
-            tvSpec.setText(filterNotChosenVariant)
-            tvAgeFrom.text = null
-            tvAgeTo.text = null
+            tvTheme.text = null
+            tvSpec.text = null
         }
     }
 }

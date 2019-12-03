@@ -4,8 +4,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.fragment_organization.*
-import kotlinx.android.synthetic.main.item_user.*
+import kotlinx.android.synthetic.main.item_organization_user.*
 import setCircleImage
 
 class OrganizationUserItem(

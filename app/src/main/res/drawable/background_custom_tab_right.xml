@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/custom_tabs_background" />
+    <corners
+        android:bottomRightRadius="@dimen/custom_tab_corner_radius"
+        android:topRightRadius="@dimen/custom_tab_corner_radius" />
+</shape>

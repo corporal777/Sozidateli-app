@@ -29,11 +29,12 @@ class EventItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            itemContainer.apply {
+            itemView.apply {
                 if (isInHorizontalParent) {
                     layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
-
+            }
+            itemContainer.apply {
                 alpha = if (event.status == Event.Status.CONFERENCE_ENDS) 0.4f else 1f
             }
 
@@ -128,7 +129,7 @@ class EventItem(
                 return@apply
             } else when (event.userRegistration) {
                 Event.RegistrationStatus.PENDING -> {
-                    textBackground = R.color.event_item_action_background
+                    textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_cancel_request
                     clickAction = { onEventClickListener.onActionCancel(event) }
                 }
@@ -138,19 +139,19 @@ class EventItem(
                         return@apply
                     }
 
-                    textBackground = R.color.event_item_action_background
+                    textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_write_to_organisation
                     clickAction = { onEventClickListener.onActionWriteToOrganization(event) }
                 }
                 Event.RegistrationStatus.APPROVED -> {
-                    textBackground = R.color.event_item_action_background_show_event
+                    textBackground = R.drawable.background_event_action_approved
                     textRes = R.string.event_action_show_event
                     clickAction = { onEventClickListener.onActionShowEvent(event) }
                     textColor = Color.WHITE
                 }
                 else -> {
                     if (event.isCanRegister()) {
-                        textBackground = R.color.event_item_action_background
+                        textBackground = R.drawable.background_event_action
                         textRes = R.string.event_action_participate
                         clickAction = { onEventClickListener.onActionRegister(event) }
                     } else {
@@ -162,7 +163,7 @@ class EventItem(
 
             text = resources.getString(textRes)
             setTextColor(textColor)
-            backgroundTintList = ContextCompat.getColorStateList(context, textBackground)
+            background = ContextCompat.getDrawable(context, textBackground)
             isVisible = true
             setOnClickListener { clickAction() }
         }

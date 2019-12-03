@@ -157,6 +157,10 @@
         <action
             android:id="@+id/organizations_fragment_to_self"
             app:destination="@id/organizations_fragment" />
+
+        <action
+            android:id="@+id/organizations_fragment_to_organization_fragment"
+            app:destination="@id/organization_fragment" />
     </fragment>
 
     <fragment

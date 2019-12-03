@@ -11,6 +11,7 @@ import com.example.data.models.SearchFilter
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
+import com.example.holders.NoDataItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -62,7 +63,11 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     }
 
     override fun setData(data: List<I?>) {
-        adapter.update(data.map(::createItem))
+        if (data.isEmpty()) {
+            adapter.update(listOf(NoDataItem(getString(R.string.search_no_data_text), getString(R.string.search_no_data_description))))
+        } else {
+            adapter.update(data.map(::createItem))
+        }
         swipeToRefresh.isRefreshing = false
     }
 
@@ -155,7 +160,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                 tvTheme,
                 themes,
                 selectedTheme?.value,
-                filterNotChosenVariant,
+                null,
                 transformKey = { it.value },
                 findValue = { it?.id },
                 onVariantChange = { id ->
@@ -174,7 +179,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
         if (interests == null) {
             textView.isEnabled = false
-            textView.setText(filterNotChosenVariant)
+            textView.text = null
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(spec, interests)
@@ -182,7 +187,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                     textView,
                     interests,
                     selectedTheme?.value,
-                    filterNotChosenVariant,
+                    null,
                     transformKey = { it.value },
                     findValue = { it?.id },
                     onVariantChange = { onSpecChange(it) }

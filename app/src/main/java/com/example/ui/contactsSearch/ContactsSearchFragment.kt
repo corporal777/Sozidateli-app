@@ -120,7 +120,7 @@ class ContactsSearchFragment : BaseFragment(), ContactsSearchContract.View, Tool
     }
 
     override fun setItems(favorites: List<User>, chats: List<User>, another: List<User>) {
-        val mapToItem = { user: User -> UserItem(user.user_id, user.fullName, user.user_avatar, { presenter.onUserClick(user) }) }
+        val mapToItem = { user: User -> UserItem(user.user_id, user.fullName, null, user.user_avatar, { presenter.onUserClick(user) }) }
         favoritesSection.update(favorites.map(mapToItem))
         chatsSection.update(chats.map(mapToItem))
         anotherSection.update(another.map(mapToItem))

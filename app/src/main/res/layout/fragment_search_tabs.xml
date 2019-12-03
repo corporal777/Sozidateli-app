@@ -5,51 +5,98 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:background="@drawable/background_input_normal">
 
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilSearch"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            style="@style/Input.Search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:hint="@string/search_input_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnClear"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnFilter"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_filter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClear"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_input_clear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnFilter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.526" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTabEvents"
+            style="@style/CustomTab"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:endIconDrawable="@drawable/ic_filter"
-            app:endIconMode="custom"
-            app:endIconTint="@android:color/transparent"
-            app:endIconTintMode="screen"
-            app:errorEnabled="false"
-            app:errorIconDrawable="@null"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/background_custom_tab_left_selector"
+            android:text="@string/search_events"
+            app:layout_constraintEnd_toStartOf="@+id/btnTabOrganizations"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearch"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:hint="@string/search_input_hint"
-                android:imeOptions="actionSearch"
-                android:inputType="textFilter" />
-        </com.example.ui.views.CustomTextInputLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTabOrganizations"
+            style="@style/CustomTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_custom_tab_center_selector"
+            android:text="@string/search_organizations"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnTabEvents"
+            app:layout_constraintEnd_toStartOf="@+id/btnTabUsers"
+            app:layout_constraintStart_toEndOf="@+id/btnTabEvents" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            style="@style/AppTheme.Tabs"
-            android:layout_width="match_parent"
-            app:tabMode="fixed" />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/tabsDivider"
-        style="@style/ViewDivider.Horizontal" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTabUsers"
+            style="@style/CustomTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_custom_tab_right_selector"
+            android:text="@string/search_users"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnTabOrganizations"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnTabOrganizations" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

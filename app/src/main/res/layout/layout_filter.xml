@@ -7,7 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ViewBackgroundWhite">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnClear"
@@ -15,14 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackground"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/clear"
             android:textAllCaps="false"
             android:textColor="@color/profile_data_disabled"
-            android:textSize="17sp"
+            android:textSize="18sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/tvTitle"
             app:layout_constraintEnd_toStartOf="@+id/tvTitle"
             app:layout_constraintHorizontal_bias="0.0"
@@ -30,7 +31,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvTitle"
-            fontPath="fonts/Roboto-Medium.ttf"
+            fontPath="fonts/Roboto-Bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -41,7 +42,7 @@
             android:paddingEnd="8dp"
             android:text="@string/search_filters"
             android:textColor="@color/text_color_profile_data"
-            android:textSize="17sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,8 +51,8 @@
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:src="@drawable/ic_close"
@@ -66,8 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tvTitle,btnClear,btnClose"
-            tools:layout_editor_absoluteY="400dp" />
+            app:constraint_referenced_ids="tvTitle,btnClear,btnClose" />
 
         <FrameLayout
             android:id="@+id/flFilters"

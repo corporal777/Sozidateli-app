@@ -97,8 +97,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
     }
 
     override fun showOrganization(organization: Organization) {
-        val args = OrganizationFragmentArgs.Builder(organization.id).build().toBundle()
-        findNavController().navigate(R.id.organization_fragment, args)
+        findNavController().navigate(OrganizationsFragmentDirections.organizationsFragmentToOrganizationFragment(organization.id))
     }
 
     override fun showFavorites() {

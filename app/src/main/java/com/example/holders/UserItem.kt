@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.view.View
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -11,25 +12,41 @@ import setCircleImage
 class UserItem(
         private val id: Int,
         private val name: String,
+        private val description: String?,
         private val avatar: String?,
         private val onUserClick: () -> Unit,
-        private val action: UserSubscribeButton.Action? = null,
+        var action: UserSubscribeButton.Action? = null,
         private val onActionClick: (() -> Unit)? = null
 ) : Item(id.toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvUserName.text = name
+            tvDescription.apply {
+                isVisible = !description.isNullOrEmpty()
+                text = description
+            }
             ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
             itemView.setOnClickListener { onUserClick.invoke() }
             btnAction.apply {
-                visibility = if (this@UserItem.action != null) {
-                    setAction(this@UserItem.action)
+                val action = this@UserItem.action
+                visibility = if (action != null) {
+                    setAction(action)
                     setOnClickListener { onActionClick?.invoke() }
                     View.VISIBLE
                 } else {
                     View.GONE
                 }
+            }
+        }
+    }
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) super.bind(viewHolder, position, payloads)
+        else {
+            val payload = payloads.firstOrNull() ?: return
+            if (payload is UserSubscribeButton.Action) {
+                viewHolder.btnAction.setAction(payload)
             }
         }
     }

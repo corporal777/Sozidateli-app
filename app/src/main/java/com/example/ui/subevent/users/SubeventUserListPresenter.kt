@@ -26,7 +26,7 @@ class SubeventUserListPresenter @Inject constructor(
         val eventId = event
         val subeventId = subevent
         eventRepository.getSubeventUsers(eventId, subeventId, limit, offset)
-    }.map { UserItem(it.user_id, it.fullName, it.user_avatar, { onUserClick(it) }) }
+    }.map { UserItem(it.user_id, it.fullName, null, it.user_avatar, { onUserClick(it) }) }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

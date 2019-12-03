@@ -13,20 +13,7 @@
     <com.example.ui.views.CustomTextInputLayout
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etName"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_user_name"
-            android:inputType="textCapSentences" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        style="@style/Profile.Edit.InputLayout"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         app:endIconMode="none">
 
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
@@ -39,134 +26,29 @@
             android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_age" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.example.ui.views.CustomTextInputLayout
-                style="@style/Profile.Edit.InputLayout.DropDown"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/tvAgeFrom"
-                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
-                    android:hint="@string/search_filter_age_from" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <View
-                android:layout_width="16dp"
-                android:layout_height="1dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="#404041" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                style="@style/Profile.Edit.InputLayout.DropDown"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/tvAgeTo"
-                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
-                    android:hint="@string/search_filter_age_to" />
-            </com.example.ui.views.CustomTextInputLayout>
-        </LinearLayout>
-    </LinearLayout>
-
     <com.example.ui.views.CustomTextInputLayout
-        style="@style/Profile.Edit.InputLayout"
+        android:id="@+id/tilTheme"
+        style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="24dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmail"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_email"
-            android:inputType="textEmailAddress" />
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvTheme"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_theme" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout
-        style="@style/Profile.Edit.InputLayout"
+        android:id="@+id/tilSpec"
+        style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="24dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPhone"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_phone"
-            android:inputType="phone" />
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvSpec"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_specialization" />
     </com.example.ui.views.CustomTextInputLayout>
-
-    <LinearLayout
-        android:id="@+id/llInterests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_interests" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvTheme"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilSpec"
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvSpec"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
-        </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/search_filter_favorites" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            style="@style/Profile.Edit.InputLayout.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvSubscription"
-                style="@style/Profile.Edit.Input.SingleLine.DropDown" />
-        </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
 </LinearLayout>
