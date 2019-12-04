@@ -15,8 +15,4 @@
         android:drawablePadding="16dp"
         android:textSize="16sp"
         tools:text="Информационная, консультационная и методическая поддержка деятельности некоммерческих организаций" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal" />
 </LinearLayout>

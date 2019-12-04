@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidUnknownAttribute -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
     android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/ivAvatar"
-        android:layout_width="63dp"
-        android:layout_height="63dp"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/background_corners"
         android:contentDescription="@string/content_description_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,18 +23,16 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
         android:maxLines="2"
         android:textColor="@color/profile_name_text"
-        android:textSize="19sp"
+        android:textSize="17sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/tvId"
-        app:layout_constraintEnd_toStartOf="@+id/btnEdit"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="@tools:sample/full_names" />
 
@@ -40,55 +40,25 @@
         android:id="@+id/tvId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:textAllCaps="true"
         android:textColor="@color/profile_id_text"
-        android:textSize="14sp"
+        android:textSize="17sp"
         app:layout_constraintEnd_toStartOf="@+id/btnEdit"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvName"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
-        tools:text="ID100500" />
+        tools:text="ID 100500" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:layout_marginBottom="20dp"
-        android:minHeight="32dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:textAllCaps="false"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
+        android:id="@+id/btnEdit"
+        style="@style/Profile.Edit.Button"
+        android:layout_marginStart="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ivAvatar"
-        app:layout_constraintTop_toTopOf="@+id/barrier"
-        tools:text="@string/profile_user_status" />
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btnEdit"
-        style="@style/Profile.Edit.Button"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvId,ivAvatar" />
+        app:layout_constraintTop_toBottomOf="@+id/ivAvatar"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

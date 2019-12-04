@@ -113,7 +113,7 @@
     <color name="profile_data_disabled">#979797</color>
     <color name="profile_data_text_link">@color/colorAccent</color>
     <color name="profile_section_title_text">@color/colorAccent</color>
-    <color name="profile_section_subtitle_text">@color/profile_title_text</color>
+    <color name="profile_section_subtitle_text">#232326</color>
     <color name="profile_button_background">#FFFFFF</color>
     <color name="profile_section_title_background_expanded">#00000000</color>
     <color name="profile_section_title_background_collapsed">@color/profile_button_background

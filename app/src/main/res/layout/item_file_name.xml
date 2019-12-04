@@ -19,11 +19,7 @@
         android:minHeight="48dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:textColor="@color/colorAccent"
         android:textSize="16sp"
         tools:text="1.pdf" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:visibility="gone" />
 </LinearLayout>

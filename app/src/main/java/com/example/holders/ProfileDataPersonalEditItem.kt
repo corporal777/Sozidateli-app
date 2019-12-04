@@ -4,8 +4,8 @@ import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.CheckBox
 import android.widget.EditText
-import androidx.appcompat.widget.SwitchCompat
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.UserAddress
@@ -17,8 +17,8 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
@@ -36,11 +36,7 @@ class ProfileDataPersonalEditItem(
         private val birthday: String?,
         private val showBirthday: Boolean,
         private val address: UserAddress,
-        private val socialNetworks: List<UserDataSocialLink>?,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit,
-        private val cancelClickListener: () -> Unit,
-        private val changeEmailClick: () -> Unit,
-        private val changePasswordClick: () -> Unit
+        private val socialNetworks: List<UserDataSocialLink>?
 ) : Item() {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -64,7 +60,10 @@ class ProfileDataPersonalEditItem(
             }
             .toMutableList()
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    private lateinit var viewHolder: GroupieViewHolder
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        this.viewHolder = viewHolder
         viewHolder.apply {
             etEmail.setText(email)
             tilWorkPhone.apply { error = null }
@@ -104,9 +103,6 @@ class ProfileDataPersonalEditItem(
                 initInput(mGender) { mGender = it.toString() }
             }
 
-            btnSave.setOnClickListener { if (checkDataValid(viewHolder)) saveClickListener(getDataToSave()) }
-            btnRevoke.setOnClickListener { cancelClickListener() }
-
             llSocialNetworks.removeAllViews()
             mSocialNetworks.forEach { initSocialNetworkInput(viewHolder, it) }
             btnSocialNetworkAdd.apply {
@@ -119,14 +115,6 @@ class ProfileDataPersonalEditItem(
                     }
                 }
             }
-
-            btnChangeEmail.apply {
-                setOnClickListener { changeEmailClick() }
-            }
-
-            btnChangePassword.apply {
-                setOnClickListener { changePasswordClick() }
-            }
         }
     }
 
@@ -135,12 +123,12 @@ class ProfileDataPersonalEditItem(
         onTextChanged(onTextChanged)
     }
 
-    private fun SwitchCompat.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
+    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
         isChecked = checked
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
-    private fun initSocialNetworkInput(viewHolder:GroupieViewHolder, sn: UserDataSocialLink) {
+    private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
         var csn = sn
         val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
@@ -164,7 +152,7 @@ class ProfileDataPersonalEditItem(
         viewHolder.llSocialNetworks.addView(parent)
     }
 
-    private fun checkDataValid(viewHolder:GroupieViewHolder): Boolean {
+    fun checkDataValid(): Boolean {
         var isValid = true
         if (workPhone != mWorkPhone || mobilePhone != mMobilePhone) {
             if (workPhone != mWorkPhone && !mWorkPhone.isNullOrEmpty()) {
@@ -184,7 +172,7 @@ class ProfileDataPersonalEditItem(
         return isValid
     }
 
-    private fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
             if (workPhone != mWorkPhone) put(User.FIELD_USER_PHONE_WORK, mWorkPhone)

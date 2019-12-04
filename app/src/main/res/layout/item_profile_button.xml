@@ -7,10 +7,7 @@
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Profile.Button"
-        android:drawableEnd="@drawable/ic_arrow_bottom"
         tools:text="@string/profile_favorite" />
 
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal" />
+    <View style="@style/ViewDivider.Horizontal" />
 </LinearLayout>

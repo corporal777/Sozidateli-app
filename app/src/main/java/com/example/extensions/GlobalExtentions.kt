@@ -157,6 +157,15 @@ fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
     )
 }
 
+fun User.Status?.getUserStatusText(context: Context): String? {
+    if (this == null) return null
+    return context.getString(R.string.status_your_status).format(context.getString(when (this) {
+        User.Status.LOW_PROTECTION -> R.string.profile_status_low
+        User.Status.MID_PROTECTION -> R.string.profile_status_mid
+        User.Status.MAX_PROTECTION -> R.string.profile_status_max
+    }))
+}
+
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
             .transform(CropCircleTransformation())

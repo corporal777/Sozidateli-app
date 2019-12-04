@@ -198,7 +198,7 @@ class UserPresenter
     }
 
     private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
-        return loadBitmap(listOf(CropCircleTransformation()))
+        return loadBitmap()
     }
 
     private fun isCurrentUser() = userId == appData.getUser().user_id.toString()

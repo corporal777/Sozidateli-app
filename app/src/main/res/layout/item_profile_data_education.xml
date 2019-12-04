@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/tvDates"
         style="@style/Profile.Data"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -16,6 +17,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingPrefix"
         tools:text="2014 по н.в." />
 
     <TextView
@@ -29,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDates" />
+        app:layout_constraintTop_toBottomOf="@+id/tvInstitution" />
 
     <TextView
         android:id="@+id/tvSpecialty"
@@ -54,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSpecialty" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDates" />
 
     <TextView
         android:id="@+id/tvInstitution"
@@ -67,12 +69,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInstitutionTitle"
         tools:text="Ленинградский технологический институт холодной промышленности" />
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvInstitution" />
 </androidx.constraintlayout.widget.ConstraintLayout>

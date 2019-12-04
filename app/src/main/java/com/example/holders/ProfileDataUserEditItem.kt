@@ -5,11 +5,10 @@ import android.graphics.PorterDuff
 import com.example.R
 import com.example.data.models.Optional
 import com.example.data.models.user.User
-import com.example.util.CropCircleTransformation
 import com.example.util.USER_MIDDLE_NAME_EMPTY
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
 import onTextChanged
 
@@ -20,8 +19,6 @@ class ProfileDataUserEditItem(
         private val middleName: String?,
         private val removePhotoClickListener: () -> Unit,
         private val changePhotoClickListener: () -> Unit,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit,
-        private val cancelClickListener: () -> Unit,
         private val onDisabledInputInfoClickListener: () -> Unit
 ) : Item() {
 
@@ -36,7 +33,10 @@ class ProfileDataUserEditItem(
 
     private lateinit var emptyInputError: String
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    private lateinit var viewHolder: GroupieViewHolder
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        this.viewHolder = viewHolder
         viewHolder.apply {
             setAvatar(this, mAvatar)
 
@@ -68,21 +68,19 @@ class ProfileDataUserEditItem(
             btnAvatarChange.apply {
                 setOnClickListener { changePhotoClickListener() }
             }
-
-            btnSave.setOnClickListener { if (checkDataComplete(viewHolder)) saveClickListener(getDataToSave()) }
-            btnRevoke.setOnClickListener { cancelClickListener() }
         }
     }
 
-    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun bind(holder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.size > 0) setAvatar(holder, (payloads.getOrNull(0) as Optional<*>).value as? Bitmap)
         else super.bind(holder, position, payloads)
     }
 
-    private fun setAvatar(viewHolder:GroupieViewHolder, avatar: Bitmap?) {
+    private fun setAvatar(viewHolder: GroupieViewHolder, avatar: Bitmap?) {
         this.mAvatar = avatar
         viewHolder.ivAvatar.apply {
-            if (avatar != null) setImageBitmap(CropCircleTransformation(false).transform(avatar))
+            clipToOutline = true
+            if (avatar != null) setImageBitmap(avatar)
             else setImageResource(R.drawable.avatar_placeholder)
         }
 
@@ -110,7 +108,7 @@ class ProfileDataUserEditItem(
         }
     }
 
-    private fun checkDataComplete(viewHolder:GroupieViewHolder): Boolean {
+    fun checkDataComplete(): Boolean {
         var hasError = false
         viewHolder.apply {
             if (mSurname.isNullOrEmpty()) {
@@ -130,7 +128,7 @@ class ProfileDataUserEditItem(
         return !hasError
     }
 
-    private fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (name != mName) put(User.FIELD_USER_NAME, mName)
             if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)

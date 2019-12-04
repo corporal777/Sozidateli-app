@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Profile.Edit.InputContainer">
+    style="@style/Profile.Edit.InputContainer"
+    android:layout_marginStart="@dimen/profile_data_padding">
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/Profile.Edit.InputTitle"
+        android:layout_marginBottom="0dp"
         android:text="@string/profile_education_level" />
 
     <TextView
         android:id="@+id/tvEducationLevel"
         style="@style/Profile.Data"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         tools:text="Среднее профессиональное" />
-
-    <View
-        style="@style/ViewDivider.Horizontal" />
 </LinearLayout>

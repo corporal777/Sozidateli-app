@@ -5,9 +5,8 @@ import com.xwray.groupie.Group
 class ProfileExpandableTitleGroup(
         subtitle: String,
         isInitiallyExpanded: Boolean = false,
-        onExpandChange: OnExpandChange<ProfileExpandableTitleItem>,
-        editClickListener: OnEditClickListener? = null
-) : ExpandableTitleGroup<ProfileExpandableTitleItem>(ProfileExpandableTitleItem(subtitle, editClickListener), isInitiallyExpanded, onExpandChange) {
+        onExpandChange: OnExpandChange<ProfileExpandableTitleItem>
+) : ExpandableTitleGroup<ProfileExpandableTitleItem>(ProfileExpandableTitleItem(subtitle), isInitiallyExpanded, onExpandChange) {
 
     private val childList = mutableListOf<Group>()
 

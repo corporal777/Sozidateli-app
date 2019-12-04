@@ -3,7 +3,7 @@ package com.example.holders
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_save.*
 
 class ProfileDataEditSaveItem(
         id: Long,

@@ -308,11 +308,11 @@
     <string name="profile_phone_hint">+7 (927) 298–16–17</string>
     <string name="profile_birthday">Дата рождения</string>
     <string name="profile_country">Страна</string>
-    <string name="profile_city">Город</string>
+    <string name="profile_city">Населенный пункт</string>
     <string name="profile_city_hint">Москва</string>
     <string name="profile_sn">Социальные сети</string>
-    <string name="profile_sn_hint">vk.com/durov</string>
-    <string name="profile_sn_add">Добавить соц. сеть</string>
+    <string name="profile_sn_hint">Ссылка на профиль в соцсети</string>
+    <string name="profile_sn_add">Добавить еще ссылку</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>
     <string name="profile_institution">Учебное заведение</string>
@@ -329,7 +329,7 @@
     <string name="profile_sn_label">Ссылка на профиль</string>
     <string name="profile_date_start">Дата начала </string>
     <string name="profile_date_end">Дата окончания </string>
-    <string name="profile_password_change">Изменить пароль</string>
+    <string name="profile_password_change">Сменить пароль</string>
     <string name="profile_password_change_complete">Пароль успешно изменен</string>
     <string name="profile_password_old">Старый пароль</string>
     <string name="profile_password_new">Новый пароль</string>
@@ -382,7 +382,7 @@
     <string name="profile_edit_user_name_hint">Иван</string>
     <string name="profile_edit_user_middle_name">Отчество</string>
     <string name="profile_edit_user_middle_name_hint">Иванович</string>
-    <string name="profile_edit_user_no_middle_name">У меня нет отчества</string>
+    <string name="profile_edit_user_no_middle_name">Нет отчества</string>
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
     <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста обратитесь в нашу службу поддержки: support@sozidateli.ru</string>
@@ -403,12 +403,12 @@
         <item>Более одного высшего</item>
         <item>Есть ученая степень</item>
     </string-array>
-    <string name="profile_user_status">Статус: %s</string>
+    <string name="profile_user_status">Ваш статус: %s</string>
     <string name="profile_status_low">Анонимный</string>
     <string name="profile_status_mid">Защищенный</string>
     <string name="profile_status_max">Максимальный</string>
 
-    <string name="status_your_status">Ваш текущий статус:</string>
+    <string name="status_your_status">Ваш текущий статус: %s</string>
     <string name="status_security">Повышенная безопасность аккаунта</string>
     <string name="status_support">Приоритетная техничнсекая поддержка</string>
     <string name="status_invites">Возможность принимать приглашения в проектах Фонда Президентских Грантов</string>

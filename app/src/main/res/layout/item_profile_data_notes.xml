@@ -21,11 +21,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Информационная, консультационная и методическая поддержка деятельности некоммерческих организаций" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,7 +40,6 @@ class ProfileDataWorkExperienceItem(
 
             tvProject.text = work.organization ?: "-"
             tvPosition.text = work.position ?: "-"
-            groupDescription.setTextDataOrHide(tvDescription, work.description)
         }
     }
 

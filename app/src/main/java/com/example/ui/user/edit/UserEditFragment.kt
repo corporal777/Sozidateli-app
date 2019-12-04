@@ -25,9 +25,11 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.holders.*
+import com.example.holders.ActionButtonItem.Companion.ACTION_SAVE
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthValidateUtil
+import com.example.util.StickyFooterItemDecoration
 import com.google.android.material.textfield.TextInputLayout
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
@@ -69,23 +71,26 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@UserEditFragment.adapter
+            if (itemDecorationCount == 0) addItemDecoration(StickyFooterItemDecoration())
         }
 
         swipeToRefresh.isEnabled = false
     }
 
     override fun setMainData(user: User, avatar: Bitmap?) {
-        adapter.update(listOf(ProfileDataUserEditItem(
+        val dataItem = ProfileDataUserEditItem(
                 avatar,
                 user.user_name,
                 user.user_last_name,
                 user.user_middle_name,
                 { presenter.onRemoveAvatarClick() },
                 { presenter.onEditAvatarClick() },
-                { presenter.onSaveMainClick(it) },
-                { presenter.onCancelClick() },
                 { presenter.onDisabledMainInputInfoClick() }
-        )))
+        )
+        adapter.update(listOf(dataItem,
+                ActionButtonItem(-100L, ACTION_SAVE) {
+                    if (dataItem.checkDataComplete()) presenter.onSaveMainClick(dataItem.getDataToSave())
+                }))
     }
 
     override fun showDisabledMainInputInfo() {
@@ -113,7 +118,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setPersonalData(user: User) {
-        adapter.update(listOf(ProfileDataPersonalEditItem(
+        val dataItem = ProfileDataPersonalEditItem(
                 requireContext(),
                 user.user_email,
                 user.user_email_show,
@@ -125,12 +130,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday,
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
-                user.social_links,
-                { presenter.onSavePersonalClick(it) },
-                { presenter.onCancelClick() },
-                { presenter.onChangeEmailClick() },
-                { presenter.onChangePasswordClick() }
-        )))
+                user.social_links
+        )
+
+        adapter.update(listOf(dataItem,
+                ActionButtonItem(-100L, ACTION_SAVE) {
+                    if (dataItem.checkDataValid()) presenter.onSaveMainClick(dataItem.getDataToSave())
+                }))
     }
 
     override fun showChangeEmail() {
@@ -315,7 +321,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         val editItem = ProfileDataFileEditItem(file.desc)
         adapter.update(listOf(
                 editItem,
-                ProfileDataFileItem(file.name ?: "", true) { presenter.onFileClick(file) },
+                ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
                 ProfileDataEditSaveItem(0L, {
                     hideKeyboard()
                     file.desc = editItem.mName

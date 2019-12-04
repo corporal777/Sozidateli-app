@@ -256,12 +256,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="tvSocialNetworks,tvSocialNetworksTitle" />
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworks" />
 </androidx.constraintlayout.widget.ConstraintLayout>

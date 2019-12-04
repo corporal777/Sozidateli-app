@@ -4,14 +4,15 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
 import com.example.util.ClickableSpan
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_personal.*
+import setOnClickListener
 import setTextDataOrHide
-
 
 class ProfileDataPersonalItem(
         private val organizations: List<Organization>?,
@@ -25,7 +26,7 @@ class ProfileDataPersonalItem(
         private val onOrganizationClick: (Organization) -> Unit
 ) : Item() {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvOrganization.movementMethod = LinkMovementMethod.getInstance()
 

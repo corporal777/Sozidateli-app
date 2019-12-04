@@ -13,6 +13,7 @@
         android:layout_marginEnd="@dimen/profile_padding_start"
         android:layout_marginBottom="@dimen/action_button_margin_vertical"
         android:background="@drawable/background_action_button_selector"
+        android:textAllCaps="false"
         android:textColor="@color/text_color_action_button"
         tools:text="@string/save" />
 </LinearLayout>
