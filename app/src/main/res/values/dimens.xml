@@ -79,6 +79,8 @@
     <dimen name="user_item_avatar_size">46dp</dimen>
 
     <dimen name="subscribe_button_icon_inset">6dp</dimen>
+    <dimen name="notifications_icon_inset">8dp</dimen>
+    <dimen name="revert_icon_inset">8dp</dimen>
 
     <dimen name="custom_tab_corner_radius">4dp</dimen>
 </resources>

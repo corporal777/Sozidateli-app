@@ -11,7 +11,7 @@
         android:id="@+id/tvLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/ic_keyboard_arrow_right"
+        android:drawableEnd="@drawable/ic_arrow_right"
         android:drawablePadding="8dp"
         android:paddingStart="@dimen/profile_padding_start"
         android:paddingTop="16dp"

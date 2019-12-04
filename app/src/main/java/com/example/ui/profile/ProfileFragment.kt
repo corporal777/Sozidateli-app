@@ -2,43 +2,36 @@ package com.example.ui.profile
 
 import android.content.Intent
 import android.content.Intent.*
-import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.ColorRes
-import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
-import androidx.appcompat.view.ContextThemeWrapper
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
+import com.example.data.models.MyEventsFilter
 import com.example.data.models.user.User
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BadgeDrawable
 import com.example.ui.views.addBadge
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_profile_data_current_user.*
-import setCircleImage
-import setUserStatus
 import javax.inject.Inject
 import javax.inject.Provider
 
 
 class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
-    override val title: CharSequence
-        get() = getString(R.string.profile_title)
+
+    override val title = ""
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -53,7 +46,14 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        containerUser.setOnClickListener { presenter.onProfileClick() }
+        (screenTittle as TextView).text = getString(R.string.profile_label)
+
+        ivAvatar.apply {
+            clipToOutline = true
+        }
+
+        btnEdit.setOnClickListener { presenter.onProfileClick() }
+
         containerNotification.setOnClickListener { presenter.onNotificationClick() }
         tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
         tvEvents.setOnClickListener { presenter.onEventsClick() }
@@ -65,18 +65,31 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun setUser(user: User) {
-        ivAvatar.setCircleImage(user.user_avatar, R.drawable.avatar_placeholder)
-        tvName.text = user.fullName
-        tvId.apply { text = resources.getString(R.string.profile_uid, user.user_id) }
+        val avatar = user.user_avatar
+        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder).into(ivAvatar)
 
-        btnEdit.isVisible = false
+        val statusIcon = when (user.user_status) {
+            User.Status.LOW_PROTECTION -> R.drawable.ic_user_status_low
+            User.Status.MID_PROTECTION -> R.drawable.ic_user_status_middle
+            User.Status.MAX_PROTECTION -> R.drawable.ic_user_status_max
+            null -> null
+        }
 
-        btnStatus.apply {
-            val status = user.user_status
-            if (status != null) {
-                setUserStatus(status, resources.getString(R.string.profile_user_status))
-                setOnClickListener { findNavController().navigate(R.id.user_status_fragment) }
+        val imageSpan = statusIcon?.let { ContextCompat.getDrawable(requireContext(), statusIcon) }?.let {
+            it.setBounds(0, 0, 16.dp, 16.dp)
+            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+        }
+
+        val userName = user.fullName
+
+        if (imageSpan == null) {
+            tvName.text = userName
+        } else {
+            val titleSpannable = SpannableStringBuilder(userName).apply {
+                append("  ").setSpan(imageSpan, length - 1, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
+
+            tvName.text = titleSpannable
         }
     }
 
@@ -86,8 +99,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
             notificationBadge.number = notificationCount
             doOnNextLayout {
                 addBadge(notificationBadge) { badgeWidth, badgeHeight, anchorRect ->
-                    val badgeCenterX = anchorRect.right
-                    val badgeCenterY = anchorRect.top + anchorRect.height() / 3
+                    val badgeCenterX = anchorRect.right - anchorRect.width() / 4
+                    val badgeCenterY = anchorRect.top + anchorRect.height() / 4
 
                     anchorRect.set(
                             badgeCenterX - badgeWidth / 2,
@@ -99,7 +112,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
             }
         }
 
-        changeNotificationItem(R.string.profile_notifications_has_new, R.color.profile_notification_data_has_new, R.style.ViewBackgroundAccent)
+        ivNotificationIcon.setImageResource(R.drawable.ic_profile_notifications)
     }
 
     override fun hideLastNotification() {
@@ -108,33 +121,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
             invalidateSelf()
         }
 
-        changeNotificationItem(R.string.notifications_label, R.color.profile_notification_data_empty, R.style.ViewBackgroundGray)
-    }
-
-    private fun changeNotificationItem(@StringRes messageRes: Int, @ColorRes dataColorRes: Int, @StyleRes backgroundStyle: Int) {
-        val dataColor = ContextCompat.getColor(requireContext(), dataColorRes)
-        tvLastNotificationMessage.apply {
-            text = getString(messageRes)
-            setTextColor(dataColor)
-        }
-
-        ivNotificationIcon.apply {
-            imageTintList = ColorStateList.valueOf(dataColor)
-        }
-
-        ivNotificationArrow.apply {
-            imageTintList = ColorStateList.valueOf(dataColor)
-        }
-
-        containerNotification.background = getNotificationButtonBackground(backgroundStyle)
-    }
-
-    private fun getNotificationButtonBackground(@StyleRes style: Int): Drawable? {
-        return ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.background_highlight,
-                ContextThemeWrapper(requireContext(), style).theme
-        )
+        ivNotificationIcon.setImageResource(R.drawable.ic_profile_notifications_empty)
     }
 
     override fun showProfile(uid: String) {
@@ -146,7 +133,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showEvents() {
-//        findNavController().navigate(ProfileFragmentDirections.profileToMyEvents())
+        findNavController().navigate(ProfileFragmentDirections.profileToMyEvents(MyEventsFilter.NONE))
     }
 
     override fun showAboutApp() {

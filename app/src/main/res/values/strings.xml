@@ -174,7 +174,7 @@
     <string name="search_empty_list">Ничего не найдено</string>
     <string name="search_organizations">Организации</string>
     <string name="search_events">Мероприятия</string>
-    <string name="search_users">Люди</string>
+    <string name="search_users">Пользователи</string>
     <string name="search_input_hint">Поиск</string>
     <string name="search_filter_address">Область, край, район или город</string>
     <string name="search_filter_organization_address">Адрес</string>
@@ -289,7 +289,8 @@
     <string name="recovery_set_password_title">Укажите новый пароль</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
 
-    <string name="profile_label">Профиль</string>
+    <string name="profile_label">Личный кабинет</string>
+    <string name="profile_edit">Редактировать профиль</string>
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
     <string name="profile_title">Личный кабинет</string>
@@ -441,6 +442,7 @@
     <string name="status_profile_status_code_do_not_receive">Не пришел код</string>
     <string name="status_profile_status_phone_remove">Вы действительно хотиет удалить номер телефона %s? Удалив номер Вам будет присвоен статус АНОНИМНЫЙ</string>
 
+    <string name="favorites_events">Мероприятия</string>
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>
 

@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.user.User
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
@@ -52,18 +53,23 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
     }
 
     override fun setData(data: List<User?>) {
-        usersSection.update(data.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
-            else UserItem(
-                    it.user_id,
-                    it.fullName,
-                    null,
-                    it.user_avatar,
-                    { presenter.onUserClick(it) },
-                    UserSubscribeButton.Action.UNFAVORITE,
-                    { presenter.onUserRemoveFromFavoritesClick(it) }
-            )
-        })
+        if (data.isEmpty()){
+            usersSection.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        } else {
+            usersSection.update(data.map {
+                if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+                else UserItem(
+                        it.user_id,
+                        it.fullName,
+                        null,
+                        it.user_avatar,
+                        { presenter.onUserClick(it) },
+                        UserSubscribeButton.Action.UNFAVORITE,
+                        { presenter.onUserRemoveFromFavoritesClick(it) }
+                )
+            })
+        }
+
         swipeToRefresh.isRefreshing = false
     }
 

@@ -21,11 +21,10 @@ class NotificationPresenter
 ) : BasePresenter<NotificationContract.View>(), NotificationContract.Presenter {
 
     lateinit var notification: Notification
-    var showButtons = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(notification, showButtons)
+        viewState.setData(notification)
         if (!notification.wasRead && notification.type != Notification.Type.RATE) {
             compositeDisposable += userRepository.markNotificationsAsRead(listOf(notification.id))
                     .performOnBackgroundOutOnMain()
@@ -45,7 +44,7 @@ class NotificationPresenter
                             wasRead = true
                             acceptState = state
                         }
-                        viewState.setData(notification, showButtons)
+                        viewState.setData(notification)
                     }
                 }
     }
@@ -64,7 +63,7 @@ class NotificationPresenter
 
     override fun onNotificationChangeDecisionClick() {
         notification.acceptState = Notification.AcceptState.NONE
-        viewState.setData(notification, showButtons)
+        viewState.setData(notification)
     }
 
     override fun onNotificationRateClick() {

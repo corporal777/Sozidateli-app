@@ -4,38 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8dp"
+    android:layout_marginBottom="16dp"
+    android:paddingBottom="16dp"
     tools:background="@color/notification_center_notification_read">
-
-    <TextView
-        android:id="@+id/tvDate"
-        style="@style/Notification.Date"
-        fontPath="fonts/Roboto-Light.ttf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/date/ddmmyy" />
 
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Notification.Title"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:text="@string/notifications_simple_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingPrefix" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/Notification.Date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:ignore="MissingPrefix"
+        tools:text="@tools:sample/date/ddmmyy" />
 
     <TextView
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
-        fontPath="fonts/Roboto-Light.ttf"
         android:ellipsize="end"
         android:maxLength="200"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
         app:layout_constraintVertical_bias="0.0"
         app:layout_goneMarginBottom="10dp"
         tools:ignore="MissingPrefix"
@@ -43,38 +44,28 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReadMore"
-        style="@style/Notification.ReadMore"
-        fontPath="fonts/Roboto-Bold.ttf"
+        style="@style/Notification.ActionButton"
+        fontPath="fonts/Roboto-Medium.ttf"
+        android:layout_marginTop="10dp"
+        android:drawableEnd="@drawable/ic_notification_read_more"
+        android:text="@string/notifications_read_more"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/tvWasRead"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMessage" />
 
-    <TextView
-        android:id="@+id/tvWasRead"
-        style="@style/Notification.Action"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_marginBottom="10dp"
-        android:text="@string/notifications_was_read"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnReadMore"
-        app:layout_goneMarginTop="16dp"
-        tools:ignore="MissingPrefix" />
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnMarkAsRead"
         style="@style/Notification.ActionButton"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/Roboto-Medium.ttf"
+        android:layout_marginTop="10dp"
         android:text="@string/notifications_mark_as_read"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@+id/btnReadMore"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

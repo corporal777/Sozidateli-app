@@ -34,7 +34,6 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
     fun providePresenter(): NotificationPresenter = presenterProvider.get().apply {
         NotificationFragmentArgs.fromBundle(arguments!!).let {
             notification = it.notification
-            showButtons = it.showButtons
         }
     }
 
@@ -43,7 +42,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         true
     }
 
-    override fun setData(notification: Notification, showButtons: Boolean) {
+    override fun setData(notification: Notification) {
         tvDate.apply {
             val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
             text = parsedDate
@@ -72,21 +71,21 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         actionTextRes = R.string.notifications_state_disabled
                     }
                     Notification.AcceptState.ACCEPTED -> {
-                        canChangeAccept = showButtons
+                        canChangeAccept = true
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
-                        canChangeAccept = showButtons
+                        canChangeAccept = true
                         actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
-                        canAccept = showButtons
+                        canAccept = true
                     }
                 }
             }
             Notification.Type.RATE -> {
                 titleRes = R.string.notifications_rate_title
-                canRate = showButtons && !notification.wasRead
+                canRate = !notification.wasRead
             }
         }
 
@@ -118,8 +117,6 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
             isVisible = canChangeAccept
             setOnClickListener { presenter.onNotificationChangeDecisionClick() }
         }
-
-        divider.isVisible = showButtons
     }
 
     override fun showUrl(url: String) {

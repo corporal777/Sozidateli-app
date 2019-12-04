@@ -28,7 +28,7 @@ class NotificationsPresenter
 ) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
 
     private var firstLaunch = true
-    private var notifications: List<Notification> = emptyList()
+    private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
@@ -52,7 +52,7 @@ class NotificationsPresenter
                 .subscribeSimple {
                     val id = it.first
                     val state = it.second
-                    notifications.find { notification -> notification.id == id }?.apply {
+                    notifications.find { notification -> notification?.id == id }?.apply {
                         wasRead = true
                         acceptState = state
                         viewState.onNotificationNeedUpdate(id)
@@ -96,14 +96,14 @@ class NotificationsPresenter
     }
 
     override fun onNotificationChangeDecisionClick(id: Int) {
-        notifications.find { it.id == id }?.apply {
+        notifications.find { it?.id == id }?.apply {
             acceptState = Notification.AcceptState.NONE
         }
         viewState.onNotificationNeedUpdate(id)
     }
 
     override fun onNotificationReadMoreClick(id: Int) {
-        notifications.find { it.id == id }?.apply {
+        notifications.find { it?.id == id }?.apply {
             viewState.showNotification(this)
         }
     }

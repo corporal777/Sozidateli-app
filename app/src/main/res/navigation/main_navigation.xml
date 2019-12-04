@@ -386,11 +386,6 @@
             app:argType="com.example.data.models.Notification"
             app:nullable="false" />
 
-        <argument
-            android:name="showButtons"
-            android:defaultValue="true"
-            app:argType="boolean" />
-
         <action
             android:id="@+id/notification_to_event_rating"
             app:destination="@id/event_rating_fragment" />

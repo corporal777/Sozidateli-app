@@ -102,6 +102,8 @@
     <color name="search_input_icon">#000000</color>
     <color name="search_input_text">#000000</color>
 
+    <color name="profile_background">#F7F7FA</color>
+    <color name="profile_logout_text">#FF0000</color>
     <color name="profile_name_text">#000000</color>
     <color name="profile_id_text">#939598</color>
     <color name="profile_action_subscribe">@color/colorAccent</color>
@@ -136,6 +138,9 @@
 
     <color name="notification_center_notification_unread">#26C49A6C</color>
     <color name="notification_center_notification_read">@android:color/white</color>
+    <color name="notification_center_title_text">#232326</color>
+    <color name="notification_center_date_text">#9977767E</color>
+    <color name="notification_center_message_text">#77767E</color>
     <color name="notification_accept_state_text">#66000000</color>
 
     <color name="button_save_background">#7D9D57</color>

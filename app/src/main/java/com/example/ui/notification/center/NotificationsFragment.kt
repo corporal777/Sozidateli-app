@@ -5,8 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -74,7 +72,6 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@NotificationsFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }

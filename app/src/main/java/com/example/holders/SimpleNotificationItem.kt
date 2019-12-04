@@ -16,24 +16,20 @@ class SimpleNotificationItem(
         private val onNotificationReadClickListener: OnNotificationReadClickListener
 ) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
             btnMarkAsRead.apply {
-                isVisible = !btnReadMore.isVisible && !notification.wasRead
+                isVisible = !notification.wasRead && !getReadMoreView(viewHolder).isVisible
                 setOnClickListener { onNotificationReadClickListener(notification.id) }
-            }
-
-            tvWasRead.apply {
-                isVisible = !btnMarkAsRead.isVisible && notification.wasRead
             }
         }
     }
 
-    override fun getTitleView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvTitle
-    override fun getMessageView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvMessage
-    override fun getDateView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvDate
-    override fun getReadMoreView(viewHolder:GroupieViewHolder): View = viewHolder.btnReadMore
+    override fun getTitleView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvTitle
+    override fun getMessageView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessage
+    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvDate
+    override fun getReadMoreView(viewHolder: GroupieViewHolder): View = viewHolder.btnReadMore
     override fun getLayout() = R.layout.item_notification_simple
 }
 

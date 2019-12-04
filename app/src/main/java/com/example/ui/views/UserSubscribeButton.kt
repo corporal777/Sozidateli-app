@@ -21,6 +21,8 @@ class UserSubscribeButton : AppCompatButton {
     private val actionSubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_favorite) }
     private val actionUnsubscribeImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_favorite_in) }
 
+    private val actionUnblockImage by lazy { ContextCompat.getDrawable(context, R.drawable.ic_revert) }
+
     private val actionSubscribeText by lazy { resources.getString(R.string.subscribe) }
     private val actionUnsubscribeText by lazy { resources.getString(R.string.unsubscribe) }
     private val actionFavoriteText by lazy { resources.getString(R.string.add_to_favorites) }
@@ -92,7 +94,7 @@ class UserSubscribeButton : AppCompatButton {
 
     fun setActionUnblock() {
         action = Action.UNBLOCK
-        changeAction(actionUnblockText, actionUnblockTextColor, null)
+        changeAction(actionUnblockText, actionUnblockTextColor, actionUnblockImage)
     }
 
     private fun changeAction(text: String, textColor: Int, drawable: Drawable?) {

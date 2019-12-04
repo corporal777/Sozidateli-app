@@ -1,115 +1,179 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/containerUser"
-        layout="@layout/item_profile_data_current_user"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground" />
+        android:background="@color/profile_background"
+        android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/containerNotification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/margin_horizontal_default"
-        android:paddingTop="16dp"
-        android:paddingEnd="@dimen/margin_horizontal_default"
-        android:paddingBottom="16dp"
-        tools:background="@drawable/background_highlight"
-        tools:theme="@style/ViewBackgroundAccent">
-
-        <ImageView
-            android:id="@+id/ivNotificationIcon"
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/screenTittle"
+            layout="@layout/item_screen_label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_notification"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginEnd="@dimen/margin_horizontal_default" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingTop="2dp">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/background_corners"
+                android:contentDescription="@string/content_description_avatar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/avatar_placeholder" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="16dp"
+                android:maxLines="2"
+                android:textColor="@color/profile_name_text"
+                android:textSize="17sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+                app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@tools:sample/full_names" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEdit"
+                fontPath="fonts/Roboto-Medium.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_corners_large"
+                android:backgroundTint="@color/action_button_change_screen_background"
+                android:minHeight="38dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/profile_edit"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
+                app:layout_constraintTop_toBottomOf="@+id/tvName"
+                app:layout_constraintVertical_bias="1.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/containerNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/white"
+            android:paddingStart="@dimen/margin_horizontal_default"
+            android:paddingTop="16dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:id="@+id/ivNotificationIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/ic_profile_notifications_empty" />
+
+            <TextView
+                android:id="@+id/tvLastNotificationMessage"
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/notifications_label"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivNotificationArrow"
+                app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:ignore="MissingPrefix" />
+
+            <ImageView
+                android:id="@+id/ivNotificationArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/tvLastNotificationMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="16dp"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivNotificationArrow"
-            app:layout_constraintStart_toEndOf="@+id/ivNotificationIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="@string/profile_notifications_has_new" />
+            android:id="@+id/tvFavorite"
+            style="@style/Profile.Button"
+            android:text="@string/profile_favorite" />
 
-        <ImageView
-            android:id="@+id/ivNotificationArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:src="@drawable/ic_keyboard_arrow_right"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <View style="@style/ViewDivider.Horizontal" />
 
-    <View style="@style/ViewDivider.Horizontal" />
+        <TextView
+            android:id="@+id/tvEvents"
+            style="@style/Profile.Button"
+            android:text="@string/profile_me_events" />
 
-    <TextView
-        android:id="@+id/tvFavorite"
-        style="@style/Profile.Button"
-        android:text="@string/profile_favorite" />
+        <View style="@style/ViewDivider.Horizontal" />
 
-    <View style="@style/ViewDivider.Horizontal" />
+        <TextView
+            android:id="@+id/tvBanned"
+            style="@style/Profile.Button"
+            android:text="@string/profile_banned" />
 
-    <TextView
-        android:id="@+id/tvEvents"
-        style="@style/Profile.Button"
-        android:text="@string/profile_me_events" />
 
-    <View style="@style/ViewDivider.Horizontal" />
+        <TextView
+            android:id="@+id/tvSupport"
+            style="@style/Profile.Button"
+            android:layout_marginTop="20dp"
+            android:text="@string/profile_support" />
 
-    <TextView
-        android:id="@+id/tvBanned"
-        style="@style/Profile.Button"
-        android:text="@string/profile_banned" />
+        <View style="@style/ViewDivider.Horizontal" />
 
-    <View style="@style/ViewDivider.Horizontal" />
+        <TextView
+            android:id="@+id/tvRate"
+            style="@style/Profile.Button"
+            android:text="@string/profile_rate" />
 
-    <TextView
-        android:id="@+id/tvSupport"
-        style="@style/Profile.Button"
-        android:text="@string/profile_support" />
+        <View style="@style/ViewDivider.Horizontal" />
 
-    <View style="@style/ViewDivider.Horizontal" />
+        <TextView
+            android:id="@+id/tvAboutApplication"
+            style="@style/Profile.Button"
+            android:text="@string/profile_about_app" />
 
-    <TextView
-        android:id="@+id/tvRate"
-        style="@style/Profile.Button"
-        android:text="@string/profile_rate" />
 
-    <View style="@style/ViewDivider.Horizontal" />
-
-    <TextView
-        android:id="@+id/tvAboutApplication"
-        style="@style/Profile.Button"
-        android:text="@string/profile_about_app" />
-
-    <View style="@style/ViewDivider.Horizontal" />
-
-    <TextView
-        android:id="@+id/tvLogout"
-        style="@style/Profile.Button"
-        android:text="@string/profile_logout" />
-
-    <View style="@style/ViewDivider.Horizontal" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvLogout"
+            style="@style/Profile.Button"
+            android:layout_marginTop="20dp"
+            android:text="@string/profile_logout"
+            android:textColor="@color/profile_logout_text" />
+    </LinearLayout>
+</ScrollView>

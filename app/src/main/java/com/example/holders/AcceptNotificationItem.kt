@@ -41,12 +41,13 @@ class AcceptNotificationItem(
                 }
             }
 
+            val isReadMoreVisible = !getReadMoreView(viewHolder).isVisible
             val isAcceptable = notification.acceptState == Notification.AcceptState.NONE
             val isEnabled = notification.acceptState != Notification.AcceptState.DISABLED
-            btnAccept.isVisible = isEnabled && isAcceptable
-            btnCancel.isVisible = isEnabled && isAcceptable
-            btnChangeDecision.isVisible = isEnabled && !isAcceptable
-            tvAcceptState.isVisible = !isAcceptable
+            btnAccept.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
+            btnCancel.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
+            btnChangeDecision.isVisible = !isReadMoreVisible && isEnabled && !isAcceptable
+            tvAcceptState.isVisible = !isReadMoreVisible && !isAcceptable
         }
     }
 

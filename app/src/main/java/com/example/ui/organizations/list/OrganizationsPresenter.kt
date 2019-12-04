@@ -36,6 +36,9 @@ class OrganizationsPresenter
         when (filter) {
             OrganizationsFilter.FAVORITES -> viewState.setFavoritesHeader()
             OrganizationsFilter.NONE -> viewState.setNoFilterHeader()
+            OrganizationsFilter.FAVORITES_NO_TITLE -> {
+                // do nothing
+            }
         }
 
         viewState.setOrganizations(List(20) { null })
@@ -44,6 +47,7 @@ class OrganizationsPresenter
                 .subscribeSimple {
                     if (it.isEmpty()) {
                         when (filter) {
+                            OrganizationsFilter.FAVORITES_NO_TITLE,
                             OrganizationsFilter.FAVORITES -> viewState.showFavoritesEmptyListPlaceholder()
                             OrganizationsFilter.NONE -> viewState.showNoFilterEmptyListPlaceholder()
                         }
@@ -95,6 +99,7 @@ class OrganizationsPresenter
 
     private fun getFilterData(): Map<String, Boolean> {
         return when (filter) {
+            OrganizationsFilter.FAVORITES_NO_TITLE,
             OrganizationsFilter.FAVORITES -> mapOf(FIELD_IS_IN_FAVORITE to true)
             OrganizationsFilter.NONE -> mapOf()
         }

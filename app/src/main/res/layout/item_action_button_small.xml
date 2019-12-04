@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -10,18 +9,9 @@
         android:id="@+id/btnAction"
         style="@style/Profile.Edit.ActionButton"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="14dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:layout_marginBottom="14dp"
         android:background="@drawable/background_action_button_selector"
         android:textColor="@color/text_color_action_button"
-        app:layout_constrainedHeight="true"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/btnAvatarRemove"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
-        app:layout_constraintVertical_chainStyle="packed"
         tools:drawableStart="@drawable/ic_add_sn"
-        tools:text="@string/profile_sn_add" />
+        tools:text="action" />
 </LinearLayout>

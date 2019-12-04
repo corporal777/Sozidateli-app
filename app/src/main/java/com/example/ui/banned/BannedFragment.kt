@@ -7,6 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
@@ -33,14 +34,11 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
     @ProvidePresenter
     fun providePresenter(): BannedPresenter = presenterProvider.get()
 
-    private val usersSection = TitledSection(-100L)
-
     private val adapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(usersSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
+                    presenter.onItemTake(position)
                 }
             })
         }
@@ -56,18 +54,23 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
     }
 
     override fun setItems(userChats: List<UserChat?>) {
-        usersSection.update(userChats.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
-            else UserItem(
-                    it.id,
-                    it.user.fullName,
-                    null,
-                    it.user.user_avatar,
-                    { presenter.onUserClick(it) },
-                    UserSubscribeButton.Action.UNBLOCK,
-                    { presenter.onUnblockLick(it) }
-            )
-        })
+        if (userChats.isEmpty()) {
+            adapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        } else {
+            adapter.update(userChats.map {
+                if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+                else UserItem(
+                        it.id,
+                        it.user.fullName,
+                        it.user.user_city,
+                        it.user.user_avatar,
+                        { presenter.onUserClick(it) },
+                        UserSubscribeButton.Action.UNBLOCK,
+                        { presenter.onUnblockLick(it) }
+                )
+            })
+        }
+
         swipeToRefresh.isRefreshing = false
     }
 

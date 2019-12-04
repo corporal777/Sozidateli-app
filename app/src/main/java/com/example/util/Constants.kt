@@ -14,6 +14,7 @@ const val DATE_TIME_FORMAT_SERVER_TIMESTAMP = "yyyy-MM-dd HH:mm:ss"
 const val TIME_FORMAT_DEFAULT = "HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT = "d.MM.yyyy HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT_NO_YEAR = "d.MM HH:mm"
+const val DATE_TIME_FORMAT_DEFAULT_FULL_MONTH = "d MMMM yyyy HH:mm"
 
 const val ARG_CUSTOM_LABEL = "label"
 

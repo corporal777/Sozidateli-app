@@ -876,6 +876,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="organizations_fragment_to_organization_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="organizations_fragment_to_self">
                               <value>
                                 <LayoutPositions />

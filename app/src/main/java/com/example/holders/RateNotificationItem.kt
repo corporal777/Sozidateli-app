@@ -24,8 +24,8 @@ class RateNotificationItem(
         super.bind(viewHolder, position)
         viewHolder.apply {
             btnRate.apply {
+                isVisible = !notification.wasRead && !getReadMoreView(viewHolder).isVisible
                 setOnClickListener { notification.rateId?.let { rateClickListener(it) } }
-                isVisible = !notification.wasRead
             }
         }
     }

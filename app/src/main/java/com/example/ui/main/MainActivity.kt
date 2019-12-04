@@ -382,7 +382,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun createNotificationFragment(inapp: Notification): NotificationFragment {
         return NotificationFragment().apply {
-            arguments = NotificationFragmentArgs.Builder(inapp).apply { showButtons = false }.build().toBundle()
+            arguments = NotificationFragmentArgs.Builder(inapp).build().toBundle()
         }
     }
 

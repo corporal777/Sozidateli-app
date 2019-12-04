@@ -18,6 +18,7 @@ import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.contacts.EventContactsFragment
+import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.EventLocationFragment
@@ -226,4 +227,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEventRatingFragment(): EventRatingFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFavoriteEventsFragment(): FavoriteEventsFragment
 }

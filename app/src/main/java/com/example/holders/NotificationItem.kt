@@ -9,14 +9,16 @@ import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
-import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
+import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import maxLength
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import java.text.SimpleDateFormat
+import java.util.*
 
 abstract class NotificationItem(
         private val notification: Notification,
@@ -46,7 +48,7 @@ abstract class NotificationItem(
         }
 
         getDateView(viewHolder).apply {
-            val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
+            val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_FULL_MONTH, Locale.getDefault()))
             text = parsedDate
         }
 
