@@ -132,7 +132,8 @@
     <color name="profile_status_max_text">#FFFFFF</color>
     <color name="profile_status_max_background">#7D9D57</color>
     <color name="profile_status_your_status">#45413A</color>
-    <color name="profile_status_description">#E6000000</color>
+    <color name="profile_status_counter">#FFFFFF</color>
+    <color name="profile_status_description">#000000</color>
     <color name="profile_status_complete">#7D9D57</color>
     <color name="profile_status_uncomplete">#C73C00</color>
 

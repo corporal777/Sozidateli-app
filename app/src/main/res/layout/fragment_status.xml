@@ -12,18 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvYourStatus"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:text="@string/status_your_status"
-            android:textColor="@color/profile_status_your_status"
-            android:textSize="19sp"
-            tools:ignore="MissingPrefix" />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvStatus"
             fontPath="fonts/Roboto-Medium.ttf"
@@ -107,18 +95,22 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp">
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAction"
-                    fontPath="fonts/Roboto-Bold.ttf"
+                    fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="@drawable/background_corners"
+                    android:backgroundTint="@color/colorAccent"
+                    android:minHeight="38dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@android:color/white"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -127,15 +119,18 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnRemove"
-                    fontPath="fonts/Roboto-Bold.ttf"
+                    fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/background_corners"
+                    android:backgroundTint="@color/colorAccent"
+                    android:minHeight="38dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:text="@string/remove"
                     android:textAllCaps="false"
-                    android:textColor="@color/attention_action"
+                    android:textColor="@android:color/white"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btnAction"

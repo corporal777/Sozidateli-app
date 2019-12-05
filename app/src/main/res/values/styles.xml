@@ -521,13 +521,14 @@
     <style name="Status.Description.Profile">
         <item name="android:layout_marginStart">12dp</item>
         <item name="android:layout_marginTop">0dp</item>
+        <item name="android:textColor">@color/profile_status_description</item>
         <item name="android:drawablePadding">0dp</item>
     </style>
 
     <style name="Status.Counter">
         <item name="android:layout_width">29dp</item>
         <item name="android:layout_height">29dp</item>
-        <item name="android:textColor">@color/profile_status_description</item>
+        <item name="android:textColor">@color/profile_status_counter</item>
         <item name="android:textSize">16dp</item>
         <item name="android:background">@drawable/background_status_counter</item>
         <item name="android:gravity">center</item>

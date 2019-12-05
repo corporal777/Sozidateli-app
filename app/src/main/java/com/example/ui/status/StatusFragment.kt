@@ -7,13 +7,11 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.text.set
 import androidx.core.text.toSpannable
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,6 +19,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserStatusDetails
 import com.example.data.models.user.User
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.LoadingAlertDialog
 import isValidPhoneNumber
@@ -75,8 +74,6 @@ class StatusFragment : BaseFragment(), StatusContract.View {
         tvStatus.apply {
             setUserStatus(status)
         }
-
-        tvYourStatus.isInvisible = !isCurrentStatus
 
         val isSecurityComplete: Boolean
         val isSupportComplete: Boolean
@@ -146,7 +143,6 @@ class StatusFragment : BaseFragment(), StatusContract.View {
     }
 
     fun setContentAlpha(alpha: Float) {
-        tvYourStatus.alpha = alpha
         llContent.alpha = alpha
     }
 
