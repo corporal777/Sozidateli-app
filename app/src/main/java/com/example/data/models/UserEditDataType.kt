@@ -6,5 +6,6 @@ enum class UserEditDataType {
     EDUCATION,
     WORK,
     INTERESTS,
-    ADDITIONAL
+    ADDITIONAL_NOTES,
+    ADDITIONAL_FILES
 }

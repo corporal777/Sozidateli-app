@@ -24,7 +24,7 @@ class ToolbarContentActionBar(
     private val navigationIcon by lazy {
         ToolbarButton(appCompatActivity).apply {
             setImageResource(R.drawable.ic_back)
-            setOnClickListener { weakActivity.get()?.onSupportNavigateUp() }
+            setOnClickListener { weakActivity.get()?.onBackPressed() }
         }
     }
 

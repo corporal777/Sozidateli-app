@@ -7,67 +7,7 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:paddingTop="4dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/profile_work_start" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilStart"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etStart"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-        </com.example.ui.views.CustomTextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout style="@style/Profile.Edit.InputContainer">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/profile_work_finish" />
-
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilFinish"
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFinish"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/scFinish"
-            style="@style/Profile.Edit.Switch"
-            android:text="@string/profile_education_not_finished" />
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/profile_social_project_name" />
+        android:layout_marginTop="16dp">
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilProject"
@@ -91,10 +31,6 @@
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="8dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/profile_social_project_role" />
-
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilPosition"
             style="@style/Profile.Edit.InputLayout"
@@ -114,46 +50,66 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="8dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.InputTitle"
-            android:text="@string/profile_work_description" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilDescription"
+            android:id="@+id/tilStart"
             style="@style/Profile.Edit.InputLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null">
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            app:endIconMode="custom">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescription"
+                android:id="@+id/etStart"
                 style="@style/Profile.Edit.Input.SingleLine"
-                android:hint="@string/profile_work_description"
-                android:inputType="textMultiLine|textCapSentences"
-                android:maxLines="5" />
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/search_filter_start" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilFinish"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFinish"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/search_filter_finish" />
         </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scFinish"
+        style="@style/Profile.Edit.Switch"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/profile_education_not_finished" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRemove"
-        fontPath="fonts/Roboto-Bold.ttf"
+        style="@style/Profile.Edit.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:background="?attr/selectableItemBackground"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/remove"
-        android:textAllCaps="false"
-        android:textColor="@color/attention_action"
-        android:textSize="17sp" />
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:text="@string/remove" />
 
     <View
         android:id="@+id/divider"

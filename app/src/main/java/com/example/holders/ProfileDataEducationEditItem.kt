@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.widget.SwitchCompat
 import com.example.R
@@ -95,7 +96,7 @@ class ProfileDataEducationEditItem(
         onTextChanged(onTextChanged)
     }
 
-    private fun SwitchCompat.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
+    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
         isChecked = checked
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }

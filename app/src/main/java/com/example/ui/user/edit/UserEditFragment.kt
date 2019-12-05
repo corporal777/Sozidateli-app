@@ -13,7 +13,9 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -25,27 +27,22 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.holders.*
-import com.example.holders.ActionButtonItem.Companion.ACTION_SAVE
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthValidateUtil
-import com.example.util.StickyFooterItemDecoration
 import com.google.android.material.textfield.TextInputLayout
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.dialog_change_password.view.*
-import kotlinx.android.synthetic.main.fragment_chat_list.*
-import onTextChanged
+import kotlinx.android.synthetic.main.fragment_user_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
 
-    override val title
-        get() = getString(R.string.profile_edit_title)
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: UserEditPresenter
@@ -67,14 +64,21 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }
     }
 
+    private var onSaveClick: (() -> Unit)? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                presenter.onNavigateUpRequest()
+            }
+        })
+
         recyclerView.apply {
             adapter = this@UserEditFragment.adapter
-            if (itemDecorationCount == 0) addItemDecoration(StickyFooterItemDecoration())
         }
 
-        swipeToRefresh.isEnabled = false
+        btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
     override fun setMainData(user: User, avatar: Bitmap?) {
@@ -87,10 +91,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 { presenter.onEditAvatarClick() },
                 { presenter.onDisabledMainInputInfoClick() }
         )
-        adapter.update(listOf(dataItem,
-                ActionButtonItem(-100L, ACTION_SAVE) {
-                    if (dataItem.checkDataComplete()) presenter.onSaveMainClick(dataItem.getDataToSave())
-                }))
+        adapter.update(listOf(dataItem))
+
+        onSaveClick = { if (dataItem.checkDataComplete()) presenter.onSaveMainClick(dataItem.getDataToSave()) }
+        btnSave.isVisible = true
     }
 
     override fun showDisabledMainInputInfo() {
@@ -131,12 +135,14 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
                 user.social_links
-        )
+        ) {
+            presenter.onChangeEmailClick()
+        }
 
-        adapter.update(listOf(dataItem,
-                ActionButtonItem(-100L, ACTION_SAVE) {
-                    if (dataItem.checkDataValid()) presenter.onSaveMainClick(dataItem.getDataToSave())
-                }))
+        adapter.update(listOf(dataItem))
+
+        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSavePersonalClick(dataItem.getDataToSave()) }
+        btnSave.isVisible = true
     }
 
     override fun showChangeEmail() {
@@ -173,82 +179,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 .show()
     }
 
-    override fun showChangePassword() {
-        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
-        val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
-        val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
-            onTextChanged { tilOldPassword.error = null }
-        }
-        val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
-        val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
-            onTextChanged { tilNewPassword.error = null }
-        }
-        val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
-        val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
-            onTextChanged {
-                tilNewPasswordConfirm.error = if (etNewPassword.text.toString() != etNewPasswordConfirm.text.toString()) {
-                    getString(R.string.auth_error_password_do_not_match)
-                } else {
-                    null
-                }
-            }
-        }
-
-        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
-                .setView(view)
-                .setPositiveButton(R.string.ok, null)
-                .create()
-                .apply {
-                    setOnShowListener {
-                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                            setOnClickListener {
-                                var hasError = false
-                                val oldPassword = etOldPassword.text?.toString()
-                                val newPassword = etNewPassword.text?.toString()
-                                val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
-
-                                if (oldPassword.isNullOrEmpty()) {
-                                    tilOldPassword.error = emptyFieldError
-                                    hasError = true
-                                }
-
-                                if (newPassword != newPasswordConfirm) {
-                                    tilNewPasswordConfirm.error = getString(R.string.auth_error_password_do_not_match)
-                                    hasError = true
-                                } else {
-                                    if (newPassword.isNullOrEmpty()) {
-                                        tilNewPassword.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                    if (newPasswordConfirm.isNullOrEmpty()) {
-                                        tilNewPasswordConfirm.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                }
-
-                                if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
-                                    presenter.onChangePasswordClickConfirm(oldPassword, newPassword, newPasswordConfirm)
-                                    dismiss()
-                                }
-                            }
-                        }
-                    }
-                }
-                .show()
-    }
-
-    override fun showPasswordChangeComplete() {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
-                .setMessage(R.string.profile_password_change_complete)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
-
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
@@ -257,24 +187,37 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override fun setEducationData(user: User) {
         val education = user.education ?: emptyList()
-        adapter.update(listOf(ProfileDataEducationEditGroup(
+
+        val dataItem = ProfileDataEducationEditGroup(
+                requireContext(),
                 user.user_education,
-                education,
-                { presenter.onSaveEducationClick(it) },
-                { presenter.onCancelClick() }
-        )))
+                education
+        )
+        adapter.update(listOf(dataItem))
+
+        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSaveEducationClick(dataItem.getDataToSave()) }
+        btnSave.isVisible = true
     }
 
     override fun setWorkData(user: User) {
         val work = user.work ?: emptyList()
-        adapter.update(listOf(ProfileDataWorkEditGroup(
-                work,
-                { presenter.onSaveWorkClick(it) },
-                { presenter.onCancelClick() }
-        )))
+        val dataItem = ProfileDataWorkEditGroup(
+                requireContext(),
+                work
+        )
+        adapter.update(listOf(dataItem))
+        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSaveWorkClick(dataItem.getDataToSave()) }
+        btnSave.isVisible = true
     }
 
     override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
+        val findUserInterests: () -> List<Interest> = {
+            interests.values.flatten().filter { item -> item.isUserInterest }
+                    .map { item -> item.interest }
+        }
+
+        var userInterests = findUserInterests()
+
         adapter.update(interests.map {
             val parent = it.key
             val childList = it.value
@@ -282,8 +225,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 titleItem.badgeCount = childList.count { child -> child.isUserInterest }
                 val interestsItems = childList.mapIndexed { index, interest ->
                     ProfileDataInterestEditItem(interest, index != childList.size - 1) {
-                        presenter.onSaveInterestsClick(interests.values.flatten().filter { item -> item.isUserInterest }
-                                .map { item -> item.interest })
+                        userInterests = findUserInterests()
                         val count = childList.count { child -> child.isUserInterest }
                         titleItem.apply {
                             badgeCount = count
@@ -294,23 +236,36 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 addAll(interestsItems)
             }
         })
+
+        onSaveClick = { presenter.onSaveInterestsClick(userInterests) }
+        btnSave.isVisible = true
     }
 
-    override fun setAdditionalData(user: User, previousNotes: String?) {
-        adapter.update(listOf(ProfileDataAdditionalEditGroup(
+    override fun setAdditionalNotesData(user: User) {
+        val dataItem = ProfileDataNotesEditItem(1L, user.user_notes)
+        adapter.update(listOf(ProfileDataNotesDescriptionItem(0L) { showWhyUserShouldAddDataToNotesField() }, dataItem))
+        onSaveClick = { presenter.onSaveAdditionalNotesClick(dataItem.mNotes) }
+        btnSave.isVisible = true
+    }
+
+    private fun showWhyUserShouldAddDataToNotesField() {
+        AlertDialog.Builder(requireContext())
+                .setMessage(R.string.profile_edit_additional_notes_data)
+                .setPositiveButton(R.string.ok, null)
+                .show()
+    }
+
+    override fun setAdditionalFilesData(user: User) {
+        adapter.update(listOf(ProfileDataAdditionalFilesEditGroup(
                 requireContext(),
-                user.user_notes,
                 user.attached_recomendation_files ?: emptyList(),
-                onItemExpandChange,
                 { presenter.onAddFileClick() },
                 { presenter.onFileClick(it) },
                 { presenter.onEditFileClick(it) },
-                { presenter.onSaveAdditionalClick(it) },
-                { presenter.onCancelClick() },
-                { presenter.onNotesChanged(it) }
-        ).apply {
-            previousNotes?.let { notes = it }
-        }))
+                { presenter.onSaveAdditionalFilesClick(it) }
+        )))
+
+        btnSave.isVisible = false
     }
 
     override fun showFileSelector() {
@@ -322,15 +277,19 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.update(listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-                ProfileDataEditSaveItem(0L, {
-                    hideKeyboard()
-                    file.desc = editItem.mName
-                    presenter.onFileEditSaveClick()
-                }, {
-                    hideKeyboard()
-                    presenter.onFileEditCancelClick()
-                })
+                ProfileButtonEditItem(getString(R.string.add_file)) { presenter.onFileEditSaveClick() }.apply {
+                    hasDivider = false
+                    compactMargin = true
+                }
         ))
+
+        onSaveClick = {
+            hideKeyboard()
+            file.desc = editItem.mName
+            presenter.onFileEditSaveClick()
+        }
+
+        btnSave.isVisible = true
     }
 
     override fun downloadFile(file: String) {
@@ -362,5 +321,5 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         super.navigateUp()
     }
 
-    override fun layout() = R.layout.fragment_user
+    override fun layout() = R.layout.fragment_user_edit
 }

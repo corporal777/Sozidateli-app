@@ -23,6 +23,7 @@ import initAsDatePicker
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
 import onTextChanged
+import setOnClickListener
 
 class ProfileDataPersonalEditItem(
         private val context: Context,
@@ -36,7 +37,8 @@ class ProfileDataPersonalEditItem(
         private val birthday: String?,
         private val showBirthday: Boolean,
         private val address: UserAddress,
-        private val socialNetworks: List<UserDataSocialLink>?
+        private val socialNetworks: List<UserDataSocialLink>?,
+        private val changeEmailClick: () -> Unit
 ) : Item() {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -65,7 +67,10 @@ class ProfileDataPersonalEditItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            etEmail.setText(email)
+            btnEmail.apply {
+                text = email
+                setOnClickListener(changeEmailClick)
+            }
             tilWorkPhone.apply { error = null }
             etWorkPhone.apply {
                 initInput(mWorkPhone) {

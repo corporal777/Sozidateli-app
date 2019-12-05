@@ -52,6 +52,12 @@ interface UserContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showDataEditor(type: UserEditDataType)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChangePassword()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPasswordChangeComplete()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -72,8 +78,12 @@ interface UserContract {
         fun onEditEducationClick()
         fun onEditWorkClick()
         fun onEditInterestsClick()
-        fun onEditAdditionalDataClick()
+        fun onEditAdditionalNotesDataClick()
+        fun onEditAdditionalFilesDataClick()
 
         fun onRefreshRequest()
+
+        fun onChangePasswordClick()
+        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
     }
 }

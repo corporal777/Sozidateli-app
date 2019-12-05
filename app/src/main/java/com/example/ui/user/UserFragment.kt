@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,13 +33,16 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import getUserStatusText
+import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_user.*
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -89,6 +93,10 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
     private lateinit var menuImageView: ImageView
 
+    private val editText by lazy {
+        getString(R.string.edit)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
@@ -108,9 +116,10 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
         val personalData = mutableListOf<Group>()
         if (editable) {
-            personalData.add(ProfileButtonItem(getString(R.string.profile_password_change)) {})
-            user.user_status.getUserStatusText(requireContext())?.let {
-                personalData.add(ProfileButtonItem(it) {})
+            personalData.add(ProfileButtonItem(getString(R.string.profile_password_change)) { presenter.onChangePasswordClick() })
+            (user.user_status
+                    ?: User.Status.LOW_PROTECTION).getUserStatusText(requireContext()).let {
+                personalData.add(ProfileButtonItem(it) { presenter.onStatusClick() })
             }
         }
         initPersonalDataItem(user, editable)?.let { personalData.add(it) }
@@ -191,7 +200,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     onExpandChange = onItemExpandChange
             ).apply {
                 add(initProfileDataPersonalItem(user, false))
-                if (editable) add(ProfileButtonEditItem { presenter.onEditPersonalDataClick() })
+                if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditPersonalDataClick() })
             }
         } else {
             initProfileDataPersonalItem(user, true)
@@ -231,7 +240,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 add(Section().apply {
                     setHeader(ProfileDataEducationLevelItem(educationLevel.let { if (it.isNullOrEmpty()) "-" else it }))
                     addAll(education.map { ProfileDataEducationItem(it) })
-                    if (editable) add(ProfileButtonEditItem { presenter.onEditEducationClick() })
+                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditEducationClick() })
                 })
             }
         } else null
@@ -248,7 +257,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     addAll(work.mapIndexed { index, socialRoles ->
                         ProfileDataWorkExperienceItem(socialRoles, index == 0)
                     })
-                    if (editable) add(ProfileButtonEditItem { presenter.onEditWorkClick() })
+                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditWorkClick() })
                 })
             }
         } else null
@@ -269,7 +278,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                             addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
                         }
                     })
-                    if (editable) add(ProfileButtonEditItem { presenter.onEditInterestsClick() })
+                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditInterestsClick() })
                 })
             }
         } else null
@@ -282,6 +291,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val subgroups = mutableListOf<Group>()
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
             add(ProfileDataNotesItem(notes.let { if (it.isNullOrEmpty()) "-" else it }))
+            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditAdditionalNotesDataClick() })
         })
 
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
@@ -292,6 +302,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     ) { presenter.onFileClick(file) }
                 })
             }
+            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditAdditionalFilesDataClick() })
         })
 
         return if (editable || !notes.isNullOrEmpty() || files.isNotEmpty()) {
@@ -301,9 +312,83 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             ).apply {
                 titleItem.hideDividerOnExpand = false
                 addAll(subgroups)
-                if (editable) add(ProfileButtonEditItem { presenter.onEditAdditionalDataClick() })
             }
         } else null
+    }
+
+    override fun showChangePassword() {
+        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
+        val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
+        val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
+            onTextChanged { tilOldPassword.error = null }
+        }
+        val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
+        val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
+            onTextChanged { tilNewPassword.error = null }
+        }
+        val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
+        val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
+            onTextChanged {
+                tilNewPasswordConfirm.error = if (etNewPassword.text.toString() != etNewPasswordConfirm.text.toString()) {
+                    getString(R.string.auth_error_password_do_not_match)
+                } else {
+                    null
+                }
+            }
+        }
+
+        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.profile_password_change)
+                .setView(view)
+                .setPositiveButton(R.string.ok, null)
+                .create()
+                .apply {
+                    setOnShowListener {
+                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
+                            setOnClickListener {
+                                var hasError = false
+                                val oldPassword = etOldPassword.text?.toString()
+                                val newPassword = etNewPassword.text?.toString()
+                                val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
+
+                                if (oldPassword.isNullOrEmpty()) {
+                                    tilOldPassword.error = emptyFieldError
+                                    hasError = true
+                                }
+
+                                if (newPassword != newPasswordConfirm) {
+                                    tilNewPasswordConfirm.error = getString(R.string.auth_error_password_do_not_match)
+                                    hasError = true
+                                } else {
+                                    if (newPassword.isNullOrEmpty()) {
+                                        tilNewPassword.error = emptyFieldError
+                                        hasError = true
+                                    }
+                                    if (newPasswordConfirm.isNullOrEmpty()) {
+                                        tilNewPasswordConfirm.error = emptyFieldError
+                                        hasError = true
+                                    }
+                                }
+
+                                if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
+                                    presenter.onChangePasswordClickConfirm(oldPassword, newPassword, newPasswordConfirm)
+                                    dismiss()
+                                }
+                            }
+                        }
+                    }
+                }
+                .show()
+    }
+
+    override fun showPasswordChangeComplete() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.profile_password_change)
+                .setMessage(R.string.profile_password_change_complete)
+                .setPositiveButton(R.string.ok, null)
+                .setNegativeButton(R.string.cancel, null)
+                .show()
     }
 
     override fun setActionSubscribe() {

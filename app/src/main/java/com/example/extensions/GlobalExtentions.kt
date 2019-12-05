@@ -157,8 +157,7 @@ fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
     )
 }
 
-fun User.Status?.getUserStatusText(context: Context): String? {
-    if (this == null) return null
+fun User.Status.getUserStatusText(context: Context): String {
     return context.getString(R.string.status_your_status).format(context.getString(when (this) {
         User.Status.LOW_PROTECTION -> R.string.profile_status_low
         User.Status.MID_PROTECTION -> R.string.profile_status_mid

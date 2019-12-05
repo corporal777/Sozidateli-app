@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Profile.Edit.InputContainer">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Profile.Edit.InputTitle"
-        android:text="@string/profile_education_level" />
-
     <com.example.ui.views.CustomTextInputLayout
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:endIconDrawable="@drawable/ic_drop_down"
-        app:endIconMode="dropdown_menu"
-        app:errorEnabled="false">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvEducationLevel"
@@ -22,6 +14,7 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:hint="@string/profile_education_level"
             android:paddingStart="14dp"
             android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>

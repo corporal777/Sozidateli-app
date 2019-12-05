@@ -8,8 +8,7 @@ import onTextChanged
 
 class ProfileDataNotesEditItem(
         id: Long,
-        notes: String?,
-        private val onNotesChange: (String?) -> Unit
+        notes: String?
 ) : Item(id) {
 
     var mNotes = notes
@@ -18,10 +17,7 @@ class ProfileDataNotesEditItem(
         viewHolder.apply {
             etNotes.apply {
                 setText(mNotes)
-                onTextChanged {
-                    mNotes = it?.toString()
-                    onNotesChange(mNotes)
-                }
+                onTextChanged { mNotes = it?.toString() }
             }
         }
     }

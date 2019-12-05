@@ -372,7 +372,7 @@
     <string name="profile_work_finish">Окончание</string>
     <string name="profile_work_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_notes">Примечания</string>
-    <string name="profile_files">Файлы</string>
+    <string name="profile_files">Файлы рекомендаций, писем, отзывов, характеристик</string>
     <string name="profile_edit_title">Редактирование</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
@@ -386,15 +386,14 @@
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
     <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста обратитесь в нашу службу поддержки: support@sozidateli.ru</string>
-    <string name="profile_edit_email_hint">example@email.com</string>
+    <string name="profile_edit_email_hint">E-mail</string>
     <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
     <string name="profile_edit_request_error">Ошибка обновления данных</string>
-    <string name="profile_edit_additional_data_title">Это поле нужно заполнить, если Вы являетесь членом команды проекта, подаваемого на конкурс президентских грантов.
-\nЗдесь Вы можете указать дополнительную информацию о себе:
-\nрассказать о своих достижениях
-\nприкрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем
-\nдобавить ссылки на ваши публикации и другие материалы
+    <string name="profile_edit_additional_notes_data">Это поле нужно заполнить, если Вы являетесь членом команды проекта, подаваемого на конкурс президентских грантов.
+\nЗдесь Вы можете указать дополнительную информацию о себе: рассказать о своих достижениях, прикрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем, добавить ссылки на ваши публикации и другие материалы
 \nТакже вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта</string>
+    <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
+    <string name="profile_edit_additional_data_rename_file">Переименовать файл</string>
     <string-array name="profile_edit_education_levels">
         <item>Среднее образование</item>
         <item>Среднее профессиональное</item>

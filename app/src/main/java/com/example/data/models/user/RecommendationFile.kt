@@ -10,4 +10,9 @@ data class RecommendationFile(
         var name: String?,
         var desc: String?,
         var url: String?
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+        const val ID_INVALID = -1
+    }
+}

@@ -36,12 +36,6 @@ interface UserEditContract {
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmailComplete(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangePassword()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPasswordChangeComplete()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEducationData(user: User)
 
@@ -52,7 +46,10 @@ interface UserEditContract {
         fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAdditionalData(user: User, previousNotes: String?)
+        fun setAdditionalNotesData(user: User)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setAdditionalFilesData(user: User)
 
         @StateStrategyType(SkipStrategy::class)
         fun showFileSelector()
@@ -80,8 +77,6 @@ interface UserEditContract {
 
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String)
-        fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
 
         //additional data
 
@@ -91,14 +86,14 @@ interface UserEditContract {
         fun onFileEditSaveClick()
         fun onFileEditCancelClick()
         fun onFileClick(file: RecommendationFile)
-        fun onNotesChanged(notes: String?)
 
         fun onSaveMainClick(data: Map<String, Any?>)
         fun onSavePersonalClick(data: Map<String, Any?>)
         fun onSaveEducationClick(data: Map<String, Any?>)
         fun onSaveWorkClick(data: Map<String, Any?>)
         fun onSaveInterestsClick(data: List<Interest>)
-        fun onSaveAdditionalClick(data: Map<String, Any?>)
+        fun onSaveAdditionalNotesClick(notes: String?)
+        fun onSaveAdditionalFilesClick(data: Map<String, Any?>)
         fun onCancelClick()
 
         fun onNavigateUpRequest()

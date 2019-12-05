@@ -1,24 +1,22 @@
 package com.example.holders
 
+import android.content.Context
+import com.example.R
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
-import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_RECORD
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class ProfileDataWorkEditGroup(
-        workList: List<SocialRoles>,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit,
-        private val cancelClickListener: () -> Unit
+        context: Context,
+        workList: List<SocialRoles>
 ) : NestedGroup() {
 
     private val works = mutableListOf<ProfileDataWorkEditItem>()
-    private val addItem = ActionButtonItem(0L, ACTION_ADD_RECORD) { add(createWorkItem(null)) }
-    private val saveItem = ProfileDataEditSaveItem(1L, {
-        if (checkDataValid()) saveClickListener(getDataToSave())
-    }, {
-        cancelClickListener()
-    })
+    private val addItem = ProfileButtonEditItem(context.getString(R.string.add_record)) { add(createWorkItem(null)) }.apply {
+        hasDivider = false
+        compactMargin = true
+    }
 
     init {
         workList.map { createWorkItem(it) }.let {
@@ -26,14 +24,12 @@ class ProfileDataWorkEditGroup(
             addAll(it)
         }
         add(addItem)
-        add(saveItem)
     }
 
     override fun getGroup(position: Int): Group {
         return if (position > works.size - 1) {
             when (position - works.size) {
                 0 -> addItem
-                1 -> saveItem
                 else -> throw IndexOutOfBoundsException("Invalid item position: $position")
             }
         } else {
@@ -44,13 +40,12 @@ class ProfileDataWorkEditGroup(
     override fun getPosition(group: Group): Int {
         return when (group) {
             addItem -> works.size
-            saveItem -> works.size + 1
             else -> works.indexOf(group)
         }
     }
 
     override fun getGroupCount(): Int {
-        return works.size + 2
+        return works.size + 1
     }
 
     private fun add(item: ProfileDataWorkEditItem) {
@@ -64,8 +59,7 @@ class ProfileDataWorkEditGroup(
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
-                socialRoles?.position,
-                socialRoles?.description
+                socialRoles?.position
         ) { item ->
             val position = getItemCountBeforeGroup(item)
             remove(item)
@@ -74,7 +68,7 @@ class ProfileDataWorkEditGroup(
         }
     }
 
-    private fun checkDataValid(): Boolean {
+    fun checkDataValid(): Boolean {
         var isValid = true
         works.forEach {
             if (!it.isDataValid()) {
@@ -85,15 +79,14 @@ class ProfileDataWorkEditGroup(
         return isValid
     }
 
-    private fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): Map<String, Any?> {
         return mapOf(
                 User.FIELD_WORK to works.map {
                     mapOf(
                             SocialRoles.FIELD_BEGIN to it.mStart,
                             SocialRoles.FIELD_END to if (it.isNotFinished) null else it.mFinish,
                             SocialRoles.FIELD_ORGANIZATION to it.mOrganization,
-                            SocialRoles.FIELD_POSITION to it.mPosition,
-                            SocialRoles.FIELD_DESCRIPTION to it.mDescription
+                            SocialRoles.FIELD_POSITION to it.mPosition
                     )
                 }
         )

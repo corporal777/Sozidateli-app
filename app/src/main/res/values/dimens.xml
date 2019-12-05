@@ -29,7 +29,8 @@
     <dimen name="profile_height_field">50dp</dimen>
 
     <dimen name="profile_padding_start">20dp</dimen>
-    <dimen name="profile_data_padding">32dp</dimen>
+    <dimen name="profile_data_margin">32dp</dimen>
+    <dimen name="profile_data_margin_compact">@dimen/margin_horizontal_default</dimen>
     <dimen name="profile_avatar_size">60dp</dimen>
 
     <dimen name="add_schedule_height">50dp</dimen>
@@ -56,6 +57,7 @@
     <dimen name="organization_logo_corners_radius">4dp</dimen>
 
     <dimen name="building_scheme_bottom_gradient_height">50dp</dimen>
+    <dimen name="about_event_bottom_gradient_height">83dp</dimen>
 
     <dimen name="action_button_height">42dp</dimen>
     <dimen name="action_button_margin_vertical">20dp</dimen>

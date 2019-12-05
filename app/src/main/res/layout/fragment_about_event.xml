@@ -19,6 +19,12 @@
             tools:listitem="@layout/item_event_info_header" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/about_event_bottom_gradient_height"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_gradient" />
+
     <include
         android:id="@+id/btnRegister"
         layout="@layout/item_action_button"

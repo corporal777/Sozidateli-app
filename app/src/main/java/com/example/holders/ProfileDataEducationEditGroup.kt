@@ -1,26 +1,25 @@
 package com.example.holders
 
+import android.content.Context
+import com.example.R
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
-import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_RECORD
+import com.example.holders.ActionButtonItem.Companion.ACTION_SAVE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class ProfileDataEducationEditGroup(
+        context: Context,
         educationLevel: String?,
-        education: List<SocialRoles>,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit,
-        private val cancelClickListener: () -> Unit
+        education: List<SocialRoles>
 ) : NestedGroup() {
 
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel)
     private val educations = mutableListOf<ProfileDataEducationEditItem>()
-    private val addItem = ActionButtonItem(0L, ACTION_ADD_RECORD) { add(createEducationItem(null)) }
-    private val saveItem = ProfileDataEditSaveItem(1L, {
-        if (checkDataValid()) saveClickListener(getDataToSave())
-    }, {
-        cancelClickListener()
-    })
+    private val addItem = ProfileButtonEditItem(context.getString(R.string.add_record)) { add(createEducationItem(null)) }.apply {
+        hasDivider = false
+        compactMargin = true
+    }
 
     init {
         add(educationLevelItem)
@@ -29,7 +28,6 @@ class ProfileDataEducationEditGroup(
             addAll(it)
         }
         add(addItem)
-        add(saveItem)
     }
 
     override fun getGroup(position: Int): Group {
@@ -41,7 +39,6 @@ class ProfileDataEducationEditGroup(
                 itemPosition -= educations.size
                 when (itemPosition) {
                     0 -> addItem
-                    1 -> saveItem
                     else -> throw IndexOutOfBoundsException("Invalid item position: $position")
                 }
             } else {
@@ -54,7 +51,6 @@ class ProfileDataEducationEditGroup(
         return when (group) {
             educationLevelItem -> 0
             addItem -> educations.size + 1
-            saveItem -> educations.size + 2
             else -> educations.indexOf(group) + 1
         }
     }
@@ -79,7 +75,7 @@ class ProfileDataEducationEditGroup(
         notifyItemInserted(educations.size)
     }
 
-    private fun checkDataValid(): Boolean {
+    fun checkDataValid(): Boolean {
         var isValid = true
         educations.forEach {
             if (!it.isDataValid()) {
@@ -90,7 +86,7 @@ class ProfileDataEducationEditGroup(
         return isValid
     }
 
-    private fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): Map<String, Any?> {
         return mapOf(
                 User.FIELD_USER_EDUCATION to educationLevelItem.mEducationLevel,
                 User.FIELD_EDUCATION to educations.map {
@@ -105,6 +101,6 @@ class ProfileDataEducationEditGroup(
     }
 
     override fun getGroupCount(): Int {
-        return educations.size + 3
+        return educations.size + 2
     }
 }

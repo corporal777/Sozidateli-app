@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.widget.SwitchCompat
 import com.example.R
@@ -20,7 +21,6 @@ class ProfileDataWorkEditItem(
         finish: String?,
         organization: String?,
         position: String?,
-        description: String?,
         private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit
 ) : Item() {
 
@@ -31,8 +31,6 @@ class ProfileDataWorkEditItem(
     var mOrganization = organization
         private set
     var mPosition = position
-        private set
-    var mDescription = description
         private set
     var isNotFinished = mFinish == null
         private set
@@ -68,10 +66,6 @@ class ProfileDataWorkEditItem(
                 tilPosition.error = null
                 mPosition = it.toString()
             }
-            etDescription.initInput(mDescription) {
-                tilDescription.error = null
-                mDescription = it.toString()
-            }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
         }
@@ -93,9 +87,6 @@ class ProfileDataWorkEditItem(
                 if (!isPositionValid()) tilPosition.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)
                 }
-                if (!isDescriptionValid()) tilDescription.apply {
-                    error = resources.getString(R.string.profile_edit_empty_field_error)
-                }
             }
         }
     }
@@ -105,7 +96,7 @@ class ProfileDataWorkEditItem(
         onTextChanged(onTextChanged)
     }
 
-    private fun SwitchCompat.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
+    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
         isChecked = checked
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
@@ -148,8 +139,7 @@ class ProfileDataWorkEditItem(
 
     private fun isOrganizationValid() = !mOrganization.isNullOrBlank()
     private fun isPositionValid() = !mPosition.isNullOrBlank()
-    private fun isDescriptionValid() = true
-    fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid() && isDescriptionValid()
+    fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid()
 
     override fun getLayout() = R.layout.item_profile_data_edit_work
 }

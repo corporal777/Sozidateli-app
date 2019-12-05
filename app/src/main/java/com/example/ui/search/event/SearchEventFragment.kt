@@ -46,7 +46,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
         override fun onShowFilterClick(event: Event) = presenter.onShowFormatClick(event)
     }
 
-
     override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
         AlertDialog.Builder(requireContext())
                 .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->

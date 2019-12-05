@@ -14,6 +14,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.CropCircleTransformation
 import com.example.util.loadBitmap
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
@@ -189,12 +190,62 @@ class UserPresenter
         viewState.showDataEditor(UserEditDataType.INTERESTS)
     }
 
-    override fun onEditAdditionalDataClick() {
-        viewState.showDataEditor(UserEditDataType.ADDITIONAL)
+    override fun onEditAdditionalNotesDataClick() {
+        viewState.showDataEditor(UserEditDataType.ADDITIONAL_NOTES)
+    }
+
+    override fun onEditAdditionalFilesDataClick() {
+        viewState.showDataEditor(UserEditDataType.ADDITIONAL_FILES)
     }
 
     override fun onStatusClick() {
         viewState.showStatus()
+    }
+
+    override fun onChangePasswordClick() {
+        viewState.showChangePassword()
+    }
+
+    override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
+        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
+            viewState.showPasswordChangeComplete()
+            false
+        }
+    }
+
+    private fun onEditSave(data: Map<String, Any?>, onComplete: (User) -> Boolean) {
+        if (data.isEmpty()) {
+            viewState.navigateUp()
+            return
+        }
+
+        val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
+        if (avatar != null) {
+            if (data.size == 1) {
+                updateUser(userRepository.uploadAvatar(avatar), onComplete)
+            } else {
+                updateUser(userRepository.uploadAvatar(avatar)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
+            }
+        } else {
+            updateUser(userRepository.updateUser(data), onComplete)
+        }
+    }
+
+    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
+        compositeDisposable += request
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    appData.getUser().apply {
+                        it.user_status?.let { status -> user_status = status }
+                        it.user_status_detail?.let { details -> user_status_detail = details }
+                    }
+                    if (onComplete(it)) viewState.navigateUp()
+                }, {
+                    it.printStackTrace()
+                    viewState.showUpdateError(it.message)
+                })
     }
 
     private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {

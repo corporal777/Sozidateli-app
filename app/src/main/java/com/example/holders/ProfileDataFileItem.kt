@@ -12,7 +12,10 @@ class ProfileDataFileItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvFileName.text = name
+            tvFileName.apply {
+                text = name
+                isClickable = false
+            }
             tvFileName.setOnClickListener { onFileClick() }
         }
     }

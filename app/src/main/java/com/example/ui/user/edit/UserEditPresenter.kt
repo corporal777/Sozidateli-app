@@ -38,8 +38,6 @@ class UserEditPresenter
     private var isFileEdit = false
     private var isInterestsLoaded = false
 
-    private var notes: String? = null
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userChangeSubject
@@ -52,7 +50,8 @@ class UserEditPresenter
                         UserEditDataType.EDUCATION -> viewState.setEducationData(user)
                         UserEditDataType.WORK -> viewState.setWorkData(user)
                         UserEditDataType.INTERESTS -> setInterestsData(user)
-                        UserEditDataType.ADDITIONAL -> viewState.setAdditionalData(user, notes)
+                        UserEditDataType.ADDITIONAL_NOTES -> viewState.setAdditionalNotesData(user)
+                        UserEditDataType.ADDITIONAL_FILES -> viewState.setAdditionalFilesData(user)
                     }
                 }, {
                     it.printStackTrace()
@@ -142,14 +141,22 @@ class UserEditPresenter
                 interests = it.interests
             }.asOptional())
             viewState.hideAllLoadingDialogs()
-            false
+            true
         }
     }
 
-    override fun onSaveAdditionalClick(data: Map<String, Any?>) {
-        onEditSave(data) {
+    override fun onSaveAdditionalNotesClick(notes: String?) {
+        onEditSave(mapOf(User.FIELD_USER_NOTES to notes)) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_notes = it.user_notes
+            }.asOptional())
+            true
+        }
+    }
+
+    override fun onSaveAdditionalFilesClick(data: Map<String, Any?>) {
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
                 attached_recomendation_files = it.attached_recomendation_files
             }.asOptional())
             false
@@ -197,17 +204,6 @@ class UserEditPresenter
         }
     }
 
-    override fun onChangePasswordClick() {
-        viewState.showChangePassword()
-    }
-
-    override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
-            viewState.showPasswordChangeComplete()
-            false
-        }
-    }
-
     override fun onAddFileClick() {
         viewState.showFileSelector()
     }
@@ -245,7 +241,7 @@ class UserEditPresenter
 
     override fun onFileEditCancelClick() {
         isFileEdit = false
-        viewState.setAdditionalData(appData.getUser(), notes)
+        viewState.setAdditionalFilesData(appData.getUser())
     }
 
     override fun onNavigateUpRequest() {
@@ -257,10 +253,6 @@ class UserEditPresenter
 
     override fun onFileClick(file: RecommendationFile) {
         file.url?.let { viewState.downloadFile(it) }
-    }
-
-    override fun onNotesChanged(notes: String?) {
-        this.notes = notes
     }
 
     private fun setInterestsData(user: User) {

@@ -8,22 +8,18 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
-        <com.example.ui.views.CustomTextInputLayout
-            style="@style/Profile.Edit.InputLayout"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEmail"
+            style="@style/Profile.Edit.Input.SingleLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            app:endIconMode="custom"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:enabled="false"
-                android:hint="@string/profile_edit_email_hint"
-                android:inputType="textEmailAddress" />
-        </com.example.ui.views.CustomTextInputLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:hint="@string/profile_edit_email_hint"
+            android:textAllCaps="false"
+            android:textStyle="normal" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scShowEmail"
@@ -104,7 +100,7 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="48dp">
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilBirthday"
@@ -150,6 +146,7 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="0dp">
 
         <LinearLayout
@@ -162,7 +159,7 @@
             android:id="@+id/btnSocialNetworkAdd"
             style="@style/Profile.Edit.Button"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:layout_marginBottom="8dp"
             android:text="@string/profile_sn_add"

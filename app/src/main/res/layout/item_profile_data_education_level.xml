@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Profile.Edit.InputContainer"
-    android:layout_marginStart="@dimen/profile_data_padding">
+    android:layout_marginStart="@dimen/profile_data_margin">
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/Profile.Edit.InputTitle"
