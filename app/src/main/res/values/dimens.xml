@@ -21,7 +21,7 @@
 
     <dimen name="background_default_corners_radius">4dp</dimen>
     <dimen name="background_large_corners_radius">10dp</dimen>
-    <dimen name="background_input_corners_radius">10dp</dimen>
+    <dimen name="background_input_corners_radius">6dp</dimen>
     <dimen name="background_input_padding">12dp</dimen>
 
     <dimen name="event_item_border_width">1dp</dimen>

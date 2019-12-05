@@ -11,11 +11,12 @@
         style="@style/Input.Search"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:background="@drawable/background_input"
         android:gravity="center_vertical"
         android:hint="@string/search_input_hint"
-        android:longClickable="false"
         android:imeOptions="actionSearch"
-        android:inputType="textFilter" />
+        android:inputType="textFilter"
+        android:longClickable="false" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"

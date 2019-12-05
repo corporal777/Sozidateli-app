@@ -11,17 +11,19 @@ import com.example.R
 
 object AuthBackground {
 
-    private var bitmap: Bitmap? = null
+//    private var bitmap: Bitmap? = null
 
     fun get(res: Resources): Drawable {
-        val bitmap = this.bitmap
-        return asDrawable(res, if (bitmap != null && !bitmap.isRecycled) bitmap else create(res))
+//        val bitmap = this.bitmap
+//        return asDrawable(res, if (bitmap != null && !bitmap.isRecycled) bitmap else create(res))
+
+        return asDrawable(res, create(res))
     }
 
-    fun clear() {
-        bitmap?.recycle()
-        bitmap = null
-    }
+//    fun clear() {
+//        bitmap?.recycle()
+//        bitmap = null
+//    }
 
     private fun create(
             res: Resources,
@@ -50,9 +52,10 @@ object AuthBackground {
         return BitmapRegionDecoder.newInstance(res.openRawResource(resId), false).decodeRegion(
                 Rect(left, top, right, bottom),
                 BitmapFactory.Options()
-        ).apply {
-            bitmap = this
-        }
+        )
+//        ).apply {
+//            bitmap = this
+//        }
     }
 
     private fun cropSide(imageSize: Int, displaySize: Int, @FloatRange(from = -1.0, to = 1.0) move: Float = 0f): Pair<Int, Int> {

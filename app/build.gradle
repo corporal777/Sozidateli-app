@@ -20,8 +20,8 @@ android {
         applicationId "ru.houseofapps.fond"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.9.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,8 +52,8 @@ android {
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
         }
         debug {
-//            buildConfigField "String", "API_URL", "\"http://api.sozidateli-houseofapps.ru/\""
-            buildConfigField "String", "API_URL", "\"http://e.binlab.by/\""
+            buildConfigField "String", "API_URL", "\"http://api.sozidateli-houseofapps.ru/\""
+//            buildConfigField "String", "API_URL", "\"http://e.binlab.by/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
     }

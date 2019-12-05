@@ -109,7 +109,7 @@ class MainPresenter
                     }
 
                     initInternetConnectionCheck()
-                    AuthBackground.clear()
+//                    AuthBackground.clear()
                 }, {
                     it.printStackTrace()
                     isAuthRequired = true
@@ -440,7 +440,7 @@ class MainPresenter
         super.onDestroy()
         unsubscribeChat()
         chatHelper.currentChatId = null
-        AuthBackground.clear()
+//        AuthBackground.clear()
     }
 
     override fun onOpenStartDestination() {
