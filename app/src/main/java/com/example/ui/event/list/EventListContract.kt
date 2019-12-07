@@ -23,7 +23,7 @@ interface EventListContract {
         fun showAboutEvent(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventRequest(event: Event)
+        fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>)
@@ -39,12 +39,12 @@ interface EventListContract {
         fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()
 
-        fun onActionRegister(event: Event)
-        fun onActionCancel(event: Event)
-        fun onActionWriteToOrganization(event: Event)
-        fun onActionShowEvent(event: Event)
-        fun onShowEventClick(event: Event)
-        fun onShowFilterClick(event: Event)
+        fun onActionRegister(event: String)
+        fun onActionCancel(event: String)
+        fun onActionWriteToOrganization(emails: List<EmailAffiliation>)
+        fun onActionShowEvent(event: String)
+        fun onShowEventClick(event: String)
+        fun onShowFilterClick(format: Int)
 
         fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
     }

@@ -9,6 +9,7 @@
     <color name="gray">#E4E4E4</color>
     <color name="hint_gray">#939598</color>
     <color name="main_background">#FFFFFF</color>
+    <color name="list_background">#F7F7FA</color>
     <color name="text_color_default">#000000</color>
     <color name="disabled_color">#d1d3d4</color>
     <color name="attention_action">#C73C00</color>
@@ -102,7 +103,6 @@
     <color name="search_input_icon">#000000</color>
     <color name="search_input_text">#000000</color>
 
-    <color name="profile_background">#F7F7FA</color>
     <color name="profile_logout_text">#FF0000</color>
     <color name="profile_name_text">#000000</color>
     <color name="profile_id_text">#939598</color>
@@ -170,4 +170,6 @@
     <color name="custom_tabs_background_selected">#77767E</color>
     <color name="custom_tabs_text">#77767E</color>
     <color name="custom_tabs_text_selected">#FFFFFF</color>
+
+    <color name="about_event_date">#999999</color>
 </resources>

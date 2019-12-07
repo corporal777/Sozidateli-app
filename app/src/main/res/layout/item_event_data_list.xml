@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/event_item_margin_bottom">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventDay"
+            fontPath="fonts/Roboto-Medium.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:paddingTop="2dp"
+            android:textAllCaps="true"
+            android:textColor="@color/event_item_text"
+            android:textSize="25sp"
+            android:transitionName="eventDate"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineDate"
+            app:layout_constraintHorizontal_bias="0.36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix"
+            tools:text="25" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventDate"
+            fontPath="fonts/Roboto-Medium.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="2"
+            android:paddingBottom="2dp"
+            android:textAllCaps="true"
+            android:textColor="@color/event_item_text"
+            android:textSize="16sp"
+            android:transitionName="eventDate"
+            app:layout_constraintEnd_toEndOf="@+id/tvEventDay"
+            app:layout_constraintStart_toStartOf="@+id/tvEventDay"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventDay"
+            tools:ignore="MissingPrefix"
+            tools:text="МАР\n19" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.205" />
+
+        <View
+            android:id="@+id/dateDivider"
+            style="@style/ViewDivider.Vertical"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvEventDate"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineDate"
+            app:layout_constraintHorizontal_bias="0.56"
+            app:layout_constraintStart_toEndOf="@id/tvEventDate"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDay" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventLabel"
+            fontPath="fonts/Roboto-Bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="2"
+            android:textColor="@color/event_item_text"
+            android:textSize="@dimen/event_item_event_name_text_size"
+            android:transitionName="eventLabel"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/tvEventAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineDate"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDay"
+            app:layout_constraintVertical_bias="0.95"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. " />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEventAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:maxLines="1"
+            android:textColor="@color/event_item_address_text"
+            android:textSize="@dimen/event_item_date_text_size"
+            android:transitionName="eventDate"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintEnd_toEndOf="@+id/tvEventLabel"
+            app:layout_constraintStart_toStartOf="@+id/tvEventLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventLabel"
+            tools:ignore="MissingPrefix"
+            tools:text="г. Тула 14:00" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

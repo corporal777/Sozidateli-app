@@ -14,12 +14,14 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.SearchFilter
-import com.example.holders.EventItem
+import com.example.holders.EventDataListItem
+import com.example.holders.EventGroup
+import com.example.holders.EventStatusItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.Group
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import onTextChanged
@@ -37,13 +39,13 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     @ProvidePresenter
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
-    private val onEventClickListener = object : EventItem.OnEventClickListener {
-        override fun onActionRegister(event: Event) = presenter.onActionRegister(event)
-        override fun onActionShowEvent(event: Event) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: Event) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(event: Event) = presenter.onActionWriteToOrganization(event)
-        override fun onShowEventClick(event: Event) = presenter.onShowEventClick(event)
-        override fun onShowFilterClick(event: Event) = presenter.onShowFormatClick(event)
+    private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
+        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
+        override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
+        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
+        override fun onShowEventClick(event: String) = presenter.onShowEventClick(event)
+        override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
     }
 
     override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
@@ -70,8 +72,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
         findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
-    override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
+    override fun showEventRequest(event: String) {
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun selectEvent() {
@@ -80,9 +82,19 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 .build())
     }
 
-    override fun createItem(itemData: Event?): Item {
+    override fun createItem(itemData: Event?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventItem(itemData, onEventClickListener)
+        else EventGroup(
+                itemData.id,
+                itemData.status,
+                itemData.userRegistration,
+                itemData.backgroundColor,
+                itemData.logo,
+                itemData.format,
+                itemData.organization?.emails,
+                onEventClickListener,
+                EventDataListItem(-itemData.id.toLong(), itemData.name, itemData.address, itemData.conferenceStart)
+        )
     }
 
     @SuppressLint("InflateParams")

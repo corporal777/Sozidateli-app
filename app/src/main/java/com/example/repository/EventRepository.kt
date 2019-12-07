@@ -33,4 +33,7 @@ interface EventRepository {
 
     fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>
     fun loadEventRatingData(eventId: String): Single<EventRatingData>
+
+    fun addToFavorite(eventId: String): Completable
+    fun removeFromFavorite(eventId: String): Completable
 }

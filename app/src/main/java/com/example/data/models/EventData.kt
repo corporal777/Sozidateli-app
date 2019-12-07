@@ -14,14 +14,22 @@ data class EventData(
         val description: String?,
         val name: String,
         val logo: String?,
+        @SerializedName("bg_color")
+        val backgroundColor: String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")
         val conferenceFinish: String?,
+        @SerializedName("conference_first_activity_start")
+        val conferenceFirstActivityStart: String?,
+        @SerializedName("conference_last_activity_finish")
+        val conferenceLastActivityFinish: String?,
         @SerializedName("registration_start")
         val registrationStart: String?,
         @SerializedName("registration_finish")
         val registrationFinish: String?,
+        @SerializedName("user_registration")
+        val userRegistration: Event.RegistrationStatus?,
         val status: Event.Status?,
         val address: String?,
         @SerializedName("address_federal")
@@ -42,15 +50,18 @@ data class EventData(
         @SerializedName("rating_headline")
         val ratingHeadline: String?,
         @SerializedName("rating_subtitle")
-        val ratingSubtitle: String?
+        val ratingSubtitle: String?,
+        val format: EventFormat?,
+        @SerializedName("is_favorite")
+        var isFavorite: Boolean?
 )
 
 fun EventData.createMapInfo(): MapInfo? {
-        val lat = placeLat
-        val lon = placeLon
-        val title = placeHowToGetTitle
-        val description = placeHowToGet
+    val lat = placeLat
+    val lon = placeLon
+    val title = placeHowToGetTitle
+    val description = placeHowToGet
 
-        return if (lat == null || lon == null) null
-        else MapInfo(lat, lon, title, description)
+    return if (lat == null || lon == null) null
+    else MapInfo(lat, lon, title, description)
 }

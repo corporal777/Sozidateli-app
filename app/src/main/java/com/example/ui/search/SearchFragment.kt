@@ -19,8 +19,8 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import com.xwray.groupie.Group
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
 import initDropDownView
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
@@ -201,7 +201,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         return id?.let { interests.find { it.id == id } }
     }
 
-    protected abstract fun createItem(itemData: I?): Item
+    protected abstract fun createItem(itemData: I?): Group
     protected abstract fun createFilterView(filter: F): View
     protected abstract fun clearFilterView(filterView: View)
 

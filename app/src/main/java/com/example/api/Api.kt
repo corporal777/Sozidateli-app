@@ -265,6 +265,12 @@ interface Api {
     @GET("/v1/events/{event}/pages/{page}")
     fun getEventPage(@Path("event") event: String, @Path("page") page: String): Single<ApiResponse<Page>>
 
+    @POST("/v1/events/{event}/subscribe")
+    fun subscribeToEvent(@Path("event") event: String): Completable
+
+    @POST("/v1/events/{event}/unsubscribe")
+    fun unsubscribeFromEvent(@Path("event") event: String): Completable
+
     @POST("/v1/common/interests")
     fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
 

@@ -167,4 +167,12 @@ class EventRepositoryImp
             )
         })
     }
+
+    override fun addToFavorite(eventId: String): Completable {
+        return api.subscribeToEvent(eventId)
+    }
+
+    override fun removeFromFavorite(eventId: String): Completable {
+        return api.unsubscribeFromEvent(eventId)
+    }
 }

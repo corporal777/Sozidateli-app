@@ -14,7 +14,7 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.UserSubscribeButton
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.Group
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onTextChanged
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
     @ProvidePresenter
     fun providePresenter(): SearchUserPresenter = presenterProvider.get()
 
-    override fun createItem(itemData: User?): Item {
+    override fun createItem(itemData: User?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
         else UserItem(
                 itemData.user_id,

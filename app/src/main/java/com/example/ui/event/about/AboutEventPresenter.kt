@@ -3,7 +3,6 @@ package com.example.ui.event.about
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.*
-import com.example.extensions.formatToInterval
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Maybe
@@ -44,10 +43,8 @@ class AboutEventPresenter
         viewState.apply {
             setEventName(event.name)
             setEventData(
-                    event.logo,
-                    event.organization?.name,
-                    event.conferenceStart?.formatToInterval(event.conferenceFinish),
-                    event.description,
+                    event,
+                    eventInfo.userRegistration?.status,
                     eventInfo.pages,
                     eventInfo.partners,
                     hasContacts()
@@ -111,5 +108,23 @@ class AboutEventPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(onSuccess = ::setEventInfoData)
+    }
+
+    override fun onShowFilterClick(format: Int) {
+
+    }
+
+    override fun onChangeFavoriteClick() {
+        val request = if (event.event.isFavorite == true) eventRepository.removeFromFavorite(eventId)
+        else eventRepository.addToFavorite(eventId)
+
+        request.performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    val event = this.event.event
+                    val isSubscribed = !(event.isFavorite ?: false)
+                    event.isFavorite = isSubscribed
+                    viewState.changeEventSubscription(isSubscribed)
+                }
     }
 }

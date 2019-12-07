@@ -64,10 +64,10 @@ abstract class EventListPresenter<V : EventListContract.View>(
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
     }
 
-    override fun onActionRegister(event: Event) = viewState.showEventRequest(event)
+    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
 
-    override fun onActionCancel(event: Event) {
-        compositeDisposable += eventRepository.eventRegisterCancel(event.id)
+    override fun onActionCancel(event: String) {
+        compositeDisposable += eventRepository.eventRegisterCancel(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
@@ -75,8 +75,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 }
     }
 
-    override fun onActionWriteToOrganization(event: Event) {
-        val emails = event.organization?.emails
+    override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
@@ -84,19 +83,19 @@ abstract class EventListPresenter<V : EventListContract.View>(
         viewState.showWriteToOrganization(email)
     }
 
-    override fun onActionShowEvent(event: Event) {
-        compositeDisposable += eventRepository.setDefaultEvent(event.id)
+    override fun onActionShowEvent(event: String) {
+        compositeDisposable += eventRepository.setDefaultEvent(event)
                 .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(event.id))
+                .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }
     }
 
-    override fun onShowEventClick(event: Event) = viewState.showAboutEvent(event.id)
+    override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
-    override fun onShowFilterClick(event: Event) = viewState.showAboutEvent(event.id)
+    override fun onShowFilterClick(format: Int) {}
 
     override fun onScrollChange(position: Int, offset: Int) {
         scrollPosition = position

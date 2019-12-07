@@ -12,7 +12,7 @@ import com.example.data.models.SearchFilter
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.search.SearchFragment
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.Group
 import kotlinx.android.synthetic.main.layout_filter_organization.view.*
 import onTextChanged
 import javax.inject.Inject
@@ -33,7 +33,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id))
     }
 
-    override fun createItem(itemData: Organization?): Item {
+    override fun createItem(itemData: Organization?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else OrganizationItem(
                 itemData,

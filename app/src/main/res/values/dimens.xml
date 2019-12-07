@@ -57,7 +57,7 @@
     <dimen name="organization_logo_corners_radius">4dp</dimen>
 
     <dimen name="building_scheme_bottom_gradient_height">50dp</dimen>
-    <dimen name="about_event_bottom_gradient_height">83dp</dimen>
+    <dimen name="about_event_bottom_gradient_height">100dp</dimen>
 
     <dimen name="action_button_height">42dp</dimen>
     <dimen name="action_button_margin_vertical">20dp</dimen>

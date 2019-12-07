@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
-import com.example.holders.EventItem
-import com.example.holders.NoDataItem
-import com.example.holders.PlaceholderItem
+import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -43,13 +41,13 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         })
     }
 
-    private val onEventClickListener = object : EventItem.OnEventClickListener {
-        override fun onActionRegister(event: Event) = presenter.onActionRegister(event)
-        override fun onActionShowEvent(event: Event) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: Event) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(event: Event) = presenter.onActionWriteToOrganization(event)
-        override fun onShowEventClick(event: Event) = presenter.onShowEventClick(event)
-        override fun onShowFilterClick(event: Event) = presenter.onShowFilterClick(event)
+    private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
+        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
+        override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
+        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
+        override fun onShowEventClick(event: String) = presenter.onShowEventClick(event)
+        override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
 
     @CallSuper
@@ -68,7 +66,17 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     override fun setData(events: List<Event?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItem(it, onEventClickListener)
+            else EventGroup(
+                    it.id,
+                    it.status,
+                    it.userRegistration,
+                    it.backgroundColor,
+                    it.logo,
+                    it.format,
+                    it.organization?.emails,
+                    onEventClickListener,
+                    EventDataListItem(-it.id.toLong(), it.name, it.address, it.conferenceStart)
+            )
         })
         swipeToRefresh.isRefreshing = false
     }
@@ -106,8 +114,8 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
     }
 
-    override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
+    override fun showEventRequest(event: String) {
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
     }
 
     override fun selectEvent() {

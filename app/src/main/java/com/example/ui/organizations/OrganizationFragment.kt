@@ -17,10 +17,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.Organization
 import com.example.data.models.OrganizationMember
-import com.example.holders.EventItem
+import com.example.holders.EventDataListItem
+import com.example.holders.EventGroup
+import com.example.holders.EventStatusItem
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -59,30 +62,13 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         organizationId = OrganizationFragmentArgs.fromBundle(arguments!!).organizationId
     }
 
-    private val onEventClickListener = object : EventItem.OnEventClickListener {
-        override fun onActionRegister(event: Event) {
-
-        }
-
-        override fun onActionShowEvent(event: Event) {
-
-        }
-
-        override fun onActionCancel(event: Event) {
-
-        }
-
-        override fun onActionWriteToOrganization(event: Event) {
-
-        }
-
-        override fun onShowEventClick(event: Event) {
-
-        }
-
-        override fun onShowFilterClick(event: Event) {
-
-        }
+    private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
+        override fun onActionRegister(event: String) {}
+        override fun onActionShowEvent(event: String) {}
+        override fun onActionCancel(event: String) {}
+        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {}
+        override fun onShowEventClick(event: String) {}
+        override fun onShowFilterClick(format: Int) {}
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -239,7 +225,17 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         vpEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 addAll(events.map {
-                    EventItem(it, onEventClickListener).apply { isInHorizontalParent = true }
+                    EventGroup(
+                            it.id,
+                            it.status,
+                            it.userRegistration,
+                            it.backgroundColor,
+                            it.logo,
+                            it.format,
+                            it.organization?.emails,
+                            onEventClickListener,
+                            EventDataListItem(-it.id.toLong(), it.name, it.address, it.conferenceStart)
+                    )
                 })
             }
 

@@ -3,11 +3,8 @@ package com.example.ui.event.about
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,23 +12,23 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
-import com.example.extensions.dp
-import com.example.holders.EventInfoHeaderItem
-import com.example.holders.EventPageItem
-import com.example.holders.EventPartnerItem
+import com.example.extensions.*
+import com.example.holders.*
+import com.example.holders.EventGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
-import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
+import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_about_event.*
-import kotlinx.android.synthetic.main.fragment_about_event.swipeToRefresh
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
-import kotlinx.android.synthetic.main.layout_list.*
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -57,7 +54,33 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         spanCount = 12
     }
 
-    private var eventHeaderItem: EventInfoHeaderItem? = null
+    private val eventClickListener = object : EventStatusItem.OnEventClickListener {
+        override fun onActionRegister(event: String) {
+            // do nothing
+        }
+
+        override fun onActionShowEvent(event: String) {
+            // do nothing
+        }
+
+        override fun onActionCancel(event: String) {
+            // do nothing
+        }
+
+        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {
+            // do nothing
+        }
+
+        override fun onShowEventClick(event: String) {
+            // do nothing
+        }
+
+        override fun onShowFilterClick(format: Int) {
+
+        }
+    }
+
+    private var aboutItem: EventDataAboutItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,31 +125,62 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setEventData(
-            logo: String?,
-            organizationName: String?,
-            dates: String?,
-            description: String?,
-            pages: List<EventPage>,
-            partners: List<EventParther>,
-            showContacts: Boolean
-    ) {
-        groupAdapter.update(listOf(
-                EventInfoHeaderItem(-100L, logo, organizationName, dates, description) { iv, url ->
-                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            requireActivity(),
-                            Pair(iv, iv.transitionName)
-                    )
+    override fun setEventData(eventData: EventData, userRegistration: Event.RegistrationStatus?, pages: List<EventPage>, partners: List<EventParther>, showContacts: Boolean) {
+        val start = eventData.conferenceStart
+        val finish = eventData.conferenceFinish
 
-                    findNavController().navigate(
-                            R.id.image_view_activity,
-                            ImageViewActivityArgs.Builder(url, null, null, iv.transitionName).build().toBundle(),
-                            null,
-                            ActivityNavigatorExtras(options)
-                    )
-                }.apply {
-                    eventHeaderItem = this
-                },
+        val startDate = start?.parseToDate(defaultServerDateFormatter)
+        val endDate = finish?.parseToDate(defaultServerDateFormatter)
+        val startCalendar = startDate?.calendar()
+        val endCalendar = endDate?.calendar()
+
+        val startFormatter = if (startCalendar != null && endCalendar != null && startCalendar.isSameYear(endCalendar)) {
+            SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_FULL_MONTH, Locale.getDefault())
+        } else if (startCalendar != null) {
+            SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+        } else {
+            null
+        }
+
+        val endFormatter = if (endCalendar != null) {
+            SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+        } else {
+            null
+        }
+
+        val eventDates = StringBuilder().apply {
+            if (startFormatter != null) {
+                append(startFormatter.format(startDate))
+                if (endFormatter != null) append(" - ")
+            }
+            if (endFormatter != null) append(endFormatter.format(endDate))
+        }.toString()
+
+        val aboutItem = EventDataAboutItem(
+                -eventData.id.toLong(),
+                eventData.organization?.name,
+                eventData.name,
+                eventData.conferenceFirstActivityStart,
+                eventDates,
+                eventData.isFavorite ?: false
+        ) {
+            presenter.onChangeFavoriteClick()
+        }.apply {
+            this@AboutEventFragment.aboutItem = this
+        }
+
+        groupAdapter.update(listOf(
+                EventGroup(
+                        eventData.id,
+                        if (eventData.status == Event.Status.CONFERENCE_ENDS) Event.Status.CONFERENCE_ENDS else null,
+                        userRegistration,
+                        eventData.backgroundColor,
+                        eventData.logo,
+                        eventData.format,
+                        null,
+                        eventClickListener,
+                        aboutItem
+                ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() }.apply {
@@ -145,11 +199,13 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         toolbarContentActionBar?.title = name
     }
 
+    override fun changeEventSubscription(isSubscribed: Boolean) {
+        aboutItem?.notifyChanged(isSubscribed)
+    }
+
     override fun showRegisterButton(show: Boolean) {
-        btnRegister.isVisible = show
-        recyclerView.updatePadding(bottom = if (show) with(resources) {
-            getDimensionPixelSize(R.dimen.action_button_height) + getDimensionPixelSize(R.dimen.action_button_margin_vertical) * 2
-        } else 20.dp)
+        flRegister.isVisible = show
+        recyclerView.updatePadding(bottom = if (show) flRegister.height else 20.dp)
     }
 
     override fun showPage(eventId: String, pageId: String) {

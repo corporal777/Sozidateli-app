@@ -3,35 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_highlight"
-    android:orientation="vertical"
-    android:theme="@style/ViewBackgroundWhite">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/background_highlight"
         android:drawableEnd="@drawable/ic_arrow_right"
         android:drawablePadding="8dp"
-        android:paddingStart="@dimen/profile_padding_start"
+        android:paddingStart="@dimen/margin_horizontal_default"
         android:paddingTop="16dp"
-        android:paddingEnd="@dimen/profile_padding_start"
+        android:paddingEnd="24dp"
         android:paddingBottom="16dp"
         android:textSize="16sp"
+        android:theme="@style/ViewBackgroundWhite"
         tools:text="@tools:sample/lorem" />
 
-    <View style="@style/ViewDivider.Horizontal" />
-
-    <FrameLayout
-        android:id="@+id/flAdditionalBottomPadding"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@color/main_background"
-        android:visibility="gone">
-
-        <View
-            style="@style/ViewDivider.Horizontal"
-            android:layout_gravity="bottom" />
-    </FrameLayout>
-
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal" />
 </LinearLayout>

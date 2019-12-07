@@ -16,6 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.CompletableSubject
+import timber.log.Timber
 import java.util.*
 
 class UserEventData(

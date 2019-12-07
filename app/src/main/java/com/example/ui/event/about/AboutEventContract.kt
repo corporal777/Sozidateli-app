@@ -10,10 +10,8 @@ interface AboutEventContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventData(
-                logo: String?,
-                organizationName: String?,
-                dates: String?,
-                description: String?,
+                eventData: EventData,
+                userRegistration: Event.RegistrationStatus?,
                 pages: List<EventPage>,
                 partners: List<EventParther>,
                 showContacts: Boolean
@@ -45,6 +43,9 @@ interface AboutEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showLogoImage(url: String)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun changeEventSubscription(isSubscribed: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -55,5 +56,7 @@ interface AboutEventContract {
         fun onPartnerClick(partner: EventParther)
         fun onLogoClick(url: String)
         fun onRefreshRequest()
+        fun onShowFilterClick(format: Int)
+        fun onChangeFavoriteClick()
     }
 }
