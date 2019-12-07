@@ -1,8 +1,12 @@
 package com.example.ui.event.about
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
@@ -81,6 +85,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     private var aboutItem: EventDataAboutItem? = null
+    private var writeMessageDialog: AlertDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -183,7 +188,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
-                    add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() }.apply {
+                    add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
+                    add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
                         hasBottomPadding = pages.isNotEmpty()
                     })
                     addAll(pages.map { EventPageItem(it.id, it.menu) { presenter.onPageClick(it) } })
@@ -205,7 +211,32 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun showRegisterButton(show: Boolean) {
         flRegister.isVisible = show
-        recyclerView.updatePadding(bottom = if (show) flRegister.height else 20.dp)
+        recyclerView.updatePadding(bottom = if (show) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
+    }
+
+    @SuppressLint("InflateParams")
+    override fun showWriteToOrganizationForm() {
+        val view = layoutInflater.inflate(R.layout.dialog_send_message_to_organization, null)
+        writeMessageDialog = AlertDialog.Builder(requireContext())
+                .setTitle(R.string.about_event_write_to_organization_title)
+                .setMessage(R.string.about_event_write_to_organization_message)
+                .setView(view)
+                .setPositiveButton(R.string.send, null)
+                .setNegativeButton(R.string.cancel, null)
+                .setOnDismissListener { writeMessageDialog = null }
+                .show()
+                .apply {
+                    getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                        val message = view.findViewById<EditText>(R.id.etMessage).text?.toString()
+                        if (!message.isNullOrEmpty()) presenter.onWriteToOrganizationMessage(message)
+                        else dismiss()
+                    }
+                }
+    }
+
+    override fun hideWriteToOrganizationForm() {
+        writeMessageDialog?.dismiss()
+        writeMessageDialog = null
     }
 
     override fun showPage(eventId: String, pageId: String) {

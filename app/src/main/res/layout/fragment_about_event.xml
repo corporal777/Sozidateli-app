@@ -23,7 +23,7 @@
     <FrameLayout
         android:id="@+id/flRegister"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/about_event_bottom_gradient_height"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/about_event_bottom_gradient_height"
+            android:layout_height="match_parent"
             android:background="@drawable/bottom_gradient_inapp" />
 
         <include

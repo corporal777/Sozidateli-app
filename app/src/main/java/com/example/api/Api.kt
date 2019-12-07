@@ -271,6 +271,10 @@ interface Api {
     @POST("/v1/events/{event}/unsubscribe")
     fun unsubscribeFromEvent(@Path("event") event: String): Completable
 
+    @FormUrlEncoded
+    @POST("/v1/events/{event}/messages/add")
+    fun sendMessageToOrganization(@Path("event") event: String, @Field("message") message: String): Completable
+
     @POST("/v1/common/interests")
     fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
 

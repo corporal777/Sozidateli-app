@@ -1,10 +1,12 @@
 package com.example.ui.event.about
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
+import com.example.util.OneExecutionByTagStateStrategy
 
 interface AboutEventContract {
     interface View : BaseContract.View {
@@ -44,8 +46,14 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showLogoImage(url: String)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
+        fun showWriteToOrganizationForm()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
+        fun hideWriteToOrganizationForm()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -58,5 +66,7 @@ interface AboutEventContract {
         fun onRefreshRequest()
         fun onShowFilterClick(format: Int)
         fun onChangeFavoriteClick()
+        fun onWriteToOrganizationClick()
+        fun onWriteToOrganizationMessage(message: String)
     }
 }

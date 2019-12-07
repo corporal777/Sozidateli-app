@@ -36,4 +36,6 @@ interface EventRepository {
 
     fun addToFavorite(eventId: String): Completable
     fun removeFromFavorite(eventId: String): Completable
+
+    fun sendMessageToOrganization(eventId: String,message: String): Completable
 }

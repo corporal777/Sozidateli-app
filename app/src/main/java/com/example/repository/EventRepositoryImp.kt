@@ -175,4 +175,8 @@ class EventRepositoryImp
     override fun removeFromFavorite(eventId: String): Completable {
         return api.unsubscribeFromEvent(eventId)
     }
+
+    override fun sendMessageToOrganization(eventId: String, message: String): Completable {
+        return api.sendMessageToOrganization(eventId, message)
+    }
 }

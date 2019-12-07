@@ -118,13 +118,26 @@ class AboutEventPresenter
         val request = if (event.event.isFavorite == true) eventRepository.removeFromFavorite(eventId)
         else eventRepository.addToFavorite(eventId)
 
-        request.performOnBackgroundOutOnMain()
+        compositeDisposable += request.performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     val event = this.event.event
                     val isSubscribed = !(event.isFavorite ?: false)
                     event.isFavorite = isSubscribed
                     viewState.changeEventSubscription(isSubscribed)
+                }
+    }
+
+    override fun onWriteToOrganizationClick() {
+        viewState.showWriteToOrganizationForm()
+    }
+
+    override fun onWriteToOrganizationMessage(message: String) {
+        compositeDisposable += eventRepository.sendMessageToOrganization(eventId, message)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.hideWriteToOrganizationForm()
                 }
     }
 }

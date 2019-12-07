@@ -109,7 +109,10 @@
 
     <string name="about_event_contacts">Контакты мероприятия</string>
     <string name="about_event_speakers">Спикеры мероприятия</string>
-    <string name="about_event_write_to_organization">Спикеры мероприятия</string>
+    <string name="about_event_write_to_organization">Написать организатору</string>
+    <string name="about_event_write_to_organization_title">Сообщение организатору</string>
+    <string name="about_event_write_to_organization_message">Ответ будет направлен вам на email, указанный в профиле.</string>
+    <string name="about_event_write_to_organization_hint">Пожалуйста, напишите сообщение организатору мероприятия.</string>
     <string name="about_event_time">Время:</string>
     <string name="about_event_date">Дата:</string>
 
