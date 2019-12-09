@@ -1,17 +1,14 @@
 package com.example.ui.chatList
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnNextLayout
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.TabsFragmentAdapter
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -38,9 +35,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
 
     private val invitesBadge by lazy {
-        BadgeDrawable(
-                badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_low)
-        )
+        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high))
     }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
@@ -49,56 +44,55 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
                 0 -> presenter.onChatsSelected()
                 1 -> presenter.onInvitesSelected()
             }
+
+            selectTab(position)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)!!
-
-        val fragments by lazy {
-            listOf<Pair<Fragment, String>>(
-                    ChatListFragment() to getString(R.string.chat_list_contacts_and_chats),
-                    InviteListFragment() to getString(R.string.chat_list_chat_requests)
-            )
-        }
-
-        view.findViewById<ViewPager>(R.id.viewPager).apply {
-            adapter = TabsFragmentAdapter(fragments, childFragmentManager)
-            offscreenPageLimit = fragments.size
-        }
-
-        return view
+    private val fragments by lazy {
+        listOf(
+                ChatListFragment(),
+                InviteListFragment()
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager.apply {
+            adapter = object : FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                override fun getItem(position: Int) = fragments[position]
+                override fun getCount() = fragments.size
+            }
             addOnPageChangeListener(pageChangeListener)
-            tabLayout.setupWithViewPager(this)
         }
         setupInvitesBadge()
+
+        btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
+        btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
     }
 
     private fun setupInvitesBadge() {
-        ((tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(1) as? ViewGroup)?.doOnNextLayout {
-            (it as ViewGroup).apply {
-                getChildAt(1).addBadge(invitesBadge, this) { badgeWidth, badgeHeight, anchorRect ->
-                    val badgeCenterX = anchorRect.right + 8.dp
-                    val badgeCenterY = height / 2
+        btnTabRequests.doOnNextLayout {
+            it.addBadge(invitesBadge) { badgeWidth, badgeHeight, anchorRect ->
+                val badgeCenterX = anchorRect.right - 32.dp
+                val badgeCenterY = anchorRect.height() / 2
 
-                    anchorRect.set(
-                            badgeCenterX,
-                            badgeCenterY - badgeHeight / 2,
-                            badgeCenterX + badgeWidth,
-                            badgeCenterY + badgeHeight / 2
-                    )
-                }
+                anchorRect.set(
+                        badgeCenterX,
+                        badgeCenterY - badgeHeight / 2,
+                        badgeCenterX + badgeWidth,
+                        badgeCenterY + badgeHeight / 2
+                )
             }
         }
     }
 
     override fun selectTab(position: Int) {
-        viewPager.setCurrentItem(position, false)
+        clTabs.apply {
+            for (p in 0 until childCount) {
+                getChildAt(p).isSelected = p == position
+            }
+        }
     }
 
     override fun setInvitesCount(count: Int) {

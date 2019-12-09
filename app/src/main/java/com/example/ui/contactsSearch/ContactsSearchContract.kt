@@ -13,7 +13,7 @@ interface ContactsSearchContract {
         fun setItems(favorites: List<User>, chats: List<User>, another: List<User>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list data")
-        fun clearItems()
+        fun setPlaceholders(size: Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun showNeedMoreSymbols(symbolsLimit: Int)

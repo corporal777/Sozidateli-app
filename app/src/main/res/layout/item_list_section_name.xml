@@ -1,32 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:paddingTop="22dp">
+    android:background="@color/list_background">
 
     <TextView
         android:id="@+id/tvName"
+        fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:layout_marginBottom="16dp"
-        android:textAllCaps="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
+        android:background="@android:color/white"
+        android:paddingStart="@dimen/margin_horizontal_default"
+        android:paddingTop="20dp"
+        android:paddingEnd="@dimen/margin_horizontal_default"
+        android:paddingBottom="20dp"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingPrefix"
         tools:text="Example 1" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

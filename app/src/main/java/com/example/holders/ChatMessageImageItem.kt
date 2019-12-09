@@ -2,6 +2,7 @@ package com.example.holders
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import com.example.R
 import com.example.data.models.ChatMessage
@@ -11,6 +12,9 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_image.*
+import kotlinx.android.synthetic.main.item_chat_message_image.guidelineEnd
+import kotlinx.android.synthetic.main.item_chat_message_image.guidelineStart
+import kotlinx.android.synthetic.main.item_chat_message_image.tvMessageDate
 
 class ChatMessageImageItem(
         message: ChatMessage.Personal,
@@ -30,10 +34,8 @@ class ChatMessageImageItem(
                         .resize(242.dp, 242.dp)
                         .error(R.drawable.ic_broken_image)
                         .transform(RoundedCornersTransformation(
-                                (cornersRadius / 1.5).toInt(),
-                                0,
-                                if (message.isMyMessage) RoundedCornersTransformation.CornerType.OTHER_BOTTOM_RIGHT else
-                                    RoundedCornersTransformation.CornerType.OTHER_BOTTOM_LEFT
+                                (cornersRadius / 1.3).toInt(),
+                                0
                         ))
                         .into(this, object : Callback {
                             override fun onSuccess() {
@@ -53,5 +55,6 @@ class ChatMessageImageItem(
     override fun getGuidLineStart(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineStart
     override fun getGuidLineEnd(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineEnd
     override fun getMessageContainer(viewHolder:GroupieViewHolder): View = viewHolder.imageContainer
+    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessageDate
     override fun getLayout() = R.layout.item_chat_message_image
 }

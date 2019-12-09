@@ -79,7 +79,7 @@ class ContactsSearchPresenter
                     viewState.apply {
                         showLoadingDialog()
                         hideKeyboard()
-                        clearItems()
+                        setPlaceholders(20)
                     }
                     searchText = it
                     pagination.invalidate()

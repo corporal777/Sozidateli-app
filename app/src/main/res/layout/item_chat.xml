@@ -11,8 +11,8 @@
         android:layout_width="@dimen/user_item_avatar_size"
         android:layout_height="@dimen/user_item_avatar_size"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,11 +23,11 @@
         android:id="@+id/tvName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@android:color/black"
+        android:textColor="@color/chat_list_user_name"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/tvLastMessage"
         app:layout_constraintEnd_toStartOf="@+id/tvDate"
@@ -40,15 +40,15 @@
         android:id="@+id/tvLastMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:ellipsize="end"
-        android:lines="2"
-        android:maxLines="2"
+        android:maxLines="1"
+        android:textColor="@color/chat_list_last_message"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintStart_toStartOf="@+id/tvName"
         app:layout_constraintTop_toBottomOf="@id/tvName"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 
@@ -57,15 +57,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:textColor="@color/chat_list_date"
         android:textSize="14sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvName"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="15.08.304" />
+        tools:text="6 декабря" />
 
     <View
         android:id="@+id/divider"
         style="@style/ViewDivider.Horizontal"
+        android:layout_width="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/tvName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

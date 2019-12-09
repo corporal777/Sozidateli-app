@@ -1,22 +1,27 @@
 package com.example.holders
 
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.example.extensions.dp
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_list_section_name.*
 
 class ListSectionNameItem(
         id: Long,
         private val name: String? = null
 ) : Item(id) {
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+
+    var withTopMargin = false
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.tvName.apply {
-            if (name.isNullOrEmpty()) visibility = GONE
-            else {
-                text = name
-                visibility = VISIBLE
+            text = name
+            isVisible = !name.isNullOrEmpty()
+            updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                this.topMargin = if (withTopMargin) 20.dp else 0
             }
         }
     }

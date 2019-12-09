@@ -66,7 +66,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun setUser(user: User) {
         val avatar = user.user_avatar
-        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder).into(ivAvatar)
+        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
 
         val statusIcon = when (user.user_status) {
             User.Status.LOW_PROTECTION -> R.drawable.ic_user_status_low

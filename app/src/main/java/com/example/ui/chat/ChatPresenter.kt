@@ -60,6 +60,8 @@ class ChatPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
+    private var newMessagesMessage: ChatMessage.NewMessages? = null
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
@@ -209,7 +211,11 @@ class ChatPresenter
     }
 
     private fun List<ChatMessage>.addUnreadMessagesItem(index: Int): List<ChatMessage> {
-        return if (index != LAST_UNREAD_INDEX_INVALID) toMutableList().apply { add(index, CHAT_MESSAGE_UNREAD_ITEM) }
+        return if (index != LAST_UNREAD_INDEX_INVALID) toMutableList().apply {
+            newMessagesMessage = ChatMessage.NewMessages(index).apply {
+                add(index, this)
+            }
+        }
         else this
     }
 
@@ -256,7 +262,9 @@ class ChatPresenter
     private fun sendMessage(message: String, type: Message.Type) {
         if (isCanShowUnreadMessagesItem) {
             isCanShowUnreadMessagesItem = false
-            viewState.removeChatMessage(CHAT_MESSAGE_UNREAD_ITEM)
+            newMessagesMessage?.let {
+                viewState.removeChatMessage(it)
+            }
         }
         viewState.apply { clearMessageInput() }
 
@@ -383,7 +391,5 @@ class ChatPresenter
     companion object {
         private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 50
         private const val LAST_UNREAD_INDEX_INVALID = -1
-
-        private val CHAT_MESSAGE_UNREAD_ITEM = ChatMessage.NewMessages
     }
 }

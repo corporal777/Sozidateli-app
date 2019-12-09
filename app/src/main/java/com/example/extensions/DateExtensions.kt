@@ -21,6 +21,9 @@ val dateFormatterShortMothNoYear: DateFormat
 val dateFormatterFullMothNoYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_NO_YEAR, Locale.getDefault())
 
+val dateFormatterFullMothFullYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+
 val defaultServerDateFormatter: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
@@ -135,8 +138,11 @@ fun Long.calendar(): Calendar = Calendar.getInstance().apply { timeInMillis = th
 fun Date.calendar(): Calendar = Calendar.getInstance().apply { time = this@calendar }
 
 fun Calendar.isSameDay(other: Calendar): Boolean {
-    return this.get(Calendar.DAY_OF_YEAR) == other.get(Calendar.DAY_OF_YEAR) &&
-            this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
+    return isSameYear(other) && this.get(Calendar.DAY_OF_YEAR) == other.get(Calendar.DAY_OF_YEAR)
+}
+
+fun Calendar.isYesterday(from: Calendar): Boolean {
+    return isSameYear(from) && this.get(Calendar.DAY_OF_YEAR) == from.get(Calendar.DAY_OF_YEAR) - 1
 }
 
 fun Calendar.isSameYear(other: Calendar): Boolean {

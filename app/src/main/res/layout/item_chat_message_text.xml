@@ -12,11 +12,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         android:padding="10dp"
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toEndOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,6 +22,24 @@
         tools:layout_constraintHorizontal_bias="1.0"
         tools:text="Всем привет"
         tools:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvMessageDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/chat_message_date"
+        android:textSize="13sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvChatMessage"
+        app:layout_constraintStart_toStartOf="@+id/tvChatMessage"
+        app:layout_constraintTop_toBottomOf="@+id/tvChatMessage"
+        tools:layout_constraintHorizontal_bias="1.0"
+        tools:text="14:20" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStart"

@@ -250,7 +250,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
                     item.apply { onBindListener = { presenter.onChatMessageOnScreen(message.message) } }
                 }
-                ChatMessage.NewMessages -> ChatUnreadLabelItem()
+                is ChatMessage.NewMessages -> ChatUnreadLabelItem(it.count)
                 is ChatMessage.Date -> ChatDateItem(it.date)
                 is ChatMessage.Accept -> ChatAcceptItem { it.message.let { message -> presenter.onChatMessageOnScreen(message) } }
             }

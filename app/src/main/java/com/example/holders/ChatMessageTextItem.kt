@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.view.View
+import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
@@ -12,7 +13,7 @@ class ChatMessageTextItem(
         message: ChatMessage.Personal
 ) : ChatMessageItem(message) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
         viewHolder.apply {
             tvChatMessage.apply {
@@ -23,8 +24,10 @@ class ChatMessageTextItem(
         }
     }
 
-    override fun getGuidLineStart(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineStart
-    override fun getGuidLineEnd(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineEnd
-    override fun getMessageContainer(viewHolder:GroupieViewHolder): View = viewHolder.tvChatMessage
+    override fun getGuidLineStart(viewHolder: GroupieViewHolder): Guideline = viewHolder.guidelineStart
+    override fun getGuidLineEnd(viewHolder: GroupieViewHolder): Guideline = viewHolder.guidelineEnd
+    override fun getMessageContainer(viewHolder: GroupieViewHolder): View = viewHolder.tvChatMessage
+    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessageDate
+
     override fun getLayout() = R.layout.item_chat_message_text
 }

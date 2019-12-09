@@ -145,6 +145,8 @@
     <string name="site">Сайт</string>
     <string name="social_networks">Соцсети</string>
     <string name="send">Отправить</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
 
     <string-array name="organization_types">
         <item>Некоммерческая</item>
@@ -264,8 +266,8 @@
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
 
-    <string name="chat_list_empty">У вас нет чатов</string>
-    <string name="chat_list_create_chat">Создать чат</string>
+    <string name="chat_list_empty">Список чатов пуст.</string>
+    <string name="chat_list_create_chat">Создать новый чат</string>
     <string name="chat_list_contacts_and_chats">Контакты и чаты</string>
     <string name="chat_list_chat_requests">Запросы на чат</string>
 
@@ -274,13 +276,22 @@
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="chat_need_confirm">Вы сможете продолжить диалог после того, как подтвердите чат</string>
     <string name="chat_wait_accept">Вы сможете продолжить диалог после того, как пользователь одобрит чат с вами</string>
-    <string name="chat_you_banned">Пользователь ограничил сообщения</string>
+    <string name="chat_you_banned">Пользователь ограничил возможность отправлять сообщения</string>
     <string name="chat_banned_by_you">Вы ограничили отправку сообщений</string>
     <string name="chat_confirm">Одобрить</string>
     <string name="chat_new_message_title_text">Новое сообщение от</string>
     <string name="chat_photo_message_text">Изображение</string>
     <string name="chat_accepted">Пользователь подтвердил чат</string>
     <string name="chat_accept_by_me">Вы подтвердили чат</string>
+    <string name="chat_message_hint">Сообщение…</string>
+    <plurals name="chat_new_messages_count">
+        <item quantity="zero">%d непрочитанных</item>
+        <item quantity="one">%d непрочитанное</item>
+        <item quantity="two">%d непрочитанных</item>
+        <item quantity="few">%d непрочитанных</item>
+        <item quantity="many">%d непрочитанных</item>
+        <item quantity="other">%d непрочитанных</item>
+    </plurals>
 
     <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
     <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных  и вы не сможете ему больше отправлять сообщения.</string>
@@ -491,7 +502,6 @@
     <string name="no_internet_message">Для доступа, пожалуйста, проверьте ваше интернет-соединение</string>
     <string name="no_internet_action_retry">Попробовать заново</string>
     <string name="no_internet_action_to_calendar">Перейти в календарь</string>
-    <string name="unread_message">Непрочитанные сообщения</string>
 
     <string name="banned_empty_message">Никого нет</string>
 

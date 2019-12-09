@@ -40,7 +40,11 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     private val favoritesSection by lazy {
-        TitledSection(-200L, getString(R.string.search_contact_section_favorites))
+        Section().apply {
+            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)).apply {
+                withTopMargin = true
+            })
+        }
     }
 
     private val adapter by lazy {
@@ -76,17 +80,17 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
             chatSection.apply {
-                if (groupCount == 0 || getGroup(0) !is ListSectionNameItem) {
-                    setHeader(ListSectionNameItem(-300L))
-                }
-                update(chats.map { chat ->
+                setHeader(ListSectionNameItem(-300L, getString(R.string.chat_list)))
+                val chatsCount = chats.size
+                update(chats.mapIndexed { index, chat ->
                     if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
                     else UserChatItem(
                             chat,
                             { presenter.onChatClick(it) },
                             { presenter.onChatOnScreen(chat.id) },
                             { presenter.onChatGoneFromScreen(chat.id) },
-                            BadgeDrawable(badgeBackgroundColor = badgeColor)
+                            BadgeDrawable(badgeBackgroundColor = badgeColor),
+                            index != chatsCount - 1
                     )
                 })
             }

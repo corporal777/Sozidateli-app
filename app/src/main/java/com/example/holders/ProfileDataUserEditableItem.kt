@@ -30,7 +30,7 @@ class ProfileDataUserEditableItem(
                 clipToOutline = true
                 transitionName = avatarUrl
                 if (avatar != null) setImageBitmap(avatar)
-                else setImageResource(R.drawable.avatar_placeholder)
+                else setImageResource(R.drawable.avatar_placeholder_rectangle)
                 setOnClickListener { onAvatarClick(this) }
             }
             tvId.apply { text = resources.getString(R.string.profile_uid, uid) }

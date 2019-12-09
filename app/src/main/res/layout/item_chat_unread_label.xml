@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tvNewMessages"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="7dp"
-    android:layout_marginBottom="7dp"
-    >
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@android:color/black"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:text="@string/unread_message"/>
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@android:color/black"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"/>
-</LinearLayout>
+    android:background="@color/chat_new_messages_background"
+    android:gravity="center"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:textAllCaps="true"
+    android:textColor="@color/chat_new_messages_text"
+    tools:text="@string/chat_new_messages_count" />

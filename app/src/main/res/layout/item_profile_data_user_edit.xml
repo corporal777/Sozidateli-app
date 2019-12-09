@@ -15,7 +15,7 @@
         android:contentDescription="@string/content_description_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/avatar_placeholder" />
+        tools:src="@drawable/avatar_placeholder_rectangle" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAvatarChange"

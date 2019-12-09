@@ -7,30 +7,46 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <include
-        android:id="@+id/search"
-        layout="@layout/view_search_input"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/background_input_normal">
 
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="17dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearch"
+            style="@style/Input.Search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:hint="@string/search_input_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textFilter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnClear"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClear"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_input_clear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.526" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         layout="@layout/layout_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider" />
+        app:layout_constraintTop_toBottomOf="@id/clSearch" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -81,7 +81,7 @@ class ProfileDataUserEditItem(
         viewHolder.ivAvatar.apply {
             clipToOutline = true
             if (avatar != null) setImageBitmap(avatar)
-            else setImageResource(R.drawable.avatar_placeholder)
+            else setImageResource(R.drawable.avatar_placeholder_rectangle)
         }
 
         viewHolder.btnAvatarRemove.apply {

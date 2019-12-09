@@ -8,7 +8,7 @@ sealed class ChatMessage {
             val isMyMessage: Boolean
     ) : ChatMessage()
 
-    object NewMessages : ChatMessage()
+    data class NewMessages(val count: Int) : ChatMessage()
     data class Date(val date: Long) : ChatMessage()
     data class Accept(val message: Message) : ChatMessage()
 }

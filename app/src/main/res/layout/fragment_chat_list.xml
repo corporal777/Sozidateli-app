@@ -16,6 +16,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:descendantFocusability="beforeDescendants"
+            android:paddingTop="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_chat" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

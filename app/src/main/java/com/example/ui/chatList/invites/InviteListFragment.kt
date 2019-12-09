@@ -8,12 +8,11 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
-import com.example.holders.ListSectionNameItem
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,22 +28,13 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
     @ProvidePresenter
     fun providePresenter(): InviteListPresenter = presenterProvider.get()
 
-    private val inviteSection by lazy {
-        Section().apply {
-            setHeader(ListSectionNameItem(-300L))
-            setHideWhenEmpty(true)
-        }
-    }
-
     private val adapter by lazy {
         PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
+                    presenter.onItemTake(position)
                 }
             })
-
-            add(inviteSection)
         }
     }
 
@@ -58,12 +48,17 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
-        inviteSection.update(chats.map { chat ->
+        if (chats.isEmpty()) adapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        else adapter.update(chats.mapIndexed { index, chat ->
             if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-            else UserChatItem(
-                    chat,
-                    { presenter.onChatClick(it) }
-            )
+            else {
+                val chatsCount = chats.size
+                UserChatItem(
+                        chat,
+                        { presenter.onChatClick(it) },
+                        withDivider = index != chatsCount - 1
+                )
+            }
         })
 
         swipeToRefresh.isRefreshing = false
