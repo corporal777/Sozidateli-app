@@ -95,7 +95,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
-    override fun onShowFilterClick(format: Int) {}
+    override fun onShowFilterClick(format: Int) = viewState.showSearch(format)
 
     override fun onScrollChange(position: Int, offset: Int) {
         scrollPosition = position

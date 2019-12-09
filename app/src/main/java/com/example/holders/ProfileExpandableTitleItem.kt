@@ -28,5 +28,3 @@ class ProfileExpandableTitleItem(
 
     override fun getLayout() = R.layout.item_profile_expandable_title
 }
-
-typealias OnEditClickListener = () -> Unit

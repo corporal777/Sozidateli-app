@@ -48,17 +48,18 @@ class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragm
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val fragments = listOf(
+    private val fragments by lazy {
+        listOf(
                 FavoriteEventsFragment(),
                 OrganizationsFragment().apply {
                     arguments = OrganizationsFragmentArgs.Builder(OrganizationsFilter.FAVORITES_NO_TITLE).build().toBundle()
                 },
                 FavoriteUsersFragment()
         )
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewPager.run {
             addOnPageChangeListener(pageChangeListener)
             adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -66,7 +67,6 @@ class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragm
 
                 override fun getCount() = fragments.size
             }
-            offscreenPageLimit = fragments.size
             selectTab(currentItem)
         }
 

@@ -41,6 +41,7 @@ import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.splash.SplashFragment
+import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -105,6 +106,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
 
             root.background = bg
+        }
+
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentDestroyed(fm, f)
+            if (f is StoriesFragment) presenter.onStoriesComplete()
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.ui.page
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.Document
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -25,8 +26,11 @@ class PagePresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.setTitle(it.menu)
-                    viewState.setContent(it.picture, it.content)
+                    viewState.setContent(it.picture, it.title, it.content, it.files)
                 }
+    }
+
+    override fun onDocumentClick(document: Document) {
+        document.file?.let { viewState.openLinkInBrowser(it) }
     }
 }

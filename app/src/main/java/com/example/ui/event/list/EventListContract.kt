@@ -33,6 +33,9 @@ interface EventListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSearch(format: Int)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {

@@ -12,11 +12,11 @@
         android:id="@+id/tvTitle"
         style="@style/Notification.Title"
         fontPath="fonts/Roboto-Medium.ttf"
-        android:text="@string/notifications_simple_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix" />
+        tools:ignore="MissingPrefix"
+        tools:text="@string/notifications_simple_title" />
 
     <TextView
         android:id="@+id/tvDate"
@@ -32,7 +32,6 @@
         style="@style/Notification.Message"
         android:ellipsize="end"
         android:maxLength="200"
-        app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

@@ -12,7 +12,7 @@ interface EventContactsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, canShowOnMap: Boolean)
+        fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, canShowOnMap: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?)

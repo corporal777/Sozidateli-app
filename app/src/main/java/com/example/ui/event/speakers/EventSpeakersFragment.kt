@@ -10,6 +10,7 @@ import com.example.R
 import com.example.data.models.Speaker
 import com.example.extensions.findItemBy
 import com.example.holders.SpeakerItem
+import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.user.UserFragmentArgs
@@ -21,8 +22,7 @@ import javax.inject.Provider
 
 class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, ToolbarFragment {
 
-    override val title: String
-        get() = getString(R.string.about_event_speakers)
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: EventSpeakersPresenter
@@ -57,7 +57,17 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
 
 
     override fun setData(data: List<Speaker>) {
-        groupAdapter.update(data.map { SpeakerItem(it, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerFavoriteChangeClick(it) }) })
+        groupAdapter.update(data.map {
+            UserItem(
+                    it.id,
+                    it.user.fullName,
+                    it.description,
+                    it.user.user_avatar,
+                    { presenter.onSpeakerClick(it) },
+                    it.user.getUserSubscribeAction(),
+                    { presenter.onSpeakerFavoriteChangeClick(it) }
+            )
+        })
         swipeToRefresh.isRefreshing = false
     }
 

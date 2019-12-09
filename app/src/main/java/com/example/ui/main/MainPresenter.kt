@@ -16,7 +16,10 @@ import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.*
+import com.example.util.ACTION_REQUEST_COUNT
+import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
+import com.example.util.ChatHelper
+import com.example.util.ConnectivityProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -69,10 +72,18 @@ class MainPresenter
     private var inappList: Deque<RemoteNotification>? = null
 
     private var isDoNotCheckConnectionFragmentOpened = false
-    private var isInternetConnected = false
+    private var isInternetConnected = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.showStories()
+    }
+
+    override fun onStoriesComplete() {
+        subscribeToTokenUpdates()
+    }
+
+    private fun subscribeToTokenUpdates() {
         compositeDisposable += appData.tokenChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe { token ->

@@ -11,9 +11,6 @@ interface PartnerContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(partner: Partner, logo: Bitmap?, background: Bitmap?)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setTitle(title: String)
     }
 
     interface Presenter : BaseContract.Presenter

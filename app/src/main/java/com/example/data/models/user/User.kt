@@ -1,6 +1,7 @@
 package com.example.data.models.user
 
 import com.example.data.models.*
+import com.example.ui.views.UserSubscribeButton
 import com.google.gson.annotations.SerializedName
 
 data class User(
@@ -79,8 +80,17 @@ data class User(
 ) {
     val fullName: String
         get() {
-            return "$user_name $user_last_name${user_middle_name?.let { if (it == "-") "" else " $it" } ?: ""}"
+            return "$user_name $user_last_name${user_middle_name?.let { if (it == "-") "" else " $it" }
+                    ?: ""}"
         }
+
+    fun getUserSubscribeAction(): UserSubscribeButton.Action {
+        return when {
+            user_banned -> UserSubscribeButton.Action.UNBLOCK
+            is_in_favorite -> UserSubscribeButton.Action.UNFAVORITE
+            else -> UserSubscribeButton.Action.FAVORITE
+        }
+    }
 
     companion object {
         const val FIELD_USER_NAME = "user_name"

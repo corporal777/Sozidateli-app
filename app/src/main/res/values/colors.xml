@@ -11,6 +11,7 @@
     <color name="main_background">#FFFFFF</color>
     <color name="list_background">#F7F7FA</color>
     <color name="text_color_default">#000000</color>
+    <color name="text_color_title">#232326</color>
     <color name="disabled_color">#d1d3d4</color>
     <color name="attention_action">#C73C00</color>
     <color name="toolbar_title_text">#000000</color>
@@ -109,7 +110,7 @@
     <color name="profile_action_subscribe">@color/colorAccent</color>
     <color name="profile_action_ban">@color/attention_action</color>
     <color name="profile_title_text">#80000000</color>
-    <color name="profile_data_text">#000000</color>
+    <color name="profile_data_text">#232326</color>
     <color name="profile_data_disabled">#979797</color>
     <color name="profile_data_text_link">@color/colorAccent</color>
     <color name="profile_section_title_text">@color/colorAccent</color>
@@ -146,9 +147,9 @@
 
     <color name="button_save_background">#7D9D57</color>
     <color name="button_save_text">#FFFFFF</color>
-    <color name="button_cancel_background">#1A000000</color>
-    <color name="button_cancel_border">#1A000000</color>
-    <color name="button_cancel_text">#66000000</color>
+    <color name="button_cancel_background">#FFFFFF</color>
+    <color name="button_cancel_border">#979797</color>
+    <color name="button_cancel_text">#979797</color>
 
     <color name="indicator_color">#C4C4C4</color>
     <color name="indicator_color_selected">@color/colorAccent</color>

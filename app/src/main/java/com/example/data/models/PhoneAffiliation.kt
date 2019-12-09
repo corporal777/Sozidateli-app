@@ -7,4 +7,9 @@ import kotlinx.android.parcel.Parcelize
 class PhoneAffiliation(
         val phone: String,
         val affiliation: String?
-) : Parcelable
+) : Parcelable {
+
+    fun getAffiliationString(): String {
+        return if (!affiliation.isNullOrBlank()) "${affiliation}: $phone" else phone
+    }
+}

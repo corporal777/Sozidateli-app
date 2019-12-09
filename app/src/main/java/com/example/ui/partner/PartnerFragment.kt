@@ -1,6 +1,8 @@
 package com.example.ui.partner
 
 import android.graphics.Bitmap
+import android.view.View
+import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -13,14 +15,12 @@ import com.example.data.models.Partner
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import kotlinx.android.synthetic.main.fragment_partner.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
-    override val title: String
-        get() = getString(R.string.partners_label)
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: PartnerPresenter
@@ -36,34 +36,23 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         }
     }
 
-    private var toolbarContentActionBar: ToolbarContentActionBar? = null
-
     override fun setData(partner: Partner, logo: Bitmap?, background: Bitmap?) {
-        ivLogo.apply {
+        ivBackground.apply {
+            clipToOutline = true
             if (background == null) {
                 isVisible = false
             } else {
                 setImageBitmap(background)
+                setOnImageClickListener(this, partner.background)
             }
         }
         ivLogo.apply {
+            clipToOutline = true
             if (logo == null) {
                 isVisible = false
             } else {
                 setImageBitmap(logo)
-                setOnClickListener {
-                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            requireActivity(),
-                            Pair(this, this.transitionName)
-                    )
-
-                    findNavController().navigate(
-                            R.id.image_view_activity,
-                            ImageViewActivityArgs.Builder(partner.logo, null, null, this.transitionName).build().toBundle(),
-                            null,
-                            ActivityNavigatorExtras(options)
-                    )
-                }
+                setOnImageClickListener(this, partner.logo)
             }
         }
 
@@ -86,13 +75,20 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         llContent.isVisible = true
     }
 
-    override fun setTitle(title: String) {
-        toolbarContentActionBar?.title = title
-    }
+    private fun setOnImageClickListener(imageView: ImageView, url: String?) {
+        imageView.setOnClickListener {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    Pair(it, it.transitionName)
+            )
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
+            findNavController().navigate(
+                    R.id.image_view_activity,
+                    ImageViewActivityArgs.Builder(url, null, null, it.transitionName).build().toBundle(),
+                    null,
+                    ActivityNavigatorExtras(options)
+            )
+        }
     }
 
     override fun layout() = R.layout.fragment_partner

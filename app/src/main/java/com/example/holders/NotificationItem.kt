@@ -37,6 +37,16 @@ abstract class NotificationItem(
             setBackgroundColor(ContextCompat.getColor(context, if (notification.wasRead) R.color.notification_center_notification_read else R.color.notification_center_notification_unread))
         }
 
+        getTitleView(viewHolder).apply {
+            val titleRes = when (notification.type) {
+                Notification.Type.SIMPLE -> R.string.notifications_simple_title
+                Notification.Type.ACCEPTABLE -> R.string.notifications_acceptable_title
+                Notification.Type.RATE -> R.string.notifications_rate_title
+            }
+
+            text = resources.getString(titleRes)
+        }
+
         getMessageView(viewHolder).apply {
             isVisible = !notification.message.isNullOrEmpty()
             val message = notification.message?.parseAsHtml()

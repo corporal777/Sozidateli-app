@@ -3,10 +3,9 @@ package com.example.holders.registerEvent
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.example.R
-import com.example.extensions.setUnderlineSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_event_registration_field_title.*
+import kotlinx.android.synthetic.main.item_event_registration_field_file.*
 
 class EventRegistrationPersonalDataFileItem(
         private val url: String?,
@@ -25,7 +24,7 @@ class EventRegistrationPersonalDataFileItem(
             }
 
             textView.apply {
-                text = description?.setUnderlineSpan()
+                text = description
                 isVisible = hasText
             }
 
@@ -35,7 +34,7 @@ class EventRegistrationPersonalDataFileItem(
         }
     }
 
-    override fun getLayout() = R.layout.item_event_registration_field_title
+    override fun getLayout() = R.layout.item_event_registration_field_file
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (this === other) return true

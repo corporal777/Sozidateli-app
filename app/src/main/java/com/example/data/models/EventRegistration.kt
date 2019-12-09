@@ -31,5 +31,7 @@ data class EventRegistration(
         @SerializedName("registration_subtitle")
         val registrationSubtitle: String?,
         @SerializedName("is_require_moderate_requests")
-        val isRequireModerate: Boolean?
+        val isRequireModerate: Boolean?,
+        @SerializedName("conference_first_activity_start")
+        val conferenceFirstActivityStart: String?
 )

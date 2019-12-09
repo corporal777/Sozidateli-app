@@ -15,6 +15,7 @@ import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
+import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Completable
@@ -63,6 +64,18 @@ class SearchEventPresenter
                         onSuccess = {
                             isCommonDataLoaded = true
                         })
+    }
+
+    override fun onResume(searchInterface: SearchInterface) {
+        super.onResume(searchInterface)
+        searchInterface.apply {
+            val initWithFilter = this.initWithFilter
+            if (initWithFilter != null && initWithFilter is SearchFilter.Event) {
+                tmpFilter = initWithFilter
+                filter = initWithFilter
+                this.initWithFilter = null
+            }
+        }
     }
 
     override fun onActionRegister(event: String) = viewState.showEventRequest(event)

@@ -41,7 +41,7 @@ class AboutEventPresenter
         this.event = eventInfo
         val event = eventInfo.event
         viewState.apply {
-            setEventName(event.name)
+            //            setEventName(event.name)
             setEventData(
                     event,
                     eventInfo.userRegistration?.status,
@@ -58,10 +58,7 @@ class AboutEventPresenter
     }
 
     override fun onPageClick(page: EventPage) {
-        checkInternetAndRun {
-            if (page.isFilePage) viewState.showDocuments(eventId, page.id.toString())
-            else viewState.showPage(eventId, page.id.toString())
-        }
+        checkInternetAndRun { viewState.showPage(eventId, page.id.toString()) }
     }
 
     override fun onPartnerClick(partner: EventParther) {
@@ -77,6 +74,7 @@ class AboutEventPresenter
                 eventData.web,
                 eventData.social,
                 eventData.address,
+                eventData.place,
                 eventData.createMapInfo(),
                 event.places
         )
@@ -90,6 +88,7 @@ class AboutEventPresenter
                 || eventData.web.isNotEmpty()
                 || eventData.social.isNotEmpty()
                 || eventData.address?.isNotEmpty() ?: false
+                || eventData.place?.isNotEmpty() ?: false
                 || eventData.createMapInfo() != null
                 || event.places.isNotEmpty()
     }
@@ -106,7 +105,6 @@ class AboutEventPresenter
         compositeDisposable += eventRepository.getEventInfo(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
                 .subscribeSimple(onSuccess = ::setEventInfoData)
     }
 

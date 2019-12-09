@@ -1,39 +1,40 @@
 package com.example.ui.organizations
 
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.set
-import androidx.core.text.toSpannable
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.Organization
-import com.example.data.models.OrganizationMember
+import com.example.data.models.*
+import com.example.data.models.user.User
+import com.example.extensions.findItemBy
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
-import com.example.holders.OrganizationUserItem
+import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.views.UserSubscribeButton
-import com.rd.animation.type.AnimationType
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_organization.*
@@ -41,8 +42,6 @@ import kotlinx.android.synthetic.main.fragment_organization.btnAction
 import kotlinx.android.synthetic.main.fragment_organization.llContent
 import kotlinx.android.synthetic.main.fragment_status.scrollContainer
 import parseColor
-import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan
-import uk.co.chrisjenx.calligraphy.TypefaceUtils
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -63,13 +62,15 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
-        override fun onActionRegister(event: String) {}
-        override fun onActionShowEvent(event: String) {}
-        override fun onActionCancel(event: String) {}
-        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {}
-        override fun onShowEventClick(event: String) {}
-        override fun onShowFilterClick(format: Int) {}
+        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
+        override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
+        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
+        override fun onShowEventClick(event: String) = presenter.onShowEventClick(event)
+        override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
+
+    private val usersAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -82,8 +83,8 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         btnAction.apply {
             setOnClickListener {
                 when (action) {
-                    UserSubscribeButton.Action.SUBSCRIBE -> presenter.onSubscribeClick()
-                    UserSubscribeButton.Action.UNSUBSCRIBE -> presenter.onUnsubscribeClick()
+                    UserSubscribeButton.Action.FAVORITE -> presenter.onSubscribeClick()
+                    UserSubscribeButton.Action.UNFAVORITE -> presenter.onUnsubscribeClick()
                     else -> throw IllegalArgumentException("Wrong action: $it for organization")
                 }
             }
@@ -92,47 +93,26 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setOrganization(organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
-        ivLogo.apply {
-            if (organization.background.isNullOrEmpty()) {
+    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
+        ivBackground.apply {
+            clipToOutline = true
+            if (background == null) {
                 isVisible = false
             } else {
-                Picasso.get().load(organization.background).into(this, object : Callback {
-                    override fun onSuccess() {
-
-                    }
-
-                    override fun onError(e: Exception?) {
-                        isVisible = false
-                    }
-                })
+                isVisible = true
+                setImageBitmap(background)
+                setOnImageClickListener(this, organization.background)
             }
         }
         ivLogo.apply {
             clipToOutline = true
-            Picasso.get().load(organization.logo)
-                    .noFade()
-                    .into(this, object : Callback {
-                        override fun onSuccess() {
-                            setOnClickListener {
-                                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                        requireActivity(),
-                                        Pair(it, it.transitionName)
-                                )
-
-                                findNavController().navigate(
-                                        R.id.image_view_activity,
-                                        ImageViewActivityArgs.Builder(organization.logo, null, null, it.transitionName).build().toBundle(),
-                                        null,
-                                        ActivityNavigatorExtras(options)
-                                )
-                            }
-                        }
-
-                        override fun onError(e: java.lang.Exception?) {
-
-                        }
-                    })
+            if (logo == null) {
+                isInvisible = true
+            } else {
+                isInvisible = false
+                setImageBitmap(logo)
+                setOnImageClickListener(this, organization.logo)
+            }
         }
 
         tvOrganizationImageName.apply {
@@ -144,43 +124,44 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
         tvName.text = organization.name
 
-        tvDescriptionShort.text = organization.descriptionShort
-
-        val linksData = StringBuilder().apply {
-            organization.webLinks?.let { list ->
-                if (list.isNotEmpty()) append(list.joinToString(separator = "\n"))
-            }
-            organization.socialLinks?.let { list ->
-                if (list.isNotEmpty()) {
-                    if (length > 0) append("\n\n")
-                    append(list.joinToString(separator = "\n"))
-                }
-            }
-        }
+        val links = organization.webLinks?.joinToString(separator = "\n")
+        val hasLinks = !links.isNullOrEmpty()
+        tvLinksTitle.isVisible = hasLinks
         tvLinks.apply {
-            isVisible = linksData.isNotEmpty()
-            text = linksData
+            isVisible = hasLinks
+            text = links
         }
 
-        val addressData = StringBuilder().apply {
-            organization.address?.let { append(it) }
-            organization.phones?.let { list ->
-                if (list.isNotEmpty()) {
-                    if (length > 0) append("\n")
-                    append(list.joinToString(separator = "\n") { if (!it.affiliation.isNullOrBlank()) "${it.affiliation}: ${it.phone}" else it.phone })
-                }
-            }
-            organization.emails?.let { list ->
-                if (list.isNotEmpty()) {
-                    if (length > 0) append("\n")
-                    append(list.joinToString(separator = "\n") { it.getAffiliationString() })
-                }
-            }
+        val snLinks = organization.socialLinks?.joinToString(separator = "\n")
+        val hasSnLinks = !snLinks.isNullOrEmpty()
+        tvSnLinksTitle.isVisible = hasSnLinks
+        tvSnLinks.apply {
+            isVisible = hasSnLinks
+            text = snLinks
         }
 
+        val emails = organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val hasEmails = !emails.isNullOrEmpty()
+        tvEmailTitle.isVisible = hasEmails
+        tvEmail.apply {
+            isVisible = hasEmails
+            text = emails
+        }
+
+        val phones = organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val hasPhones = !phones.isNullOrEmpty()
+        tvPhoneTitle.isVisible = hasPhones
+        tvPhone.apply {
+            isVisible = hasPhones
+            text = phones
+        }
+
+        val hasAddress = !organization.address.isNullOrEmpty()
+
+        tvAddressTitle.isVisible = hasAddress
         tvAddress.apply {
-            isVisible = addressData.isNotEmpty()
-            text = addressData
+            isVisible = hasAddress
+            text = organization.address
         }
 
         tvDescription.apply {
@@ -188,43 +169,29 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             text = organization.descriptionFull
         }
 
-        val usersCountText = "${organization.totalMembers}"
-        val peoplesText = getString(R.string.organization_peoples)
-        val peoplesSpannable = "$peoplesText $usersCountText".toSpannable().apply {
-            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/Roboto-Bold.ttf"))
-            val start = peoplesText.length + 1
-            val end = start + usersCountText.length
-            set(start, end, typefaceSpan)
-        }
-        tvPeoples.text = peoplesSpannable
-
-        rvPeoples.adapter = GroupAdapter<GroupieViewHolder>().apply {
-            addAll(users.map {
+        tvPeoples.text = getString(R.string.organization_peoples).format(organization.totalMembers)
+        rvPeoples.adapter = usersAdapter.apply {
+            update(users.map {
                 val user = it.user
-                OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onUserClick(user) }
+                UserItem(
+                        user.user_id,
+                        user.fullName,
+                        user.user_city,
+                        user.user_avatar,
+                        { presenter.onUserClick(user) },
+                        user.getUserSubscribeAction(),
+                        { presenter.onUserActionCLick(user) })
             })
         }
-
         btnPeoples.apply {
             isVisible = organization.totalMembers > users.size
             setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
-        dividerPeoples.isVisible = btnPeoples.isVisible
-
-        val eventsCountText = "${organization.totalEvents}"
-        val eventsText = getString(R.string.organization_events)
-        val eventsSpannable = "$eventsText $eventsCountText".toSpannable().apply {
-            val typefaceSpan = CalligraphyTypefaceSpan(TypefaceUtils.load(resources.assets, "fonts/Roboto-Bold.ttf"))
-            val start = eventsText.length + 1
-            val end = start + eventsCountText.length
-            set(start, end, typefaceSpan)
-        }
-        tvEvents.text = eventsSpannable
-
-        vpEvents.apply {
+        tvEvents.text = getString(R.string.organization_events).format(organization.totalEvents)
+        rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
-                addAll(events.map {
+                update(events.map {
                     EventGroup(
                             it.id,
                             it.status,
@@ -238,27 +205,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                     )
                 })
             }
-
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageScrollStateChanged(state: Int) {
-                    eventPageIndicator.onPageScrollStateChanged(state)
-                }
-
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                    eventPageIndicator.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                }
-
-                override fun onPageSelected(position: Int) {
-                    eventPageIndicator.setSelected(position)
-                }
-            })
         }
-
-        eventPageIndicator.apply {
-            count = events.size
-            setAnimationType(AnimationType.COLOR)
-        }
-
         btnEvents.apply {
             isVisible = organization.totalEvents > events.size
             setOnClickListener { presenter.onShowMoreEventsClick() }
@@ -268,10 +215,71 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         swipeToRefresh.isRefreshing = false
     }
 
+    private fun setOnImageClickListener(imageView: ImageView, url: String?) {
+        imageView.setOnClickListener {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    Pair(it, it.transitionName)
+            )
+
+            findNavController().navigate(
+                    R.id.image_view_activity,
+                    ImageViewActivityArgs.Builder(url, null, null, it.transitionName).build().toBundle(),
+                    null,
+                    ActivityNavigatorExtras(options)
+            )
+        }
+    }
+
     override fun setSubscribed(isSubscribed: Boolean) {
         btnAction.apply {
-            setAction(if (isSubscribed) UserSubscribeButton.Action.UNSUBSCRIBE else UserSubscribeButton.Action.SUBSCRIBE)
+            setAction(if (isSubscribed) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
         }
+    }
+
+    override fun updateUser(user: User) {
+        val idLong = user.user_id.toLong()
+        val item = usersAdapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
+        item.notifyChanged(user.getUserSubscribeAction())
+    }
+
+    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+        AlertDialog.Builder(requireContext())
+                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                    val email = emails[which]
+                    presenter.onWriteToOrganizationEmailChosen(email)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
+    override fun showWriteToOrganization(email: EmailAffiliation) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    override fun showAboutEvent(event: String) {
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+    }
+
+    override fun showEventRequest(event: String) {
+        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+    }
+
+    override fun selectEvent() {
+        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
+    }
+
+    override fun showSearch(format: Int) {
+        val filter = SearchFilter.Event().apply { this.format = format }
+        findNavController().navigate(R.id.search_tabs_fragment, SearchTabsFragmentArgs.Builder(filter).build().toBundle())
     }
 
     override fun showEvents(organizationId: String) {

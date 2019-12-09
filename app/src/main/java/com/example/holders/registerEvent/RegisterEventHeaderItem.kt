@@ -8,30 +8,36 @@ import kotlinx.android.synthetic.main.item_register_event_header.*
 
 open class RegisterEventHeaderItem(
         id: Long,
-        private val organizationName: String?,
+        private val eventName: String?,
+        private val time: String?,
         private val dates: String?,
-        private val description: String?,
         private val formTitle: String?,
         private val formDescription: String?
 ) : Item(id) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvOrganizationLabel.apply {
-                isVisible = !organizationName.isNullOrEmpty()
-                text = organizationName
+            tvEventName.apply {
+                isVisible = !eventName.isNullOrEmpty()
+                text = eventName
             }
+
+            if (time != null) {
+                llTime.isVisible = true
+                tvEventTime.text = time
+            } else {
+                llTime.isVisible = false
+            }
+
             tvEventDate.apply {
                 isVisible = !dates.isNullOrEmpty()
                 text = dates
             }
-            tvEventInfo.apply {
-                isVisible = !description.isNullOrEmpty()
-                text = description
-            }
+
             tvFormLabel.apply {
                 isVisible = !formTitle.isNullOrEmpty()
                 text = formTitle
             }
+
             tvFormDescription.apply {
                 isVisible = !formDescription.isNullOrEmpty()
                 text = formDescription

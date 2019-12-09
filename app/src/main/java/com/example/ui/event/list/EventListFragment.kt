@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
+import com.example.data.models.SearchFilter
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
@@ -122,6 +124,11 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build())
+    }
+
+    override fun showSearch(format: Int) {
+        val filter = SearchFilter.Event().apply { this.format = format }
+        findNavController().navigate(R.id.search_tabs_fragment, SearchTabsFragmentArgs.Builder(filter).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list

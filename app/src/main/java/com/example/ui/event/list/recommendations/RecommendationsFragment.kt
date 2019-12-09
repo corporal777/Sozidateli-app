@@ -45,7 +45,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
     }
 
     override fun showSearch() {
-        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToSearchFragment())
+        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToSearchFragment(null))
     }
 
     override fun showOrganizations() {

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/margin_horizontal_default"
+    android:layout_marginEnd="@dimen/margin_horizontal_default">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +30,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="@dimen/profile_padding_start"
             android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
             android:textSize="17sp"
             tools:ignore="MissingPrefix"
             tools:text="1 этаж" />

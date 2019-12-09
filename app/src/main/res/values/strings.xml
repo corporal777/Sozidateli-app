@@ -499,11 +499,16 @@
     <string name="about_developed_by">Разработано в</string>
     <string name="about_developer_site">www.houseofapps.ru</string>
 
-    <string name="organization_main_data">Основная информация</string>
-    <string name="organization_peoples">Люди</string>
+    <string name="organization_main_data">Общая информация</string>
+    <string name="organization_peoples">Сотрудники (%d)</string>
     <string name="organization_peoples_watch">Смотреть всех</string>
-    <string name="organization_events">Мероприятия</string>
+    <string name="organization_events">Мероприятия (%d)</string>
     <string name="organization_events_watch">Смотреть все мероприятия</string>
+    <string name="organization_links">Ссылки</string>
+    <string name="organization_sn_links">Соцсети</string>
+    <string name="organization_email">Email</string>
+    <string name="organization_phones">Номера телефонов</string>
+    <string name="organization_address">Адрес</string>
 
     <string name="qr_scan_label">Поиск меропрятия</string>
     <string name="qr_scan_for_event">Для поиска мероприятия\nотсканируйте QR-код</string>
@@ -525,6 +530,7 @@
     <string name="event_contacts_site">Сайт</string>
     <string name="event_contacts_social_networks">Соцсети</string>
     <string name="event_contacts_address">Адрес проведения</string>
+    <string name="event_contacts_place">Место проведения</string>
     <string name="event_contacts_watch_on_map">Посмотреть на карте</string>
 
     <string name="map_route">Mаршрут</string>

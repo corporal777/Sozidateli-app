@@ -15,7 +15,6 @@ import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.contactsSearch.ContactsSearchFragment
-import com.example.ui.documents.DocumentsListFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
@@ -104,9 +103,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAboutEventFragment(): AboutEventFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeDocumentsListFragment(): DocumentsListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment

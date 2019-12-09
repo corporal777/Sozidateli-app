@@ -9,16 +9,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.BackgroundImageFragment
+import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthBackground
 import jp.shts.android.storiesprogressview.StoriesProgressView
-import kotlinx.android.synthetic.main.activity_stories.*
+import kotlinx.android.synthetic.main.fragment_stories.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class StoriesFragment : BaseFragment(), StoriesContract.View, BackgroundImageFragment {
-
-    override val isLightStatus = false
+class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnectionFragment {
 
     @InjectPresenter
     lateinit var presenter: StoriesPresenter
@@ -92,7 +91,5 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, BackgroundImageFra
         ivImage.setImageDrawable(AuthBackground.get(resources))
     }
 
-    override fun getFragmentBackgroundDrawable(): Drawable? = null
-
-    override fun layout() = R.layout.activity_stories
+    override fun layout() = R.layout.fragment_stories
 }

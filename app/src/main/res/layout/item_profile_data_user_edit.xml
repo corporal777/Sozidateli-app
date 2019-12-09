@@ -21,6 +21,7 @@
         android:id="@+id/btnAvatarChange"
         style="@style/Profile.Edit.Button"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:minEms="7"

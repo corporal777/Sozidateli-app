@@ -27,7 +27,6 @@ class PartnerPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += eventRepository.getPartnerById(dataEventId, dataPartnerId)
-
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -39,7 +38,6 @@ class PartnerPresenter
                 }
                 .subscribeSimple {
                     viewState.apply {
-                        setTitle(it.partner.name)
                         setData(it.partner, it.logo, it.background)
                     }
                 }

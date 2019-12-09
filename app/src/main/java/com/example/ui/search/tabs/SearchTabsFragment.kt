@@ -3,12 +3,12 @@ package com.example.ui.search.tabs
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.TabsFragmentAdapter
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -36,24 +36,22 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
 
     @ProvidePresenter
     fun providePresenter(): SearchTabsPresenter = presenterProvider.get().apply {
-        searchInterface = this@SearchTabsFragment.searchInterface
+        searchInterface = this@SearchTabsFragment.searchInterface.apply {
+            initWithFilter = SearchTabsFragmentArgs.fromBundle(arguments!!).filter
+        }
     }
 
     private val searchInterface = SearchInterface()
 
-    private val pages by lazy {
+    private val fragments by lazy {
         listOf(
-                SearchEventFragment() to getString(R.string.search_organizations),
-                SearchOrganizationFragment() to getString(R.string.search_events),
-                SearchUserFragment() to getString(R.string.search_users)
+                SearchEventFragment(),
+                SearchOrganizationFragment(),
+                SearchUserFragment()
         )
     }
 
-    private val pageChangeListener = object : ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
+    private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             selectTab(position)
         }
@@ -63,7 +61,11 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
         super.onViewCreated(view, savedInstanceState)
         viewPager.run {
             addOnPageChangeListener(pageChangeListener)
-            adapter = TabsFragmentAdapter(pages, childFragmentManager)
+            adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                override fun getItem(position: Int) = fragments[position]
+
+                override fun getCount() = fragments.size
+            }
             selectTab(currentItem)
         }
 

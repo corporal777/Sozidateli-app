@@ -39,7 +39,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
                 itemData.user_city,
                 itemData.user_avatar,
                 { presenter.onUserClick(itemData) },
-                if (itemData.is_in_favorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE,
+                itemData.getUserSubscribeAction(),
                 { presenter.onUserActionCLick(itemData) }
         )
     }
@@ -47,7 +47,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, User, SearchFilte
     override fun updateUser(user: User) {
         val idLong = user.user_id.toLong()
         val item = adapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
-        item.notifyChanged(if (user.is_in_favorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+        item.notifyChanged(user.getUserSubscribeAction())
     }
 
     override fun showUser(user: User) {

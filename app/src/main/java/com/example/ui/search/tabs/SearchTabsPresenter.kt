@@ -1,6 +1,7 @@
 package com.example.ui.search.tabs
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.SearchFilter
 import com.example.ui.base.BasePresenter
 import com.example.ui.search.SearchInterface
 import javax.inject.Inject
@@ -11,6 +12,7 @@ class SearchTabsPresenter
 ) : BasePresenter<SearchTabsContract.View>(), SearchTabsContract.Presenter {
 
     lateinit var searchInterface: SearchInterface
+    var filter: SearchFilter? = null
 
     override fun onSearchTextChange(text: String) {
         onSearchTextSubmit(text)

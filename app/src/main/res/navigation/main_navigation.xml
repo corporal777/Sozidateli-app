@@ -210,9 +210,6 @@
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
         <action
-            android:id="@id/action_about_event_fragment_to_documents_list_fragment"
-            app:destination="@id/documents_list_fragment" />
-        <action
             android:id="@id/action_about_event_fragment_to_speakers_list_fragment"
             app:destination="@id/speakers_list_fragment" />
         <action
@@ -496,6 +493,12 @@
         android:id="@+id/search_tabs_fragment"
         android:name="com.example.ui.search.tabs.SearchTabsFragment"
         tools:layout="@layout/fragment_search_tabs">
+
+        <argument
+            android:name="filter"
+            app:argType="com.example.data.models.SearchFilter"
+            app:nullable="true" />
+
         <action
             android:id="@+id/search_tabs_to_qr_scanner"
             app:destination="@id/qr_scanner_fragment" />
@@ -529,9 +532,6 @@
             app:argType="string"
             app:nullable="false" />
         <action
-            android:id="@+id/action_about_event_fragment_to_documents_list_fragment"
-            app:destination="@id/documents_list_fragment" />
-        <action
             android:id="@+id/action_about_event_fragment_to_speakers_list_fragment"
             app:destination="@id/speakers_list_fragment" />
         <action
@@ -543,18 +543,6 @@
         <action
             android:id="@+id/action_about_event_fragment_to_contacts_fragment"
             app:destination="@id/contacts_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/documents_list_fragment"
-        android:name="com.example.ui.documents.DocumentsListFragment">
-        <argument
-            android:name="eventId"
-            app:argType="string" />
-
-        <argument
-            android:name="pageId"
-            app:argType="string" />
     </fragment>
 
     <fragment
@@ -624,6 +612,11 @@
 
         <argument
             android:name="address"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="place"
             app:argType="string"
             app:nullable="true" />
 

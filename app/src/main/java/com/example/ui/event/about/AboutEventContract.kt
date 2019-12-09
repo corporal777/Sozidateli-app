@@ -29,16 +29,13 @@ interface AboutEventContract {
         fun showPage(eventId: String, pageId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDocuments(eventId: String, pageId: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showPartner(eventId: String, partnerId: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showSpeakers(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?, places: List<Place>?)
+        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)

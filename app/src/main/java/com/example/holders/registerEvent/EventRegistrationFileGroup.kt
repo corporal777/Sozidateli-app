@@ -1,21 +1,25 @@
 package com.example.holders.registerEvent
 
+import android.content.Context
 import android.net.Uri
+import com.example.R
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterFieldData
-import com.example.holders.ActionButtonItem
-import com.example.holders.ActionButtonItem.Companion.ACTION_ADD_FILE
+import com.example.holders.ProfileButtonEditItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventRegistrationFileGroup(
+        context: Context,
         val fieldData: EventRegisterFieldData<EventFile?>,
         private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit,
         onAddClick: () -> Unit
 ) : NestedGroup() {
 
     private var fileItem: EventRegistrationFileItem? = null
-    private val fileAddItem = ActionButtonItem(FILE_ADD_ITEM_ID, ACTION_ADD_FILE, onAddClick)
+    private val fileAddItem = ProfileButtonEditItem(context.getString(R.string.add_file), onAddClick).apply {
+        hasDivider = false
+    }
 
     init {
         checkFile()

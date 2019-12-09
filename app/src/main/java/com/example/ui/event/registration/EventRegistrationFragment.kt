@@ -17,7 +17,7 @@ import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
 import com.example.extensions.forEachGroups
-import com.example.extensions.formatToInterval
+import com.example.extensions.formatToEventDatesInterval
 import com.example.extensions.setRequired
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
@@ -78,9 +78,9 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
         section.apply {
             setHeader(RegisterEventHeaderItem(
                     -100L,
-                    event.organization?.name,
-                    event.conferenceStart?.formatToInterval(event.conferenceFinish),
-                    event.description,
+                    event.name,
+                    event.conferenceFirstActivityStart,
+                    event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
                     event.registrationName,
                     event.registrationSubtitle
             ))
@@ -110,7 +110,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
                     is EventRegisterFieldData.Passport ->
                         RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
                     is EventRegisterFieldData.File ->
-                        EventRegistrationFileGroup(it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
+                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
                 }
             })
         }

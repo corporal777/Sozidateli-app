@@ -18,12 +18,13 @@ class EventContactsPresenter
     lateinit var webLinks: List<String>
     lateinit var socialLinks: List<String>
     var address: String? = null
+    var place: String? = null
     var mapInfo: MapInfo? = null
     var places: Array<Place>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(phones, emails, webLinks, socialLinks, address, mapInfo != null || !places.isNullOrEmpty())
+        viewState.setData(phones, emails, webLinks, socialLinks, address, place, mapInfo != null || !places.isNullOrEmpty())
     }
 
     override fun onShowOnMapClick() {

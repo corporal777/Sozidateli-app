@@ -16,30 +16,26 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
-import com.example.extensions.*
+import com.example.extensions.dp
+import com.example.extensions.formatToEventDatesInterval
 import com.example.holders.*
 import com.example.holders.EventGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR
-import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragment {
 
-    override val title: String
-        get() = ""
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: AboutEventPresenter
@@ -131,42 +127,12 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun setEventData(eventData: EventData, userRegistration: Event.RegistrationStatus?, pages: List<EventPage>, partners: List<EventParther>, showContacts: Boolean) {
-        val start = eventData.conferenceStart
-        val finish = eventData.conferenceFinish
-
-        val startDate = start?.parseToDate(defaultServerDateFormatter)
-        val endDate = finish?.parseToDate(defaultServerDateFormatter)
-        val startCalendar = startDate?.calendar()
-        val endCalendar = endDate?.calendar()
-
-        val startFormatter = if (startCalendar != null && endCalendar != null && startCalendar.isSameYear(endCalendar)) {
-            SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_FULL_MONTH, Locale.getDefault())
-        } else if (startCalendar != null) {
-            SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
-        } else {
-            null
-        }
-
-        val endFormatter = if (endCalendar != null) {
-            SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
-        } else {
-            null
-        }
-
-        val eventDates = StringBuilder().apply {
-            if (startFormatter != null) {
-                append(startFormatter.format(startDate))
-                if (endFormatter != null) append(" - ")
-            }
-            if (endFormatter != null) append(endFormatter.format(endDate))
-        }.toString()
-
         val aboutItem = EventDataAboutItem(
                 -eventData.id.toLong(),
                 eventData.organization?.name,
                 eventData.name,
                 eventData.conferenceFirstActivityStart,
-                eventDates,
+                eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
                 eventData.isFavorite ?: false
         ) {
             presenter.onChangeFavoriteClick()
@@ -243,10 +209,6 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPageFragment(eventId, pageId))
     }
 
-    override fun showDocuments(eventId: String, pageId: String) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToDocumentsListFragment(eventId, pageId))
-    }
-
     override fun showPartner(eventId: String, partnerId: String) {
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPartnerFragment(eventId, partnerId))
     }
@@ -255,7 +217,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(eventId))
     }
 
-    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, mapInfo: MapInfo?, places: List<Place>?) {
+    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?) {
         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToContactsFragment(
                 eventName,
                 phones.toTypedArray(),
@@ -263,6 +225,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 webLinks.toTypedArray(),
                 socialLinks.toTypedArray(),
                 address,
+                place,
                 mapInfo,
                 places?.toTypedArray()
         ))

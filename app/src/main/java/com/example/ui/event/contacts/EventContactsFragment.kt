@@ -10,8 +10,7 @@ import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
 import com.example.data.models.Place
-import com.example.holders.ActionButtonItem
-import com.example.holders.ActionButtonItem.Companion.ACTION_SHOW_ON_MAP
+import com.example.holders.ProfileButtonEditItem
 import com.example.holders.ProfileFieldTextItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -25,8 +24,7 @@ import javax.inject.Provider
 
 class EventContactsFragment : BaseFragment(), EventContactsContract.View, ToolbarFragment {
 
-    override val title: String
-        get() = getString(R.string.about_event_contacts)
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: EventContactsPresenter
@@ -43,6 +41,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         webLinks = args.webLinks.toList()
         socialLinks = args.socialLinks.toList()
         address = args.address
+        place = args.place
         mapInfo = args.mapInfo
         places = args.places
     }
@@ -56,7 +55,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         }
     }
 
-    override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, canShowOnMap: Boolean) {
+    override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, canShowOnMap: Boolean) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone) })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
@@ -66,10 +65,14 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n")))
             if (!address.isNullOrEmpty())
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_address), address))
+            if (!place.isNullOrEmpty())
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place))
 
             if (canShowOnMap)
-                add(ActionButtonItem(size.toLong(), ACTION_SHOW_ON_MAP) {
+                add(ProfileButtonEditItem(size.toLong(), getString(R.string.event_contacts_watch_on_map)) {
                     presenter.onShowOnMapClick()
+                }.apply {
+                    hasDivider = false
                 })
         })
     }

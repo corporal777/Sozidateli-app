@@ -13,7 +13,6 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.UserSubscribeButton
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list.*
@@ -53,7 +52,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
     }
 
     override fun setData(data: List<User?>) {
-        if (data.isEmpty()){
+        if (data.isEmpty()) {
             usersSection.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
         } else {
             usersSection.update(data.map {
@@ -64,7 +63,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                         null,
                         it.user_avatar,
                         { presenter.onUserClick(it) },
-                        UserSubscribeButton.Action.UNFAVORITE,
+                        it.getUserSubscribeAction(),
                         { presenter.onUserRemoveFromFavoritesClick(it) }
                 )
             })

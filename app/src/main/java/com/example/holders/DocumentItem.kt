@@ -26,7 +26,7 @@ class DocumentItem(
                 isVisible = date != null
             }
             tvDocumentName.apply {
-                text = (document.description ?: document.filename ?: "file").setUnderlineSpan()
+                text = (document.description ?: document.filename ?: "file")
             }
 
             tvFileData.apply {

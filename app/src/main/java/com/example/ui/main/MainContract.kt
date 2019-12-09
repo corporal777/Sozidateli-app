@@ -87,5 +87,7 @@ interface MainContract {
 
         fun onRequestShowErrorMessage(message: String)
         fun onRequestHideErrorMessage()
+
+        fun onStoriesComplete()
     }
 }

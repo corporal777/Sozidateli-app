@@ -1,6 +1,8 @@
 package com.example.data.models
 
-sealed class SearchFilter {
+import java.io.Serializable
+
+sealed class SearchFilter : Serializable {
     data class Organization(
             var address: String? = null,
             var name: String? = null,
