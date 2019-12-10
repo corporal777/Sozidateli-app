@@ -21,8 +21,8 @@ interface Api {
     fun setEmailSocialNetwork(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
-    @POST("/v1/user/auth/{sn}/confirm_email")
-    fun confirmEmailSocialNetwork(@Path("sn") sn: String, @Field("id") id: String, @Field("code") code: String): Single<ApiResponse<AuthResponse>>
+    @POST("/v1/user/auth/social/confirm_email")
+    fun confirmEmailSocialNetwork(@Field("id") id: String, @Field("code") code: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth")
@@ -49,8 +49,8 @@ interface Api {
     fun registerEmailResend(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
-    @POST("/v1/user/auth/{sn}/resend_confirm")
-    fun registerSnResend(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    @POST("/v1/user/auth/social/resend_confirm")
+    fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @GET("/v1/user/info/short")
     fun getUserShort(): Maybe<ApiResponse<UserShort>>

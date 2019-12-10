@@ -41,10 +41,6 @@ class ChatView : FrameLayout, ChatViewContract.View {
         ContextCompat.getDrawable(context, R.drawable.background_badge_attention_high)!!
     }
 
-    private val badgeBackgroundRequests by lazy {
-        ContextCompat.getDrawable(context, R.drawable.background_badge_attention_low)!!
-    }
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -72,7 +68,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
     }
 
     override fun setRequestsCount(count: String) {
-        showBadge(count, badgeBackgroundRequests)
+        showBadge(count, badgeBackgroundMessages)
     }
 
     private fun showBadge(count: String, backgroundDrawable: Drawable) {

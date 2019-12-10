@@ -51,8 +51,8 @@ open class SubEventItem(
                 }
 
                 removeAllViews()
-                val categories = subEvent.groups
-                val tags = subEvent.groups.plus(subEvent.tags)
+                val categories = subEvent.groups ?: emptyList()
+                val tags = subEvent.tags ?: emptyList()
                 categories.forEach { addView(createChip(it)) }
                 tags.forEach { addView(createChip(it)) }
             }

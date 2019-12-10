@@ -1,9 +1,11 @@
 package com.example.data.models
 
+import java.io.Serializable
+
 sealed class Tag(
         open val id: String,
         open val name: String
-) {
+) : Serializable {
 
     var isSelected = false
 

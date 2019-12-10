@@ -38,7 +38,7 @@ class EmailConfirmPresenter
     override fun onResendClick() {
         val snAuth = this.snUser?.snAuth
         val request = if (snAuth != null) {
-            authRepository.registerSnResend(snAuth.snType.code, email, snAuth.token)
+            authRepository.registerSnResend(email, snAuth.token)
         } else {
             authRepository.registerEmailResend(email)
         }

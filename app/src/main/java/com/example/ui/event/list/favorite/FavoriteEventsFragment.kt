@@ -1,10 +1,15 @@
 package com.example.ui.event.list.favorite
 
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.R
 import com.example.data.models.Event
+import com.example.data.models.SubEvent
+import com.example.extensions.findItemBy
 import com.example.holders.EventFavoriteItem
 import com.example.holders.PlaceholderItem
+import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.EventListFragment
 import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
@@ -24,8 +29,24 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     override fun setData(events: List<Event?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
-            else EventFavoriteItem(it) {}
+            else EventFavoriteItem(
+                    it,
+                    { presenter.onShowEventClick(it.id) },
+                    { presenter.onEventActionClick(it) },
+                    { presenter.onEventSubeventsClick(it) }
+            )
         })
         swipeToRefresh.isRefreshing = false
+    }
+
+    override fun updateEventFavorite(eventId: String, isFavorite: Boolean) {
+        dataGroup.findItemBy<EventFavoriteItem> { it.event.id == eventId }?.apply {
+            notifyChanged(isFavorite)
+        }
+    }
+
+    override fun showSubEvents(subEvents: List<SubEvent>) {
+        val args = FavoriteSubeventFragmentArgs.Builder(subEvents.toTypedArray()).build().toBundle()
+        findNavController().navigate(R.id.favorite_subevents_fragment, args)
     }
 }

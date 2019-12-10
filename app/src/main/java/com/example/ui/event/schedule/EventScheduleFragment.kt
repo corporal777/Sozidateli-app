@@ -116,7 +116,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     override fun showCurrentDay(day: EventScheduleCalendarDay) {
-        daySection.update(listOf(DayHeaderItem(day)))
+        daySection.update(listOf(DayHeaderItem(day.millis)))
     }
 
     override fun hideCurrentDay() {

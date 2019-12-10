@@ -107,8 +107,12 @@ constructor(
 
     private fun filterTags(event: SubEvent, selectedTags: List<Tag>): Boolean {
         if (!mustFilterTags() || selectedTags.isEmpty()) return true
-        return selectedTags.any { tag -> event.tags.any { eventTag -> eventTag.id == tag.id } }
-                || selectedTags.any { tag -> event.groups.any { eventTag -> eventTag.id == tag.id } }
+        return selectedTags.any { tag ->
+            event.tags?.any { eventTag -> eventTag.id == tag.id } ?: false
+        }
+                || selectedTags.any { tag ->
+            event.groups?.any { eventTag -> eventTag.id == tag.id } ?: false
+        }
     }
 
     private fun daySubEventsError() {

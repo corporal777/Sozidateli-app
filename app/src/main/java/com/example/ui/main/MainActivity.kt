@@ -184,6 +184,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
                 val change = it.getQueryParameter(CHANGE_EMAIL)
 
+                val lastPath = it.lastPathSegment
+
                 if (change != null) {
                     if (authEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(authEmail, authCode)
@@ -192,11 +194,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     presenter.onHandleAuthLink(authEmail, authCode)
                 } else if (authCode != null && recoverEmail != null) {
                     presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
-                } else if (it.getQueryParameter(SET_EMAIL_USER_SOCIAL) != null) {
-                    val id = it.getQueryParameter(ID)
-                    val snType = it.getQueryParameter(SN_PROVIDER)
-                    if (snType != null && id != null && authCode != null) {
-                        presenter.onHandleSocialNetworkConfirm(snType, id, authCode)
+                } else if (lastPath == PATH_SN_AUTHORIZATION) {
+                    val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
+                    if (userId != null && authCode != null) {
+                        presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
                 }
             }

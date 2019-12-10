@@ -21,7 +21,12 @@
                 <data
                     android:host="sozidateli-houseofapps.ru"
                     android:pathPrefix="/profile"
-                    android:scheme="http" />
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli-houseofapps.ru"
+                    android:pathPrefix="/social"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
     </application>

@@ -36,7 +36,7 @@ data class Event(
         val userRegistration: RegistrationStatus?,
         val format: EventFormat?,
         val activities: List<SubEvent>?,
-        @SerializedName("in_favorites")
+        @SerializedName("is_favorite")
         var isInFavorites: Boolean
 ) {
 

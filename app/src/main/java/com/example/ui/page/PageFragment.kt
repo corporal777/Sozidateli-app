@@ -46,7 +46,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         }
     }
 
-    override fun setContent(logo: String?, title: String, content: String, documents: List<Document>) {
+    override fun setContent(logo: String?, title: String?, content: String?, documents: List<Document>?) {
         ivLogo.apply {
             clipToOutline = true
             val visible = !logo.isNullOrEmpty()
@@ -54,11 +54,26 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
             isVisible = visible
         }
 
-        tvTitle.setHtml(title)
+        tvTitle.apply {
+            if (title == null) {
+                isVisible = false
+            } else {
+                isVisible = true
+                setHtml(title)
+            }
+        }
 
-        tvInfo.setHtml(content)
+        tvInfo.apply {
+            if (content == null) {
+                isVisible = false
+            } else {
+                isVisible = true
+                setHtml(content)
+            }
+        }
 
-        groupAdapter.update(documents.map { DocumentItem(it) { presenter.onDocumentClick(it) } })
+        groupAdapter.update(documents?.map { DocumentItem(it) { presenter.onDocumentClick(it) } }
+                ?: emptyList())
     }
 
     override fun openLinkInBrowser(link: String) {

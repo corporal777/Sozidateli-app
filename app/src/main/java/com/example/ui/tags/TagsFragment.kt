@@ -42,7 +42,7 @@ class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
 
         LayoutInflater.from(requireContext()).inflate(R.layout.layout_tag_button, tagGroup, true).apply {
             findViewById<Button>(R.id.btnTag).apply {
-                text = context.getText(R.string.schedule_show_all_tags)
+                text = context.getText(R.string.schedule_clear_tags)
                 setOnClickListener { presenter.onClearClick() }
             }
         }

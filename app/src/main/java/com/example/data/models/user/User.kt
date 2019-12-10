@@ -83,9 +83,9 @@ data class User(
     val fullName: String
         get() {
             val nameList = listOfNotNull(
-                    user_last_name,
                     user_name,
-                    getMiddleName()
+                    getMiddleName(),
+                    user_last_name
             )
             return nameList.joinToString(" ")
         }

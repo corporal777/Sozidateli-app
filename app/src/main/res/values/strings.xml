@@ -482,6 +482,7 @@
     <string name="schedule_cache_data">Отсутствует связь с сервером. Показаны данные актуальные на %s</string>
     <string name="schedule_search_by_tags">Поиск по тегам</string>
     <string name="schedule_show_all_tags">Выбрать теги</string>
+    <string name="schedule_clear_tags">Сбросить фильтр</string>
 
     <string name="auth_sn_set_email_title">Установите email</string>
 

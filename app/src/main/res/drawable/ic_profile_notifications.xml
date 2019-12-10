@@ -3,7 +3,7 @@
     <item android:drawable="@drawable/ic_profile_notifications_background" />
     <item>
         <inset
-            android:drawable="@drawable/ic_notification"
+            android:drawable="@drawable/ic_profile_notification"
             android:inset="@dimen/notifications_icon_inset" />
     </item>
 </layer-list>

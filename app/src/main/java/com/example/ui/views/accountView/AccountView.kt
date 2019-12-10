@@ -42,7 +42,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     }
 
     override fun setCount(count: String) {
-        view.tvBadge.text = count
+//        view.tvBadge.text = count
     }
 
     override fun showCounter(show: Boolean) {

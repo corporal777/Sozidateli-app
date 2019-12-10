@@ -118,5 +118,9 @@
         <meta-data
             android:name="chat_project_key"
             android:value="AskfWi3o31sA" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
     </application>
 </manifest>

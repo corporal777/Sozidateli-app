@@ -38,6 +38,7 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
+import timber.log.Timber
 import withLoadingDialog
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -324,8 +325,9 @@ class MainPresenter
                 .call(compositeDisposable)
     }
 
-    override fun onHandleSocialNetworkConfirm(snType: String, id: String, code: String) {
-        compositeDisposable += authRepository.confirmEmailSocialNetwork(snType, id, code)
+    override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
+        Timber.tag("")
+        compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

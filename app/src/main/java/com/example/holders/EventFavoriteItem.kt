@@ -12,10 +12,13 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_favorite.*
 import parseColor
+import setOnClickListener
 
 class EventFavoriteItem(
-        private val event: Event,
-        private val onEventClick: () -> Unit
+        val event: Event,
+        private val onEventClick: () -> Unit,
+        private val onEventActionClick: () -> Unit,
+        private val onEventSubeventsClick: () -> Unit
 ) : Item(event.id.toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -23,7 +26,7 @@ class EventFavoriteItem(
             tvEventName.text = event.name
             ivLogo.apply {
                 clipToOutline = true
-                Picasso.get().load(event.logo.let { if (it.isNullOrBlank()) null else it })
+                Picasso.get().load(event.backgroundImage.let { if (it.isNullOrBlank()) null else it })
                         .into(this)
             }
 
@@ -34,12 +37,30 @@ class EventFavoriteItem(
                         ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
-            btnSubevents.isVisible = event.activities?.any { it.isInFavorites } ?: false
-            userSubscribeButton.setAction(if (event.isInFavorites) UserSubscribeButton.Action.UNFAVORITE
-            else UserSubscribeButton.Action.FAVORITE)
+            btnSubevents.apply {
+                isVisible = event.activities?.any { it.isInFavorites } ?: false
+                setOnClickListener(onEventSubeventsClick)
+            }
+            userSubscribeButton.apply {
+                setAction(this, event.isInFavorites)
+                setOnClickListener(onEventActionClick)
+            }
 
             itemView.setOnClickListener { onEventClick.invoke() }
         }
+    }
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+        if (payload == null) super.bind(viewHolder, position, payloads)
+        else {
+            if (payload is Boolean) setAction(viewHolder.userSubscribeButton, payload)
+        }
+    }
+
+    private fun setAction(button: UserSubscribeButton, isFavorite: Boolean) {
+        button.setAction(if (isFavorite) UserSubscribeButton.Action.UNFAVORITE
+        else UserSubscribeButton.Action.FAVORITE)
     }
 
     override fun getLayout() = R.layout.item_event_favorite

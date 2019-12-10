@@ -54,8 +54,8 @@ class AuthRepositoryImp
         return callAuthCompletable(api.setEmailSocialNetwork(snType, email, token))
     }
 
-    override fun confirmEmailSocialNetwork(snType: String, id: String, code: String): Completable {
-        return callAuthCompletable(api.confirmEmailSocialNetwork(snType, id, code))
+    override fun confirmEmailSocialNetwork(id: String, code: String): Completable {
+        return callAuthCompletable(api.confirmEmailSocialNetwork(id, code))
     }
 
     override fun authEmail(email: String, password: String): Completable {
@@ -74,8 +74,8 @@ class AuthRepositoryImp
         return callAuthCompletable(api.registerEmailResend(email))
     }
 
-    override fun registerSnResend(snType: String, email: String, token: String): Completable {
-        return callAuthCompletable(api.registerSnResend(snType, email, token))
+    override fun registerSnResend(email: String, token: String): Completable {
+        return callAuthCompletable(api.registerSnResend(email, token))
     }
 
     override fun sendRecoveryEmail(email: String): Completable {

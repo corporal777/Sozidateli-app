@@ -654,4 +654,12 @@
     <fragment
         android:id="@+id/event_tags_fragment"
         android:name="com.example.ui.tags.TagsFragment" />
+
+    <fragment
+        android:id="@+id/favorite_subevents_fragment"
+        android:name="com.example.ui.event.favorite.subevent.FavoriteSubeventFragment">
+        <argument
+            android:name="actions"
+            app:argType="com.example.data.models.SubEvent[]" />
+    </fragment>
 </navigation>
