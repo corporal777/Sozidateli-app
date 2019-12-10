@@ -7,7 +7,7 @@ import androidx.core.text.toSpannable
 import java.util.*
 
 fun CharSequence.substringToWholeWord(maxLength: Int = this.length): CharSequence {
-    return if (length > maxLength) {
+    return if (maxLength in 1 until length) {
         val maxString = subSequence(0, maxLength - 1).trim()
         val spaceIndex = maxString.indexOfLast { it.isWhitespace() }
         if (spaceIndex > 0) maxString.subSequence(0, spaceIndex) else maxString

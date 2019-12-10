@@ -6,7 +6,6 @@ import com.example.R
 import com.example.data.models.SubeventInfo
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToInterval
-import com.example.extensions.substringToWholeWord
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -20,8 +19,6 @@ open class SubeventInfoItem(
         private val onFavoriteClickListener: () -> Unit
 ) : Item(subevent.id.toLong()) {
 
-    private var ellipsizeDescription = true
-
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvTime.text = subevent.start.formatToInterval(subevent.finish, defaultServerDateTimeFormatter, true)
@@ -31,13 +28,11 @@ open class SubeventInfoItem(
                 isVisible = !subevent.description.isNullOrEmpty()
             }
 
-            val message = subevent.description ?: ""
-            val ellipsizedMessage = if (ellipsizeDescription) message.substringToWholeWord(tvDescription.maxLength) else message
+            val message = subevent.description
 
             tvDescription.apply {
-                if (!ellipsizeDescription) maxLength = message.length
-                isVisible = !subevent.description.isNullOrEmpty()
-                text = ellipsizedMessage
+                isVisible = !message.isNullOrEmpty()
+                text = message
                 BetterLinkMovementMethod.linkify(Linkify.ALL, this)
             }
 
