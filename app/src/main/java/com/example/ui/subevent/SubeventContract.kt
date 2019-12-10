@@ -24,5 +24,6 @@ interface SubeventContract {
     interface Presenter : BaseContract.Presenter {
         fun onSpeakerClick(speaker: Speaker)
         fun onSpeakerChangeSubscriptionClick(speaker: Speaker)
+        fun onSubeventChangeSubscriptionClick()
     }
 }

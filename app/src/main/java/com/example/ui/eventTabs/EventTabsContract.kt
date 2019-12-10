@@ -1,6 +1,5 @@
 package com.example.ui.eventTabs
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.MapInfo
@@ -25,9 +24,6 @@ interface EventTabsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventList()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setLabel(label: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showChat()

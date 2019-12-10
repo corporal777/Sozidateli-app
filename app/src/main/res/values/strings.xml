@@ -471,12 +471,15 @@
     <string name="register_event_select_category_hint">Выберите категорию</string>
     <string name="select_file_error">Возможно файл не существует или вы выбрали его из облака. Для загрузки используйте файлы хранящиеся на устройстве.</string>
 
+    <string name="schedule_title">Расписание</string>
+    <string name="schedule_events_title">События</string>
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
-    <string name="schedule_my_empty_day_placeholder">У вас еще нет событий. Добавьте к себе в расписание из списка.</string>
-    <string name="schedule_complete_empty_day_placeholder">В этот день нет событий</string>
+    <string name="schedule_my_empty_day_placeholder_title">Список пуст.</string>
+    <string name="schedule_my_empty_day_placeholder_description">Нажмите “Добавить в расписание” в списке событий</string>
+    <string name="schedule_complete_empty_day_placeholder">Список пуст</string>
     <string name="schedule_cache_data">Отсутствует связь с сервером. Показаны данные актуальные на %s</string>
     <string name="schedule_search_by_tags">Поиск по тегам</string>
-    <string name="schedule_show_all_tags">Смотреть все</string>
+    <string name="schedule_show_all_tags">Выбрать теги</string>
 
     <string name="auth_sn_set_email_title">Установите email</string>
 

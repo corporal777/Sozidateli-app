@@ -36,7 +36,7 @@ import javax.inject.Provider
 
 class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment, DoNotCheckConnectionFragment {
 
-    override val title = ""
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: EventTabsPresenter
@@ -87,8 +87,6 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
         }
     }
-
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -161,16 +159,11 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
                 .build())
     }
 
-    override fun setLabel(label: String) {
-        toolbarContentActionBar.title = label
-    }
-
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
         toolbarContentActionBar.apply {
-            addLeftView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
             addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
+            addRightView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
         }
     }
 

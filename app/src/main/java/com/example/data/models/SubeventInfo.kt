@@ -20,5 +20,7 @@ data class SubeventInfo(
         val groups: List<Tag.Group>,
         val tags: List<Tag.EventTag>,
         val speakers: List<Speaker>,
-        val auditoriums: List<Auditorium>
+        val auditoriums: List<Auditorium>,
+        @SerializedName("in_favorites")
+        var isInFavorites: Boolean
 )

@@ -1,94 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:layout_marginStart="@dimen/margin_horizontal_default"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="@dimen/margin_horizontal_default"
+    android:background="@drawable/background_sub_event">
 
     <TextView
         android:id="@+id/tvTime"
+        fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:textSize="20sp"
+        android:layout_marginEnd="8dp"
+        android:textSize="16sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAction"
+        app:layout_constraintEnd_toStartOf="@+id/btnAction"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnAction"
+        app:layout_constraintVertical_bias="0.6"
+        tools:ignore="MissingPrefix"
         tools:text="9:00 - 10:00" />
 
     <TextView
         android:id="@+id/tvStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:paddingTop="7dp"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTime"
-        tools:text="@string/sub_event_register_users" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/tagGroup"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:chipSpacingHorizontal="16dp"
-        app:chipSpacingVertical="8dp"
-        app:layout_constraintEnd_toStartOf="@id/ivArrow"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAction"
+        tools:ignore="MissingPrefix"
+        tools:text="@string/sub_event_register_users" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/margin_horizontal_default"
+        android:paddingEnd="@dimen/margin_horizontal_default"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="16dp"
+            app:chipSpacingVertical="8dp" />
+    </HorizontalScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAction"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/background_corners"
-        android:drawablePadding="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background_add_to_schedule"
         android:minHeight="42dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:text="@string/sub_event_add_to_schedule"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/text_color_add_to_schedule"
         android:textSize="14sp"
-        android:theme="@style/ViewBackgroundAccent"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tagGroup" />
-
-    <ImageView
-        android:id="@+id/ivArrow"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_arrow_right"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
-
-    <FrameLayout
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_background"
-        android:paddingBottom="@dimen/event_schedule_sub_event_divider_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAction">
-
-        <View style="@style/ViewDivider.Horizontal" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

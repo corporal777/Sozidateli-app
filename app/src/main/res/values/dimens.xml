@@ -85,4 +85,14 @@
     <dimen name="revert_icon_inset">8dp</dimen>
 
     <dimen name="custom_tab_corner_radius">4dp</dimen>
+
+    <dimen name="sub_event_background_corners_radius">4dp</dimen>
+    <dimen name="sub_event_background_padding">16dp</dimen>
+    <dimen name="tag_text_size">12sp</dimen>
+    <dimen name="tag_background_padding_horizontal">16dp</dimen>
+    <dimen name="tag_background_padding_vertical">10dp</dimen>
+    <dimen name="tag_corners_radius">12dp</dimen>
+    <dimen name="tag_compact_background_padding_horizontal">16dp</dimen>
+    <dimen name="tag_compact_background_padding_vertical">5dp</dimen>
+    <dimen name="tag_compact_corners_radius">4dp</dimen>
 </resources>

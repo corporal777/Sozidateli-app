@@ -15,7 +15,6 @@ open class DayItem(
 
     override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            root.alpha = if (day.hasEvents) 1f else 0.3f
             tvDayName.text = day.dayOfWeek
             tvDayNumber.apply {
                 isSelected = this@DayItem.isSelected
@@ -26,7 +25,7 @@ open class DayItem(
     }
 
     private fun performSelectClick() {
-        if (!day.hasEvents || isSelected) return
+        if (isSelected) return
         isSelected = true
         onDaySelect.invoke(day)
         notifyChanged()

@@ -89,7 +89,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 itemData.status,
                 itemData.userRegistration,
                 itemData.backgroundColor,
-                itemData.logo,
+                itemData.backgroundImage,
                 itemData.format,
                 itemData.organization?.emails,
                 onEventClickListener,

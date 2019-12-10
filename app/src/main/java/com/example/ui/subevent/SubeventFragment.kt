@@ -49,12 +49,11 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
                 add(infoSection)
                 add(speakersSection)
             }
-            if (itemDecorationCount == 0) addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         }
     }
 
     override fun setData(subEvent: SubeventInfo) {
-        infoSection.update(listOf(SubeventInfoItem(subEvent)))
+        infoSection.update(listOf(SubeventInfoItem(subEvent) { presenter.onSubeventChangeSubscriptionClick() }))
     }
 
     override fun setSpeakers(speakers: List<Speaker>) {

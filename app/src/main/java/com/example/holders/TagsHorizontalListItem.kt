@@ -1,5 +1,7 @@
 package com.example.holders
 
+import android.view.LayoutInflater
+import android.widget.Button
 import com.example.R
 import com.example.data.models.Tag
 import com.example.ui.views.TagChip
@@ -18,10 +20,17 @@ class TagsHorizontalListItem(
         viewHolder.apply {
             tagGroup.apply {
                 removeAllViews()
+
+                LayoutInflater.from(context).inflate(R.layout.layout_tag_button, this, true).apply {
+                    findViewById<Button>(R.id.btnTag).apply {
+                        text = context.getText(R.string.schedule_show_all_tags)
+                        setOnClickListener(onShowAllClick)
+                    }
+                }
+
                 tags.forEach { tag ->
                     val chip = TagChip(context).apply {
                         text = tag.name
-                        isCheckable = true
                         isChecked = tag.isSelected
                         setOnCheckedChangeListener { _, isChecked ->
                             tag.isSelected = isChecked
@@ -32,8 +41,6 @@ class TagsHorizontalListItem(
                     addView(chip)
                 }
             }
-
-            btnShowAllTags.setOnClickListener(onShowAllClick)
         }
     }
 

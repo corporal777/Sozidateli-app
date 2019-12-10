@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="@dimen/tag_corners_radius" />
+    <padding
+        android:right="@dimen/tag_background_padding_horizontal"
+        android:left="@dimen/tag_background_padding_horizontal"
+        android:top="@dimen/tag_background_padding_vertical"
+        android:bottom="@dimen/tag_background_padding_vertical" />
+    <solid android:color="@color/event_calendar_tag_background" />
+</shape>

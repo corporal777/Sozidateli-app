@@ -12,7 +12,7 @@ open class DayHeaderItem(
         val date: EventScheduleCalendarDay
 ) : Item(date.millis) {
 
-    private val dateFormat = SimpleDateFormat("EE dd.MM", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("EE d.MM.yyyy", Locale.getDefault())
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {

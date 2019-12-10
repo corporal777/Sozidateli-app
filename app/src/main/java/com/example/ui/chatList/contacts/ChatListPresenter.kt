@@ -79,7 +79,9 @@ class ChatListPresenter
                         dispatchChatsListUpdate(it)
                         if (isScrolledToTop) scrollToTopPosition()
                     }
-                }, { it.printStackTrace() })
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     override fun attachView(view: ChatListContract.View?) {

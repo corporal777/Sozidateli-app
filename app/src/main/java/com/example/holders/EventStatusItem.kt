@@ -70,7 +70,6 @@ class EventStatusItem(
                     textBackground = R.color.event_status_approved_background
                     textRes = R.string.event_status_approved
                 }
-                Event.RegistrationStatus.CANCELLED,
                 Event.RegistrationStatus.PENDING -> {
                     textBackground = R.color.event_status_wait_confirmation_background
                     textRes = R.string.event_status_wait_confirmation

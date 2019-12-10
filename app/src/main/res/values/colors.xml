@@ -77,7 +77,21 @@
     <color name="event_status_declined_background">#FF0000</color>
     <color name="event_status_wait_confirmation_background">#979797</color>
     <color name="event_status_finished_background">#979797</color>
-    <color name="event_calendar_day_background">#7D9D57</color>
+    <color name="event_calendar_day_name_text">#000000</color>
+    <color name="event_calendar_day_date_text">#000000</color>
+    <color name="event_calendar_day_date_text_selected">#FFFFFF</color>
+    <color name="event_calendar_day_background">#99000000</color>
+    <color name="event_calendar_sub_event_background">#0D000000</color>
+    <color name="event_calendar_add_to_schedule_background">#FFFFFF</color>
+    <color name="event_calendar_add_to_schedule_stroke">#1A000000</color>
+    <color name="event_calendar_add_to_schedule_stroke_disabled">#E6E6E6</color>
+    <color name="event_calendar_add_to_schedule_text">#000000</color>
+    <color name="event_calendar_add_to_schedule_text_disabled">#868686</color>
+    <color name="event_calendar_tag_text">#000000</color>
+    <color name="event_calendar_tag_text_checked">#FFFFFF</color>
+    <color name="event_calendar_tag_background">#EFEFF0</color>
+    <color name="event_calendar_tag_background_checked">#BE9B72</color>
+    <color name="event_calendar_tag_button_background">#99000000</color>
 
     <color name="auth_fb_color">#4968ac</color>
     <color name="auth_vk_color">#5376a3</color>
@@ -97,12 +111,6 @@
     <color name="image_view_error_background">#42403E</color>
 
     <color name="search_edit_text_bg">#f8f8f8</color>
-
-    <color name="tag_selected_background">#9096A0</color>
-    <color name="tag_background">#00404041</color>
-    <color name="tag_selected_text">#FFFFFF</color>
-    <color name="tag_text">#939598</color>
-    <color name="tag_border">#939598</color>
 
     <color name="tab_text">#E6000000</color>
     <color name="tab_text_selected">@color/colorAccent</color>

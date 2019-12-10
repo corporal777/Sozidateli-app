@@ -7,7 +7,6 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.UserEvent
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -16,7 +15,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.CompletableSubject
-import timber.log.Timber
 import java.util.*
 
 class UserEventData(
@@ -74,27 +72,38 @@ class UserEventData(
     private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
         if (dates.isEmpty()) return emptyList()
         val sortedDates = dates.sorted()
-        val firsDate = sortedDates.first().calendar()
-        val lastDate = sortedDates.last().calendar()
-        val inDatesCalendar = Calendar.getInstance()
+//        val firsDate = sortedDates.first().calendar()
+//        val lastDate = sortedDates.last().calendar()
+//        val inDatesCalendar = Calendar.getInstance()
+//
+//        val datesInRange = mutableListOf<EventScheduleCalendarDay>()
+//        while (firsDate.before(lastDate) || firsDate.isSameDay(lastDate)) {
+//            val dateInDates = sortedDates.find { firsDate.isSameDay(inDatesCalendar.apply { timeInMillis = it }) }
+//
+//            val eventDay = EventScheduleCalendarDay(
+//                    firsDate.timeInMillis,
+//                    firsDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+//                            ?: "",
+//                    firsDate.get(Calendar.DAY_OF_MONTH),
+//                    dateInDates != null
+//            )
+//
+//            datesInRange.add(eventDay)
+//            firsDate.add(Calendar.DATE, 1)
+//        }
+//
+//        return datesInRange
 
-        val datesInRange = mutableListOf<EventScheduleCalendarDay>()
-        while (firsDate.before(lastDate) || firsDate.isSameDay(lastDate)) {
-            val dateInDates = sortedDates.find { firsDate.isSameDay(inDatesCalendar.apply { timeInMillis = it }) }
-
-            val eventDay = EventScheduleCalendarDay(
-                    firsDate.timeInMillis,
-                    firsDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+        return sortedDates.map {
+            val cal = it.calendar()
+            EventScheduleCalendarDay(
+                    it,
+                    cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
                             ?: "",
-                    firsDate.get(Calendar.DAY_OF_MONTH),
-                    dateInDates != null
+                    cal.get(Calendar.DAY_OF_MONTH),
+                    true
             )
-
-            datesInRange.add(eventDay)
-            firsDate.add(Calendar.DATE, 1)
         }
-
-        return datesInRange
     }
 
     fun clear() {

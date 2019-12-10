@@ -56,4 +56,8 @@ class SubeventPresenter @Inject constructor(
                     viewState.updateSpeaker(speaker)
                 }
     }
+
+    override fun onSubeventChangeSubscriptionClick() {
+
+    }
 }

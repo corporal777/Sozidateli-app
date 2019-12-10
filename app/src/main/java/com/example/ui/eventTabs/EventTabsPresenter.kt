@@ -39,10 +39,6 @@ class EventTabsPresenter
                     }
                 })
 
-        viewState.apply {
-            setLabel(userEvent.eventInfo.event.name)
-        }
-
         onMyScheduleTabSelected()
     }
 

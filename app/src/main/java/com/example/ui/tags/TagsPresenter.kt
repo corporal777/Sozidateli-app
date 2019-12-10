@@ -18,11 +18,15 @@ class TagsPresenter @Inject constructor(
         super.onFirstViewAttach()
         viewState.apply {
             setData(tags)
-            setTitle(userEvent.eventInfo.event.name)
         }
     }
 
     override fun onTagClick(tag: Tag) {
 
+    }
+
+    override fun onClearClick() {
+        tags.forEach { it.isSelected = false }
+        viewState.uselectAllTags()
     }
 }

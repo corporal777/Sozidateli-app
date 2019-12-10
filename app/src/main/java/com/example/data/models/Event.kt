@@ -18,6 +18,8 @@ data class Event(
         val logo: String?,
         @SerializedName("bg_color")
         val backgroundColor: String?,
+        @SerializedName("bg_img")
+        val backgroundImage: String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")
@@ -37,7 +39,9 @@ data class Event(
 
     enum class Status {
         CONFERENCE_ENDS,
-        REGISTRATION_PARTICIPANTS
+        REGISTRATION_PARTICIPANTS,
+        REGISTRATION_PARTICIPANTS_ENDS,
+        CONFERENCE_IN_PROGRESS
     }
 
     enum class RegistrationStatus {
@@ -68,7 +72,10 @@ data class Event(
         const val FILTER_REGISTRATION_ANY_REGISTERED = "any"
 
         fun isCanRegister(eventStatus: Status?, registrationStatus: RegistrationStatus?): Boolean {
-            return eventStatus == Status.REGISTRATION_PARTICIPANTS
+            return (eventStatus == Status.REGISTRATION_PARTICIPANTS
+                            || eventStatus == Status.REGISTRATION_PARTICIPANTS_ENDS
+                            || eventStatus == Status.CONFERENCE_IN_PROGRESS
+                    )
                     && registrationStatus != RegistrationStatus.APPROVED
                     && registrationStatus != RegistrationStatus.PENDING
         }

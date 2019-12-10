@@ -146,7 +146,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         if (eventData.status == Event.Status.CONFERENCE_ENDS) Event.Status.CONFERENCE_ENDS else null,
                         userRegistration,
                         eventData.backgroundColor,
-                        eventData.logo,
+                        eventData.backgroundImage,
                         eventData.format,
                         null,
                         eventClickListener,

@@ -73,7 +73,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.status,
                     it.userRegistration,
                     it.backgroundColor,
-                    it.logo,
+                    it.backgroundImage,
                     it.format,
                     it.organization?.emails,
                     onEventClickListener,

@@ -18,5 +18,8 @@ class EventCompleteScheduleFragment : EventScheduleFragment<EventCompleteSchedul
     @ProvidePresenter
     fun providePresenter(): EventCompleteSchedulePresenter = presenterProvider.get()
 
+
+    override fun getTitle() = getString(R.string.schedule_events_title)
     override fun getEmptyDayPlaceholderText() = getString(R.string.schedule_complete_empty_day_placeholder)
+    override fun getEmptyDayPlaceholderDescription(): String? = null
 }

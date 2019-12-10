@@ -16,6 +16,8 @@ data class EventData(
         val logo: String?,
         @SerializedName("bg_color")
         val backgroundColor: String?,
+        @SerializedName("bg_img")
+        val backgroundImage: String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")

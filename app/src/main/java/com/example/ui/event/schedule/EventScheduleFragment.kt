@@ -4,24 +4,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
-import com.example.data.models.SubEventCheckLast
 import com.example.data.models.Tag
-import com.example.holders.CalendarHorizontalListItem
-import com.example.holders.DayHeaderItem
-import com.example.holders.SubEventItem
-import com.example.holders.TagsHorizontalListItem
+import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_event_schedule.*
+import kotlinx.android.synthetic.main.item_no_data.*
 
 abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(), EventScheduleContract.View {
 
@@ -31,11 +27,14 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     private val calendarSection = Section()
     private val daySection = Section()
     private val eventsSection = Section()
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
-        add(tagsSection)
-        add(calendarSection)
-        add(daySection)
-        add(eventsSection)
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            add(ScreenLabelItem(getTitle()))
+            add(calendarSection)
+            add(tagsSection)
+            add(daySection)
+            add(eventsSection)
+        }
     }
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
@@ -57,12 +56,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
-            val layoutManager = LinearLayoutManager(context)
             adapter = groupAdapter
-            this.layoutManager = layoutManager
-            if (itemDecorationCount == 0) {
-                addItemDecoration(DividerItemDecoration(requireContext(), layoutManager.orientation))
-            }
         }
     }
 
@@ -95,18 +89,25 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     override fun setSubEvents(subEvents: List<SubEvent>, selectedTags: List<Tag>) {
-        eventsSection.update(subEvents.mapIndexed { index, subEvent ->
-            SubEventItem(SubEventCheckLast(subEvent, index == subEvents.size - 1), selectedTags, onSubEventClickListener)
+        eventsSection.update(subEvents.map { subEvent ->
+            SubEventItem(subEvent, onSubEventClickListener)
         })
     }
 
     override fun showEmptyEventPlaceholder() {
-        tvMessage.text = getString(R.string.schedule_empty_event_placeholder)
-        placeholder.visibility = VISIBLE
+        showPlaceholder(getString(R.string.schedule_empty_event_placeholder), null)
     }
 
     override fun showEmptyDayPlaceholder() {
-        tvMessage.text = getEmptyDayPlaceholderText()
+        showPlaceholder(getEmptyDayPlaceholderText(), getEmptyDayPlaceholderDescription())
+    }
+
+    private fun showPlaceholder(title: String, description: String?) {
+        tvTitle.text = title
+        tvDescription.apply {
+            text = description
+            isVisible = !description.isNullOrEmpty()
+        }
         placeholder.visibility = VISIBLE
     }
 
@@ -132,10 +133,10 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     override fun showDataFormCacheMessage(cacheDate: String) {
-        tvCacheData.apply {
-            text = String.format(getString(R.string.schedule_cache_data), cacheDate)
-            visibility = VISIBLE
-        }
+//        tvCacheData.apply {
+//            text = String.format(getString(R.string.schedule_cache_data), cacheDate)
+//            visibility = VISIBLE
+//        }
     }
 
     override fun hideDataFormCacheMessage() {
@@ -144,5 +145,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
 
     override fun layout() = R.layout.fragment_event_schedule
 
+    abstract fun getTitle(): String
     abstract fun getEmptyDayPlaceholderText(): String
+    abstract fun getEmptyDayPlaceholderDescription(): String?
 }

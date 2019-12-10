@@ -1,6 +1,5 @@
 package com.example.ui.tags
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Tag
@@ -11,11 +10,12 @@ interface TagsContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(tags: List<Tag>)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setTitle(title: String)
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun uselectAllTags()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onTagClick(tag: Tag)
+        fun onClearClick()
     }
 }

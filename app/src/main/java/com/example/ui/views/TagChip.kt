@@ -2,46 +2,47 @@ package com.example.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.Gravity
+import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.core.content.ContextCompat
 import com.example.R
-import com.example.extensions.dp
-import com.example.extensions.sp
-import com.google.android.material.chip.Chip
+import uk.co.chrisjenx.calligraphy.CalligraphyUtils
 
-class TagChip : Chip {
-
-    private val textColor by lazy { ContextCompat.getColor(context, R.color.tag_text) }
-    private val textColorSelected by lazy { ContextCompat.getColor(context, R.color.tag_selected_text) }
-
-    private var checkedChangeListener: OnCheckedChangeListener? = null
+class TagChip : AppCompatToggleButton {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    var isCompactTag = false
+        set(value) {
+            field = value
+            setBackground()
+        }
+
     init {
-        setChipStrokeColorResource(R.color.tag_border)
-        chipStrokeWidth = 1f.dp
-        checkedIcon = null
-        textSize = 15f
-        super.setOnCheckedChangeListener { _, _ ->
-            processCheckedState()
-            checkedChangeListener?.onCheckedChanged(this, isChecked)
-        }
-        processCheckedState()
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimensionPixelSize(R.dimen.tag_text_size).toFloat())
+        CalligraphyUtils.applyFontToTextView(context, this, "fonts/Roboto-Bold.ttf")
+        setTextColor(ContextCompat.getColorStateList(context, R.color.text_color_tag))
+        setBackground()
+        stateListAnimator = null
+        isAllCaps = false
+        gravity = Gravity.CENTER
+
+        minimumHeight = 0
+        minimumWidth = 0
+        minHeight = 0
+        minWidth = 0
     }
 
-    override fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
-        this.checkedChangeListener = listener
+    private fun setBackground() {
+        setBackgroundResource(if (isCompactTag) R.drawable.background_tag_compact else R.drawable.background_tag)
     }
 
-    private fun processCheckedState() {
-        if (isChecked) {
-            setTextColor(textColorSelected)
-            setChipBackgroundColorResource(R.color.tag_selected_background)
-        } else {
-            setTextColor(textColor)
-            setChipBackgroundColorResource(R.color.tag_background)
-        }
+    override fun setText(text: CharSequence?, type: BufferType?) {
+        super.setText(text, type)
+        textOn = text
+        textOff = text
     }
 }
