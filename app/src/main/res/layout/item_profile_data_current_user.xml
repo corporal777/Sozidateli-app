@@ -1,64 +1,70 @@
 <!--suppress AndroidUnknownAttribute -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
-    android:background="@android:color/white">
+    android:paddingBottom="20dp"
+    android:background="@color/list_background">
 
-    <ImageView
-        android:id="@+id/ivAvatar"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/background_corners"
-        android:contentDescription="@string/content_description_avatar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/avatar_placeholder_rectangle" />
-
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="16dp"
-        android:maxLines="2"
-        android:textColor="@color/profile_name_text"
-        android:textSize="17sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="@tools:sample/full_names" />
+        android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/tvId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:textAllCaps="true"
-        android:textColor="@color/profile_id_text"
-        android:textSize="17sp"
-        app:layout_constraintEnd_toStartOf="@+id/btnEdit"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvName"
-        app:layout_constraintTop_toBottomOf="@+id/tvName"
-        tools:text="ID 100500" />
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_corners"
+            android:contentDescription="@string/content_description_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/avatar_placeholder_rectangle" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnEdit"
-        style="@style/Profile.Edit.Button"
-        android:layout_marginStart="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/ivAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/ivAvatar"
-        app:layout_constraintVertical_bias="0.0" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
+            android:maxLines="2"
+            android:textColor="@color/profile_name_text"
+            android:textSize="17sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/tvId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:textAllCaps="true"
+            android:textColor="@color/profile_id_text"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnEdit"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tvName"
+            app:layout_constraintTop_toBottomOf="@+id/tvName"
+            tools:text="ID 100500" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEdit"
+            style="@style/Profile.Edit.Button"
+            android:layout_marginStart="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/ivAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/ivAvatar"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

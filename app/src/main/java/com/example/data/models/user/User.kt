@@ -78,15 +78,26 @@ data class User(
         var is_in_favorite: Boolean = false,
         var is_has_chat: Boolean = false
 ) {
+    var isCurrentUser = false
+
     val fullName: String
         get() {
-            return "$user_name $user_last_name${user_middle_name?.let { if (it == "-") "" else " $it" }
-                    ?: ""}"
+            val nameList = listOfNotNull(
+                    user_last_name,
+                    user_name,
+                    getMiddleName()
+            )
+            return nameList.joinToString(" ")
         }
 
-    fun getUserSubscribeAction(): UserSubscribeButton.Action {
+    private fun getMiddleName(): String? {
+        return user_middle_name?.let { if (it == "-") null else it }
+    }
+
+    fun getUserSubscribeAction(): UserSubscribeButton.Action? {
         return when {
-            user_banned -> UserSubscribeButton.Action.UNBLOCK
+            isCurrentUser -> null
+            user_banned || chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
             is_in_favorite -> UserSubscribeButton.Action.UNFAVORITE
             else -> UserSubscribeButton.Action.FAVORITE
         }

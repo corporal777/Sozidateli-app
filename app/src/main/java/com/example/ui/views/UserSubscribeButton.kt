@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.example.R
 import com.example.extensions.dp
@@ -101,6 +102,7 @@ class UserSubscribeButton : AppCompatButton {
         this.text = if (showText) text else null
         this.setTextColor(textColor)
         this.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+        isVisible = true
     }
 
     override fun onSaveInstanceState(): Parcelable? {

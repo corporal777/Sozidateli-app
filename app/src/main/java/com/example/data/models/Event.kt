@@ -1,10 +1,7 @@
 package com.example.data.models
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class Event(
         @SerializedName("event_id")
         val id: String,
@@ -14,6 +11,8 @@ data class Event(
         val organizationId: String?,
         val organization: Organization?,
         val address: String?,
+        @SerializedName("address_city")
+        val addressCity: String?,
         val name: String,
         val logo: String?,
         @SerializedName("bg_color")
@@ -24,6 +23,10 @@ data class Event(
         val conferenceStart: String?,
         @SerializedName("conference_finish")
         val conferenceFinish: String?,
+        @SerializedName("conference_first_activity_start")
+        val conferenceFirstActivityStart: String?,
+        @SerializedName("conference_last_activity_finish")
+        val conferenceLastActivityFinish: String?,
         @SerializedName("registration_start")
         val registrationStart: String?,
         @SerializedName("registration_finish")
@@ -31,9 +34,11 @@ data class Event(
         val status: Status?,
         @SerializedName("user_registration")
         val userRegistration: RegistrationStatus?,
-        val format: EventFormat?
-
-) : Parcelable {
+        val format: EventFormat?,
+        val activities: List<SubEvent>?,
+        @SerializedName("in_favorites")
+        var isInFavorites: Boolean
+) {
 
     fun isCanRegister() = isCanRegister(status, userRegistration)
 
@@ -73,8 +78,8 @@ data class Event(
 
         fun isCanRegister(eventStatus: Status?, registrationStatus: RegistrationStatus?): Boolean {
             return (eventStatus == Status.REGISTRATION_PARTICIPANTS
-                            || eventStatus == Status.REGISTRATION_PARTICIPANTS_ENDS
-                            || eventStatus == Status.CONFERENCE_IN_PROGRESS
+                    || eventStatus == Status.REGISTRATION_PARTICIPANTS_ENDS
+                    || eventStatus == Status.CONFERENCE_IN_PROGRESS
                     )
                     && registrationStatus != RegistrationStatus.APPROVED
                     && registrationStatus != RegistrationStatus.PENDING

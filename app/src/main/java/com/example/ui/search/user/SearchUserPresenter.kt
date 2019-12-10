@@ -1,6 +1,7 @@
 package com.example.ui.search.user
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Interest
 import com.example.data.models.SearchFilter
 import com.example.data.models.user.User
@@ -19,12 +20,17 @@ import javax.inject.Inject
 @InjectViewState
 class SearchUserPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository
 ) : SearchPresenter<SearchUserContract.View, User, SearchFilter.User>(), SearchUserContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.usersList(limit, offset, buildFilter())
+                .doOnSuccess {
+                    val uid = appData.getUser().user_id
+                    it.data.forEach { user -> user?.isCurrentUser = user?.user_id == uid }
+                }
     }
 
     private var isInterestsLoaded = false

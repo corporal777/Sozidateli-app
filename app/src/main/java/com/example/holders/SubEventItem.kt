@@ -25,10 +25,10 @@ open class SubEventItem(
             tvStatus.text = subEvent.title
 
             btnAction.apply {
-                isEnabled = !subEvent.isInCalendar
-
                 text = (if (subEvent.isInCalendar) context.getString(R.string.sub_event_remove_from_schedule)
                 else context.getString(R.string.sub_event_add_to_schedule))
+
+                isEnabled = subEvent.isInCalendar || subEvent.canAddToCalendar
 
                 setOnClickListener {
                     clickListener?.apply {

@@ -10,10 +10,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.core.view.isEmpty
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,8 +46,7 @@ import javax.inject.Provider
 
 class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
-    override val title
-        get() = getString(R.string.profile_label)
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: UserPresenter
@@ -91,7 +88,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
-    private lateinit var menuImageView: ImageView
 
     private val editText by lazy {
         getString(R.string.edit)
@@ -154,11 +150,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 avatar,
                 user.fullName,
                 user.user_id,
-                when {
-                    user.chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
-                    user.is_in_favorite -> UserSubscribeButton.Action.UNFAVORITE
-                    else -> UserSubscribeButton.Action.FAVORITE
-                },
+                user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
+                user.is_in_favorite,
                 {
                     presenter.apply {
                         when (it) {
@@ -194,16 +187,12 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private fun initPersonalDataItem(user: User, editable: Boolean): Group? {
-        return if (editable) {
-            ProfileExpandableTitleGroup(
-                    getString(R.string.profile_title_general_info),
-                    onExpandChange = onItemExpandChange
-            ).apply {
-                add(initProfileDataPersonalItem(user, false))
-                if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditPersonalDataClick() })
-            }
-        } else {
-            initProfileDataPersonalItem(user, true)
+        return ProfileExpandableTitleGroup(
+                getString(R.string.profile_title_general_info),
+                onExpandChange = onItemExpandChange
+        ).apply {
+            add(initProfileDataPersonalItem(user, !editable))
+            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditPersonalDataClick() })
         }
     }
 
@@ -391,16 +380,17 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 .show()
     }
 
-    override fun setActionSubscribe() {
-        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.FAVORITE)
-    }
+    override fun setSubscribeAction(action: UserSubscribeButton.Action?) {
+        mainDataSection.notifyItemChanged(0, action)
 
-    override fun setActionUnsubscribe() {
-        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.UNFAVORITE)
-    }
-
-    override fun setActionUnblock() {
-        mainDataSection.notifyItemChanged(0, UserSubscribeButton.Action.UNBLOCK)
+        toolbarContentActionBar.removeAllRightViews()
+        toolbarContentActionBar.addRightView(ToolbarButton(requireContext()).apply {
+            setImageResource(if (action == UserSubscribeButton.Action.UNBLOCK) R.drawable.ic_revert else R.drawable.ic_block)
+            setOnClickListener {
+                if (action == UserSubscribeButton.Action.UNBLOCK) presenter.onUnblockClick()
+                else presenter.onBlockClick()
+            }
+        })
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
@@ -423,36 +413,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
             showRequestErrorMessage()
-        }
-    }
-
-    override fun showUserMenuButton(show: Boolean) {
-        if (show) {
-            menuImageView = ToolbarButton(requireContext()).apply {
-                setImageResource(R.drawable.ic_menu)
-                setOnClickListener { presenter.onMenuButtonUserClick() }
-            }
-
-            toolbarContentActionBar.addRightView(menuImageView)
-        } else {
-            toolbarContentActionBar.removeAllRightViews()
-        }
-    }
-
-    override fun showUserMenu(isBlocked: Boolean) {
-        PopupMenu(requireContext(), menuImageView).apply {
-            menu.apply {
-                val text = if (isBlocked) R.string.unblock else R.string.block
-                val blockItem = if (isEmpty()) add(text) else getItem(0).apply {
-                    this.setTitle(text)
-                }
-
-                blockItem.setOnMenuItemClickListener {
-                    if (isBlocked) presenter.onUnblockClick() else presenter.onBlockClick()
-                    return@setOnMenuItemClickListener true
-                }
-            }
-            show()
         }
     }
 

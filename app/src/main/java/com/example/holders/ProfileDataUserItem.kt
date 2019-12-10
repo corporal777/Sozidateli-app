@@ -16,6 +16,7 @@ class ProfileDataUserItem(
         private val name: String,
         private val uid: Int,
         private var subscribeAction: UserSubscribeButton.Action,
+        private var isInFavorite: Boolean,
         private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
         private val writeMessageClickListener: () -> Unit,
         private val onAvatarClick: (ImageView) -> Unit
@@ -25,8 +26,9 @@ class ProfileDataUserItem(
         viewHolder.apply {
             ivAvatar.apply {
                 transitionName = avatarUrl
+                clipToOutline = true
                 if (avatar != null) setImageBitmap(avatar)
-                else setImageResource(R.drawable.avatar_placeholder)
+                else setImageResource(R.drawable.avatar_placeholder_rectangle)
 
                 setOnClickListener { onAvatarClick(this) }
             }
@@ -46,30 +48,28 @@ class ProfileDataUserItem(
         else holder.apply {
             (payloads[0] as? UserSubscribeButton.Action)?.let {
                 subscribeAction = it
+                if (it == UserSubscribeButton.Action.FAVORITE) isInFavorite = false
+                else if (it == UserSubscribeButton.Action.UNFAVORITE) isInFavorite = true
                 setAction(btnAction, btnChat, it)
             }
         }
     }
 
     private fun setAction(subscribeButton: UserSubscribeButton, newChatButton: View, action: UserSubscribeButton.Action) {
-        when (action) {
-            UserSubscribeButton.Action.FAVORITE -> {
-                subscribeButton.setActionFavorite()
-                newChatButton.isEnabled = true
-            }
-            UserSubscribeButton.Action.UNFAVORITE -> {
-                subscribeButton.setActionUnfavorite()
-                newChatButton.isEnabled = true
-            }
-            UserSubscribeButton.Action.UNBLOCK -> {
-                subscribeButton.setActionUnblock()
-                newChatButton.isEnabled = false
-            }
-            else -> {
-                subscribeButton.setActionFavorite()
-                newChatButton.isEnabled = false
-            }
+        val isEnabled = action != UserSubscribeButton.Action.UNBLOCK
+        val alpha = if (isEnabled) 1f else 0.6f
+        subscribeButton.isEnabled = isEnabled
+        newChatButton.isEnabled = isEnabled
+        subscribeButton.alpha = alpha
+        newChatButton.alpha = alpha
+
+        val finalAction = when {
+            isEnabled -> action
+            isInFavorite -> UserSubscribeButton.Action.UNFAVORITE
+            else -> UserSubscribeButton.Action.FAVORITE
         }
+
+        subscribeButton.setAction(finalAction)
     }
 
     override fun getLayout() = R.layout.item_profile_data_user

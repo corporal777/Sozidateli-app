@@ -1,6 +1,7 @@
 package com.example.ui.users.favorite
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.user.User
 import com.example.extensions.buildList
 import com.example.repository.UserRepository
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @InjectViewState
 class FavoriteUsersPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val userRepository: UserRepository
 ) : BasePresenter<FavoriteUsersContract.View>(), FavoriteUsersContract.Presenter {
 
@@ -25,7 +27,11 @@ class FavoriteUsersPresenter
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-                .subscribe({ viewState.setData(it) }, { it.printStackTrace() })
+                .subscribe({
+                    val uid = appData.getUser().user_id
+                    it.forEach { user -> user?.isCurrentUser = user?.user_id == uid }
+                    viewState.setData(it)
+                }, { it.printStackTrace() })
     }
 
     override fun onUserClick(user: User) = viewState.showUser(user)

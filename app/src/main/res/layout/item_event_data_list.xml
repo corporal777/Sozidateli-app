@@ -89,7 +89,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guidelineDate"
             app:layout_constraintTop_toTopOf="@+id/tvEventDay"
-            app:layout_constraintVertical_bias="0.95"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. Заседание общественного совета при министерстве природных. " />
 

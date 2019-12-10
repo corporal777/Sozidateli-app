@@ -22,7 +22,7 @@ import javax.inject.Provider
 
 class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarFragment {
 
-    override val title: CharSequence = ""
+    override val title: CharSequence? = null
 
     @InjectPresenter
     lateinit var presenter: NotificationPresenter

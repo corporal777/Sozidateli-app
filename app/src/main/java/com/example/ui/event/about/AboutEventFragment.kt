@@ -16,8 +16,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
-import com.example.extensions.dp
-import com.example.extensions.formatToEventDatesInterval
+import com.example.extensions.*
 import com.example.holders.*
 import com.example.holders.EventGroup
 import com.example.interfaces.ToolbarFragment
@@ -131,7 +130,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 -eventData.id.toLong(),
                 eventData.organization?.name,
                 eventData.name,
-                eventData.conferenceFirstActivityStart,
+                eventData.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                 eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
                 eventData.isFavorite ?: false
         ) {

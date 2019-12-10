@@ -14,6 +14,7 @@
         android:title="@string/event_tab_about" />
     <item
         android:id="@+id/event_location"
+        android:icon="@drawable/nav_4"
         android:title="@string/event_tab_map" />
     <item
         android:id="@+id/to_list"

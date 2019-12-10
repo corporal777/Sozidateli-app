@@ -1,8 +1,7 @@
 package com.example.holders
 
 import com.example.R
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.parseToDate
+import com.example.extensions.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_data_list.*
@@ -10,15 +9,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class EventDataListItem(
-        private val itemId: Long,
+        itemId: Long,
         private val name: String?,
         private val address: String?,
-        private val conferenceStart: String?
+        private val conferenceStart: String?,
+        private val conferenceActionStart: String?
 ) : Item(itemId) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventAddress.apply {
-                text = address
+                val startTime = conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+                val textList = listOfNotNull(address, startTime)
+                text = textList.joinToString(" • ")
             }
             tvEventLabel.text = name
 

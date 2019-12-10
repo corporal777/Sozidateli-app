@@ -9,7 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Speaker
 import com.example.extensions.findItemBy
-import com.example.holders.SpeakerItem
+import com.example.holders.SpeakerGroup
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -49,7 +49,6 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = groupAdapter
-            if (itemDecorationCount == 0) addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -57,14 +56,10 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
 
 
     override fun setData(data: List<Speaker>) {
-        groupAdapter.update(data.map {
-            UserItem(
-                    it.id,
-                    it.user.fullName,
-                    it.description,
-                    it.user.user_avatar,
+        groupAdapter.update(data.map { speaker ->
+            SpeakerGroup(
+                    speaker,
                     { presenter.onSpeakerClick(it) },
-                    it.user.getUserSubscribeAction(),
                     { presenter.onSpeakerFavoriteChangeClick(it) }
             )
         })
@@ -72,9 +67,9 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
     }
 
     override fun updateSpeaker(speaker: Speaker) {
-        val idLong = speaker.id.toLong()
-        groupAdapter.findItemBy { item: SpeakerItem -> item.id == idLong }?.apply {
-            updateSpeaker(speaker)
+        val idLong = speaker.uid.toLong()
+        groupAdapter.findItemBy { item: UserItem -> item.id == idLong }?.apply {
+            notifyChanged(speaker.user.getUserSubscribeAction())
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.ui.subevent
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Speaker
+import com.example.data.models.SubEvent
 import com.example.data.models.SubeventInfo
 import com.example.ui.base.BaseContract
 
@@ -24,6 +25,6 @@ interface SubeventContract {
     interface Presenter : BaseContract.Presenter {
         fun onSpeakerClick(speaker: Speaker)
         fun onSpeakerChangeSubscriptionClick(speaker: Speaker)
-        fun onSubeventChangeSubscriptionClick()
+        fun onSubeventChangeSubscriptionClick(subevent: SubeventInfo)
     }
 }

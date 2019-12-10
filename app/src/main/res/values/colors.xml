@@ -189,4 +189,7 @@
     <color name="custom_tabs_text_selected">#FFFFFF</color>
 
     <color name="about_event_date">#999999</color>
+
+    <color name="favorites_events_subevents_text">#C49A6C</color>
+    <color name="favorites_events_subevents_background">#1FC49A6C</color>
 </resources>

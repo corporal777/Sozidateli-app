@@ -33,17 +33,14 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatSection by lazy {
-        Section().apply {
-            setHideWhenEmpty(true)
-        }
-    }
+    private val chatSection by lazy { Section() }
 
     private val favoritesSection by lazy {
         Section().apply {
             setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)).apply {
                 withTopMargin = true
             })
+            setHideWhenEmpty(true)
         }
     }
 
@@ -76,23 +73,22 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     override fun setChatsData(chats: List<UserChat?>, favorites: List<User>) {
         if (chats.isEmpty()) {
-            chatSection.removeHeader()
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
             chatSection.apply {
-                setHeader(ListSectionNameItem(-300L, getString(R.string.chat_list)))
                 val chatsCount = chats.size
-                update(chats.mapIndexed { index, chat ->
-                    if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-                    else UserChatItem(
-                            chat,
-                            { presenter.onChatClick(it) },
-                            { presenter.onChatOnScreen(chat.id) },
-                            { presenter.onChatGoneFromScreen(chat.id) },
-                            BadgeDrawable(badgeBackgroundColor = badgeColor),
-                            index != chatsCount - 1
-                    )
-                })
+                update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list)))
+                        .plus(chats.mapIndexed { index, chat ->
+                            if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+                            else UserChatItem(
+                                    chat,
+                                    { presenter.onChatClick(it) },
+                                    { presenter.onChatOnScreen(chat.id) },
+                                    { presenter.onChatGoneFromScreen(chat.id) },
+                                    BadgeDrawable(badgeBackgroundColor = badgeColor),
+                                    index != chatsCount - 1
+                            )
+                        }))
             }
         }
 

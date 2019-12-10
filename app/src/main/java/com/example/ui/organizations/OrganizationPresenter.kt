@@ -2,6 +2,7 @@ package com.example.ui.organizations
 
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @InjectViewState
 class OrganizationPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val organizationRepository: OrganizationRepository,
         private val userRepository: UserRepository,
         private val eventRepository: EventRepository,
@@ -53,6 +55,8 @@ class OrganizationPresenter
                 }
                 .subscribe({
                     val organizationData = it.data
+                    val uid = appData.getUser().user_id
+                    organizationData.members.forEach { member -> member.user.isCurrentUser = member.user.user_id == uid }
                     viewState.setOrganization(it.logo, it.background, organizationData.organization, organizationData.events, organizationData.members)
                     viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
                 }, {

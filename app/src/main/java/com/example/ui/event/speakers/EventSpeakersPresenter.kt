@@ -1,6 +1,7 @@
 package com.example.ui.event.speakers
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Speaker
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @InjectViewState
 class EventSpeakersPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository
 ) : BasePresenter<EventSpeakersContract.View>(), EventSpeakersContract.Presenter {
@@ -33,6 +35,8 @@ class EventSpeakersPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
+                    val uid = appData.getUser().user_id
+                    it.forEach { speaker -> speaker.user.isCurrentUser = speaker.user.user_id == uid }
                     viewState.apply { setData(it) }
                 }
     }

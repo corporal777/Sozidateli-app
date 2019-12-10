@@ -30,14 +30,11 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
     @ProvidePresenter
     fun providePresenter(): FavoriteUsersPresenter = presenterProvider.get()
 
-    private val usersSection = TitledSection(-100L)
-
     private val adapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(usersSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
+                    presenter.onItemTake(position)
                 }
             })
         }
@@ -53,9 +50,9 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
 
     override fun setData(data: List<User?>) {
         if (data.isEmpty()) {
-            usersSection.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+            adapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
         } else {
-            usersSection.update(data.map {
+            adapter.update(data.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
                         it.user_id,

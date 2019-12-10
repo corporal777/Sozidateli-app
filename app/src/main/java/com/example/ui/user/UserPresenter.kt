@@ -11,7 +11,6 @@ import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.CropCircleTransformation
 import com.example.util.loadBitmap
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -38,10 +37,6 @@ class UserPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.apply {
-            showUserMenuButton(!isCurrentUser())
-        }
-
         loadUserData(true)
 
         compositeDisposable += haChat.subscribeToExcludeFlagChange()
@@ -49,8 +44,8 @@ class UserPresenter
                 .subscribe({
                     if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
                         viewState.apply {
-                            if (it.exclude) setActionUnblock()
-                            else setActionSubscribe()
+                            profileUserData.user.chat?.isBannedByYou = it.exclude
+                            viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                         }
                     }
                 }, { it.printStackTrace() })
@@ -88,6 +83,7 @@ class UserPresenter
                     )
                     viewState.apply {
                         setUser(profileUserData)
+                        if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                     }
                 }, { it.printStackTrace() })
     }
@@ -128,14 +124,20 @@ class UserPresenter
         compositeDisposable += userRepository.addToFavorite(userId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ viewState.setActionUnsubscribe() }, { it.printStackTrace() })
+                .subscribe({
+                    profileUserData.user.is_in_favorite = true
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
     }
 
     override fun onUnsubscribeClick() {
         compositeDisposable += userRepository.removeFromFavorite(userId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ viewState.setActionSubscribe() }, { it.printStackTrace() })
+                .subscribe({
+                    profileUserData.user.is_in_favorite = false
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
     }
 
     override fun onUnblockClick() {
@@ -145,7 +147,7 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.chat?.isBannedByYou = false
-                    viewState.setActionSubscribe()
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
     }
 
@@ -160,14 +162,8 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.chat?.isBannedByYou = true
-                    viewState.setActionUnblock()
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
-    }
-
-    override fun onMenuButtonUserClick() {
-        if (::profileUserData.isInitialized) {
-            viewState.showUserMenu(profileUserData.user.chat?.isBannedByYou == true)
-        }
     }
 
     override fun onEditMainDataClick() {

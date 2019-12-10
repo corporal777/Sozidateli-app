@@ -93,7 +93,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 itemData.format,
                 itemData.organization?.emails,
                 onEventClickListener,
-                EventDataListItem(-itemData.id.toLong(), itemData.name, itemData.address, itemData.conferenceStart)
+                EventDataListItem(-itemData.id.toLong(), itemData.name, itemData.addressCity, itemData.conferenceStart, itemData.conferenceFirstActivityStart)
         )
     }
 

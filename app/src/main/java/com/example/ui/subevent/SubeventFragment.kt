@@ -8,9 +8,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Speaker
 import com.example.data.models.SubeventInfo
-import com.example.holders.SpeakerItem
-import com.example.holders.SpeakersListHeaderItem
+import com.example.holders.ListSectionNameItem
+import com.example.holders.SpeakerGroup
 import com.example.holders.SubeventInfoItem
+import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.user.UserFragmentArgs
@@ -40,7 +41,14 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
     }
 
     private val infoSection = Section()
-    private val speakersSection = Section()
+    private val speakersSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-200L, getString(R.string.speakers)).apply {
+                withTopMargin = true
+            })
+            setHideWhenEmpty(true)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,19 +61,13 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
     }
 
     override fun setData(subEvent: SubeventInfo) {
-        infoSection.update(listOf(SubeventInfoItem(subEvent) { presenter.onSubeventChangeSubscriptionClick() }))
+        infoSection.update(listOf(SubeventInfoItem(subEvent) { presenter.onSubeventChangeSubscriptionClick(subEvent) }))
     }
 
     override fun setSpeakers(speakers: List<Speaker>) {
-        speakersSection.apply {
-            if (speakers.isEmpty()) {
-                update(emptyList())
-            } else {
-                update(listOf(SpeakersListHeaderItem()).plus(speakers.map { speaker ->
-                    SpeakerItem(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
-                }))
-            }
-        }
+        speakersSection.update(speakers.map { speaker ->
+            SpeakerGroup(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
+        })
     }
 
     override fun showSpeakerProfile(speaker: Speaker) {
@@ -73,11 +75,11 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
     }
 
     override fun updateSpeaker(speaker: Speaker) {
-        val idLong = speaker.id.toLong()
+        val idLong = speaker.uid.toLong()
         for (i in 0 until speakersSection.itemCount) {
             val item = speakersSection.getItem(i)
-            if (item.id == idLong && item is SpeakerItem) {
-                item.updateSpeaker(speaker)
+            if (item.id == idLong && item is UserItem) {
+                item.notifyChanged(speaker.user.getUserSubscribeAction())
                 break
             }
         }

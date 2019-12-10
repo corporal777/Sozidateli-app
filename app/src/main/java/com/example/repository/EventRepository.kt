@@ -34,8 +34,12 @@ interface EventRepository {
     fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>
     fun loadEventRatingData(eventId: String): Single<EventRatingData>
 
+    fun getFavoriteEvents(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
     fun addToFavorite(eventId: String): Completable
     fun removeFromFavorite(eventId: String): Completable
 
-    fun sendMessageToOrganization(eventId: String,message: String): Completable
+    fun sendMessageToOrganization(eventId: String, message: String): Completable
+
+    fun subscribeToSubevent(event: String, activity: String): Completable
+    fun unsubscribeFromSubEvent(event: String, activity: String): Completable
 }

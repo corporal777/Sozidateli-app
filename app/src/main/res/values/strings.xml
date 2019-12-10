@@ -294,7 +294,7 @@
     </plurals>
 
     <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
-    <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных  и вы не сможете ему больше отправлять сообщения.</string>
+    <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных и вы не сможете ему больше отправлять сообщения.</string>
 
     <string name="user_avatar">Аватар</string>
 
@@ -461,6 +461,8 @@
     <string name="favorites_events">Мероприятия</string>
     <string name="favorites_users">Пользователи</string>
     <string name="favorites_organizations">Организации</string>
+
+    <string name="favorites_events_subevents">Избранные события</string>
 
     <string name="email_change_title">Email изменен</string>
     <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>

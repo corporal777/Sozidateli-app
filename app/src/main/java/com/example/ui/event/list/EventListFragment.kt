@@ -77,7 +77,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.format,
                     it.organization?.emails,
                     onEventClickListener,
-                    EventDataListItem(-it.id.toLong(), it.name, it.address, it.conferenceStart)
+                    EventDataListItem(-it.id.toLong(), it.name, it.addressCity, it.conferenceStart, it.conferenceFirstActivityStart)
             )
         })
         swipeToRefresh.isRefreshing = false

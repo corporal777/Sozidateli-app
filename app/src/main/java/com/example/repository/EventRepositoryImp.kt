@@ -169,14 +169,26 @@ class EventRepositoryImp
     }
 
     override fun addToFavorite(eventId: String): Completable {
-        return api.subscribeToEvent(eventId)
+        return call(api.subscribeToEvent(eventId))
     }
 
     override fun removeFromFavorite(eventId: String): Completable {
-        return api.unsubscribeFromEvent(eventId)
+        return call(api.unsubscribeFromEvent(eventId))
+    }
+
+    override fun getFavoriteEvents(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
+        return callPagination(api.getFavoriteEvents(limit, offset))
     }
 
     override fun sendMessageToOrganization(eventId: String, message: String): Completable {
-        return api.sendMessageToOrganization(eventId, message)
+        return call(api.sendMessageToOrganization(eventId, message))
+    }
+
+    override fun subscribeToSubevent(event: String, activity: String): Completable {
+        return call(api.subscrbeToSubevent(event, activity))
+    }
+
+    override fun unsubscribeFromSubEvent(event: String, activity: String): Completable {
+        return call(api.unsubscribeFromSubEvent(event, activity))
     }
 }
