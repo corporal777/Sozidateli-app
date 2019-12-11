@@ -104,7 +104,7 @@
 
     <color name="input_border">#D5D7D8</color>
 
-    <color name="event_tabs_background">#42403E</color>
+    <color name="event_tabs_background">#000000</color>
     <color name="event_tabs_text">#FFFFFF</color>
     <color name="event_tabs_text_unchecked">#7dffffff</color>
 

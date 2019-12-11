@@ -1,17 +1,15 @@
 package com.example.ui.stories
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.AuthBackground
 import jp.shts.android.storiesprogressview.StoriesProgressView
 import kotlinx.android.synthetic.main.fragment_stories.*
 import javax.inject.Inject
@@ -51,7 +49,7 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stories.apply {
-            setStoriesCount(3)
+            setStoriesCount(4)
             setStoryDuration(3000L)
             setStoriesListener(object : StoriesProgressView.StoriesListener {
                 override fun onComplete() {
@@ -65,7 +63,7 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
 
                 override fun onNext() {
                     val position = position + 1
-                    if (position < 3) setStory(position)
+                    if (position < 4) setStory(position)
                 }
             })
             startStories()
@@ -86,9 +84,13 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
 
     private fun setStory(position: Int) {
         this.position = position
-        val message = "Story $position"
-        tvMessage.text = message
-        ivImage.setImageDrawable(AuthBackground.get(resources))
+        ivImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
+            0 -> R.drawable.st_1
+            1 -> R.drawable.st_2
+            2 -> R.drawable.st_4
+            3 -> R.drawable.st_5
+            else -> throw IllegalStateException("No file for position: $position")
+        }))
     }
 
     override fun layout() = R.layout.fragment_stories
