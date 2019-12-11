@@ -19,7 +19,7 @@ class EventDataListItem(
         viewHolder.apply {
             tvEventAddress.apply {
                 val startTime = conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
-                val textList = listOfNotNull(address, startTime)
+                val textList = listOfNotNull(address.let { if (it.isNullOrBlank()) null else it }, startTime)
                 text = textList.joinToString(" • ")
             }
             tvEventLabel.text = name

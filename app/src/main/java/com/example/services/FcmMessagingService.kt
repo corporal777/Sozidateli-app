@@ -82,9 +82,7 @@ class FcmMessagingService : FirebaseMessagingService() {
         val eventId = data[DATA_EVENT_ID] ?: return
         val eventLogo = data[DATA_EVENT_LOGO]
 
-        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_NOTIFICATION to bundleOf(
-                FIELD_NOTIFICATION_ID to notificationId
-        )))
+        val intent = NotificationUtil.createNotificationIntent(this, bundleOf(FIELD_EVENT to eventId))
 
         setMessageToMainThread {
             val send: (Bitmap?) -> Unit = { bitmap ->

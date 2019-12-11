@@ -97,8 +97,9 @@ class AboutEventPresenter
         viewState.showEventRequest(eventId)
     }
 
-    override fun onLogoClick(url: String) {
-        viewState.showLogoImage(url)
+    override fun onLogoClick() {
+        val url = event.event.backgroundImage
+        if (url != null) viewState.showLogoImage(url)
     }
 
     override fun onRefreshRequest() {

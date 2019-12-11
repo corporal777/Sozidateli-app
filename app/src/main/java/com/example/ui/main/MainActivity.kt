@@ -36,6 +36,7 @@ import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
@@ -204,18 +205,27 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         } else {
             val extras = intent.extras ?: return
 
-            if (extras.containsKey(FIELD_CHAT)) {
-                intent.getBundleExtra(FIELD_CHAT)?.let {
-                    val chatId = it.getString(FIELD_CHAT_ID, null)
-                    val userName = it.getString(FIELD_LABEL, null)
-                    val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
-                    if (chatId != null && userName != null) {
-                        presenter.onHandleChat(chatId, userName, notificationId)
+            when {
+                extras.containsKey(FIELD_CHAT) -> {
+                    intent.getBundleExtra(FIELD_CHAT)?.let {
+                        val chatId = it.getString(FIELD_CHAT_ID, null)
+                        val userName = it.getString(FIELD_LABEL, null)
+                        val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
+                        if (chatId != null && userName != null) {
+                            presenter.onHandleChat(chatId, userName, notificationId)
+                        }
                     }
                 }
-            } else if (extras.containsKey(FIELD_NOTIFICATION)) {
-                intent.getParcelableExtra<RemoteNotification>(FIELD_NOTIFICATION)?.let {
-                    presenter.onHandleNotification(it)
+                extras.containsKey(FIELD_EVENT) -> {
+                    val eventId = extras.getString(FIELD_EVENT)
+                    if (eventId != null) {
+                        presenter.onHandleEvent(eventId)
+                    }
+                }
+                extras.containsKey(FIELD_NOTIFICATION) -> {
+                    extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
+                        presenter.onHandleNotification(it)
+                    }
                 }
             }
         }
@@ -324,6 +334,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showNotification(notification: Notification) {
         findNavController().navigate(R.id.notification_fragment, NotificationFragmentArgs.Builder(notification).build().toBundle())
+    }
+
+    override fun showRating(event: String) {
+        findNavController().navigate(R.id.event_rating_fragment, EventRatingFragmentArgs.Builder(event).build().toBundle())
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)

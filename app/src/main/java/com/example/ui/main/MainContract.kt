@@ -37,6 +37,9 @@ interface MainContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNotification(notification: Notification)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRating(event: String)
+
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(email: String, code: String)
 
@@ -74,6 +77,7 @@ interface MainContract {
         fun onHandleRecoverPasswordLink(email: String, code: String)
         fun onHandleChangeEmailConfirm(email: String, code: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
+        fun onHandleEvent(event: String)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
         fun onSetPassword(email: String, code: String, password: String)

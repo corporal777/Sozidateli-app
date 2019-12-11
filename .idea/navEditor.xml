@@ -566,6 +566,15 @@
                             <option name="y" value="3711" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="enter_event_code_fragment_to_about_event_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -962,6 +971,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="qr_scanner_to_about_event_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="qr_scanner_to_enter_code">
                               <value>
                                 <LayoutPositions />

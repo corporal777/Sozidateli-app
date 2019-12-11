@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.example.holders.EventGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -71,7 +73,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         }
 
         override fun onShowEventClick(event: String) {
-            // do nothing
+            presenter.onLogoClick()
         }
 
         override fun onShowFilterClick(format: Int) {
@@ -235,7 +237,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showLogoImage(url: String) {
-
+        findNavController().navigate(
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, null).build().toBundle()
+        )
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

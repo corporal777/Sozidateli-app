@@ -1,6 +1,7 @@
 package com.example.ui.auth.register.sn
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -130,9 +131,11 @@ class RegisterSnPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
-                        onApiError = {
-                            if (it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {
+                        onError = {
+                            if (it is ApiError && it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {
                                 viewState.showEmailConfirmation(email, snUser)
+                            } else {
+                                onReceiveError(it)
                             }
                         },
                         onComplete = {}

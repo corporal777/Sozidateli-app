@@ -1,5 +1,6 @@
 package com.example.ui.auth.base
 
+import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
@@ -50,12 +51,18 @@ constructor(
         val snAuth = snUser.snAuth
         compositeDisposable += authRepository.authSocialNetwork(snAuth.snType.code, snAuth.token)
                 .performOnBackgroundOutOnMain()
-                .subscribeSimple(onApiError = {
-                    viewState.hideLoadingDialog()
-                    if (it.hasError(ERROR_NEED_REGISTRATION)) onContinueWithSnRegistration(snUser)
-                }, onComplete = {
-                    viewState.hideLoadingDialog()
-                })
+                .subscribeSimple(
+                        onError = {
+                            viewState.hideLoadingDialog()
+                            if (it is ApiError && it.hasError(ERROR_NEED_REGISTRATION)) {
+                                onContinueWithSnRegistration(snUser)
+                            } else {
+                                onReceiveError(it)
+                            }
+                        },
+                        onComplete = {
+                            viewState.hideLoadingDialog()
+                        })
     }
 
     override fun authVk() {

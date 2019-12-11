@@ -59,7 +59,7 @@ interface AboutEventContract {
         fun onGoToEventClick()
         fun onPageClick(page: EventPage)
         fun onPartnerClick(partner: EventParther)
-        fun onLogoClick(url: String)
+        fun onLogoClick()
         fun onRefreshRequest()
         fun onShowFilterClick(format: Int)
         fun onChangeFavoriteClick()

@@ -11,6 +11,7 @@ import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
+import com.example.data.models.RemoteNotification.Companion.TYPE_RATE
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -192,7 +193,7 @@ class MainPresenter
         return userRepository.userEventCalendar()
                 .flatMapObservable { Observable.fromIterable(it) }
                 .filter { calendar ->
-                    val now = System.currentTimeMillis()
+                    val now = System.currentTimeMillis() / 1000
                     calendar.time.any { time -> time.end > now && time.start <= now }
                 }
                 .toList()
@@ -295,6 +296,10 @@ class MainPresenter
         viewState.showChat(chatId, userName)
     }
 
+    override fun onHandleEvent(event: String) {
+        viewState.showEvent(event)
+    }
+
     override fun onHandleAuthLink(email: String, code: String) {
         if (appData.token != null) return
         isAuthRequired = true
@@ -342,6 +347,7 @@ class MainPresenter
         val organizationId = notification.organization_id
         when {
             notification.type == TYPE_INVITE -> viewState.showNotification(Notification.fromRemoteNotification(notification))
+            notification.type == TYPE_RATE && eventId != 0 -> viewState.showRating(eventId.toString())
             eventId != 0 -> viewState.showEvent(eventId.toString())
             organizationId != 0 -> viewState.showOrganization(organizationId.toString())
             else -> viewState.showNotification(Notification.fromRemoteNotification(notification))
