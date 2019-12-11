@@ -1,6 +1,7 @@
 package com.example.ui.search.qr
 
 import android.Manifest
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -30,15 +31,20 @@ class QrScannerPresenter
     }
 
     override fun onDecodeQrCode(code: String) {
-        compositeDisposable += eventRepository.getEventByCode(code)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.showEvent(it)
-                }, {
-                    viewState.showEventNotFoundError()
-                    it.printStackTrace()
-                })
+        val uri = Uri.parse(code)
+        val parsedCode = uri.lastPathSegment
+        if (parsedCode == null) viewState.showEventNotFoundError()
+        else {
+            compositeDisposable += eventRepository.getEventByCode(parsedCode)
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribe({
+                        viewState.showEvent(it.event)
+                    }, {
+                        viewState.showEventNotFoundError()
+                        it.printStackTrace()
+                    })
+        }
     }
 
     override fun onEnterCodeClick() {

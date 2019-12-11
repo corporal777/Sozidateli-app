@@ -19,7 +19,7 @@ class EnterCodePresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.showEvent(it)
+                    viewState.showEvent(it.event)
                 }, {
                     viewState.showEventNotFoundError()
                     it.printStackTrace()

@@ -96,7 +96,7 @@ class EventRepositoryImp
         return call(api.setEventRating(eventId, body))
     }
 
-    override fun getEventByCode(code: String): Single<Event> {
+    override fun getEventByCode(code: String): Single<QrEvent> {
         return call(api.getEventByCode(code))
     }
 

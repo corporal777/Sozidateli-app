@@ -28,7 +28,7 @@ interface EventRepository {
     fun getSubeventUsers(eventId: String, subEventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     fun getCategoriesList(): Single<List<EventGroup>>
     fun getEventSpeakers(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>>
-    fun getEventByCode(code: String): Single<Event>
+    fun getEventByCode(code: String): Single<QrEvent>
     fun getPage(event: String, page: String): Single<Page>
 
     fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>

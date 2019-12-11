@@ -3,6 +3,7 @@ package com.example.ui.search.code
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -53,7 +54,7 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View, ToolbarFragmen
     }
 
     override fun showEvent(event: Event) {
-
+        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(event.id))
     }
 
     override fun showEventNotFoundError() {

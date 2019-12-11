@@ -260,7 +260,7 @@ interface Api {
     fun getEventSpeakers(@Path("eventId") eventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<Speaker>>>
 
     @GET("/v1/events/qr/{code}")
-    fun getEventByCode(@Path("code") code: String): Single<ApiResponse<Event>>
+    fun getEventByCode(@Path("code") code: String): Single<ApiResponse<QrEvent>>
 
     @GET("/v1/events/{event}/pages/{page}")
     fun getEventPage(@Path("event") event: String, @Path("page") page: String): Single<ApiResponse<Page>>
