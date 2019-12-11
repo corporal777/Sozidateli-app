@@ -5,12 +5,14 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
+import com.example.data.UserEventData
 import com.example.data.models.ApiError
 import com.example.data.models.EventFile
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.GsonBuilder
@@ -32,7 +34,9 @@ import javax.inject.Inject
 @InjectViewState
 class EventRegistrationPresenter
 @Inject constructor(
+        private val eventData: UserEventData,
         private val eventRepository: EventRepository,
+        private val userRepository: UserRepository,
         private val rxPermissions: RxPermissions,
         private val contentResolver: ContentResolver
 ) : BasePresenter<EventRegistrationContract.View>(), EventRegistrationContract.Presenter {
@@ -147,7 +151,7 @@ class EventRegistrationPresenter
                             onReceiveError(it)
                         },
                         onSuccess = {
-                            viewState.showSuccessRegister(it.event.isRequireModerate == false)
+                            viewState.showSuccessRegister(it.event.moderateRegistration)
                         })
     }
 
@@ -160,7 +164,13 @@ class EventRegistrationPresenter
     }
 
     override fun onSuccessGoToEvent() {
-        viewState.showEvent()
+        compositeDisposable += eventRepository.setDefaultEvent(eventId)
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(eventId))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.showEvent() }
     }
 
     override fun onRegisterCancelClick() {

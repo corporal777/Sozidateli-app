@@ -32,6 +32,14 @@ data class EventRegistration(
         val registrationSubtitle: String?,
         @SerializedName("is_require_moderate_requests")
         val isRequireModerate: Boolean?,
+        @SerializedName("moderate_registration")
+        val moderateRegistration: String?,
         @SerializedName("conference_first_activity_start")
         val conferenceFirstActivityStart: String?
-)
+) {
+    companion object {
+        const val MODERATION_MANUAL = "manual"
+        const val MODERATION_AUTO_APPROVE = "auto_approve"
+        const val MODERATION_AUTO_DISMISS = "auto_dismiss"
+    }
+}

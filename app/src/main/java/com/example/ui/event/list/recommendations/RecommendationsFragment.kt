@@ -21,7 +21,7 @@ import javax.inject.Provider
 
 class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), RecommendationsContract.View, ToolbarFragment {
 
-    override val title = ""
+    override val title: String? = null
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "RecommendationsPresenter")
     override lateinit var presenter: RecommendationsPresenter

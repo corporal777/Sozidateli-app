@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_goneMarginTop="0dp"
         tools:text="Dialog message"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnPositive"
@@ -56,7 +56,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-        app:layout_goneMarginTop="0dp"
         tools:text="@android:string/ok"
         tools:visibility="visible" />
 
@@ -73,7 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnPositive"
-        app:layout_goneMarginTop="0dp"
         tools:text="@android:string/cancel"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

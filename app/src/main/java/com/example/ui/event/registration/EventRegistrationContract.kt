@@ -37,7 +37,7 @@ interface EventRegistrationContract {
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSuccessRegister(canGoToEvent: Boolean)
+        fun showSuccessRegister(moderation: String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun openUrl(url: String)

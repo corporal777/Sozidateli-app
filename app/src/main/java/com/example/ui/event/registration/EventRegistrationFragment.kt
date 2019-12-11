@@ -16,6 +16,9 @@ import com.example.data.models.EventGroup
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
+import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
+import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
+import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
 import com.example.extensions.forEachGroups
 import com.example.extensions.formatToEventDatesInterval
 import com.example.extensions.setRequired
@@ -159,11 +162,32 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
         }.show()
     }
 
-    override fun showSuccessRegister(canGoToEvent: Boolean) {
+    override fun showSuccessRegister(moderation: String?) {
+        val canGoToEvent: Boolean
+        val maybeApproved: Boolean
+        when (moderation) {
+            MODERATION_MANUAL -> {
+                canGoToEvent = false
+                maybeApproved = true
+            }
+            MODERATION_AUTO_APPROVE -> {
+                canGoToEvent = true
+                maybeApproved = true
+            }
+            MODERATION_AUTO_DISMISS -> {
+                canGoToEvent = false
+                maybeApproved = false
+            }
+            else -> {
+                canGoToEvent = false
+                maybeApproved = true
+            }
+        }
         bottomDialog?.dismiss()
         BottomDialog(requireContext()).apply {
             setTitle(getString(if (canGoToEvent) R.string.event_register_sent_title else R.string.event_register_sent_moderate_title))
-            setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
+            if (maybeApproved)
+                setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
             positiveButton {
                 text = getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
                 clickListener = {

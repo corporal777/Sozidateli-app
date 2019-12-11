@@ -33,6 +33,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private val pagination: PaginationDataSourceFactory<Event?> = PaginationDataSourceFactory(::getPaginationRequest)
     private lateinit var paginationList: PaginationList<Event?>
 
+    private var isFirstAttach = true
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
@@ -62,6 +64,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
     override fun attachView(view: V?) {
         super.attachView(view)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
+        if (isFirstAttach) isFirstAttach = false
+        else pagination.invalidate()
     }
 
     override fun onActionRegister(event: String) = viewState.showEventRequest(event)
