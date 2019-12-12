@@ -16,7 +16,8 @@ class BadgeDrawable(
         @ColorInt var badgeBackgroundColor: Int = -0x10000,
         @ColorInt var badgeTextColor: Int = -0x1,
         var badgeTextSize: Float = 11f.sp,
-        var badgeTextPadding: Float = 0f
+        var badgeTextPadding: Float = 0f,
+        var shouldDrawText: Boolean = true
 ) : Drawable() {
 
     private val shapeDrawable = MaterialShapeDrawable().apply {
@@ -73,7 +74,7 @@ class BadgeDrawable(
             return
         }
         shapeDrawable.draw(canvas)
-        drawText(canvas)
+        if (shouldDrawText) drawText(canvas)
     }
 
     private fun drawText(canvas: Canvas) {

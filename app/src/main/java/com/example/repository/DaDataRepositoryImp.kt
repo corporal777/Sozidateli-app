@@ -9,5 +9,5 @@ class DaDataRepositoryImp
         private val apiDataData: ApiDataData
 ) : DaDataRepository {
 
-    override fun suggestCity(query: String) = apiDataData.suggestCity(DaDataRequestBody(query))
+    override fun suggestCity(query: String, count: Int) = apiDataData.suggestCity(DaDataRequestBody(query, count))
 }

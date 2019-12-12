@@ -45,6 +45,7 @@ class AboutEventPresenter
             setEventData(
                     event,
                     eventInfo.userRegistration?.status,
+                    eventInfo.userRating,
                     eventInfo.pages,
                     eventInfo.partners,
                     hasContacts()
@@ -55,6 +56,10 @@ class AboutEventPresenter
 
     override fun onSpeakersClick() {
         checkInternetAndRun { viewState.showSpeakers(eventId) }
+    }
+
+    override fun onRateClick() {
+        viewState.showRating(eventId)
     }
 
     override fun onPageClick(page: EventPage) {

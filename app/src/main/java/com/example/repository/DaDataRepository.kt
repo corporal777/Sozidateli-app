@@ -4,5 +4,5 @@ import com.example.data.models.DaDataResponse
 import io.reactivex.Single
 
 interface DaDataRepository {
-    fun suggestCity(query: String): Single<DaDataResponse>
+    fun suggestCity(query: String, count: Int): Single<DaDataResponse>
 }

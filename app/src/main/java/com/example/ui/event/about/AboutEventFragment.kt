@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -127,7 +126,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setEventData(eventData: EventData, userRegistration: Event.RegistrationStatus?, pages: List<EventPage>, partners: List<EventParther>, showContacts: Boolean) {
+    override fun setEventData(eventData: EventData, userRegistration: Event.RegistrationStatus?, userRating: EventRatingData?, pages: List<EventPage>, partners: List<EventParther>, showContacts: Boolean) {
         val aboutItem = EventDataAboutItem(
                 -eventData.id.toLong(),
                 eventData.organization?.name,
@@ -154,11 +153,15 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         aboutItem
                 ),
                 Section().apply {
+                    if ((eventData.status == Event.Status.CONFERENCE_ENDS || eventData.status == Event.Status.IN_ARCHIVE) && userRating?.created == null) {
+                        add(EventPageItem(-100, getString(R.string.about_event_rate)) { presenter.onRateClick() })
+                    }
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
                     add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
                         hasBottomPadding = pages.isNotEmpty()
                     })
+
                     addAll(pages.map { EventPageItem(it.id, it.menu) { presenter.onPageClick(it) } })
                 },
                 Section().apply {
@@ -241,6 +244,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 R.id.image_view_activity,
                 ImageViewActivityArgs.Builder(url, null, null, null).build().toBundle()
         )
+    }
+
+    override fun showRating(eventId: String) {
+        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToEventRatingFragment(eventId))
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

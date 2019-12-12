@@ -193,6 +193,7 @@ class ProfileDataPersonalEditItem(
                 put(User.FIELD_USER_ADDRESS, mAddress.address ?: "")
                 put(User.FIELD_USER_ADDRESS_INDEX, mAddress.index ?: "")
                 put(User.FIELD_USER_ADDRESS_COUNTRY, mAddress.country ?: "")
+                put(User.FIELD_USER_ADDRESS_FEDERAL, mAddress.federal ?: "")
                 put(User.FIELD_USER_ADDRESS_REGION, mAddress.region ?: "")
                 put(User.FIELD_USER_ADDRESS_AREA, mAddress.area ?: "")
                 put(User.FIELD_USER_ADDRESS_CITY, mAddress.city ?: "")

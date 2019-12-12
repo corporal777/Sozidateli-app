@@ -44,6 +44,7 @@ data class Event(
 
     enum class Status {
         CONFERENCE_ENDS,
+        IN_ARCHIVE,
         REGISTRATION_PARTICIPANTS,
         REGISTRATION_PARTICIPANTS_ENDS,
         CONFERENCE_IN_PROGRESS

@@ -34,10 +34,9 @@ class UserChatItem(
         viewHolder.apply {
             ivAvatar.apply {
                 setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
-
-                doOnNextLayout { view ->
-                    badgeDrawable?.apply {
-                        (view.parent as ViewGroup).overlay.clear()
+                (parent as ViewGroup).overlay.clear()
+                badgeDrawable?.apply {
+                    doOnNextLayout { view ->
                         number = userChat.unreadMessageCount
                         view.addBadge(this) { badgeWidth, badgeHeight, anchorRect ->
                             val badgeCenterX = (anchorRect.right - width / 2.5f).roundToInt()

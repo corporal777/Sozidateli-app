@@ -35,7 +35,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
 
     private val invitesBadge by lazy {
-        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high))
+        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high), shouldDrawText = false)
     }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {

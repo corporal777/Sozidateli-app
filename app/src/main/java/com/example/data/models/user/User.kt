@@ -46,6 +46,7 @@ data class User(
         var user_address: String? = null,
         var user_address_index: String? = null,
         var user_address_country: String? = null,
+        var user_address_federal: String? = null,
         var user_address_region: String? = null,
         var user_address_area: String? = null,
         var user_address_city: String? = null,
@@ -120,6 +121,7 @@ data class User(
         const val FIELD_USER_ADDRESS = "user_address"
         const val FIELD_USER_ADDRESS_INDEX = "user_address_index"
         const val FIELD_USER_ADDRESS_COUNTRY = "user_address_country"
+        const val FIELD_USER_ADDRESS_FEDERAL = "user_address_federal"
         const val FIELD_USER_ADDRESS_REGION = "user_address_region"
         const val FIELD_USER_ADDRESS_AREA = "user_address_area"
         const val FIELD_USER_ADDRESS_CITY = "user_address_city"

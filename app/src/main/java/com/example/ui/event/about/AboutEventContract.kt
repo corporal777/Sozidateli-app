@@ -14,6 +14,7 @@ interface AboutEventContract {
         fun setEventData(
                 eventData: EventData,
                 userRegistration: Event.RegistrationStatus?,
+                userRating: EventRatingData?,
                 pages: List<EventPage>,
                 partners: List<EventParther>,
                 showContacts: Boolean
@@ -43,6 +44,9 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showLogoImage(url: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showRating(eventId: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
 
@@ -65,5 +69,6 @@ interface AboutEventContract {
         fun onChangeFavoriteClick()
         fun onWriteToOrganizationClick()
         fun onWriteToOrganizationMessage(message: String)
+        fun onRateClick()
     }
 }

@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
+import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,6 +27,8 @@ class EventTabsPresenter
     private val userEvent = eventData.userEvent!!
     private var isInternetConnected = false
     private var isFirstAttach = false
+
+    private val tabSelectStack = Stack<TabSelectCommand>()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -61,36 +64,34 @@ class EventTabsPresenter
 
     override fun onMyScheduleTabSelected() {
         viewState.apply {
-            showMyScheduleTab()
             showNoConnectionMessage(false)
         }
+
+        selectTab(TabSelectCommand.MySchedule)
     }
 
     override fun onScheduleTabSelected() {
         viewState.apply {
-            showScheduleTab()
             showNoConnectionMessage(false)
         }
+
+        selectTab(TabSelectCommand.Schedule)
     }
 
     override fun onAboutSelected() {
-        val eventId = userEvent.eventId
         viewState.apply {
-            showAboutTab(eventId)
             showNoConnectionMessage(!isInternetConnected)
         }
+
+        selectTab(TabSelectCommand.AboutEvent)
     }
 
     override fun onMapTabsSelected() {
-        val eventInfo = userEvent.eventInfo
         viewState.apply {
-            showMapTab(
-                    eventInfo.event.name,
-                    eventInfo.event.createMapInfo(),
-                    eventInfo.places.toTypedArray()
-            )
             showNoConnectionMessage(!isInternetConnected)
         }
+
+        selectTab(TabSelectCommand.Map)
     }
 
     override fun onToListSelected() {
@@ -109,6 +110,33 @@ class EventTabsPresenter
                         })
     }
 
+    private fun selectTab(command: TabSelectCommand) {
+        tabSelectStack.remove(command)
+        tabSelectStack.push(command)
+        viewState.apply {
+            when (command) {
+                is TabSelectCommand.MySchedule -> showMyScheduleTab()
+                is TabSelectCommand.Schedule -> showScheduleTab()
+                is TabSelectCommand.AboutEvent -> showAboutTab(userEvent.eventId)
+                is TabSelectCommand.Map -> {
+                    val eventInfo = userEvent.eventInfo
+                    showMapTab(eventInfo.event.name,
+                            eventInfo.event.createMapInfo(),
+                            eventInfo.places.toTypedArray()
+                    )
+                }
+            }
+            setBackClickHandlerEnabled(tabSelectStack.size > 1)
+        }
+    }
+
+    override fun onHandleBackCLick() {
+        if (tabSelectStack.size > 1) {
+            tabSelectStack.pop()
+            selectTab(tabSelectStack.peek())
+        }
+    }
+
     override fun onMenuChatClick() = viewState.showChat()
 
     override fun onMenuAccountClick() = viewState.showAccount()
@@ -116,5 +144,12 @@ class EventTabsPresenter
     override fun onDestroy() {
         super.onDestroy()
         eventData.clear()
+    }
+
+    private sealed class TabSelectCommand {
+        object MySchedule : TabSelectCommand()
+        object Schedule : TabSelectCommand()
+        object AboutEvent : TabSelectCommand()
+        object Map : TabSelectCommand()
     }
 }

@@ -13,6 +13,7 @@ data class DaDataItem(
 data class DaDataInformation(
         val postal_code: String?,
         val country: String?,
+        val federal_district: String?,
         val region: String?,
         val area: String?,
         val city: String?,

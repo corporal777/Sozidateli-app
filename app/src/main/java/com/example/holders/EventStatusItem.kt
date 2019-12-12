@@ -143,6 +143,21 @@ class EventStatusItem(
 
     override fun getLayout() = R.layout.item_event_status
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (this === other) return true
+        if (other !is EventStatusItem) return false
+
+        if (eventId != other.eventId) return false
+        if (status != other.status) return false
+        if (userRegistration != other.userRegistration) return false
+        if (backgroundColor != other.backgroundColor) return false
+        if (logo != other.logo) return false
+        if (format != other.format) return false
+        if (organizationEmails != other.organizationEmails) return false
+
+        return true
+    }
+
     interface OnEventClickListener {
         fun onActionRegister(event: String)
         fun onActionShowEvent(event: String)

@@ -2,16 +2,20 @@ package com.example.ui.chatList.invites
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.extensions.dp
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
@@ -38,10 +42,13 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
         }
     }
 
+    private val badgeColor by lazy { ContextCompat.getColor(requireContext(), R.color.badge_attention_high) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = this@InviteListFragment.adapter
+            updatePadding(top = 24.dp)
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -56,7 +63,8 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
                 UserChatItem(
                         chat,
                         { presenter.onChatClick(it) },
-                        withDivider = index != chatsCount - 1
+                        withDivider = index != chatsCount - 1,
+                        badgeDrawable = BadgeDrawable(badgeBackgroundColor = badgeColor)
                 )
             }
         })

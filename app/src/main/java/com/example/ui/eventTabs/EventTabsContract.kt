@@ -1,5 +1,6 @@
 package com.example.ui.eventTabs
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.MapInfo
@@ -30,6 +31,9 @@ interface EventTabsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showAccount()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setBackClickHandlerEnabled(enabled: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -41,5 +45,7 @@ interface EventTabsContract {
 
         fun onMenuChatClick()
         fun onMenuAccountClick()
+
+        fun onHandleBackCLick()
     }
 }

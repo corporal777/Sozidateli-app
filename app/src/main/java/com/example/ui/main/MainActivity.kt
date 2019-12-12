@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,8 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.os.ConfigurationCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
@@ -30,6 +33,7 @@ import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
+import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
@@ -70,6 +74,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         chatAcceptMessageText = getString(R.string.chat_accepted)
     }
 
+    private val navBarColorDefault by lazy {
+        ContextCompat.getColor(this, R.color.navBarDefault)
+    }
+
     private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
             presenter.apply {
@@ -105,6 +113,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
             }
+
+            window.navigationBarColor = if (f is NavBarColorFragment) f.navBarColor else navBarColorDefault
 
             root.background = bg
         }

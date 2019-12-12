@@ -5,6 +5,9 @@
     <color name="colorAccent">#C49A6C</color>
     <color name="colorDivider">#EEEEEE</color>
 
+    <color name="navBarDefault">#FFFFFF</color>
+    <color name="navBarTabs">#000000</color>
+
     <color name="red">#ed1c24</color>
     <color name="gray">#E4E4E4</color>
     <color name="hint_gray">#939598</color>

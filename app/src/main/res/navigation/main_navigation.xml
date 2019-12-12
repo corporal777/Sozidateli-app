@@ -221,6 +221,9 @@
         <action
             android:id="@id/action_about_event_fragment_to_contacts_fragment"
             app:destination="@id/contacts_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_event_rating_fragment"
+            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <activity
@@ -549,6 +552,9 @@
         <action
             android:id="@+id/action_about_event_fragment_to_contacts_fragment"
             app:destination="@id/contacts_fragment" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_event_rating_fragment"
+            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <fragment

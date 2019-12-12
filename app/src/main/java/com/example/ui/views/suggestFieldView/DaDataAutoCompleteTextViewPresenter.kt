@@ -23,7 +23,7 @@ class DaDataAutoCompleteTextViewPresenter @Inject constructor(
     override fun onQueryChange(query: String) {
         compositeDisposable.clear()
         compositeDisposable += Single.timer(350, TimeUnit.MILLISECONDS)
-                .flatMap { daDataRepository.suggestCity(query) }
+                .flatMap { daDataRepository.suggestCity(query, 10) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     items = it.suggestions
@@ -34,7 +34,15 @@ class DaDataAutoCompleteTextViewPresenter @Inject constructor(
     }
 
     override fun onItemSelected(position: Int) {
-        items.getOrNull(position)?.let { viewState.performOnItemSelected(it) }
+        val item = items.getOrNull(position) ?: return
+        compositeDisposable += daDataRepository.suggestCity(item.value, 1)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val firstItem = it.suggestions.firstOrNull() ?: item
+                    viewState.performOnItemSelected(firstItem)
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     override fun onDestroy() {

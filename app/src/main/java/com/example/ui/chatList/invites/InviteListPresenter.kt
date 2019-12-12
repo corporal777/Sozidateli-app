@@ -15,7 +15,6 @@ import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -57,8 +56,7 @@ class InviteListPresenter
 
     private fun dispatchInvitesListUpdate(data: List<ChatListDataItem>) {
         val invites = mutableListOf<UserChat>()
-
-        data.forEach { if (it is ChatListDataItem.Invite) invites.add(it.userChat) }
+        data.forEach { if (it is ChatListDataItem.Invite) invites.add(it.userChat.apply { unreadMessageCount = 1 }) }
         viewState.setInvitesData(invites)
     }
 

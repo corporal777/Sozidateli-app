@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
@@ -15,6 +16,7 @@ import com.example.R
 import com.example.data.models.MapInfo
 import com.example.data.models.Place
 import com.example.interfaces.DoNotCheckConnectionFragment
+import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
@@ -34,9 +36,13 @@ import kotlinx.android.synthetic.main.item_action_button.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment, DoNotCheckConnectionFragment {
+class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment, DoNotCheckConnectionFragment, NavBarColorFragment {
 
     override val title: String? = null
+
+    override val navBarColor: Int by lazy {
+        ContextCompat.getColor(requireContext(), R.color.navBarTabs)
+    }
 
     @InjectPresenter
     lateinit var presenter: EventTabsPresenter
@@ -84,9 +90,10 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-
+            presenter.onHandleBackCLick()
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -145,6 +152,10 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     private fun generateFragmentTag(tabId: Int): String = "tabFragment#$tabId"
 
+    override fun setBackClickHandlerEnabled(enabled: Boolean) {
+        backPressedCallback.isEnabled = enabled
+    }
+
     override fun showChat() {
         findNavController().navigate(EventTabsFragmentDirections.actionEventTabsFragmentToChatListTabsFragment())
     }
@@ -188,6 +199,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             noInternetDialog?.dismiss()
         }
     }
+
 
     override fun layout() = R.layout.fragment_event_tabs
 }
