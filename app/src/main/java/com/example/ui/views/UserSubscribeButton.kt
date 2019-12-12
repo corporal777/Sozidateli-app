@@ -46,6 +46,8 @@ class UserSubscribeButton : AppCompatButton {
         isAllCaps = false
         updatePadding(left = 8.dp, right = 8.dp, top = 0, bottom = 0)
         textSize = 12f
+        minimumWidth = 0
+        minWidth = 0
     }
 
     init {

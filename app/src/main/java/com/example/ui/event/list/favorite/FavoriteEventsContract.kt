@@ -12,7 +12,7 @@ interface FavoriteEventsContract {
         fun updateEventFavorite(eventId: String, isFavorite: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSubEvents(subEvents: List<SubEvent>)
+        fun showSubEvents(event: String, subEvents: List<SubEvent>)
     }
 
     interface Presenter : EventListContract.Presenter {

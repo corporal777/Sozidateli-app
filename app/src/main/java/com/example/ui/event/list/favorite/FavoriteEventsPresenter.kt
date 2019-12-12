@@ -44,9 +44,6 @@ class FavoriteEventsPresenter
     }
 
     override fun onEventSubeventsClick(event: Event) {
-        val subevents = event.activities
-        if (!subevents.isNullOrEmpty()){
-            viewState.showSubEvents(subevents)
-        }
+        viewState.showSubEvents(event.id, event.activities ?: emptyList())
     }
 }

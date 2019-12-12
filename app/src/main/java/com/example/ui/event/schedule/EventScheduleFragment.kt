@@ -49,6 +49,10 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
             presenter.onRemoveFromScheduleClick(subEvent)
         }
+
+        override fun onChangeFavoriteClick(subEvent: SubEvent) {
+            // do nothing
+        }
     }
 
     private var calendarItem: CalendarHorizontalListItem? = null
@@ -90,7 +94,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
 
     override fun setSubEvents(subEvents: List<SubEvent>, selectedTags: List<Tag>) {
         eventsSection.update(subEvents.map { subEvent ->
-            SubEventItem(subEvent, onSubEventClickListener)
+            SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener)
         })
     }
 
@@ -123,8 +127,8 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         daySection.update(emptyList())
     }
 
-    override fun showSubEvent(title: String, eventId: String, subEventId: String) {
-        val args = SubeventFragmentArgs.Builder(title, eventId, subEventId).build().toBundle()
+    override fun showSubEvent(eventId: String, subEventId: String) {
+        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
         findNavController().navigate(R.id.subevent_fragment, args)
     }
 

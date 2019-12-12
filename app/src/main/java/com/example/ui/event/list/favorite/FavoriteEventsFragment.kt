@@ -45,8 +45,8 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
         }
     }
 
-    override fun showSubEvents(subEvents: List<SubEvent>) {
-        val args = FavoriteSubeventFragmentArgs.Builder(subEvents.toTypedArray()).build().toBundle()
+    override fun showSubEvents(event: String, subEvents: List<SubEvent>) {
+        val args = FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
         findNavController().navigate(R.id.favorite_subevents_fragment, args)
     }
 }

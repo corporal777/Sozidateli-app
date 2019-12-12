@@ -95,4 +95,6 @@
     <dimen name="tag_compact_background_padding_horizontal">16dp</dimen>
     <dimen name="tag_compact_background_padding_vertical">5dp</dimen>
     <dimen name="tag_compact_corners_radius">4dp</dimen>
+
+    <dimen name="card_min_height">186dp</dimen>
 </resources>

@@ -253,9 +253,6 @@
         android:id="@+id/subevent_fragment"
         android:name="com.example.ui.subevent.SubeventFragment">
         <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
             android:name="eventId"
             app:argType="string" />
         <argument
@@ -668,7 +665,15 @@
         android:id="@+id/favorite_subevents_fragment"
         android:name="com.example.ui.event.favorite.subevent.FavoriteSubeventFragment">
         <argument
+            android:name="event"
+            app:argType="string" />
+
+        <argument
             android:name="actions"
             app:argType="com.example.data.models.SubEvent[]" />
+
+        <action
+            android:id="@+id/favorite_subevents_fragment_to_subevent_fragment"
+            app:destination="@id/subevent_fragment" />
     </fragment>
 </navigation>

@@ -24,8 +24,7 @@ import javax.inject.Provider
 
 class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment {
 
-    override val title: CharSequence
-        get() = SubeventFragmentArgs.fromBundle(arguments!!).title
+    override val title: CharSequence? = null
 
     @InjectPresenter
     lateinit var presenter: SubeventPresenter

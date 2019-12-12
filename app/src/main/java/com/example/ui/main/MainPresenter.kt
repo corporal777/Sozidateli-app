@@ -78,7 +78,8 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showStories()
+//        viewState.showStories()
+        onStoriesComplete()
     }
 
     override fun onStoriesComplete() {

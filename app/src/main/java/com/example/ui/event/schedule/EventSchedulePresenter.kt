@@ -148,7 +148,7 @@ constructor(
 
     override fun onSubEventClick(subEvent: SubEvent) {
         checkInternetAndRun {
-            viewState.showSubEvent(userEvent.eventInfo.event.name, userEvent.eventId, subEvent.id)
+            viewState.showSubEvent(userEvent.eventId, subEvent.id)
         }
     }
 
