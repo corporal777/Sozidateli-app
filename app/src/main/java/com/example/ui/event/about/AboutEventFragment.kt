@@ -153,7 +153,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         aboutItem
                 ),
                 Section().apply {
-                    if ((eventData.status == Event.Status.CONFERENCE_ENDS || eventData.status == Event.Status.IN_ARCHIVE) && userRating?.created == null) {
+                    if ((eventData.status == Event.Status.CONFERENCE_ENDS || eventData.status == Event.Status.IN_ARCHIVE) && eventData.ratingStartAt != null && userRating?.created == null && eventData.userRegistration == Event.RegistrationStatus.APPROVED) {
                         add(EventPageItem(-100, getString(R.string.about_event_rate)) { presenter.onRateClick() })
                     }
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })

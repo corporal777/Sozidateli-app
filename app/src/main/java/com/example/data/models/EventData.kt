@@ -53,6 +53,8 @@ data class EventData(
         val ratingHeadline: String?,
         @SerializedName("rating_subtitle")
         val ratingSubtitle: String?,
+        @SerializedName("rating_start_at")
+        val ratingStartAt : Boolean?,
         val format: EventFormat?,
         @SerializedName("is_favorite")
         var isFavorite: Boolean?

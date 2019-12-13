@@ -68,6 +68,7 @@ const val FIELD_ORGANIZATION_ID = "organization_id"
 const val FIELD_ACTION = "action"
 const val PATH_SN_AUTHORIZATION = "social"
 const val FIELD_SN_AUTHORIZATION_USER_ID = "usa_id"
+const val PATH_EVENT = "event"
 
 const val REQUEST_CODE_SELECT_PDF = 12
 const val REQUEST_CODE_PERMISSION_READ_FILE = 13

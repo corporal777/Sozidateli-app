@@ -46,8 +46,33 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
+                    android:host="sozidateli-houseofapps.ru"
+                    android:pathPrefix="/profile"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli-houseofapps.ru"
+                    android:pathPrefix="/social"
+                    android:scheme="https" />
+
+                <data
+                    android:host="www.sozidateli-houseofapps.ru"
+                    android:pathPrefix="/profile"
+                    android:scheme="https" />
+
+                <data
+                    android:host="www.sozidateli-houseofapps.ru"
+                    android:pathPrefix="/social"
+                    android:scheme="https" />
+
+                <data
                     android:host="www.sozidateli.ru"
-                    android:pathPrefix="/"
+                    android:pathPrefix="/event"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/event"
                     android:scheme="https" />
             </intent-filter>
 

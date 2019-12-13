@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +14,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.os.ConfigurationCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
@@ -193,11 +191,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
-                val change = it.getQueryParameter(CHANGE_EMAIL)
 
+                val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
-                if (change != null) {
+                if (paths.contains(PATH_EVENT) && lastPath != null) {
+                    presenter.onHandleEvent(lastPath)
+                } else if (it.getQueryParameter(CHANGE_EMAIL) != null) {
                     if (authEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(authEmail, authCode)
                     }
