@@ -3,18 +3,17 @@ package com.example.util.pagination
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import java.lang.ref.WeakReference
 
 class PaginationListGroupAdapter<VH : GroupieViewHolder> : GroupAdapter<VH>() {
 
-    private var weakPaginationListItemTakeCallback: WeakReference<OnItemTakeCallback>? = null
+    private var onItemTakeCallback: OnItemTakeCallback? = null
 
-    fun setOnItemTakeCallback(callback: OnItemTakeCallback) {
-        weakPaginationListItemTakeCallback = WeakReference(callback)
+    fun setOnItemTakeCallback(callback: OnItemTakeCallback?) {
+        onItemTakeCallback = callback
     }
 
     override fun getItem(position: Int): Item<*> {
-        weakPaginationListItemTakeCallback?.get()?.onItemTake(position)
+        onItemTakeCallback?.onItemTake(position)
         return super.getItem(position)
     }
 

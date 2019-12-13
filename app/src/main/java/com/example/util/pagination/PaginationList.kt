@@ -31,8 +31,6 @@ class PaginationList<T>(
     }
 
     fun onItemTake(position: Int) {
-        val list = pagedList ?: return
-        if (position < 0 || position >= list.size) return
         pagedList?.loadAround(position)
     }
 
