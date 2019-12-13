@@ -6,6 +6,9 @@ import com.example.data.models.SearchFilter
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
+import io.reactivex.rxkotlin.plusAssign
+import performOnBackgroundOutOnMain
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -20,6 +23,19 @@ class SearchOrganizationPresenter
 
     override fun onOrganizationClick(organization: Organization) {
         viewState.showOrganization(organization)
+    }
+
+    override fun onOrganizationSubscriptionClick(organization: Organization) {
+        val isSubscribed = organization.isSubscribed ?: false
+        val request = if (isSubscribed) organizationRepository.unsubscribe(organization.id)
+        else organizationRepository.subscribe(organization.id)
+
+        compositeDisposable += request.performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    organization.isSubscribed = !isSubscribed
+                    viewState.changeSubscription(organization)
+                }
     }
 
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {

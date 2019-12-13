@@ -362,30 +362,6 @@
                             <option name="y" value="97" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_about_event_fragment_to_contacts_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_page_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_partner_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_speakers_list_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -613,26 +589,6 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_about_event_fragment_to_contacts_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_page_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_partner_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_about_event_fragment_to_speakers_list_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_event_tabs_fragment_to_chat_list_tabs_fragment">
                               <value>
                                 <LayoutPositions />

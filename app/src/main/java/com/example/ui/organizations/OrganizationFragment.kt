@@ -197,7 +197,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                             it.status,
                             it.userRegistration,
                             it.backgroundColor,
-                            it.logo,
+                            it.backgroundImage,
                             it.format,
                             it.organization?.emails,
                             onEventClickListener,

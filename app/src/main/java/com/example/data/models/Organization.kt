@@ -27,7 +27,7 @@ data class Organization(
         @SerializedName("phone")
         val phones: List<PhoneAffiliation>?,
         @SerializedName("is_user_subscribed")
-        val isSubscribed: Boolean?,
+        var isSubscribed: Boolean?,
         @SerializedName("total_members")
         val totalMembers: Int,
         @SerializedName("total_events")

@@ -6,6 +6,7 @@ import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_data_about.*
+import setOnClickListener
 
 class EventDataAboutItem(
         itemId: Long,
@@ -14,7 +15,8 @@ class EventDataAboutItem(
         private val time: String?,
         private val date: String?,
         private var isFavorite: Boolean,
-        private val actionClickListener: (UserSubscribeButton.Action) -> Unit
+        private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
+        private val organizationClickListener: () -> Unit
 ) : Item(itemId) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -22,6 +24,7 @@ class EventDataAboutItem(
             tvOrganizationLabel.apply {
                 text = organizationName
                 isVisible = !organizationName.isNullOrEmpty()
+                setOnClickListener(organizationClickListener)
             }
             tvEventName.apply {
                 text = eventName

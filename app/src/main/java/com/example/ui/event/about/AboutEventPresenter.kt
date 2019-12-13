@@ -144,4 +144,8 @@ class AboutEventPresenter
                     viewState.hideWriteToOrganizationForm()
                 }
     }
+
+    override fun onOrganizationClick(organization: String) {
+        viewState.showOrganization(organization)
+    }
 }

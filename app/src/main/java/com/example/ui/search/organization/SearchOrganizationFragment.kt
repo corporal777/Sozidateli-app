@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Organization
 import com.example.data.models.SearchFilter
+import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.search.SearchFragment
@@ -33,11 +34,17 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id))
     }
 
+    override fun changeSubscription(organization: Organization) {
+        val idLong = organization.id.toLong()
+        adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
+    }
+
     override fun createItem(itemData: Organization?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else OrganizationItem(
                 itemData,
-                { presenter.onOrganizationClick(itemData) }
+                { presenter.onOrganizationClick(itemData) },
+                { presenter.onOrganizationSubscriptionClick(itemData) }
         )
     }
 

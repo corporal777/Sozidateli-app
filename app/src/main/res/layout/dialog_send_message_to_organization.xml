@@ -16,7 +16,7 @@
             android:id="@+id/etMessage"
             style="@style/Profile.Edit.Input"
             android:gravity="start|top"
-            android:hint="@string/about_event_write_to_organization_message"
+            android:hint="@string/about_event_write_to_organization_hint"
             android:inputType="textMultiLine|textCapSentences|textImeMultiLine"
             android:lines="6" />
     </com.example.ui.views.CustomTextInputLayout>

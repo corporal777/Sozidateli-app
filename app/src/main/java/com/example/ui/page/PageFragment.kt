@@ -55,7 +55,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         }
 
         tvTitle.apply {
-            if (title == null) {
+            if (title.isNullOrBlank()) {
                 isVisible = false
             } else {
                 isVisible = true
@@ -64,7 +64,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         }
 
         tvInfo.apply {
-            if (content == null) {
+            if (content.isNullOrBlank()) {
                 isVisible = false
             } else {
                 isVisible = true

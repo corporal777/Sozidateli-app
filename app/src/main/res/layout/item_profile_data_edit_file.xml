@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -21,9 +20,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
                 style="@style/Profile.Edit.Input"
+                android:hint="@string/profile_edit_additional_data_rename_file"
                 android:inputType="text"
-                android:maxLines="2"
-                tools:text="@tools:sample/lorem/random" />
+                android:maxLines="2" />
         </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 </LinearLayout>

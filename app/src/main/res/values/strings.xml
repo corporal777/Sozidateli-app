@@ -29,7 +29,7 @@
     <string name="my_events_pending">Заявка на рассмотрении</string>
     <string name="my_events_declined">Участие отклонено</string>
 
-    <string name="organizations_favorites">Избранные</string>
+    <string name="organizations_favorites">Избранное</string>
     <string name="organizations_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке организаций</string>
 
     <string name="event_status_approved">Участие одобрено</string>
@@ -116,6 +116,7 @@
     <string name="about_event_write_to_organization_hint">Пожалуйста, напишите сообщение организатору мероприятия.</string>
     <string name="about_event_time">Время:</string>
     <string name="about_event_date">Дата:</string>
+    <string name="about_event_partners">Спонсоры</string>
 
     <string name="news_read_more">Подробнее</string>
 
@@ -185,19 +186,19 @@
     <string name="search_events">Мероприятия</string>
     <string name="search_users">Пользователи</string>
     <string name="search_input_hint">Поиск</string>
-    <string name="search_filter_address">Область, край, район или город</string>
+    <string name="search_filter_address">Область, край или город</string>
     <string name="search_filter_organization_address">Адрес</string>
-    <string name="search_filter_organization_name">Название органзации</string>
+    <string name="search_filter_organization_name">Название организации</string>
     <string name="search_filter_inn">ИНН</string>
     <string name="search_filter_type">Тип</string>
     <string name="search_filter_subscription">Подписка</string>
     <string name="search_filters">Фильтры</string>
-    <string name="search_filters_find">Найти</string>
+    <string name="search_filters_find">Применить</string>
     <string name="search_filters_not_chosen">Не выбрано</string>
     <string name="search_filter_event_name">Название мероприятия</string>
     <string name="search_filter_event_dates">Период проведения мероприятия</string>
     <string name="search_filter_specialization">Специализация</string>
-    <string name="search_filter_theme">Тематика мероприятия</string>
+    <string name="search_filter_theme">Интересующая тема</string>
     <string name="search_filter_registration">Регистрация</string>
     <string name="search_filter_user_name">Имя</string>
     <string name="search_filter_age">Возраст</string>
@@ -411,7 +412,7 @@
 \nЗдесь Вы можете указать дополнительную информацию о себе: рассказать о своих достижениях, прикрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем, добавить ссылки на ваши публикации и другие материалы
 \nТакже вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта</string>
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
-    <string name="profile_edit_additional_data_rename_file">Переименовать файл</string>
+    <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
     <string-array name="profile_edit_education_levels">
         <item>Среднее образование</item>
         <item>Среднее профессиональное</item>
@@ -569,7 +570,7 @@
     <string name="event_register_already_approved_error">Заявка уже была подтверждена ранее</string>
     <string name="event_register_closed_error">Регистрация закрыта</string>
     <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
-    <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистраци на мероприятие</string>
+    <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистрации на мероприятие</string>
     <string name="event_register_sent_moderate_title">Ваша заявка успешно подана!</string>
     <string name="event_register_sent_moderate_message">Модератор подтвердит ваше участие в течении 2 рабочих дней</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>

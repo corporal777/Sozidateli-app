@@ -209,21 +209,6 @@
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
-        <action
-            android:id="@id/action_about_event_fragment_to_speakers_list_fragment"
-            app:destination="@id/speakers_list_fragment" />
-        <action
-            android:id="@id/action_about_event_fragment_to_partner_fragment"
-            app:destination="@id/partner_fragment" />
-        <action
-            android:id="@id/action_about_event_fragment_to_page_fragment"
-            app:destination="@id/page_fragment" />
-        <action
-            android:id="@id/action_about_event_fragment_to_contacts_fragment"
-            app:destination="@id/contacts_fragment" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_event_rating_fragment"
-            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <activity
@@ -540,21 +525,6 @@
             android:name="eventId"
             app:argType="string"
             app:nullable="false" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_speakers_list_fragment"
-            app:destination="@id/speakers_list_fragment" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_partner_fragment"
-            app:destination="@id/partner_fragment" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_page_fragment"
-            app:destination="@id/page_fragment" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_contacts_fragment"
-            app:destination="@id/contacts_fragment" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_event_rating_fragment"
-            app:destination="@id/event_rating_fragment" />
     </fragment>
 
     <fragment

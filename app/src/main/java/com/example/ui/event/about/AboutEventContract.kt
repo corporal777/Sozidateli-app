@@ -47,6 +47,9 @@ interface AboutEventContract {
         @StateStrategyType(SkipStrategy::class)
         fun showRating(eventId: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showOrganization(organization: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
 
@@ -70,5 +73,6 @@ interface AboutEventContract {
         fun onWriteToOrganizationClick()
         fun onWriteToOrganizationMessage(message: String)
         fun onRateClick()
+        fun onOrganizationClick(organization: String)
     }
 }

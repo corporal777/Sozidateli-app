@@ -21,8 +21,14 @@ import com.example.holders.*
 import com.example.holders.EventGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.contacts.EventContactsFragmentArgs
+import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.event.speakers.EventSpeakersFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.page.PageFragmentArgs
+import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -133,10 +139,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 eventData.name,
                 eventData.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                 eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
-                eventData.isFavorite ?: false
-        ) {
-            presenter.onChangeFavoriteClick()
-        }.apply {
+                eventData.isFavorite ?: false,
+                { presenter.onChangeFavoriteClick() },
+                { eventData.organizationId?.let { presenter.onOrganizationClick(it) } }
+        ).apply {
             this@AboutEventFragment.aboutItem = this
         }
 
@@ -162,9 +168,16 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         hasBottomPadding = pages.isNotEmpty()
                     })
 
-                    addAll(pages.map { EventPageItem(it.id, it.menu) { presenter.onPageClick(it) } })
+                    addAll(pages.mapIndexed { index, item ->
+                        EventPageItem(item.id, item.menu) { presenter.onPageClick(item) }.apply {
+                            hasBottomPadding = index == pages.size - 1
+                        }
+                    })
                 },
+
                 Section().apply {
+                    setHeader(PartnersTitleItem(-50))
+                    setHideWhenEmpty(true)
                     addAll(partners.map { EventPartnerItem(it.id, it.logo, it.name) { presenter.onPartnerClick(it) } })
                 }
         ))
@@ -210,19 +223,19 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showPage(eventId: String, pageId: String) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPageFragment(eventId, pageId))
+        findNavController().navigate(R.id.page_fragment, PageFragmentArgs.Builder(eventId, pageId).build().toBundle())
     }
 
     override fun showPartner(eventId: String, partnerId: String) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToPartnerFragment(eventId, partnerId))
+        findNavController().navigate(R.id.partner_fragment, PartnerFragmentArgs.Builder(eventId, partnerId).build().toBundle())
     }
 
     override fun showSpeakers(eventId: String) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToSpeakersListFragment(eventId))
+        findNavController().navigate(R.id.speakers_list_fragment, EventSpeakersFragmentArgs.Builder(eventId).build().toBundle())
     }
 
     override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToContactsFragment(
+        findNavController().navigate(R.id.contacts_fragment, EventContactsFragmentArgs.Builder(
                 eventName,
                 phones.toTypedArray(),
                 emails.toTypedArray(),
@@ -232,7 +245,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 place,
                 mapInfo,
                 places?.toTypedArray()
-        ))
+        ).build().toBundle())
     }
 
     override fun showEventRequest(event: String) {
@@ -247,7 +260,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showRating(eventId: String) {
-        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToEventRatingFragment(eventId))
+        findNavController().navigate(R.id.event_rating_fragment, EventRatingFragmentArgs.Builder(eventId).build().toBundle())
+    }
+
+    override fun showOrganization(organization: String) {
+        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization).build().toBundle())
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
