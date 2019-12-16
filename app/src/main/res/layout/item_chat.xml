@@ -6,18 +6,24 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/ivAvatar"
-        android:layout_width="@dimen/user_item_avatar_size"
-        android:layout_height="@dimen/user_item_avatar_size"
+    <FrameLayout
+        android:id="@+id/flImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="13dp"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="@dimen/user_item_avatar_size"
+            android:layout_height="@dimen/user_item_avatar_size"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tvName"
@@ -31,7 +37,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/tvLastMessage"
         app:layout_constraintEnd_toStartOf="@+id/tvDate"
-        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintStart_toEndOf="@id/flImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Дейенерис из дома Таргариенов, именуемая первой, Неопалимая, Королева Миэрина, Королева Андалов, Ройнар и Первых Людей, Кхалиси Дотракийского Моря, Разбивающая Оковы и Матерь Драконов" />

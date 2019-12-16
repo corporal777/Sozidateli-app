@@ -3,7 +3,6 @@ package com.example.holders
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserChat
@@ -34,21 +33,19 @@ class UserChatItem(
         viewHolder.apply {
             ivAvatar.apply {
                 setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
-                (parent as ViewGroup).overlay.clear()
                 badgeDrawable?.apply {
-                    doOnNextLayout { view ->
-                        number = userChat.unreadMessageCount
-                        view.addBadge(this) { badgeWidth, badgeHeight, anchorRect ->
-                            val badgeCenterX = (anchorRect.right - width / 2.5f).roundToInt()
-                            val badgeCenterY = anchorRect.top + badgeHeight / 2
+                    number = userChat.unreadMessageCount
+                    (parent as ViewGroup).overlay.clear()
+                    addBadge(this) { badgeWidth, badgeHeight, anchorRect ->
+                        val badgeCenterX = (anchorRect.right - width / 2.5f).roundToInt()
+                        val badgeCenterY = anchorRect.top + badgeHeight / 2
 
-                            anchorRect.set(
-                                    badgeCenterX,
-                                    badgeCenterY - badgeHeight / 2,
-                                    badgeCenterX + badgeWidth,
-                                    badgeCenterY + badgeHeight / 2
-                            )
-                        }
+                        anchorRect.set(
+                                badgeCenterX,
+                                badgeCenterY - badgeHeight / 2,
+                                badgeCenterX + badgeWidth,
+                                badgeCenterY + badgeHeight / 2
+                        )
                     }
                 }
             }
@@ -79,6 +76,17 @@ class UserChatItem(
             }
 
             divider.isVisible = withDivider
+        }
+    }
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+        if (payload == null) super.bind(viewHolder, position, payloads)
+        else if (payload is Int) {
+            badgeDrawable?.apply {
+                number = payload
+                invalidateSelf()
+            }
         }
     }
 

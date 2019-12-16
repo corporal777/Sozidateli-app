@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import com.example.extensions.sp
 import com.google.android.material.shape.MaterialShapeDrawable
+import timber.log.Timber
 
 class BadgeDrawable(
         var number: Int = 0,
@@ -79,6 +80,7 @@ class BadgeDrawable(
 
     private fun drawText(canvas: Canvas) {
         val countText = getBadgeText()
+        Timber.tag("CHAT_T").d("DRAW TEXT: $countText")
         val badgeBounds = shapeDrawable.bounds
 
         val textBounds = Rect()

@@ -19,7 +19,6 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat_list.*
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -102,13 +101,12 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {
-        Timber.tag("CHAT_T").d("CHAT: $chatId, COUNT: $count")
         for (i in 0 until chatSection.itemCount) {
             val item = chatSection.getItem(i)
             if (item is UserChatItem && item.userChat.id.toString() == chatId) {
                 if (item.userChat.unreadMessageCount != count) {
                     item.userChat.unreadMessageCount = count
-                    item.notifyChanged()
+                    item.notifyChanged(count)
                 }
                 break
             }
