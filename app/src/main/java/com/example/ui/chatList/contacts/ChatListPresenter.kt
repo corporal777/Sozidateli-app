@@ -135,7 +135,7 @@ class ChatListPresenter
                     chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))
                 })
 
-        chatUnreadMessageSubscriptions.put(chatId, subscription)
+        chatUnreadMessageSubscriptions[chatId] = subscription
         compositeDisposable.add(subscription)
     }
 
