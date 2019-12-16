@@ -162,8 +162,8 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     // leakcanary
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
+//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+//    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     //utils
     implementation 'org.greenrobot:eventbus:3.1.1'
