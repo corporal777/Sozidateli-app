@@ -38,6 +38,10 @@ class UserRepositoryImp
         return callPagination(api.getUserNotifications(limit, offset))
     }
 
+    override fun getNotification(id: Int): Maybe<RemoteNotification> {
+        return call(api.getUserNotification(id))
+    }
+
     override fun markNotificationsAsRead(ids: List<Int>): Completable {
         return call(api.markNotificationsAsRead(ids)).doOnSuccess {
             appData.notificationsCount = it.unreadCount

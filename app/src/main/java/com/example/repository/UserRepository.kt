@@ -14,6 +14,7 @@ interface UserRepository {
     fun getUserFull(): Maybe<User>
     fun getLastNotification(): Single<List<Notification>>
     fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
+    fun getNotification(id: Int): Maybe<RemoteNotification>
     fun markNotificationsAsRead(ids: List<Int>): Completable
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable

@@ -1,5 +1,6 @@
 package com.example.ui.profile
 
+import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.UserRepository
@@ -15,7 +16,8 @@ class ProfilePresenter
 @Inject constructor(
         private val userRepository: UserRepository,
         private val haChat: HAChat,
-        private val appData: AppData
+        private val appData: AppData,
+        private val notificationManager: NotificationManager
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override fun onFirstViewAttach() {
@@ -73,6 +75,7 @@ class ProfilePresenter
                     appData.isSubscribedToPush = false
                     haChat.disconnect()
                     appData.logout()
+                    notificationManager.cancelAll()
                 }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

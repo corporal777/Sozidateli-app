@@ -84,6 +84,9 @@ interface Api {
     @POST("/v1/user/notifications")
     fun getUserNotifications(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<RemoteNotification>>>
 
+    @GET("/v1/user/notifications/{id}")
+    fun getUserNotification(@Path("id") id: Int): Maybe<ApiResponse<RemoteNotification>>
+
     @FormUrlEncoded
     @POST("/v1/user/notifications/mark_as_read")
     fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<UnreadCountResponse>>

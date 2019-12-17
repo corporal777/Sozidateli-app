@@ -10,8 +10,6 @@ import com.example.data.UserEventData
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
-import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE
-import com.example.data.models.RemoteNotification.Companion.TYPE_RATE
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -39,7 +37,6 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
-import timber.log.Timber
 import withLoadingDialog
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -78,8 +75,8 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-//        viewState.showStories()
-        onStoriesComplete()
+        viewState.showStories()
+//        onStoriesComplete()
     }
 
     override fun onStoriesComplete() {
@@ -349,15 +346,24 @@ class MainPresenter
 
     override fun onHandleNotification(notification: RemoteNotification) {
         if (isAuthRequired) return
-        val eventId = notification.event_id
-        val organizationId = notification.organization_id
-        when {
-            notification.type == TYPE_INVITE -> viewState.showNotification(Notification.fromRemoteNotification(notification))
-            notification.type == TYPE_RATE && eventId != 0 -> viewState.showRating(eventId.toString())
-            eventId != 0 -> viewState.showEvent(eventId.toString())
-            organizationId != 0 -> viewState.showOrganization(organizationId.toString())
-            else -> viewState.showNotification(Notification.fromRemoteNotification(notification))
-        }
+//        val eventId = notification.event_id
+//        val organizationId = notification.organization_id
+//        when {
+//            notification.type == TYPE_INVITE -> showNotification(notification.id)
+//            notification.type == TYPE_RATE && eventId != 0 -> viewState.showRating(eventId.toString())
+//            eventId != 0 -> viewState.showEvent(eventId.toString())
+//            organizationId != 0 -> viewState.showOrganization(organizationId.toString())
+//            else -> showNotification(notification.id)
+//        }
+
+        showNotification(notification.id)
+    }
+
+    private fun showNotification(notificationId: Int) {
+        compositeDisposable += userRepository.getNotification(notificationId)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
     }
 
     override fun onSetPassword(email: String, code: String, password: String) {

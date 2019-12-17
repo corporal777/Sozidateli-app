@@ -67,7 +67,7 @@ class FcmMessagingService : FirebaseMessagingService() {
         val chatId = data[DATA_CHAT_ID] ?: return
         val messageId = data[DATA_CHAT_MESSAGE_ID] ?: return
         val name = data[DATA_CHAT_USER_NAME] ?: return
-        val avatar = data[DATA_CHAT_USER_AVATAR] ?: return
+        val avatar = data[DATA_CHAT_USER_AVATAR]
 
         setMessageToMainThread { chatHelper.showNotificationIfCan(chatId, messageId, title, body, name, avatar) }
     }
