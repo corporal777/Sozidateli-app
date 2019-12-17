@@ -309,6 +309,7 @@
     <string name="recovery_confirm_password">Подтвердите пароль</string>
 
     <string name="profile_label">Личный кабинет</string>
+    <string name="profile_current_user_label">Профиль</string>
     <string name="profile_edit">Редактировать профиль</string>
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
@@ -426,7 +427,7 @@
     <string name="profile_status_mid">Защищенный</string>
     <string name="profile_status_max">Максимальный</string>
 
-    <string name="status_your_status">Ваш текущий статус: %s</string>
+    <string name="status_your_status">Ваш текущий статус:</string>
     <string name="status_security">Повышенная безопасность аккаунта</string>
     <string name="status_support">Приоритетная техничнсекая поддержка</string>
     <string name="status_invites">Возможность принимать приглашения в проектах Фонда Президентских Грантов</string>
@@ -475,8 +476,8 @@
     <string name="register_event_select_category_hint">Выберите категорию</string>
     <string name="select_file_error">Возможно файл не существует или вы выбрали его из облака. Для загрузки используйте файлы хранящиеся на устройстве.</string>
 
-    <string name="schedule_title">Расписание</string>
-    <string name="schedule_events_title">События</string>
+    <string name="schedule_title">Мое расписание</string>
+    <string name="schedule_events_title">Все события</string>
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
     <string name="schedule_my_empty_day_placeholder_title">Список пуст.</string>
     <string name="schedule_my_empty_day_placeholder_description">Нажмите “Добавить в расписание” в списке событий</string>

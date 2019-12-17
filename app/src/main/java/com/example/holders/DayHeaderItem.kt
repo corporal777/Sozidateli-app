@@ -16,10 +16,7 @@ open class DayHeaderItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvDate.text = dateFormat.format(date).let {
-                if (it.length > 1) it.substring(0, 1).toUpperCase(Locale.getDefault()) + it.substring(1)
-                else it
-            }
+            tvDate.text = dateFormat.format(date).capitalize()
         }
     }
 

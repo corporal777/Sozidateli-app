@@ -4,14 +4,13 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
+import com.example.extensions.parsePhone
 import com.example.util.ClickableSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_personal.*
-import setOnClickListener
 import setTextDataOrHide
 
 class ProfileDataPersonalItem(
@@ -37,8 +36,8 @@ class ProfileDataPersonalItem(
             })
 
             groupEmail.setTextDataOrHide(tvEmail, email)
-            groupPhoneWork.setTextDataOrHide(tvPhoneWork, workPhone)
-            groupPhoneMobile.setTextDataOrHide(tvPhoneMobile, mobilePhone)
+            groupPhoneWork.apply { setTextDataOrHide(tvPhoneWork, workPhone?.parsePhone(context)) }
+            groupPhoneMobile.apply { setTextDataOrHide(tvPhoneMobile, mobilePhone?.parsePhone(context)) }
             groupGender.setTextDataOrHide(tvGender, gender)
             groupBirthday.setTextDataOrHide(tvBirthday, birthday)
             groupCity.setTextDataOrHide(tvCity, city)

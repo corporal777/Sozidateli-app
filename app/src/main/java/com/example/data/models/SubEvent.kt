@@ -24,37 +24,37 @@ data class SubEvent(
         val tags: List<Tag.EventTag>?
 ) : Parcelable {
 
-        override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (other !is SubEvent) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SubEvent) return false
 
-                if (id != other.id) return false
-                if (title != other.title) return false
-                if (start != other.start) return false
-                if (finish != other.finish) return false
-                if (isVisitor != other.isVisitor) return false
-                if (forEveryone != other.forEveryone) return false
-                if (isInCalendar != other.isInCalendar) return false
-                if (canAddToCalendar != other.canAddToCalendar) return false
-                if (isInFavorites != other.isInFavorites) return false
-                if (groups != other.groups) return false
-                if (tags != other.tags) return false
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (start != other.start) return false
+        if (finish != other.finish) return false
+        if (isVisitor != other.isVisitor) return false
+        if (forEveryone != other.forEveryone) return false
+        if (isInCalendar != other.isInCalendar) return false
+        if (canAddToCalendar != other.canAddToCalendar) return false
+        if (isInFavorites != other.isInFavorites) return false
+        if (groups != other.groups) return false
+        if (tags != other.tags) return false
 
-                return true
-        }
+        return true
+    }
 
-        override fun hashCode(): Int {
-                var result = id.hashCode()
-                result = 31 * result + title.hashCode()
-                result = 31 * result + start.hashCode()
-                result = 31 * result + finish.hashCode()
-                result = 31 * result + isVisitor.hashCode()
-                result = 31 * result + forEveryone.hashCode()
-                result = 31 * result + isInCalendar.hashCode()
-                result = 31 * result + canAddToCalendar.hashCode()
-                result = 31 * result + isInFavorites.hashCode()
-                result = 31 * result + (groups?.hashCode() ?: 0)
-                result = 31 * result + (tags?.hashCode() ?: 0)
-                return result
-        }
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + start.hashCode()
+        result = 31 * result + finish.hashCode()
+        result = 31 * result + isVisitor.hashCode()
+        result = 31 * result + forEveryone.hashCode()
+        result = 31 * result + isInCalendar.hashCode()
+        result = 31 * result + canAddToCalendar.hashCode()
+        result = 31 * result + isInFavorites.hashCode()
+        result = 31 * result + (groups?.hashCode() ?: 0)
+        result = 31 * result + (tags?.hashCode() ?: 0)
+        return result
+    }
 }

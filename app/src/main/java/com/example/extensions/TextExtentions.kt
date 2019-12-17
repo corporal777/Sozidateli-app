@@ -1,9 +1,11 @@
 package com.example.extensions
 
+import android.content.Context
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.UnderlineSpan
 import androidx.core.text.toSpannable
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import java.util.*
 
 fun CharSequence.substringToWholeWord(maxLength: Int = this.length): CharSequence {
@@ -29,4 +31,12 @@ fun String.getFileNameAndExtension(): Pair<String, String> {
     val name = if (extDotIndex == -1) this else substring(0, extDotIndex)
     val extension = substring(extDotIndex + 1, length).toLowerCase(Locale.getDefault())
     return name to extension
+}
+
+fun String.parsePhone(context: Context, defaultRegion: String = "RU"): String {
+    return PhoneNumberUtil.createInstance(context).let {
+        val parsed = kotlin.runCatching { it.parse(this, defaultRegion) }.getOrNull()
+        if (parsed != null) it.format(parsed, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
+        else this
+    }
 }

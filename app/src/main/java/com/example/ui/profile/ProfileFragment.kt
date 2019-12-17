@@ -31,7 +31,7 @@ import javax.inject.Provider
 
 class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
-    override val title = ""
+    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter

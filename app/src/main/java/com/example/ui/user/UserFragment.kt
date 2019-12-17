@@ -331,6 +331,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 .setTitle(R.string.profile_password_change)
                 .setView(view)
                 .setPositiveButton(R.string.ok, null)
+                .setNegativeButton(R.string.cancel, null)
                 .create()
                 .apply {
                     setOnShowListener {
@@ -391,6 +392,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 else presenter.onBlockClick()
             }
         })
+    }
+
+    override fun setNoTitle() {
+        toolbarContentActionBar.title = null
+    }
+
+    override fun setProfileTitle() {
+        toolbarContentActionBar.title = getString(R.string.profile_current_user_label)
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {

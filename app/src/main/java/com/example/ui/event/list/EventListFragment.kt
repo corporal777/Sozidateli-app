@@ -75,7 +75,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.backgroundColor,
                     it.backgroundImage,
                     it.format,
-                    it.organization?.emails,
+                    it.email,
                     onEventClickListener,
                     EventDataListItem(-it.id.toLong(), it.name, it.addressCity, it.conferenceStart, it.conferenceFirstActivityStart)
             )

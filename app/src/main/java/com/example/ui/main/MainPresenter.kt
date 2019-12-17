@@ -93,7 +93,10 @@ class MainPresenter
                     unsubscribeChat()
                     if (token.value == null) {
                         isAuthRequired = true
-                        viewState.showLogin()
+                        viewState.apply {
+                            showLogin()
+                            checkIntent()
+                        }
                     } else {
                         loadUser()
                     }
@@ -298,6 +301,7 @@ class MainPresenter
     }
 
     override fun onHandleEvent(event: String) {
+        if (isAuthRequired) return
         viewState.showEvent(event)
     }
 
@@ -320,6 +324,7 @@ class MainPresenter
     }
 
     override fun onHandleChangeEmailConfirm(email: String, code: String) {
+        if (isAuthRequired) return
         userRepository.changeEmailConfirm(email, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -332,7 +337,6 @@ class MainPresenter
     }
 
     override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
-        Timber.tag("")
         compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -344,6 +348,7 @@ class MainPresenter
     }
 
     override fun onHandleNotification(notification: RemoteNotification) {
+        if (isAuthRequired) return
         val eventId = notification.event_id
         val organizationId = notification.organization_id
         when {

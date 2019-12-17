@@ -158,11 +158,11 @@ fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
 }
 
 fun User.Status.getUserStatusText(context: Context): String {
-    return context.getString(R.string.status_your_status).format(context.getString(when (this) {
+    return "${context.getString(R.string.status_your_status)} ${context.getString(when (this) {
         User.Status.LOW_PROTECTION -> R.string.profile_status_low
         User.Status.MID_PROTECTION -> R.string.profile_status_mid
         User.Status.MAX_PROTECTION -> R.string.profile_status_max
-    }))
+    })}"
 }
 
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {

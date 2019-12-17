@@ -10,6 +10,7 @@ import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
 import com.example.data.models.Place
+import com.example.extensions.parsePhone
 import com.example.holders.ProfileButtonEditItem
 import com.example.holders.ProfileFieldTextItem
 import com.example.interfaces.ToolbarFragment
@@ -57,7 +58,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
 
     override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, canShowOnMap: Boolean) {
         groupAdapter.update(mutableListOf<Item>().apply {
-            addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone) })
+            addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext())) })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
             if (webLinks.isNotEmpty())
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n")))

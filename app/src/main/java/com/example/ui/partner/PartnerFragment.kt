@@ -16,6 +16,8 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
 import kotlinx.android.synthetic.main.fragment_partner.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -67,6 +69,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         tvLinks.apply {
             isVisible = !partner.web.isNullOrEmpty()
             text = partner.web
+            removeUrlUnderline()
         }
 
         llSupportType.isVisible = !partner.typeSupport.isNullOrEmpty()

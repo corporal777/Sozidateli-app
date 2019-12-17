@@ -37,7 +37,8 @@ data class Event(
         val format: EventFormat?,
         val activities: List<SubEvent>?,
         @SerializedName("is_favorite")
-        var isInFavorites: Boolean
+        var isInFavorites: Boolean,
+        val email: List<EmailAffiliation>?
 ) {
 
     fun isCanRegister() = isCanRegister(status, userRegistration)

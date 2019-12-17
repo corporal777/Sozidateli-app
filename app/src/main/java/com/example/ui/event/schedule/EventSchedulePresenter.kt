@@ -137,13 +137,12 @@ constructor(
         if (date.calendar().isSameDay(currentDayDate.calendar())) invalidateDay()
     }
 
-    protected open fun processChangeEventInCalendarStatusRequest(request: Completable) {
+    protected open fun processChangeEventInCalendarStatusRequest(subEvent: SubEvent, request: Completable) {
         compositeDisposable += request
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple { invalidateDay() }
-
+                .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
     override fun onSubEventClick(subEvent: SubEvent) {
@@ -154,6 +153,7 @@ constructor(
 
     override fun onAddToScheduleClick(subEvent: SubEvent) {
         processChangeEventInCalendarStatusRequest(
+                subEvent,
                 eventRepository.addEventToCalendar(userEvent.eventId, subEvent.id)
                         .andThen(Completable.fromAction { subEvent.isInCalendar = true })
         )
@@ -161,8 +161,9 @@ constructor(
 
     override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
         processChangeEventInCalendarStatusRequest(
+                subEvent,
                 eventRepository.removeEventFromCalendar(userEvent.eventId, subEvent.id)
-                        .andThen(Completable.fromAction { subEvent.isInCalendar = false })
+                        .andThen(Completable.fromAction { subEvent.apply { isInCalendar = false } })
         )
     }
 

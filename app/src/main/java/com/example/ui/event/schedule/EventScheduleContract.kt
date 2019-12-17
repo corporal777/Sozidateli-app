@@ -53,6 +53,9 @@ interface EventScheduleContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAllTags()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateSubevent(subEvent: SubEvent)
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -6,6 +6,7 @@ import com.example.data.models.Agreement
 import com.example.data.models.EventFormat
 import com.example.data.models.Interest
 import io.reactivex.Maybe
+import java.util.*
 import javax.inject.Inject
 
 class CommonRepositoryImpl
@@ -17,7 +18,11 @@ class CommonRepositoryImpl
     override fun getInterests(): Maybe<List<Interest>> {
         val cachedInterests = appData.interests
         return if (cachedInterests.isNullOrEmpty()) call(api.getInterestsList())
-                .doOnSuccess { appData.interests = it }
+                .map { interests ->
+                    val capitalizedInterests = interests.map { Interest(it.id, it.parent, it.value.capitalize()) }
+                    appData.interests = capitalizedInterests
+                    capitalizedInterests
+                }
         else Maybe.just(cachedInterests)
     }
 

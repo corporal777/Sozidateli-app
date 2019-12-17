@@ -39,6 +39,11 @@ class UserPresenter
         super.onFirstViewAttach()
         loadUserData(true)
 
+        viewState.apply {
+            if (isCurrentUser()) setProfileTitle()
+            else setNoTitle()
+        }
+
         compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
                 .subscribe({

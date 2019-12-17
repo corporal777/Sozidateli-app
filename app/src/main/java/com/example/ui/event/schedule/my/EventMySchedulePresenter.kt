@@ -3,13 +3,11 @@ package com.example.ui.event.schedule.my
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.SubEvent
-import com.example.di.Connectivity
 import com.example.events.OnDayChangeFromCompleteSchedule
 import com.example.events.OnDayChangeFromMySchedule
 import com.example.repository.EventRepository
 import com.example.ui.event.schedule.EventSchedulePresenter
 import io.reactivex.Completable
-import io.reactivex.Observable
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -31,8 +29,8 @@ class EventMySchedulePresenter
 
     override fun mustFilterTags() = false
 
-    override fun processChangeEventInCalendarStatusRequest(request: Completable) {
-        super.processChangeEventInCalendarStatusRequest(request.doFinally {
+    override fun processChangeEventInCalendarStatusRequest(subEvent: SubEvent, request: Completable) {
+        super.processChangeEventInCalendarStatusRequest(subEvent, request.doFinally {
             val millis = currentDay?.millis ?: return@doFinally
             EventBus.getDefault().post(OnDayChangeFromMySchedule(millis))
         })

@@ -9,6 +9,7 @@ import com.example.data.models.UserEditDataType
 import com.example.data.models.user.RecommendationFile
 import com.example.ui.base.BaseContract
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.OneExecutionByTagStateStrategy
 
 interface UserContract {
     interface View : BaseContract.View {
@@ -45,6 +46,12 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPasswordChangeComplete()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "title")
+        fun setNoTitle()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "title")
+        fun setProfileTitle()
     }
 
     interface Presenter : BaseContract.Presenter {

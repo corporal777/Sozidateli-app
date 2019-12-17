@@ -29,8 +29,8 @@ class EventCompleteSchedulePresenter
 
     override fun mustFilterTags() = true
 
-    override fun processChangeEventInCalendarStatusRequest(request: Completable) {
-        super.processChangeEventInCalendarStatusRequest(request.doFinally {
+    override fun processChangeEventInCalendarStatusRequest(subEvent: SubEvent, request: Completable) {
+        super.processChangeEventInCalendarStatusRequest(subEvent, request.doFinally {
             val millis = currentDay?.millis ?: return@doFinally
             EventBus.getDefault().post(OnDayChangeFromCompleteSchedule(millis))
         })

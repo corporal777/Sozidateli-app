@@ -10,6 +10,7 @@ import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.Tag
+import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.subevent.SubeventFragmentArgs
@@ -96,6 +97,11 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         eventsSection.update(subEvents.map { subEvent ->
             SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener)
         })
+    }
+
+    override fun updateSubevent(subEvent: SubEvent) {
+        val idLong = subEvent.id.toLong()
+        eventsSection.findItemBy<SubEventItem> { it -> it.id == idLong }?.notifyChanged()
     }
 
     override fun showEmptyEventPlaceholder() {
