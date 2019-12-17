@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.extensions.dp
+import com.example.extensions.sp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
@@ -35,7 +36,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
 
     private val invitesBadge by lazy {
-        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high), shouldDrawText = false)
+        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high), shouldDrawText = false, badgeTextSize = 6f.sp)
     }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
@@ -74,7 +75,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     private fun setupInvitesBadge() {
         btnTabRequests.doOnNextLayout {
             it.addBadge(invitesBadge) { badgeWidth, badgeHeight, anchorRect ->
-                val badgeCenterX = anchorRect.right - 32.dp
+                val badgeCenterX = anchorRect.right - 24.dp
                 val badgeCenterY = anchorRect.height() / 2
 
                 anchorRect.set(

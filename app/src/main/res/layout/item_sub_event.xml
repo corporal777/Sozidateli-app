@@ -37,6 +37,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:ellipsize="end"
+        android:gravity="center_vertical"
         android:lines="3"
         android:maxLines="3"
         android:textColor="@android:color/black"
@@ -66,7 +67,7 @@
             android:id="@+id/tagGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:chipSpacingHorizontal="16dp"
+            app:chipSpacingHorizontal="8dp"
             app:chipSpacingVertical="8dp" />
     </HorizontalScrollView>
 

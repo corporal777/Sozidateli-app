@@ -20,26 +20,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <!--suppress AndroidUnknownAttribute -->
-    <TextView
+    <View
         android:id="@+id/tvBadge"
-        fontPath="fonts/Roboto-Bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/background_badge_attention_high"
         android:gravity="center"
-        android:minWidth="20dp"
-        android:minHeight="20dp"
         android:textColor="@android:color/white"
-        android:textSize="10sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/ivImage"
         app:layout_constraintEnd_toEndOf="@+id/ivImage"
         app:layout_constraintStart_toStartOf="@+id/ivImage"
         app:layout_constraintTop_toTopOf="@+id/ivImage"
-        tools:ignore="MissingPrefix,SmallSp"
-        tools:text="99"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
