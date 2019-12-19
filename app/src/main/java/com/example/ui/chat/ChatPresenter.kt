@@ -18,6 +18,7 @@ import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.google.gson.Gson
+import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -315,7 +316,7 @@ class ChatPresenter
 
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
         compositeDisposable += takePhotoRequest
-                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_CHAT, outputMaxHeight = IMAGE_MAX_SIZE_CHAT) }
+                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_CHAT, outputMaxHeight = IMAGE_MAX_SIZE_CHAT, cropMode = CropImageView.CropMode.FREE) }
                 .flatMapSingle { chatRepository.uploadImage(chatId, it) }
                 .map {
                     it.response.firstOrNull()?.let { image ->

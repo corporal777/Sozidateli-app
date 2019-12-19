@@ -19,7 +19,10 @@ class ChatListTabsPresenter
         super.onFirstViewAttach()
         compositeDisposable += appData.chatRequestsCountSubject
                 .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.setInvitesCount(100) }, { viewState.setInvitesCount(0) })
+                .subscribe({ viewState.setInvitesCount(it) }, { viewState.setInvitesCount(0) })
+        compositeDisposable += appData.chatMessageCountSubject
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
     }
 
     override fun attachView(view: ChatListTabsContract.View?) {

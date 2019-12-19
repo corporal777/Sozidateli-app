@@ -57,8 +57,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
     }
 
-    private val badgeColor by lazy { ContextCompat.getColor(requireContext(), R.color.badge_attention_high) }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
@@ -85,7 +83,6 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
                                     { presenter.onChatClick(it) },
                                     { presenter.onChatOnScreen(chat.id) },
                                     { presenter.onChatGoneFromScreen(chat.id) },
-                                    BadgeDrawable(badgeBackgroundColor = badgeColor),
                                     index != chatsCount - 1
                             )
                         }))

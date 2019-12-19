@@ -2,13 +2,11 @@ package com.example.holders
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.extensions.*
-import com.example.ui.views.BadgeDrawable
-import com.example.ui.views.addBadge
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -16,7 +14,6 @@ import kotlinx.android.synthetic.main.item_chat.*
 import ru.houseofapps.chat.models.Message
 import setCircleImage
 import java.util.*
-import kotlin.math.roundToInt
 
 
 class UserChatItem(
@@ -24,7 +21,6 @@ class UserChatItem(
         private val onClick: (UserChat) -> Unit,
         private val onBind: ((UserChatItem) -> Unit)? = null,
         private val onUnBind: ((UserChatItem) -> Unit)? = null,
-        private val badgeDrawable: BadgeDrawable? = null,
         private val withDivider: Boolean
 ) : Item(userChat.id.toLong()) {
 
@@ -33,22 +29,9 @@ class UserChatItem(
         viewHolder.apply {
             ivAvatar.apply {
                 setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
-                badgeDrawable?.apply {
-                    number = userChat.unreadMessageCount
-                    (parent as ViewGroup).overlay.clear()
-                    addBadge(this) { badgeWidth, badgeHeight, anchorRect ->
-                        val badgeCenterX = (anchorRect.right - width / 2.5f).roundToInt()
-                        val badgeCenterY = anchorRect.top + badgeHeight / 2
-
-                        anchorRect.set(
-                                badgeCenterX,
-                                badgeCenterY - badgeHeight / 2,
-                                badgeCenterX + badgeWidth,
-                                badgeCenterY + badgeHeight / 2
-                        )
-                    }
-                }
             }
+
+            updateBadge(viewHolder.tvBadge)
 
             tvName.text = userChat.user.fullName
 
@@ -83,10 +66,16 @@ class UserChatItem(
         val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewHolder, position, payloads)
         else if (payload is Int) {
-            badgeDrawable?.apply {
-                number = payload
-                invalidateSelf()
-            }
+            updateBadge(viewHolder.tvBadge)
+        }
+    }
+
+    private fun updateBadge(tvBadge: TextView) {
+        tvBadge.apply {
+            val messageCount = userChat.unreadMessageCount
+            isVisible = messageCount > 0
+            val count = if (messageCount <= 99) messageCount.toString() else "99+"
+            text = count
         }
     }
 

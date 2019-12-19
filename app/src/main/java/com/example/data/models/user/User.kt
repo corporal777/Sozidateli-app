@@ -91,8 +91,8 @@ data class User(
             return nameList.joinToString(" ")
         }
 
-    private fun getMiddleName(): String? {
-        return user_middle_name?.let { if (it == "-") null else it }
+    fun getMiddleName(): String? {
+        return user_middle_name?.let { if (it == "-" || it.isEmpty()) null else it }
     }
 
     fun getUserSubscribeAction(): UserSubscribeButton.Action? {

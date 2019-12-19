@@ -17,6 +17,7 @@ import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
+import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -180,7 +181,7 @@ class UserEditPresenter
 
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
         compositeDisposable += takePhotoRequest
-                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_AVATAR, outputMaxHeight = IMAGE_MAX_SIZE_AVATAR) }
+                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_AVATAR, outputMaxHeight = IMAGE_MAX_SIZE_AVATAR, cropMode = CropImageView.CropMode.SQUARE) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.changeUserAvatar(it)

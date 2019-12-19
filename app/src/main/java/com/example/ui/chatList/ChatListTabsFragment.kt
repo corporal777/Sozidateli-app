@@ -2,21 +2,16 @@ package com.example.ui.chatList
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.view.doOnNextLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.extensions.dp
-import com.example.extensions.sp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.ui.views.BadgeDrawable
-import com.example.ui.views.addBadge
 import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -34,10 +29,6 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
 
     @ProvidePresenter
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
-
-    private val invitesBadge by lazy {
-        BadgeDrawable(badgeBackgroundColor = ContextCompat.getColor(requireContext(), R.color.badge_attention_high), shouldDrawText = false, badgeTextSize = 6f.sp)
-    }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
@@ -66,41 +57,30 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
             }
             addOnPageChangeListener(pageChangeListener)
         }
-        setupInvitesBadge()
 
         btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
         btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
     }
 
-    private fun setupInvitesBadge() {
-        btnTabRequests.doOnNextLayout {
-            it.addBadge(invitesBadge) { badgeWidth, badgeHeight, anchorRect ->
-                val badgeCenterX = anchorRect.right - 24.dp
-                val badgeCenterY = anchorRect.height() / 2
-
-                anchorRect.set(
-                        badgeCenterX,
-                        badgeCenterY - badgeHeight / 2,
-                        badgeCenterX + badgeWidth,
-                        badgeCenterY + badgeHeight / 2
-                )
-            }
-        }
-    }
-
     override fun selectTab(position: Int) {
-        clTabs.apply {
-            for (p in 0 until childCount) {
-                getChildAt(p).isSelected = p == position
+        when (position) {
+            0 -> {
+                btnTabChats.isSelected = true
+                btnTabRequests.isSelected = false
+            }
+            1 -> {
+                btnTabRequests.isSelected = true
+                btnTabChats.isSelected = false
             }
         }
     }
 
     override fun setInvitesCount(count: Int) {
-        invitesBadge.apply {
-            number = count
-            invalidateSelf()
-        }
+        tvInvitesBadge.isVisible = count > 0
+    }
+
+    override fun setChatsCount(count: Int) {
+        tvChatsBadge.isVisible = count > 0
     }
 
     override fun layout() = R.layout.fragment_chat_list_tabs

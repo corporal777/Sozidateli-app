@@ -11,6 +11,9 @@ interface ChatListTabsContract {
         fun selectTab(position: Int)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setChatsCount(count: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun setInvitesCount(count: Int)
     }
 

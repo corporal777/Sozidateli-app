@@ -270,8 +270,8 @@
 
     <string name="chat_list_empty">Список чатов пуст.</string>
     <string name="chat_list_create_chat">Создать новый чат</string>
-    <string name="chat_list_contacts_and_chats">Контакты и чаты</string>
-    <string name="chat_list_chat_requests">Запросы на чат</string>
+    <string name="chat_list_contacts_and_chats">Чаты</string>
+    <string name="chat_list_chat_requests">Запросы</string>
 
     <string name="invite_list_empty">Никого нет</string>
 
