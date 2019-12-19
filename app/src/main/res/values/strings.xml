@@ -515,8 +515,7 @@
     <string name="banned_empty_message">Никого нет</string>
 
     <string name="about_version">Версия %s</string>
-    <string name="about_developed_by">Разработано в</string>
-    <string name="about_developer_site">www.houseofapps.ru</string>
+    <string name="about_developer_site">Разработано в houseofapps.ru</string>
 
     <string name="organization_main_data">Общая информация</string>
     <string name="organization_peoples">Сотрудники (%d)</string>

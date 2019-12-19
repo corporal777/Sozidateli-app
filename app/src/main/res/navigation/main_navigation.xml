@@ -294,8 +294,7 @@
 
     <fragment
         android:id="@+id/about_fragment"
-        android:name="com.example.ui.about.AboutFragment"
-        android:label=" " />
+        android:name="com.example.ui.about.AboutFragment"/>
 
     <fragment
         android:id="@+id/favorite_fragment"

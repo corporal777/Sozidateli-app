@@ -76,14 +76,14 @@ fun TextView.setDateCheckYearText(date: String) {
     }
 }
 
-fun TextView.removeUrlUnderline() {
+fun TextView.removeUrlUnderline(textColor: Int? = null) {
     text.toSpannable().apply {
         val urls = getSpans<URLSpan>()
         urls.forEach {
             val start = getSpanStart(it)
             val end = getSpanEnd(it)
             removeSpan(it)
-            set(start..end, URLSpanNoUnderline(it.url))
+            set(start..end, URLSpanNoUnderline(it.url, textColor))
         }
     }
 }

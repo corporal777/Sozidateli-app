@@ -1,18 +1,17 @@
 package com.example.ui.about
 
 import android.os.Bundle
+import android.text.util.Linkify.WEB_URLS
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
-import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.fragment_about.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,10 +32,10 @@ class AboutFragment : BaseFragment(), AboutContract.View, ToolbarFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tvAppVersion.text = getString(R.string.about_version).format(BuildConfig.VERSION_NAME)
-
-        val iconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_app)
-        val iconBitmap = iconDrawable?.toBitmap()
-        ivIcon.setImageBitmap(RoundedCornersTransformation(32.dp, 24.dp).transform(iconBitmap))
+        tvDeveloperSite.apply {
+            BetterLinkMovementMethod.linkify(WEB_URLS, tvDeveloperSite)
+            removeUrlUnderline(textColors.defaultColor)
+        }
     }
 
     override fun layout() = R.layout.fragment_about

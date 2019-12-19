@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_page.*
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -59,7 +60,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 isVisible = true
-                setHtml(title)
+                setHtml(title, HtmlHttpImageGetter (this))
             }
         }
 
@@ -68,7 +69,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 isVisible = true
-                setHtml(content)
+                setHtml(content, HtmlHttpImageGetter (this))
             }
         }
 
