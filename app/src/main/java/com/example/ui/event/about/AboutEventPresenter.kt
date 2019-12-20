@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.models.*
 import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class AboutEventPresenter
 @Inject constructor(
         private val eventRepository: EventRepository,
-        private val userEventData: UserEventData
+        private val userEventData: UserEventData,
+        private val userRepository: UserRepository
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     lateinit var eventId: String
@@ -50,7 +52,11 @@ class AboutEventPresenter
                     eventInfo.partners,
                     hasContacts()
             )
-            showRegisterButton(Event.isCanRegister(event.status, eventInfo.userRegistration?.status))
+
+            setActionButton(
+                    event,
+                    eventInfo.userRegistration?.status
+            )
         }
     }
 
@@ -102,6 +108,16 @@ class AboutEventPresenter
         viewState.showEventRequest(eventId)
     }
 
+    override fun onSelectEventClick() {
+        compositeDisposable += eventRepository.setDefaultEvent(eventId)
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(userEventData.load(eventId))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }
+    }
+
     override fun onLogoClick() {
         val url = event.event.backgroundImage
         if (url != null) viewState.showLogoImage(url)
@@ -147,5 +163,24 @@ class AboutEventPresenter
 
     override fun onOrganizationClick(organization: String) {
         viewState.showOrganization(organization)
+    }
+
+    override fun onActionCancel() {
+        compositeDisposable += eventRepository.eventRegisterCancel(eventId)
+                .andThen(eventRepository.getEventInfo(eventId))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.setActionButton(it.event, it.userRegistration?.status)
+                }
+    }
+
+    override fun onActionWriteToOrganization() {
+        val emails = event.event.email
+        if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
+    }
+
+    override fun onWriteToOrganizationEmailChosen(email: EmailAffiliation) {
+        viewState.showWriteToOrganization(email)
     }
 }

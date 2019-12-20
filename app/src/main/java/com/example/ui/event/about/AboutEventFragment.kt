@@ -2,13 +2,16 @@ package com.example.ui.event.about
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +39,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
+import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -124,11 +128,6 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             }
         }
 
-        btnRegister.btnAction.apply {
-            text = getString(R.string.go_to_event)
-            setOnClickListener { presenter.onGoToEventClick() }
-        }
-
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
@@ -184,17 +183,58 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         swipeToRefresh.isRefreshing = false
     }
 
+    override fun setActionButton(eventData: EventData, userRegistration: Event.RegistrationStatus?) {
+        flRegister.apply {
+            val textRes: Int
+            val clickAction: () -> Unit
+            if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
+                isVisible = false
+                return@apply
+            } else when (userRegistration) {
+                Event.RegistrationStatus.PENDING -> {
+                    textRes = R.string.event_action_cancel_request
+                    clickAction = { presenter.onActionCancel() }
+                }
+                Event.RegistrationStatus.DECLINED -> {
+                    if (eventData.email.isNullOrEmpty()) {
+                        isVisible = false
+                        return@apply
+                    }
+
+                    textRes = R.string.event_action_write_to_organisation
+                    clickAction = { presenter.onActionWriteToOrganization() }
+                }
+                Event.RegistrationStatus.APPROVED -> {
+                    textRes = R.string.event_action_show_event
+                    clickAction = { presenter.onSelectEventClick() }
+                }
+                else -> {
+                    if (Event.isCanRegister(eventData.status, userRegistration)) {
+                        textRes = R.string.event_action_participate
+                        clickAction = { presenter.onGoToEventClick() }
+                    } else {
+                        isVisible = false
+                        return@apply
+                    }
+                }
+            }
+
+            isVisible = true
+            btnAction.apply {
+                text = getString(textRes)
+                setOnClickListener(clickAction)
+            }
+        }
+
+        recyclerView.updatePadding(bottom = if (flRegister.isVisible) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
+    }
+
     override fun setEventName(name: String) {
         toolbarContentActionBar?.title = name
     }
 
     override fun changeEventSubscription(isSubscribed: Boolean) {
         aboutItem?.notifyChanged(isSubscribed)
-    }
-
-    override fun showRegisterButton(show: Boolean) {
-        flRegister.isVisible = show
-        recyclerView.updatePadding(bottom = if (show) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
     }
 
     @SuppressLint("InflateParams")
@@ -215,6 +255,26 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         else dismiss()
                     }
                 }
+    }
+
+    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+        AlertDialog.Builder(requireContext())
+                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                    val email = emails[which]
+                    presenter.onWriteToOrganizationEmailChosen(email)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
+    override fun showWriteToOrganization(email: EmailAffiliation) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+        }
     }
 
     override fun hideWriteToOrganizationForm() {
@@ -265,6 +325,12 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun showOrganization(organization: String) {
         findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization).build().toBundle())
+    }
+
+    override fun selectEvent() {
+        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

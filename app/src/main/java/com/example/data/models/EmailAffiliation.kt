@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class EmailAffiliation(
+data class EmailAffiliation(
         val email: String,
         val affiliation: String?
 ) : Parcelable {

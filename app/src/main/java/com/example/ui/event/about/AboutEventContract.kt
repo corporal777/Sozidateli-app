@@ -21,10 +21,13 @@ interface AboutEventContract {
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setEventName(name: String)
+        fun setActionButton(
+                eventData: EventData,
+                userRegistration: Event.RegistrationStatus?
+        )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun showRegisterButton(show: Boolean)
+        fun setEventName(name: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPage(eventId: String, pageId: String)
@@ -58,12 +61,22 @@ interface AboutEventContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
         fun hideWriteToOrganizationForm()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showWriteToOrganization(email: EmailAffiliation)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun selectEvent()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onContactsClick()
         fun onSpeakersClick()
         fun onGoToEventClick()
+        fun onSelectEventClick()
         fun onPageClick(page: EventPage)
         fun onPartnerClick(partner: EventParther)
         fun onLogoClick()
@@ -74,5 +87,9 @@ interface AboutEventContract {
         fun onWriteToOrganizationMessage(message: String)
         fun onRateClick()
         fun onOrganizationClick(organization: String)
+
+        fun onActionCancel()
+        fun onActionWriteToOrganization()
+        fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
     }
 }
