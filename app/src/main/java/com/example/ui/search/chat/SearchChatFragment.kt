@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.user.User
 import com.example.holders.ListSectionNameItem
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.interfaces.SearchInterfaceProvider
@@ -107,18 +108,23 @@ class SearchChatFragment : AbstractSearchUserFragment<SearchChatPresenter>(), Se
         anotherSection.clear()
     }
 
-    override fun createItem(user: User?): Group {
-        return if (user == null) PlaceholderItem(PlaceholderItem.Type.USER)
-        else UserItem(user.user_id, user.fullName, null, user.user_avatar, { presenter.onUserClick(user) })
+    override fun createItem(itemData: User?): Group {
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
+        else UserItem(itemData.user_id, itemData.fullName, null, itemData.user_avatar, { presenter.onUserClick(itemData) })
     }
 
     override fun setItems(favorites: List<User>, chats: List<User>, another: List<User>) {
-        favoritesSection.update(favorites.map(::createItem))
-        chatsHeader.withTopMargin = favorites.isNotEmpty()
-        chatsSection.update(chats.map(::createItem))
-        anotherHeader.withTopMargin = chats.isNotEmpty()
-        anotherSection.update(another.map(::createItem))
-        adapter.update(listOf(favoritesSection, chatsSection, anotherSection))
+        if (favorites.isEmpty() && chats.isEmpty() && another.isEmpty()){
+            adapter.update(listOf(NoDataItem(getString(R.string.schedule_my_empty_day_placeholder_title), getString(R.string.search_no_data_description))))
+        } else {
+            favoritesSection.update(favorites.map(::createItem))
+            chatsHeader.withTopMargin = favorites.isNotEmpty()
+            chatsSection.update(chats.map(::createItem))
+            anotherHeader.withTopMargin = chats.isNotEmpty()
+            anotherSection.update(another.map(::createItem))
+            adapter.update(listOf(favoritesSection, chatsSection, anotherSection))
+        }
+
         swipeToRefresh.isRefreshing = false
     }
 

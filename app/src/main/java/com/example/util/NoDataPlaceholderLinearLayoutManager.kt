@@ -9,8 +9,13 @@ import com.example.R
 
 class NoDataPlaceholderLinearLayoutManager : LinearLayoutManager {
 
+    @Suppress("unused")
     constructor(context: Context?) : super(context)
+
+    @Suppress("unused")
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
+
+    @Suppress("unused")
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     override fun layoutDecoratedWithMargins(child: View, left: Int, top: Int, right: Int, bottom: Int) {

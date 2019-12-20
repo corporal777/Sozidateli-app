@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_no_data.*
 class NoDataItem(
         private val title: String,
         private val description: String? = null
-) : Item() {
+) : Item(-1000) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvTitle.text = title
