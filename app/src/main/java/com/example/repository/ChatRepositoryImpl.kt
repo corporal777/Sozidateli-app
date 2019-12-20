@@ -46,8 +46,8 @@ class ChatRepositoryImpl
         return call(api.getChat(chatId))
     }
 
-    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
-        return callPagination(api.chatSearch(searchMap, limit, offset))
+    override fun searchUser(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
+        return callPagination(api.chatSearch(emptyMap(), limit, offset))
     }
 
     override fun chatAccept(chatId: String): Completable {

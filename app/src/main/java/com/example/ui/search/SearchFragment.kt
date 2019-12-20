@@ -48,8 +48,14 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     override fun onResume() {
         super.onResume()
+        (this as? SearchInterfaceProvider)?.apply {
+            presenter.onResume(provideSearchInterface())
+            return
+        }
+
         (parentFragment as? SearchInterfaceProvider)?.apply {
             presenter.onResume(provideSearchInterface())
+            return
         }
     }
 

@@ -14,7 +14,6 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.ui.contactsSearch.ContactsSearchFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
@@ -40,6 +39,7 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
+import com.example.ui.search.chat.SearchChatFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
@@ -139,6 +139,9 @@ abstract class FragmentBuildersModule {
     abstract fun contributeSearchUsersFragment(): SearchUserFragment
 
     @ContributesAndroidInjector
+    abstract fun contributeSearchChatFragment(): SearchChatFragment
+
+    @ContributesAndroidInjector
     abstract fun contributeEventTabsFragment(): EventTabsFragment
 
     @ContributesAndroidInjector
@@ -155,9 +158,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeBuildingSchemeFragment(): BuildingSchemeFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeContactsSearchFragment(): ContactsSearchFragment
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment

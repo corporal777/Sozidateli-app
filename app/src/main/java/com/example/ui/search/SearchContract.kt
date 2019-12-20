@@ -4,11 +4,12 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchFilter
 import com.example.ui.base.BaseContract
+import com.example.util.OneExecutionByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 
 interface SearchContract {
     interface View<I, F : SearchFilter> : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "list data")
         fun setData(data: List<I?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)

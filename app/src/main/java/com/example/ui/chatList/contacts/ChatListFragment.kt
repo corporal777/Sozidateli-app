@@ -2,7 +2,6 @@ package com.example.ui.chatList.contacts
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,8 +12,6 @@ import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
-import com.example.ui.contactsSearch.ContactsSearchFragment.Companion.SEARCH_ACTION_INPUT
-import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -127,7 +124,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun openSearch() {
-        findNavController().navigate(R.id.contacts_search_fragment, bundleOf("searchAction" to SEARCH_ACTION_INPUT))
+        findNavController().navigate(R.id.chat_search_fragment)
     }
 
     override fun layout() = R.layout.fragment_chat_list

@@ -86,8 +86,12 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
             viewState.setData(List(20) { null })
             searchDisposable += Observable.create(paginationList)
                     .performOnBackgroundOutOnMain()
-                    .subscribeSimple { viewState.setData(it) }
+                    .subscribeSimple { onDataLoaded(it) }
         }
+    }
+
+    protected open fun onDataLoaded(data: List<I?>) {
+        viewState.setData(data)
     }
 
     abstract fun createFilter(): F

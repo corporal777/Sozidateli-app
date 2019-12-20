@@ -22,7 +22,7 @@ interface ChatRepository {
 
     fun getChat(chatId: String): Single<UserChat>
 
-    fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    fun searchUser(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
     fun chatAccept(chatId: String): Completable
 

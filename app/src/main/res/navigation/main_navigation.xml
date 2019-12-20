@@ -294,7 +294,7 @@
 
     <fragment
         android:id="@+id/about_fragment"
-        android:name="com.example.ui.about.AboutFragment"/>
+        android:name="com.example.ui.about.AboutFragment" />
 
     <fragment
         android:id="@+id/favorite_fragment"
@@ -391,8 +391,8 @@
             android:id="@+id/chat_list_to_chat"
             app:destination="@id/chat_fragment" />
         <action
-            android:id="@+id/action_chat_list_fragment_to_contacts_search_fragment"
-            app:destination="@id/contacts_search_fragment" />
+            android:id="@+id/action_chat_list_fragment_to_chat_search_fragment"
+            app:destination="@id/chat_search_fragment" />
     </fragment>
 
     <fragment
@@ -422,17 +422,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/contacts_search_fragment"
-        android:name="com.example.ui.contactsSearch.ContactsSearchFragment"
-        android:label="@string/contact_search_title"
-        tools:layout="@layout/fragment_contacts_search">
-        <action
-            android:id="@+id/open_user"
-            app:destination="@id/user_fragment" />
-        <argument
-            android:name="searchAction"
-            app:argType="integer" />
-    </fragment>
+        android:id="@+id/chat_search_fragment"
+        android:name="com.example.ui.search.chat.SearchChatFragment"
+        tools:layout="@layout/fragment_chat_search" />
 
     <fragment
         android:id="@+id/user_fragment"
