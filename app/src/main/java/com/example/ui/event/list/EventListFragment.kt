@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
@@ -48,9 +49,17 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
         override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
-        override fun onShowEventClick(event: String) = presenter.onShowEventClick(event)
+        override fun onShowEventClick(view: View, event: String) {
+            eventToShowView = view
+            presenter.onShowEventClick(event)
+        }
+
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
+
+    private var eventToShowView: View? = null
+
+    private var eventDataListItem: EventDataListItem? = null
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,7 +122,11 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+                R.id.about_event_fragment,
+                AboutEventFragmentArgs.Builder(event).build().toBundle(),
+                null,
+                eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
     }
 
     override fun showEventRequest(event: String) {

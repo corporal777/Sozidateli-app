@@ -130,11 +130,19 @@
 
         <action
             android:id="@+id/recommendations_fragment_to_favorite_organizations_fragment"
-            app:destination="@id/organizations_fragment" />
+            app:destination="@id/organizations_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/recommendations_fragment_to_my_events_fragment"
-            app:destination="@id/my_events_fragment" />
+            app:destination="@id/my_events_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/recommendations_fragment_to_chat_list_tabs_fragment"
@@ -156,7 +164,11 @@
 
         <action
             android:id="@+id/organizations_fragment_to_self"
-            app:destination="@id/organizations_fragment" />
+            app:destination="@id/organizations_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/organizations_fragment_to_organization_fragment"
@@ -174,7 +186,11 @@
 
         <action
             android:id="@+id/my_events_fragment_to_self"
-            app:destination="@id/my_events_fragment" />
+            app:destination="@id/my_events_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
     </fragment>
 
     <fragment

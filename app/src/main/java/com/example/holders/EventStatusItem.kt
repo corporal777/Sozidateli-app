@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.graphics.Color
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -33,7 +34,7 @@ class EventStatusItem(
             itemContainer.apply {
                 alpha = if (status == Event.Status.CONFERENCE_ENDS) 0.4f else 1f
                 clipToOutline = true
-                setOnClickListener { onEventClickListener.onShowEventClick(eventId) }
+                setOnClickListener { onEventClickListener.onShowEventClick(itemView, eventId) }
             }
 
             ivLogo.apply {
@@ -163,7 +164,7 @@ class EventStatusItem(
         fun onActionShowEvent(event: String)
         fun onActionCancel(event: String)
         fun onActionWriteToOrganization(emails: List<EmailAffiliation>)
-        fun onShowEventClick(event: String)
+        fun onShowEventClick(view: View, event: String)
         fun onShowFilterClick(format: Int)
     }
 }

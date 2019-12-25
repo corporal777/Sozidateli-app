@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="transition_name_search_input" translatable="false">searchInput</string>
+    <string name="transition_name_event" translatable="false">event</string>
 </resources>

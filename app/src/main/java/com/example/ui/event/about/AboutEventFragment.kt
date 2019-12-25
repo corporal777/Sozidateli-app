@@ -81,7 +81,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             // do nothing
         }
 
-        override fun onShowEventClick(event: String) {
+        override fun onShowEventClick(view: View, event: String) {
             presenter.onLogoClick()
         }
 
