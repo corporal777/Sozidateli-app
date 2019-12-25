@@ -66,7 +66,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
         override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
-        override fun onShowEventClick(event: String) = presenter.onShowEventClick(event)
+        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
 
