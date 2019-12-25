@@ -75,11 +75,15 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showStories()
-//        onStoriesComplete()
+        if (!appData.isStoriesShown) {
+            viewState.showStories()
+        } else {
+            onStoriesComplete()
+        }
     }
 
     override fun onStoriesComplete() {
+        appData.isStoriesShown = true
         subscribeToTokenUpdates()
     }
 

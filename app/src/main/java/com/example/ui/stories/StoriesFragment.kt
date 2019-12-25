@@ -3,8 +3,9 @@ package com.example.ui.stories
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -30,6 +31,13 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
     private var pressTime = 0L
     private var limit = 500L
 
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            stories.resume()
+            stories.reverse()
+        }
+    }
+
     private val onTouchListener = View.OnTouchListener { _, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -48,11 +56,13 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
         stories.apply {
             setStoriesCount(4)
             setStoryDuration(3000L)
             setStoriesListener(object : StoriesProgressView.StoriesListener {
                 override fun onComplete() {
+                    backPressedCallback.isEnabled = false
                     findNavController().navigateUp()
                 }
 
@@ -70,12 +80,16 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
         }
 
         reverse.apply {
-            setOnClickListener { stories.reverse() }
+            setOnClickListener {
+                stories.reverse()
+            }
             setOnTouchListener(onTouchListener)
         }
 
         skip.apply {
-            setOnClickListener { stories.skip() }
+            setOnClickListener {
+                stories.skip()
+            }
             setOnTouchListener(onTouchListener)
         }
 

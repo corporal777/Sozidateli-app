@@ -145,6 +145,10 @@ fun Calendar.isYesterday(from: Calendar): Boolean {
     return isSameYear(from) && this.get(Calendar.DAY_OF_YEAR) == from.get(Calendar.DAY_OF_YEAR) - 1
 }
 
+fun Calendar.isSameMonth(other: Calendar): Boolean {
+    return isSameYear(other) && this.get(Calendar.MONTH) == other.get(Calendar.MONTH)
+}
+
 fun Calendar.isSameYear(other: Calendar): Boolean {
     return this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
 }

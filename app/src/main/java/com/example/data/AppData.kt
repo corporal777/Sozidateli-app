@@ -20,6 +20,15 @@ class AppData(
             }
         }
 
+    var isStoriesShown: Boolean = appPrefs.isStoriesShown
+        set(value) {
+            val changed = field != value
+            field = value
+            if (changed) {
+                appPrefs.isStoriesShown = value
+            }
+        }
+
     var isSubscribedToPush: Boolean = appPrefs.isFCMTokenSent
         set(value) {
             field = value

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -55,12 +54,12 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:theme="@style/ViewBackgroundAccent"
                     android:background="@drawable/background_corners"
                     android:text="@string/cancel"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:theme="@style/ViewBackgroundAccent" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSave"
@@ -69,17 +68,35 @@
                     android:layout_height="43dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:theme="@style/ViewBackgroundAccent"
-                    android:background="@drawable/background_corners"
                     android:layout_weight="1"
+                    android:background="@drawable/background_corners"
                     android:text="@string/save"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:theme="@style/ViewBackgroundAccent" />
             </LinearLayout>
-
         </LinearLayout>
-
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="@android:color/white" />
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

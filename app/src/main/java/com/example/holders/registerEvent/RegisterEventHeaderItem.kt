@@ -34,12 +34,12 @@ open class RegisterEventHeaderItem(
             }
 
             tvFormLabel.apply {
-                isVisible = !formTitle.isNullOrEmpty()
+                isVisible = !formTitle.isNullOrBlank()
                 text = formTitle
             }
 
             tvFormDescription.apply {
-                isVisible = !formDescription.isNullOrEmpty()
+                isVisible = !formDescription.isNullOrBlank()
                 text = formDescription
             }
 

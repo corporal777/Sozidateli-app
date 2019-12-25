@@ -19,6 +19,7 @@ class CustomTextInputLayout : TextInputLayout {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         findViewById<View>(R.id.text_input_end_icon)?.apply {
             minimumHeight = 42.dp
+            minimumWidth = 38.dp
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

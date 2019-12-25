@@ -31,6 +31,7 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -306,6 +307,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun showChangePassword() {
+        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
+        val shortPasswordError = getString(R.string.auth_error_short_password)
+
         val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
         val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
         val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
@@ -313,7 +317,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
         val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
         val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
-            onTextChanged { tilNewPassword.error = null }
+            onTextChanged {
+                tilNewPassword.error = if (it != null && !AuthValidateUtil.isValidPassword(it.toString())) shortPasswordError else null
+            }
         }
         val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
         val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
@@ -326,7 +332,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             }
         }
 
-        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.profile_password_change)
                 .setView(view)
@@ -344,6 +349,11 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
                                 if (oldPassword.isNullOrEmpty()) {
                                     tilOldPassword.error = emptyFieldError
+                                    hasError = true
+                                }
+
+                                if (newPassword != null && !AuthValidateUtil.isValidPassword(newPassword)) {
+                                    tilNewPassword.error = shortPasswordError
                                     hasError = true
                                 }
 

@@ -4,8 +4,6 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.user.User
@@ -16,10 +14,8 @@ import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onTextChanged
-import javax.inject.Inject
-import javax.inject.Provider
 
-abstract class AbstractSearchUserFragment<P: SearchUserContract.Presenter> : SearchFragment<P, User, SearchFilter.User>(), SearchUserContract.View {
+abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : SearchFragment<P, User, SearchFilter.User>(), SearchUserContract.View {
 
     override fun createItem(itemData: User?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)

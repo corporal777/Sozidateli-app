@@ -2,15 +2,16 @@ package com.example.holders
 
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.appcompat.widget.SwitchCompat
 import com.example.R
+import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
 import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import initAsDatePicker
+import com.xwray.groupie.kotlinandroidextensions.Item
+import initAsMonthYearPicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import onTextChanged
 import java.text.SimpleDateFormat
@@ -35,22 +36,24 @@ class ProfileDataWorkEditItem(
     var isNotFinished = mFinish == null
         private set
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
+    private val now = Date()
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
-            etStart.setText(startDate?.let { formatDate(it) })
-            tilStart.initAsDatePicker(startDate) { year, month, _ ->
+            etStart.setText(startDate?.let { formatDate(it).capitalize() })
+            tilStart.initAsMonthYearPicker(startDate, maxDate = now) { year, month, day ->
                 tilStart.error = null
-                mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month)
+                mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
             }
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
-            etFinish.setText(finishDate?.let { formatDate(it) })
-            tilFinish.initAsDatePicker(finishDate) { year, month, _ ->
+            etFinish.setText(finishDate?.let { formatDate(it).capitalize() })
+            tilFinish.initAsMonthYearPicker(finishDate, maxDate = now) { year, month, day ->
                 tilFinish.error = null
-                mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month)
+                mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
             }
 
             setFinishEnabled(this, !isNotFinished)
@@ -71,7 +74,7 @@ class ProfileDataWorkEditItem(
         }
     }
 
-    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun bind(holder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) super.bind(holder, position, payloads)
         else {
             holder.apply {
@@ -102,22 +105,24 @@ class ProfileDataWorkEditItem(
     }
 
     private fun formatDate(date: Date): String {
-        return Calendar.getInstance().apply { time = date }.let {
-            formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, it.get(Calendar.YEAR), it.get(Calendar.MONTH))
-        }
+        return formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, date.time)
     }
 
-    private fun formatDate(format: String, year: Int, month: Int): String {
+    private fun formatDate(format: String, year: Int, month: Int, day: Int): String {
         val calendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
-            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.DAY_OF_MONTH, day)
         }
 
-        return SimpleDateFormat(format, Locale.getDefault()).format(calendar.time)
+        return formatDate(format, calendar.timeInMillis)
     }
 
-    private fun setFinishEnabled(viewHolder:GroupieViewHolder, enabled: Boolean) {
+    private fun formatDate(format: String, date: Long): String {
+        return SimpleDateFormat(format, Locale.getDefault()).format(date)
+    }
+
+    private fun setFinishEnabled(viewHolder: GroupieViewHolder, enabled: Boolean) {
         isNotFinished = !enabled
         viewHolder.apply {
             etFinish.isEnabled = enabled
@@ -127,13 +132,18 @@ class ProfileDataWorkEditItem(
 
     private fun isStartValid() = mStart != null
     private fun isFinishValid(): Boolean {
-        val finish = mFinish
-        return if (finish == null) {
-            isNotFinished
+        return if (isNotFinished) {
+            true
         } else {
             val start = mStart
-            if (start == null) true
-            else finish > start
+            val finish = mFinish
+            if (start == null || finish == null) false
+            else {
+                val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
+                val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
+                if (finishDate == null || startDate == null) false
+                else finishDate.isSameMonth(startDate)
+            }
         }
     }
 

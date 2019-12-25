@@ -72,6 +72,14 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
+    <style name="AlertDialogTheme.DatePickerSpinner">
+        <item name="android:datePickerStyle">@style/DatePickerSpinnerStyle</item>
+    </style>
+
+    <style name="DatePickerSpinnerStyle" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+
     <style name="AppTheme.Tabs" parent="AppTheme">
         <item name="android:layout_height">64dp</item>
         <item name="tabGravity">fill</item>
@@ -344,8 +352,6 @@
     <style name="Profile.Edit.Input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/input_text_color</item>
         <item name="android:backgroundTint">@color/background_input</item>

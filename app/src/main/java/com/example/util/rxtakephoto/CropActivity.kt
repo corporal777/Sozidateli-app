@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import com.example.R
 import com.isseiaoki.simplecropview.CropImageView
 import com.isseiaoki.simplecropview.util.Utils
@@ -84,15 +85,18 @@ class CropActivity : AppCompatActivity() {
     }
 
     private fun crop() {
+        flLoading.isVisible = true
         compositeDisposable.add(
                 cropView.cropAsSingle()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             cropSubject.onSuccess(it)
+                            flLoading.isVisible = false
                             finish()
                         }, {
                             cropSubject.onError(it)
+                            flLoading.isVisible = false
                         })
         )
     }

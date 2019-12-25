@@ -14,7 +14,7 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp" />
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>
 </LinearLayout>

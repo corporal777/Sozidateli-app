@@ -36,8 +36,8 @@
             android:hint="@string/search_filter_organization_address"
             android:inputType="textCapSentences"
             android:minHeight="48dp"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp" />
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etInn"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_inn"

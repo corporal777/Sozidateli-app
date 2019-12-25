@@ -13,6 +13,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import kotlinx.android.synthetic.main.item_register_event_passport.*
 import onTextChanged
+import java.util.*
 
 class RegisterEventPassportItem(
         private val fieldData: EventRegisterFieldData<EventPassport>,
@@ -58,7 +59,7 @@ class RegisterEventPassportItem(
 
             val date = passport.date?.let { defaultServerDateFormatter.parse(it) }
             tilDate.apply {
-                initAsDatePicker(date) { year, month, day ->
+                initAsDatePicker(date, maxDate = Date()) { year, month, day ->
                     String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
                 }
             }

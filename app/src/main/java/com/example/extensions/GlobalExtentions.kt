@@ -28,6 +28,7 @@ import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
@@ -227,15 +228,19 @@ fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null):
     return phoneNumberUtil.isValidNumber(parsedPhone)
 }
 
-fun TextInputLayout.initAsDatePicker(startDate: Date?, transformDate: (year: Int, month: Int, day: Int) -> String?) {
-    initAsDatePicker(startDate, false) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
+fun TextInputLayout.initAsMonthYearPicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int) -> String?) {
+    initAsDatePicker(startDate, minDate, maxDate, includeTime = false, showDates = false) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
 }
 
-fun TextInputLayout.initAsDateTimePicker(startDate: Date?, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
-    initAsDatePicker(startDate, true) { year, month, dayOfMonth, hour, minute -> transformDate(year, month, dayOfMonth, hour, minute) }
+fun TextInputLayout.initAsDatePicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int) -> String?) {
+    initAsDatePicker(startDate, minDate, maxDate, includeTime = false, showDates = true) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
 }
 
-private fun TextInputLayout.initAsDatePicker(startDate: Date?, includeTime: Boolean, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
+fun TextInputLayout.initAsDateTimePicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
+    initAsDatePicker(startDate, minDate, maxDate, includeTime = true, showDates = true) { year, month, dayOfMonth, hour, minute -> transformDate(year, month, dayOfMonth, hour, minute) }
+}
+
+private fun TextInputLayout.initAsDatePicker(startDate: Date?, minDate: Date?, maxDate: Date?, includeTime: Boolean, showDates: Boolean, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
     val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
     val showTimePicker: (year: Int, month: Int, day: Int, startHour: Int, startMinute: Int) -> Unit = { year, month, day, startHour: Int, startMinute: Int ->
         TimePickerDialog(context, R.style.AlertDialogTheme, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
@@ -246,19 +251,30 @@ private fun TextInputLayout.initAsDatePicker(startDate: Date?, includeTime: Bool
     }
 
     val showDatePicker = {
-        DatePickerDialog(context, R.style.AlertDialogTheme, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+        DatePickerDialog(context, if (showDates) R.style.AlertDialogTheme else R.style.AlertDialogTheme_DatePickerSpinner, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             if (includeTime) showTimePicker(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
             else {
                 calendar.set(year, month, dayOfMonth)
                 editText?.setText(transformDate(year, month, dayOfMonth, 0, 0))
             }
         }, calendar.get(YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                .apply {
+                    minDate?.let { datePicker.minDate = it.time }
+                    maxDate?.let { datePicker.maxDate = it.time }
+                    if (!showDates) {
+                        val yearRes = context.resources.getIdentifier("android:id/day", null, null)
+                        if (yearRes != 0) {
+                            datePicker.findViewById<View>(yearRes)?.isVisible = false
+                        }
+                    }
+                }
                 .show()
     }
 
     setEndIconDrawable(R.drawable.ic_calendar)
     setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
     setEndIconOnClickListener { showDatePicker() }
+    errorIconDrawable = null
     editText?.apply {
         isCursorVisible = false
         isFocusableInTouchMode = false

@@ -73,7 +73,8 @@
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/search_filter_start" />
+                android:hint="@string/search_filter_start"
+                android:inputType="textNoSuggestions" />
         </com.example.ui.views.CustomTextInputLayout>
 
         <com.example.ui.views.CustomTextInputLayout
@@ -91,7 +92,8 @@
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/search_filter_finish" />
+                android:hint="@string/search_filter_finish"
+                android:inputType="textNoSuggestions" />
         </com.example.ui.views.CustomTextInputLayout>
     </LinearLayout>
 

@@ -32,6 +32,8 @@
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding"
             android:hint="@string/search_filter_address"
             android:inputType="textCapSentences" />
     </com.example.ui.views.CustomTextInputLayout>
@@ -46,6 +48,8 @@
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvFormat"
             style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding"
             android:hint="@string/search_filter_format" />
     </com.example.ui.views.CustomTextInputLayout>
 
@@ -59,6 +63,8 @@
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvTheme"
             style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding"
             android:hint="@string/search_filter_theme" />
     </com.example.ui.views.CustomTextInputLayout>
 
@@ -72,6 +78,8 @@
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvSpec"
             style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding"
             android:hint="@string/search_filter_specialization" />
     </com.example.ui.views.CustomTextInputLayout>
 
