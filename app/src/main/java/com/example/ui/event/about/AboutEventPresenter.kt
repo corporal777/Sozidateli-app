@@ -156,9 +156,16 @@ class AboutEventPresenter
         compositeDisposable += eventRepository.sendMessageToOrganization(eventId, message)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    viewState.hideWriteToOrganizationForm()
-                }
+                .subscribeSimple(
+                        onComplete = {
+                            viewState.apply {
+                                hideWriteToOrganizationForm()
+                                showWriteToOrganizationComplete()
+                            }
+                        },
+                        onError = {
+                            viewState.showWriteToOrganizationError()
+                        })
     }
 
     override fun onOrganizationClick(organization: String) {

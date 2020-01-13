@@ -3,7 +3,6 @@ package com.example.ui.event.speakers
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -22,7 +21,8 @@ import javax.inject.Provider
 
 class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, ToolbarFragment {
 
-    override val title: String? = null
+    override val title: String?
+        get() = getString(R.string.about_event_speakers)
 
     @InjectPresenter
     lateinit var presenter: EventSpeakersPresenter

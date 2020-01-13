@@ -62,6 +62,12 @@ interface AboutEventContract {
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
         fun hideWriteToOrganizationForm()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showWriteToOrganizationComplete()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showWriteToOrganizationError()
+
         @StateStrategyType(SkipStrategy::class)
         fun showWriteToOrganization(email: EmailAffiliation)
 

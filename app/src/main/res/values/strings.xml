@@ -112,8 +112,10 @@
     <string name="about_event_rate">Оценить</string>
     <string name="about_event_write_to_organization">Написать организатору</string>
     <string name="about_event_write_to_organization_title">Сообщение организатору</string>
-    <string name="about_event_write_to_organization_message">Ответ будет направлен вам на email, указанный в профиле.</string>
+    <string name="about_event_write_to_organization_message">Ответ будет направлен Вам на e-mail, указанный в профиле.</string>
     <string name="about_event_write_to_organization_hint">Пожалуйста, напишите сообщение организатору мероприятия.</string>
+    <string name="about_event_write_to_organization_complete">Сообщение отправлено</string>
+    <string name="about_event_write_to_organization_error">Не удалось отправить сообщение</string>
     <string name="about_event_time">Время:</string>
     <string name="about_event_date">Дата:</string>
     <string name="about_event_partners">Спонсоры</string>
@@ -211,8 +213,8 @@
     <string name="search_filter_format">Формат мероприятия</string>
     <string name="search_filter_start">Начало</string>
     <string name="search_filter_finish">Окончание</string>
-    <string name="search_no_data_text">Ничего не найдено.</string>
-    <string name="search_no_data_description">Пожалуйста, уточните поисковой запрос и попробуйте еще раз.</string>
+    <string name="search_no_data_text">Ничего не найдено</string>
+    <string name="search_no_data_description">Пожалуйста, уточните поисковый запрос и попробуйте еще раз</string>
 
     <string name="search_contact_section_favorites">Избранные</string>
     <string name="search_contact_section_chats">Вы ранее общались</string>
@@ -277,7 +279,7 @@
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="chat_need_confirm">Вы сможете продолжить диалог после того, как подтвердите чат</string>
-    <string name="chat_wait_accept">Вы сможете продолжить диалог после того, как пользователь одобрит чат с вами</string>
+    <string name="chat_wait_accept">Вы сможете продолжить диалог после того, как пользователь одобрит чат с Вами</string>
     <string name="chat_you_banned">Пользователь ограничил возможность отправлять сообщения</string>
     <string name="chat_banned_by_you">Вы ограничили отправку сообщений</string>
     <string name="chat_confirm">Одобрить</string>
@@ -296,7 +298,7 @@
     </plurals>
 
     <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
-    <string name="user_ban_confirmation_message">В случае блокировки, пользователь пропадет из списка избранных и вы не сможете ему больше отправлять сообщения.</string>
+    <string name="user_ban_confirmation_message">В случае блокировки пользователь пропадет из списка избранных, и Вы больше не сможете отправлять ему сообщения.</string>
 
     <string name="user_avatar">Аватар</string>
 
@@ -371,15 +373,15 @@
     <string name="profile_work_organization">Организация</string>
     <string name="profile_work_position">Должность</string>
     <string name="profile_work_description">Описание</string>
-    <string name="profile_social_project_name">Проект</string>
+    <string name="profile_social_project_name">Место работы</string>
     <string name="profile_social_project_role">Должность</string>
     <string name="profile_social_project_description">Описание</string>
     <string name="profile_email">E-mail</string>
     <string name="profile_email_change">Изменить e-mail</string>
-    <string name="profile_email_change_message">На указанный e-mail будет отправлено письмо с ссылкой для подтверждения. Пожалуйста, перейдите по этой ссылке.</string>
+    <string name="profile_email_change_message">На указанный e-mail будет отправлено письмо со ссылкой для подтверждения. Пожалуйста, перейдите по этой ссылке</string>
     <string name="profile_title_general_info">Общая информация</string>
     <string name="profile_title_education">Образование</string>
-    <string name="profile_dates">%s по %s</string>
+    <string name="profile_dates">%s - %s</string>
     <string name="profile_date_present">н.в.</string>
     <string name="profile_education_start">Поступление</string>
     <string name="profile_education_start_error">Выберите дату поступления</string>
@@ -392,8 +394,10 @@
     <string name="profile_work_finish">Окончание</string>
     <string name="profile_work_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_notes">Примечания</string>
+    <string name="profile_files_title">Файлы рекомендаций</string>
     <string name="profile_files">Файлы рекомендаций, писем, отзывов, характеристик</string>
     <string name="profile_edit_title">Редактирование</string>
+    <string name="profile_edit_name_and_photo">Имя и фото</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
     <string name="profile_edit_user_surname">Фамилия</string>
@@ -405,13 +409,13 @@
     <string name="profile_edit_user_no_middle_name">Нет отчества</string>
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
-    <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста обратитесь в нашу службу поддержки: support@sozidateli.ru</string>
+    <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста, обратитесь в службу технической поддержки: support@sozidateli.ru</string>
     <string name="profile_edit_email_hint">E-mail</string>
     <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
     <string name="profile_edit_request_error">Ошибка обновления данных</string>
     <string name="profile_edit_additional_notes_data">Это поле нужно заполнить, если Вы являетесь членом команды проекта, подаваемого на конкурс президентских грантов.
-\nЗдесь Вы можете указать дополнительную информацию о себе: рассказать о своих достижениях, прикрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем, добавить ссылки на ваши публикации и другие материалы
-\nТакже вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта</string>
+\nЗдесь Вы можете указать дополнительную информацию о себе: рассказать о своих достижениях, прикрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем, добавить ссылки на Ваши публикации и другие материалы
+\nТакже Вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта</string>
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
     <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
     <string-array name="profile_edit_education_levels">
@@ -429,10 +433,10 @@
 
     <string name="status_your_status">Ваш текущий статус:</string>
     <string name="status_security">Повышенная безопасность аккаунта</string>
-    <string name="status_support">Приоритетная техничнсекая поддержка</string>
-    <string name="status_invites">Возможность принимать приглашения в проектах Фонда Президентских Грантов</string>
-    <string name="status_conditions">Чтобы повысить статус необходимо:</string>
-    <string name="status_verified_phone">Подтвержден номер телефона</string>
+    <string name="status_support">Приоритетная техническая поддержка</string>
+    <string name="status_invites">Возможность принимать приглашения в конкурсные проекты Фонда президентских грантов</string>
+    <string name="status_conditions">Чтобы повысить статус, необходимо:</string>
+    <string name="status_verified_phone">Подтвердить номер телефона</string>
     <string name="status_fill_profile">Заполнить профиль:</string>
     <string name="status_profile_name">ФИО</string>
     <string name="status_profile_birthday">Дату рождения</string>
@@ -447,15 +451,15 @@
     <string name="status_profile_title_remove">Удаление номера телефона</string>
     <string name="status_profile_message_remove">Для того, чтобы удалить номер телефона, введите пароль, который указывали при регистрации</string>
     <string name="status_profile_check_password_wrong">Введен неправильный пароль</string>
-    <string name="status_profile_status_phone_number_set">Укажите номер телефона, для подтверждения. На этот номер будет выслан код из 6 цифр, которые нужно ввести в соответующую форму.</string>
+    <string name="status_profile_status_phone_number_set">Укажите номер телефона для подтверждения. На этот номер будет отправлен код из 6 цифр, которые необходимо ввести в соответствующую форму</string>
     <string name="status_profile_status_phone_number_change">Введите новый номер</string>
-    <string name="status_profile_status_phone_set_to_profile">Если хотите указать номер телефона в Вашем личном профиле, то выберите соответвующую галочку для этого номера:</string>
+    <string name="status_profile_status_phone_set_to_profile">Если хотите указать этот номер телефона в Вашем профиле, выберите соответствующий вариант ниже</string>
     <string name="status_profile_status_phone_set_to_profile_mobile">Это мобильный</string>
     <string name="status_profile_status_phone_set_to_profile_work">Это рабочий</string>
     <string name="status_profile_status_phone_do_not_set_to_profile">Не указывать в профиле</string>
-    <string name="status_profile_status_code_set">На номер %s выслан код из 6 цифр. Ведите его для подтверждения.</string>
+    <string name="status_profile_status_code_set">На номер %s отправлен код из 6 цифр. Введите его для подтверждения</string>
     <string name="status_profile_status_code_resend">На номер %s выслан новый код.</string>
-    <string name="status_profile_status_code_hint">Введите 6 код из смс</string>
+    <string name="status_profile_status_code_hint">Введите 6 цифр из SMS</string>
     <string name="status_profile_status_code_empty">Введите код</string>
     <string name="status_profile_status_code_error">Введен неправильный код</string>
     <string name="status_profile_status_code_do_not_receive">Не пришел код</string>
@@ -479,7 +483,7 @@
     <string name="schedule_title">Мое расписание</string>
     <string name="schedule_events_title">Все события</string>
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
-    <string name="schedule_my_empty_day_placeholder_title">Список пуст.</string>
+    <string name="schedule_my_empty_day_placeholder_title">Список пуст</string>
     <string name="schedule_my_empty_day_placeholder_description">Нажмите “Добавить в расписание” в списке событий</string>
     <string name="schedule_complete_empty_day_placeholder">Список пуст</string>
     <string name="schedule_cache_data">Отсутствует связь с сервером. Показаны данные актуальные на %s</string>
@@ -495,9 +499,9 @@
 
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 
-    <string name="empty_list_placeholder_message">Список пуст.</string>
+    <string name="empty_list_placeholder_message">Список пуст</string>
     <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
-    <string name="success_register_event_msg">Модератор подтвердит ваше участие\nв течении 2 рабочих дней </string>
+    <string name="success_register_event_msg">Модератор подтвердит Ваше участие\nв течение 2 рабочих дней</string>
     <string name="success_register_event_btn">К списку мероприятий</string>
 
     <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>
@@ -575,7 +579,7 @@
     <string name="event_register_sent_moderate_message">Модератор подтвердит ваше участие в течении 2 рабочих дней</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
-    <string name="event_register_sent_message">Теперь вы можете перейти к мероприятию и составить свой календарь событий</string>
+    <string name="event_register_sent_message">Теперь Вы можете перейти к мероприятию и составить свой календарь событий</string>
     <string name="event_register_sent_button">К мероприятию</string>
 
     <string name="support_email_title">Запрос тех. поддержки</string>

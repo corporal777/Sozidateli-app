@@ -1,6 +1,7 @@
 package com.example.ui.user.edit
 
 import android.graphics.Bitmap
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -9,6 +10,7 @@ import com.example.data.models.UserInterest
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface UserEditContract {
     interface View : BaseContract.View {
@@ -62,6 +64,27 @@ interface UserEditContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun navigateUpChecked()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setMainTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setPersonalTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setEducationTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setWorkTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setInterestsTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setAdditionalNotesTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setAdditionalFilesTitle()
     }
 
     interface Presenter : BaseContract.Presenter {

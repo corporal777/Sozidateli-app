@@ -38,8 +38,8 @@ class ProfileDataWorkExperienceItem(
                 }
             }
 
-            tvProject.text = work.organization ?: "-"
-            tvPosition.text = work.position ?: "-"
+            tvProject.text = work.organization?.trim() ?: "-"
+            tvPosition.text = work.position?.trim() ?: "-"
         }
     }
 

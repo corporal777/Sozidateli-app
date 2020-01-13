@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,7 @@ import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
 import com.vincent.filepicker.Constant
@@ -65,6 +67,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     private var onSaveClick: (() -> Unit)? = null
+
+    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -311,6 +315,23 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 }
             }
         }
+    }
+
+    override fun setMainTitle() = setTitle(R.string.profile_edit_name_and_photo)
+    override fun setPersonalTitle() = setTitle(R.string.profile_title_general_info)
+    override fun setEducationTitle() = setTitle(R.string.profile_title_education)
+    override fun setWorkTitle() = setTitle(R.string.profile_work_experience)
+    override fun setInterestsTitle() = setTitle(R.string.profile_interests)
+    override fun setAdditionalNotesTitle() = setTitle(R.string.profile_notes)
+    override fun setAdditionalFilesTitle() = setTitle(R.string.profile_files_title)
+
+    private fun setTitle(@StringRes titleRes: Int) {
+        toolbarContentActionBar.setTitle(titleRes)
+    }
+
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
     }
 
     override fun navigateUp() {

@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.R
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
-import com.example.holders.ActionButtonItem.Companion.ACTION_SAVE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
@@ -24,8 +23,12 @@ class ProfileDataEducationEditGroup(
     init {
         add(educationLevelItem)
         education.map { createEducationItem(it) }.let {
-            educations.addAll(it)
-            addAll(it)
+            if (it.isEmpty()) {
+                add(createEducationItem(null))
+            } else {
+                educations.addAll(it)
+                addAll(it)
+            }
         }
         add(addItem)
     }

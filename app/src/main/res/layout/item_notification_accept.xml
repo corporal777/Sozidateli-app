@@ -89,7 +89,7 @@
         android:id="@+id/tvAcceptState"
         style="@style/Notification.Action"
         fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnReadMore"

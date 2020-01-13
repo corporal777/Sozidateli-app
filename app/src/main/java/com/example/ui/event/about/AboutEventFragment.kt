@@ -282,6 +282,14 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         writeMessageDialog = null
     }
 
+    override fun showWriteToOrganizationComplete() {
+        showToast(R.string.about_event_write_to_organization_complete)
+    }
+
+    override fun showWriteToOrganizationError() {
+        showToast(R.string.about_event_write_to_organization_error)
+    }
+
     override fun showPage(eventId: String, pageId: String) {
         findNavController().navigate(R.id.page_fragment, PageFragmentArgs.Builder(eventId, pageId).build().toBundle())
     }

@@ -46,13 +46,34 @@ class UserEditPresenter
                 .subscribe({
                     val user = it.value ?: throw RuntimeException("Edit null user")
                     when (editType) {
-                        UserEditDataType.MAIN -> setMainData(user)
-                        UserEditDataType.PERSONAL -> viewState.setPersonalData(user)
-                        UserEditDataType.EDUCATION -> viewState.setEducationData(user)
-                        UserEditDataType.WORK -> viewState.setWorkData(user)
-                        UserEditDataType.INTERESTS -> setInterestsData(user)
-                        UserEditDataType.ADDITIONAL_NOTES -> viewState.setAdditionalNotesData(user)
-                        UserEditDataType.ADDITIONAL_FILES -> viewState.setAdditionalFilesData(user)
+                        UserEditDataType.MAIN -> {
+                            viewState.setMainTitle()
+                            setMainData(user)
+                        }
+                        UserEditDataType.PERSONAL -> viewState.apply {
+                            setPersonalTitle()
+                            setPersonalData(user)
+                        }
+                        UserEditDataType.EDUCATION -> viewState.apply {
+                            setEducationTitle()
+                            setEducationData(user)
+                        }
+                        UserEditDataType.WORK -> viewState.apply {
+                            setWorkTitle()
+                            setWorkData(user)
+                        }
+                        UserEditDataType.INTERESTS -> {
+                            viewState.setInterestsTitle()
+                            setInterestsData(user)
+                        }
+                        UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
+                            setAdditionalNotesTitle()
+                            setAdditionalNotesData(user)
+                        }
+                        UserEditDataType.ADDITIONAL_FILES -> viewState.apply {
+                            setAdditionalFilesTitle()
+                            setAdditionalFilesData(user)
+                        }
                     }
                 }, {
                     it.printStackTrace()

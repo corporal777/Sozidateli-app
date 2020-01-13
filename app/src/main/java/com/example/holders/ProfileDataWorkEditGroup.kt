@@ -20,8 +20,12 @@ class ProfileDataWorkEditGroup(
 
     init {
         workList.map { createWorkItem(it) }.let {
-            works.addAll(it)
-            addAll(it)
+            if (it.isEmpty()) {
+                add(createWorkItem(null))
+            } else {
+                works.addAll(it)
+                addAll(it)
+            }
         }
         add(addItem)
     }

@@ -335,7 +335,7 @@
 
     <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxBackgroundColor">@color/input_background</item>
-        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeColor">@color/input_background</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/background_input_corners_radius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/background_input_corners_radius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/background_input_corners_radius</item>
