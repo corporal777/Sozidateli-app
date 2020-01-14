@@ -60,3 +60,10 @@ inline fun Group.forEachItems(selector: (Item<*>) -> Unit) {
         selector(item)
     }
 }
+
+inline fun <reified I : Group> Group.forEachGroups(selector: (I) -> Unit) {
+    for (i in 0 until this.itemCount) {
+        val item = this.getItem(i)
+        if (item is I) selector(item)
+    }
+}

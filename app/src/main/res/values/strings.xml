@@ -337,6 +337,10 @@
     <string name="profile_sn_add">Добавить еще ссылку</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>
+    <string name="profile_degrees_level">Ученая степень или звание</string>
+    <string name="profile_sciences_level">Специализация</string>
+    <string name="profile_sciences_add">Добавить степень, звание</string>
+    <string name="profile_institution_add">Добавить учебное заведение</string>
     <string name="profile_institution">Учебное заведение</string>
     <string name="profile_institution_hint">МГУ им. Ломоносова</string>
     <string name="profile_work_experience">Опыт работы</string>
@@ -418,14 +422,6 @@
 \nТакже Вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта</string>
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
     <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
-    <string-array name="profile_edit_education_levels">
-        <item>Среднее образование</item>
-        <item>Среднее профессиональное</item>
-        <item>Незаконченное высшее</item>
-        <item>Высшее</item>
-        <item>Более одного высшего</item>
-        <item>Есть ученая степень</item>
-    </string-array>
     <string name="profile_user_status">Ваш статус: %s</string>
     <string name="profile_status_low">Анонимный</string>
     <string name="profile_status_mid">Защищенный</string>

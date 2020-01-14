@@ -61,7 +61,6 @@ data class User(
         var emails: List<Value>? = null,
         var social_links: List<UserDataSocialLink>? = null,
         var interests: List<Interest>? = null,
-        var academic_degree: List<Value>? = null,
         var memberships: List<Value>? = null,
         var settings_chat_allow_msg_from_all: Boolean = true,
         var settings_chat_allow_msg_from_fav: Boolean = true,
@@ -77,7 +76,11 @@ data class User(
         var notification_total: Int = -1,
         var notification_unread: Int = -1,
         var is_in_favorite: Boolean = false,
-        var is_has_chat: Boolean = false
+        var is_has_chat: Boolean = false,
+        var academic_degree: List<AcademicDegree>? = null,
+        val available_degrees: List<String>? = null,
+        val available_sciences: List<String>? = null,
+        val available_education: List<String>? = null
 ) {
     var isCurrentUser = false
 
@@ -137,6 +140,7 @@ data class User(
         const val FIELD_USER_NEW_PASSWORD = "user_new_password"
         const val FIELD_USER_EDUCATION = "user_education"
         const val FIELD_EDUCATION = "education"
+        const val FIELD_ACADEMIC_DEGREE = "academic_degree"
         const val FIELD_WORK = "work"
         const val FIELD_INTERESTS = "interests"
         const val FIELD_USER_NOTES = "user_notes"
