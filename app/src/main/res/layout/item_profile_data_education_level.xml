@@ -17,4 +17,19 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         tools:text="Среднее профессиональное" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDegreesTitle"
+        style="@style/Profile.Edit.InputTitle"
+        android:layout_marginBottom="0dp"
+        android:text="@string/profile_degrees_level" />
+
+    <TextView
+        android:id="@+id/tvDegreesLevel"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        tools:text="Среднее профессиональное" />
 </LinearLayout>

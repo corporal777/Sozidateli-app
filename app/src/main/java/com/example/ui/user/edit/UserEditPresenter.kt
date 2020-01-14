@@ -142,6 +142,7 @@ class UserEditPresenter
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_education = it.user_education
                 education = it.education
+                academic_degree = it.academic_degree
             }.asOptional())
             true
         }

@@ -221,14 +221,15 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     private fun initEducationDataItem(user: User, editable: Boolean): Group? {
         val educationLevel = user.user_education
+        val academicDegrees = user.academic_degree ?: emptyList()
         val education = user.education ?: emptyList()
-        return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty()) {
+        return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_education),
                     onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    setHeader(ProfileDataEducationLevelItem(educationLevel.let { if (it.isNullOrEmpty()) "-" else it }))
+                    if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
                     addAll(education.map { ProfileDataEducationItem(it) })
                     if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditEducationClick() })
                 })
