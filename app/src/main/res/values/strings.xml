@@ -325,6 +325,7 @@
     <string name="profile_support">Написать в техническую поддержку</string>
     <string name="profile_rate">Оценить приложение</string>
     <string name="profile_logout">Выйти</string>
+    <string name="profile_contacts">Контактные данные</string>
     <string name="profile_phone_mobile">Мобильный телефон</string>
     <string name="profile_phone_work">Рабочий телефон</string>
     <string name="profile_phone_hint">+7 (927) 298–16–17</string>
@@ -372,7 +373,6 @@
     <string name="profile_gender_female">Женский</string>
     <string name="profile_gender_not_selected">Не выбрано</string>
     <string name="profile_educate_speciality">Специальность</string>
-    <string name="profile_educate_speciality_hint">Инженер-механик подвижного состава</string>
     <string name="profile_educate_institution">Учебное заведение</string>
     <string name="profile_work_organization">Организация</string>
     <string name="profile_work_position">Должность</string>
@@ -572,7 +572,7 @@
     <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
     <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистрации на мероприятие</string>
     <string name="event_register_sent_moderate_title">Ваша заявка успешно подана!</string>
-    <string name="event_register_sent_moderate_message">Модератор подтвердит ваше участие в течении 2 рабочих дней</string>
+    <string name="event_register_sent_moderate_message">Модератор подтвердит Ваше участие в течении 2 рабочих дней</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
     <string name="event_register_sent_message">Теперь Вы можете перейти к мероприятию и составить свой календарь событий</string>

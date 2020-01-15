@@ -320,7 +320,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setMainTitle() = setTitle(R.string.profile_edit_name_and_photo)
-    override fun setPersonalTitle() = setTitle(R.string.profile_title_general_info)
+    override fun setPersonalTitle() = setTitle(R.string.profile_contacts)
     override fun setEducationTitle() = setTitle(R.string.profile_title_education)
     override fun setWorkTitle() = setTitle(R.string.profile_work_experience)
     override fun setInterestsTitle() = setTitle(R.string.profile_interests)

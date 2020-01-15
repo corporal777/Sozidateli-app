@@ -39,7 +39,8 @@
         app:layout_constraintVertical_bias="0.0"
         app:layout_goneMarginBottom="10dp"
         tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@tools:sample/lorem/random"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReadMore"
@@ -53,7 +54,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAccept"
@@ -69,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnReadMore"
         app:layout_goneMarginTop="10dp"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCancel"
@@ -83,7 +84,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnAccept"
         app:layout_constraintTop_toTopOf="@+id/btnAccept"
         app:layout_constraintVertical_bias="0.0"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tvAcceptState"
@@ -103,10 +104,8 @@
         android:id="@+id/btnChangeDecision"
         style="@style/Notification.ActionButton"
         fontPath="fonts/Roboto-Bold.ttf"
-        android:layout_marginTop="10dp"
         android:text="@string/notifications_change_decision"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvAcceptState"
         app:layout_constraintStart_toEndOf="@+id/tvAcceptState"
-        app:layout_constraintTop_toBottomOf="@+id/btnReadMore"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
