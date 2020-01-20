@@ -20,6 +20,7 @@
             android:id="@+id/etOrganizationName"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_organization_name"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences" />
     </com.example.ui.views.CustomTextInputLayout>
 
@@ -34,6 +35,7 @@
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_organization_address"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:minHeight="48dp"
             android:paddingStart="@dimen/background_input_padding"
@@ -45,7 +47,8 @@
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:imeOptions="actionDone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etInn"

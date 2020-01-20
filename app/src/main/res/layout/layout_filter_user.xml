@@ -20,6 +20,7 @@
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:minHeight="48dp"
             android:paddingStart="@dimen/background_input_padding"
