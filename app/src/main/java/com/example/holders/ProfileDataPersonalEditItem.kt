@@ -76,7 +76,7 @@ class ProfileDataPersonalEditItem(
             etWorkPhone.apply {
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
-                    if (it?.isNotEmpty() == true) tilWorkPhone.error = null
+                    if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error = null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
@@ -84,7 +84,7 @@ class ProfileDataPersonalEditItem(
             etMobilePhone.apply {
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
-                    if (it?.isNotEmpty() == true) tilMobilePhone.error = null
+                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }

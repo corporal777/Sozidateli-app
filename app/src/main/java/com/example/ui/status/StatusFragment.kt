@@ -20,7 +20,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserStatusDetails
 import com.example.data.models.user.User
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.LoadingAlertDialog
 import isValidPhoneNumber
@@ -196,7 +195,7 @@ class StatusFragment : BaseFragment(), StatusContract.View {
 
     override fun showChangePhone(action: Int) {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_set_status_phone_number, null).apply {
-            etPhone.onTextChanged { tilPhone.error = null }
+            etPhone.onTextChanged { if (tilPhone.error != null) tilPhone.error = null }
             etPhone.addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
             val message = when (action) {
