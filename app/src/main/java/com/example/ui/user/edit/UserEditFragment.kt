@@ -46,6 +46,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override val title: String? = null
 
+    override fun layout() = R.layout.fragment_user_edit
+
     @InjectPresenter
     lateinit var presenter: UserEditPresenter
 
@@ -343,6 +345,4 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun navigateUpChecked() {
         super.navigateUp()
     }
-
-    override fun layout() = R.layout.fragment_user_edit
 }
