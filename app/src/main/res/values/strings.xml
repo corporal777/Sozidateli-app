@@ -402,7 +402,7 @@
     <string name="profile_files_title">Файлы рекомендаций</string>
     <string name="profile_files">Файлы рекомендаций, писем, отзывов, характеристик</string>
     <string name="profile_edit_title">Редактирование</string>
-    <string name="profile_edit_name_and_photo">Имя и фото</string>
+    <string name="profile_edit_name_and_photo">ФИО и фото</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
     <string name="profile_edit_user_surname">Фамилия</string>
