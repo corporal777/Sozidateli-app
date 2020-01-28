@@ -298,7 +298,7 @@
     </plurals>
 
     <string name="user_ban_confirmation_title">Вы уверены, что хотите заблокировать пользователя?</string>
-    <string name="user_ban_confirmation_message">В случае блокировки пользователь пропадет из списка избранных, и Вы больше не сможете отправлять ему сообщения.</string>
+    <string name="user_ban_confirmation_message">В случае блокировки пользователь пропадет из списка избранных и Вы больше не сможете отправлять ему сообщения.</string>
 
     <string name="user_avatar">Аватар</string>
 
