@@ -203,6 +203,8 @@ class EventRegistrationPresenter
                         onError = {
                             if (it is PermissionNotGrantedException) {
                                 viewState.showToast(R.string.event_register_file_no_permission)
+                            } else {
+                                it.printStackTrace()
                             }
                         }, onNext = { path ->
                     val nameAndExtension = (path.fileName(contentResolver)
@@ -212,7 +214,7 @@ class EventRegistrationPresenter
                     val fileExtension = nameAndExtension.second
 
                     val availableExtensions = field.field.values ?: emptyList()
-                    val contains = availableExtensions.find {
+                    val contains = availableExtensions.isEmpty() || availableExtensions.find {
                         val availableExtension = it.toLowerCase(Locale.getDefault())
                         availableExtension == fileExtension || fileExtension == "jpg" && availableExtension == "jpeg"
                     } != null
