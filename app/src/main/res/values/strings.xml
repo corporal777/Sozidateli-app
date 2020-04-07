@@ -332,7 +332,7 @@
     <string name="profile_phone_number_must_be_in_international_format">Номер нужно вводить в международном формате с \"+\" в начале</string>
     <string name="profile_birthday">Дата рождения</string>
     <string name="profile_country">Страна</string>
-    <string name="profile_city">Населенный пункт</string>
+    <string name="profile_city">Адрес фактического проживания</string>
     <string name="profile_city_hint">Москва</string>
     <string name="profile_sn">Социальные сети</string>
     <string name="profile_sn_hint">Ссылка на профиль в соцсети</string>
