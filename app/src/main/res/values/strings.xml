@@ -343,7 +343,7 @@
     <string name="profile_sciences_level">Специализация</string>
     <string name="profile_sciences_add">Добавить степень, звание</string>
     <string name="profile_institution_add">Добавить учебное заведение</string>
-    <string name="profile_institution">Учебное заведение</string>
+    <string name="profile_institution">Образовательная организация</string>
     <string name="profile_institution_hint">МГУ им. Ломоносова</string>
     <string name="profile_work_experience">Опыт работы</string>
     <string name="profile_social_project">Социальные проекты</string>
