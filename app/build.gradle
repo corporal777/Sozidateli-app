@@ -52,7 +52,7 @@ android {
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
         }
         debug {
-            buildConfigField "String", "API_URL", "\"http://api.sozidateli-houseofapps.ru/\""
+            buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
 //            buildConfigField "String", "API_URL", "\"http://e.binlab.by/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
