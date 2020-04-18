@@ -14,6 +14,7 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.SearchFilter
+import com.example.extensions.getAffiliationString
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
@@ -98,8 +99,14 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+        val emailsList = emails.map {
+            it.getAffiliationString(underlinedEmail = true)
+        }
+                .filter { it.isNotEmpty() }
+                .toTypedArray()
+
         AlertDialog.Builder(requireContext())
-                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                .setItems(emailsList) { dialog, which ->
                     val email = emails[which]
                     presenter.onWriteToOrganizationEmailChosen(email)
                     dialog.dismiss()

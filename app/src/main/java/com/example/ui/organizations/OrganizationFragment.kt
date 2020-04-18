@@ -24,6 +24,7 @@ import com.example.R
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.extensions.findItemBy
+import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem

@@ -14,6 +14,7 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.SearchFilter
+import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
@@ -50,7 +51,10 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
 
     override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
         AlertDialog.Builder(requireContext())
-                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                .setItems(
+                        emails.map { it.getAffiliationString(underlinedEmail = true) }
+                                .toTypedArray()
+                ) { dialog, which ->
                     val email = emails[which]
                     presenter.onWriteToOrganizationEmailChosen(email)
                     dialog.dismiss()
