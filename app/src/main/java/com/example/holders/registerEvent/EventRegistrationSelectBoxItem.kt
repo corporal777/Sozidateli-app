@@ -26,6 +26,7 @@ open class EventRegistrationSelectBoxItem(
                             onDataChange()
                         }
                 )
+                hint = fieldData.field.description
             }
         }
     }

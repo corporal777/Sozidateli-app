@@ -51,7 +51,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
 
     @ProvidePresenter
     fun providePresenter(): EventRegistrationPresenter = presenterProvider.get().apply {
-        eventId = EventRegistrationFragmentArgs.fromBundle(arguments!!).eventId
+        eventId = EventRegistrationFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
     private val section = Section()

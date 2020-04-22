@@ -8,6 +8,7 @@ import com.example.data.models.EventRegisterFieldData
 import com.example.holders.ProfileButtonEditItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
+import com.xwray.groupie.kotlinandroidextensions.Item
 
 class EventRegistrationFileGroup(
         context: Context,
@@ -21,8 +22,19 @@ class EventRegistrationFileGroup(
         hasDivider = false
     }
 
+    private val availableExtensions: Item?
+
     init {
         checkFile()
+
+        availableExtensions = if (!fieldData.field.values.isNullOrEmpty()) {
+            EventRegistrationAvailableExtensionsItem(String.format(
+                    context.getString(R.string.event_register_available_extensions),
+                    fieldData.field.values.joinToString()
+            ))
+        } else {
+            null
+        }
     }
 
     fun checkFile() {
@@ -37,19 +49,30 @@ class EventRegistrationFileGroup(
     }
 
     override fun getGroup(position: Int): Group {
-        return if (position == 0) fileItem ?: fileAddItem
-        else throw IndexOutOfBoundsException("Max group count is ${groupCount}, but you want position $position")
+        return when {
+            availableExtensions != null && position == 0 -> availableExtensions
+            availableExtensions != null && position == 1 -> fileItem ?: fileAddItem
+            position == 0 -> fileItem ?: fileAddItem
+            else -> {
+                throw IndexOutOfBoundsException("Max group count is ${groupCount}, but you want position $position")
+            }
+        }
     }
 
     override fun getPosition(group: Group): Int {
+        val hasAvailableExtensions = availableExtensions != null
         return when {
-            fileItem != null && group == fileItem -> 0
-            group == fileAddItem -> 0
+            hasAvailableExtensions && group == availableExtensions -> 0
+            fileItem != null && group == fileItem -> if (hasAvailableExtensions) 1 else 0
+            group == fileAddItem -> if (hasAvailableExtensions) 1 else 0
             else -> -1
         }
     }
 
-    override fun getGroupCount() = 1
+    override fun getGroupCount(): Int {
+        return if (availableExtensions != null) 2
+        else 1
+    }
 
     private fun createFileItem(fileName: String, path: Uri): EventRegistrationFileItem {
         return EventRegistrationFileItem(FILE_ITEM_ID, fileName, path.scheme?.startsWith("http") != true, {
