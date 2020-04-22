@@ -498,7 +498,7 @@
 
     <string name="empty_list_placeholder_message">Список пуст</string>
     <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
-    <string name="success_register_event_msg">Модератор подтвердит Ваше участие\nв течение 2 рабочих дней</string>
+    <string name="success_register_event_msg">Организатор рассмотрит Вашу заявку в ближайшее время</string>
     <string name="success_register_event_btn">К списку мероприятий</string>
 
     <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>

@@ -4,6 +4,8 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import com.example.R
 import com.example.data.models.Organization
 import com.example.extensions.parsePhone
@@ -29,9 +31,12 @@ class ProfileDataPersonalItem(
         viewHolder.apply {
             tvOrganization.movementMethod = LinkMovementMethod.getInstance()
 
-            groupOrganization.setTextDataOrHide(tvOrganization, organizations?.joinTo(SpannableStringBuilder(), "\n") {
-                SpannableString(it.name).apply {
-                    setSpan(ClickableSpan { onOrganizationClick(it) }, 0, it.name.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            val organizationStringBuilder = SpannableStringBuilder()
+            groupOrganization.setTextDataOrHide(tvOrganization, organizations?.joinTo(organizationStringBuilder, "\n") {
+                it.name.toSpannable().apply {
+                    set(0, this.length, ClickableSpan {
+                        onOrganizationClick(it)
+                    })
                 }
             })
 
