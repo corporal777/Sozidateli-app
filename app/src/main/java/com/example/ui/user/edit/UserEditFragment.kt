@@ -56,7 +56,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     @ProvidePresenter
     fun providePresenter(): UserEditPresenter = presenterProvider.get().apply {
-        editType = UserEditFragmentArgs.fromBundle(arguments!!).type
+        editType = UserEditFragmentArgs.fromBundle(requireArguments()).type
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -74,7 +74,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 presenter.onNavigateUpRequest()
             }
@@ -99,7 +99,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         )
         adapter.update(listOf(dataItem))
 
-        onSaveClick = { if (dataItem.checkDataComplete()) presenter.onSaveMainClick(dataItem.getDataToSave()) }
+        onSaveClick = {
+            if (dataItem.checkDataComplete()) {
+                presenter.onSaveMainClick(dataItem.getDataToSave())
+            }
+        }
         btnSave.isVisible = true
     }
 
@@ -147,7 +151,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
         adapter.update(listOf(dataItem))
 
-        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSavePersonalClick(dataItem.getDataToSave()) }
+        onSaveClick = {
+            recyclerView.requestFocus()
+            if (dataItem.checkDataValid()) {
+                presenter.onSavePersonalClick(dataItem.getDataToSave())
+            }
+        }
         btnSave.isVisible = true
     }
 
@@ -203,7 +212,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         )
         adapter.update(listOf(dataItem))
 
-        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSaveEducationClick(dataItem.getDataToSave()) }
+        onSaveClick = {
+            if (dataItem.checkDataValid()) {
+                presenter.onSaveEducationClick(dataItem.getDataToSave())
+            }
+        }
         btnSave.isVisible = true
     }
 
@@ -214,7 +227,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 work
         )
         adapter.update(listOf(dataItem))
-        onSaveClick = { if (dataItem.checkDataValid()) presenter.onSaveWorkClick(dataItem.getDataToSave()) }
+        onSaveClick = {
+            if (dataItem.checkDataValid()) {
+                presenter.onSaveWorkClick(dataItem.getDataToSave())
+            }
+        }
         btnSave.isVisible = true
     }
 

@@ -160,19 +160,26 @@ class ProfileDataPersonalEditItem(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        if (workPhone != mWorkPhone || mobilePhone != mMobilePhone) {
-            if (workPhone != mWorkPhone && !mWorkPhone.isNullOrEmpty()) {
-                if (!mWorkPhone.isValidPhoneNumber(context)) {
-                    viewHolder.tilWorkPhone.error = invalidNumberError
-                    isValid = false
-                }
+        if (workPhone != mWorkPhone
+                && !mWorkPhone.isNullOrEmpty()
+                && !mWorkPhone.isValidPhoneNumber(context)
+        ) {
+            viewHolder.tilWorkPhone.apply {
+                error = invalidNumberError
+                requestFocus()
             }
-            if (mobilePhone != mMobilePhone && !mMobilePhone.isNullOrEmpty()) {
-                if (!mMobilePhone.isValidPhoneNumber(context)) {
-                    viewHolder.tilMobilePhone.error = invalidNumberError
-                    isValid = false
-                }
+            isValid = false
+        }
+
+        if (mobilePhone != mMobilePhone
+                && !mMobilePhone.isNullOrEmpty()
+                && !mMobilePhone.isValidPhoneNumber(context)
+        ) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
             }
+            isValid = false
         }
 
         return isValid
