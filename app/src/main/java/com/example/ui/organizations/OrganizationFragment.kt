@@ -199,7 +199,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                             it.userRegistration,
                             it.backgroundColor,
                             it.backgroundImage,
-                            it.format,
+                            it.takeFormat(),
                             it.organization?.emails,
                             onEventClickListener,
                             EventDataListItem(-it.id.toLong(), it.name, it.addressCity, it.conferenceStart, it.conferenceFirstActivityStart)

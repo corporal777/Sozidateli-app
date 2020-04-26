@@ -35,6 +35,8 @@ data class Event(
         @SerializedName("user_registration")
         val userRegistration: RegistrationStatus?,
         val format: EventFormat?,
+        @SerializedName("format_custom")
+        val formatCustom: String?,
         val activities: List<SubEvent>?,
         @SerializedName("is_favorite")
         var isInFavorites: Boolean,
@@ -86,5 +88,11 @@ data class Event(
                     && registrationStatus != RegistrationStatus.APPROVED
                     && registrationStatus != RegistrationStatus.PENDING
         }
+    }
+}
+
+fun Event.takeFormat(): EventFormat? {
+    return format ?: formatCustom?.let { customFormat ->
+        EventFormat(name = customFormat)
     }
 }

@@ -14,6 +14,7 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.SearchFilter
+import com.example.data.models.takeFormat
 import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
@@ -94,7 +95,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 itemData.userRegistration,
                 itemData.backgroundColor,
                 itemData.backgroundImage,
-                itemData.format,
+                itemData.takeFormat(),
                 itemData.organization?.emails,
                 onEventClickListener,
                 EventDataListItem(-itemData.id.toLong(), itemData.name, itemData.addressCity, itemData.conferenceStart, itemData.conferenceFirstActivityStart)

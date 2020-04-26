@@ -54,8 +54,10 @@ data class EventData(
         @SerializedName("rating_subtitle")
         val ratingSubtitle: String?,
         @SerializedName("rating_start_at")
-        val ratingStartAt : Int?,
+        val ratingStartAt: Int?,
         val format: EventFormat?,
+        @SerializedName("format_custom")
+        val formatCustom: String?,
         @SerializedName("is_favorite")
         var isFavorite: Boolean?
 )
@@ -68,4 +70,10 @@ fun EventData.createMapInfo(): MapInfo? {
 
     return if (lat == null || lon == null) null
     else MapInfo(lat, lon, title, description)
+}
+
+fun EventData.takeFormat(): EventFormat? {
+    return format ?: formatCustom?.let { customFormat ->
+        EventFormat(name = customFormat)
+    }
 }

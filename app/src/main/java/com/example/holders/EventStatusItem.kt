@@ -44,14 +44,18 @@ class EventStatusItem(
                 Picasso.get().load(logo).into(this)
             }
 
+            // отключили клик из-за кастомных форматов - карточка #2319
             tvEventFormat.apply {
                 if (format == null) {
                     isVisible = false
                 } else {
                     isVisible = true
                     text = format.name
-                    setOnClickListener { onEventClickListener.onShowFilterClick(format.id) }
+//                    setOnClickListener { onEventClickListener.onShowFilterClick(format.id) }
                 }
+
+                isClickable = false
+                isFocusable = false
             }
 
             setApproveStatus(tvStatus)

@@ -152,7 +152,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         userRegistration,
                         eventData.backgroundColor,
                         eventData.backgroundImage,
-                        eventData.format,
+                        eventData.takeFormat(),
                         null,
                         eventClickListener,
                         aboutItem
