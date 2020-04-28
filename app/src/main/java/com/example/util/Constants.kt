@@ -48,7 +48,7 @@ const val LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliq
         "\n" +
         "Fusce dignissim nisi elit, ac tristique lorem pretium eu. Suspendisse velit neque, lacinia event_id blandit nec, consectetur eget tellus. Nunc quis purus laoreet, dictum nisi et, vestibulum lorem. Phasellus eu lacus aliquam, imperdiet tortor a, placerat nisl. Ut lacinia ex ut sagittis ullamcorper. Vivamus lobortis pharetra dapibus. Etiam quis suscipit lectus. Phasellus justo ligula, varius sit amet mauris a, finibus dictum leo. Nam commodo mauris facilisis ex facilisis blandit vitae nec mauris. Nam ultricies maximus urna, event_id suscipit lorem fringilla vel. Suspendisse a magna sed risus ullamcorper malesuada. Proin nisl enim, posuere a viverra non, porttitor ut nunc. Nam aliquam dapibus ornare."
 
-const val AUTH_CONFIRM_EMAIL_EMAIL = "email"
+const val AUTH_CONFIRM_EMAIL_EMAIL = "confirm_email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 
 const val RECOVERY_EMAIL = "recover_email"
