@@ -22,18 +22,22 @@ class EventRegistrationFileGroup(
         hasDivider = false
     }
 
-    private val availableExtensions: Item?
+    private val descriptions: MutableList<Item> = mutableListOf()
 
     init {
         checkFile()
 
-        availableExtensions = if (!fieldData.field.values.isNullOrEmpty()) {
-            EventRegistrationAvailableExtensionsItem(String.format(
+        if (fieldData.field.description != null) {
+            descriptions.add(EventRegistrationDescriptionItem(fieldData.field.description))
+        }
+
+        if (!fieldData.field.values.isNullOrEmpty()) {
+            val availableExtensions = EventRegistrationDescriptionItem(String.format(
                     context.getString(R.string.event_register_available_extensions),
                     fieldData.field.values.joinToString()
             ))
-        } else {
-            null
+
+            descriptions.add(availableExtensions)
         }
     }
 
@@ -49,10 +53,14 @@ class EventRegistrationFileGroup(
     }
 
     override fun getGroup(position: Int): Group {
+        val descriptionsCount = descriptions.size
         return when {
-            availableExtensions != null && position == 0 -> availableExtensions
-            availableExtensions != null && position == 1 -> fileItem ?: fileAddItem
-            position == 0 -> fileItem ?: fileAddItem
+            position in 0 until descriptionsCount -> {
+                descriptions[position]
+            }
+            (position - descriptionsCount) == 0 -> {
+                fileItem ?: fileAddItem
+            }
             else -> {
                 throw IndexOutOfBoundsException("Max group count is ${groupCount}, but you want position $position")
             }
@@ -60,18 +68,21 @@ class EventRegistrationFileGroup(
     }
 
     override fun getPosition(group: Group): Int {
-        val hasAvailableExtensions = availableExtensions != null
+        val descriptionIndex = descriptions.indexOf(group)
+        if (descriptionIndex >= 0) {
+            return descriptionIndex
+        }
+
+        val descriptionsCount = descriptions.size
         return when {
-            hasAvailableExtensions && group == availableExtensions -> 0
-            fileItem != null && group == fileItem -> if (hasAvailableExtensions) 1 else 0
-            group == fileAddItem -> if (hasAvailableExtensions) 1 else 0
+            fileItem != null && group == fileItem -> descriptionsCount
+            group == fileAddItem -> descriptionsCount
             else -> -1
         }
     }
 
     override fun getGroupCount(): Int {
-        return if (availableExtensions != null) 2
-        else 1
+        return descriptions.size + 1
     }
 
     private fun createFileItem(fileName: String, path: Uri): EventRegistrationFileItem {

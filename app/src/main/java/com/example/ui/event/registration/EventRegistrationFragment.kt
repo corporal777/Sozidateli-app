@@ -111,7 +111,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
                     is EventRegisterFieldData.Boolean ->
                         RegisterEventBooleanItem(it, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
                     is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
+                        RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.File ->
                         EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
                 }
