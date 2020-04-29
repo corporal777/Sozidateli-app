@@ -39,7 +39,8 @@ class ProfileDataPersonalEditItem(
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val socialNetworks: List<UserDataSocialLink>?,
-        private val changeEmailClick: () -> Unit
+        private val changeEmailClick: () -> Unit,
+        private val confirmPhoneClick: (String) -> Unit
 ) : Item() {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -117,6 +118,20 @@ class ProfileDataPersonalEditItem(
                         UserDataSocialLink(value = "").apply {
                             mSocialNetworks.add(this)
                             initSocialNetworkInput(viewHolder, this)
+                        }
+                    }
+                }
+            }
+
+            btnPasswordConfirm.apply {
+                setOnClickListener {
+                    val phone = etMobilePhone.text.toString()
+                    if (phone.isValidPhoneNumber(context)) {
+                        confirmPhoneClick(phone)
+                    } else {
+                        tilMobilePhone.apply {
+                            error = invalidNumberError
+                            requestFocus()
                         }
                     }
                 }

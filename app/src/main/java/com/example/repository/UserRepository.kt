@@ -39,6 +39,8 @@ interface UserRepository {
     fun sendStatusPhoneConfirmSms(password: String): Completable
     fun sendStatusPhoneConfirmCode(password: String): Completable
 
+    fun checkPhone(phone: String): Completable
+
     fun userEventCalendar(): Maybe<List<UserEventCalendar>>
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 }

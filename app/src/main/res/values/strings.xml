@@ -423,6 +423,7 @@
 \nТакже Вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта.</string>
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
     <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
+    <string name="profile_edit_confirm_password">Подтвердить номер</string>
     <string name="profile_user_status">Ваш статус: %s</string>
     <string name="profile_status_low">Анонимный</string>
     <string name="profile_status_mid">Защищенный</string>
@@ -585,4 +586,16 @@
 
     <string name="event_rating_title">Анкета оценки</string>
     <string name="event_rating_success">Оценка отправлена</string>
+
+    <string name="password_confirm_description">Для того, чтобы подтвердить номер телефона, введите пароль, который указывали при регистрации</string>
+    <string name="password_confirm_hint">Пароль</string>
+    <string name="password_confirm_next">Далее</string>
+    <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
+
+    <string name="phone_confirm_description">Пожалуйста, введите смс-код, который был отравлен на номер телефона:</string>
+    <string name="phone_confirm_hint">Код из смс</string>
+    <string name="phone_confirm_wrong_code">Введен неправильный код</string>
+    <string name="phone_confirm_confirm">Подтвердить</string>
+    <string name="phone_confirm_resend">Отправить код повторно</string>
+    <string name="phone_confirm_timer">Повторная отправка кода доступна через %s</string>
 </resources>

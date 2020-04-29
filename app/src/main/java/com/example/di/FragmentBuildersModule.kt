@@ -55,6 +55,8 @@ import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
 import com.example.ui.user.edit.UserEditFragment
+import com.example.ui.user.passwordconfirm.PasswordConfirmFragment
+import com.example.ui.user.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -230,4 +232,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteSubeventFragment(): FavoriteSubeventFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePasswordConfirmFragment(): PasswordConfirmFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePhoneConfirmFragment(): PhoneConfirmFragment
 }

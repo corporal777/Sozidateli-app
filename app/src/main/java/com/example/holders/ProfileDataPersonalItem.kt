@@ -1,8 +1,6 @@
 package com.example.holders
 
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import androidx.core.text.set
 import androidx.core.text.toSpannable

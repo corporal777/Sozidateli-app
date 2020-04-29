@@ -5,6 +5,8 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/splash_fragment">
 
+    <include app:graph="@navigation/phone_confirm_navigation" />
+
     <fragment
         android:id="@+id/splash_fragment"
         android:name="com.example.ui.splash.SplashFragment"
@@ -474,6 +476,14 @@
         <action
             android:id="@+id/edit_to_edit"
             app:destination="@id/user_edit_fragment" />
+        <action
+            android:id="@+id/edit_to_phone_confirm"
+            app:destination="@id/phone_confirm_navigation">
+            <argument
+                android:name="phone"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
     </fragment>
 
     <fragment

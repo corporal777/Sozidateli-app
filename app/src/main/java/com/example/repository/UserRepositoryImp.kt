@@ -128,6 +128,10 @@ class UserRepositoryImp
         return call(api.sendStatusPhoneConfirmCode(password))
     }
 
+    override fun checkPhone(phone: String): Completable {
+        return call(api.checkPhone(phone))
+    }
+
     override fun userEventCalendar(): Maybe<List<UserEventCalendar>> {
         return call(api.eventCalendar())
     }

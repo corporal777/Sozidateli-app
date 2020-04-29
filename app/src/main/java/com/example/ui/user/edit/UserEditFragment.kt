@@ -17,6 +17,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -144,10 +145,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday,
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
-                user.social_links
-        ) {
-            presenter.onChangeEmailClick()
-        }
+                user.social_links,
+                { presenter.onChangeEmailClick() },
+                { presenter.onConfirmPhoneClick(it) }
+        )
 
         adapter.update(listOf(dataItem))
 
@@ -192,6 +193,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 .setMessage(String.format(getString(R.string.email_change_msg, email)))
                 .setPositiveButton(R.string.ok, null)
                 .show()
+    }
+
+    override fun showPhoneConfirm(phone: String) {
+        findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone))
     }
 
     override fun showUpdateError(message: String?) {

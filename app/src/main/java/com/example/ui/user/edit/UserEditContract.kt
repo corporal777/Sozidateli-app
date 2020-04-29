@@ -38,6 +38,9 @@ interface UserEditContract {
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmailComplete(email: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneConfirm(phone: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEducationData(user: User)
 
@@ -100,6 +103,7 @@ interface UserEditContract {
 
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String)
+        fun onConfirmPhoneClick(phone: String)
 
         //additional data
 

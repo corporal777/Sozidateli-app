@@ -227,6 +227,10 @@ class UserEditPresenter
         }
     }
 
+    override fun onConfirmPhoneClick(phone: String) {
+        viewState.showPhoneConfirm(phone)
+    }
+
     override fun onAddFileClick() {
         viewState.showFileSelector()
     }
