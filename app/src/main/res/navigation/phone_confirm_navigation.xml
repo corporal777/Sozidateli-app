@@ -14,8 +14,11 @@
             app:argType="string"
             app:nullable="false" />
 
-        <action android:id="@+id/password_confirm_to_phone_confirm"
-            app:destination="@+id/phone_confirm_fragment"/>
+        <action
+            android:id="@+id/password_confirm_to_phone_confirm"
+            app:destination="@+id/phone_confirm_fragment"
+            app:popUpTo="@id/password_confirm_fragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -24,6 +27,10 @@
         tools:layout="@layout/fragment_confirm_password">
         <argument
             android:name="phone"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="password"
             app:argType="string"
             app:nullable="false" />
     </fragment>

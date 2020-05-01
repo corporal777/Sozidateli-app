@@ -10,40 +10,42 @@
         style="@style/Profile.Data"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:text="@string/phone_confirm_description"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--suppress AndroidUnknownAttribute -->
     <TextView
         android:id="@+id/tvPhone"
         style="@style/Profile.Data"
+        fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:textSize="17sp"
-        android:textStyle="bold"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+        tools:ignore="MissingPrefix"
         tools:text="+79999999999" />
 
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilPassword"
+        android:id="@+id/tilCode"
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         app:endIconMode="none"
         app:errorEnabled="true"
         app:errorIconDrawable="@null"
@@ -52,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPhone">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPassword"
+            android:id="@+id/etCode"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/phone_confirm_hint"
             android:inputType="textVisiblePassword" />
@@ -63,9 +65,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:background="@drawable/background_action_button_selector"
         android:minHeight="52dp"
         android:text="@string/phone_confirm_confirm"
@@ -73,16 +75,16 @@
         android:textColor="@color/text_color_action_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/tilCode" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnResend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:background="@drawable/background_action_button_selector"
         android:enabled="false"
         android:minHeight="52dp"
@@ -98,9 +100,9 @@
         android:id="@+id/tvTimer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:textColor="@color/profile_data_disabled"
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
@@ -108,5 +110,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnResend"
-        tools:text="Повторная отправка кода доступна через 3 минуты" />
+        tools:text="Повторная отправка кода доступна через 3:00" />
 </androidx.constraintlayout.widget.ConstraintLayout>

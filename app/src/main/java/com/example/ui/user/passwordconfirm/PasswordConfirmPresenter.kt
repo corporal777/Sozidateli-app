@@ -36,7 +36,7 @@ class PasswordConfirmPresenter
                             }
                         },
                         {
-                            viewState.showPhoneConfirm(phone)
+                            viewState.showPhoneConfirm(phone, password)
                         }
                 )
     }

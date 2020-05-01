@@ -114,10 +114,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val personalData = mutableListOf<Group>()
         if (editable) {
             personalData.add(ProfileButtonItem(getString(R.string.profile_password_change)) { presenter.onChangePasswordClick() })
-            (user.user_status
-                    ?: User.Status.LOW_PROTECTION).getUserStatusText(requireContext()).let {
-                personalData.add(ProfileButtonItem(it) { presenter.onStatusClick() })
-            }
         }
         initPersonalDataItem(user, editable)?.let { personalData.add(it) }
         personalDataSection.update(personalData)

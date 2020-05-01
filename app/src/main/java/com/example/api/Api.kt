@@ -70,10 +70,6 @@ interface Api {
     @POST("/v1/user/phone/confirm")
     fun sendStatusPhoneConfirmCode(@Field("code") code: String): Completable
 
-    @FormUrlEncoded
-    @POST("/v1/user/check_phone")
-    fun checkPhone(@Field("user_phone") phone: String): Completable
-
     @GET("/v1/users/{id}")
     fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 

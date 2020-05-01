@@ -595,6 +595,7 @@
     <string name="phone_confirm_description">Пожалуйста, введите смс-код, который был отравлен на номер телефона:</string>
     <string name="phone_confirm_hint">Код из смс</string>
     <string name="phone_confirm_wrong_code">Введен неправильный код</string>
+    <string name="phone_confirm_code_send_error">Не удалось отправить код. Попробуйте позже.</string>
     <string name="phone_confirm_confirm">Подтвердить</string>
     <string name="phone_confirm_resend">Отправить код повторно</string>
     <string name="phone_confirm_timer">Повторная отправка кода доступна через %s</string>

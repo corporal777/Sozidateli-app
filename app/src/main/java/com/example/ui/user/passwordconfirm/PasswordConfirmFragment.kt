@@ -38,7 +38,7 @@ class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, To
         etPassword.onTextChanged { tilPassword.error = null }
         btnSave.setOnClickListener {
             val password = etPassword.text?.toString()
-            if (password?.isNotEmpty() == true) presenter.onClickConfirmPassword(password)
+            if (!password.isNullOrEmpty()) presenter.onClickConfirmPassword(password)
         }
     }
 
@@ -46,7 +46,7 @@ class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, To
         tilPassword.error = getString(R.string.password_confirm_wrong_password)
     }
 
-    override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(phone))
+    override fun showPhoneConfirm(phone: String, password: String) {
+        findNavController().navigate(PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(phone, password))
     }
 }
