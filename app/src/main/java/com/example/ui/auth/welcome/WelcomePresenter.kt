@@ -15,7 +15,6 @@ class WelcomePresenter
         super.onFirstViewAttach()
         val user = appData.getUser()
         val name = user.user_name
-        val middleName = user.getMiddleName()
-        viewState.setUserName(listOfNotNull(name, middleName).joinToString(" "))
+        viewState.setUserName(name)
     }
 }
