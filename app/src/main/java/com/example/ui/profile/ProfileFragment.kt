@@ -67,30 +67,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     override fun setUser(user: User) {
         val avatar = user.user_avatar
         Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
-
-        val statusIcon = when (user.user_status) {
-            User.Status.LOW_PROTECTION -> R.drawable.ic_user_status_low
-            User.Status.MID_PROTECTION -> R.drawable.ic_user_status_middle
-            User.Status.MAX_PROTECTION -> R.drawable.ic_user_status_max
-            null -> null
-        }
-
-        val imageSpan = statusIcon?.let { ContextCompat.getDrawable(requireContext(), statusIcon) }?.let {
-            it.setBounds(0, 0, 16.dp, 16.dp)
-            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
-        }
-
-        val userName = user.fullName
-
-        if (imageSpan == null) {
-            tvName.text = userName
-        } else {
-            val titleSpannable = SpannableStringBuilder(userName).apply {
-                append("  ").setSpan(imageSpan, length - 1, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            }
-
-            tvName.text = titleSpannable
-        }
+        tvName.text = user.fullName
     }
 
     override fun highlightNotifications(notificationCount: Int) {

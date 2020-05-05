@@ -38,7 +38,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import getUserStatusText
 import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_user.*
 import onTextChanged
@@ -57,7 +56,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     @ProvidePresenter
     fun providePresenter(): UserPresenter = presenterProvider.get().apply {
-        val args = UserFragmentArgs.fromBundle(arguments!!)
+        val args = UserFragmentArgs.fromBundle(requireArguments())
         userId = args.userId
     }
 
@@ -131,7 +130,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 avatar,
                 user.fullName,
                 user.user_id,
-                user.user_status ?: User.Status.LOW_PROTECTION,
                 { presenter.onEditMainDataClick() },
                 { imageView ->
                     val url = user.user_avatar ?: return@ProfileDataUserEditableItem
@@ -188,13 +186,13 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 getString(R.string.profile_title_general_info),
                 onExpandChange = onItemExpandChange
         ).apply {
-            add(initProfileDataPersonalItem(user, !editable))
+            add(initProfileDataPersonalItem(user, editable))
             if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditPersonalDataClick() })
         }
     }
 
-    private fun initProfileDataPersonalItem(user: User, withOrganizations: Boolean): ProfileDataPersonalItem {
-        val organizations: List<Organization>? = if (withOrganizations) user.organisations else null
+    private fun initProfileDataPersonalItem(user: User, editable: Boolean): ProfileDataPersonalItem {
+        val organizations: List<Organization>? = if (!editable) user.organisations else null
         val email = user.user_email
         val workPhone = user.user_phone_work
         val mobilePhone = user.user_phone
@@ -208,6 +206,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 email,
                 workPhone,
                 mobilePhone,
+                editable && user.user_phone_confirmed,
                 gender,
                 birthday,
                 city,

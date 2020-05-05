@@ -127,6 +127,19 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPhoneMobileTitle"
         tools:text="+7 (927) 298-16-17" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPhoneConfirmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:text="@string/profile_edit_phone_confirmed"
+        android:textColor="@color/profile_status_complete"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/tvPhoneMobile"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneMobile"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupPhoneMobile"
         android:layout_width="wrap_content"
@@ -144,7 +157,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneMobile" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneConfirmed" />
 
     <TextView
         android:id="@+id/tvGender"

@@ -1,11 +1,13 @@
 package com.example.ui.user.phoneconfirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.ApiError
+import com.example.data.models.asOptional
+import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.TimerFormatter
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @InjectViewState
 class PhoneConfirmPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val userRepository: UserRepository
 ) : BasePresenter<PhoneConfirmContract.View>(), PhoneConfirmContract.Presenter {
 
@@ -52,10 +55,19 @@ class PhoneConfirmPresenter
             setTimeLeft(null)
         }
 
-//        val updateMap = mapOf(User.FIELD_USER_STATUS_PHONE to phone)
-//        smsCompositeDisposable += userRepository.updateUser(updateMap)
-//                .flatMapCompletable { userRepository.sendStatusPhoneConfirmSms(password) }
-        smsCompositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+        val updateMap = mapOf(
+                User.FIELD_USER_STATUS_PHONE to phone,
+                User.FIELD_USER_PHONE_MOBILE to phone
+        )
+        smsCompositeDisposable += userRepository.updateUser(updateMap)
+                .doOnSuccess {
+                    val user = appData.getUser().apply {
+                        user_phone = phone
+                        user_status_phone = phone
+                    }
+                    appData.userChangeSubject.onNext(user.asOptional())
+                }
+                .flatMapCompletable { userRepository.sendStatusPhoneConfirmSms(password) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeBy(
@@ -96,7 +108,7 @@ class PhoneConfirmPresenter
     }
 
     override fun onCodeSendClick(code: String) {
-        compositeDisposable += Completable.timer(1, TimeUnit.SECONDS)
+        compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeBy(
@@ -109,6 +121,9 @@ class PhoneConfirmPresenter
                             }
                         },
                         onComplete = {
+                            val user = appData.getUser()
+                            user.user_phone_confirmed = true
+                            appData.userChangeSubject.onNext(user.asOptional())
                             viewState.onPhoneConfirmationComplete()
                         }
                 )

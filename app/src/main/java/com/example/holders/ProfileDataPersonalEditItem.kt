@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.UserAddress
@@ -34,6 +35,7 @@ class ProfileDataPersonalEditItem(
         private val showWorkPhone: Boolean,
         private val mobilePhone: String?,
         private val showMobilePhone: Boolean,
+        private val isPhoneConfirmed: Boolean,
         private val gender: String?,
         private val birthday: String?,
         private val showBirthday: Boolean,
@@ -64,6 +66,8 @@ class ProfileDataPersonalEditItem(
             }
             .toMutableList()
 
+    private var mIsPhoneConfirmed = isPhoneConfirmed
+
     private lateinit var viewHolder: GroupieViewHolder
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -86,6 +90,11 @@ class ProfileDataPersonalEditItem(
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
                     if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
+
+                    if (isPhoneConfirmed) {
+                        mIsPhoneConfirmed = mMobilePhone == mobilePhone
+                        updatePhoneConfirmationStatus(viewHolder)
+                    }
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
@@ -136,6 +145,15 @@ class ProfileDataPersonalEditItem(
                     }
                 }
             }
+
+            updatePhoneConfirmationStatus(this)
+        }
+    }
+
+    private fun updatePhoneConfirmationStatus(viewHolder: GroupieViewHolder) {
+        viewHolder.apply {
+            btnPasswordConfirm.isVisible = !mIsPhoneConfirmed
+            tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
     }
 
@@ -205,7 +223,10 @@ class ProfileDataPersonalEditItem(
             if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
             if (workPhone != mWorkPhone) put(User.FIELD_USER_PHONE_WORK, mWorkPhone)
             if (showWorkPhone != mShowWorkPhone) put(User.FIELD_USER_PHONE_WORK_SHOW, mShowWorkPhone)
-            if (mobilePhone != mMobilePhone) put(User.FIELD_USER_PHONE_MOBILE, mMobilePhone)
+            if (mobilePhone != mMobilePhone) {
+                put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
+                put(User.FIELD_USER_PHONE_MOBILE, mMobilePhone)
+            }
             if (showMobilePhone != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)
             if (gender != mGender) put(User.FIELD_USER_GENDER, getGender())
             mBirthday?.formatToDefaultServerDate()?.let {

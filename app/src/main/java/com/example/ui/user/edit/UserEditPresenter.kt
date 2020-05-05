@@ -46,33 +46,40 @@ class UserEditPresenter
                 .subscribe({
                     val user = it.value ?: throw RuntimeException("Edit null user")
                     when (editType) {
-                        UserEditDataType.MAIN -> {
-                            viewState.setMainTitle()
+                        UserEditDataType.MAIN -> viewState.apply {
+                            setMainTitle()
+                            saveOnClick(true)
                             setMainData(user)
                         }
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
                             setPersonalData(user)
+                            saveOnClick(true)
                         }
                         UserEditDataType.EDUCATION -> viewState.apply {
                             setEducationTitle()
                             setEducationData(user)
+                            saveOnClick(true)
                         }
                         UserEditDataType.WORK -> viewState.apply {
                             setWorkTitle()
                             setWorkData(user)
+                            saveOnClick(true)
                         }
-                        UserEditDataType.INTERESTS -> {
-                            viewState.setInterestsTitle()
+                        UserEditDataType.INTERESTS -> viewState.apply {
+                            setInterestsTitle()
                             setInterestsData(user)
+                            saveOnClick(true)
                         }
                         UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
                             setAdditionalNotesTitle()
                             setAdditionalNotesData(user)
+                            saveOnClick(true)
                         }
                         UserEditDataType.ADDITIONAL_FILES -> viewState.apply {
                             setAdditionalFilesTitle()
                             setAdditionalFilesData(user)
+                            saveOnClick(false)
                         }
                     }
                 }, {
@@ -238,6 +245,7 @@ class UserEditPresenter
     override fun onEditFileClick(file: RecommendationFile) {
         isFileEdit = true
         viewState.setFileEditData(file)
+        viewState.saveOnClick(true)
     }
 
     override fun onFilePicked(path: String) {
@@ -334,6 +342,7 @@ class UserEditPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     appData.getUser().apply {
+                        user_phone_confirmed = it.user_phone_confirmed
                         it.user_status?.let { status -> user_status = status }
                         it.user_status_detail?.let { details -> user_status_detail = details }
                     }

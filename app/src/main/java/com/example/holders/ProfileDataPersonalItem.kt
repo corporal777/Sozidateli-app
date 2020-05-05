@@ -4,6 +4,7 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
 import com.example.extensions.parsePhone
@@ -18,6 +19,7 @@ class ProfileDataPersonalItem(
         private val email: String?,
         private val workPhone: String?,
         private val mobilePhone: String?,
+        private val mobilePhoneConfirmed: Boolean,
         private val gender: String?,
         private val birthday: String?,
         private val city: String?,
@@ -45,6 +47,8 @@ class ProfileDataPersonalItem(
             groupBirthday.setTextDataOrHide(tvBirthday, birthday)
             groupCity.setTextDataOrHide(tvCity, city)
             groupSocialNetworks.setTextDataOrHide(tvSocialNetworks, socialNetworks?.joinToString("\n"))
+
+            tvPhoneConfirmed.isVisible = mobilePhoneConfirmed
         }
     }
 

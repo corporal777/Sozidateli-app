@@ -424,6 +424,7 @@
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
     <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
     <string name="profile_edit_confirm_password">Подтвердить номер</string>
+    <string name="profile_edit_phone_confirmed">Номер подтвержден</string>
     <string name="profile_user_status">Ваш статус: %s</string>
     <string name="profile_status_low">Анонимный</string>
     <string name="profile_status_mid">Защищенный</string>

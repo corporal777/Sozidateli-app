@@ -105,7 +105,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.onSaveMainClick(dataItem.getDataToSave())
             }
         }
-        btnSave.isVisible = true
     }
 
     override fun showDisabledMainInputInfo() {
@@ -141,6 +140,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_phone_work_show,
                 user.user_phone,
                 user.user_phone_show,
+                user.user_phone_confirmed,
                 user.user_gender,
                 user.user_birthday,
                 user.user_birthday_show,
@@ -158,7 +158,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.onSavePersonalClick(dataItem.getDataToSave())
             }
         }
-        btnSave.isVisible = true
     }
 
     override fun showChangeEmail() {
@@ -222,7 +221,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.onSaveEducationClick(dataItem.getDataToSave())
             }
         }
-        btnSave.isVisible = true
     }
 
     override fun setWorkData(user: User) {
@@ -237,7 +235,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.onSaveWorkClick(dataItem.getDataToSave())
             }
         }
-        btnSave.isVisible = true
     }
 
     override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
@@ -268,14 +265,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         })
 
         onSaveClick = { presenter.onSaveInterestsClick(userInterests) }
-        btnSave.isVisible = true
     }
 
     override fun setAdditionalNotesData(user: User) {
         val dataItem = ProfileDataNotesEditItem(1L, user.user_notes)
         adapter.update(listOf(ProfileDataNotesDescriptionItem(0L) { showWhyUserShouldAddDataToNotesField() }, dataItem))
         onSaveClick = { presenter.onSaveAdditionalNotesClick(dataItem.mNotes) }
-        btnSave.isVisible = true
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
@@ -294,8 +289,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 { presenter.onEditFileClick(it) },
                 { presenter.onSaveAdditionalFilesClick(it) }
         )))
-
-        btnSave.isVisible = false
     }
 
     override fun showFileSelector() {
@@ -318,8 +311,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             file.desc = editItem.mName
             presenter.onFileEditSaveClick()
         }
-
-        btnSave.isVisible = true
     }
 
     override fun downloadFile(file: String) {
@@ -366,5 +357,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override fun navigateUpChecked() {
         super.navigateUp()
+    }
+
+    override fun saveOnClick(saveOnClick: Boolean) {
+        btnSave.isVisible = saveOnClick
     }
 }

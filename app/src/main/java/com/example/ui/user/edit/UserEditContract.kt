@@ -88,6 +88,9 @@ interface UserEditContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setAdditionalFilesTitle()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun saveOnClick(saveOnClick: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
