@@ -49,32 +49,13 @@
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
-            android:text="@string/auth_login"
+            android:text="@string/auth_action_login"
             android:textColor="@color/auth_title_text"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/tvRegisterWithEmail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-            tools:ignore="MissingPrefix" />
-
-        <TextView
-            android:id="@+id/tvRegisterWithEmail"
-            fontPath="fonts/Roboto-Light.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="32dp"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="2dp"
-            android:text="@string/auth_login_with_email"
-            android:textColor="@color/auth_title_text"
-            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/llInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
             tools:ignore="MissingPrefix" />
 
         <LinearLayout
@@ -85,10 +66,10 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithEmail">
+            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle">
 
             <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilEmail"
+                android:id="@+id/tilLogin"
                 style="@style/Profile.Edit.InputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,11 +81,11 @@
                 app:errorIconDrawable="@null">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmail"
+                    android:id="@+id/etLogin"
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:hint="@string/email"
+                    android:hint="@string/auth_login"
                     android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
@@ -156,7 +137,7 @@
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:background="@drawable/background_action_button_selector"
             android:minHeight="@dimen/auth_button_min_height"
-            android:text="@string/auth_login"
+            android:text="@string/auth_action_login"
             android:textAllCaps="false"
             android:textColor="@color/text_color_action_button"
             android:textSize="14sp"

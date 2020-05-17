@@ -81,7 +81,7 @@ class EmailConfirmPresenter
                 .flatMapCompletable {
                     val snUser = this.snUser
                     if (snUser != null) authRepository.authSocialNetwork(snUser.snAuth.snType.code, snUser.snAuth.token)
-                    else authRepository.authEmail(email, password)
+                    else authRepository.authEmailOrPhone(email, password)
                 }
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {}

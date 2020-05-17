@@ -21,6 +21,7 @@ import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
 import ru.houseofapps.chat.HAChat
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
@@ -83,4 +84,7 @@ class AppModule {
 
     @Provides
     fun providesEventLocationAlarmHelper(context: Context): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
+    @Provides
+    fun providesPhoneNumberUtil(context: Context): PhoneNumberUtil = PhoneNumberUtil.createInstance(context)
 }

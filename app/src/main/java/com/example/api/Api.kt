@@ -26,7 +26,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/auth")
-    fun authEmail(@Field("user_email") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
+    fun authEmailOrPhone(@Field("username") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/status")

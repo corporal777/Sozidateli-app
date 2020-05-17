@@ -99,7 +99,13 @@ class ProfileDataPersonalEditItem(
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
-            tilBirthday.initAsDatePicker(mBirthday?.let { defaultDateFormatter.parse(it) }, maxDate = Date()) { year, month, day ->
+            tilBirthday.initAsDatePicker(
+                    mBirthday?.let { defaultDateFormatter.parse(it) },
+                    maxDate = Calendar.getInstance().apply {
+                        add(Calendar.YEAR, -14)
+                    }
+                            .time
+            ) { year, month, day ->
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
             }
 

@@ -44,6 +44,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -218,8 +219,12 @@ fun Bitmap.toBodyPart(name: String, fileName: String, compressFormat: Bitmap.Com
 }
 
 fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null): Boolean {
-    if (this.isNullOrEmpty()) return false
     val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
+    return isValidPhoneNumber(phoneNumberUtil, defaultRegion)
+}
+
+fun String?.isValidPhoneNumber(phoneNumberUtil: PhoneNumberUtil, defaultRegion: String? = null): Boolean {
+    if (this.isNullOrEmpty()) return false
     val parsedPhone = try {
         phoneNumberUtil.parse(this, defaultRegion)
     } catch (e: Throwable) {

@@ -18,6 +18,7 @@
     <string name="content_description_vk">Vk</string>
     <string name="content_description_ok">Одноклассники</string>
     <string name="content_description_close">Закрыть</string>
+    <string name="content_description_email_or_phone">E-mail или номер телефона</string>
 
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Что посетить?</string>
@@ -47,8 +48,9 @@
     <string name="auth_or_login">Или войдите,\nесли у вас уже есть аккаунт</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
+    <string name="auth_login">E-mail или номер телефона</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
-    <string name="auth_login">Войти</string>
+    <string name="auth_action_login">Войти</string>
     <string name="auth_login_with_email">с помощью вашей электронной почты</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
@@ -73,6 +75,7 @@
     <string name="auth_error_no_first_name">Введите имя</string>
     <string name="auth_error_no_last_name">Введите фамилию</string>
     <string name="auth_error_wrong_email">Введите корректный e-mail</string>
+    <string name="auth_error_wrong_login">Пожалуйста, укажите корректный логин</string>
     <string name="auth_error_no_password">Введите пароль</string>
     <string name="auth_error_short_password">Больше 5 символов</string>
     <string name="auth_error_password_do_not_match">Пароли не совпадают</string>

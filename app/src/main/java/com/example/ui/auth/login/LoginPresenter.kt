@@ -6,7 +6,9 @@ import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
+import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
@@ -16,24 +18,25 @@ import javax.inject.Inject
 class LoginPresenter
 @Inject constructor(
         private val authRepository: AuthRepository,
+        private val phoneNumberUtil: PhoneNumberUtil,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager), LoginContract.Presenter {
 
-    var email = ""
+    var login = ""
     var password = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState?.apply {
-            setEmailAndPassword(email, password)
+            setLoginAndPassword(login, password)
         }
     }
 
     override fun onClickBack() = viewState.navigateUp()
 
-    override fun onChangeEmailText(email: String) {
-        this.email = email
-        viewState.showEmailError(false)
+    override fun onChangeLoginText(login: String) {
+        this.login = login
+        viewState.showLoginError(false)
         performDataChange()
     }
 
@@ -44,11 +47,12 @@ class LoginPresenter
     }
 
     override fun onClickRecoverPassword() {
+        val email = login.let { if (AuthValidateUtil.isValidEmail(it)) it else "" }
         viewState.showRecoveryPassword(email)
     }
 
-    override fun onClickLogin(email: String, password: String) {
-        compositeDisposable += authRepository.authEmail(email, password)
+    override fun onClickLogin(login: String, password: String) {
+        compositeDisposable += authRepository.authEmailOrPhone(login, password)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -60,11 +64,15 @@ class LoginPresenter
     }
 
     private fun isDataValid(): Boolean {
-        return AuthValidateUtil.isValidEmail(email)
+        return (AuthValidateUtil.isValidEmail(login) || login.isValidPhoneNumber())
                 && password.isNotEmpty()
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
         viewState.showSnRegistration(snUser)
+    }
+
+    private fun String.isValidPhoneNumber(): Boolean {
+        return isValidPhoneNumber(phoneNumberUtil)
     }
 }

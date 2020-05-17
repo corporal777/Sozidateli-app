@@ -58,8 +58,8 @@ class AuthRepositoryImp
         return callAuthCompletable(api.confirmEmailSocialNetwork(id, code))
     }
 
-    override fun authEmail(email: String, password: String): Completable {
-        return callAuthCompletable(api.authEmail(email, password))
+    override fun authEmailOrPhone(email: String, password: String): Completable {
+        return callAuthCompletable(api.authEmailOrPhone(email, password))
     }
 
     override fun register(email: String, password: String, firstName: String, lastName: String): Completable {
@@ -154,6 +154,6 @@ class AuthRepositoryImp
     }
 
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return call(authRequest).flatMapCompletable { Completable.complete() }
+        return call(authRequest).ignoreElement()
     }
 }

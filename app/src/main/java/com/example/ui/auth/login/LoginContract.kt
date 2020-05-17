@@ -8,7 +8,7 @@ import com.example.ui.auth.base.BaseAuthContract
 interface LoginContract {
     interface View : BaseAuthContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEmailAndPassword(email: String, password: String)
+        fun setLoginAndPassword(login: String, password: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRecoveryPassword(email: String)
@@ -17,7 +17,7 @@ interface LoginContract {
         fun enableLoginBtn(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailError(show: Boolean)
+        fun showLoginError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showPasswordError(show: Boolean)
@@ -31,9 +31,9 @@ interface LoginContract {
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickBack()
-        fun onChangeEmailText(email: String)
+        fun onChangeLoginText(login: String)
         fun onChangePasswordText(password: String)
-        fun onClickLogin(email: String, password: String)
+        fun onClickLogin(login: String, password: String)
         fun onClickRecoverPassword()
     }
 }
