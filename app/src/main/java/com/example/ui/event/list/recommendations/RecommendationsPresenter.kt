@@ -34,4 +34,6 @@ class RecommendationsPresenter
     override fun onMenuChatClick() = viewState.showChat()
 
     override fun onMenuAccountClick() = viewState.showAccount()
+
+    override fun onMenuNotificationsClick() = viewState.showNotifications()
 }

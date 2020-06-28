@@ -1,5 +1,6 @@
 package com.example.ui.event.location.map
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.ACTION_SEND
 import android.content.res.Resources
@@ -36,11 +37,12 @@ class MapFragment private constructor() : BaseFragment(), MapContract.View, OnMa
 
     @ProvidePresenter
     fun providePresenter(): MapPresenter = presenterProvider.get().apply {
-        mapInfo = arguments!!.getParcelable(ARG_MAP_INFO)!!
+        mapInfo = requireArguments().getParcelable(ARG_MAP_INFO)!!
     }
 
     private lateinit var googleMap: GoogleMap
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initializeMap() {
         flMapContainer.apply {
             updateLayoutParams {
@@ -81,6 +83,7 @@ class MapFragment private constructor() : BaseFragment(), MapContract.View, OnMa
         scrollContainer.isVisible = true
     }
 
+    @SuppressLint("MissingPermission")
     override fun enableCurrentLocation(enable: Boolean) {
         googleMap.isMyLocationEnabled = enable
     }

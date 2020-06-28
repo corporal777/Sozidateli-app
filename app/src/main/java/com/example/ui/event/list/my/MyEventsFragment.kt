@@ -26,7 +26,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContrac
 
     @ProvidePresenter
     fun providePresenter(): MyEventsPresenter = presenterProvider.get().apply {
-        filter = MyEventsFragmentArgs.fromBundle(arguments!!).filter
+        filter = MyEventsFragmentArgs.fromBundle(requireArguments()).filter
     }
 
     override fun setNoFilterHeader() {

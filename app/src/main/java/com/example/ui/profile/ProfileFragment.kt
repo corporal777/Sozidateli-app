@@ -4,13 +4,8 @@ import android.content.Intent
 import android.content.Intent.*
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.doOnNextLayout
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -18,16 +13,13 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.user.User
-import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BadgeDrawable
-import com.example.ui.views.addBadge
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 import javax.inject.Provider
-
 
 class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
@@ -42,8 +34,6 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get()
 
-    private lateinit var notificationBadge: BadgeDrawable
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (screenTittle as TextView).text = getString(R.string.profile_label)
@@ -54,7 +44,6 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
         btnEdit.setOnClickListener { presenter.onProfileClick() }
 
-        containerNotification.setOnClickListener { presenter.onNotificationClick() }
         tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
         tvEvents.setOnClickListener { presenter.onEventsClick() }
         tvBanned.setOnClickListener { presenter.onBannedClick() }
@@ -68,37 +57,6 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         val avatar = user.user_avatar
         Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
         tvName.text = user.fullName
-    }
-
-    override fun highlightNotifications(notificationCount: Int) {
-        ivNotificationIcon.apply {
-            if (!::notificationBadge.isInitialized) notificationBadge = BadgeDrawable(notificationCount)
-            notificationBadge.number = notificationCount
-            doOnNextLayout {
-                addBadge(notificationBadge) { badgeWidth, badgeHeight, anchorRect ->
-                    val badgeCenterX = anchorRect.right - anchorRect.width() / 4
-                    val badgeCenterY = anchorRect.top + anchorRect.height() / 4
-
-                    anchorRect.set(
-                            badgeCenterX - badgeWidth / 2,
-                            badgeCenterY - badgeHeight / 2,
-                            badgeCenterX + badgeWidth / 2,
-                            badgeCenterY + badgeHeight / 2
-                    )
-                }
-            }
-        }
-
-        ivNotificationIcon.setImageResource(R.drawable.ic_profile_notifications)
-    }
-
-    override fun hideLastNotification() {
-        if (::notificationBadge.isInitialized) notificationBadge.apply {
-            number = 0
-            invalidateSelf()
-        }
-
-        ivNotificationIcon.setImageResource(R.drawable.ic_profile_notifications_empty)
     }
 
     override fun showProfile(uid: String) {
@@ -119,10 +77,6 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun showBanned() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBannedFragment())
-    }
-
-    override fun showNotifications() {
-        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToNotificationsFragment())
     }
 
     override fun openSupportEmail(uid: String) {
@@ -152,7 +106,6 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         } catch (e: android.content.ActivityNotFoundException) {
             startActivity(Intent(ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
         }
-
     }
 
     override fun layout() = R.layout.fragment_profile

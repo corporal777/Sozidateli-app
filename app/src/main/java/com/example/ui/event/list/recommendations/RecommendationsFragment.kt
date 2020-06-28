@@ -15,6 +15,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.notifications.NotificationsView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import javax.inject.Inject
 import javax.inject.Provider
@@ -64,11 +65,23 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
         findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToProfileFragment())
     }
 
+    override fun showNotifications() {
+        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToNotificationsFragment())
+    }
+
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         toolbarContentActionBar.apply {
-            addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
-            addRightView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
+            addRightView(AccountView(requireContext()).also {
+                it.canShowBadge = false
+                it.setOnClickListener { presenter.onMenuAccountClick() }
+            })
+            addRightView(ChatView(requireContext()).also {
+                it.setOnClickListener { presenter.onMenuChatClick() }
+            })
+            addRightView(NotificationsView(requireContext()).also {
+                it.setOnClickListener { presenter.onMenuNotificationsClick() }
+            })
         }
     }
 }

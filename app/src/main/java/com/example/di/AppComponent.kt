@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.App
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.notifications.NotificationsView
 import com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
 import dagger.BindsInstance
 import dagger.Component
@@ -35,4 +36,5 @@ interface AppComponent {
 
     fun inject(view: DaDataAutoCompleteTextView)
 
+    fun inject(view: NotificationsView)
 }

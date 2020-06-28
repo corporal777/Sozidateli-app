@@ -1,4 +1,4 @@
-package com.example.ui.views.accountView
+package com.example.ui.views.notifications
 
 import android.content.Context
 import android.util.AttributeSet
@@ -12,41 +12,34 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
-import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AccountView : FrameLayout, AccountViewContract.View {
+class NotificationsView : FrameLayout, NotificationsViewContract.View {
+
+    companion object {
+        private const val NOTIFICATIONS_TAG_VIEW = "notifications_view_tag"
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val mvpDelegate by lazy { MvpDelegate<AccountView>(this) }
+    private val mvpDelegate by lazy { MvpDelegate<NotificationsView>(this) }
 
-    var canShowBadge: Boolean = true
-        get() = if (::presenter.isInitialized) presenter.canShowBadge else field
-        set(value) {
-            field = value
-            if (::presenter.isInitialized) {
-                presenter.canShowBadge = value
-            }
-        }
-
-    @InjectPresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
-    lateinit var presenter: AccountViewPresenter
+    @InjectPresenter(type = PresenterType.WEAK, tag = NOTIFICATIONS_TAG_VIEW)
+    lateinit var presenter: NotificationsViewPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<AccountViewPresenter>
+    lateinit var presenterProvider: Provider<NotificationsViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
-    fun providePresenter(): AccountViewPresenter = presenterProvider.get().apply {
-        canShowBadge = this@AccountView.canShowBadge
-    }
+    @ProvidePresenter(type = PresenterType.WEAK, tag = NOTIFICATIONS_TAG_VIEW)
+    fun providePresenter(): NotificationsViewPresenter = presenterProvider.get()
 
-    private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
-        ivImage.setImageResource(PLACEHOLDER)
-    }
+    private var view: View = LayoutInflater.from(context)
+            .inflate(R.layout.image_with_badge, this, true).apply {
+                ivImage.setImageResource(R.drawable.ic_profile_notification)
+            }
 
     init {
         (context.applicationContext as App).appComponent.inject(this)
@@ -54,10 +47,6 @@ class AccountView : FrameLayout, AccountViewContract.View {
 
     override fun showCounter(show: Boolean) {
         view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    override fun setAvatar(url: String?) {
-        ivImage.setCircleImage(url, PLACEHOLDER)
     }
 
     override fun onAttachedToWindow() {
@@ -76,11 +65,5 @@ class AccountView : FrameLayout, AccountViewContract.View {
 
     override fun setOnClickListener(l: OnClickListener?) {
         ivImage.setOnClickListener(l)
-    }
-
-    companion object {
-        private const val ACCOUNT_TAG_VIEW = "account_view_tag"
-
-        private const val PLACEHOLDER = R.drawable.avatar_placeholder
     }
 }

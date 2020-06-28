@@ -22,30 +22,16 @@ class ProfilePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += appData.notificationsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({ updateNotification() }, {})
-
         compositeDisposable += userRepository.getUserFull()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.setUser(it)
-                    updateNotification()
                 }, { it.printStackTrace() })
-    }
-
-    private fun updateNotification() {
-        val unreadNotifications = appData.notificationsCount
-        viewState.apply {
-            if (unreadNotifications > 0) highlightNotifications(unreadNotifications)
-            else hideLastNotification()
-        }
     }
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
         viewState.setUser(appData.getUser())
-        updateNotification()
     }
 
     override fun onProfileClick() = viewState.showProfile(appData.getUser().user_id.toString())
@@ -55,8 +41,6 @@ class ProfilePresenter
     override fun onEventsClick() = viewState.showEvents()
 
     override fun onAboutApplicationClick() = viewState.showAboutApp()
-
-    override fun onNotificationClick() = viewState.showNotifications()
 
     override fun onBannedClick() = viewState.showBanned()
 

@@ -153,6 +153,10 @@
         <action
             android:id="@+id/recommendations_fragment_to_profile_fragment"
             app:destination="@id/profile_fragment" />
+
+        <action
+            android:id="@+id/recommendations_fragment_to_notifications_fragment"
+            app:destination="@id/notifications_fragment" />
     </fragment>
 
     <fragment

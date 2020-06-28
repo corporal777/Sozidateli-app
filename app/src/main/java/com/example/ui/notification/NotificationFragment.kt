@@ -32,7 +32,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
     @ProvidePresenter
     fun providePresenter(): NotificationPresenter = presenterProvider.get().apply {
-        NotificationFragmentArgs.fromBundle(arguments!!).let {
+        NotificationFragmentArgs.fromBundle(requireArguments()).let {
             notification = it.notification
         }
     }

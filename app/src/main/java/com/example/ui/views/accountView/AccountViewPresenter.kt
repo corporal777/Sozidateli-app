@@ -13,6 +13,12 @@ class AccountViewPresenter @Inject constructor(
         private val appData: AppData
 ) : MvpPresenter<AccountViewContract.View>(), AccountViewContract.Presenter {
 
+    override var canShowBadge: Boolean = true
+        set(value) {
+            field = value
+            viewState.showCounter(value)
+        }
+
     private val compositeDisposable = CompositeDisposable()
 
     private var userAvatar: String? = null
@@ -25,10 +31,8 @@ class AccountViewPresenter @Inject constructor(
                 .subscribe({
                     viewState.apply {
                         if (it > 0) {
-                            setCount(if (it > 99) "99+" else it.toString())
-                            showCounter(true)
+                            showCounter(canShowBadge)
                         } else {
-                            setCount("")
                             showCounter(false)
                         }
                     }

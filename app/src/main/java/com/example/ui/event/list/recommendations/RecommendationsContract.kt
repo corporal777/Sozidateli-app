@@ -20,6 +20,9 @@ interface RecommendationsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAccount()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showNotifications()
     }
 
     interface Presenter : EventListContract.Presenter {
@@ -28,5 +31,6 @@ interface RecommendationsContract {
         fun onMyEventsClick()
         fun onMenuChatClick()
         fun onMenuAccountClick()
+        fun onMenuNotificationsClick()
     }
 }
