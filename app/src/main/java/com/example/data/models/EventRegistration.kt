@@ -35,7 +35,9 @@ data class EventRegistration(
         @SerializedName("moderate_registration")
         val moderateRegistration: String?,
         @SerializedName("conference_first_activity_start")
-        val conferenceFirstActivityStart: String?
+        val conferenceFirstActivityStart: String?,
+        @SerializedName("conference_requests_receiving_date_end")
+        val conferenceRegistrationFinishDate: String?
 ) {
     companion object {
         const val MODERATION_MANUAL = "manual"

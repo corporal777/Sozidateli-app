@@ -55,7 +55,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     @ProvidePresenter
     fun providePresenter(): AboutEventPresenter = presenterProvider.get().apply {
-        eventId = AboutEventFragmentArgs.fromBundle(arguments!!).eventId
+        eventId = AboutEventFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
@@ -187,7 +187,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         flRegister.apply {
             val textRes: Int
             val clickAction: () -> Unit
-            if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
+            if (eventData.conferenceRegistrationClosed) {
+                textRes = R.string.about_event_registration_closed
+                btnAction.isEnabled = false
+                clickAction = {}
+            } else if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
                 isVisible = false
                 return@apply
             } else when (userRegistration) {

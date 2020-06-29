@@ -11,6 +11,7 @@ open class RegisterEventHeaderItem(
         private val eventName: String?,
         private val time: String?,
         private val dates: String?,
+        private val finishDate: String?,
         private val formTitle: String?,
         private val formDescription: String?
 ) : Item(id) {
@@ -21,17 +22,14 @@ open class RegisterEventHeaderItem(
                 text = eventName
             }
 
-            if (time != null) {
-                llTime.isVisible = true
-                tvEventTime.text = time
-            } else {
-                llTime.isVisible = false
-            }
+            tvEventTime.text = time
+            llTime.isVisible = time.isNullOrEmpty().not()
 
-            tvEventDate.apply {
-                isVisible = !dates.isNullOrEmpty()
-                text = dates
-            }
+            tvEventDate.text = dates
+            llDate.isVisible = dates.isNullOrEmpty().not()
+
+            tvRegistrationFinishDate.text = finishDate
+            llRegistrationFinishDate.isVisible = finishDate.isNullOrEmpty().not()
 
             tvFormLabel.apply {
                 isVisible = !formTitle.isNullOrBlank()

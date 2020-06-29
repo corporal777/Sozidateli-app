@@ -19,9 +19,7 @@ import com.example.data.models.EventRegistration
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
-import com.example.extensions.forEachGroups
-import com.example.extensions.formatToEventDatesInterval
-import com.example.extensions.setRequired
+import com.example.extensions.*
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
@@ -82,8 +80,9 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             setHeader(RegisterEventHeaderItem(
                     -100L,
                     event.name,
-                    event.conferenceFirstActivityStart,
+                    event.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                     event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
+                    event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                     event.registrationName,
                     event.registrationSubtitle
             ))

@@ -59,7 +59,11 @@ data class EventData(
         @SerializedName("format_custom")
         val formatCustom: String?,
         @SerializedName("is_favorite")
-        var isFavorite: Boolean?
+        var isFavorite: Boolean?,
+        @SerializedName("conference_requests_receiving_date_end")
+        val conferenceRegistrationFinishDate: String?,
+        @SerializedName("conference_requests_receiving_closed")
+        val conferenceRegistrationClosed: Boolean
 )
 
 fun EventData.createMapInfo(): MapInfo? {

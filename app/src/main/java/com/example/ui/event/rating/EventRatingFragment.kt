@@ -41,7 +41,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
 
     @ProvidePresenter
     fun providePresenter(): EventRatingPresenter = presenterProvider.get().apply {
-        eventId = EventRatingFragmentArgs.fromBundle(arguments!!).eventId
+        eventId = EventRatingFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
     private val section = Section()
@@ -67,6 +67,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                     event.name,
                     event.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                     event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
+                    event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                     event.ratingHeadline,
                     event.ratingSubtitle
             ))
