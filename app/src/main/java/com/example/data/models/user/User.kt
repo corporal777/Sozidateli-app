@@ -44,6 +44,7 @@ data class User(
         var passport_given_at: String? = null,
         var user_city: String? = null,
         var user_address: String? = null,
+        var user_short_address: String? = null,
         var user_address_index: String? = null,
         var user_address_country: String? = null,
         var user_address_federal: String? = null,

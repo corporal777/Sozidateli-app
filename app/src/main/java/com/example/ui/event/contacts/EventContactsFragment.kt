@@ -35,7 +35,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
 
     @ProvidePresenter
     fun providePresenter(): EventContactsPresenter = presenterProvider.get().apply {
-        val args = EventContactsFragmentArgs.fromBundle(arguments!!)
+        val args = EventContactsFragmentArgs.fromBundle(requireArguments())
         eventName = args.eventName
         phones = args.phones.toList()
         emails = args.emails.toList()
@@ -56,7 +56,15 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         }
     }
 
-    override fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, canShowOnMap: Boolean) {
+    override fun setData(
+            phones: List<PhoneAffiliation>,
+            emails: List<EmailAffiliation>,
+            webLinks: List<String>,
+            socialLinks: List<String>,
+            address: String?,
+            place: String?,
+            canShowOnMap: Boolean
+    ) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext())) })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })

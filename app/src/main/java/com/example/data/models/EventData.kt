@@ -34,6 +34,8 @@ data class EventData(
         val userRegistration: Event.RegistrationStatus?,
         val status: Event.Status?,
         val address: String?,
+        @SerializedName("short_address")
+        val shortAddress: String?,
         @SerializedName("address_federal")
         val addressFederal: String?,
         val place: String?,

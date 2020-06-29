@@ -11,6 +11,8 @@ data class Event(
         val organizationId: String?,
         val organization: Organization?,
         val address: String?,
+        @SerializedName("short_address")
+        val shortAddress: String?,
         @SerializedName("address_city")
         val addressCity: String?,
         val name: String,

@@ -59,7 +59,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
     @ProvidePresenter
     fun providePresenter(): OrganizationPresenter = presenterProvider.get().apply {
-        organizationId = OrganizationFragmentArgs.fromBundle(arguments!!).organizationId
+        organizationId = OrganizationFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
@@ -157,12 +157,13 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             text = phones
         }
 
-        val hasAddress = !organization.address.isNullOrEmpty()
+        val hasAddress = !organization.addressShort.isNullOrEmpty() ||
+                !organization.address.isNullOrEmpty()
 
         tvAddressTitle.isVisible = hasAddress
         tvAddress.apply {
             isVisible = hasAddress
-            text = organization.address
+            text = organization.addressShort ?: organization.address
         }
 
         tvDescription.apply {
@@ -202,7 +203,13 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                             it.takeFormat(),
                             it.organization?.emails,
                             onEventClickListener,
-                            EventDataListItem(-it.id.toLong(), it.name, it.addressCity, it.conferenceStart, it.conferenceFirstActivityStart)
+                            EventDataListItem(
+                                    -it.id.toLong(),
+                                    it.name,
+                                    it.shortAddress ?: it.addressCity,
+                                    it.conferenceStart,
+                                    it.conferenceFirstActivityStart
+                            )
                     )
                 })
             }

@@ -198,7 +198,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val mobilePhone = user.user_phone
         val gender = user.user_gender
         val birthday = user.user_birthday?.formatToDefaultDate()
-        val city = user.user_address
+        val city = user.user_short_address ?: user.user_address
         val socialNetworks = user.social_links
 
         return ProfileDataPersonalItem(

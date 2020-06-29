@@ -19,6 +19,8 @@ data class Organization(
         val descriptionFull: String?,
         @SerializedName("addr")
         val address: String?,
+        @SerializedName("short_addr")
+        val addressShort: String?,
         val emails: List<EmailAffiliation>?,
         @SerializedName("web")
         val webLinks: List<String>?,

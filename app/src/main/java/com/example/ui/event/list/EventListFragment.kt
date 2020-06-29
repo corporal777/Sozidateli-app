@@ -11,10 +11,12 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EmailAffiliation
+import com.example.data.models.Event
+import com.example.data.models.SearchFilter
+import com.example.data.models.takeFormat
 import com.example.extensions.getAffiliationString
 import com.example.holders.*
-import com.example.holders.EventGroup
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -86,7 +88,13 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.takeFormat(),
                     it.email,
                     onEventClickListener,
-                    EventDataListItem(-it.id.toLong(), it.name, it.addressCity, it.conferenceStart, it.conferenceFirstActivityStart)
+                    EventDataListItem(
+                            -it.id.toLong(),
+                            it.name,
+                            it.shortAddress ?: it.addressCity,
+                            it.conferenceStart,
+                            it.conferenceFirstActivityStart
+                    )
             )
         })
         swipeToRefresh.isRefreshing = false
