@@ -177,7 +177,6 @@ class BuildingSchemeFragment private constructor() : BaseFragment(), BuildingSch
                     })
                 }
             }
-
         }
 
         override fun getItemLayout(itemView: Int) = R.layout.item_building_scheme

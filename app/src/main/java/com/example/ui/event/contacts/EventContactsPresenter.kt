@@ -12,6 +12,11 @@ import javax.inject.Inject
 class EventContactsPresenter
 @Inject constructor() : BasePresenter<EventContactsContract.View>(), EventContactsContract.Presenter {
 
+    companion object {
+        private const val GOOGLE_MAP_SHARE_URL = "https://www.google.com/maps/search/?api=1&query="
+        private const val GOOGLE_MAP_ROUTE_URL = "geo:0,0?mode=d&q="
+    }
+
     lateinit var eventName: String
     lateinit var phones: List<PhoneAffiliation>
     lateinit var emails: List<EmailAffiliation>
@@ -24,10 +29,25 @@ class EventContactsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(phones, emails, webLinks, socialLinks, address, place, mapInfo != null || !places.isNullOrEmpty())
+        viewState.setData(
+                phones,
+                emails,
+                webLinks,
+                socialLinks,
+                address,
+                place,
+                mapInfo,
+                places
+        )
     }
 
-    override fun onShowOnMapClick() {
-        viewState.showMap(eventName, mapInfo, places)
+    override fun onShareClick() {
+        val mapInfo = this.mapInfo ?: return
+        viewState.shareUrl("${GOOGLE_MAP_SHARE_URL}${mapInfo.lat},${mapInfo.lon}")
+    }
+
+    override fun onOpenRouteClick() {
+        val mapInfo = this.mapInfo ?: return
+        viewState.openUrl("${GOOGLE_MAP_ROUTE_URL}${mapInfo.lat},${mapInfo.lon}")
     }
 }

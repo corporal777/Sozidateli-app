@@ -1,29 +1,57 @@
 package com.example.ui.event.contacts
 
+import android.content.Intent
+import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.View
-import androidx.navigation.fragment.findNavController
+import android.widget.Toast
+import androidx.core.view.doOnNextLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.widget.NestedScrollView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.SimpleRecyclerViewAdapter
+import com.example.adapters.ViewHolder
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
 import com.example.data.models.Place
 import com.example.extensions.parsePhone
-import com.example.holders.ProfileButtonEditItem
 import com.example.holders.ProfileFieldTextItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.location.EventLocationFragmentArgs
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.fragment_building_scheme.*
 import kotlinx.android.synthetic.main.fragment_event_contacts.*
+import kotlinx.android.synthetic.main.fragment_event_contacts.pageIndicator
+import kotlinx.android.synthetic.main.fragment_event_contacts.viewPager
+import kotlinx.android.synthetic.main.item_building_scheme.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
 class EventContactsFragment : BaseFragment(), EventContactsContract.View, ToolbarFragment {
+
+    companion object {
+        private val MAP_OPTIONS_DEFAULT = GoogleMapOptions()
+                .liteMode(true)
+                .mapToolbarEnabled(false)
+                .zoomControlsEnabled(false)
+
+        private const val MAP_TAG = "com.example.ui.event.contacts.EventContactsFragment.SupportMapFragment"
+    }
 
     override val title: String? = null
 
@@ -47,6 +75,10 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         places = args.places
     }
 
+    private val mapFragment by lazy {
+        SupportMapFragment.newInstance(MAP_OPTIONS_DEFAULT)
+    }
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,10 +95,13 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
             socialLinks: List<String>,
             address: String?,
             place: String?,
-            canShowOnMap: Boolean
+            mapInfo: MapInfo?,
+            places: Array<Place>?
     ) {
         groupAdapter.update(mutableListOf<Item>().apply {
-            addAll(phones.map { ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext())) })
+            addAll(phones.map {
+                ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext()))
+            })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
             if (webLinks.isNotEmpty())
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n")))
@@ -76,19 +111,144 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_address), address))
             if (!place.isNullOrEmpty())
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place))
-
-            if (canShowOnMap)
-                add(ProfileButtonEditItem(size.toLong(), getString(R.string.event_contacts_watch_on_map)) {
-                    presenter.onShowOnMapClick()
-                }.apply {
-                    hasDivider = false
-                })
         })
+
+        setupMap(mapInfo)
+
+        setPlaces(places)
     }
 
-    override fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) {
-        findNavController().navigate(R.id.event_location_fragment, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
+    private fun setupMap(mapInfo: MapInfo?) {
+        if (mapInfo != null) {
+            val lat = mapInfo.lat
+            val lon = mapInfo.lon
+            if (lat != null && lon != null) {
+                if (childFragmentManager.findFragmentByTag(MAP_TAG) == null) {
+                    childFragmentManager.beginTransaction()
+                            .replace(R.id.flMapContainer, mapFragment, MAP_TAG)
+                            .commitNow()
+                }
+
+                mapFragment.getMapAsync {
+                    it.clear()
+
+                    val latLng = LatLng(mapInfo.lat, mapInfo.lon)
+                    it.addMarker(MarkerOptions().position(latLng))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                }
+
+                flMapContainer.apply {
+                    updateLayoutParams {
+                        val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
+                        height = dh.roundToInt()
+                    }
+                }
+
+                btnShare.setOnClickListener { presenter.onShareClick() }
+                btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
+
+                llMapAction.isVisible = true
+            } else {
+                llMapAction.isVisible = false
+            }
+
+            val title = mapInfo.title
+            tvMapDescriptionTitle.apply {
+                text = title
+                isVisible = !title.isNullOrEmpty()
+            }
+
+            val description = mapInfo.description
+            tvMapDescription.apply {
+                text = description
+                isVisible = !description.isNullOrEmpty()
+            }
+
+            llMapContent.isVisible = true
+        } else {
+            llMapContent.isVisible = false
+        }
+    }
+
+    private fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray, page: Int) {
+        viewPager.apply {
+            adapter = PlacePagerAdapter(places, scrollPositions)
+            setCurrentItem(page, false)
+        }
+
+        pageIndicator.apply {
+            val pagesCount = places.size
+            isVisible = pagesCount > 1
+            count = pagesCount
+        }
+    }
+
+    override fun shareUrl(url: String) {
+        try {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.map_sharing)))
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.map_sharing_error, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun openUrl(url: String) {
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.map_route_error, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun layout() = R.layout.fragment_event_contacts
+
+    private inner class PlacePagerAdapter(
+            places: List<Place>,
+            private val scrollPositions: SparseIntArray
+    ) : SimpleRecyclerViewAdapter<Place>(places) {
+        override fun onBindItem(holder: ViewHolder, item: Place?, position: Int) {
+            val place = item!!
+            holder.apply {
+                ivScheme.apply {
+                    updateLayoutParams {
+                        height = imageHeight
+                        width = imageWidth
+                    }
+                    transitionName = place.image
+
+                    Picasso.get()
+                            .load(place.image)
+                            .error(R.drawable.ic_broken_image)
+                            .into(this)
+
+                    setOnClickListener { presenter.onImageClick(place, position) }
+                }
+
+                val title = place.name
+                tvDescriptionTitle.apply {
+                    text = title
+                    isVisible = !title.isNullOrEmpty()
+                }
+
+                val description = place.description
+                tvDescription.apply {
+                    text = description
+                    isVisible = !description.isNullOrEmpty()
+                }
+
+                scrollContainer.apply {
+                    val y = scrollPositions[position]
+                    doOnNextLayout { scrollTo(0, y) }
+                    setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                        presenter.onScrollPositionChange(scrollY, position)
+                    })
+                }
+            }
+        }
+
+        override fun getItemLayout(itemView: Int) = R.layout.item_building_scheme
+    }
 }

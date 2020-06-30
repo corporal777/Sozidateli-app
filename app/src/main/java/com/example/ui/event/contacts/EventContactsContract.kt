@@ -12,13 +12,26 @@ interface EventContactsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, canShowOnMap: Boolean)
+        fun setData(
+                phones: List<PhoneAffiliation>,
+                emails: List<EmailAffiliation>,
+                webLinks: List<String>,
+                socialLinks: List<String>,
+                address: String?,
+                place: String?,
+                mapInfo: MapInfo?,
+                places: Array<Place>?
+        )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showMap(eventName: String, mapInfo: MapInfo?, places: Array<Place>?)
+        fun shareUrl(url: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun openUrl(url: String)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onShowOnMapClick()
+        fun onShareClick()
+        fun onOpenRouteClick()
     }
 }

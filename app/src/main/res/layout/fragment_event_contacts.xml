@@ -1,21 +1,131 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:clipToPadding="false"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_profile_field_text" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_profile_field_text" />
+
+        <LinearLayout
+            android:id="@+id/llMapContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/flMapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/llMapAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/action_button_height"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnShare"
+                    android:layout_width="62dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_highlight"
+                    android:elevation="1dp"
+                    android:src="@drawable/ic_show_on_map"
+                    android:theme="@style/ViewBackgroundMapShare" />
+
+                <FrameLayout
+                    android:id="@+id/btnGoTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_highlight"
+                    android:elevation="0dp"
+                    android:theme="@style/ViewBackgroundAccent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        fontPath="fonts/Roboto-Medium.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:drawableStart="@drawable/ic_route"
+                        android:drawablePadding="12dp"
+                        android:gravity="center"
+                        android:text="@string/map_route"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        tools:ignore="MissingPrefix" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMapDescriptionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textSize="17sp"
+                tools:ignore="MissingPrefix"
+                tools:text="@string/event_map_tab_how_to_get" />
+
+            <TextView
+                android:id="@+id/tvMapDescription"
+                fontPath="fonts/Roboto-Light.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="20dp"
+                android:autoLink="all"
+                android:textSize="16sp"
+                tools:ignore="MissingPrefix"
+                tools:text="@tools:sample/lorem/random" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/flSchemeContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/building_scheme_bottom_gradient_height"
+                android:layout_gravity="bottom"
+                android:background="@drawable/bottom_gradient" />
+
+            <com.rd.PageIndicatorView
+                android:id="@+id/pageIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="20dp"
+                app:piv_padding="21dp"
+                app:piv_radius="5.3dp"
+                app:piv_selectedColor="@color/indicator_color_selected"
+                app:piv_unselectedColor="@color/indicator_color" />
+        </FrameLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
