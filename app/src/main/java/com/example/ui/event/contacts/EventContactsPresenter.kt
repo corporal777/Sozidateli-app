@@ -50,4 +50,9 @@ class EventContactsPresenter
         val mapInfo = this.mapInfo ?: return
         viewState.openUrl("${GOOGLE_MAP_ROUTE_URL}${mapInfo.lat},${mapInfo.lon}")
     }
+
+    override fun onOpenAddressClick() {
+        val mapInfo = this.mapInfo ?: return
+        viewState.openUrl("${GOOGLE_MAP_SHARE_URL}${mapInfo.lat},${mapInfo.lon}")
+    }
 }

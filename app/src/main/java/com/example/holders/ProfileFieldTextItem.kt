@@ -9,7 +9,7 @@ import removeUrlUnderline
 
 class ProfileFieldTextItem(
         private val title: String,
-        private val data: String
+        private val data: CharSequence
 ) : Item() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {

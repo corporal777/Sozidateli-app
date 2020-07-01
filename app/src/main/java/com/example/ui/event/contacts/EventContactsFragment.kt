@@ -4,18 +4,16 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.util.SparseIntArray
+import android.text.style.URLSpan
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.doOnNextLayout
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.core.widget.NestedScrollView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.adapters.SimpleRecyclerViewAdapter
-import com.example.adapters.ViewHolder
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.MapInfo
 import com.example.data.models.PhoneAffiliation
@@ -29,15 +27,10 @@ import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.fragment_building_scheme.*
 import kotlinx.android.synthetic.main.fragment_event_contacts.*
-import kotlinx.android.synthetic.main.fragment_event_contacts.pageIndicator
-import kotlinx.android.synthetic.main.fragment_event_contacts.viewPager
-import kotlinx.android.synthetic.main.item_building_scheme.*
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -103,19 +96,30 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext()))
             })
             addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
-            if (webLinks.isNotEmpty())
+            if (webLinks.isNotEmpty()) {
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n")))
-            if (socialLinks.isNotEmpty())
+            }
+            if (socialLinks.isNotEmpty()) {
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n")))
-            if (!address.isNullOrEmpty())
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_address), address))
-            if (!place.isNullOrEmpty())
+            }
+            if (!address.isNullOrEmpty()) {
+                val addressLink = object : URLSpan("") {
+                    override fun onClick(widget: View) {
+                        presenter.onOpenAddressClick()
+                    }
+                }
+                val addressClickable = address.toSpannable().apply {
+                    set(0, address.length, addressLink)
+                }
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable))
+            }
+            if (!place.isNullOrEmpty()) {
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place))
+            }
+
         })
 
         setupMap(mapInfo)
-
-        setPlaces(places)
     }
 
     private fun setupMap(mapInfo: MapInfo?) {
@@ -170,19 +174,6 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         }
     }
 
-    private fun setPlaces(places: List<Place>, scrollPositions: SparseIntArray, page: Int) {
-        viewPager.apply {
-            adapter = PlacePagerAdapter(places, scrollPositions)
-            setCurrentItem(page, false)
-        }
-
-        pageIndicator.apply {
-            val pagesCount = places.size
-            isVisible = pagesCount > 1
-            count = pagesCount
-        }
-    }
-
     override fun shareUrl(url: String) {
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -204,51 +195,4 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     }
 
     override fun layout() = R.layout.fragment_event_contacts
-
-    private inner class PlacePagerAdapter(
-            places: List<Place>,
-            private val scrollPositions: SparseIntArray
-    ) : SimpleRecyclerViewAdapter<Place>(places) {
-        override fun onBindItem(holder: ViewHolder, item: Place?, position: Int) {
-            val place = item!!
-            holder.apply {
-                ivScheme.apply {
-                    updateLayoutParams {
-                        height = imageHeight
-                        width = imageWidth
-                    }
-                    transitionName = place.image
-
-                    Picasso.get()
-                            .load(place.image)
-                            .error(R.drawable.ic_broken_image)
-                            .into(this)
-
-                    setOnClickListener { presenter.onImageClick(place, position) }
-                }
-
-                val title = place.name
-                tvDescriptionTitle.apply {
-                    text = title
-                    isVisible = !title.isNullOrEmpty()
-                }
-
-                val description = place.description
-                tvDescription.apply {
-                    text = description
-                    isVisible = !description.isNullOrEmpty()
-                }
-
-                scrollContainer.apply {
-                    val y = scrollPositions[position]
-                    doOnNextLayout { scrollTo(0, y) }
-                    setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-                        presenter.onScrollPositionChange(scrollY, position)
-                    })
-                }
-            }
-        }
-
-        override fun getItemLayout(itemView: Int) = R.layout.item_building_scheme
-    }
 }

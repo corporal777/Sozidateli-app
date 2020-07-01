@@ -33,5 +33,6 @@ interface EventContactsContract {
     interface Presenter : BaseContract.Presenter {
         fun onShareClick()
         fun onOpenRouteClick()
+        fun onOpenAddressClick()
     }
 }
