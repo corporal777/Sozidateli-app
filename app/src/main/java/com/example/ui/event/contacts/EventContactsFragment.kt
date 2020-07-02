@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.text.style.URLSpan
 import android.view.View
 import android.widget.Toast
 import androidx.core.text.set
@@ -22,6 +21,7 @@ import com.example.extensions.parsePhone
 import com.example.holders.ProfileFieldTextItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.util.ClickableSpan
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.SupportMapFragment
@@ -103,13 +103,11 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n")))
             }
             if (!address.isNullOrEmpty()) {
-                val addressLink = object : URLSpan("") {
-                    override fun onClick(widget: View) {
-                        presenter.onOpenAddressClick()
-                    }
+                val clickableSpan = ClickableSpan(drawUnderline = false) {
+                    presenter.onOpenAddressClick()
                 }
                 val addressClickable = address.toSpannable().apply {
-                    set(0, address.length, addressLink)
+                    set(0, address.length, clickableSpan)
                 }
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable))
             }
