@@ -15,6 +15,7 @@ class EventGroup(
         logo: String?,
         format: EventFormat?,
         organizationEmails: List<EmailAffiliation>?,
+        conferenceRegistrationClosed: Boolean,
         eventClickListener: EventStatusItem.OnEventClickListener,
         private val dataItem: Item
 ) : NestedGroup() {
@@ -28,6 +29,7 @@ class EventGroup(
             logo,
             format,
             organizationEmails,
+            conferenceRegistrationClosed,
             eventClickListener
     )
 

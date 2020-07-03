@@ -138,6 +138,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 eventData.name,
                 eventData.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                 eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
+                eventData.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
                 eventData.isFavorite ?: false,
                 { presenter.onChangeFavoriteClick() },
                 { eventData.organizationId?.let { presenter.onOrganizationClick(it) } }
@@ -154,6 +155,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData.backgroundImage,
                         eventData.takeFormat(),
                         null,
+                        eventData.conferenceRegistrationClosed,
                         eventClickListener,
                         aboutItem
                 ),
@@ -187,11 +189,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         flRegister.apply {
             val textRes: Int
             val clickAction: () -> Unit
-            if (eventData.conferenceRegistrationClosed) {
-                textRes = R.string.about_event_registration_closed
-                btnAction.isEnabled = false
-                clickAction = {}
-            } else if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
+            if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
                 isVisible = false
                 return@apply
             } else when (userRegistration) {
@@ -213,12 +211,20 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     clickAction = { presenter.onSelectEventClick() }
                 }
                 else -> {
-                    if (Event.isCanRegister(eventData.status, userRegistration)) {
-                        textRes = R.string.event_action_participate
-                        clickAction = { presenter.onGoToEventClick() }
-                    } else {
-                        isVisible = false
-                        return@apply
+                    when {
+                        eventData.conferenceRegistrationClosed -> {
+                            textRes = R.string.about_event_registration_closed
+                            btnAction.isEnabled = false
+                            clickAction = {}
+                        }
+                        Event.isCanRegister(eventData.status, userRegistration) -> {
+                            textRes = R.string.event_action_participate
+                            clickAction = { presenter.onGoToEventClick() }
+                        }
+                        else -> {
+                            isVisible = false
+                            return@apply
+                        }
                     }
                 }
             }

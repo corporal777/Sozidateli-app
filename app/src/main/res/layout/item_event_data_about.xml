@@ -96,6 +96,35 @@
                 tools:text="4 сентярбя - 7 октября 2019 г." />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llRegistrationFinishDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:orientation="horizontal">
+
+            <TextView
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_event_registration_finish"
+                android:textColor="@color/about_event_date"
+                android:textSize="14sp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvRegistrationFinishDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/about_event_date"
+                android:textSize="14sp"
+                tools:ignore="MissingPrefix"
+                tools:text="4 сентярбя 2000 г." />
+        </LinearLayout>
+
         <com.example.ui.views.UserSubscribeButton
             android:id="@+id/btnAction"
             android:layout_width="wrap_content"

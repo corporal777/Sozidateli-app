@@ -26,6 +26,7 @@ class EventStatusItem(
         private val logo: String?,
         private val format: EventFormat?,
         private val organizationEmails: List<EmailAffiliation>?,
+        private val conferenceRegistrationClosed: Boolean,
         private val onEventClickListener: OnEventClickListener
 ) : Item(itemId) {
 
@@ -127,13 +128,22 @@ class EventStatusItem(
                     textColor = Color.WHITE
                 }
                 else -> {
-                    if (Event.isCanRegister(status, userRegistration)) {
-                        textBackground = R.drawable.background_event_action
-                        textRes = R.string.event_action_participate
-                        clickAction = { onEventClickListener.onActionRegister(eventId) }
-                    } else {
-                        isVisible = false
-                        return@apply
+                    when {
+                        conferenceRegistrationClosed -> {
+                            textRes = R.string.about_event_registration_closed
+                            btnAction.isEnabled = false
+                            textBackground = R.drawable.background_event_action
+                            clickAction = {}
+                        }
+                        Event.isCanRegister(status, userRegistration) -> {
+                            textBackground = R.drawable.background_event_action
+                            textRes = R.string.event_action_participate
+                            clickAction = { onEventClickListener.onActionRegister(eventId) }
+                        }
+                        else -> {
+                            isVisible = false
+                            return@apply
+                        }
                     }
                 }
             }

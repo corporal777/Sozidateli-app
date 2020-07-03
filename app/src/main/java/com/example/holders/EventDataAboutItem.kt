@@ -6,6 +6,14 @@ import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_data_about.*
+import kotlinx.android.synthetic.main.item_event_data_about.llDate
+import kotlinx.android.synthetic.main.item_event_data_about.llRegistrationFinishDate
+import kotlinx.android.synthetic.main.item_event_data_about.llTime
+import kotlinx.android.synthetic.main.item_event_data_about.tvEventDate
+import kotlinx.android.synthetic.main.item_event_data_about.tvEventName
+import kotlinx.android.synthetic.main.item_event_data_about.tvEventTime
+import kotlinx.android.synthetic.main.item_event_data_about.tvRegistrationFinishDate
+import kotlinx.android.synthetic.main.item_register_event_header.*
 import setOnClickListener
 
 class EventDataAboutItem(
@@ -14,6 +22,7 @@ class EventDataAboutItem(
         private val eventName: String?,
         private val time: String?,
         private val date: String?,
+        private val finishDate: String?,
         private var isFavorite: Boolean,
         private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
         private val organizationClickListener: () -> Unit
@@ -44,6 +53,9 @@ class EventDataAboutItem(
             } else {
                 llDate.isVisible = false
             }
+
+            tvRegistrationFinishDate.text = finishDate
+            llRegistrationFinishDate.isVisible = finishDate.isNullOrEmpty().not()
 
             btnAction.apply {
                 setAction(getAction())

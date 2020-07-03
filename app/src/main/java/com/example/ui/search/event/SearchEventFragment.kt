@@ -97,6 +97,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 itemData.backgroundImage,
                 itemData.takeFormat(),
                 itemData.organization?.emails,
+                itemData.conferenceRegistrationClosed,
                 onEventClickListener,
                 EventDataListItem(
                         -itemData.id.toLong(),

@@ -67,7 +67,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                     event.name,
                     event.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
                     event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
-                    event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
+                    null,
                     event.ratingHeadline,
                     event.ratingSubtitle
             ))
