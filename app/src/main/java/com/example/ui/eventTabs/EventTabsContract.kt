@@ -33,6 +33,9 @@ interface EventTabsContract {
         fun showAccount()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showNotifications()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setBackClickHandlerEnabled(enabled: Boolean)
     }
 
@@ -45,6 +48,7 @@ interface EventTabsContract {
 
         fun onMenuChatClick()
         fun onMenuAccountClick()
+        fun onMenuNotificationsClick()
 
         fun onHandleBackCLick()
     }

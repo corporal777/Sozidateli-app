@@ -27,6 +27,7 @@ import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.notifications.NotificationsView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.BottomNavigationViewHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -169,11 +170,23 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
                 .build())
     }
 
+    override fun showNotifications() {
+        findNavController().navigate(EventTabsFragmentDirections.eventToNotifications())
+    }
+
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         toolbarContentActionBar.apply {
-            addRightView(AccountView(requireContext()).also { it.setOnClickListener { presenter.onMenuAccountClick() } })
-            addRightView(ChatView(requireContext()).also { it.setOnClickListener { presenter.onMenuChatClick() } })
+            addRightView(AccountView(requireContext()).also {
+                it.canShowBadge = false
+                it.setOnClickListener { presenter.onMenuAccountClick() }
+            })
+            addRightView(ChatView(requireContext()).also {
+                it.setOnClickListener { presenter.onMenuChatClick() }
+            })
+            addRightView(NotificationsView(requireContext()).also {
+                it.setOnClickListener { presenter.onMenuNotificationsClick() }
+            })
         }
     }
 

@@ -231,6 +231,9 @@
         <action
             android:id="@+id/main_to_profile"
             app:destination="@id/profile_fragment" />
+        <action
+            android:id="@+id/event_to_notifications"
+            app:destination="@id/notifications_fragment" />
     </fragment>
 
     <activity

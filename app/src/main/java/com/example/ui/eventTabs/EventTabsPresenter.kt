@@ -141,6 +141,8 @@ class EventTabsPresenter
 
     override fun onMenuAccountClick() = viewState.showAccount()
 
+    override fun onMenuNotificationsClick() = viewState.showNotifications()
+
     override fun onDestroy() {
         super.onDestroy()
         eventData.clear()
