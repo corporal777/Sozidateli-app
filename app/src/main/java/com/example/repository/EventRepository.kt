@@ -17,6 +17,7 @@ interface EventRepository {
     fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>>
     fun setEventRating(eventId: String, body: RequestBody): Completable
+    fun getEventRating(eventId: String): Single<EventInfo>
     fun getEventActivity(eventId: String): Maybe<EventActivity>
     fun getEventInfo(eventId: String): Maybe<EventInfo>
     fun setDefaultEvent(eventId: String): Completable

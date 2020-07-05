@@ -57,6 +57,8 @@ data class EventData(
         val ratingSubtitle: String?,
         @SerializedName("rating_start_at")
         val ratingStartAt: Int?,
+        @SerializedName("rating_files")
+        val ratingFiles: List<EventRatingFile>?,
         val format: EventFormat?,
         @SerializedName("format_custom")
         val formatCustom: String?,

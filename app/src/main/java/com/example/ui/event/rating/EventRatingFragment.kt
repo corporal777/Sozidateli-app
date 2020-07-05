@@ -93,9 +93,30 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                     is EventRegisterFieldData.Passport ->
                         RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
                     is EventRegisterFieldData.File ->
-                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
+                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) {
+                            presenter.onAddFileClick(it)
+                        }.createFieldItemFrom(it)
                 }
             })
+
+            val filesGroup = Section().apply {
+                setHideWhenEmpty(true)
+                setHeader(EventRegistrationTitleItem(getString(R.string.event_rating_documents)))
+            }
+
+            val files = event.ratingFiles?.mapNotNull {
+                val link = it.fileLink
+                if (link != null) {
+                    EventRegistrationPersonalDataFileItem(link, it.fileName, personalDataFileClickListener)
+                } else {
+                    null
+                }
+            }
+
+            files?.let {
+                filesGroup.addAll(it)
+                add(filesGroup)
+            }
         }
     }
 

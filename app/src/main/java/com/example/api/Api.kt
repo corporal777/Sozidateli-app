@@ -227,6 +227,9 @@ interface Api {
     @POST("/v1/events/{eventId}/rating/set")
     fun setEventRating(@Path("eventId") eventId: String, @Body body: RequestBody): Completable
 
+    @GET("/v1/events/{eventId}/rating/get")
+    fun getEventRating(@Path("eventId") eventId: String): Single<ApiResponse<EventInfo>>
+
     @GET("/v1/events/{eventId}")
     fun getEventInfo(@Path("eventId") eventId: String): Maybe<ApiResponse<EventInfo>>
 

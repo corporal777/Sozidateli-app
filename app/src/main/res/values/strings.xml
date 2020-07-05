@@ -592,6 +592,7 @@
 
     <string name="event_rating_title">Анкета оценки</string>
     <string name="event_rating_success">Оценка отправлена</string>
+    <string name="event_rating_documents">Документы</string>
 
     <string name="password_confirm_description">Для того, чтобы подтвердить номер телефона, введите пароль, который указывали при регистрации</string>
     <string name="password_confirm_hint">Пароль</string>

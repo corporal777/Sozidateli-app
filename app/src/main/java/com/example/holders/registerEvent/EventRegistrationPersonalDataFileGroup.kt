@@ -33,6 +33,10 @@ class EventRegistrationPersonalDataFileGroup(
     override fun getGroupCount() = 2
 }
 
-fun Group.withEventRegistrationPersonalDataFile(url: String?, description: String?, onFileClickListener: OnPersonalDataFileClickListener): Group {
+fun Group.withEventRegistrationPersonalDataFile(
+        url: String?,
+        description: String?,
+        onFileClickListener: OnPersonalDataFileClickListener
+): Group {
     return EventRegistrationPersonalDataFileGroup(url, description, this, onFileClickListener)
 }

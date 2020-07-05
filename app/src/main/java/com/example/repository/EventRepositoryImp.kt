@@ -96,6 +96,10 @@ class EventRepositoryImp
         return call(api.setEventRating(eventId, body))
     }
 
+    override fun getEventRating(eventId: String): Single<EventInfo> {
+        return call(api.getEventRating(eventId))
+    }
+
     override fun getEventByCode(code: String): Single<QrEvent> {
         return call(api.getEventByCode(code))
     }
@@ -143,29 +147,33 @@ class EventRepositoryImp
     }
 
     override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
-        return Single.zip(getEventInfo(eventId).toSingle(), getEventRatingForm(eventId), BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
-            val fieldsData = fields.mapNotNull { field ->
-                when (field.type) {
-                    EventRegisterField.Type.STRING,
-                    EventRegisterField.Type.TEXT_AREA,
-                    EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, null)
-                    EventRegisterField.Type.DATE,
-                    EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, null)
-                    EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, null)
-                    EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, null)
-                    EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, null)
-                    EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, null)
-                    EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, null)
-                    EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, null)
-                    else -> null
-                }
-            }
+        return Single.zip(
+                getEventRating(eventId),
+                getEventRatingForm(eventId),
+                BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
+                    val fieldsData = fields.mapNotNull { field ->
+                        when (field.type) {
+                            EventRegisterField.Type.STRING,
+                            EventRegisterField.Type.TEXT_AREA,
+                            EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, null)
+                            EventRegisterField.Type.DATE,
+                            EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, null)
+                            EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, null)
+                            EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, null)
+                            EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, null)
+                            EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, null)
+                            EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, null)
+                            EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, null)
+                            else -> null
+                        }
+                    }
 
-            return@BiFunction EventRatingData(
-                    eventInfo.event,
-                    fieldsData
-            )
-        })
+                    return@BiFunction EventRatingData(
+                            eventInfo.event,
+                            fieldsData
+                    )
+                }
+        )
     }
 
     override fun addToFavorite(eventId: String): Completable {
