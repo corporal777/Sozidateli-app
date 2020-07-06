@@ -60,7 +60,12 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
         recyclerView.apply { adapter = this@EventRatingFragment.adapter }
     }
 
-    override fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>) {
+    override fun setFields(
+            event: EventData,
+            fieldsData: List<EventRegisterFieldData<*>>,
+            rating: Int
+    ) {
+        val editable = rating <= 0
         section.apply {
             setHeader(RegisterEventHeaderItem(
                     -100L,
@@ -72,26 +77,26 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                     event.ratingSubtitle
             ))
 
-            setFooter(saveButtonItem)
+            if (editable) setFooter(saveButtonItem)
 
-            add(RatingItem { presenter.onRatingChange(it) })
+            add(RatingItem(rating, presenter::onRatingChange))
 
             addAll(fieldsData.map {
                 when (it) {
                     is EventRegisterFieldData.String ->
-                        RegisterEventStringItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventStringItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Date ->
-                        RegisterEventDateItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventDateItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.SelectBox ->
-                        EventRegistrationSelectBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        EventRegistrationSelectBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventRadioBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventCheckboxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Boolean ->
-                        RegisterEventBooleanItem(it, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
+                        RegisterEventBooleanItem(it, editable, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
                     is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
+                        RegisterEventPassportItem(it, editable, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
                     is EventRegisterFieldData.File ->
                         EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) {
                             presenter.onAddFileClick(it)

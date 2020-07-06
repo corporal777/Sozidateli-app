@@ -56,7 +56,8 @@ class EventRatingPresenter
                     viewState.apply {
                         fieldsData = it.fieldsData
                         invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
-                        setFields(it.event, fieldsData)
+                        rating = it.ratingValue ?: 0
+                        setFields(it.event, fieldsData, rating)
                         checkDataValid()
                     }
                 }

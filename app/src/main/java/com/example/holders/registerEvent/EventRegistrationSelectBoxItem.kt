@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.item_register_event_selector.*
 
 open class EventRegistrationSelectBoxItem(
         private val fieldData: EventRegisterFieldData<String>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
@@ -15,6 +16,7 @@ open class EventRegistrationSelectBoxItem(
         val values = field.values ?: emptyList()
         viewHolder.apply {
             autoCompleteTextView.apply {
+                isEnabled = editable
                 initDropDownView(
                         this,
                         values,

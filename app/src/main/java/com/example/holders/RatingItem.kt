@@ -7,13 +7,20 @@ import kotlinx.android.synthetic.main.item_rating.*
 import kotlin.math.roundToInt
 
 class RatingItem(
+        private var rating: Int,
         private val onRatingChange: (rating: Int) -> Unit
 ) : Item() {
 
+    private val disabled = rating > 0
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-                onRatingChange(rating.roundToInt())
+        viewHolder.ratingBar.apply {
+            rating = this@RatingItem.rating.toFloat()
+            setIsIndicator(disabled)
+            setOnRatingBarChangeListener { _, rating, _ ->
+                val ratingInt = rating.roundToInt()
+                this@RatingItem.rating = ratingInt
+                onRatingChange(ratingInt)
             }
         }
     }

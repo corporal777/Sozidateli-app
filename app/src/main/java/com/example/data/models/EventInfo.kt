@@ -10,6 +10,8 @@ data class EventInfo(
         val pages: List<EventPage>,
         @SerializedName("user_registration")
         val userRegistration: EventUserRegistration?,
-        @SerializedName("user_rating")
-        var userRating: EventRatingData?
+        @SerializedName("value")
+        val ratingValue: Int?,
+        @SerializedName("fields")
+        val responseFields: List<EventRegisterResponseField?>?
 )

@@ -112,38 +112,24 @@ class EventRepositoryImp
         val loadFields = getEventRegisterField(eventId)
         val loadRegister = getEventRegister(eventId)
 
-        return Single.zip(loadFields, loadRegister, BiFunction<EventRegisterForm, EventRegisterResponse, EventRegisterData> { fields, registration ->
-            val findRegistrationDataValue: (EventRegisterField) -> JsonElement? = { field -> registration.fields?.find { field.id == it?.id }?.value }
-
-            var group: EventRegisterField? = null
-            val fieldsData = fields.fields?.mapNotNull { field ->
-                when (field.type) {
-                    EventRegisterField.Type.STRING,
-                    EventRegisterField.Type.TEXT_AREA,
-                    EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, findRegistrationDataValue(field).fromJson<String>())
-                    EventRegisterField.Type.DATE,
-                    EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, findRegistrationDataValue(field).fromJson<String>())
-                    EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, findRegistrationDataValue(field).fromJson<Set<String>>())
-                    EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, findRegistrationDataValue(field).fromJson<String>())
-                    EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, findRegistrationDataValue(field).fromJson<String>())
-                    EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, findRegistrationDataValue(field).fromJson(EventFile.Deserializer()))
-                    EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, findRegistrationDataValue(field).fromJson<Boolean>())
-                    EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, findRegistrationDataValue(field).fromJson<EventPassport>())
-                    EventRegisterField.Type.GROUP -> {
-                        group = field
-                        null
+        return Single.zip(
+                loadFields,
+                loadRegister,
+                BiFunction<EventRegisterForm, EventRegisterResponse, EventRegisterData> { fields, registration ->
+                    val fieldsData = createFieldsData(fields.fields, registration.fields)
+                    val group: EventRegisterField? = fields.fields?.find {
+                        it.type == EventRegisterField.Type.GROUP
                     }
-                }
-            }
 
-            EventRegisterData(
-                    registration.event,
-                    group,
-                    registration.group_id,
-                    fields.groups ?: emptyList(),
-                    fieldsData ?: emptyList()
-            )
-        })
+                    EventRegisterData(
+                            registration.event,
+                            group,
+                            registration.group_id,
+                            fields.groups ?: emptyList(),
+                            fieldsData ?: emptyList()
+                    )
+                }
+        )
     }
 
     override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
@@ -151,29 +137,67 @@ class EventRepositoryImp
                 getEventRating(eventId),
                 getEventRatingForm(eventId),
                 BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
-                    val fieldsData = fields.mapNotNull { field ->
-                        when (field.type) {
-                            EventRegisterField.Type.STRING,
-                            EventRegisterField.Type.TEXT_AREA,
-                            EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(field, null)
-                            EventRegisterField.Type.DATE,
-                            EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(field, null)
-                            EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(field, null)
-                            EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(field, null)
-                            EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(field, null)
-                            EventRegisterField.Type.FILE -> EventRegisterFieldData.File(field, null)
-                            EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(field, null)
-                            EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(field, null)
-                            else -> null
-                        }
-                    }
-
+                    val fieldsData = createFieldsData(fields, eventInfo.responseFields)
                     return@BiFunction EventRatingData(
-                            eventInfo.event,
-                            fieldsData
+                            event = eventInfo.event,
+                            fieldsData = fieldsData ?: emptyList(),
+                            ratingValue = eventInfo.ratingValue
                     )
                 }
         )
+    }
+
+    private fun createFieldsData(
+            fields: List<EventRegisterField>?,
+            responseField: List<EventRegisterResponseField?>?
+    ): List<EventRegisterFieldData<*>>? {
+        return fields?.mapNotNull { field ->
+            when (field.type) {
+                EventRegisterField.Type.STRING,
+                EventRegisterField.Type.TEXT_AREA,
+                EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.DATE,
+                EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<Set<String>>()
+                )
+                EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())
+                )
+                EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<Boolean>()
+                )
+                EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<EventPassport>()
+                )
+                else -> null
+            }
+        }
+    }
+
+    private fun findRegistrationDataValue(
+            field: EventRegisterField,
+            fields: List<EventRegisterResponseField?>?
+    ): JsonElement? {
+        return fields?.find { field.id == it?.id }?.value
     }
 
     override fun addToFavorite(eventId: String): Completable {

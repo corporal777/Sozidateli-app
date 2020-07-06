@@ -16,6 +16,7 @@ import onTextChanged
 
 open class RegisterEventDateItem(
         private val fieldData: EventRegisterFieldData<String>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
@@ -30,6 +31,7 @@ open class RegisterEventDateItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             textInputEditText.apply {
+                isEnabled = editable
                 val valueString = fieldData.value
                 val date = valueString?.let { defaultServerDateFormatter.parse(it) }
                 val value: String?
@@ -53,6 +55,8 @@ open class RegisterEventDateItem(
                 setText(value)
                 textWatcher = onTextChanged(textChangeListener)
             }
+
+            textInputLayout.isEnabled = editable
         }
     }
 

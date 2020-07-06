@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.item_register_event_checkbox.*
 
 open class RegisterEventCheckboxItem(
         private val fieldData: EventRegisterFieldData<Set<String>>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
@@ -17,31 +18,44 @@ open class RegisterEventCheckboxItem(
         val values = field.values ?: emptyList()
         viewHolder.apply {
             checkGroup.apply {
+                isEnabled = editable
                 removeAllViews()
                 values.forEachIndexed { index, value ->
-                    addView((LayoutInflater.from(context).inflate(R.layout.item_checkbox, this, false) as CheckBox).apply {
-                        id = index
-                        text = value
-
-                        setOnCheckedChangeListener { _, isChecked ->
-                            val valuesData = if (fieldData.value == null) {
-                                val set = mutableSetOf<String>()
-                                fieldData.value = set
-                                set
-                            } else {
-                                fieldData.value as MutableSet<String>
-                            }
-
-                            if (isChecked) valuesData.add(value)
-                            else valuesData.remove(value)
-                            onDataChange()
-                        }
-
-                        fieldData.value?.let {
-                            if (it.contains(value)) isChecked = true
-                        }
-                    }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                    addView(
+                            createCheckbox(index, value),
+                            ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                    )
                 }
+            }
+        }
+    }
+
+    private fun ViewGroup.createCheckbox(index: Int, value: String): CheckBox {
+        val checkbox = (LayoutInflater.from(context)
+                .inflate(R.layout.item_checkbox, this, false) as CheckBox)
+        return checkbox.apply {
+            id = index
+            text = value
+
+            setOnCheckedChangeListener { _, isChecked ->
+                val valuesData = if (fieldData.value == null) {
+                    val set = mutableSetOf<String>()
+                    fieldData.value = set
+                    set
+                } else {
+                    fieldData.value as MutableSet<String>
+                }
+
+                if (isChecked) valuesData.add(value)
+                else valuesData.remove(value)
+                onDataChange()
+            }
+
+            fieldData.value?.let {
+                if (it.contains(value)) isChecked = true
             }
         }
     }
