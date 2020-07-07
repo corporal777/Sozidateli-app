@@ -38,9 +38,9 @@
     <color name="badge_attention_high">#FF0000</color>
 
     <color name="action_button_enabled_background_color">#bd9b72</color>
-    <color name="action_button_disabled_background_color">#d1d3d4</color>
+    <color name="action_button_disabled_background_color">#E7E6E6</color>
     <color name="action_button_enabled_text_color">#FFFFFF</color>
-    <color name="action_button_disabled_text_color">#d1d3d4</color>
+    <color name="action_button_disabled_text_color">#000000</color>
     <color name="action_button_change_screen_background">#EFEFF0</color>
 
     <color name="chat_list_user_name">#232326</color>

@@ -198,7 +198,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     override fun setActionButton(eventData: EventData, userRegistration: Event.RegistrationStatus?) {
         flRegister.apply {
             val textRes: Int
-            val clickAction: () -> Unit
+            val clickAction: (() -> Unit)?
             if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
                 isVisible = false
                 return@apply
@@ -224,8 +224,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     when {
                         eventData.conferenceRegistrationClosed -> {
                             textRes = R.string.about_event_registration_closed
-                            btnAction.isEnabled = false
-                            clickAction = {}
+                            clickAction = null
                         }
                         Event.isCanRegister(eventData.status, userRegistration) -> {
                             textRes = R.string.event_action_participate
@@ -242,7 +241,12 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             isVisible = true
             btnAction.apply {
                 text = getString(textRes)
-                setOnClickListener(clickAction)
+                if (clickAction != null) {
+                    setOnClickListener(clickAction)
+                } else {
+                    setOnClickListener(null)
+                    isEnabled = false
+                }
             }
         }
 

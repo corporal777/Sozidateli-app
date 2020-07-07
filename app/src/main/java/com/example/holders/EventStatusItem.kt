@@ -101,7 +101,7 @@ class EventStatusItem(
             val textBackground: Int
             var textColor = Color.BLACK
             val textRes: Int
-            val clickAction: () -> Unit
+            val clickAction: (() -> Unit)?
             if (status == null || status == Event.Status.CONFERENCE_ENDS) {
                 isVisible = false
                 return@apply
@@ -131,9 +131,8 @@ class EventStatusItem(
                     when {
                         conferenceRegistrationClosed -> {
                             textRes = R.string.about_event_registration_closed
-                            btnAction.isEnabled = false
                             textBackground = R.drawable.background_event_action
-                            clickAction = {}
+                            clickAction = null
                         }
                         Event.isCanRegister(status, userRegistration) -> {
                             textBackground = R.drawable.background_event_action
@@ -152,7 +151,14 @@ class EventStatusItem(
             setTextColor(textColor)
             background = ContextCompat.getDrawable(context, textBackground)
             isVisible = true
-            setOnClickListener { clickAction() }
+
+            if (clickAction != null) {
+                setOnClickListener { clickAction() }
+            } else {
+                setOnClickListener(null)
+                isClickable = false
+                isEnabled = false
+            }
         }
     }
 

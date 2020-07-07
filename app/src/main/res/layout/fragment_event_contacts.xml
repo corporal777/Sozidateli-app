@@ -27,14 +27,14 @@
             android:id="@+id/llMapContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:layout_marginStart="@dimen/profile_data_margin"
+            android:layout_marginEnd="@dimen/profile_data_margin"
             android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/flMapContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="331dp" />
 
             <LinearLayout
                 android:id="@+id/llMapAction"

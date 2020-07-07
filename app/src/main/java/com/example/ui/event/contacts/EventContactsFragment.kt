@@ -139,13 +139,6 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                     it.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
                 }
 
-                flMapContainer.apply {
-                    updateLayoutParams {
-                        val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
-                        height = dh.roundToInt()
-                    }
-                }
-
                 btnShare.setOnClickListener { presenter.onShareClick() }
                 btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
 

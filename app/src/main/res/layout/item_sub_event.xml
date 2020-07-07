@@ -29,6 +29,19 @@
         tools:text="9:00 - 10:00" />
 
     <TextView
+        android:id="@+id/tvMskTime"
+        fontPath="fonts/Roboto-Bold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sub_event_time_msk"
+        android:textSize="12sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="@+id/tvTime"
+        app:layout_constraintStart_toStartOf="@+id/tvTime"
+        app:layout_constraintTop_toBottomOf="@+id/tvTime"
+        tools:ignore="MissingPrefix" />
+
+    <TextView
         android:id="@+id/tvStatus"
         fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="0dp"
