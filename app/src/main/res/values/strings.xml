@@ -112,7 +112,7 @@
 
     <string name="about_event_contacts">Контакты мероприятия</string>
     <string name="about_event_speakers">Спикеры мероприятия</string>
-    <string name="about_event_rate">Оценить</string>
+    <string name="about_event_rate">Оценить мероприятие</string>
     <string name="about_event_write_to_organization">Написать организатору</string>
     <string name="about_event_write_to_organization_title">Сообщение организатору</string>
     <string name="about_event_write_to_organization_message">Ответ будет направлен Вам на e-mail, указанный в профиле.</string>

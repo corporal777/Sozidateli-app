@@ -11,6 +11,7 @@ import onTextChanged
 
 class RegisterEventStringItem(
         private val fieldData: EventRegisterFieldData<String>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
@@ -24,6 +25,7 @@ class RegisterEventStringItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             textInputEditText.apply {
+                isEnabled = editable
                 when (field.type) {
                     EventRegisterField.Type.STRING ->
                         inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES

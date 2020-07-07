@@ -98,19 +98,19 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             addAll(fieldsData.map {
                 when (it) {
                     is EventRegisterFieldData.String ->
-                        RegisterEventStringItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventStringItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Date ->
-                        RegisterEventDateItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventDateItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.SelectBox ->
-                        EventRegistrationSelectBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        EventRegistrationSelectBoxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventRadioBoxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventCheckboxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Boolean ->
-                        RegisterEventBooleanItem(it, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
+                        RegisterEventBooleanItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it, withTitle = false)
                     is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventPassportItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.File ->
                         EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
                 }

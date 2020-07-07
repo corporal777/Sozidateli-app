@@ -134,7 +134,6 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     override fun setEventData(
             eventData: EventData,
             userRegistration: Event.RegistrationStatus?,
-            userRating: EventRatingData?,
             pages: List<EventPage>,
             partners: List<EventParther>,
             showContacts: Boolean
@@ -167,17 +166,24 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         aboutItem
                 ),
                 Section().apply {
-                    if ((eventData.status == Event.Status.CONFERENCE_ENDS ||
-                                    eventData.status == Event.Status.IN_ARCHIVE) &&
-                            eventData.ratingStartAt != null && userRating?.created == null &&
-                            userRegistration == Event.RegistrationStatus.APPROVED) {
-                        add(EventPageItem(-100, getString(R.string.about_event_rate)) { presenter.onRateClick() })
-                    }
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
+
+                    val hasRating = (eventData.status == Event.Status.CONFERENCE_ENDS ||
+                            eventData.status == Event.Status.IN_ARCHIVE) &&
+                            eventData.ratingStartAt != null &&
+                            userRegistration == Event.RegistrationStatus.APPROVED
+
+                    val hasPages = pages.isNotEmpty()
                     add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
-                        hasBottomPadding = pages.isNotEmpty()
+                        hasBottomPadding = !hasRating && hasPages
                     })
+
+                    if (hasRating) {
+                        add(EventPageItem(-100, getString(R.string.about_event_rate), presenter::onRateClick).apply {
+                            hasBottomPadding = hasPages
+                        })
+                    }
 
                     addAll(pages.mapIndexed { index, item ->
                         EventPageItem(item.id, item.menu) { presenter.onPageClick(item) }.apply {

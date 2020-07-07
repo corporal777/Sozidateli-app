@@ -4,5 +4,5 @@ data class EventRatingData(
         val event: EventData,
         val fieldsData: List<EventRegisterFieldData<*>>,
         val created: String? = null,
-        val value: Int = 0
+        val ratingValue: Int? = 0
 )

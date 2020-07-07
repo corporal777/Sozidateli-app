@@ -17,6 +17,7 @@ import java.util.*
 
 class RegisterEventPassportItem(
         private val fieldData: EventRegisterFieldData<EventPassport>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
@@ -31,6 +32,7 @@ class RegisterEventPassportItem(
             val passport = fieldData.value ?: EventPassport().apply { fieldData.value = this }
 
             etSerial.apply {
+                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.series)
                 serialTextWatcher = onTextChanged {
@@ -40,6 +42,7 @@ class RegisterEventPassportItem(
             }
 
             etNumber.apply {
+                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.number)
                 numberTextWatcher = onTextChanged {
@@ -49,6 +52,7 @@ class RegisterEventPassportItem(
             }
 
             etAgency.apply {
+                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.agency)
                 agencyTextWatcher = onTextChanged {
@@ -59,12 +63,14 @@ class RegisterEventPassportItem(
 
             val date = passport.date?.let { defaultServerDateFormatter.parse(it) }
             tilDate.apply {
+                isEnabled = editable
                 initAsDatePicker(date, maxDate = Date()) { year, month, day ->
                     String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
                 }
             }
 
             etDate.apply {
+                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(date?.let { defaultDateFormatter.format(it) })
                 dateTextWatcher = onTextChanged {
@@ -74,6 +80,7 @@ class RegisterEventPassportItem(
             }
 
             etCode.apply {
+                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.code)
                 codeTextWatcher = onTextChanged {

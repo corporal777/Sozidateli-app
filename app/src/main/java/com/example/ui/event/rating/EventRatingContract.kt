@@ -14,7 +14,7 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface EventRatingContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>)
+        fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>, rating: Int)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)

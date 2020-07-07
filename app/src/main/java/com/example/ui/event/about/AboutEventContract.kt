@@ -14,7 +14,6 @@ interface AboutEventContract {
         fun setEventData(
                 eventData: EventData,
                 userRegistration: Event.RegistrationStatus?,
-                userRating: EventRatingData?,
                 pages: List<EventPage>,
                 partners: List<EventParther>,
                 showContacts: Boolean

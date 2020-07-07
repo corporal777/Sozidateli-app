@@ -47,7 +47,6 @@ class AboutEventPresenter
             setEventData(
                     event,
                     eventInfo.userRegistration?.status,
-                    eventInfo.userRating,
                     eventInfo.pages,
                     eventInfo.partners,
                     hasContacts()

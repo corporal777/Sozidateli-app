@@ -10,12 +10,14 @@ import kotlinx.android.synthetic.main.item_checkbox.*
 
 open class RegisterEventBooleanItem(
         private val fieldData: EventRegisterFieldData<Boolean>,
+        private val editable: Boolean = true,
         onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem(fieldData, onDataChange) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             checkbox.apply {
+                isEnabled = editable
                 text = field.name
                 isChecked = fieldData.value ?: false
                 setOnCheckedChangeListener { _, isChecked ->
