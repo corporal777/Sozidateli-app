@@ -37,9 +37,11 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
     @ProvidePresenter
     fun providePresenter(): SearchTabsPresenter = presenterProvider.get().apply {
         searchInterface = this@SearchTabsFragment.searchInterface.apply {
-            initWithFilter = SearchTabsFragmentArgs.fromBundle(arguments!!).filter
+            initWithFilter = SearchTabsFragmentArgs.fromBundle(requireArguments()).filter
         }
     }
+
+    private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private val searchInterface = SearchInterface()
 
@@ -54,6 +56,7 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             selectTab(position)
+            setupToolbarIcons(position)
         }
     }
 
@@ -67,6 +70,7 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
                 override fun getCount() = fragments.size
             }
             selectTab(currentItem)
+            setupToolbarIcons(currentItem)
         }
 
         etSearch.apply {
@@ -112,11 +116,19 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-        toolbarContentActionBar.apply {
-            addRightView(ToolbarButton(requireContext()).apply {
-                setImageResource(R.drawable.ic_scan)
-                setOnClickListener { presenter.onScanClick() }
-            })
+        this.toolbarContentActionBar = toolbarContentActionBar
+        setupToolbarIcons(viewPager.currentItem)
+    }
+
+    private fun setupToolbarIcons(position: Int) {
+        toolbarContentActionBar?.apply {
+            removeAllRightViews()
+            if (position == 0) {
+                addRightView(ToolbarButton(requireContext()).apply {
+                    setImageResource(R.drawable.ic_scan)
+                    setOnClickListener { presenter.onScanClick() }
+                })
+            }
         }
     }
 
