@@ -1,6 +1,9 @@
 package com.example.data.models
 
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.parseToDate
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Event(
         @SerializedName("event_id")
@@ -43,9 +46,16 @@ data class Event(
         @SerializedName("is_favorite")
         var isInFavorites: Boolean,
         val email: List<EmailAffiliation>?,
+        @SerializedName("conference_requests_receiving_date_end")
+        val conferenceRegistrationFinishDate: String?,
         @SerializedName("conference_requests_receiving_closed")
         val conferenceRegistrationClosed: Boolean
 ) {
+
+    val isRegistrationClosed: Boolean
+        get() = conferenceRegistrationClosed ||
+                conferenceRegistrationFinishDate?.parseToDate(defaultServerDateFormatter)
+                        ?.before(Date()) ?: false
 
     fun isCanRegister() = isCanRegister(status, userRegistration)
 
@@ -60,10 +70,13 @@ data class Event(
     enum class RegistrationStatus {
         @SerializedName("pending")
         PENDING,
+
         @SerializedName("approved")
         APPROVED,
+
         @SerializedName("declined")
         DECLINED,
+
         @SerializedName("cancelled")
         CANCELLED
     }

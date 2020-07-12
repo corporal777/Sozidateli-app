@@ -1,6 +1,9 @@
 package com.example.data.models
 
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.parseToDate
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class EventData(
         @SerializedName("event_id")
@@ -68,7 +71,12 @@ data class EventData(
         val conferenceRegistrationFinishDate: String?,
         @SerializedName("conference_requests_receiving_closed")
         val conferenceRegistrationClosed: Boolean
-)
+) {
+    val isRegistrationClosed: Boolean
+        get() = conferenceRegistrationClosed ||
+                conferenceRegistrationFinishDate?.parseToDate(defaultServerDateFormatter)
+                        ?.before(Date()) ?: false
+}
 
 fun EventData.createMapInfo(): MapInfo? {
     val lat = placeLat

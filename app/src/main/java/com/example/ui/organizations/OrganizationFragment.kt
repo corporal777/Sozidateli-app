@@ -202,7 +202,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                             it.backgroundImage,
                             it.takeFormat(),
                             it.organization?.emails,
-                            it.conferenceRegistrationClosed,
+                            it.isRegistrationClosed,
                             onEventClickListener,
                             EventDataListItem(
                                     -it.id.toLong(),

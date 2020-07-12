@@ -161,7 +161,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData.backgroundImage,
                         eventData.takeFormat(),
                         null,
-                        eventData.conferenceRegistrationClosed,
+                        eventData.isRegistrationClosed,
                         eventClickListener,
                         aboutItem
                 ),
@@ -228,7 +228,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 }
                 else -> {
                     when {
-                        eventData.conferenceRegistrationClosed -> {
+                        eventData.isRegistrationClosed -> {
                             textRes = R.string.about_event_registration_closed
                             clickAction = null
                         }
