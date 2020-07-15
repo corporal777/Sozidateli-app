@@ -6,14 +6,6 @@ import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_data_about.*
-import kotlinx.android.synthetic.main.item_event_data_about.llDate
-import kotlinx.android.synthetic.main.item_event_data_about.llRegistrationFinishDate
-import kotlinx.android.synthetic.main.item_event_data_about.llTime
-import kotlinx.android.synthetic.main.item_event_data_about.tvEventDate
-import kotlinx.android.synthetic.main.item_event_data_about.tvEventName
-import kotlinx.android.synthetic.main.item_event_data_about.tvEventTime
-import kotlinx.android.synthetic.main.item_event_data_about.tvRegistrationFinishDate
-import kotlinx.android.synthetic.main.item_register_event_header.*
 import setOnClickListener
 
 class EventDataAboutItem(
