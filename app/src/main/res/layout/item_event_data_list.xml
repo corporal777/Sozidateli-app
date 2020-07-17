@@ -98,7 +98,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:maxLines="1"
             android:textColor="@color/event_item_address_text"
             android:textSize="@dimen/event_item_date_text_size"
             android:transitionName="eventDate"

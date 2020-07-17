@@ -15,12 +15,20 @@ class EventDataListItem(
         private val conferenceStart: String?,
         private val conferenceActionStart: String?
 ) : Item(itemId) {
+
+    companion object {
+        private const val ADDRESS_SPLIT_DIVIDER = ","
+
+        private const val SPACE = " "
+        private const val SPACE_NO_BREAK = "\u00A0"
+    }
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventAddress.apply {
                 val startTime = conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
-                val textList = listOfNotNull(address.let { if (it.isNullOrBlank()) null else it }, startTime)
-                text = textList.joinToString(" • ")
+                val textList = listOfNotNull(formatAddress(), startTime)
+                text = textList.joinToString("$SPACE_NO_BREAK•$SPACE_NO_BREAK")
             }
             tvEventLabel.text = name
 
@@ -42,6 +50,12 @@ class EventDataListItem(
                 text = result
             }
         }
+    }
+
+    private fun formatAddress(): String? {
+        return if (address.isNullOrEmpty()) null
+        else address.split(ADDRESS_SPLIT_DIVIDER)
+                .joinToString { it.trim().replace(SPACE, SPACE_NO_BREAK) }
     }
 
     override fun getLayout() = R.layout.item_event_data_list
