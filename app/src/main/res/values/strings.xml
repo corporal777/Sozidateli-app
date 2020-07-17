@@ -368,6 +368,9 @@
     <string name="profile_password_old">Старый пароль</string>
     <string name="profile_password_new">Новый пароль</string>
     <string name="profile_password_hint">********</string>
+    <string name="profile_password_old_hint">Введите старый пароль</string>
+    <string name="profile_password_new_hint">Введите новый пароль</string>
+    <string name="profile_password_new_repeat_hint">Повторите ввод пароля</string>
     <string name="profile_confirm_new_password">Подтвердите новый пароль</string>
     <string name="profile_attached_file">Файлы рекоммендаций</string>
     <string name="profile_attached_file_name">Название</string>
@@ -529,7 +532,7 @@
     <string name="organization_main_data">Общая информация</string>
     <string name="organization_peoples">Сотрудники (%d)</string>
     <string name="organization_peoples_watch">Смотреть всех</string>
-    <string name="organization_events">Мероприятия (%d)</string>
+    <string name="organization_events">Мероприятия организации (%d)</string>
     <string name="organization_events_watch">Смотреть все мероприятия</string>
     <string name="organization_links">Ссылки</string>
     <string name="organization_sn_links">Соцсети</string>

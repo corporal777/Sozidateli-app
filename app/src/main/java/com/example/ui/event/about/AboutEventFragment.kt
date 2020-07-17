@@ -142,7 +142,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 -eventData.id.toLong(),
                 eventData.organization?.name,
                 eventData.name,
-                eventData.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
+//                eventData.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
+                null,
                 eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
                 eventData.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
                 eventData.isFavorite ?: false,
@@ -161,7 +162,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData.backgroundImage,
                         eventData.takeFormat(),
                         null,
-                        eventData.conferenceRegistrationClosed,
+                        eventData.isRegistrationClosed,
                         eventClickListener,
                         aboutItem
                 ),
@@ -228,7 +229,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 }
                 else -> {
                     when {
-                        eventData.conferenceRegistrationClosed -> {
+                        eventData.isRegistrationClosed -> {
                             textRes = R.string.about_event_registration_closed
                             clickAction = null
                         }
