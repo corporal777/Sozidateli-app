@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -12,6 +13,7 @@ import com.example.data.models.Document
 import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -32,11 +34,15 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
 
     @ProvidePresenter
     fun providePresenter(): PagePresenter = presenterProvider.get().apply {
-        PageFragmentArgs.fromBundle(arguments!!).apply {
+        args.apply {
             dataEventId = eventId
             dataPageId = pageId
         }
     }
+
+    private val args: PageFragmentArgs by navArgs()
+
+    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
@@ -47,7 +53,15 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         }
     }
 
-    override fun setContent(logo: String?, title: String?, content: String?, documents: List<Document>?) {
+    override fun setContent(
+            logo: String?,
+            contentTitle: String,
+            title: String?,
+            content: String?,
+            documents: List<Document>?
+    ) {
+        toolbarContentActionBar.title = contentTitle
+
         ivLogo.apply {
             clipToOutline = true
             val visible = !logo.isNullOrEmpty()
@@ -60,7 +74,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 isVisible = true
-                setHtml(title, HtmlHttpImageGetter (this))
+                setHtml(title, HtmlHttpImageGetter(this))
             }
         }
 
@@ -69,7 +83,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 isVisible = true
-                setHtml(content, HtmlHttpImageGetter (this))
+                setHtml(content, HtmlHttpImageGetter(this))
             }
         }
 
@@ -80,6 +94,11 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
     override fun openLinkInBrowser(link: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         startActivity(browserIntent)
+    }
+
+    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+        super.setupToolbarContent(toolbarContentActionBar)
+        this.toolbarContentActionBar = toolbarContentActionBar
     }
 
     override fun layout() = R.layout.fragment_page

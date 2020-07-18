@@ -9,7 +9,13 @@ import com.example.ui.base.BaseContract
 interface PageContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setContent(logo: String?, title: String?, content: String?, documents: List<Document>?)
+        fun setContent(
+                logo: String?,
+                contentTitle: String,
+                title: String?,
+                content: String?,
+                documents: List<Document>?
+        )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openLinkInBrowser(link: String)

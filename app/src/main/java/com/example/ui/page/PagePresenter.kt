@@ -26,7 +26,7 @@ class PagePresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.setContent(it.picture, it.title, it.content, it.files)
+                    viewState.setContent(it.picture, it.menu, it.title, it.content, it.files)
                 }
     }
 
