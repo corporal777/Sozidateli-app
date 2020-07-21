@@ -36,6 +36,10 @@ class EventRepositoryImp
         return call(api.eventRegister(eventId, body))
     }
 
+    override fun eventRegisterCheck(eventId: String): Single<EventRegisterCheckFields> {
+        return call(api.eventRegisterCheck(eventId))
+    }
+
     override fun eventRegisterCancel(eventId: String): Completable {
         return call(api.eventRegisterCancel(eventId))
     }

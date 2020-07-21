@@ -61,6 +61,7 @@
 
     <dimen name="action_button_height">42dp</dimen>
     <dimen name="action_button_margin_vertical">20dp</dimen>
+    <dimen name="action_button_margin_horizontal">20dp</dimen>
 
     <dimen name="event_registration_form_title_margin_top">14dp</dimen>
     <dimen name="event_registration_form_title_margin_bottom">4dp</dimen>

@@ -32,6 +32,8 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
+import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -309,6 +311,17 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
+    }
+
+    override fun showRegistrationFieldsRequest(fields: List<String>) {
+        EventRegistrationProfileFieldsDialog(requireContext(), fields) {
+            presenter.onShowEditProfileClick()
+        }
+                .show()
+    }
+
+    override fun showEditProfile(id: String) {
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun hideWriteToOrganizationForm() {

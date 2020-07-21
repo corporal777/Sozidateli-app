@@ -35,6 +35,8 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
+import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -313,6 +315,17 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
     override fun changeScrollY(scroll: Int) {
         scrollContainer.scrollTo(0, scroll)
+    }
+
+    override fun showRegistrationFieldsRequest(fields: List<String>) {
+        EventRegistrationProfileFieldsDialog(requireContext(), fields) {
+            presenter.onShowEditProfileClick()
+        }
+                .show()
+    }
+
+    override fun showEditProfile(id: String) {
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun layout() = R.layout.fragment_organization

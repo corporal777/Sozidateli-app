@@ -1,8 +1,10 @@
 package com.example.ui.event.list
 
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
+import com.example.data.models.EventRegisterCheckField
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -21,6 +23,7 @@ import withLoadingDialog
 import java.net.UnknownHostException
 
 abstract class EventListPresenter<V : EventListContract.View>(
+        private val appData: AppData,
         private val eventData: UserEventData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
@@ -68,7 +71,32 @@ abstract class EventListPresenter<V : EventListContract.View>(
         else pagination.invalidate()
     }
 
-    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
+    override fun onActionRegister(event: String) {
+        compositeDisposable += eventRepository.eventRegisterCheck(event)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(event, null)
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(event, it.fields)
+                        }
+                )
+    }
+
+    private fun checkRegistrationFields(event: String, fields: List<EventRegisterCheckField>?) {
+        val requiredFields = fields?.filter { !it.filled }
+        if (requiredFields == null) {
+            viewState.showEventRequest(event)
+        } else {
+            viewState.showRegistrationFieldsRequest(requiredFields.mapNotNull { it.title })
+        }
+    }
+
+    override fun onShowEditProfileClick() {
+        viewState.showEditProfile(appData.getUser().user_id.toString())
+    }
 
     override fun onActionCancel(event: String) {
         compositeDisposable += eventRepository.eventRegisterCancel(event)

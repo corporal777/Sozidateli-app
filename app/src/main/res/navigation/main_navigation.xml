@@ -455,6 +455,9 @@
         android:id="@+id/user_fragment"
         android:name="com.example.ui.user.UserFragment"
         tools:layout="@layout/fragment_user">
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/user_to_chat"
             app:destination="@id/chat_fragment"
@@ -468,9 +471,6 @@
         <action
             android:id="@+id/user_to_organization"
             app:destination="@id/organization_fragment" />
-        <argument
-            android:name="userId"
-            app:argType="string" />
     </fragment>
 
     <fragment

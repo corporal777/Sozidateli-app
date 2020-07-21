@@ -1,6 +1,7 @@
 package com.example.data.models
 
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.isSameDay
 import com.example.extensions.parseToDate
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -70,12 +71,12 @@ data class EventData(
         @SerializedName("conference_requests_receiving_date_end")
         val conferenceRegistrationFinishDate: String?,
         @SerializedName("conference_requests_receiving_closed")
-        val conferenceRegistrationClosed: Boolean
+        val conferenceRegistrationClosed: Boolean,
+        @SerializedName("can_register")
+        val canRegister: Boolean
 ) {
     val isRegistrationClosed: Boolean
-        get() = conferenceRegistrationClosed ||
-                conferenceRegistrationFinishDate?.parseToDate(defaultServerDateFormatter)
-                        ?.before(Date()) ?: false
+        get() = conferenceRegistrationClosed || !canRegister
 }
 
 fun EventData.createMapInfo(): MapInfo? {

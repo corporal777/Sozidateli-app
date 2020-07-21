@@ -1,6 +1,7 @@
 package com.example.ui.event.about
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.*
 import com.example.repository.EventRepository
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @InjectViewState
 class AboutEventPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val eventRepository: EventRepository,
         private val userEventData: UserEventData,
         private val userRepository: UserRepository
@@ -43,7 +45,6 @@ class AboutEventPresenter
         this.event = eventInfo
         val event = eventInfo.event
         viewState.apply {
-            //            setEventName(event.name)
             setEventData(
                     event,
                     eventInfo.userRegistration?.status,
@@ -104,7 +105,30 @@ class AboutEventPresenter
     }
 
     override fun onGoToEventClick() {
-        viewState.showEventRequest(eventId)
+        compositeDisposable += eventRepository.eventRegisterCheck(eventId)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(null)
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(it.fields)
+                        }
+                )
+    }
+
+    private fun checkRegistrationFields(fields: List<EventRegisterCheckField>?) {
+        val requiredFields = fields?.filter { !it.filled }
+        if (requiredFields == null) {
+            viewState.showEventRequest(eventId)
+        } else {
+            viewState.showRegistrationFieldsRequest(requiredFields.mapNotNull { it.title })
+        }
+    }
+
+    override fun onShowEditProfileClick() {
+        viewState.showEditProfile(appData.getUser().user_id.toString())
     }
 
     override fun onSelectEventClick() {

@@ -610,4 +610,7 @@
     <string name="phone_confirm_confirm">Подтвердить</string>
     <string name="phone_confirm_resend">Отправить код повторно</string>
     <string name="phone_confirm_timer">Повторная отправка кода доступна через %s</string>
+
+    <string name="event_register_check_fields">Чтобы подать заявку на участие в мероприятии, Вам необходимо заполнить поля профиля:</string>
+    <string name="event_register_check_click_field">профиля</string>
 </resources>

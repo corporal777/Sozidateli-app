@@ -58,6 +58,12 @@ interface OrganizationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showSearch(format: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showRegistrationFieldsRequest(fields: List<String>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEditProfile(id: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -82,5 +88,6 @@ interface OrganizationContract {
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
         fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
+        fun onShowEditProfileClick()
     }
 }

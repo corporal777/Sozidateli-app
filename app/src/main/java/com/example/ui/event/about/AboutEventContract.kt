@@ -75,6 +75,12 @@ interface AboutEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showRegistrationFieldsRequest(fields: List<String>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEditProfile(id: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -96,5 +102,7 @@ interface AboutEventContract {
         fun onActionCancel()
         fun onActionWriteToOrganization()
         fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
+
+        fun onShowEditProfileClick()
     }
 }

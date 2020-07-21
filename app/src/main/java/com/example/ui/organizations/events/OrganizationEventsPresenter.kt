@@ -1,6 +1,7 @@
 package com.example.ui.organizations.events
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.di.Connectivity
@@ -15,11 +16,12 @@ import javax.inject.Inject
 @InjectViewState
 class OrganizationEventsPresenter
 @Inject constructor(
+        appData: AppData,
         eventData: UserEventData,
         private val eventRepository: EventRepository,
         userRepository: UserRepository,
         @Connectivity connectivity: Observable<Boolean>
-) : EventListPresenter<OrganizationEventsContract.View>(eventData, eventRepository, userRepository, connectivity), OrganizationEventsContract.Presenter {
+) : EventListPresenter<OrganizationEventsContract.View>(appData, eventData, eventRepository, userRepository, connectivity), OrganizationEventsContract.Presenter {
 
     lateinit var organizationId: String
 

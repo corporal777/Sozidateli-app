@@ -21,6 +21,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
+import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
@@ -157,6 +159,17 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     override fun showSearch(format: Int) {
         val filter = SearchFilter.Event().apply { this.format = format }
         findNavController().navigate(R.id.search_tabs_fragment, SearchTabsFragmentArgs.Builder(filter).build().toBundle())
+    }
+
+    override fun showRegistrationFieldsRequest(fields: List<String>) {
+        EventRegistrationProfileFieldsDialog(requireContext(), fields) {
+            presenter.onShowEditProfileClick()
+        }
+                .show()
+    }
+
+    override fun showEditProfile(id: String) {
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list

@@ -4,10 +4,7 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.Optional
-import com.example.data.models.OrganizationData
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
@@ -128,7 +125,32 @@ class OrganizationPresenter
                 }
     }
 
-    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
+    override fun onActionRegister(event: String) {
+        compositeDisposable += eventRepository.eventRegisterCheck(event)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(event, null)
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(event, it.fields)
+                        }
+                )
+    }
+
+    private fun checkRegistrationFields(event: String, fields: List<EventRegisterCheckField>?) {
+        val requiredFields = fields?.filter { !it.filled }
+        if (requiredFields == null) {
+            viewState.showEventRequest(event)
+        } else {
+            viewState.showRegistrationFieldsRequest(requiredFields.mapNotNull { it.title })
+        }
+    }
+
+    override fun onShowEditProfileClick() {
+        viewState.showEditProfile(appData.getUser().user_id.toString())
+    }
 
     override fun onActionCancel(event: String) {
         compositeDisposable += eventRepository.eventRegisterCancel(event)

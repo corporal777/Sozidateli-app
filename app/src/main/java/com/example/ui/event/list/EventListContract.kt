@@ -1,5 +1,6 @@
 package com.example.ui.event.list
 
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EmailAffiliation
@@ -36,6 +37,12 @@ interface EventListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showSearch(format: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showRegistrationFieldsRequest(fields: List<String>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEditProfile(id: String)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
@@ -50,5 +57,7 @@ interface EventListContract {
         fun onShowFilterClick(format: Int)
 
         fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
+
+        fun onShowEditProfileClick()
     }
 }
