@@ -36,8 +36,13 @@ class EventRepositoryImp
         return call(api.eventRegister(eventId, body))
     }
 
-    override fun eventRegisterCheck(eventId: String): Single<EventRegisterCheckFields> {
+    override fun eventRegisterCheck(eventId: String): Single<List<EventRegisterCheckField>> {
         return call(api.eventRegisterCheck(eventId))
+                .map {
+                    it.fields?.filter { field ->
+                        !field.filled
+                    } ?: emptyList()
+                }
     }
 
     override fun eventRegisterCancel(eventId: String): Completable {

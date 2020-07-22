@@ -110,20 +110,20 @@ class AboutEventPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onError = {
-                            checkRegistrationFields(null)
+                            checkRegistrationFields(emptyList())
                         },
                         onSuccess = {
-                            checkRegistrationFields(it.fields)
+                            checkRegistrationFields(it)
                         }
                 )
     }
 
-    private fun checkRegistrationFields(fields: List<EventRegisterCheckField>?) {
-        val requiredFields = fields?.filter { !it.filled }
-        if (requiredFields == null) {
+    private fun checkRegistrationFields(fields: List<EventRegisterCheckField>) {
+        val filtered = fields.mapNotNull { it.title }
+        if (fields.isEmpty()) {
             viewState.showEventRequest(eventId)
         } else {
-            viewState.showRegistrationFieldsRequest(requiredFields.mapNotNull { it.title })
+            viewState.showRegistrationFieldsRequest(filtered)
         }
     }
 
