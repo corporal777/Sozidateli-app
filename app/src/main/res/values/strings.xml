@@ -579,8 +579,8 @@
     <string name="event_register_closed_error">Регистрация закрыта</string>
     <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
     <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистрации на мероприятие</string>
-    <string name="event_register_sent_moderate_title">Ваша заявка успешно подана!</string>
-    <string name="event_register_sent_moderate_message">Организатор рассмотрит Вашу заявку в ближайшее время</string>
+    <string name="event_register_sent_moderate_title">Ваша заявка на участие в мероприятии отправлена.</string>
+    <string name="event_register_sent_moderate_message">Организаторы рассмотрят ее в ближайшее время.</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
     <string name="event_register_sent_message">Теперь Вы можете перейти к мероприятию и составить свой календарь событий</string>
