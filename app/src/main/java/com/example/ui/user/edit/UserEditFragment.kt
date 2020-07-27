@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
 import android.widget.EditText
@@ -192,11 +193,23 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showChangeEmailComplete(email: String) {
+        val supportEmail = getString(R.string.support_email).toSpannable()
+        Linkify.addLinks(supportEmail, Linkify.EMAIL_ADDRESSES)
+
+        val message = SpannableStringBuilder(getString(R.string.email_change_msg).format(email))
+                .append(" ")
+                .append(supportEmail)
+                .append(".")
+
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.email_change_title)
-                .setMessage(String.format(getString(R.string.email_change_msg, email)))
+                .setMessage(message)
                 .setPositiveButton(R.string.ok, null)
                 .show()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.let {
+                        it.movementMethod = BetterLinkMovementMethod.getInstance()
+                    }
+                }
     }
 
     override fun showPhoneConfirm(phone: String) {

@@ -479,7 +479,7 @@
     <string name="favorites_events_subevents">Избранные события</string>
 
     <string name="email_change_title">Email изменен</string>
-    <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылкой для подтверждения. После подтверждения email в личном кабинете изменится.</string>
+    <string name="email_change_msg">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо для подтверждения изменения e-mail.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
 
     <string name="email_change_confirm_success">Email успешно изменен</string>
     <string name="email_change_confirm_error">Ошибка при подтверждении email</string>
