@@ -380,10 +380,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     override fun showPasswordChangeComplete() {
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
                 .setMessage(R.string.profile_password_change_complete)
                 .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
                 .show()
     }
 
