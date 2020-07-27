@@ -7,9 +7,6 @@ import com.example.ui.base.BaseContract
 interface EmailConfirmContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEmail(email: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setTimeLeft(seconds: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)

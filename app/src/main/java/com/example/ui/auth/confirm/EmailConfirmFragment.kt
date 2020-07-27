@@ -9,6 +9,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
+import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -27,7 +28,7 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
 
     @ProvidePresenter
     fun providePresenter(): EmailConfirmPresenter = presenterProvider.get().apply {
-        EmailConfirmFragmentArgs.fromBundle(arguments!!).also {
+        navArgs<EmailConfirmFragmentArgs>().value.also {
             email = it.email
             password = it.password ?: ""
             snUser = it.snUser
@@ -49,16 +50,6 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
         }
 
         ibClose.setOnClickListener { presenter.onCloseClick() }
-    }
-
-    override fun setEmail(email: String) {
-        val message = SpannableString(String.format(getString(R.string.auth_register_confirm_email_message, email))).apply {
-            val start = indexOf(email)
-            val finish = start + email.length
-            setSpan(StyleSpan(Typeface.BOLD), start, finish, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-
-        tvMessage.text = message
     }
 
     override fun setTimeLeft(seconds: Int) {

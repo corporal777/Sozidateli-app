@@ -59,8 +59,8 @@
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
-    <string name="auth_register_confirm_email_title">Пожалуйста, подтвердите адрес электронной почты</string>
-    <string name="auth_register_confirm_email_message">На %s было отправлено письмо со ссылкой и кодом подтверждения.\n\nПожалуйста, перейдите по ссылке в письме.</string>
+    <string name="auth_register_confirm_email_title">Ура, Вы почти достигли своей цели!</string>
+    <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки support@sozidateli.ru</string>
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_input_first_name_hint">Укажите ваше имя</string>
@@ -480,7 +480,7 @@
     <string name="favorites_events_subevents">Избранные события</string>
 
     <string name="email_change_title">Email изменен</string>
-    <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылка для подтверждения. После подтверждения email в личном кабинете изменится.</string>
+    <string name="email_change_msg">На почтовый ящик %s отправлено письмо со ссылкой для подтверждения. После подтверждения email в личном кабинете изменится.</string>
 
     <string name="email_change_confirm_success">Email успешно изменен</string>
     <string name="email_change_confirm_error">Ошибка при подтверждении email</string>

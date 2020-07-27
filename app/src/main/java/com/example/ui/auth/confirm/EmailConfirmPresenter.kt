@@ -30,7 +30,6 @@ class EmailConfirmPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
-        viewState.setEmail(email)
         startTimer()
         checkConfirmed()
     }
