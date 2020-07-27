@@ -85,7 +85,7 @@ class ProfileDataEducationEditItem(
                     error = resources.getString(R.string.profile_education_finish_error)
                 }
                 if (!isOrganizationValid()) tilInstitution.apply {
-                    error = resources.getString(R.string.profile_edit_empty_field_error)
+                    error = resources.getString(R.string.profile_educate_institution_empty_error)
                 }
                 if (!isSpecialityValid()) tilSpeciality.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)

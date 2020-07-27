@@ -341,7 +341,7 @@
     <string name="profile_city_hint">Москва</string>
     <string name="profile_sn">Социальные сети</string>
     <string name="profile_sn_hint">Ссылка на профиль в соцсети</string>
-    <string name="profile_sn_add">Добавить еще ссылку</string>
+    <string name="profile_sn_add">Добавить соцсеть</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>
     <string name="profile_degrees_level">Ученая степень или звание</string>
@@ -382,11 +382,12 @@
     <string name="profile_gender_female">Женский</string>
     <string name="profile_gender_not_selected">Не выбрано</string>
     <string name="profile_educate_speciality">Специальность</string>
-    <string name="profile_educate_institution">Учебное заведение</string>
+    <string name="profile_educate_institution">Образовательная организация</string>
+    <string name="profile_educate_institution_empty_error">Введите образовательную организацию</string>
     <string name="profile_work_organization">Организация</string>
     <string name="profile_work_position">Должность</string>
     <string name="profile_work_description">Описание</string>
-    <string name="profile_social_project_name">Место работы</string>
+    <string name="profile_social_project_name">Организация</string>
     <string name="profile_social_project_role">Должность</string>
     <string name="profile_social_project_description">Описание</string>
     <string name="profile_email">E-mail</string>
@@ -413,12 +414,9 @@
     <string name="profile_edit_name_and_photo">ФИО и фото</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
-    <string name="profile_edit_user_surname">Фамилия</string>
-    <string name="profile_edit_user_surname_hint">Иванов</string>
-    <string name="profile_edit_user_name">Имя</string>
-    <string name="profile_edit_user_name_hint">Иван</string>
-    <string name="profile_edit_user_middle_name">Отчество</string>
-    <string name="profile_edit_user_middle_name_hint">Иванович</string>
+    <string name="profile_edit_user_surname">Укажите Вашу фамилию</string>
+    <string name="profile_edit_user_name">Укажите Ваше имя"</string>
+    <string name="profile_edit_user_middle_name">Укажите Ваше отчество</string>
     <string name="profile_edit_user_no_middle_name">Нет отчества</string>
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
@@ -426,9 +424,7 @@
     <string name="profile_edit_email_hint">E-mail</string>
     <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
     <string name="profile_edit_request_error">Ошибка обновления данных</string>
-    <string name="profile_edit_additional_notes_data">Это поле нужно заполнить, если Вы являетесь членом команды проекта, подаваемого на конкурс президентских грантов.
-\nЗдесь Вы можете указать дополнительную информацию о себе: рассказать о своих достижениях, прикрепить файлы со сканированными копиями своих грамот, дипломов или рекомендательных писем, добавить ссылки на Ваши публикации и другие материалы.
-\nТакже Вы можете указать любую другую информацию, которая поможет экспертам конкурса убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта.</string>
+    <string name="profile_edit_additional_notes_data">В данном разделе профиля Вы можете поделиться дополнительной информацией о себе:\n\n- рассказать о своих достижениях, заслугах, об участии в коллегиальных органах;\n- прикрепить грамоты, дипломы, благодарственные или рекомендательные письма и другие документы, подтверждающие результаты Вашей работы;\n- добавить ссылки на публикации и другие материалы о Вас и Вашей работе в СМИ;\n- указать любую другую информацию о Вашей деятельности.\nОбращаем внимание, что данный раздел является очень важным при подаче заявки на конкурс президентских грантов, поскольку эти сведения могут помочь экспертам убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта.</string>
     <string name="profile_edit_additional_data_why">Зачем заполнять это поле?</string>
     <string name="profile_edit_additional_data_rename_file">Новое название файла</string>
     <string name="profile_edit_confirm_password">Подтвердить номер</string>

@@ -36,8 +36,7 @@
             android:layout_height="wrap_content"
             app:endIconMode="custom"
             app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:helperText="@string/profile_phone_number_must_be_in_international_format">
+            app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMobilePhone"
@@ -88,8 +87,7 @@
             android:layout_height="wrap_content"
             app:endIconMode="custom"
             app:errorEnabled="true"
-            app:errorIconDrawable="@null"
-            app:helperText="@string/profile_phone_number_must_be_in_international_format">
+            app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWorkPhone"
