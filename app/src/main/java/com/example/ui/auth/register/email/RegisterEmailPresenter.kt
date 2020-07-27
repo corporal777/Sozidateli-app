@@ -110,15 +110,13 @@ class RegisterEmailPresenter
     }
 
     private fun register(email: String, firstName: String, lastName: String, password: String) {
-//        compositeDisposable += authRepository.register(email, password, firstName, lastName)
-//                .withCheckInternetConnectivity()
-//                .performOnBackgroundOutOnMain()
-//                .withLoadingDialog(viewState)
-//                .subscribeSimple {
-//                    viewState.showEmailConfirmation(email, password)
-//                }
-
-        viewState.showEmailConfirmation(email, password)
+        compositeDisposable += authRepository.register(email, password, firstName, lastName)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.showEmailConfirmation(email, password)
+                }
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
