@@ -1,11 +1,7 @@
 package com.example.ui.auth.confirm
 
 import android.content.res.ColorStateList
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -41,6 +37,9 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val supportEmail = getString(R.string.support_email)
+        val description = getString(R.string.auth_register_confirm_email_message).format(supportEmail)
+        tvMessage.text = description
         btnResend.apply {
             setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),

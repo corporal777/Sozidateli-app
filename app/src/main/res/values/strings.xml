@@ -60,7 +60,7 @@
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
     <string name="auth_hint_password_strong_3">-Не менее 1 символа</string>
     <string name="auth_register_confirm_email_title">Ура, Вы почти достигли своей цели!</string>
-    <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки support@sozidateli.ru</string>
+    <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_input_first_name_hint">Укажите ваше имя</string>
@@ -312,7 +312,7 @@
 
     <string name="recovery_password_title">Восстановление пароля</string>
     <string name="recovery_password_btn">Восстановить</string>
-    <string name="recovery_confirm_email_message">На почтовый ящик %s отправлена инструкция по восстановлению пароля.</string>
+    <string name="recovery_confirm_email_message">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо с инструкцией по восстановлению пароля.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
     <string name="recovery_set_password_title">Укажите новый пароль</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
 
@@ -423,7 +423,7 @@
     <string name="profile_edit_user_no_middle_name">Нет отчества</string>
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
     <string name="profile_edit_name_disabled_title">Изменить ФИО</string>
-    <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста, обратитесь в службу технической поддержки: support@sozidateli.ru</string>
+    <string name="profile_edit_name_disabled_message">Чтобы изменить фамилию, имя и отчество, пожалуйста, обратитесь в службу технической поддержки: %s</string>
     <string name="profile_edit_email_hint">E-mail</string>
     <string name="profile_edit_email_invalid">Введите правильный e-mail</string>
     <string name="profile_edit_request_error">Ошибка обновления данных</string>
@@ -592,7 +592,7 @@
     <string name="event_register_available_extensions">Допустимые форматы: %s</string>
 
     <string name="support_email_title">Запрос тех. поддержки</string>
-    <string name="support_email">support@sozidateli-houseofapps.ru</string>
+    <string name="support_email">support@sozidateli.ru</string>
 
     <string name="event_rating_title">Анкета оценки</string>
     <string name="event_rating_success">Оценка отправлена</string>

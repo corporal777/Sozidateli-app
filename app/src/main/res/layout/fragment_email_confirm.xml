@@ -62,14 +62,14 @@
         android:autoLink="email"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="2dp"
-        android:text="@string/auth_register_confirm_email_message"
         android:textColor="@color/auth_title_text"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        tools:ignore="MissingPrefix" />
+        tools:ignore="MissingPrefix"
+        tools:text="@string/auth_register_confirm_email_message" />
 
     <TextView
         android:id="@+id/tvTimer"

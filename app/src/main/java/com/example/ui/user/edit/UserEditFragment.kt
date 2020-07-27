@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.View
 import android.widget.EditText
@@ -16,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +39,7 @@ import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_user_edit.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -108,15 +108,20 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showDisabledMainInputInfo() {
-        val message = SpannableString(getString(R.string.profile_edit_name_disabled_message))
+        val supportEmail = getString(R.string.support_email)
+        val message = getString(R.string.profile_edit_name_disabled_message).format(supportEmail).toSpannable()
         Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-        val dialog = AlertDialog.Builder(requireContext())
+
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.profile_edit_name_disabled_title)
                 .setMessage(message)
                 .setPositiveButton(R.string.ok, null)
                 .show()
-
-        (dialog.findViewById(android.R.id.message) as? TextView)?.movementMethod = LinkMovementMethod.getInstance()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.let {
+                        it.movementMethod = BetterLinkMovementMethod.getInstance()
+                    }
+                }
     }
 
     override fun showTakePictureChooser() {
