@@ -18,7 +18,6 @@
     <string name="content_description_vk">Vk</string>
     <string name="content_description_ok">Одноклассники</string>
     <string name="content_description_close">Закрыть</string>
-    <string name="content_description_email_or_phone">E-mail или номер телефона</string>
 
     <string name="events_tabs_title">Мероприятия</string>
     <string name="tab_recommended_title">Что посетить?</string>
@@ -48,7 +47,7 @@
     <string name="auth_or_login">Или войдите,\nесли у вас уже есть аккаунт</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
-    <string name="auth_login">E-mail или номер телефона</string>
+    <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
     <string name="auth_action_login">Войти</string>
     <string name="auth_login_with_email">с помощью вашей электронной почты</string>
