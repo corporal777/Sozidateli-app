@@ -16,7 +16,9 @@ import javax.inject.Provider
 
 class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, ToolbarFragment {
 
-    override val title: String? = null
+    override val title: String? by lazy {
+        getString(R.string.status_profile_title_set)
+    }
 
     val args: PasswordConfirmFragmentArgs by navArgs()
 

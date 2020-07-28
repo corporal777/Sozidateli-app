@@ -432,7 +432,6 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     override fun showBlockConfirmation() {
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.user_ban_confirmation_title)
-                .setMessage(R.string.user_ban_confirmation_message)
                 .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockConfirm() }
                 .setNegativeButton(R.string.cancel, null)
                 .show()

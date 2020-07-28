@@ -334,9 +334,7 @@ class ChatPresenter
     }
 
     override fun onAcceptChatClick() {
-        val recipient = chat?.user?.user_id?.toString() ?: return
         compositeDisposable += chatRepository.chatAccept(chatId)
-                .andThen(haChat.sendMessage(chatId, Message.Type.SERVICE, CHAT_SERVICE_MESSAGE_ACCEPT, recipient, createMessageAdditionalData()))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.showChatInput(true) }, {})

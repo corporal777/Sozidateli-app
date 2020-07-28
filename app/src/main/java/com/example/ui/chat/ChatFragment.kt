@@ -198,7 +198,6 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     override fun showChatBlockConfirmation() {
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.user_ban_confirmation_title)
-                .setMessage(R.string.user_ban_confirmation_message)
                 .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
                 .setNegativeButton(R.string.cancel, null)
                 .show()

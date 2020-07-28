@@ -17,7 +17,9 @@ import javax.inject.Provider
 
 class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarFragment {
 
-    override val title: String? = null
+    override val title: String? by lazy {
+        getString(R.string.status_profile_title_set)
+    }
 
     override fun layout() = R.layout.fragment_confirm_phone
 

@@ -31,11 +31,12 @@
 
     <string name="organizations_favorites">Избранное</string>
     <string name="organizations_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке организаций</string>
+    <string name="events_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке мероприятий</string>
 
     <string name="event_status_approved">Участие одобрено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
     <string name="event_status_finished">Мероприятие завершено</string>
-    <string name="event_status_decline">Заявка отклонена</string>
+    <string name="event_status_decline">Заявка не подтверждена</string>
     <string name="event_action_show_event">Перейти в мероприятие</string>
     <string name="event_action_write_to_organisation">Написать организатору</string>
     <string name="event_action_participate">Участвовать</string>
@@ -120,7 +121,7 @@
     <string name="about_event_write_to_organization_error">Не удалось отправить сообщение</string>
     <string name="about_event_time">Время:</string>
     <string name="about_event_date">Дата:</string>
-    <string name="about_event_partners">Спонсоры</string>
+    <string name="about_event_partners">Партнеры</string>
     <string name="about_event_registration_finish">Заявки принимаются по:</string>
     <string name="about_event_registration_closed">Прием заявок закрыт</string>
 
@@ -276,7 +277,7 @@
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
 
-    <string name="chat_list_empty">Список чатов пуст.</string>
+    <string name="chat_list_empty">У Вас нет чатов</string>
     <string name="chat_list_create_chat">Создать новый чат</string>
     <string name="chat_list_contacts_and_chats">Чаты</string>
     <string name="chat_list_chat_requests">Запросы</string>
@@ -284,10 +285,10 @@
     <string name="invite_list_empty">Никого нет</string>
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
-    <string name="chat_need_confirm">Вы сможете продолжить диалог после того, как подтвердите чат</string>
-    <string name="chat_wait_accept">Вы сможете продолжить диалог после того, как пользователь одобрит чат с Вами</string>
+    <string name="chat_need_confirm">Чтобы начать диалог, нажмите «Одобрить».</string>
+    <string name="chat_wait_accept">Дождитесь ответа пользователя, чтобы продолжить чат.</string>
     <string name="chat_you_banned">Пользователь ограничил возможность отправлять ему сообщения</string>
-    <string name="chat_banned_by_you">Вы ограничили отправку сообщений</string>
+    <string name="chat_banned_by_you">Вы ограничили отправку сообщений.\n\nДля того чтобы продолжить чат, разблокируйте пользователя на его странице</string>
     <string name="chat_confirm">Одобрить</string>
     <string name="chat_new_message_title_text">Новое сообщение от</string>
     <string name="chat_photo_message_text">Изображение</string>
@@ -449,7 +450,7 @@
     <string name="status_profile_work_experience">Опыт работы</string>
     <string name="status_profile_additional_data">Дополнительные сведения</string>
     <string name="status_profile_title_set">Подтверждение номера телефона</string>
-    <string name="status_profile_message_set">Для того, чтобы подтвердить номер телефона, введите пароль, который указывали при регистрации</string>
+    <string name="status_profile_message_set">Для того чтобы подтвердить номер телефона, введите Ваш пароль</string>
     <string name="status_profile_title_change">Изменение номера телефона</string>
     <string name="status_profile_message_change">Для того, чтобы изменить номер телефона, введите пароль, который указывали при регистрации</string>
     <string name="status_profile_title_remove">Удаление номера телефона</string>
@@ -594,15 +595,14 @@
     <string name="event_rating_success">Оценка отправлена</string>
     <string name="event_rating_documents">Документы</string>
 
-    <string name="password_confirm_description">Для того, чтобы подтвердить номер телефона, введите пароль, который указывали при регистрации</string>
     <string name="password_confirm_hint">Пароль</string>
     <string name="password_confirm_next">Далее</string>
     <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
 
-    <string name="phone_confirm_description">Пожалуйста, введите смс-код, который был отравлен на номер телефона:</string>
-    <string name="phone_confirm_hint">Код из смс</string>
+    <string name="phone_confirm_description">На номер отправлен код из 6 цифр. Введите его для подтверждения.</string>
+    <string name="phone_confirm_hint">Введите 6 цифр из СМС</string>
     <string name="phone_confirm_wrong_code">Введен неправильный код</string>
-    <string name="phone_confirm_code_send_error">Не удалось отправить код. Попробуйте позже.</string>
+    <string name="phone_confirm_code_send_error">Не удалось отправить СМС. Проверьте правильность ввода данных номера телефона или обратитесь в службу поддержки support@sozidateli.ru.</string>
     <string name="phone_confirm_confirm">Подтвердить</string>
     <string name="phone_confirm_resend">Отправить код повторно</string>
     <string name="phone_confirm_timer">Повторная отправка кода доступна через %s</string>

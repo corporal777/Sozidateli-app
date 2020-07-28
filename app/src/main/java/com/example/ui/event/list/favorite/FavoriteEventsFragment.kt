@@ -8,6 +8,7 @@ import com.example.data.models.Event
 import com.example.data.models.SubEvent
 import com.example.extensions.findItemBy
 import com.example.holders.EventFavoriteItem
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.EventListFragment
@@ -48,5 +49,13 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     override fun showSubEvents(event: String, subEvents: List<SubEvent>) {
         val args = FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
         findNavController().navigate(R.id.favorite_subevents_fragment, args)
+    }
+
+    override fun showEmptyListPlaceholder() {
+        dataGroup.update(listOf(NoDataItem(
+                getString(R.string.empty_list_placeholder_message),
+                getString(R.string.events_favorites_empty_list_description)
+        )))
+        swipeToRefresh.isRefreshing = false
     }
 }
