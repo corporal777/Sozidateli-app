@@ -142,7 +142,7 @@ class ProfileDataWorkEditItem(
                 val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
                 val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
                 if (finishDate == null || startDate == null) false
-                else finishDate.isSameMonth(startDate)
+                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(startDate)
             }
         }
     }
