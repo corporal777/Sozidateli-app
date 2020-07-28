@@ -131,7 +131,7 @@ class EventStatusItem(
                     when {
                         conferenceRegistrationClosed -> {
                             textRes = R.string.about_event_registration_closed
-                            textBackground = R.drawable.background_event_action
+                            textBackground = R.drawable.background_event_action_disabled
                             clickAction = null
                         }
                         Event.isCanRegister(status, userRegistration) -> {

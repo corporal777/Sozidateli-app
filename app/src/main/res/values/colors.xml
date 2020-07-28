@@ -76,6 +76,7 @@
     <color name="event_item_no_image_background">#80000000</color>
     <color name="event_item_action_text">#000000</color>
     <color name="event_item_action_background">#FFFFFF</color>
+    <color name="event_item_action_background_disabled">#E7E6E6</color>
     <color name="event_item_action_border">#1A000000</color>
     <color name="event_item_action_text_show_event">#FFFFFF</color>
     <color name="event_item_action_background_show_event">#74B12A</color>
