@@ -609,4 +609,6 @@
 
     <string name="event_register_check_fields">Чтобы подать заявку на участие в мероприятии, Вам необходимо заполнить поля профиля:</string>
     <string name="event_register_check_click_field">профиля</string>
+
+    <string name="timezone_moscow">по Мск</string>
 </resources>

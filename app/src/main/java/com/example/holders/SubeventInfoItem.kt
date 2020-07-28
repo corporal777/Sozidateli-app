@@ -10,7 +10,6 @@ import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_subevent_info.*
-import maxLength
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
 
@@ -21,7 +20,15 @@ open class SubeventInfoItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvTime.text = subevent.start.formatToInterval(subevent.finish, defaultServerDateTimeFormatter, true)
+            val time = subevent.start
+                    .formatToInterval(subevent.finish, defaultServerDateTimeFormatter, true)
+                    ?.let {
+                        StringBuilder(it)
+                                .append("(")
+                                .append(tvTitle.context.getString(R.string.timezone_moscow))
+                                .append(")")
+                    }
+            tvTime.text = time
             tvTitle.text = subevent.title
             tvDescription.apply {
                 text = subevent.description
