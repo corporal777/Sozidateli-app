@@ -206,7 +206,8 @@
     <string name="search_filter_event_name">Название мероприятия</string>
     <string name="search_filter_event_dates">Период проведения мероприятия</string>
     <string name="search_filter_specialization">Специализация</string>
-    <string name="search_filter_theme">Интересующая тема</string>
+    <string name="search_filter_user_theme">Интересующая тема</string>
+    <string name="search_filter_theme">Тематика мероприятия</string>
     <string name="search_filter_registration">Регистрация</string>
     <string name="search_filter_user_name">Имя</string>
     <string name="search_filter_age">Возраст</string>
