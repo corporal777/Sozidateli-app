@@ -11,6 +11,7 @@ import com.example.data.models.Event.Companion.FILTER_DATE_START
 import com.example.data.models.Event.Companion.FILTER_FORMAT
 import com.example.data.models.Event.Companion.FILTER_NAME
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION
+import com.example.data.models.Event.Companion.FILTER_SHOW_CANCELED
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
@@ -136,7 +137,7 @@ class SearchEventPresenter
     }
 
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
-        put("show_canceled", true)
+        put(FILTER_SHOW_CANCELED, true)
         if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address
         if (!address.isNullOrEmpty()) put(FILTER_ADDRESS, address)

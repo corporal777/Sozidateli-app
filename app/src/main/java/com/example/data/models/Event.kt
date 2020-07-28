@@ -90,6 +90,7 @@ data class Event(
         const val FILTER_DATE_FINISH = "date_end"
         const val FILTER_CATEGORY = "category"
         const val FILTER_FORMAT = "format"
+        const val FILTER_SHOW_CANCELED = "show_canceled"
 
         const val FILTER_REGISTRATION_PENDING = "pending"
         const val FILTER_REGISTRATION_APPROVED = "approved"
