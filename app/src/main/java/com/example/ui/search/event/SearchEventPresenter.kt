@@ -136,6 +136,7 @@ class SearchEventPresenter
     }
 
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
+        put("show_canceled", true)
         if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address
         if (!address.isNullOrEmpty()) put(FILTER_ADDRESS, address)
