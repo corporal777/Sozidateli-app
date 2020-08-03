@@ -5,23 +5,20 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/ivImage"
+        android:id="@+id/ivBackgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        tools:src="@drawable/st_1_bg" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvMessage"
+    <ImageView
+        android:id="@+id/ivForegroundImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        tools:text="Story 1" />
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/st_1_fg" />
 
     <LinearLayout
         android:layout_width="match_parent"

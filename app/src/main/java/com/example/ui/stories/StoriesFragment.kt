@@ -98,11 +98,19 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
 
     private fun setStory(position: Int) {
         this.position = position
-        ivImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
-            0 -> R.drawable.st_1
-            1 -> R.drawable.st_2
-            2 -> R.drawable.st_4
-            3 -> R.drawable.st_5
+        ivBackgroundImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
+            0 -> R.drawable.st_1_bg
+            1 -> R.drawable.st_2_bg
+            2 -> R.drawable.st_3_bg
+            3 -> R.drawable.st_4_bg
+            else -> throw IllegalStateException("No file for position: $position")
+        }))
+
+        ivForegroundImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
+            0 -> R.drawable.st_1_fg
+            1 -> R.drawable.st_2_fg
+            2 -> R.drawable.st_3_fg
+            3 -> R.drawable.st_4_fg
             else -> throw IllegalStateException("No file for position: $position")
         }))
     }
