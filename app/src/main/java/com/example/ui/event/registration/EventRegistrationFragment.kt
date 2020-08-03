@@ -80,7 +80,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             setHeader(RegisterEventHeaderItem(
                     -100L,
                     event.name,
-                    event.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
+                    null,
                     event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
                     event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
                     event.registrationHeadline,

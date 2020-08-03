@@ -11,7 +11,9 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventData
 import com.example.data.models.EventRegisterFieldData
-import com.example.extensions.*
+import com.example.extensions.forEachGroups
+import com.example.extensions.formatToEventDatesInterval
+import com.example.extensions.setRequired
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_SEND
 import com.example.holders.RatingItem
@@ -70,7 +72,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
             setHeader(RegisterEventHeaderItem(
                     -100L,
                     event.name,
-                    event.conferenceFirstActivityStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter),
+                    null,
                     event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
                     null,
                     event.ratingHeadline,

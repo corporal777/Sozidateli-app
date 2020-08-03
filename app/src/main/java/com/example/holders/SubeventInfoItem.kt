@@ -24,9 +24,8 @@ open class SubeventInfoItem(
                     .formatToInterval(subevent.finish, defaultServerDateTimeFormatter, true)
                     ?.let {
                         StringBuilder(it)
-                                .append("(")
-                                .append(tvTitle.context.getString(R.string.timezone_moscow))
-                                .append(")")
+                                .append(" ")
+                                .append(tvTitle.context.getString(R.string.sub_event_time_msk))
                     }
             tvTime.text = time
             tvTitle.text = subevent.title
