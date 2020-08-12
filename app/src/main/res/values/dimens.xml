@@ -98,4 +98,7 @@
     <dimen name="tag_compact_corners_radius">4dp</dimen>
 
     <dimen name="card_min_height">186dp</dimen>
+
+    <dimen name="stories_progress_bar_height">5dp</dimen>
+    <dimen name="stories_progress_corners_radius">2.5dp</dimen>
 </resources>

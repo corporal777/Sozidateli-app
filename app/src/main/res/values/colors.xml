@@ -202,4 +202,7 @@
     <color name="favorites_events_subevents_background">#1FC49A6C</color>
 
     <color name="dialog_event_registration_profile_fields_message">#77767E</color>
+
+    <color name="stories_progress_primary">#C3996C</color>
+    <color name="stories_progress_secondary">#4D979797</color>
 </resources>
