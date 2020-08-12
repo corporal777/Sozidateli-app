@@ -22,8 +22,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 31
-        versionName "0.9.31"
+        versionCode 32
+        versionName "0.9.32"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,10 +52,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
+
+            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+            buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
         debug {
             buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
-//            buildConfigField "String", "API_URL", "\"http://e.binlab.by/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
     }
