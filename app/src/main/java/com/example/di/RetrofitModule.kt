@@ -9,7 +9,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import io.fabric.sdk.android.services.network.HttpRequest.HEADER_CACHE_CONTROL
 import io.reactivex.schedulers.Schedulers
 import isConnectedToNetwork
 import okhttp3.Cache
@@ -27,6 +26,11 @@ import javax.inject.Singleton
 
 @Module
 class RetrofitModule {
+
+    companion object {
+
+        const val HEADER_CACHE_CONTROL = "Cache-Control"
+    }
 
     @Provides
     @Singleton

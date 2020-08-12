@@ -40,8 +40,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 //        }
 //        LeakCanary.install(this)
 
-        Fabric.with(this, Crashlytics())
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }

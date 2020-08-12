@@ -1,114 +1,44 @@
 {
   "project_info": {
-    "project_number": "282948853135",
-    "firebase_url": "https://chatapp-af88f.firebaseio.com",
-    "project_id": "chatapp-af88f",
-    "storage_bucket": "chatapp-af88f.appspot.com"
+    "project_number": "668160338277",
+    "firebase_url": "https://sozidateli.firebaseio.com",
+    "project_id": "sozidateli",
+    "storage_bucket": "sozidateli.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:282948853135:android:3e13d76c79b42e32",
+        "mobilesdk_app_id": "1:668160338277:android:ecf12ec891a89971d9198c",
         "android_client_info": {
-          "package_name": "com.example"
+          "package_name": "ru.houseofapps.sozidateli"
         }
       },
       "oauth_client": [
         {
-          "client_id": "282948853135-tr4is7jnodsesq35iqov0tdrns0nsbo9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example",
-            "certificate_hash": "468aba2e9b6c03c1c5fe3a808b375cfbdf057504"
-          }
-        },
-        {
-          "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
+          "client_id": "668160338277-vmb0ao6v41u0hm17trkje4cdihknfesq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCxnmHNTIR5JbZEt6x8Iu2YeENDZ7x60vA"
+          "current_key": "AIzaSyCw-3uhdnwg9LL9SE3Oz2gqbPGjpbZd9Es"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
+              "client_id": "668160338277-vmb0ao6v41u0hm17trkje4cdihknfesq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "668160338277-73g1ov1hj3klqvfhbhlq0ghn5ga1052j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.houseofapps.sozidateli"
+              }
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:282948853135:android:1fd07476e8d8a0b0",
-        "android_client_info": {
-          "package_name": "ru.houseofapps.chatapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCxnmHNTIR5JbZEt6x8Iu2YeENDZ7x60vA"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:282948853135:android:2184618348971691",
-        "android_client_info": {
-          "package_name": "ru.houseofapps.fond"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCxnmHNTIR5JbZEt6x8Iu2YeENDZ7x60vA"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
