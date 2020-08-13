@@ -30,9 +30,9 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ibFacebook.setOnClickListener { presenter.authFb() }
-        ibVk.setOnClickListener { presenter.authVk() }
-        ibOk.setOnClickListener { presenter.authOk() }
+//        ibFacebook.setOnClickListener { presenter.authFb() }
+//        ibVk.setOnClickListener { presenter.authVk() }
+//        ibOk.setOnClickListener { presenter.authOk() }
         ibEmail.setOnClickListener { presenter.onEmailClick() }
         ibLogin.setOnClickListener { presenter.onLoginClick() }
     }

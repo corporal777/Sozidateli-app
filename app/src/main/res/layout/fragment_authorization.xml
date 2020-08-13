@@ -15,127 +15,46 @@
         <ImageView
             android:id="@+id/ivLogo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/auth_logo_height"
-            android:layout_marginTop="@dimen/auth_logo_margin_top"
+            android:layout_height="85dp"
             android:contentDescription="@string/content_description_logo"
-            android:src="@drawable/ic_app_logo_white"
+            android:src="@drawable/ic_app_logo_main"
+            app:layout_constraintBottom_toTopOf="@+id/tvJoinMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
+            app:layout_constraintVertical_chainStyle="spread" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvJoinMessage"
             fontPath="fonts/Roboto-Medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
             android:text="@string/auth_title_login"
             android:textColor="@android:color/white"
             android:textSize="@dimen/auth_label_text_size"
-            app:layout_constraintBottom_toTopOf="@+id/llSocialNetworks"
+            app:layout_constraintBottom_toTopOf="@id/llEmail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
             app:layout_constraintVertical_chainStyle="spread_inside"
             tools:ignore="MissingPrefix" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/llSocialNetworks"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="40dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/llEmail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
-
-            <TextView
-                android:id="@+id/tvSocialNetworks"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="@string/auth_with_social_network"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/auth_block_label_text_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingPrefix" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibVk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/background_circle"
-                android:contentDescription="@string/content_description_vk"
-                android:minWidth="52dp"
-                android:minHeight="52dp"
-                android:src="@drawable/ic_vk"
-                android:theme="@style/ViewBackgroundVk"
-                app:layout_constraintEnd_toStartOf="@+id/ibFacebook"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworks" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibOk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_circle"
-                android:contentDescription="@string/content_description_ok"
-                android:minWidth="52dp"
-                android:minHeight="52dp"
-                android:src="@drawable/ic_ok"
-                android:theme="@style/ViewBackgroundOk"
-                app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ibFacebook"
-                app:layout_constraintTop_toTopOf="@+id/ibVk" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibFacebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="@drawable/background_circle"
-                android:contentDescription="@string/content_description_facebook"
-                android:minWidth="52dp"
-                android:minHeight="52dp"
-                android:src="@drawable/ic_facebook"
-                android:theme="@style/ViewBackgroundFacebook"
-                app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                app:layout_constraintEnd_toStartOf="@+id/ibOk"
-                app:layout_constraintStart_toEndOf="@+id/ibVk"
-                app:layout_constraintTop_toTopOf="@+id/ibVk" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <LinearLayout
             android:id="@+id/llEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
+            android:layout_marginBottom="54dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/llLogin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llSocialNetworks"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintVertical_chainStyle="spread_inside">
 
             <TextView
@@ -148,18 +67,20 @@
                 android:text="@string/auth_with_email"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/auth_block_label_text_size"
+                android:visibility="gone"
                 tools:ignore="MissingPrefix" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ibEmail"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/background_corners"
-                android:contentDescription="@string/content_description_vk"
                 android:minHeight="@dimen/auth_button_min_height"
-                android:src="@drawable/ic_email"
-                android:theme="@style/ViewBackgroundAttention" />
+                android:text="@string/auth_action_register"
+                android:textColor="@android:color/white"
+                android:theme="@style/ViewBackgroundAccent" />
         </LinearLayout>
 
         <LinearLayout
@@ -169,12 +90,11 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="52dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llEmail">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/tvLogin"
@@ -185,20 +105,21 @@
                 android:gravity="center"
                 android:text="@string/auth_or_login"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/auth_block_login_label_text_size"
+                android:textSize="18sp"
                 tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ibLogin"
+                fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/background_corners"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/background_corners_border"
                 android:minHeight="@dimen/auth_button_min_height"
                 android:text="@string/auth_label_login"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:theme="@style/ViewBackgroundAccent" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

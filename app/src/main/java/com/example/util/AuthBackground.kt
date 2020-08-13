@@ -52,7 +52,17 @@ object AuthBackground {
         return BitmapRegionDecoder.newInstance(res.openRawResource(resId), false).decodeRegion(
                 Rect(left, top, right, bottom),
                 BitmapFactory.Options()
-        )
+        ).let { imageBitmap ->
+            val backgroundBitmap = Bitmap.createBitmap(imageWidth, imageHeight, imageBitmap.config)
+            val backgroundCanvas = Canvas(backgroundBitmap)
+            backgroundCanvas.drawColor(Color.BLACK)
+
+            val bmOverlay = Bitmap.createBitmap(imageWidth, imageHeight, imageBitmap.config)
+            val canvas = Canvas(bmOverlay)
+            canvas.drawBitmap(backgroundBitmap, 0f, 0f, null)
+            canvas.drawBitmap(imageBitmap, 0f, 0f, null)
+            bmOverlay
+        }
 //        ).apply {
 //            bitmap = this
 //        }
