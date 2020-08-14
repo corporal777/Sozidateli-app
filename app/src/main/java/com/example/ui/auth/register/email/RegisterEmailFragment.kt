@@ -44,7 +44,9 @@ class RegisterEmailFragment : BaseFragment(), RegisterEmailContract.View {
         val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
             val linkStart = 11
             val linkEnd = length
-            setSpan(ClickableSpan { presenter.onClickUserAgreement() }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            setSpan(ClickableSpan(drawUnderline = false) {
+                presenter.onClickUserAgreement()
+            }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
 
         tvAgree.apply {

@@ -81,6 +81,7 @@
         <TextView
             android:id="@+id/tvFavorite"
             style="@style/Profile.Button"
+            android:layout_marginTop="20dp"
             android:text="@string/profile_favorite" />
 
         <View style="@style/ViewDivider.Horizontal" />
@@ -97,19 +98,18 @@
             style="@style/Profile.Button"
             android:text="@string/profile_banned" />
 
-
         <TextView
-            android:id="@+id/tvSupport"
+            android:id="@+id/tvRate"
             style="@style/Profile.Button"
             android:layout_marginTop="20dp"
-            android:text="@string/profile_support" />
+            android:text="@string/profile_rate" />
 
         <View style="@style/ViewDivider.Horizontal" />
 
         <TextView
-            android:id="@+id/tvRate"
+            android:id="@+id/tvSupport"
             style="@style/Profile.Button"
-            android:text="@string/profile_rate" />
+            android:text="@string/profile_support" />
 
         <View style="@style/ViewDivider.Horizontal" />
 

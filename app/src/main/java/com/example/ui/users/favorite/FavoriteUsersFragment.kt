@@ -57,7 +57,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                 else UserItem(
                         it.user_id,
                         it.fullName,
-                        null,
+                        it.user_city,
                         it.user_avatar,
                         { presenter.onUserClick(it) },
                         it.getUserSubscribeAction(),

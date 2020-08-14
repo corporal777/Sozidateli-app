@@ -152,6 +152,7 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.chat?.isBannedByYou = false
+                    profileUserData.user.user_banned = false
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
     }
@@ -167,6 +168,7 @@ class UserPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.chat?.isBannedByYou = true
+                    profileUserData.user.user_banned = true
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
     }

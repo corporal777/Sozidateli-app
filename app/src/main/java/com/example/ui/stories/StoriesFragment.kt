@@ -56,7 +56,7 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
         stories.apply {
             setStoriesCount(4)
             setStoryDuration(3000L)

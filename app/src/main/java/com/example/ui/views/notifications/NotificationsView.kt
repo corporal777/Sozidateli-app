@@ -46,7 +46,13 @@ class NotificationsView : FrameLayout, NotificationsViewContract.View {
     }
 
     override fun showCounter(show: Boolean) {
-        view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
+        view.apply {
+            tvBadge.visibility = if (show) View.VISIBLE else View.GONE
+            ivImage.setImageResource(
+                    if (show) R.drawable.ic_profile_notification
+                    else R.drawable.ic_notifications_none
+            )
+        }
     }
 
     override fun onAttachedToWindow() {

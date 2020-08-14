@@ -18,10 +18,9 @@
         android:visibility="invisible"
         tools:visibility="visible" />
 
-    <View
+    <com.example.ui.views.StoriesMaxView
         android:id="@+id/max_progress"
         android:layout_width="match_parent"
         android:layout_height="@dimen/stories_progress_bar_height"
-        android:background="#00000000"
         android:visibility="gone" />
 </FrameLayout>

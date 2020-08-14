@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:transitionName="@string/transition_name_event"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:transitionName="@string/transition_name_event">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/itemContainer"
@@ -56,6 +56,7 @@
                 android:backgroundTint="@color/event_item_format_background"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:minWidth="0dp"
                 android:minHeight="26dp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -83,6 +84,7 @@
                 android:ellipsize="end"
                 android:enabled="false"
                 android:maxLines="1"
+                android:minWidth="0dp"
                 android:minHeight="26dp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -108,6 +110,7 @@
                 android:ellipsize="end"
                 android:enabled="false"
                 android:maxLines="1"
+                android:minWidth="0dp"
                 android:minHeight="26dp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
