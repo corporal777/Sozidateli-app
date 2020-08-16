@@ -63,12 +63,14 @@
     <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
+    <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
     <string name="auth_input_first_name_hint">Укажите ваше имя</string>
     <string name="auth_input_last_name_hint">Укажите вашу фамилию</string>
     <string name="auth_input_email_hint">Укажите вашу электронную почту</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
+    <string name="auth_agree_address">https://www.sozidateli.ru/politics</string>
     <string name="auth_register_with_sn">или зарегистрируйтесь с помощью соцсети</string>
     <string name="auth_action_register">Зарегистрироваться</string>
     <string name="auth_action_continue">Далее</string>

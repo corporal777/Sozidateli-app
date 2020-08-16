@@ -1,6 +1,7 @@
 package com.example.ui.auth.login
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -21,6 +22,10 @@ class LoginPresenter
         private val phoneNumberUtil: PhoneNumberUtil,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager), LoginContract.Presenter {
+
+    companion object {
+        private const val WRONG_PASSWORD_API_ERROR = "combination email and password not found"
+    }
 
     var login = ""
     var password = ""
@@ -56,7 +61,18 @@ class LoginPresenter
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple { }
+                .subscribeSimple(
+                        onError = {
+                            if ((it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR) == true) {
+                                viewState.showWrongPasswordError()
+                            } else {
+                                onReceiveError(it)
+                            }
+                        },
+                        onComplete = {
+                            // do nothing
+                        }
+                )
     }
 
     private fun performDataChange() {

@@ -1,10 +1,13 @@
 package com.example.ui.auth.register.email
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
+import android.widget.Toast
 import androidx.core.text.clearSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
@@ -132,7 +135,12 @@ class RegisterEmailFragment : BaseFragment(), RegisterEmailContract.View {
     }
 
     override fun showUserAgreement() {
-        findNavController().navigate(R.id.agreement_fragment)
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.auth_agree_address)))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.error_title, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun layout() = R.layout.fragment_register_email

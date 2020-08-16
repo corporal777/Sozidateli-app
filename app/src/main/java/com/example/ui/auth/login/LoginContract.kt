@@ -23,6 +23,9 @@ interface LoginContract {
         fun showPasswordError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showWrongPasswordError()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEmailRegistration()
 
         @StateStrategyType(OneExecutionStateStrategy::class)

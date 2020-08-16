@@ -11,6 +11,6 @@ class ApiError(
     }
 
     fun hasError(error: String): Boolean {
-        return error.contains(error)
+        return errors.contains(error)
     }
 }

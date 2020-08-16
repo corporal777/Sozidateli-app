@@ -3,6 +3,7 @@ package com.example.ui.auth.login
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -74,6 +75,16 @@ class LoginFragment : BaseFragment(), LoginContract.View {
                 if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
                 else R.string.auth_error_short_password
         ) else null
+    }
+
+    override fun showWrongPasswordError() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.error_title)
+                .setMessage(R.string.auth_register_wrong_password_error)
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    // do nothing
+                }
+                .show()
     }
 
     override fun layout() = R.layout.fragment_login
