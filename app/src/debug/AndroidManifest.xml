@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example">
+
+    <application>
+
+        <activity android:name="com.example.ui.main.MainActivity">
+
+            <intent-filter
+                android:autoVerify="true"
+                android:label="@string/app_default_url_sozidateli_name">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="beta.sozidateli.ru"
+                    android:pathPrefix="/profile"
+                    android:scheme="https" />
+
+                <data
+                    android:host="beta.sozidateli.ru"
+                    android:pathPrefix="/social"
+                    android:scheme="https" />
+
+                <data
+                    android:host="www.sozidateli.ru"
+                    android:pathPrefix="/event"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/event"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

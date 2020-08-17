@@ -57,7 +57,7 @@ android {
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
         debug {
-            buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
+            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
     }
