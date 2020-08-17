@@ -91,11 +91,11 @@
 
         <meta-data
             android:name="api_url"
-            android:value="https://beta-chat-io.sozidateli.ru/" />
+            android:value="http://beta-chat-io.sozidateli.ru:4200/" />
 
         <meta-data
             android:name="socket_url"
-            android:value="https://beta-chat-io.sozidateli.ru:4200" />
+            android:value="http://beta-chat-io.sozidateli.ru:4200" />
 
         <meta-data
             android:name="chat_project_key"
