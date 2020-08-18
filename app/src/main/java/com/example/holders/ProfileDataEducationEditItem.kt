@@ -59,6 +59,8 @@ class ProfileDataEducationEditItem(
             setFinishEnabled(this, !isNotFinished)
             scFinish.initSwitch(isNotFinished) {
                 tilFinish.error = null
+                mFinish = null
+                etFinish.text = null
                 setFinishEnabled(this, !it)
             }
             etInstitution.initInput(mInstitution) {

@@ -12,7 +12,14 @@ import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.btnRemove
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.etFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.etStart
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.scFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
 import onTextChanged
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,6 +66,8 @@ class ProfileDataWorkEditItem(
             setFinishEnabled(this, !isNotFinished)
             scFinish.initSwitch(isNotFinished) {
                 tilFinish.error = null
+                mFinish = null
+                etFinish.text = null
                 setFinishEnabled(this, !it)
             }
             etProject.initInput(mOrganization) {

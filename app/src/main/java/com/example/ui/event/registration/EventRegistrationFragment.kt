@@ -142,7 +142,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             setTitle(getString(R.string.event_register_no_form_confirmation_title))
             setMessage(getString(R.string.event_register_no_form_confirmation_message))
             positiveButton {
-                text = getString(R.string.event_register_request)
+                text = getString(R.string.event_register_no_form_positive)
                 clickListener = {
                     presenter.onRegisterClick()
                     true
@@ -150,7 +150,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             }
 
             negativeButton {
-                text = getString(R.string.cancel)
+                text = getString(R.string.event_register_no_form_negative)
                 clickListener = {
                     presenter.onRegisterCancelClick()
                     true

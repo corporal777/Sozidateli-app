@@ -581,8 +581,10 @@
     <string name="event_register_form_request_error">Произошла ошибка, пожалуйста, попробуйте позже.</string>
     <string name="event_register_already_approved_error">Заявка уже была подтверждена ранее</string>
     <string name="event_register_closed_error">Регистрация закрыта</string>
-    <string name="event_register_no_form_confirmation_title">Вы уверены?</string>
-    <string name="event_register_no_form_confirmation_message">Вы можете подать заявку для регистрации на мероприятие</string>
+    <string name="event_register_no_form_confirmation_title">Запрос на участие</string>
+    <string name="event_register_no_form_confirmation_message">Вы даете согласие на обработку данных?</string>
+    <string name="event_register_no_form_positive">Да, даю согласие</string>
+    <string name="event_register_no_form_negative">Отменить</string>
     <string name="event_register_sent_moderate_title">Ваша заявка на участие в мероприятии отправлена.</string>
     <string name="event_register_sent_moderate_message">Организаторы рассмотрят ее в ближайшее время.</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
