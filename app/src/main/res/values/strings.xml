@@ -64,9 +64,9 @@
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
-    <string name="auth_input_first_name_hint">Укажите ваше имя</string>
-    <string name="auth_input_last_name_hint">Укажите вашу фамилию</string>
-    <string name="auth_input_email_hint">Укажите вашу электронную почту</string>
+    <string name="auth_input_first_name_hint">Укажите Ваше имя</string>
+    <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
+    <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
@@ -508,7 +508,7 @@
     <string name="subevent_user_list_empty">В этом событии нет зарегистрированных пользователей</string>
 
     <string name="empty_list_placeholder_message">Список пуст</string>
-    <string name="success_register_event_title">Ваша заявка\nуспешна подана</string>
+    <string name="success_register_event_title">Ваша заявка\nуспешно подана</string>
     <string name="success_register_event_msg">Организатор рассмотрит Вашу заявку в ближайшее время</string>
     <string name="success_register_event_btn">К списку мероприятий</string>
 
@@ -604,7 +604,7 @@
     <string name="password_confirm_next">Далее</string>
     <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
 
-    <string name="phone_confirm_description">На номер отправлен код из 6 цифр. Введите его для подтверждения.</string>
+    <string name="phone_confirm_description">На номер %s отправлен код из 6 цифр. Введите его для подтверждения.</string>
     <string name="phone_confirm_hint">Введите 6 цифр из СМС</string>
     <string name="phone_confirm_wrong_code">Введен неправильный код</string>
     <string name="phone_confirm_code_send_error">Не удалось отправить СМС. Проверьте правильность ввода данных номера телефона или обратитесь в службу поддержки support@sozidateli.ru.</string>

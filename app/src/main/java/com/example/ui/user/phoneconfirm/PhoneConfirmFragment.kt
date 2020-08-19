@@ -63,7 +63,7 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
     }
 
     override fun setPhone(phone: String) {
-        tvPhone.text = phone
+        tvDescription.text = getString(R.string.phone_confirm_description, phone)
     }
 
     override fun showSendSmsError() {

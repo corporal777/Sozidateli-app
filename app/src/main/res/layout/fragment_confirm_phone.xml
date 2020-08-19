@@ -13,30 +13,11 @@
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:text="@string/phone_confirm_description"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--suppress AndroidUnknownAttribute -->
-    <TextView
-        android:id="@+id/tvPhone"
-        style="@style/Profile.Data"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:textSize="17sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
-        tools:ignore="MissingPrefix"
-        tools:text="+79999999999" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/phone_confirm_description" />
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilCode"
@@ -51,7 +32,7 @@
         app:errorIconDrawable="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhone">
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCode"
