@@ -53,8 +53,16 @@ class OrganizationPresenter
                 .subscribe({
                     val organizationData = it.data
                     val uid = appData.getUser().user_id
-                    organizationData.members.forEach { member -> member.user.isCurrentUser = member.user.user_id == uid }
-                    viewState.setOrganization(it.logo, it.background, organizationData.organization, organizationData.events, organizationData.members)
+                    organizationData.members.forEach { member ->
+                        member.user?.isCurrentUser = member.user?.user_id == uid
+                    }
+                    viewState.setOrganization(
+                            it.logo,
+                            it.background,
+                            organizationData.organization,
+                            organizationData.events,
+                            organizationData.members
+                    )
                     viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
                 }, {
                     it.printStackTrace()

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_image_view.*
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -98,7 +99,14 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
         startPostponedEnterTransition()
     }
 
-    override fun findImageBitmap(url: String) = Picasso.get().load(url).into(dummyTarget)
+    override fun findImageBitmap(url: String) {
+        if (url.isBlank()) {
+            presenter.onBitmapFoundFailed(RuntimeException("url is empty"))
+        } else {
+            Picasso.get().load(url).into(dummyTarget)
+        }
+    }
+
     override fun findImageBitmap(resource: Int) = Picasso.get().load(resource).into(dummyTarget)
 
     override fun finish() {

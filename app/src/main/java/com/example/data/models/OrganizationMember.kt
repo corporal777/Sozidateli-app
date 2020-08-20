@@ -7,5 +7,5 @@ data class OrganizationMember(
         @SerializedName("member_id")
         val id: Int,
         val position: String?,
-        val user: User
+        val user: User?
 )
