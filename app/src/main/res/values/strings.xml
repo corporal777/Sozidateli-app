@@ -51,7 +51,7 @@
     <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
     <string name="auth_action_login">Войти</string>
-    <string name="auth_login_with_email">с помощью вашей электронной почты</string>
+    <string name="auth_login_with_email">с помощью Вашей электронной почты</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
     <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
@@ -512,7 +512,7 @@
     <string name="success_register_event_msg">Организатор рассмотрит Вашу заявку в ближайшее время</string>
     <string name="success_register_event_btn">К списку мероприятий</string>
 
-    <string name="sorry_not_found">Извините по вашему\nзапросу ничего\nне найдено</string>
+    <string name="sorry_not_found">Извините по Вашему\nзапросу ничего\nне найдено</string>
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
     <string name="invalid_phone_number_error">Введите правильный номер</string>
@@ -520,7 +520,7 @@
 
     <string name="no_internet_error_message">Hет подключения к интернету</string>
     <string name="no_internet_title">Hет подключения\nк интернету</string>
-    <string name="no_internet_message">Для доступа, пожалуйста, проверьте ваше интернет-соединение</string>
+    <string name="no_internet_message">Для доступа, пожалуйста, проверьте Ваше интернет-соединение</string>
     <string name="no_internet_action_retry">Попробовать заново</string>
     <string name="no_internet_action_to_calendar">Перейти в календарь</string>
 
