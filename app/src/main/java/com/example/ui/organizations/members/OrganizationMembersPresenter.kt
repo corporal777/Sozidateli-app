@@ -40,7 +40,7 @@ class OrganizationMembersPresenter
     }
 
     override fun onMemberClick(member: OrganizationMember) {
-        viewState.showUser(member.user.user_id.toString())
+        viewState.showUser(member.user?.user_id.toString())
     }
 
     override fun onScrollChange(position: Int, offset: Int) {

@@ -54,8 +54,8 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
     }
 
     override fun setData(members: List<OrganizationMember>) {
-        adapter.update(members.map {
-            val user = it.user
+        adapter.update(members.mapNotNull {
+            val user = it.user ?: return@mapNotNull null
             OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onMemberClick(it) }
         })
         swipeToRefresh.isRefreshing = false

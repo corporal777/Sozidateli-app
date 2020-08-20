@@ -175,8 +175,8 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
         tvPeoples.text = getString(R.string.organization_peoples).format(organization.totalMembers)
         rvPeoples.adapter = usersAdapter.apply {
-            update(users.map {
-                val user = it.user
+            update(users.mapNotNull {
+                val user = it.user ?: return@mapNotNull null
                 UserItem(
                         user.user_id,
                         user.fullName,
