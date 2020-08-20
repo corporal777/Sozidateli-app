@@ -101,7 +101,7 @@ fun String?.formatToEventDatesInterval(finish: String?): String? {
     val startDate = start?.parseToDate(defaultServerDateFormatter)
     val endDate = finish?.parseToDate(defaultServerDateFormatter)
     val startCalendar = startDate?.calendar()
-    val endCalendar = endDate?.calendar()
+    val endCalendar = endDate?.calendar()?.takeIf { startCalendar?.isSameDay(it) != true }
 
     val startFormatter = if (startCalendar != null) {
         SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
