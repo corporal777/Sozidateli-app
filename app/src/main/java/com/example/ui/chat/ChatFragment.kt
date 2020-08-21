@@ -68,7 +68,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     @ProvidePresenter(type = PresenterType.WEAK)
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val presenter = this
-        arguments!!.let { ChatFragmentArgs.fromBundle(it) }.apply {
+        requireArguments().let { ChatFragmentArgs.fromBundle(it) }.apply {
             presenter.chatId = chatId
             presenter.userAvatar = userAvatar
         }
@@ -177,8 +177,13 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
         }
     }
 
-    override fun showChatConfirm() {
+    override fun showChatConfirm(userName: String?) {
         showActionView(R.layout.layout_chat_action_confirmation, true) {
+            tvNeedConfirm.text = userName
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let { getString(R.string.chat_need_confirm_user_name, it) }
+                    ?: getString(R.string.chat_need_confirm)
+
             btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
             btnBlock.setOnClickListener { presenter.onBlockChatClick() }
         }

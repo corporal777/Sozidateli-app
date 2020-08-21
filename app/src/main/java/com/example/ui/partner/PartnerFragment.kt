@@ -32,7 +32,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
 
     @ProvidePresenter
     fun providePresenter(): PartnerPresenter = presenterProvider.get().apply {
-        PartnerFragmentArgs.fromBundle(arguments!!).apply {
+        PartnerFragmentArgs.fromBundle(requireArguments()).apply {
             dataEventId = eventId
             dataPartnerId = partnerId
         }
@@ -62,13 +62,19 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
             isVisible = !partner.name.isEmpty()
             text = partner.name
         }
+
         tvDescription.apply {
             isVisible = !partner.description.isNullOrEmpty()
             text = partner.description
         }
+
+        val link = partner.web?.takeIf { it.isNotBlank() }
+
+        tvLinksTitle.isVisible = link != null
+
         tvLinks.apply {
-            isVisible = !partner.web.isNullOrEmpty()
-            text = partner.web
+            isVisible = link != null
+            text = link
             removeUrlUnderline()
         }
 

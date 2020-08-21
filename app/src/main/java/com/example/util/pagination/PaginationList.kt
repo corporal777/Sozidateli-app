@@ -9,7 +9,11 @@ class PaginationList<T>(
         private val pagination: Observable<PagedList<T>>
 ) : ObservableOnSubscribe<List<T>> {
 
-    private val paginationCallback = PaginationCallback { pagedList?.let { emitter.onNext(it.snapshot()) } }
+    private val paginationCallback = PaginationCallback {
+        pagedList?.let {
+            emitter.onNext(it.snapshot())
+        }
+    }
 
     private lateinit var emitter: ObservableEmitter<List<T>>
 

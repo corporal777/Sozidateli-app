@@ -289,6 +289,7 @@
 
     <string name="chat_cant_send_msg">Данному\nпользователю\nне возможно\nотправить\nсообщение</string>
     <string name="chat_need_confirm">Чтобы начать диалог, нажмите «Одобрить».</string>
+    <string name="chat_need_confirm_user_name">%s хочет отправить Вам сообщение.\nЧтобы начать диалог, нажмите «Одобрить»</string>
     <string name="chat_wait_accept">Дождитесь ответа пользователя, чтобы продолжить чат.</string>
     <string name="chat_you_banned">Пользователь ограничил возможность отправлять ему сообщения</string>
     <string name="chat_banned_by_you">Вы ограничили отправку сообщений.\n\nДля того чтобы продолжить чат, разблокируйте пользователя на его странице</string>

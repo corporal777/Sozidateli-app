@@ -16,7 +16,7 @@ interface ChatContract {
         fun showChatInput(animate: Boolean)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
-        fun showChatConfirm()
+        fun showChatConfirm(userName: String?)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showYouBanUser()

@@ -119,7 +119,7 @@ class ChatPresenter
                             it.isEventChat -> viewState.hideKeyboard()
                             it.isBannedByYou -> disableMessaging { showYouBanUser() }
                             it.isBannedByRecipient -> disableMessaging { showYouBanned() }
-                            it.isInInvites -> disableMessaging { showChatConfirm() }
+                            it.isInInvites -> disableMessaging { showChatConfirm(it.user.fullName) }
                             it.isWaitForAcceptInvites -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
                                 showChatInput(false)

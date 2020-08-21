@@ -79,7 +79,7 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
             paginationList = pagination.applyErrorHandler {
                 it.printStackTrace()
             }
-                    .buildList(enablePlaceholders = true)
+                    .buildList(enablePlaceholders = false)
         }
 
         if (searchDisposable.size() == 0) {

@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/ivBackground"
@@ -92,6 +93,7 @@
                 tools:text="Некоммерческий фонд по оказанию помощи бездомным, брошенным животным, а так же животным - инвалидам. Хоспис, передержка и устройство в семьи. " />
 
             <TextView
+                android:id="@+id/tvLinksTitle"
                 style="@style/Profile.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="0dp"
                 android:autoLink="web"
                 tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
         </LinearLayout>
