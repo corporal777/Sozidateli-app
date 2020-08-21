@@ -3,15 +3,12 @@ package com.example
 import android.app.*
 import android.content.Context
 import android.os.Build
-import com.crashlytics.android.Crashlytics
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
-import com.splunk.mint.Mint
 import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Inject
@@ -34,8 +31,8 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
         super.onCreate()
 
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
+        // This process is dedicated to LeakCanary for heap analysis.
+        // You should not init your app in this process.
 //            return
 //        }
 //        LeakCanary.install(this)
@@ -53,8 +50,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
         CalligraphyConfig.initDefault(calligraphyConfig)
         VKSdk.initialize(this)
-
-        Mint.initAndStartSession(this, "d2da4f20")
     }
 
 

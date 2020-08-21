@@ -90,14 +90,6 @@
             android:value="@string/facebook_app_id" />
 
         <meta-data
-            android:name="api_url"
-            android:value="https://beta-chat.sozidateli.ru/chat/" />
-
-        <meta-data
-            android:name="socket_url"
-            android:value="https://beta-chat-io.sozidateli.ru" />
-
-        <meta-data
             android:name="chat_project_key"
             android:value="AskfWi3o31sA" />
 

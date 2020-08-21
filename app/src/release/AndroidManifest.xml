@@ -15,12 +15,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="beta.sozidateli.ru"
+                    android:host="sozidateli.ru"
                     android:pathPrefix="/profile"
                     android:scheme="https" />
 
                 <data
-                    android:host="beta.sozidateli.ru"
+                    android:host="sozidateli.ru"
                     android:pathPrefix="/social"
                     android:scheme="https" />
 
@@ -35,5 +35,13 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="api_url"
+            android:value="https://chat.sozidateli.ru/chat/" />
+
+        <meta-data
+            android:name="socket_url"
+            android:value="https://chat-io.sozidateli.ru" />
     </application>
 </manifest>

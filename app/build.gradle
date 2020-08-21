@@ -53,7 +53,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
-            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         }
         debug {
@@ -140,7 +140,6 @@ dependencies {
 
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
-    implementation 'com.splunk:mint-android-sdk:5.2.4'
 
     //ui
     implementation "com.xwray:groupie:2.6.0"
@@ -181,11 +180,6 @@ dependencies {
     implementation 'com.vk:androidsdk:1.6.9'
     implementation 'com.facebook.android:facebook-android-sdk:5.9.0'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
-
-    // crashlytics
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.0@aar') {
-        transitive = true
-    }
 
     // tests
     testImplementation 'junit:junit:4.12'
