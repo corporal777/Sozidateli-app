@@ -225,6 +225,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun setEducationData(user: User) {
         val dataItem = ProfileDataEducationEditGroup(
                 requireContext(),
+                user.user_birthday,
                 user.user_education,
                 user.available_education ?: emptyList(),
                 user.available_degrees ?: emptyList(),
@@ -245,6 +246,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         val work = user.work ?: emptyList()
         val dataItem = ProfileDataWorkEditGroup(
                 requireContext(),
+                user.user_birthday,
                 work
         )
         adapter.update(listOf(dataItem))

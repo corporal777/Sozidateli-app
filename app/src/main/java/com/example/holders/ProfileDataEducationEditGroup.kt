@@ -12,6 +12,7 @@ import com.xwray.groupie.Section
 
 class ProfileDataEducationEditGroup(
         context: Context,
+        private val birthday: String?,
         private val educationLevel: String?,
         private val availableEducations: List<String>,
         private val availableDegrees: List<String>,
@@ -98,7 +99,8 @@ class ProfileDataEducationEditGroup(
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
-                socialRoles?.specialty
+                socialRoles?.specialty,
+                birthday
         ) {
             educations.remove(it)
         }

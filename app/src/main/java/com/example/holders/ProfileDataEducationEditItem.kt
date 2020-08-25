@@ -22,6 +22,7 @@ class ProfileDataEducationEditItem(
         finish: String?,
         organization: String?,
         speciality: String?,
+        birthday: String?,
         private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit
 ) : Item() {
 
@@ -36,13 +37,14 @@ class ProfileDataEducationEditItem(
     var isNotFinished = mFinish == null
         private set
 
+    private val birthday = birthday?.parseToDate(defaultServerDateFormatter)
     private val now = Date()
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
             etStart.setText(startDate?.let { formatDate(it).capitalize() })
-            tilStart.initAsMonthYearPicker(startDate, maxDate = now) { year, month, day ->
+            tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
@@ -50,7 +52,7 @@ class ProfileDataEducationEditItem(
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
             etFinish.setText(finishDate?.let { formatDate(it).capitalize() })
-            tilFinish.initAsMonthYearPicker(finishDate, maxDate = now) { year, month, day ->
+            tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()

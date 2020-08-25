@@ -76,7 +76,9 @@ data class EventData(
         val canRegister: Boolean
 ) {
     val isRegistrationClosed: Boolean
-        get() = conferenceRegistrationClosed || !canRegister
+        get() = conferenceRegistrationClosed ||
+                conferenceRegistrationFinishDate?.parseToDate(defaultServerDateFormatter)
+                        ?.before(Date()) ?: false
 }
 
 fun EventData.createMapInfo(): MapInfo? {

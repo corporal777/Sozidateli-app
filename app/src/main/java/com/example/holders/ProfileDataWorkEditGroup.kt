@@ -9,6 +9,7 @@ import com.xwray.groupie.NestedGroup
 
 class ProfileDataWorkEditGroup(
         context: Context,
+        private val birthday: String?,
         workList: List<SocialRoles>
 ) : NestedGroup() {
 
@@ -63,7 +64,8 @@ class ProfileDataWorkEditGroup(
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
-                socialRoles?.position
+                socialRoles?.position,
+                birthday
         ) { item ->
             val position = getItemCountBeforeGroup(item)
             remove(item)

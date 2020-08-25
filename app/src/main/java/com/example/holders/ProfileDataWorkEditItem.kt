@@ -12,14 +12,7 @@ import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
-import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.btnRemove
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.etFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.etStart
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.scFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
 import onTextChanged
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,6 +22,7 @@ class ProfileDataWorkEditItem(
         finish: String?,
         organization: String?,
         position: String?,
+        birthday: String?,
         private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit
 ) : Item() {
 
@@ -43,13 +37,15 @@ class ProfileDataWorkEditItem(
     var isNotFinished = mFinish == null
         private set
 
+    private val birthday = birthday?.parseToDate(defaultServerDateFormatter)
+
     private val now = Date()
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
             etStart.setText(startDate?.let { formatDate(it).capitalize() })
-            tilStart.initAsMonthYearPicker(startDate, maxDate = now) { year, month, day ->
+            tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
@@ -57,7 +53,7 @@ class ProfileDataWorkEditItem(
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
             etFinish.setText(finishDate?.let { formatDate(it).capitalize() })
-            tilFinish.initAsMonthYearPicker(finishDate, maxDate = now) { year, month, day ->
+            tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
