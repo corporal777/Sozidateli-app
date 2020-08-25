@@ -320,6 +320,7 @@
     <string name="recovery_confirm_email_message">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо с инструкцией по восстановлению пароля.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
     <string name="recovery_set_password_title">Пожалуйста, укажите новый пароль и нажмите кнопку «Сохранить»</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
+    <string name="recovery_password_wrong_email_error">Упс… Такой пользователь не найден.\nПожалуйста, убедитесь, что указали правильный e-mail, и повторите попытку.</string>
 
     <string name="profile_label">Личный кабинет</string>
     <string name="profile_current_user_label">Профиль</string>

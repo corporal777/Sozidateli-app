@@ -17,6 +17,9 @@ interface RecoveryPasswordContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRecoveryNotification(email: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showWrongEmailError()
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -76,5 +76,15 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
                 }
     }
 
+    override fun showWrongEmailError() {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.error_title)
+                .setMessage(R.string.recovery_password_wrong_email_error)
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    // do nothing
+                }
+                .show()
+    }
+
     override fun layout() = R.layout.fragment_recovery_password
 }

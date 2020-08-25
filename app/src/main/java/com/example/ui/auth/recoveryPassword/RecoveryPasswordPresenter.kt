@@ -1,6 +1,7 @@
 package com.example.ui.auth.recoveryPassword
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.ApiError
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
@@ -15,6 +16,10 @@ class RecoveryPasswordPresenter
 @Inject constructor(
         private val authRepository: AuthRepository
 ) : BasePresenter<RecoveryPasswordContract.View>(), RecoveryPasswordContract.Presenter {
+
+    companion object {
+        private const val USER_NOT_REGISTERED_ERROR = "User is not registered yet"
+    }
 
     var email = ""
 
@@ -33,7 +38,18 @@ class RecoveryPasswordPresenter
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribeSimple { viewState.showRecoveryNotification(email) }
+                    .subscribeSimple(
+                            onError = {
+                                if ((it as? ApiError)?.hasError(USER_NOT_REGISTERED_ERROR) == true) {
+                                    viewState.showWrongEmailError()
+                                } else {
+                                    onReceiveError(it)
+                                }
+                            },
+                            onComplete = {
+                                viewState.showRecoveryNotification(email)
+                            }
+                    )
         } else {
             viewState.showEmailError(true)
         }
