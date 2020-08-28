@@ -19,6 +19,6 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
 
     @ProvidePresenter
     fun providePresenter(): OrganizationEventsPresenter = presenterProvider.get().apply {
-        organizationId = OrganizationEventsFragmentArgs.fromBundle(arguments!!).organizationId
+        organizationId = OrganizationEventsFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 }

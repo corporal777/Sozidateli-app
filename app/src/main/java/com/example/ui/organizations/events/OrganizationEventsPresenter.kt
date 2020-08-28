@@ -26,6 +26,9 @@ class OrganizationEventsPresenter
     lateinit var organizationId: String
 
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getEventList(limit, offset, mapOf("organisation" to organizationId))
+        return eventRepository.getEventList(limit, offset, mapOf(
+                "organisation" to organizationId,
+                Event.FILTER_SHOW_CANCELED to true
+        ))
     }
 }
