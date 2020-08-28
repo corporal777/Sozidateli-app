@@ -1,38 +1,38 @@
 {
   "project_info": {
-    "project_number": "668160338277",
-    "firebase_url": "https://sozidateli.firebaseio.com",
-    "project_id": "sozidateli",
-    "storage_bucket": "sozidateli.appspot.com"
+    "project_number": "653787205512",
+    "firebase_url": "https://sozidateli-prod.firebaseio.com",
+    "project_id": "sozidateli-prod",
+    "storage_bucket": "sozidateli-prod.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:668160338277:android:ecf12ec891a89971d9198c",
+        "mobilesdk_app_id": "1:653787205512:android:30fa909ec8ace9ff81b43d",
         "android_client_info": {
           "package_name": "ru.houseofapps.sozidateli"
         }
       },
       "oauth_client": [
         {
-          "client_id": "668160338277-vmb0ao6v41u0hm17trkje4cdihknfesq.apps.googleusercontent.com",
+          "client_id": "653787205512-gl6uga275f0r67n9d81p36n9c8ltcmp1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCw-3uhdnwg9LL9SE3Oz2gqbPGjpbZd9Es"
+          "current_key": "AIzaSyAE-4cVSiteAEyuiRVL2PO8lp_fEiUc8Gg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "668160338277-vmb0ao6v41u0hm17trkje4cdihknfesq.apps.googleusercontent.com",
+              "client_id": "653787205512-gl6uga275f0r67n9d81p36n9c8ltcmp1.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "668160338277-73g1ov1hj3klqvfhbhlq0ghn5ga1052j.apps.googleusercontent.com",
+              "client_id": "653787205512-aptj3ocss869sj08hicpdcq76i5gtnqh.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "ru.houseofapps.sozidateli"
