@@ -17,7 +17,8 @@ class EventGroup(
         organizationEmails: List<EmailAffiliation>?,
         conferenceRegistrationClosed: Boolean,
         eventClickListener: EventStatusItem.OnEventClickListener,
-        private val dataItem: Item
+        private val dataItem: Item,
+        canShowActionButton: Boolean = true
 ) : NestedGroup() {
 
     private val eventStatusItem = EventStatusItem(
@@ -30,7 +31,8 @@ class EventGroup(
             format,
             organizationEmails,
             conferenceRegistrationClosed,
-            eventClickListener
+            eventClickListener,
+            canShowActionButton
     )
 
     init {

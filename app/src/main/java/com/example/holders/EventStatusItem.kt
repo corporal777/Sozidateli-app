@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -16,6 +17,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_status.*
 import parseColor
+import setOnClickListener
 
 class EventStatusItem(
         itemId: Long,
@@ -27,7 +29,8 @@ class EventStatusItem(
         private val format: EventFormat?,
         private val organizationEmails: List<EmailAffiliation>?,
         private val conferenceRegistrationClosed: Boolean,
-        private val onEventClickListener: OnEventClickListener
+        private val onEventClickListener: OnEventClickListener,
+        private val canShowActionButton: Boolean = true
 ) : Item(itemId) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -63,7 +66,7 @@ class EventStatusItem(
 
             tvFinished.isVisible = status == Event.Status.CONFERENCE_ENDS
 
-            setAction(btnEventAction)
+            decorActionButton(btnEventAction)
         }
     }
 
@@ -96,69 +99,66 @@ class EventStatusItem(
         }
     }
 
-    private fun setAction(btnAction: Button) {
-        btnAction.apply {
-            val textBackground: Int
-            var textColor = Color.BLACK
-            val textRes: Int
-            val clickAction: (() -> Unit)?
-            if (status == null || status == Event.Status.CONFERENCE_ENDS) {
-                isVisible = false
-                return@apply
-            } else when (userRegistration) {
-                Event.RegistrationStatus.PENDING -> {
-                    textBackground = R.drawable.background_event_action
-                    textRes = R.string.event_action_cancel_request
-                    clickAction = { onEventClickListener.onActionCancel(eventId) }
-                }
-                Event.RegistrationStatus.DECLINED -> {
-                    if (organizationEmails.isNullOrEmpty()) {
-                        isVisible = false
-                        return@apply
-                    }
+    private fun decorActionButton(btnAction: Button) {
+        var textBackground: Int? = null
+        var textColor = Color.BLACK
+        @StringRes var textRes: Int? = null
+        var clickAction: (() -> Unit)? = null
+        var visibility = true
 
-                    textBackground = R.drawable.background_event_action
-                    textRes = R.string.event_action_write_to_organisation
-                    clickAction = { onEventClickListener.onActionWriteToOrganization(organizationEmails) }
-                }
+        when {
+            !canShowActionButton ||
+                    status == null ||
+                    status == Event.Status.CONFERENCE_ENDS -> {
+                visibility = false
+            }
+            conferenceRegistrationClosed &&
+                    (userRegistration != Event.RegistrationStatus.APPROVED ||
+                            userRegistration != Event.RegistrationStatus.PENDING) -> {
+                textBackground = R.drawable.background_event_action_disabled
+                textRes = R.string.about_event_registration_closed
+            }
+            else -> when (userRegistration) {
                 Event.RegistrationStatus.APPROVED -> {
                     textBackground = R.drawable.background_event_action_approved
                     textRes = R.string.event_action_show_event
                     clickAction = { onEventClickListener.onActionShowEvent(eventId) }
                     textColor = Color.WHITE
                 }
-                else -> {
-                    when {
-                        conferenceRegistrationClosed -> {
-                            textRes = R.string.about_event_registration_closed
-                            textBackground = R.drawable.background_event_action_disabled
-                            clickAction = null
-                        }
-                        Event.isCanRegister(status, userRegistration) -> {
-                            textBackground = R.drawable.background_event_action
-                            textRes = R.string.event_action_participate
-                            clickAction = { onEventClickListener.onActionRegister(eventId) }
-                        }
-                        else -> {
-                            isVisible = false
-                            return@apply
-                        }
+                Event.RegistrationStatus.PENDING -> {
+                    textBackground = R.drawable.background_event_action
+                    textRes = R.string.event_action_cancel_request
+                    clickAction = { onEventClickListener.onActionCancel(eventId) }
+                }
+                Event.RegistrationStatus.DECLINED -> {
+                    visibility = organizationEmails.isNullOrEmpty().not()
+                    textBackground = R.drawable.background_event_action
+                    textRes = R.string.event_action_write_to_organisation
+                    clickAction = {
+                        onEventClickListener.onActionWriteToOrganization(organizationEmails ?: emptyList())
                     }
                 }
+                else -> {
+                    textBackground = R.drawable.background_event_action
+                    textRes = R.string.event_action_participate
+                    clickAction = { onEventClickListener.onActionRegister(eventId) }
+                }
             }
+        }
 
-            text = resources.getString(textRes)
+        btnAction.apply {
+            text = textRes?.let { context.getString(it) }
             setTextColor(textColor)
-            background = ContextCompat.getDrawable(context, textBackground)
-            isVisible = true
+            background = textBackground?.let { ContextCompat.getDrawable(context, it) }
 
             if (clickAction != null) {
-                setOnClickListener { clickAction() }
+                setOnClickListener(clickAction)
             } else {
                 setOnClickListener(null)
-                isClickable = false
                 isEnabled = false
             }
+
+            isVisible = visibility
         }
     }
 

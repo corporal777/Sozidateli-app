@@ -21,7 +21,7 @@ interface AboutEventContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
-                eventData: EventData,
+                event: EventData,
                 userRegistration: Event.RegistrationStatus?
         )
 

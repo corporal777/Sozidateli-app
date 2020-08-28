@@ -163,9 +163,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData.backgroundImage,
                         eventData.takeFormat(),
                         null,
-                        eventData.isRegistrationClosed,
+                        eventData.conferenceRegistrationClosed,
                         eventClickListener,
-                        aboutItem
+                        aboutItem,
+                        false
                 ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
@@ -203,58 +204,62 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun setActionButton(eventData: EventData, userRegistration: Event.RegistrationStatus?) {
-        flRegister.apply {
-            val textRes: Int
-            val clickAction: (() -> Unit)?
-            if (eventData.status == null || eventData.status == Event.Status.CONFERENCE_ENDS) {
-                isVisible = false
-                return@apply
-            } else when (userRegistration) {
-                Event.RegistrationStatus.PENDING -> {
-                    textRes = R.string.event_action_cancel_request
-                    clickAction = { presenter.onActionCancel() }
-                }
-                Event.RegistrationStatus.DECLINED -> {
-                    if (eventData.email.isNullOrEmpty()) {
-                        isVisible = false
-                        return@apply
-                    }
+    override fun setActionButton(event: EventData, userRegistration: Event.RegistrationStatus?) {
+        var textRes: Int? = null
+        var clickAction: (() -> Unit)? = null
+        var visibility = true
 
-                    textRes = R.string.event_action_write_to_organisation
-                    clickAction = { presenter.onActionWriteToOrganization() }
-                }
-                Event.RegistrationStatus.APPROVED -> {
-                    textRes = R.string.event_action_show_event
-                    clickAction = { presenter.onSelectEventClick() }
-                }
-                else -> {
-                    when {
-                        eventData.isRegistrationClosed -> {
-                            textRes = R.string.about_event_registration_closed
-                            clickAction = null
-                        }
-                        Event.isCanRegister(eventData.status, userRegistration) -> {
-                            textRes = R.string.event_action_participate
-                            clickAction = { presenter.onGoToEventClick() }
-                        }
-                        else -> {
-                            isVisible = false
-                            return@apply
-                        }
+        when {
+            event.status == Event.Status.CONFERENCE_ENDS -> {
+                visibility = false
+            }
+            event.conferenceRegistrationClosed -> {
+                when (userRegistration) {
+                    Event.RegistrationStatus.APPROVED -> {
+                        textRes = R.string.event_action_show_event
+                        clickAction = { presenter.onSelectEventClick() }
+                    }
+                    Event.RegistrationStatus.PENDING -> {
+                        textRes = R.string.event_action_cancel_request
+                        clickAction = { presenter.onActionCancel() }
+                    }
+                    else -> {
+                        textRes = R.string.about_event_registration_closed
                     }
                 }
             }
-
-            isVisible = true
-            btnAction.apply {
-                text = getString(textRes)
-                if (clickAction != null) {
-                    setOnClickListener(clickAction)
-                } else {
-                    setOnClickListener(null)
-                    isEnabled = false
+            else -> {
+                when (userRegistration) {
+                    Event.RegistrationStatus.APPROVED -> {
+                        textRes = R.string.event_action_show_event
+                        clickAction = { presenter.onSelectEventClick() }
+                    }
+                    Event.RegistrationStatus.PENDING -> {
+                        textRes = R.string.event_action_cancel_request
+                        clickAction = { presenter.onActionCancel() }
+                    }
+                    Event.RegistrationStatus.DECLINED -> {
+                        visibility = event.email.isNullOrEmpty().not()
+                        textRes = R.string.event_action_write_to_organisation
+                        clickAction = { presenter.onActionWriteToOrganization() }
+                    }
+                    else -> {
+                        textRes = R.string.event_action_participate
+                        clickAction = { presenter.onGoToEventClick() }
+                    }
                 }
+            }
+        }
+
+        flRegister.isVisible = visibility
+
+        flRegister.btnAction.apply {
+            text = textRes?.let { getString(it) }
+            if (clickAction != null) {
+                setOnClickListener(clickAction)
+            } else {
+                setOnClickListener(null)
+                isEnabled = false
             }
         }
 
