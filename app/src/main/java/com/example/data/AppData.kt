@@ -13,10 +13,20 @@ class AppData(
     var token: String? = appPrefs.userToken
         set(value) {
             val changed = field != value
-            field = value
             if (changed) {
-                appPrefs.userToken = value
-                tokenChangeSubject.onNext(value.asOptional())
+                if (value.isNullOrEmpty()) {
+                    field = null
+                    appPrefs.userToken = null
+                    if (!isLoggedOut) {
+                        logout()
+                    }
+
+                    tokenChangeSubject.onNext(Optional())
+                } else if (!isLoggedOut) {
+                    field = value
+                    appPrefs.userToken = value
+                    tokenChangeSubject.onNext(value.asOptional())
+                }
             }
         }
 
@@ -60,6 +70,9 @@ class AppData(
 
     private var user: User? = null
 
+    var isLoggedOut = token.isNullOrEmpty()
+        private set
+
     val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
@@ -82,7 +95,13 @@ class AppData(
     fun getUser(): User = user
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
+    fun login(token: String) {
+        isLoggedOut = false
+        this.token = token
+    }
+
     fun logout() {
+        isLoggedOut = true
         user = null
         appPrefs.userId = -1
         notificationsCount = 0

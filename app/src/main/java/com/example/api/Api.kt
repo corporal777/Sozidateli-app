@@ -13,8 +13,14 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}")
-    fun authSocialNetwork(@Path("sn") sn: String, @Field("token") token: String, @Field("email") email: String?,
-                          @Field("user_name") firstName: String? = null, @Field("user_last_name") lastName: String? = null, @Field("user_pwd") password: String? = null): Single<ApiResponse<AuthSNResponse>>
+    fun authSocialNetwork(
+            @Path("sn") sn: String,
+            @Field("token") token: String,
+            @Field("email") email: String?,
+            @Field("user_name") firstName: String? = null,
+            @Field("user_last_name") lastName: String? = null,
+            @Field("user_pwd") password: String? = null
+    ): Single<ApiResponse<AuthSNResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/{sn}/set_email")

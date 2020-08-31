@@ -10,6 +10,7 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
+import com.example.data.prefs.AppPrefsImpl
 import com.example.repository.EventRepository
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.ChatHelper
@@ -32,6 +33,10 @@ class AppModule {
 
     @Provides
     fun provideContext(app: Application): Context = app
+
+    @Provides
+    @Singleton
+    fun provideAppPrefs(context: Context): AppPrefs = AppPrefsImpl(context)
 
     @Provides
     @Singleton

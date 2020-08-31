@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImp
 @Inject constructor(
-        appData: AppData,
+        private val appData: AppData,
         private val api: Api
 ) : ApiRepository(appData), AuthRepository {
 
@@ -47,7 +47,18 @@ class AuthRepositoryImp
     }
 
     override fun authSocialNetwork(snType: String, token: String, email: String?, firstName: String?, lastName: String?, password: String?): Completable {
-        return call(api.authSocialNetwork(snType, token, email, firstName, lastName, password)).flatMapCompletable { Completable.complete() }
+        return callAuthCompletable(
+                api.authSocialNetwork(snType, token, email, firstName, lastName, password)
+                        .map {
+                            ApiResponse(
+                                    server = it.server,
+                                    response = AuthResponse(it.response.user_id),
+                                    response_detail = it.response_detail,
+                                    session = it.session,
+                                    code = it.code
+                            )
+                        }
+        )
     }
 
     override fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable {
@@ -154,6 +165,13 @@ class AuthRepositoryImp
     }
 
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return call(authRequest).ignoreElement()
+        return authRequest
+                .doOnSuccess {
+                    val token = it.session?.token
+                    if (token != null) {
+                        appData.login(token)
+                    }
+                }
+                .ignoreElement()
     }
 }
