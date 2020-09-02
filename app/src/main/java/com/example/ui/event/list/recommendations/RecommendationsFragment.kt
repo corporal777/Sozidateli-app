@@ -7,8 +7,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.Event
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.OrganizationsFilter
+import com.example.holders.EventDataListItem
 import com.example.holders.RecommendationsHeaderItem
 import com.example.holders.ScreenLabelItem
 import com.example.interfaces.ToolbarFragment
@@ -43,6 +45,12 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
                         { presenter.onMyEventsClick() }
                 )
         ))
+    }
+
+    override fun createEventDataListItem(event: Event): EventDataListItem {
+        return super.createEventDataListItem(event).apply {
+            showStartTime = false
+        }
     }
 
     override fun showSearch() {

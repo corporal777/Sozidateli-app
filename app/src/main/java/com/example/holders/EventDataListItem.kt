@@ -23,10 +23,16 @@ class EventDataListItem(
         private const val SPACE_NO_BREAK = "\u00A0"
     }
 
+    var showStartTime = true
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventAddress.apply {
-                val startTime = conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+                val startTime = if (showStartTime) {
+                    conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+                } else {
+                    null
+                }
                 val textList = listOfNotNull(formatAddress(), startTime)
                 text = textList.joinToString("$SPACE_NO_BREAK•$SPACE_NO_BREAK")
             }
@@ -34,20 +40,19 @@ class EventDataListItem(
 
             val dateStart = conferenceStart?.parseToDate(defaultServerDateFormatter)
 
+
             tvEventDay.apply {
-                val formatter = SimpleDateFormat("d", Locale("ru", "RU"))
-                val day = formatter.format(dateStart)
-                text = day
+                text = dateStart?.let { SimpleDateFormat("d", Locale("ru", "RU")).format(it) }
             }
 
             tvEventDate.apply {
-                val formatter = SimpleDateFormat("MMM\n‘yy", Locale("ru", "RU"))
-                val formatted = formatter.format(dateStart)
-                val result = formatted?.split("\n")?.mapIndexed { index, part ->
-                    if (index == 0 && part.length > 3) part.substring(0, 3)
-                    else part
-                }?.joinToString("\n")
-                text = result
+                text = dateStart
+                        ?.let { SimpleDateFormat("MMM\n‘yy", Locale("ru", "RU")).format(it) }
+                        ?.split("\n")?.mapIndexed { index, part ->
+                            if (index == 0 && part.length > 3) part.substring(0, 3)
+                            else part
+                        }
+                        ?.joinToString("\n")
             }
         }
     }

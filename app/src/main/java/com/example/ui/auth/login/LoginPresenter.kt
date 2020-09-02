@@ -25,6 +25,7 @@ class LoginPresenter
 
     companion object {
         private const val WRONG_PASSWORD_API_ERROR = "combination email and password not found"
+        private const val WRONG_EMAIL_API_ERROR = "combination user and username not found"
     }
 
     var login = ""
@@ -63,7 +64,10 @@ class LoginPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onError = {
-                            if ((it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR) == true) {
+                            val hasApiError = (it as? ApiError)
+                                    ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+
+                            if (hasApiError == true) {
                                 viewState.showWrongPasswordError()
                             } else {
                                 onReceiveError(it)

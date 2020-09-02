@@ -27,6 +27,7 @@ import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.layout_list.*
 
 abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(), EventListContract.View {
@@ -91,16 +92,20 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.email,
                     it.conferenceRegistrationClosed,
                     onEventClickListener,
-                    EventDataListItem(
-                            -it.id.toLong(),
-                            it.name,
-                            it.shortAddress ?: it.addressCity,
-                            it.conferenceStart,
-                            it.conferenceFirstActivityStart
-                    )
+                    createEventDataListItem(event = it)
             )
         })
         swipeToRefresh.isRefreshing = false
+    }
+
+    protected open fun createEventDataListItem(event: Event): EventDataListItem {
+        return EventDataListItem(
+                -event.id.toLong(),
+                event.name,
+                event.shortAddress ?: event.addressCity,
+                event.conferenceStart,
+                event.conferenceFirstActivityStart
+        )
     }
 
     override fun showEmptyListPlaceholder() {

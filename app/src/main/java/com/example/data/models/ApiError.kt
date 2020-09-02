@@ -10,7 +10,7 @@ class ApiError(
         return errors.joinToString("\n")
     }
 
-    fun hasError(error: String): Boolean {
-        return errors.contains(error)
+    fun hasError(vararg error: String): Boolean {
+        return errors.intersect(error.toList()).isNotEmpty()
     }
 }

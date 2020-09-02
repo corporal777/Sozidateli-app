@@ -165,13 +165,12 @@ class AuthRepositoryImp
     }
 
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return authRequest
-                .doOnSuccess {
-                    val token = it.session?.token
-                    if (token != null) {
-                        appData.login(token)
-                    }
-                }
+        return call(authRequest.doOnSuccess {
+            val token = it.session?.token
+            if (token != null) {
+                appData.login(token)
+            }
+        })
                 .ignoreElement()
     }
 }
