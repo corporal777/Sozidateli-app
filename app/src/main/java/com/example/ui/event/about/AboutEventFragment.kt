@@ -163,7 +163,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData.backgroundImage,
                         eventData.takeFormat(),
                         null,
-                        eventData.conferenceRegistrationClosed,
+                        !eventData.canRegister,
                         eventClickListener,
                         aboutItem,
                         false
@@ -213,7 +213,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             event.status == Event.Status.CONFERENCE_ENDS -> {
                 visibility = false
             }
-            event.conferenceRegistrationClosed -> {
+            !event.canRegister -> {
                 when (userRegistration) {
                     Event.RegistrationStatus.APPROVED -> {
                         textRes = R.string.event_action_show_event

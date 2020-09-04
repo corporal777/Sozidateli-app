@@ -90,7 +90,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.backgroundImage,
                     it.takeFormat(),
                     it.email,
-                    it.conferenceRegistrationClosed,
+                    !it.canRegister,
                     onEventClickListener,
                     createEventDataListItem(event = it)
             )
