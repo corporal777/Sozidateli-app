@@ -105,7 +105,9 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                         itemData.shortAddress ?: itemData.addressCity,
                         itemData.conferenceStart,
                         itemData.conferenceFirstActivityStart
-                )
+                ).apply {
+                    showStartTime = false
+                }
         )
     }
 
