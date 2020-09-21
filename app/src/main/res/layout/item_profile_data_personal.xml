@@ -80,7 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneConfirmed" />
 
     <TextView
         android:id="@+id/tvPhoneWork"
@@ -112,7 +112,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneWork" />
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
     <TextView
         android:id="@+id/tvPhoneMobile"
@@ -157,7 +157,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneConfirmed" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneWork" />
 
     <TextView
         android:id="@+id/tvGender"

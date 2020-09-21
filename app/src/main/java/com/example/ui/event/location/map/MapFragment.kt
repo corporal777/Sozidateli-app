@@ -27,7 +27,7 @@ import javax.inject.Provider
 import kotlin.math.roundToInt
 
 
-class MapFragment private constructor() : BaseFragment(), MapContract.View, OnMapReadyCallback {
+class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
 
     @InjectPresenter
     lateinit var presenter: MapPresenter

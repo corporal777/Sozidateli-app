@@ -73,8 +73,8 @@ data class EventData(
 )
 
 fun EventData.createMapInfo(): MapInfo? {
-    val lat = placeLat
-    val lon = placeLon
+    val lat = placeLat?.takeIf { it in -90.0..90.0 }
+    val lon = placeLon?.takeIf { it in -180.0..180.0 }
     val title = placeHowToGetTitle
     val description = placeHowToGet
 
