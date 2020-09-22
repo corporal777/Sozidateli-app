@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -138,7 +139,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             userRegistration: Event.RegistrationStatus?,
             pages: List<EventPage>,
             partners: List<EventParther>,
-            showContacts: Boolean
+            showContacts: Boolean,
+            userAgreement: String?
     ) {
         val aboutItem = EventDataAboutItem(
                 -eventData.id.toLong(),
@@ -178,12 +180,24 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                             userRegistration == Event.RegistrationStatus.APPROVED
 
                     val hasPages = pages.isNotEmpty()
+                    val hasAgreement = userAgreement.isNullOrEmpty().not()
+
                     add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
-                        hasBottomPadding = !hasRating && hasPages
+                        hasBottomPadding = !hasRating && !hasAgreement && hasPages
                     })
 
                     if (hasRating) {
                         add(EventPageItem(-100, getString(R.string.about_event_rate), presenter::onRateClick).apply {
+                            hasBottomPadding = !hasAgreement && hasPages
+                        })
+                    }
+
+                    if (hasAgreement) {
+                        add(EventPageItem(
+                                -110,
+                                getString(R.string.about_event_agreement),
+                                presenter::onAgreementClick
+                        ).apply {
                             hasBottomPadding = hasPages
                         })
                     }
@@ -353,7 +367,17 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         findNavController().navigate(R.id.speakers_list_fragment, EventSpeakersFragmentArgs.Builder(eventId).build().toBundle())
     }
 
-    override fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>, socialLinks: List<String>, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?) {
+    override fun showContacts(
+            eventName: String,
+            phones: List<PhoneAffiliation>,
+            emails: List<EmailAffiliation>,
+            webLinks: List<String>,
+            socialLinks: List<String>,
+            address: String?,
+            place: String?,
+            mapInfo: MapInfo?,
+            places: List<Place>?
+    ) {
         findNavController().navigate(R.id.contacts_fragment, EventContactsFragmentArgs.Builder(
                 eventName,
                 phones.toTypedArray(),
@@ -380,6 +404,15 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun showRating(eventId: String) {
         findNavController().navigate(R.id.event_rating_fragment, EventRatingFragmentArgs.Builder(eventId).build().toBundle())
+    }
+
+    override fun showAgreement(url: String) {
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.map_route_error, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun showOrganization(organization: String) {

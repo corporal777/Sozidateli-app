@@ -1,7 +1,6 @@
 package com.example.holders
 
-import android.view.LayoutInflater
-import android.widget.Button
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Tag
 import com.example.ui.views.TagChip
@@ -18,15 +17,19 @@ class TagsHorizontalListItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
+            btnMoreTags.apply {
+                setOnClickListener(onShowAllClick)
+                isVisible = tags.size >= 3
+            }
             tagGroup.apply {
                 removeAllViews()
 
-                LayoutInflater.from(context).inflate(R.layout.layout_tag_button, this, true).apply {
-                    findViewById<Button>(R.id.btnTag).apply {
-                        text = context.getText(R.string.schedule_show_all_tags)
-                        setOnClickListener(onShowAllClick)
-                    }
-                }
+//                LayoutInflater.from(context).inflate(R.layout.layout_tag_button, this, true).apply {
+//                    findViewById<Button>(R.id.btnTag).apply {
+//                        text = context.getText(R.string.schedule_show_all_tags)
+//                        setOnClickListener(onShowAllClick)
+//                    }
+//                }
 
                 tags.forEach { tag ->
                     val chip = TagChip(context).apply {

@@ -115,6 +115,8 @@
     <string name="about_event_contacts">Контакты мероприятия</string>
     <string name="about_event_speakers">Спикеры мероприятия</string>
     <string name="about_event_rate">Оценить мероприятие</string>
+    <string name="about_event_agreement">Пользовательское соглашение</string>
+    <string name="about_event_agreement_open_error">Не удалось открыть пользовательское соглашение</string>
     <string name="about_event_write_to_organization">Написать организатору</string>
     <string name="about_event_write_to_organization_title">Сообщение организатору</string>
     <string name="about_event_write_to_organization_message">Ответ будет направлен Вам на e-mail, указанный в профиле.</string>
@@ -500,6 +502,8 @@
     <string name="schedule_search_by_tags">Поиск по тегам</string>
     <string name="schedule_show_all_tags">Выбрать теги</string>
     <string name="schedule_clear_tags">Сбросить фильтр</string>
+    <string name="schedule_tags_title">Теги событий</string>
+    <string name="schedule_tags_show_all">Смотреть все</string>
 
     <string name="auth_sn_set_email_title">Установите email</string>
 

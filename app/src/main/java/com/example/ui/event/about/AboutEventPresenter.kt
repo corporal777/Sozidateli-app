@@ -50,7 +50,8 @@ class AboutEventPresenter
                     eventInfo.userRegistration?.status,
                     eventInfo.pages,
                     eventInfo.partners,
-                    hasContacts()
+                    hasContacts(),
+                    event.userAgreement
             )
 
             setActionButton(
@@ -66,6 +67,10 @@ class AboutEventPresenter
 
     override fun onRateClick() {
         viewState.showRating(eventId)
+    }
+
+    override fun onAgreementClick() {
+        event.event.userAgreement?.takeIf { it.isNotEmpty() }?.let { viewState.showAgreement(it) }
     }
 
     override fun onPageClick(page: EventPage) {

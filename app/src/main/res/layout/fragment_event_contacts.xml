@@ -29,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/profile_data_margin"
             android:layout_marginEnd="@dimen/profile_data_margin"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
             <FrameLayout
                 android:id="@+id/flMapContainer"
@@ -92,7 +93,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="20dp"
                 android:autoLink="all"
                 android:textSize="16sp"
                 tools:ignore="MissingPrefix"

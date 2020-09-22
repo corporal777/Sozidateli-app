@@ -19,8 +19,6 @@ class EventMyScheduleFragment : EventScheduleFragment<EventMySchedulePresenter>(
     @ProvidePresenter
     fun providePresenter(): EventMySchedulePresenter = presenterProvider.get()
 
-    override fun setTags(tags: List<Tag>?) {}
-
     override fun getTitle() = getString(R.string.schedule_title)
     override fun getEmptyDayPlaceholderText() = getString(R.string.schedule_my_empty_day_placeholder_title)
     override fun getEmptyDayPlaceholderDescription() = getString(R.string.schedule_my_empty_day_placeholder_description)

@@ -16,7 +16,8 @@ interface AboutEventContract {
                 userRegistration: Event.RegistrationStatus?,
                 pages: List<EventPage>,
                 partners: List<EventParther>,
-                showContacts: Boolean
+                showContacts: Boolean,
+                userAgreement: String?
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
@@ -48,6 +49,9 @@ interface AboutEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showRating(eventId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAgreement(url: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showOrganization(organization: String)
@@ -97,6 +101,7 @@ interface AboutEventContract {
         fun onWriteToOrganizationClick()
         fun onWriteToOrganizationMessage(message: String)
         fun onRateClick()
+        fun onAgreementClick()
         fun onOrganizationClick(organization: String)
 
         fun onActionCancel()

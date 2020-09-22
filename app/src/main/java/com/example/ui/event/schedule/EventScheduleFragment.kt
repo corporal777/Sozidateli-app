@@ -31,8 +31,8 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
             add(ScreenLabelItem(getTitle()))
-            add(calendarSection)
             add(tagsSection)
+            add(calendarSection)
             add(daySection)
             add(eventsSection)
         }
