@@ -6,6 +6,9 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -36,9 +39,12 @@ import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.ClickableSpan
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.*
+import kotlinx.android.synthetic.main.dialog_event_registration_agreement_no_form.view.*
 import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.fragment_search.recyclerView
 import kotlinx.android.synthetic.main.item_action_button.view.*
@@ -168,6 +174,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         !eventData.canRegister,
                         eventClickListener,
                         aboutItem,
+                        eventData.userAgreement,
                         false
                 ),
                 Section().apply {
@@ -259,7 +266,14 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     }
                     else -> {
                         textRes = R.string.event_action_participate
-                        clickAction = { presenter.onGoToEventClick() }
+                        clickAction = {
+                            val agreement = event.userAgreement
+                            if (agreement.isNullOrEmpty()) {
+                                presenter.onGoToEventClick()
+                            } else {
+                                showAgreementRegisterDialog(agreement)
+                            }
+                        }
                     }
                 }
             }
@@ -278,6 +292,58 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         }
 
         recyclerView.updatePadding(bottom = if (flRegister.isVisible) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
+    }
+
+    private fun showAgreementRegisterDialog(url: String) {
+        val view = layoutInflater.inflate(R.layout.dialog_event_registration_agreement_form, null).apply {
+            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
+                val linkStart = 11
+                val linkEnd = length
+                setSpan(ClickableSpan(drawUnderline = false) {
+                    showUserAgreement(url)
+                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+
+            tvAgree.apply {
+                text = agreementText
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+
+            cbAgree.setOnCheckedChangeListener { _, checked ->
+                btnPositive.isEnabled = checked
+            }
+        }
+
+        AlertDialog.Builder(requireContext())
+                .setView(view)
+                .create()
+                .apply {
+                    setOnShowListener {
+                        view.apply {
+                            btnPositive.apply {
+                                isEnabled = false
+                                setOnClickListener {
+                                    presenter.onGoToEventClick()
+                                    dismiss()
+                                }
+                            }
+
+                            btnNegative.setOnClickListener {
+                                dismiss()
+                            }
+                        }
+                    }
+                }
+                .show()
+    }
+
+    private fun showUserAgreement(url: String) {
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun setEventName(name: String) {
@@ -411,7 +477,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(viewIntent)
         } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.map_route_error, Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
         }
     }
 

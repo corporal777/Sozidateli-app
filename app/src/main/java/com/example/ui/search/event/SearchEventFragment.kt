@@ -107,7 +107,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                         itemData.conferenceFirstActivityStart
                 ).apply {
                     showStartTime = false
-                }
+                },
+                itemData.userAgreement
         )
     }
 

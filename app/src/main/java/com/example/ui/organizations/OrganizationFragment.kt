@@ -212,7 +212,8 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                                     it.shortAddress ?: it.addressCity,
                                     it.conferenceStart,
                                     it.conferenceFirstActivityStart
-                            )
+                            ),
+                            it.userAgreement
                     )
                 })
             }

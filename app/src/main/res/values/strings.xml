@@ -598,6 +598,8 @@
     <string name="event_register_sent_message">Теперь Вы можете перейти к мероприятию и составить свой календарь событий</string>
     <string name="event_register_sent_button">К мероприятию</string>
     <string name="event_register_available_extensions">Допустимые форматы: %s</string>
+    <string name="event_register_agreement_open_error">Чтобы участвовать в мероприятии, Вам необходимо ознакомиться и принять пользовательское соглашение</string>
+
 
     <string name="support_email_title">Запрос тех. поддержки</string>
     <string name="support_email">support@sozidateli.ru</string>

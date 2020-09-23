@@ -24,6 +24,9 @@ interface EventRegistrationContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEventRegisterConfirmation()
 
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun showAgreementRegisterDialog(url: String)
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)
 

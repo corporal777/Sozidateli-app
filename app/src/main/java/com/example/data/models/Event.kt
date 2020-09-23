@@ -48,7 +48,9 @@ data class Event(
         @SerializedName("conference_requests_receiving_closed")
         val conferenceRegistrationClosed: Boolean,
         @SerializedName("can_register")
-        val canRegister: Boolean
+        val canRegister: Boolean,
+        @SerializedName("user_agreement")
+        val userAgreement: String?
 ) {
 
     enum class Status {

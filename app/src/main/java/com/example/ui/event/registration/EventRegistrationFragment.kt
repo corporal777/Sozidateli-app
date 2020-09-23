@@ -1,9 +1,13 @@
 package com.example.ui.event.registration
 
 import android.app.Activity.RESULT_OK
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.NavOptions
@@ -26,11 +30,14 @@ import com.example.holders.registerEvent.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BottomDialog
+import com.example.util.ClickableSpan
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.view.*
 import kotlinx.android.synthetic.main.fragment_request.*
 import java.util.*
 import javax.inject.Inject
@@ -63,7 +70,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
     private val personalDataFileClickListener: OnPersonalDataFileClickListener = { presenter.onPersonalDataFileClick(it) }
     private val onFieldDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit = { presenter.onDataChange(it) }
 
-    private var bottomDialog: BottomDialog? = null
+    private var bottomDialog: Dialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -159,6 +166,55 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             setCancelable(false)
             bottomDialog = this
         }.show()
+    }
+
+    override fun showAgreementRegisterDialog(url: String) {
+        bottomDialog?.dismiss()
+
+        val dialog = BottomSheetDialog(requireContext()).apply {
+            setOnCancelListener { presenter.onRegisterCancelClick() }
+        }
+
+        val view = layoutInflater.inflate(R.layout.dialog_event_registration_agreement_no_form, null).apply {
+            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
+                val linkStart = 11
+                val linkEnd = length
+                setSpan(ClickableSpan(drawUnderline = false) {
+                    showUserAgreement(url)
+                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+
+            tvAgree.apply {
+                text = agreementText
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+
+            btnPositive.apply {
+                isEnabled = false
+                setOnClickListener {
+                    presenter.onRegisterClick()
+                    dialog.dismiss()
+                }
+            }
+
+            cbAgree.setOnCheckedChangeListener { _, checked ->
+                btnPositive.isEnabled = checked
+            }
+        }
+
+        dialog.apply {
+            setContentView(view)
+            show()
+        }
+    }
+
+    private fun showUserAgreement(url: String) {
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun showSuccessRegister(moderation: String?) {

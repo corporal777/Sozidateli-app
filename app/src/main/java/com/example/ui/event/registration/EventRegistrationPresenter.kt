@@ -69,7 +69,12 @@ class EventRegistrationPresenter
                         if (hasForm) {
                             checkDataValid()
                         } else {
-                            viewState.showEventRegisterConfirmation()
+                            val agreement = it.event.userAgreement
+                            if (agreement.isNullOrEmpty()) {
+                                viewState.showEventRegisterConfirmation()
+                            } else {
+                                viewState.showAgreementRegisterDialog(agreement)
+                            }
                         }
                     }
                 }

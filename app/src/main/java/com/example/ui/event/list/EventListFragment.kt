@@ -27,7 +27,6 @@ import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.layout_list.*
 
 abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(), EventListContract.View {
@@ -92,7 +91,8 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.email,
                     !it.canRegister,
                     onEventClickListener,
-                    createEventDataListItem(event = it)
+                    createEventDataListItem(event = it),
+                    it.userAgreement
             )
         })
         swipeToRefresh.isRefreshing = false
