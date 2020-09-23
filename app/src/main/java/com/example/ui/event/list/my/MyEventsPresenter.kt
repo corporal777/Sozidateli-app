@@ -44,12 +44,14 @@ class MyEventsPresenter
     override fun onPendingClick() = viewState.showPending()
     override fun onDeclinedClick() = viewState.showDeclined()
 
-    private fun getFilterData(): Map<String, String> {
-        return mapOf(Event.FILTER_REGISTRATION to when (filter) {
-            MyEventsFilter.ACCEPTED -> Event.FILTER_REGISTRATION_APPROVED
-            MyEventsFilter.PENDING -> Event.FILTER_REGISTRATION_PENDING
-            MyEventsFilter.DECLINED -> Event.FILTER_REGISTRATION_DECLINED
-            MyEventsFilter.NONE -> Event.FILTER_REGISTRATION_ANY_REGISTERED
-        })
+    private fun getFilterData(): Map<String, Any> {
+        return mapOf(
+                Event.FILTER_REGISTRATION to when (filter) {
+                    MyEventsFilter.ACCEPTED -> Event.FILTER_REGISTRATION_APPROVED
+                    MyEventsFilter.PENDING -> Event.FILTER_REGISTRATION_PENDING
+                    MyEventsFilter.DECLINED -> Event.FILTER_REGISTRATION_DECLINED
+                    MyEventsFilter.NONE -> Event.FILTER_REGISTRATION_ANY_REGISTERED
+                },
+                "show_hidden" to true)
     }
 }
