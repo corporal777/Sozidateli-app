@@ -14,32 +14,44 @@ data class EventRegisterField(
         @SerializedName("right_file")
         val rightFile: Document?,
         @SerializedName("right_file_description")
-        val rightFileDescription: String?
+        val rightFileDescription: String?,
+        val mask: String?
 ) {
 
     enum class Type {
         @SerializedName("string")
         STRING,
+
         @SerializedName("number")
         NUMBER,
+
         @SerializedName("date")
         DATE,
+
         @SerializedName("datetime")
         DATETIME,
+
         @SerializedName("checkbox")
         CHECKBOX,
+
         @SerializedName("selectbox")
         SELECT_BOX,
+
         @SerializedName("radiobox")
         RADIO_BOX,
+
         @SerializedName("file")
         FILE,
+
         @SerializedName("textarea")
         TEXT_AREA,
+
         @SerializedName("boolean")
         BOOLEAN,
+
         @SerializedName("passport")
         PASSPORT,
+
         @SerializedName("group")
         GROUP
     }
