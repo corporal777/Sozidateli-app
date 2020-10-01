@@ -197,7 +197,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     presenter.onHandleEvent(lastPath)
-                } else if (it.getQueryParameter(CHANGE_EMAIL) != null) {
+                } else if (lastPath == PATH_CHANGE_EMAIL) {
                     if (authEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(authEmail, authCode)
                     }

@@ -21,8 +21,6 @@ const val AUTH_CONFIRM_EMAIL_CODE = "code"
 
 const val RECOVERY_EMAIL = "recover_email"
 
-const val CHANGE_EMAIL = "change"
-
 
 const val FIELD_CHAT = "chat"
 const val FIELD_CHAT_ID = "chatId"
@@ -37,6 +35,7 @@ const val FIELD_ACTION = "action"
 const val PATH_SN_AUTHORIZATION = "social"
 const val FIELD_SN_AUTHORIZATION_USER_ID = "usa_id"
 const val PATH_EVENT = "event"
+const val PATH_CHANGE_EMAIL = "email-change"
 
 const val REQUEST_CODE_SELECT_PDF = 12
 const val REQUEST_CODE_PERMISSION_READ_FILE = 13
