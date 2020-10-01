@@ -1,6 +1,5 @@
 package com.example.holders.registerEvent
 
-import android.content.res.Configuration
 import android.text.InputFilter
 import android.text.InputType
 import android.text.Spanned
@@ -39,8 +38,7 @@ class RegisterEventStringItem(
                         maxLines = 8
                     }
                     EventRegisterField.Type.NUMBER -> {
-                        inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_MASK_CLASS
-                        setRawInputType(Configuration.KEYBOARD_QWERTY)
+                        inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                         fieldData.field.mask?.takeIf { it.isNotEmpty() }?.let {
                             filters = arrayOf(SpecialCharacterInputFilter(it))
                         }
