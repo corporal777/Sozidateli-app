@@ -20,6 +20,7 @@ const val AUTH_CONFIRM_EMAIL_EMAIL = "confirm_email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 
 const val RECOVERY_EMAIL = "recover_email"
+const val CHANGE_EMAIL = "email"
 
 
 const val FIELD_CHAT = "chat"

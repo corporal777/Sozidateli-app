@@ -191,6 +191,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
+                val changeEmail = it.getQueryParameter(CHANGE_EMAIL)
 
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
@@ -198,8 +199,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     presenter.onHandleEvent(lastPath)
                 } else if (lastPath == PATH_CHANGE_EMAIL) {
-                    if (authEmail != null && authCode != null) {
-                        presenter.onHandleChangeEmailConfirm(authEmail, authCode)
+                    if (changeEmail != null && authCode != null) {
+                        presenter.onHandleChangeEmailConfirm(changeEmail, authCode)
                     }
                 } else if (authEmail != null && authCode != null) {
                     presenter.onHandleAuthLink(authEmail, authCode)
