@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
@@ -155,7 +156,7 @@ class EventStatusItem(
                     textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_participate
                     clickAction = {
-                        if (userAgreement.isNullOrEmpty()) {
+                        if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || userAgreement.isNullOrEmpty()) {
                             onEventClickListener.onActionRegister(eventId)
                         } else {
                             showAgreementRegisterDialog(btnAction.context, userAgreement)

@@ -55,10 +55,12 @@ android {
 
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
+            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
         }
         debug {
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
+            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
         }
     }
 

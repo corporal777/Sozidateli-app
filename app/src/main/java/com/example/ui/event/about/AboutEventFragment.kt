@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.extensions.*
@@ -268,7 +269,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         textRes = R.string.event_action_participate
                         clickAction = {
                             val agreement = event.userAgreement
-                            if (agreement.isNullOrEmpty()) {
+                            if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || agreement.isNullOrEmpty()) {
                                 presenter.onGoToEventClick()
                             } else {
                                 showAgreementRegisterDialog(agreement)

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentResolver
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.UserEventData
 import com.example.data.models.ApiError
@@ -70,7 +71,7 @@ class EventRegistrationPresenter
                             checkDataValid()
                         } else {
                             val agreement = it.event.userAgreement
-                            if (agreement.isNullOrEmpty()) {
+                            if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || agreement.isNullOrEmpty()) {
                                 viewState.showEventRegisterConfirmation()
                             } else {
                                 viewState.showAgreementRegisterDialog(agreement)
