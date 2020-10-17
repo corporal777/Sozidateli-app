@@ -57,6 +57,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override val title: String? = null
 
+    override fun layout() = R.layout.fragment_about_event
+
     @InjectPresenter
     lateinit var presenter: AboutEventPresenter
 
@@ -155,7 +157,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 eventData.name,
                 null,
                 eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
-                eventData.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
+                eventData.conferenceRegistrationFinishDate
+                        ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
                 eventData.isFavorite ?: false,
                 { presenter.onChangeFavoriteClick() },
                 { eventData.organizationId?.let { presenter.onOrganizationClick(it) } }
@@ -496,6 +499,4 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         super.setupToolbarContent(toolbarContentActionBar)
         this.toolbarContentActionBar = toolbarContentActionBar
     }
-
-    override fun layout() = R.layout.fragment_about_event
 }

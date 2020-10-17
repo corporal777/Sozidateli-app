@@ -24,6 +24,9 @@ val dateFormatterFullMothNoYear: DateFormat
 val dateFormatterFullMothFullYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
 
+val dateFormatterShortDayFullMothFullYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+
 val defaultServerDateFormatter: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
@@ -104,13 +107,13 @@ fun String?.formatToEventDatesInterval(finish: String?): String? {
     val endCalendar = endDate?.calendar()?.takeIf { startCalendar?.isSameDay(it) != true }
 
     val startFormatter = if (startCalendar != null) {
-        SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+        SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
     } else {
         null
     }
 
     val endFormatter = if (endCalendar != null) {
-        SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+        SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
     } else {
         null
     }
