@@ -26,31 +26,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/event_schedule_sub_event_divider_height"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCacheData" />
-
-    <FrameLayout
-        android:id="@+id/placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView"
-        tools:visibility="visible">
-
-        <include
-            layout="@layout/item_no_data"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical" />
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tvCacheData"
+        tools:listitem="@layout/item_sub_event" />
 </androidx.constraintlayout.widget.ConstraintLayout>

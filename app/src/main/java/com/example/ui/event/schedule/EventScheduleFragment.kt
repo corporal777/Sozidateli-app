@@ -3,8 +3,6 @@ package com.example.ui.event.schedule
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.EventScheduleCalendarDay
@@ -18,7 +16,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_event_schedule.*
-import kotlinx.android.synthetic.main.item_no_data.*
 
 abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(), EventScheduleContract.View {
 
@@ -57,6 +54,8 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     private var calendarItem: CalendarHorizontalListItem? = null
+
+    override fun layout() = R.layout.fragment_event_schedule
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -113,17 +112,13 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     private fun showPlaceholder(title: String, description: String?) {
-        tvTitle.text = title
-        tvDescription.apply {
-            text = description
-            isVisible = !description.isNullOrEmpty()
-        }
-        placeholder.visibility = VISIBLE
+        eventsSection.update(listOf(NoDataItem(
+                title = title,
+                description = description
+        )))
     }
 
-    override fun hidePlaceholder() {
-        placeholder.visibility = GONE
-    }
+    override fun hidePlaceholder() = Unit
 
     override fun showCurrentDay(day: EventScheduleCalendarDay) {
         daySection.update(listOf(DayHeaderItem(day.millis)))
@@ -152,8 +147,6 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     override fun hideDataFormCacheMessage() {
         tvCacheData.visibility = GONE
     }
-
-    override fun layout() = R.layout.fragment_event_schedule
 
     abstract fun getTitle(): String
     abstract fun getEmptyDayPlaceholderText(): String

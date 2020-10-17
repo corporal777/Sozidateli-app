@@ -23,10 +23,10 @@ class NoDataPlaceholderLinearLayoutManager : LinearLayoutManager {
         if (child.id != R.id.noDataPlaceholder || lp.viewAdapterPosition < itemCount - 1)
             return super.layoutDecoratedWithMargins(child, left, top, right, bottom)
 
-        val parentBottom = height - paddingBottom
+        val parentBottom = height
         val heightDifference = parentBottom - bottom
         return if (heightDifference > 0) {
-            super.layoutDecoratedWithMargins(child, left, top, right, top + heightDifference)
+            super.layoutDecoratedWithMargins(child, left, top, right, parentBottom)
         } else {
             super.layoutDecoratedWithMargins(child, left, top, right, bottom)
         }
