@@ -22,8 +22,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 41
-        versionName "0.9.41"
+        versionCode 42
+        versionName "0.9.42"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,7 +34,7 @@ android {
 
     signingConfigs {
         def localFile = rootProject.file("release.properties")
-        def propertiesFile = localFile.exists() ? localFile : new File("/home/service/keystore/heinz/release.properties")
+        def propertiesFile = localFile.exists() ? localFile : new File("/home/service/keystore/fond/release.properties")
         if (propertiesFile.exists()) {
             def properties = new Properties()
             properties.load(new FileInputStream(propertiesFile))
@@ -56,11 +56,44 @@ android {
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+
+            applicationVariants.all { variant ->
+                def buildType = variant.buildType.name
+                variant.outputs.all {
+                    outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
+                }
+            }
+
+            manifestPlaceholders = [enableCrashReporting: "true"]
         }
         debug {
-            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
+            applicationVariants.all { variant ->
+                def buildType = variant.buildType.name
+                variant.outputs.all {
+                    outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
+                }
+            }
+
+            manifestPlaceholders = [enableCrashReporting: "false"]
+        }
+        beta {
+            initWith(debug)
+            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+            matchingFallbacks = ['debug', 'release']
+        }
+        "new" {
+            initWith(debug)
+            buildConfigField "String", "API_URL", "\"http://new.sozidateli-houseofapps.ru/\""
+            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+            matchingFallbacks = ['debug', 'release']
+        }
+    }
+
+    variantFilter { variant ->
+        if (variant.name == "debug") {
+            setIgnore(true)
         }
     }
 
