@@ -85,7 +85,7 @@ android {
         }
         "new" {
             initWith(debug)
-            buildConfigField "String", "API_URL", "\"http://new.sozidateli-houseofapps.ru/\""
+            buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
             matchingFallbacks = ['debug', 'release']
         }
