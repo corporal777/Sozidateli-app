@@ -33,7 +33,6 @@
         android:layout_marginBottom="4dp"
         android:textColor="@color/chat_message_date"
         android:textSize="13sp"
-        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tvChatMessage"
         app:layout_constraintStart_toStartOf="@+id/tvChatMessage"

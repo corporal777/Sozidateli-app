@@ -28,7 +28,7 @@ class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
 
     override fun setData(tags: List<Tag>) {
         tags.forEach { tag ->
-            val chip = TagChip(context).apply {
+            val chip = TagChip(requireContext()).apply {
                 text = tag.name
                 isChecked = tag.isSelected
                 setOnCheckedChangeListener { _, isChecked ->
