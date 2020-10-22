@@ -592,7 +592,7 @@
     <string name="event_register_no_form_positive">Да, даю согласие</string>
     <string name="event_register_no_form_negative">Отменить</string>
     <string name="event_register_sent_moderate_title">Ваша заявка на участие в мероприятии отправлена</string>
-    <string name="event_register_sent_moderate_message">Организаторы рассмотрят ее в ближайшее время</string>
+    <string name="event_register_sent_moderate_message">Организаторы рассмотрят ее в\nближайшее время</string>
     <string name="event_register_sent_moderate_button">К списку мероприятий</string>
     <string name="event_register_sent_title">Заявка успешно отправлена</string>
     <string name="event_register_sent_message">Теперь Вы можете перейти к мероприятию и составить свой календарь событий</string>
