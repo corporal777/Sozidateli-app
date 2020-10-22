@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import withLoadingDialog
@@ -63,6 +64,11 @@ class ProfilePresenter
                 }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({}, {})
+                .subscribeBy(
+                        onError = {
+                            it.printStackTrace()
+                            viewState.showRequestErrorMessage()
+                        }
+                )
     }
 }
