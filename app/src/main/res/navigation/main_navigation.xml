@@ -301,8 +301,8 @@
             app:destination="@+id/about_fragment" />
 
         <action
-            android:id="@+id/profile_to_user"
-            app:destination="@+id/user_fragment" />
+            android:id="@+id/profile_to_user_profile"
+            app:destination="@+id/user_profile_fragment" />
 
         <action
             android:id="@+id/profile_to_favorite"
@@ -472,6 +472,11 @@
             android:id="@+id/user_to_organization"
             app:destination="@id/organization_fragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/user_profile_fragment"
+        android:name="com.example.ui.userprofile.UserProfileFragment"
+        tools:layout="@layout/fragment_user" />
 
     <fragment
         android:id="@+id/user_edit_fragment"

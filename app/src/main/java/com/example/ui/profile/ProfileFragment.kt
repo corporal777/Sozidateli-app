@@ -60,7 +60,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showProfile(uid: String) {
-        findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
+        findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
     }
 
     override fun showFavorites() {

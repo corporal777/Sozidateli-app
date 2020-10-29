@@ -585,6 +585,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="event_to_notifications">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="main_to_profile">
                               <value>
                                 <LayoutPositions />
@@ -980,6 +985,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="recommendations_fragment_to_notifications_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="recommendations_fragment_to_profile_fragment">
                               <value>
                                 <LayoutPositions />
@@ -1223,6 +1233,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="user_profile_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

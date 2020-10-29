@@ -622,4 +622,12 @@
 
     <string name="event_register_check_fields">Чтобы подать заявку на участие в мероприятии, Вам необходимо заполнить поля профиля:</string>
     <string name="event_register_check_click_field">профиля</string>
+
+    <string name="user_profile_label">Профиль</string>
+    <string name="user_profile_edit">Редактировать</string>
+    <string name="user_profile_main_info">Основная информация</string>
+    <string name="user_profile_contacts">Контакты</string>
+    <string name="user_profile_interests">Интересы</string>
+    <string name="user_profile_education">Образование</string>
+    <string name="user_profile_experience">Опыт работы</string>
 </resources>
