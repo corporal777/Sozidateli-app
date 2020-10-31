@@ -279,6 +279,7 @@
     <string name="photo_alert_title">Открыть камеру или галерею?</string>
     <string name="photo_alert_camera">Камера</string>
     <string name="photo_alert_gallery">Галерея</string>
+    <string name="photo_alert_remove">Удалить</string>
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
 

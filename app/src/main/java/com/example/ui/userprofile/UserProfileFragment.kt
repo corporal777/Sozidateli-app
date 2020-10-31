@@ -2,6 +2,7 @@ package com.example.ui.userprofile
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -42,16 +43,30 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
         btnExperience.setOnClickListener(presenter::onExperienceClick)
     }
 
-    override fun setUser(user: User?) {
+    override fun onUserUpdated(user: User?) {
         user ?: return
         ivAvatar.apply {
-            val avatarUrl = user.user_avatar
+            val avatarUrl = user.user_avatar?.takeIf { it.isNotBlank() }
             clipToOutline = true
             transitionName = avatarUrl
             Picasso.get()
                     .load(avatarUrl)
                     .placeholder(R.drawable.avatar_placeholder_rectangle)
+                    .error(R.drawable.avatar_placeholder_rectangle)
                     .into(this)
         }
+    }
+
+    override fun showTakePictureChooser(canRemove: Boolean) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.photo_alert_title)
+                .apply {
+                    if (canRemove) {
+                        setNeutralButton(R.string.photo_alert_remove) { _, _ -> presenter.onRemovePhotoClick() }
+                    }
+                }
+                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+                .show()
     }
 }

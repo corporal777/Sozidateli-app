@@ -1,18 +1,17 @@
 package com.example.ui.userprofile
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.user.User
-import com.example.ui.base.BaseContract
+import com.example.ui.userprofile.base.BaseUserProfileContract
 
 interface UserProfileContract {
-    interface View : BaseContract.View {
+    interface View : BaseUserProfileContract.View {
 
-        @StateStrategyType(AddToEndStrategy::class)
-        fun setUser(user: User?)
+        @StateStrategyType(SkipStrategy::class)
+        fun showTakePictureChooser(canRemove: Boolean)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseUserProfileContract.Presenter {
 
         fun onEditAvatarClick()
         fun onMainDataClick()
@@ -20,5 +19,9 @@ interface UserProfileContract {
         fun onInterestsClick()
         fun onEducationClick()
         fun onExperienceClick()
+
+        fun onTakePhotoFromGalleryClick()
+        fun onTakePhotoFromCameraClick()
+        fun onRemovePhotoClick()
     }
 }

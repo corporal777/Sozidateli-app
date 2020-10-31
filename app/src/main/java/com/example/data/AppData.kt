@@ -95,6 +95,10 @@ class AppData(
     fun getUser(): User = user
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
+    fun updateUser(update: User.() -> Unit) {
+        userChangeSubject.onNext(getUser().apply(update).asOptional())
+    }
+
     fun login(token: String) {
         isLoggedOut = false
         this.token = token
