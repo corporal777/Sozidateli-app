@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
@@ -86,6 +87,6 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileMainDataFragmentDirections.mainDataToEdit())
+        findNavController().navigate(UserProfileMainDataFragmentDirections.mainDataToEdit(UserEditDataType.PERSONAL))
     }
 }

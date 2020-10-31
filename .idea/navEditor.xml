@@ -1258,7 +1258,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="user_profile_main_data_efragment">
+                  <entry key="user_profile_main_data_edit_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -1278,6 +1278,15 @@
                             <option name="x" value="12" />
                             <option name="y" value="12" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="main_data_to_edit">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

@@ -488,17 +488,12 @@
         tools:layout="@layout/fragment_user_profile_main_data">
         <action
             android:id="@+id/main_data_to_edit"
-            app:destination="@+id/user_profile_main_data_edit_fragment" />
+            app:destination="@+id/user_edit_fragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/user_profile_main_data_edit_fragment"
-        android:name="com.example.ui.userprofile.maindataedit.UserProfileMainDataEditFragment"
-        tools:layout="@layout/fragment_user_profile_main_data_edit" />
-
-    <fragment
         android:id="@+id/user_edit_fragment"
-        android:name="com.example.ui.user.edit.UserEditFragment"
+        android:name="com.example.ui.userprofile.edit.UserEditFragment"
         tools:layout="@layout/fragment_user">
         <argument
             android:name="type"

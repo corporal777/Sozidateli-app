@@ -1,4 +1,4 @@
-package com.example.ui.user.edit
+package com.example.ui.userprofile.edit
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException

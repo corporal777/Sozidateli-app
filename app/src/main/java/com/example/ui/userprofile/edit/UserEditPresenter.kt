@@ -1,4 +1,4 @@
-package com.example.ui.user.edit
+package com.example.ui.userprofile.edit
 
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState

@@ -1,4 +1,4 @@
-package com.example.ui.user.phoneconfirm
+package com.example.ui.userprofile.phoneconfirm
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData

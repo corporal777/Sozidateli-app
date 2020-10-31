@@ -1,4 +1,4 @@
-package com.example.ui.user.phoneconfirm
+package com.example.ui.userprofile.phoneconfirm
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy

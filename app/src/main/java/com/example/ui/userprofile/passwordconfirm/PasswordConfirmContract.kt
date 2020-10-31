@@ -1,4 +1,4 @@
-package com.example.ui.user.passwordconfirm
+package com.example.ui.userprofile.passwordconfirm
 
 import com.example.ui.base.BaseContract
 

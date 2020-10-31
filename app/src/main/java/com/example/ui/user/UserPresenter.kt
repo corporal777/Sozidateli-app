@@ -84,7 +84,7 @@ class UserPresenter
                 .subscribe({
                     profileUserData = ProfileUserData(
                             it,
-                            isCurrentUser()
+                            false
                     )
                     viewState.apply {
                         setUser(profileUserData)

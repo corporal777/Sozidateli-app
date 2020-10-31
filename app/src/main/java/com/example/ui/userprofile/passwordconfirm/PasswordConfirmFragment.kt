@@ -1,4 +1,4 @@
-package com.example.ui.user.passwordconfirm
+package com.example.ui.userprofile.passwordconfirm
 
 import android.os.Bundle
 import android.view.View

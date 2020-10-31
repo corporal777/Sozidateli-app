@@ -1,4 +1,4 @@
-package com.example.ui.user.passwordconfirm
+package com.example.ui.userprofile.passwordconfirm
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.ApiError
