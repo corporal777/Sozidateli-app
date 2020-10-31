@@ -365,7 +365,7 @@
     <string name="profile_events">Мероприятия</string>
     <string name="profile_interests">Интересы</string>
     <string name="profile_notifications_has_new">У вас есть непрочитанные уведомления</string>
-    <string name="profile_uid">ID%d</string>
+    <string name="profile_uid">ID %d</string>
     <string name="profile_show_in_profile">Отображать в профиле</string>
     <string name="profile_date_start_educate">Дата начала обучения</string>
     <string name="profile_date_end_educate">Дата окончания обучения</string>
@@ -626,9 +626,29 @@
 
     <string name="user_profile_label">Профиль</string>
     <string name="user_profile_edit">Редактировать</string>
+    <string name="user_profile_save">Сохранить</string>
     <string name="user_profile_main_info">Основная информация</string>
     <string name="user_profile_contacts">Контакты</string>
     <string name="user_profile_interests">Интересы</string>
     <string name="user_profile_education">Образование</string>
     <string name="user_profile_experience">Опыт работы</string>
+
+    <string name="user_profile_last_name">Фамилия</string>
+    <string name="user_profile_last_name_hint">Ваша фамилия</string>
+    <string name="user_profile_name">Имя</string>
+    <string name="user_profile_name_hint">Ваше имя</string>
+    <string name="user_profile_middle_name">Отчество</string>
+    <string name="user_profile_middle_name_hint">Ваше отчество</string>
+    <string name="user_profile_status">Статус</string>
+    <string name="user_profile_status_hint">Нет статуса</string>
+    <string name="user_profile_birthday">Дата рождения</string>
+    <string name="user_profile_birthday_hint">-</string>
+    <string name="user_profile_gender">Пол</string>
+    <string name="user_profile_gender_hint">Не указан</string>
+    <string name="user_profile_address">Регион и населенный пункт фактического проживания</string>
+    <string name="user_profile_address_hint">Не указан</string>
+    <string name="user_profile_additional">Дополнительные сведения</string>
+    <string name="user_profile_additional_hint">Не указано</string>
+    <string name="user_profile_files">Файлы</string>
+    <string name="user_profile_files_hint">Не указано</string>
 </resources>

@@ -923,7 +923,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="profile_to_user">
+                            <entry key="profile_to_user_profile">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -1238,6 +1238,39 @@
                     </value>
                   </entry>
                   <entry key="user_profile_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="profile_to_main_data">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="user_profile_main_data_efragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="user_profile_main_data_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

@@ -9,6 +9,9 @@ interface UserProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showTakePictureChooser(canRemove: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showMainData()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

@@ -2,6 +2,7 @@ package com.example.data.models.user
 
 import com.example.data.models.*
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.USER_MIDDLE_NAME_EMPTY
 import com.google.gson.annotations.SerializedName
 
 data class User(
@@ -96,7 +97,7 @@ data class User(
         }
 
     fun getMiddleName(): String? {
-        return user_middle_name?.let { if (it == "-" || it.isEmpty()) null else it }
+        return user_middle_name?.let { if (it == USER_MIDDLE_NAME_EMPTY || it.isEmpty()) null else it }
     }
 
     fun getUserSubscribeAction(): UserSubscribeButton.Action? {
@@ -153,8 +154,10 @@ data class User(
     enum class Status {
         @SerializedName("LOW_PROTECTION")
         LOW_PROTECTION,
+
         @SerializedName("MID_PROTECTION")
         MID_PROTECTION,
+
         @SerializedName("MAX_PROTECTION")
         MAX_PROTECTION
     }

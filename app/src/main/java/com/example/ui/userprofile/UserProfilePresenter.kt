@@ -11,7 +11,6 @@ import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -26,26 +25,6 @@ class UserProfilePresenter @Inject constructor(
     override fun onEditAvatarClick() {
         val avatar = user.user_avatar?.takeIf { it.isNotBlank() }
         viewState.showTakePictureChooser(avatar != null)
-    }
-
-    override fun onMainDataClick() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onContactsClick() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onInterestsClick() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onEducationClick() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onExperienceClick() {
-        TODO("Not yet implemented")
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -65,12 +44,9 @@ class UserProfilePresenter @Inject constructor(
                 .flatMap { userRepository.uploadAvatar(it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            it.printStackTrace()
-                        },
+                .subscribeSimple(
                         onSuccess = {
-                            updateUser {
+                            updateUserInternal {
                                 user_avatar = it.user_avatar
                             }
                         }
@@ -81,15 +57,30 @@ class UserProfilePresenter @Inject constructor(
         compositeDisposable += userRepository.updateUser(mapOf(User.FIELD_USER_AVATAR to null))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            it.printStackTrace()
-                        },
+                .subscribeSimple(
                         onSuccess = {
-                            updateUser {
+                            updateUserInternal {
                                 user_avatar = it.user_avatar
                             }
                         }
                 )
+    }
+
+    override fun onMainDataClick() = viewState.showMainData()
+
+    override fun onContactsClick() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onInterestsClick() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onEducationClick() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onExperienceClick() {
+        TODO("Not yet implemented")
     }
 }

@@ -476,7 +476,25 @@
     <fragment
         android:id="@+id/user_profile_fragment"
         android:name="com.example.ui.userprofile.UserProfileFragment"
-        tools:layout="@layout/fragment_user" />
+        tools:layout="@layout/fragment_user">
+        <action
+            android:id="@+id/profile_to_main_data"
+            app:destination="@+id/user_profile_main_data_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_profile_main_data_fragment"
+        android:name="com.example.ui.userprofile.maindata.UserProfileMainDataFragment"
+        tools:layout="@layout/fragment_user_profile_main_data">
+        <action
+            android:id="@+id/main_data_to_edit"
+            app:destination="@+id/user_profile_main_data_edit_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_profile_main_data_edit_fragment"
+        android:name="com.example.ui.userprofile.maindataedit.UserProfileMainDataEditFragment"
+        tools:layout="@layout/fragment_user_profile_main_data_edit" />
 
     <fragment
         android:id="@+id/user_edit_fragment"

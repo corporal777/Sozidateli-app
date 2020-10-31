@@ -12,7 +12,7 @@ data class RecommendationFile(
         var url: String?
 ) : Parcelable {
 
-    companion object {
-        const val ID_INVALID = -1
+    fun getReadableName(): String {
+        return desc?.takeIf { it.isNotBlank() } ?: name?.takeIf { it.isNotBlank() } ?: "file"
     }
 }

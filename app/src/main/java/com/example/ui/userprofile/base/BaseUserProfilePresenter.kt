@@ -5,9 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.user.User
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 
 abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
         private val appData: AppData
@@ -19,18 +17,17 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
     @CallSuper
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        val updated = kotlin.runCatching { viewState.onUserUpdated(user) }.isSuccess
+
         compositeDisposable += appData.userChangeSubject
+                .skip(if (updated) 1 else 0)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            it.printStackTrace()
-                        },
+                .subscribeSimple(
                         onNext = {
                             viewState.onUserUpdated(it.value)
                         }
                 )
     }
 
-    protected fun updateUser(update: User.() -> Unit) = appData.updateUser(update)
+    protected fun updateUserInternal(update: User.() -> Unit) = appData.updateUser(update)
 }

@@ -3,6 +3,7 @@ package com.example.ui.userprofile
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -68,5 +69,9 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
                 .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
                 .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
                 .show()
+    }
+
+    override fun showMainData() {
+        findNavController().navigate(UserProfileFragmentDirections.profileToMainData())
     }
 }
