@@ -1237,6 +1237,27 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="user_profile_ed_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="to_edit">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="user_profile_fragment">
                     <value>
                       <LayoutPositions>
@@ -1248,6 +1269,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="profile_to_interests">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="profile_to_main_data">
                               <value>
                                 <LayoutPositions />

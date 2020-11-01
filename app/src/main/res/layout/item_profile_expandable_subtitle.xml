@@ -10,7 +10,7 @@
         fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_data_margin"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:gravity="center_vertical"

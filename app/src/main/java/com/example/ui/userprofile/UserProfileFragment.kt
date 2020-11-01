@@ -84,7 +84,7 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
     }
 
     override fun showEducation() {
-        TODO("Not yet implemented")
+        findNavController().navigate(UserProfileFragmentDirections.profileToEducation())
     }
 
     override fun showExperience() {

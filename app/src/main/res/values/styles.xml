@@ -285,8 +285,8 @@
         <item name="android:textColor">@color/profile_title_text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginStart">@dimen/profile_data_margin</item>
-        <item name="android:layout_marginEnd">@dimen/profile_data_margin</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 
     <style name="Profile.User.Title" parent="Profile.Title">
@@ -301,8 +301,8 @@
         <item name="android:textColorHint">@color/profile_data_text_hint</item>
         <item name="android:textSize">16sp</item>
         <item name="android:layout_marginBottom">16dp</item>
-        <item name="android:layout_marginStart">@dimen/profile_data_margin</item>
-        <item name="android:layout_marginEnd">@dimen/profile_data_margin</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 
     <style name="Profile.User.Data" parent="Profile.Data">

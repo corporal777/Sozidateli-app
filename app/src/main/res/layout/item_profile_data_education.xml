@@ -69,4 +69,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInstitutionTitle"
         tools:text="Ленинградский технологический институт холодной промышленности" />
+
+    <View
+        style="@style/ViewDivider.Horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSpecialty" />
 </androidx.constraintlayout.widget.ConstraintLayout>
