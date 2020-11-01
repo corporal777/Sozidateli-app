@@ -59,6 +59,7 @@ import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.userprofile.UserProfileFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
+import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
@@ -209,6 +210,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserProfileEducationFragment(): UserProfileEducationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserProfileExperienceFragment(): UserProfileExperienceFragment
 
     @ContributesAndroidInjector
     abstract fun contributeUserEditFragment(): UserEditFragment
