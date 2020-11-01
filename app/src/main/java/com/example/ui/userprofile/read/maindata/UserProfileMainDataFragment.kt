@@ -1,4 +1,4 @@
-package com.example.ui.userprofile.maindata
+package com.example.ui.userprofile.read.maindata
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -87,6 +87,6 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileMainDataFragmentDirections.mainDataToEdit(UserEditDataType.PERSONAL))
+        findNavController().navigate(UserProfileMainDataFragmentDirections.toEdit(UserEditDataType.PERSONAL))
     }
 }

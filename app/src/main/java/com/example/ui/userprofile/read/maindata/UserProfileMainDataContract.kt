@@ -1,4 +1,4 @@
-package com.example.ui.userprofile.maindata
+package com.example.ui.userprofile.read.maindata
 
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType

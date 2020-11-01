@@ -12,6 +12,18 @@ interface UserProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showMainData()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showContacts()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showInterests()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEducation()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showExperience()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

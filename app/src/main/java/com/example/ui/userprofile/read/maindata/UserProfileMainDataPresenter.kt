@@ -1,4 +1,4 @@
-package com.example.ui.userprofile.maindata
+package com.example.ui.userprofile.read.maindata
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData

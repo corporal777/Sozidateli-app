@@ -68,19 +68,11 @@ class UserProfilePresenter @Inject constructor(
 
     override fun onMainDataClick() = viewState.showMainData()
 
-    override fun onContactsClick() {
-        TODO("Not yet implemented")
-    }
+    override fun onContactsClick() = viewState.showContacts()
 
-    override fun onInterestsClick() {
-        TODO("Not yet implemented")
-    }
+    override fun onInterestsClick() = viewState.showInterests()
 
-    override fun onEducationClick() {
-        TODO("Not yet implemented")
-    }
+    override fun onEducationClick() = viewState.showEducation()
 
-    override fun onExperienceClick() {
-        TODO("Not yet implemented")
-    }
+    override fun onExperienceClick() = viewState.showExperience()
 }
