@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="2dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvFileName"
@@ -49,18 +49,9 @@
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="12dp"
         android:text="@string/profile_edit_additional_data_rename_file"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFileName" />
-
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEdit"
-        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

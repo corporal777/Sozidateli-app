@@ -419,7 +419,7 @@
     <string name="profile_work_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_notes">Примечания</string>
     <string name="profile_files_title">Файлы рекомендаций</string>
-    <string name="profile_files">Файлы рекомендаций, писем, отзывов, характеристик</string>
+    <string name="profile_files">Файлы</string>
     <string name="profile_edit_title">Редактирование</string>
     <string name="profile_edit_name_and_photo">ФИО и фото</string>
     <string name="profile_edit_change_photo">Изменить фото</string>

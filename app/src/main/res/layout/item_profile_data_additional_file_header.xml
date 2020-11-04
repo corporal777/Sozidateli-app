@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -12,9 +13,6 @@
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:text="@string/profile_files"
         android:textColor="@color/profile_section_subtitle_text"
-        android:textSize="17sp" />
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="16dp" />
+        android:textSize="17sp"
+        android:textStyle="bold" />
 </LinearLayout>

@@ -32,6 +32,9 @@ interface UserEditContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setPersonalData(user: User)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateFilesList(files: List<RecommendationFile>?)
+
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
 

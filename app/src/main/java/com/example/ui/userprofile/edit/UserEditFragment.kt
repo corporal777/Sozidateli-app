@@ -28,6 +28,7 @@ import com.example.data.models.UserInterest
 import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
+import com.example.extensions.findGroupBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -139,24 +140,29 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override fun setPersonalData(user: User) {
         val dataItem = ProfileDataPersonalEditItem(
+                1,
                 requireContext(),
-                user.user_email,
-                user.user_email_show,
-                user.user_phone_work,
-                user.user_phone_work_show,
-                user.user_phone,
-                user.user_phone_show,
-                user.user_phone_confirmed,
+                user.user_name,
+                user.user_last_name,
+                user.user_middle_name,
                 user.user_gender,
                 user.user_birthday,
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
-                user.social_links,
-                { presenter.onChangeEmailClick() },
-                { presenter.onConfirmPhoneClick(it) }
+                user.user_notes
         )
 
-        adapter.update(listOf(dataItem))
+        val files = ProfileDataAdditionalFilesEditGroup(
+                2,
+                requireContext(),
+                user.attached_recomendation_files ?: emptyList(),
+                { presenter.onAddFileClick() },
+                { presenter.onFileClick(it) },
+                { presenter.onEditFileClick(it) },
+                { presenter.onSaveAdditionalFilesClick(it) }
+        )
+
+        adapter.update(listOf(dataItem, files))
 
         onSaveClick = {
             recyclerView.requestFocus()
@@ -164,6 +170,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.onSavePersonalClick(dataItem.getDataToSave())
             }
         }
+    }
+
+    override fun updateFilesList(files: List<RecommendationFile>?) {
+        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditGroup> {
+            true
+        }?.updateFiles(files ?: emptyList())
     }
 
     override fun showChangeEmail() {
@@ -302,6 +314,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     override fun setAdditionalFilesData(user: User) {
         adapter.update(listOf(ProfileDataAdditionalFilesEditGroup(
+                1,
                 requireContext(),
                 user.attached_recomendation_files ?: emptyList(),
                 { presenter.onAddFileClick() },

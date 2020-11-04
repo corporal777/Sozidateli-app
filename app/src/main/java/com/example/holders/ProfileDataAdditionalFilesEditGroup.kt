@@ -9,6 +9,7 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class ProfileDataAdditionalFilesEditGroup(
+        private val id: Long,
         context: Context,
         files: List<RecommendationFile>,
         addFileClickListener: () -> Unit,
@@ -18,9 +19,9 @@ class ProfileDataAdditionalFilesEditGroup(
 ) : NestedGroup() {
 
     private val fileGroup = Section().apply {
-//        setHeader(ProfileDataAdditionalFileHeaderItem(ID_FILES))
+        setHeader(ProfileDataAdditionalFileHeaderItem(id))
     }
-    private val addItem = ProfileButtonEditItem(ID_ADD, context.getString(R.string.add_file), addFileClickListener).apply {
+    private val addItem = ProfileButtonEditItem(id + 1, context.getString(R.string.add_file), addFileClickListener).apply {
         hasDivider = false
         compactMargin = true
     }
@@ -28,9 +29,15 @@ class ProfileDataAdditionalFilesEditGroup(
     private val fileItems = mutableListOf<ProfileDataFileEditableItem>()
 
     init {
-        fileItems.addAll(files.map { createFileItem(it) })
-        add(fileGroup.apply { addAll(fileItems) })
+        updateFiles(files)
+        add(fileGroup)
         add(addItem)
+    }
+
+    fun updateFiles(files: List<RecommendationFile>) {
+        fileItems.clear()
+        fileItems.addAll(files.mapIndexed { index, file -> createFileItem(id + 2 + index, file) })
+        fileGroup.update(fileItems)
     }
 
     override fun getGroup(position: Int): Group {
@@ -53,9 +60,9 @@ class ProfileDataAdditionalFilesEditGroup(
         return 2
     }
 
-    private fun createFileItem(file: RecommendationFile): ProfileDataFileEditableItem {
+    private fun createFileItem(id: Long, file: RecommendationFile): ProfileDataFileEditableItem {
         return ProfileDataFileEditableItem(
-                ID_FILE + file.id,
+                id,
                 file,
                 onFileClick,
                 onFileEditClick,
@@ -65,11 +72,5 @@ class ProfileDataAdditionalFilesEditGroup(
                     ))
                 }
         )
-    }
-
-    companion object {
-        private const val ID_ADD = 3L
-        private const val ID_FILES = 3L
-        private const val ID_FILE = 4L
     }
 }

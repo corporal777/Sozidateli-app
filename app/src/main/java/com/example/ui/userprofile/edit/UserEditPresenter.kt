@@ -118,17 +118,14 @@ class UserEditPresenter
     override fun onSavePersonalClick(data: Map<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
-                user_email = it.user_email
-                user_email_show = it.user_email_show
-                user_phone_work = it.user_phone_work
-                user_phone_work_show = it.user_phone_work_show
-                user_phone = it.user_phone
-                user_phone_show = it.user_phone_show
+                user_name = it.user_name
+                user_last_name = it.user_last_name
+                user_middle_name = it.user_middle_name
                 user_gender = it.user_gender
                 user_birthday = it.user_birthday
                 user_birthday_show = it.user_birthday_show
-                social_links = it.social_links
                 user_address = it.user_address
+                user_short_address = it.user_short_address
                 user_address_index = it.user_address_index
                 user_address_country = it.user_address_country
                 user_address_region = it.user_address_region
@@ -139,6 +136,7 @@ class UserEditPresenter
                 user_address_street = it.user_address_street
                 user_address_house = it.user_address_house
                 user_address_flat = it.user_address_flat
+                user_notes = it.user_notes
             }.asOptional())
             true
         }
@@ -186,9 +184,7 @@ class UserEditPresenter
 
     override fun onSaveAdditionalFilesClick(data: Map<String, Any?>) {
         onEditSave(data) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                attached_recomendation_files = it.attached_recomendation_files
-            }.asOptional())
+            viewState.updateFilesList(it.attached_recomendation_files)
             false
         }
     }
@@ -253,9 +249,7 @@ class UserEditPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    appData.userChangeSubject.onNext(appData.getUser().apply {
-                        attached_recomendation_files = it.attached_recomendation_files
-                    }.asOptional())
+                    viewState.updateFilesList(it.attached_recomendation_files)
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError()
