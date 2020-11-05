@@ -33,6 +33,9 @@ interface UserEditContract {
         fun setPersonalData(user: User)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setContactsData(user: User)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateFilesList(files: List<RecommendationFile>?)
 
         @StateStrategyType(SkipStrategy::class)
@@ -76,6 +79,9 @@ interface UserEditContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setPersonalTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setContactsTitle()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setEducationTitle()
@@ -122,6 +128,7 @@ interface UserEditContract {
 
         fun onSaveMainClick(data: Map<String, Any?>)
         fun onSavePersonalClick(data: Map<String, Any?>)
+        fun onSaveContactsClick(data: Map<String, Any?>)
         fun onSaveEducationClick(data: Map<String, Any?>)
         fun onSaveWorkClick(data: Map<String, Any?>)
         fun onSaveInterestsClick(data: List<Interest>)

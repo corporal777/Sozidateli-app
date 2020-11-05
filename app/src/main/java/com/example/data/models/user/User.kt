@@ -82,7 +82,8 @@ data class User(
         var academic_degree: List<AcademicDegree>? = null,
         val available_degrees: List<String>? = null,
         val available_sciences: List<String>? = null,
-        val available_education: List<String>? = null
+        val available_education: List<String>? = null,
+        var site: String? = null
 ) {
     var isCurrentUser = false
 

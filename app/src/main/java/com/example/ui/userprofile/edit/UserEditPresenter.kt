@@ -56,6 +56,11 @@ class UserEditPresenter
                             setPersonalData(user)
                             saveOnClick(true)
                         }
+                        UserEditDataType.CONTACTS -> viewState.apply {
+                            setContactsTitle()
+                            setContactsData(user)
+                            saveOnClick(true)
+                        }
                         UserEditDataType.EDUCATION -> viewState.apply {
                             setEducationTitle()
                             setEducationData(user)
@@ -137,6 +142,23 @@ class UserEditPresenter
                 user_address_house = it.user_address_house
                 user_address_flat = it.user_address_flat
                 user_notes = it.user_notes
+            }.asOptional())
+            true
+        }
+    }
+
+    override fun onSaveContactsClick(data: Map<String, Any?>) {
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                user_phone = it.user_phone
+                user_phone_show = it.user_phone_show
+                user_phone_confirmed = it.user_phone_confirmed
+                user_phone_work = it.user_phone_work
+                user_phone_work_show = it.user_phone_work_show
+                social_links = it.social_links
+                user_email = it.user_email
+                user_email_show = it.user_email_show
+                site = it.site
             }.asOptional())
             true
         }
