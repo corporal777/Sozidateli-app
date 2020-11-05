@@ -481,6 +481,9 @@
             android:id="@+id/profile_to_main_data"
             app:destination="@+id/user_profile_main_data_fragment" />
         <action
+            android:id="@+id/profile_to_contacts"
+            app:destination="@+id/user_profile_contacts_fragment" />
+        <action
             android:id="@+id/profile_to_interests"
             app:destination="@+id/user_profile_interests_fragment" />
         <action
@@ -494,6 +497,15 @@
     <fragment
         android:id="@+id/user_profile_main_data_fragment"
         android:name="com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment"
+        tools:layout="@layout/fragment_user_profile_main_data">
+        <action
+            android:id="@+id/to_edit"
+            app:destination="@+id/user_edit_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_profile_contacts_fragment"
+        android:name="com.example.ui.userprofile.read.contacts.UserProfileContactsFragment"
         tools:layout="@layout/fragment_user_profile_main_data">
         <action
             android:id="@+id/to_edit"

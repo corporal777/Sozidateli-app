@@ -351,6 +351,7 @@
     <string name="profile_city_hint">Москва</string>
     <string name="profile_sn">Социальные сети</string>
     <string name="profile_sn_hint">Ссылка на профиль в соцсети</string>
+    <string name="profile_site">Сайт</string>
     <string name="profile_sn_add">Добавить соцсеть</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>

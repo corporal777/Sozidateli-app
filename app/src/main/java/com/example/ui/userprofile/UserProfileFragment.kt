@@ -76,7 +76,7 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
     }
 
     override fun showContacts() {
-        TODO("Not yet implemented")
+        findNavController().navigate(UserProfileFragmentDirections.profileToContacts())
     }
 
     override fun showInterests() {

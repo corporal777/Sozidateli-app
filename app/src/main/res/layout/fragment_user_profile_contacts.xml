@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPhoneMobileTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvPhoneMobile"
+                android:text="@string/profile_phone_mobile" />
+
+            <TextView
+                android:id="@+id/tvPhoneMobile"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="phone"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="+7 (927) 298-16-17" />
+
+            <TextView
+                android:id="@+id/tvPhoneWorkTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvPhoneWork"
+                android:text="@string/profile_phone_work" />
+
+            <TextView
+                android:id="@+id/tvPhoneWork"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="phone"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="+7 (927) 298-16-17" />
+
+            <TextView
+                android:id="@+id/tvSocialNetworksTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvSocialNetworks"
+                android:text="@string/profile_sn" />
+
+            <TextView
+                android:id="@+id/tvSocialNetworks"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
+
+            <TextView
+                android:id="@+id/tvSiteTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvSocialNetworks"
+                android:text="@string/profile_site" />
+
+            <TextView
+                android:id="@+id/tvSite"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="https://google.com" />
+
+            <TextView
+                android:id="@+id/tvEmailTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvEmail"
+                android:text="@string/profile_email" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="email"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="Lyaka.art@gmail.com" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnEdit"
+        style="@style/ActionButton"
+        android:layout_marginBottom="24dp"
+        android:text="@string/user_profile_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
