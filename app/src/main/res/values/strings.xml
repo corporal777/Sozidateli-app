@@ -652,4 +652,10 @@
     <string name="user_profile_additional_hint">Не указано</string>
     <string name="user_profile_files">Файлы</string>
     <string name="user_profile_files_hint">Не указано</string>
+    <string name="user_profile_social_networks_hint">Соцсети</string>
+    <string name="user_profile_no_social_networks">Нет соцсетей</string>
+    <string name="user_profile_site_hint">Сайт</string>
+    <string name="user_profile_no_site">Нет сайта</string>
+    <string name="user_profile_no_work_phone">Нет рабочего телефона</string>
+    <string name="user_profile_show_to_everyone">Показывать всем</string>
 </resources>

@@ -15,7 +15,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="8dp"
         android:background="@null"
-        android:hint="@string/profile_sn_hint"
+        android:hint="@string/user_profile_social_networks_hint"
         android:imeOptions="actionSearch"
         android:inputType="textWebEditText"
         app:layout_constraintBottom_toBottomOf="parent"

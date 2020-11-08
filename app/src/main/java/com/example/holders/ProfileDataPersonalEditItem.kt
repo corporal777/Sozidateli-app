@@ -2,20 +2,15 @@ package com.example.holders
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.util.Linkify
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.UserAddress
-import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
@@ -23,13 +18,11 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
-import com.example.util.USER_MIDDLE_NAME_EMPTY
+import com.example.util.USER_DATA_EMPTY
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
-import isValidPhoneNumber
-import kotlinx.android.synthetic.main.item_profile_data_edit_notes.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etMiddleName
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etNotes
@@ -37,10 +30,8 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scNoMiddle
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilMiddleName
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilName
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilSurname
-import kotlinx.android.synthetic.main.item_profile_data_user_edit.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
-import setOnClickListener
 import java.util.*
 
 class ProfileDataPersonalEditItem(
@@ -70,7 +61,7 @@ class ProfileDataPersonalEditItem(
     private var mAddress = address
     private var mNotes = notes
 
-    private var mNoMiddleNameChecked = middleName == USER_MIDDLE_NAME_EMPTY
+    private var mNoMiddleNameChecked = middleName == USER_DATA_EMPTY
 
     private val isCanChangeName = middleName.isNullOrEmpty()
 
@@ -200,7 +191,7 @@ class ProfileDataPersonalEditItem(
         return mutableMapOf<String, Any?>().apply {
             if (name != mName) put(User.FIELD_USER_NAME, mName)
             if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)
-            val middleName = if (mNoMiddleNameChecked) USER_MIDDLE_NAME_EMPTY else mMiddleName
+            val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
             if (this@ProfileDataPersonalEditItem.middleName != middleName) put(User.FIELD_USER_MIDDLE_NAME, middleName)
             if (gender != mGender) put(User.FIELD_USER_GENDER, getGender())
             mBirthday?.formatToDefaultServerDate()?.let {

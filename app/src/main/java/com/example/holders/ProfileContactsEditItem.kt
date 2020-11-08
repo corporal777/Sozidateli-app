@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
-import com.example.extensions.formatToDefaultDate
+import com.example.util.USER_DATA_EMPTY
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
@@ -26,6 +26,7 @@ class ProfileContactsEditItem(
         private val workPhone: String?,
         private val showWorkPhone: Boolean,
         private val socialNetworks: List<UserDataSocialLink>?,
+        private val site: String?,
         private val email: String?,
         private val showEmail: Boolean,
         private val changeEmailClick: () -> Unit,
@@ -41,6 +42,9 @@ class ProfileContactsEditItem(
     private var mIsPhoneConfirmed = isPhoneConfirmed
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
+    private var mSite = site
+    private var mNoSite = site == USER_DATA_EMPTY
+    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks ?: emptyList())
@@ -86,7 +90,10 @@ class ProfileContactsEditItem(
                 }
             }
 
-            tilWorkPhone.apply { error = null }
+            tilWorkPhone.apply {
+                error = null
+                isEnabled = !mNoWorkPhone
+            }
             etWorkPhone.apply {
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
@@ -95,7 +102,14 @@ class ProfileContactsEditItem(
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
 
-            scWorkPhone.initSwitch(mShowWorkPhone) { mShowWorkPhone = it }
+            scShowWorkPhone.initSwitch(mShowWorkPhone) { mShowWorkPhone = it }
+            scNoWorkPhone.initSwitch(mNoWorkPhone) {
+                mNoWorkPhone = it
+                if (it) {
+                    tilWorkPhone.error = null
+                }
+                tilWorkPhone.isEnabled = !it
+            }
 
             llSocialNetworks.removeAllViews()
             mSocialNetworks.forEach { initSocialNetworkInput(viewHolder, it) }
@@ -108,6 +122,13 @@ class ProfileContactsEditItem(
                         }
                     }
                 }
+            }
+
+            tilSite.isEnabled = !mNoSite
+            etSite.initInput(mSite) { mSite = it.toString() }
+            scSite.initSwitch(mNoSite) {
+                mNoSite = it
+                tilSite.isEnabled = !it
             }
 
             btnEmail.apply {
@@ -192,7 +213,10 @@ class ProfileContactsEditItem(
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
-            if (workPhone != mWorkPhone) put(User.FIELD_USER_PHONE_WORK, mWorkPhone)
+
+            val workPhoneUpdate = if (mNoWorkPhone) USER_DATA_EMPTY
+            else mWorkPhone
+            if (workPhone != workPhoneUpdate) put(User.FIELD_USER_PHONE_WORK, workPhoneUpdate)
             if (showWorkPhone != mShowWorkPhone) put(User.FIELD_USER_PHONE_WORK_SHOW, mShowWorkPhone)
             if (mobilePhone != mMobilePhone) {
                 put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
@@ -203,6 +227,9 @@ class ProfileContactsEditItem(
             if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
             }
+            val siteUpdate = if (mNoSite) USER_DATA_EMPTY
+            else mSite
+            if (site != siteUpdate) put(User.FIELD_USER_SITE, siteUpdate)
         }
     }
 }

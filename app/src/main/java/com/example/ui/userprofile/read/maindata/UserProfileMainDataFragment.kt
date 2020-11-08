@@ -19,7 +19,7 @@ import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
-import com.example.util.USER_MIDDLE_NAME_EMPTY
+import com.example.util.USER_DATA_EMPTY
 import kotlinx.android.synthetic.main.fragment_user_profile_main_data.*
 import setOnClickListener
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         tvName.text = user.user_name
 
         tvMiddleName.text = user.getMiddleName()
-        val isNoMiddleNameChecked = user.user_middle_name == USER_MIDDLE_NAME_EMPTY
+        val isNoMiddleNameChecked = user.user_middle_name == USER_DATA_EMPTY
         tvMiddleNameTitle.isVisible = !isNoMiddleNameChecked
         tvMiddleName.isVisible = !isNoMiddleNameChecked
 

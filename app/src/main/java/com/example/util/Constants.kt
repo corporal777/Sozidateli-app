@@ -76,4 +76,4 @@ const val CHAT_SERVICE_MESSAGE_ACCEPT = "accept"
 const val IMAGE_MAX_SIZE_AVATAR = 1024
 const val IMAGE_MAX_SIZE_CHAT = 1024
 
-const val USER_MIDDLE_NAME_EMPTY = "-"
+const val USER_DATA_EMPTY = "-"

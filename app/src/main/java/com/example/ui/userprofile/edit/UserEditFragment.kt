@@ -181,6 +181,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_phone_work,
                 user.user_phone_work_show,
                 user.social_links,
+                user.site,
                 user.user_email,
                 user.user_email_show,
                 presenter::onChangeEmailClick,

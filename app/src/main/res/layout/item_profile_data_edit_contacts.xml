@@ -53,7 +53,7 @@
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scMobilePhone"
             style="@style/Profile.Edit.Switch"
-            android:text="@string/profile_show_in_profile"
+            android:text="@string/user_profile_show_to_everyone"
             tools:checked="true" />
     </LinearLayout>
 
@@ -77,14 +77,19 @@
         </com.example.ui.views.CustomTextInputLayout>
 
         <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/scWorkPhone"
+            android:id="@+id/scShowWorkPhone"
             style="@style/Profile.Edit.Switch"
-            android:text="@string/profile_show_in_profile" />
+            android:text="@string/user_profile_show_to_everyone" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNoWorkPhone"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/user_profile_no_work_phone" />
     </LinearLayout>
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="0dp">
 
         <LinearLayout
@@ -100,14 +105,35 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:layout_marginBottom="8dp"
-            android:text="@string/profile_sn_add"
-            app:layout_constrainedHeight="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@+id/btnAvatarRemove"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-            app:layout_constraintTop_toTopOf="@+id/ivAvatar"
-            app:layout_constraintVertical_chainStyle="packed" />
+            android:text="@string/profile_sn_add" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNoSocialNetworks"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/user_profile_no_social_networks" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilSite"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSite"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/profile_site"
+                android:inputType="textWebEditText" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scSite"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/user_profile_no_site" />
     </LinearLayout>
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">

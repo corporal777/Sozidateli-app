@@ -5,7 +5,7 @@ import android.graphics.PorterDuff
 import com.example.R
 import com.example.data.models.Optional
 import com.example.data.models.user.User
-import com.example.util.USER_MIDDLE_NAME_EMPTY
+import com.example.util.USER_DATA_EMPTY
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -27,7 +27,7 @@ class ProfileDataUserEditItem(
     private var mSurname = surname
     private var mMiddleName = middleName
 
-    private var mNoMiddleNameChecked = middleName == USER_MIDDLE_NAME_EMPTY
+    private var mNoMiddleNameChecked = middleName == USER_DATA_EMPTY
 
     private val isCanChangeName = middleName.isNullOrEmpty()
 
@@ -132,7 +132,7 @@ class ProfileDataUserEditItem(
         return mutableMapOf<String, Any?>().apply {
             if (name != mName) put(User.FIELD_USER_NAME, mName)
             if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)
-            val middleName = if (mNoMiddleNameChecked) USER_MIDDLE_NAME_EMPTY else mMiddleName
+            val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
             if (this@ProfileDataUserEditItem.middleName != middleName) put(User.FIELD_USER_MIDDLE_NAME, middleName)
             if (avatar != mAvatar) put(User.FIELD_USER_AVATAR, mAvatar ?: "")
         }

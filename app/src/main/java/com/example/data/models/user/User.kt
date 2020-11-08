@@ -2,7 +2,7 @@ package com.example.data.models.user
 
 import com.example.data.models.*
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.USER_MIDDLE_NAME_EMPTY
+import com.example.util.USER_DATA_EMPTY
 import com.google.gson.annotations.SerializedName
 
 data class User(
@@ -98,7 +98,7 @@ data class User(
         }
 
     fun getMiddleName(): String? {
-        return user_middle_name?.let { if (it == USER_MIDDLE_NAME_EMPTY || it.isEmpty()) null else it }
+        return user_middle_name?.let { if (it == USER_DATA_EMPTY || it.isEmpty()) null else it }
     }
 
     fun getUserSubscribeAction(): UserSubscribeButton.Action? {
@@ -150,6 +150,7 @@ data class User(
         const val FIELD_ATTACHED_FILES = "attached_recomendation_files"
         const val FIELD_USER_STATUS_PHONE = "user_status_phone"
         const val FIELD_USER_IS_IN_FAVORITE = "is_in_favorite"
+        const val FIELD_USER_SITE = "site"
     }
 
     enum class Status {
