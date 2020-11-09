@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +23,8 @@ import com.example.data.models.ProfileUserData
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
+import com.example.extensions.showChangePasswordDialog
+import com.example.extensions.showPasswordChangeCompleteDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -31,16 +32,12 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.AuthValidateUtil
-import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.dialog_change_password.view.*
 import kotlinx.android.synthetic.main.fragment_user.*
-import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -302,88 +299,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         } else null
     }
 
-    override fun showChangePassword() {
-        val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
-        val shortPasswordError = getString(R.string.auth_error_short_password)
+    override fun showChangePassword() = showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
 
-        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
-        val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
-        val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
-            onTextChanged { tilOldPassword.error = null }
-        }
-        val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
-        val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
-            onTextChanged {
-                tilNewPassword.error = if (it != null && !AuthValidateUtil.isValidPassword(it.toString())) shortPasswordError else null
-            }
-        }
-        val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
-        val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
-            onTextChanged {
-                tilNewPasswordConfirm.error = if (etNewPassword.text.toString() != etNewPasswordConfirm.text.toString()) {
-                    getString(R.string.auth_error_password_do_not_match)
-                } else {
-                    null
-                }
-            }
-        }
-
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_password_change)
-                .setView(view)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-                .apply {
-                    setOnShowListener {
-                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                            setOnClickListener {
-                                var hasError = false
-                                val oldPassword = etOldPassword.text?.toString()
-                                val newPassword = etNewPassword.text?.toString()
-                                val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
-
-                                if (oldPassword.isNullOrEmpty()) {
-                                    tilOldPassword.error = emptyFieldError
-                                    hasError = true
-                                }
-
-                                if (newPassword != null && !AuthValidateUtil.isValidPassword(newPassword)) {
-                                    tilNewPassword.error = shortPasswordError
-                                    hasError = true
-                                }
-
-                                if (newPassword != newPasswordConfirm) {
-                                    tilNewPasswordConfirm.error = getString(R.string.auth_error_password_do_not_match)
-                                    hasError = true
-                                } else {
-                                    if (newPassword.isNullOrEmpty()) {
-                                        tilNewPassword.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                    if (newPasswordConfirm.isNullOrEmpty()) {
-                                        tilNewPasswordConfirm.error = emptyFieldError
-                                        hasError = true
-                                    }
-                                }
-
-                                if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
-                                    presenter.onChangePasswordClickConfirm(oldPassword, newPassword, newPasswordConfirm)
-                                    dismiss()
-                                }
-                            }
-                        }
-                    }
-                }
-                .show()
-    }
-
-    override fun showPasswordChangeComplete() {
-        AlertDialog.Builder(requireContext())
-                .setMessage(R.string.profile_password_change_complete)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-    }
+    override fun showPasswordChangeComplete() = showPasswordChangeCompleteDialog()
 
     override fun setSubscribeAction(action: UserSubscribeButton.Action?) {
         mainDataSection.notifyItemChanged(0, action)

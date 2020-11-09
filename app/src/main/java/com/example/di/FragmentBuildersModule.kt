@@ -63,6 +63,7 @@ import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
+import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -202,6 +203,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserProfileFragment(): UserProfileFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserProfileSettingsFragment(): UserProfileSettingsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeUserProfileMainDataFragment(): UserProfileMainDataFragment

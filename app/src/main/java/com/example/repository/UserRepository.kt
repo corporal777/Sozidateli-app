@@ -41,4 +41,6 @@ interface UserRepository {
 
     fun userEventCalendar(): Maybe<List<UserEventCalendar>>
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
+
+    fun deleteProfile(): Completable
 }

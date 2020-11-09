@@ -71,4 +71,8 @@ class ProfilePresenter
                         }
                 )
     }
+
+    override fun onSettingsClick() {
+        viewState.showSettings()
+    }
 }

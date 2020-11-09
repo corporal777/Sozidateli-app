@@ -209,4 +209,6 @@
 
     <color name="action_button_register_background_enabled">#C3996C</color>
     <color name="action_button_register_background_disabled">#66C3996C</color>
+
+    <color name="user_profile_delete_profile_text">#FF0000</color>
 </resources>

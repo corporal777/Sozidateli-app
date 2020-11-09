@@ -135,4 +135,8 @@ class UserRepositoryImp
     override fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable {
         return call(api.setUserAtEvent(events, atEvent, lat, lon))
     }
+
+    override fun deleteProfile(): Completable {
+        return call(api.deleteProfile())
+    }
 }

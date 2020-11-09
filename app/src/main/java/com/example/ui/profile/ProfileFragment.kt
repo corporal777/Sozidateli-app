@@ -51,6 +51,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvRate.setOnClickListener { presenter.onRateClick() }
         tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
         tvLogout.setOnClickListener { presenter.onLogoutClick() }
+        tvSettings.setOnClickListener { presenter.onSettingsClick() }
     }
 
     override fun setUser(user: User) {
@@ -77,6 +78,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun showBanned() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBannedFragment())
+    }
+
+    override fun showSettings() {
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserProfileSettingsFragment())
     }
 
     override fun openSupportEmail(uid: String) {

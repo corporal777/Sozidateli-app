@@ -315,6 +315,10 @@
         <action
             android:id="@+id/action_profile_fragment_to_banned_fragment"
             app:destination="@id/banned_fragment" />
+
+        <action
+            android:id="@+id/action_profile_fragment_to_user_profile_settings_fragment"
+            app:destination="@id/user_profile_settings_fragment" />
     </fragment>
 
     <fragment
@@ -510,6 +514,12 @@
         <action
             android:id="@+id/to_edit"
             app:destination="@+id/user_edit_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_profile_settings_fragment"
+        android:name="com.example.ui.userprofile.read.settings.UserProfileSettingsFragment"
+        tools:layout="@layout/fragment_user_profile_settings">
     </fragment>
 
     <fragment

@@ -6,10 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -29,12 +27,12 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
+import com.example.extensions.showChangeEmailCompleteDialog
+import com.example.extensions.showChangeEmailDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.AuthValidateUtil
-import com.google.android.material.textfield.TextInputLayout
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
@@ -204,51 +202,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }?.updateFiles(files ?: emptyList())
     }
 
-    override fun showChangeEmail() {
-        val view = layoutInflater.inflate(R.layout.dialog_change_email, null)
-        val til = view.findViewById<TextInputLayout>(R.id.tilEmail)
-        val et = view.findViewById<EditText>(R.id.etEmail)
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.profile_email_change)
-                .setView(view)
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-                .apply {
-                    setOnShowListener {
-                        getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                            setOnClickListener {
-                                val email = et.text.toString()
-                                if (AuthValidateUtil.isValidEmail(email)) {
-                                    presenter.onChangeEmailConfirm(email)
-                                    dismiss()
-                                } else til.error = getString(R.string.profile_edit_email_invalid)
-                            }
-                        }
-                    }
-                }
-                .show()
-    }
+    override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
 
-    override fun showChangeEmailComplete(email: String) {
-        val supportEmail = getString(R.string.support_email).toSpannable()
-        Linkify.addLinks(supportEmail, Linkify.EMAIL_ADDRESSES)
-
-        val message = SpannableStringBuilder(getString(R.string.email_change_msg).format(email))
-                .append(" ")
-                .append(supportEmail)
-                .append(".")
-
-        AlertDialog.Builder(requireContext())
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-                .apply {
-                    findViewById<TextView>(android.R.id.message)?.let {
-                        it.movementMethod = BetterLinkMovementMethod.getInstance()
-                    }
-                }
-    }
+    override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showPhoneConfirm(phone: String) {
         findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone))

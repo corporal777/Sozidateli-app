@@ -165,6 +165,9 @@ interface Api {
     @POST("/v1/user/geo")
     fun setUserAtEvent(@Field("event[]") events: List<Int>, @Field("at_event[]") atEvent: List<Boolean>, @Field("lat") lat: Double, @Field("lon") lon: Double): Completable
 
+    @POST("v1/user/deactivate")
+    fun deleteProfile(): Completable
+
     @FormUrlEncoded
     @POST("/v1/events")
     fun getEventList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<Event>>>

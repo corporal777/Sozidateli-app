@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/divider"
+        style="@style/ViewDivider.Horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPhoneMobileTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvPhoneMobile"
+                android:text="@string/profile_phone_mobile" />
+
+            <TextView
+                android:id="@+id/tvPhoneMobile"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/user_profile_files_hint"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                tools:text="+7 (927) 298-16-17" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPhoneEdit"
+                style="@style/Profile.Edit.Button"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/edit"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tvPasswordTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:labelFor="@+id/tvPassword"
+                android:text="@string/user_profile_password_title" />
+
+            <TextView
+                android:id="@+id/tvPassword"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/user_profile_password_placeholder"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPasswordEdit"
+                style="@style/Profile.Edit.Button"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/profile_password_change"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tvEmailTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:labelFor="@+id/tvEmail"
+                android:text="@string/user_profile_email_title" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/user_profile_email_hint"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEmailEdit"
+                style="@style/Profile.Edit.Button"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/edit"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tvPrivacyTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:labelFor="@+id/tvEmail"
+                android:text="@string/user_profile_privacy_title" />
+
+            <TextView
+                android:id="@+id/tvPrivacy"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                tools:text="@string/user_profile_privacy_visible" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPrivacyEdit"
+                style="@style/Profile.Edit.Button"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/user_profile_privacy_edit"
+                android:textStyle="normal" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnDeleteProfile"
+                style="@style/Profile.Edit.Button"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:ems="10"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/user_profile_delete_profile"
+                android:textColor="@color/user_profile_delete_profile_text"
+                android:textStyle="normal" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,6 +30,9 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openPlayMarket()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSettings()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -41,5 +44,6 @@ interface ProfileContract {
         fun onSupportClick()
         fun onRateClick()
         fun onLogoutClick()
+        fun onSettingsClick()
     }
 }

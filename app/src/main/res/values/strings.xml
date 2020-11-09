@@ -331,6 +331,7 @@
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
     <string name="profile_title">Личный кабинет</string>
+    <string name="profile_settings">Настройки профиля</string>
     <string name="profile_favorite">Избранное</string>
     <string name="profile_me_events">Мои мероприятия</string>
     <string name="profile_current_event">Текущее мероприятие</string>
@@ -658,4 +659,17 @@
     <string name="user_profile_no_site">Нет сайта</string>
     <string name="user_profile_no_work_phone">Нет рабочего телефона</string>
     <string name="user_profile_show_to_everyone">Показывать всем</string>
+    <string name="user_profile_password_title">Пароль</string>
+    <string name="user_profile_password_placeholder">************</string>
+    <string name="user_profile_email_title">Email</string>
+    <string name="user_profile_email_hint">Не указано</string>
+    <string name="user_profile_privacy_title">Приватность профиля</string>
+    <string name="user_profile_privacy_hidden">Не показывать профиль другим пользователям портала</string>
+    <string name="user_profile_privacy_visible">Показывать профиль другим пользователям портала</string>
+    <string name="user_profile_privacy_edit">Изменить</string>
+    <string name="user_profile_delete_profile">Удалить профиль</string>
+    <string name="user_profile_delete_confirm_title">Удаление профиля</string>
+    <string name="user_profile_delete_confirm_message">Вы действительно хотите удалить ваш профиль?</string>
+    <string name="user_profile_delete_confirm_approve">Да</string>
+    <string name="user_profile_delete_confirm_decline">Нет</string>
 </resources>
