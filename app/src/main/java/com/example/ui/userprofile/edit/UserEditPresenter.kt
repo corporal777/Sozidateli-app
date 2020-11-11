@@ -61,6 +61,11 @@ class UserEditPresenter
                             setContactsData(user)
                             saveOnClick(true)
                         }
+                        UserEditDataType.PHONE -> viewState.apply {
+                            setPhoneTitle()
+                            setPhoneData(user)
+                            saveOnClick(true)
+                        }
                         UserEditDataType.EDUCATION -> viewState.apply {
                             setEducationTitle()
                             setEducationData(user)

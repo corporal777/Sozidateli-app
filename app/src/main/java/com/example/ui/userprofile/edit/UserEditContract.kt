@@ -36,6 +36,9 @@ interface UserEditContract {
         fun setContactsData(user: User)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setPhoneData(user: User)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateFilesList(files: List<RecommendationFile>?)
 
         @StateStrategyType(SkipStrategy::class)
@@ -82,6 +85,9 @@ interface UserEditContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setContactsTitle()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
+        fun setPhoneTitle()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setEducationTitle()

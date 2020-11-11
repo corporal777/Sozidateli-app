@@ -1,5 +1,6 @@
 package com.example.ui.userprofile.read.settings
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.userprofile.base.BaseUserProfileContract
@@ -27,6 +28,9 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showDeleteProfile()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneEdit()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

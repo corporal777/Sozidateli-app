@@ -4,6 +4,7 @@ enum class UserEditDataType {
     MAIN,
     PERSONAL,
     CONTACTS,
+    PHONE,
     EDUCATION,
     WORK,
     INTERESTS,

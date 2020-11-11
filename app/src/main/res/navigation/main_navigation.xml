@@ -520,6 +520,9 @@
         android:id="@+id/user_profile_settings_fragment"
         android:name="com.example.ui.userprofile.read.settings.UserProfileSettingsFragment"
         tools:layout="@layout/fragment_user_profile_settings">
+        <action
+            android:id="@+id/to_edit"
+            app:destination="@+id/user_edit_fragment" />
     </fragment>
 
     <fragment

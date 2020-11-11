@@ -22,7 +22,7 @@ class UserProfileSettingsPresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData), UserProfileSettingsContract.Presenter {
 
     override fun onChangePhoneClick() {
-        TODO("Not yet implemented")
+        viewState.showPhoneEdit()
     }
 
     override fun onChangePasswordClick() {

@@ -5,9 +5,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.*
 import com.example.interfaces.ToolbarFragment
@@ -104,5 +106,9 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
                 }
                 .setPositiveButton(R.string.user_profile_delete_confirm_decline) { _, _ -> Unit }
                 .show()
+    }
+
+    override fun showPhoneEdit() {
+        findNavController().navigate(UserProfileSettingsFragmentDirections.toEdit(UserEditDataType.PHONE))
     }
 }

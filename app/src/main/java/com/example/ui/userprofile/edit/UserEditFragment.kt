@@ -196,6 +196,25 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }
     }
 
+    override fun setPhoneData(user: User) {
+        val item = ProfilePhoneEditItem(
+                requireContext(),
+                user.user_phone,
+                user.user_phone_show,
+                user.user_phone_confirmed,
+                presenter::onConfirmPhoneClick
+        )
+
+        adapter.update(listOf(item))
+
+        onSaveClick = {
+            recyclerView.requestFocus()
+            if (item.checkDataValid()) {
+                presenter.onSaveContactsClick(item.getDataToSave())
+            }
+        }
+    }
+
     override fun updateFilesList(files: List<RecommendationFile>?) {
         adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditGroup> {
             true
@@ -352,6 +371,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun setMainTitle() = setTitle(R.string.profile_edit_name_and_photo)
     override fun setPersonalTitle() = setTitle(R.string.user_profile_main_info)
     override fun setContactsTitle() = setTitle(R.string.user_profile_contacts)
+    override fun setPhoneTitle() = setTitle(R.string.profile_phone_mobile)
     override fun setEducationTitle() = setTitle(R.string.profile_title_education)
     override fun setWorkTitle() = setTitle(R.string.profile_work_experience)
     override fun setInterestsTitle() = setTitle(R.string.profile_interests)
