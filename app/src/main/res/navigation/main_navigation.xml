@@ -292,6 +292,11 @@
         android:id="@+id/profile_fragment"
         android:name="com.example.ui.profile.ProfileFragment"
         android:label="@string/profile_title">
+
+        <action
+            android:id="@+id/profile_to_user"
+            app:destination="@+id/user_fragment" />
+
         <action
             android:id="@+id/profile_to_my_events"
             app:destination="@+id/my_events_fragment" />

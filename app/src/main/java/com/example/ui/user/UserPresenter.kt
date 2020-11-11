@@ -2,6 +2,7 @@ package com.example.ui.user
 
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
@@ -84,7 +85,7 @@ class UserPresenter
                 .subscribe({
                     profileUserData = ProfileUserData(
                             it,
-                            false
+                            !BuildConfig.NEW_PROFILE_EDIT
                     )
                     viewState.apply {
                         setUser(profileUserData)

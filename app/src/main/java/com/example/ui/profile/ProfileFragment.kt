@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -52,6 +53,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
         tvLogout.setOnClickListener { presenter.onLogoutClick() }
         tvSettings.setOnClickListener { presenter.onSettingsClick() }
+        tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
     }
 
     override fun setUser(user: User) {
@@ -61,7 +63,11 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showProfile(uid: String) {
-        findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
+        } else {
+            findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
+        }
     }
 
     override fun showFavorites() {

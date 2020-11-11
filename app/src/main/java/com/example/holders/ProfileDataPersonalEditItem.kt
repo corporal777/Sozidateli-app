@@ -1,16 +1,16 @@
 package com.example.holders
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.text.util.Linkify
+import android.telephony.PhoneNumberFormattingTextWatcher
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.text.toSpannable
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.UserAddress
+import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
@@ -18,78 +18,86 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
-import com.example.util.USER_DATA_EMPTY
-import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
+import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etMiddleName
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etNotes
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scNoMiddleName
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilMiddleName
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilName
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilSurname
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
+import setOnClickListener
 import java.util.*
 
 class ProfileDataPersonalEditItem(
-        id: Long,
-        context: Context,
-        private val name: String?,
-        private val surname: String?,
-        private val middleName: String?,
+        private val context: Context,
+        private val email: String?,
+        private val showEmail: Boolean,
+        private val workPhone: String?,
+        private val showWorkPhone: Boolean,
+        private val mobilePhone: String?,
+        private val showMobilePhone: Boolean,
+        private val isPhoneConfirmed: Boolean,
         private val gender: String?,
         private val birthday: String?,
         private val showBirthday: Boolean,
         private val address: UserAddress,
-        private val notes: String?,
-) : Item(id) {
+        private val socialNetworks: List<UserDataSocialLink>?,
+        private val changeEmailClick: () -> Unit,
+        private val confirmPhoneClick: (String) -> Unit
+) : Item() {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
     private val genderFemale = context.getString(R.string.profile_gender_female)
-    private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
+    private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
 
-    private var mName = name
-    private var mSurname = surname
-    private var mMiddleName = middleName
-
+    private var mShowEmail = showEmail
+    private var mWorkPhone = workPhone
+    private var mShowWorkPhone = showWorkPhone
+    private var mMobilePhone = mobilePhone
+    private var mShowMobilePhone = showMobilePhone
     private var mGender = gender
     private var mBirthday = birthday?.formatToDefaultDate()
     private var mShowBirthday = showBirthday
     private var mAddress = address
-    private var mNotes = notes
+    private var mSocialNetworks = (socialNetworks ?: emptyList())
+            .map { it.copy() }
+            .let {
+                if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
+                else it
+            }
+            .toMutableList()
 
-    private var mNoMiddleNameChecked = middleName == USER_DATA_EMPTY
-
-    private val isCanChangeName = middleName.isNullOrEmpty()
+    private var mIsPhoneConfirmed = isPhoneConfirmed
 
     private lateinit var viewHolder: GroupieViewHolder
-
-    override fun getLayout() = R.layout.item_profile_data_edit_personal
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            tilSurname.initNameInput(surname) { mSurname = it.toString() }
-            tilName.initNameInput(mName) { mName = it.toString() }
-            tilMiddleName.initNameInput(mMiddleName) { mMiddleName = it.toString() }
+            btnEmail.apply {
+                text = email
+                setOnClickListener(changeEmailClick)
+            }
+            tilWorkPhone.apply { error = null }
+            etWorkPhone.apply {
+                initInput(mWorkPhone) {
+                    mWorkPhone = it.toString()
+                    if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error = null
+                }
+                addTextChangedListener(PhoneNumberFormattingTextWatcher())
+            }
+            tilMobilePhone.apply { error = null }
+            etMobilePhone.apply {
+                initInput(mMobilePhone) {
+                    mMobilePhone = it.toString()
+                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
 
-            scNoMiddleName.apply {
-                isChecked = mNoMiddleNameChecked
-                isEnabled = isCanChangeName
-                if (isCanChangeName) {
-                    setOnCheckedChangeListener { _, isChecked ->
-                        mNoMiddleNameChecked = isChecked
-                        etMiddleName.apply {
-                            tilMiddleName.isEnabled = !isChecked
-                            if (!isEnabled) tilMiddleName.error = null
-                        }
+                    if (isPhoneConfirmed) {
+                        mIsPhoneConfirmed = mMobilePhone == mobilePhone
+                        updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
+                addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
-
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
             tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },
@@ -106,6 +114,9 @@ class ProfileDataPersonalEditItem(
                 onDataSelectedListener = { mAddress = UserAddress.fromDaDataItem(it) }
             }
 
+            scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }
+            scWorkPhone.initSwitch(mShowWorkPhone) { mShowWorkPhone = it }
+            scMobilePhone.initSwitch(mShowMobilePhone) { mShowMobilePhone = it }
             scBirthday.initSwitch(mShowBirthday) { mShowBirthday = it }
 
             tvGender.apply {
@@ -114,10 +125,41 @@ class ProfileDataPersonalEditItem(
                 initInput(mGender) { mGender = it.toString() }
             }
 
-            etNotes.apply {
-                setText(mNotes)
-                onTextChanged { mNotes = it?.toString() }
+            llSocialNetworks.removeAllViews()
+            mSocialNetworks.forEach { initSocialNetworkInput(viewHolder, it) }
+            btnSocialNetworkAdd.apply {
+                setOnClickListener {
+                    if (!mSocialNetworks.lastOrNull()?.value.isNullOrBlank()) {
+                        UserDataSocialLink(value = "").apply {
+                            mSocialNetworks.add(this)
+                            initSocialNetworkInput(viewHolder, this)
+                        }
+                    }
+                }
             }
+
+            btnPasswordConfirm.apply {
+                setOnClickListener {
+                    val phone = etMobilePhone.text.toString()
+                    if (phone.isValidPhoneNumber(context)) {
+                        confirmPhoneClick(phone)
+                    } else {
+                        tilMobilePhone.apply {
+                            error = invalidNumberError
+                            requestFocus()
+                        }
+                    }
+                }
+            }
+
+            updatePhoneConfirmationStatus(this)
+        }
+    }
+
+    private fun updatePhoneConfirmationStatus(viewHolder: GroupieViewHolder) {
+        viewHolder.apply {
+            btnPasswordConfirm.isVisible = !mIsPhoneConfirmed
+            tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
     }
 
@@ -126,62 +168,57 @@ class ProfileDataPersonalEditItem(
         onTextChanged(onTextChanged)
     }
 
-    private fun TextInputLayout.initNameInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        editText?.setText(text)
-        error = null
-        isEnabled = true
-        if (isCanChangeName) {
-            editText?.isEnabled = true
-            editText?.onTextChanged {
-                if (it?.isNotEmpty() == true) error = null
-                onTextChanged(it)
-            }
-            setEndIconDrawable(0)
-        } else {
-            editText?.isEnabled = false
-            setEndIconDrawable(R.drawable.ic_information)
-            setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
-            setEndIconOnClickListener { showDisabledMainInputInfo(context) }
-        }
-    }
-
-    private fun showDisabledMainInputInfo(context: Context) {
-        val supportEmail = context.getString(R.string.support_email)
-        val message = context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail).toSpannable()
-        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-
-        AlertDialog.Builder(context)
-                .setTitle(R.string.profile_edit_name_disabled_title)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-                .apply {
-                    findViewById<TextView>(android.R.id.message)?.let {
-                        it.movementMethod = BetterLinkMovementMethod.getInstance()
-                    }
-                }
-    }
-
     private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
         isChecked = checked
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
+    private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
+        var csn = sn
+        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
+        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+            initInput(csn.value) { csn.value = it?.toString() ?: "" }
+        }
+
+        parent.findViewById<View>(R.id.btnDelete).apply {
+            setOnClickListener {
+                if (mSocialNetworks.remove(csn)) {
+                    if (mSocialNetworks.isEmpty()) {
+                        csn = UserDataSocialLink(value = "")
+                        mSocialNetworks.add(csn)
+                        etSn.text?.clear()
+                    } else {
+                        viewHolder.llSocialNetworks.removeView(it.parent as View)
+                    }
+                }
+            }
+        }
+
+        viewHolder.llSocialNetworks.addView(parent)
+    }
+
     fun checkDataValid(): Boolean {
         var isValid = true
-        viewHolder.apply {
-            if (mSurname.isNullOrEmpty()) {
-                tilSurname.error = emptyInputError
-                isValid = false
+        if (workPhone != mWorkPhone
+                && !mWorkPhone.isNullOrEmpty()
+                && !mWorkPhone.isValidPhoneNumber(context)
+        ) {
+            viewHolder.tilWorkPhone.apply {
+                error = invalidNumberError
+                requestFocus()
             }
-            if (mName.isNullOrEmpty()) {
-                tilName.error = emptyInputError
-                isValid = false
+            isValid = false
+        }
+
+        if (mobilePhone != mMobilePhone
+                && !mMobilePhone.isNullOrEmpty()
+                && !mMobilePhone.isValidPhoneNumber(context)
+        ) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
             }
-            if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
-                tilMiddleName.error = emptyInputError
-                isValid = false
-            }
+            isValid = false
         }
 
         return isValid
@@ -189,10 +226,14 @@ class ProfileDataPersonalEditItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (name != mName) put(User.FIELD_USER_NAME, mName)
-            if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)
-            val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
-            if (this@ProfileDataPersonalEditItem.middleName != middleName) put(User.FIELD_USER_MIDDLE_NAME, middleName)
+            if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
+            if (workPhone != mWorkPhone) put(User.FIELD_USER_PHONE_WORK, mWorkPhone)
+            if (showWorkPhone != mShowWorkPhone) put(User.FIELD_USER_PHONE_WORK_SHOW, mShowWorkPhone)
+            if (mobilePhone != mMobilePhone) {
+                put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
+                put(User.FIELD_USER_PHONE_MOBILE, mMobilePhone)
+            }
+            if (showMobilePhone != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)
             if (gender != mGender) put(User.FIELD_USER_GENDER, getGender())
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(User.FIELD_USER_BIRTHDAY, it)
@@ -214,7 +255,10 @@ class ProfileDataPersonalEditItem(
                 put(User.FIELD_USER_ADDRESS_HOUSE, mAddress.house ?: "")
                 put(User.FIELD_USER_ADDRESS_FLAT, mAddress.flat ?: "")
             }
-            if (notes != mNotes) put(User.FIELD_USER_NOTES, mNotes)
+
+            if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
+                put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
+            }
         }
     }
 
@@ -225,4 +269,6 @@ class ProfileDataPersonalEditItem(
             else -> null
         }
     }
+
+    override fun getLayout() = R.layout.item_profile_data_edit_personal
 }

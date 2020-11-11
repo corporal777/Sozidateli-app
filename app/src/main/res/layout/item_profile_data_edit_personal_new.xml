@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilSurname"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSurname"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/user_profile_last_name"
+                android:inputType="textCapWords|textPersonName" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="0dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilName"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/user_profile_name"
+                android:inputType="textCapWords|textPersonName" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="0dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilMiddleName"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMiddleName"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/user_profile_middle_name"
+                android:inputType="textCapWords|textPersonName" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNoMiddleName"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_edit_user_no_middle_name" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="32dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilBirthday"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBirthday"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/profile_birthday" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scBirthday"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_show_in_profile" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconDrawable="@drawable/ic_drop_down"
+            app:endIconMode="dropdown_menu">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvGender"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/profile_gender"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="none">
+
+            <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+                android:id="@+id/etCity"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/profile_city"
+                android:inputType="textCapSentences"
+                android:minHeight="48dp"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNotes"
+                style="@style/Profile.Edit.Input"
+                android:gravity="start|top"
+                android:hint="@string/profile_notes"
+                android:inputType="textMultiLine|textCapSentences"
+                android:lines="5"
+                tools:text="@tools:sample/lorem/random" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+</LinearLayout>

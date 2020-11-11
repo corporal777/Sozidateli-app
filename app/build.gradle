@@ -66,17 +66,20 @@ android {
 
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
         }
         beta {
             initWith(debug)
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
             matchingFallbacks = ['debug', 'release']
         }
         "new" {
             initWith(debug)
             buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
             matchingFallbacks = ['debug', 'release']
         }
     }
