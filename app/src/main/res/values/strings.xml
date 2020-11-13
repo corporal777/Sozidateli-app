@@ -66,6 +66,7 @@
     <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
     <string name="auth_input_first_name_hint">Укажите Ваше имя</string>
     <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
+    <string name="auth_input_middle_name_hint">Укажите Ваше отчество</string>
     <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>

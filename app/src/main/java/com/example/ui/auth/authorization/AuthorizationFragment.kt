@@ -6,6 +6,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.interfaces.BackgroundImageFragment
@@ -42,7 +43,11 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
     }
 
     override fun showEmailRegistration() {
-        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
+        } else {
+            findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
+        }
     }
 
     override fun showSnRegistration(snUser: SnUser) {

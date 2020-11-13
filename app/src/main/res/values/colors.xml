@@ -211,4 +211,9 @@
     <color name="action_button_register_background_disabled">#66C3996C</color>
 
     <color name="user_profile_delete_profile_text">#FF0000</color>
+
+    <color name="profile_edit_button_background_disabled">#D0D0D0</color>
+    <color name="profile_edit_button_background_enabled">#EBE9EE</color>
+    <color name="profile_edit_button_text_disabled">#FFFFFF</color>
+    <color name="profile_edit_button_text_enabled">#000000</color>
 </resources>

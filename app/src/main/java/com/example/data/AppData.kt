@@ -79,6 +79,7 @@ class AppData(
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
     val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
+    val userPhoneConfirmedSubject = BehaviorSubject.createDefault(false)
 
     fun setUser(user: User) {
         val changed = this.user != user

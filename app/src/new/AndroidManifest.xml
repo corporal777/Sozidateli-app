@@ -17,12 +17,12 @@
                 <data
                     android:host="new.sozidateli-houseofapps.ru"
                     android:pathPrefix="/profile"
-                    android:scheme="https" />
+                    android:scheme="http" />
 
                 <data
                     android:host="new.sozidateli-houseofapps.ru"
                     android:pathPrefix="/social"
-                    android:scheme="https" />
+                    android:scheme="http" />
 
                 <data
                     android:host="www.sozidateli.ru"

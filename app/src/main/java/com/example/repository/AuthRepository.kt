@@ -15,7 +15,14 @@ interface AuthRepository {
     fun confirmEmailSocialNetwork(id: String, code: String): Completable
 
     fun authEmailOrPhone(email: String, password: String): Completable
-    fun register(email: String, password: String, firstName: String, lastName: String): Completable
+    fun register(
+            email: String,
+            password: String,
+            firstName: String,
+            lastName: String,
+            middleName: String? = null,
+            phone: String? = null
+    ): Completable
     fun registerConfirm(email: String, code: String): Completable
     fun registerEmailResend(email: String): Completable
     fun registerSnResend(email: String, token: String): Completable

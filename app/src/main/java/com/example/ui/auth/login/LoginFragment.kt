@@ -7,8 +7,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
+import com.example.ui.auth.authorization.AuthorizationFragmentDirections
 import com.example.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged
@@ -55,7 +57,11 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     }
 
     override fun showEmailRegistration() {
-        findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailAction())
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailNewAction())
+        } else {
+            findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailAction())
+        }
     }
 
     override fun showSnRegistration(snUser: SnUser) {

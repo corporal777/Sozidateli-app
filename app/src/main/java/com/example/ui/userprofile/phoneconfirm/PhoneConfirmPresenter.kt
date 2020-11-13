@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.phoneconfirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.asOptional
@@ -8,6 +9,7 @@ import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.TimerFormatter
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -67,7 +69,13 @@ class PhoneConfirmPresenter
                     }
                     appData.userChangeSubject.onNext(user.asOptional())
                 }
-                .flatMapCompletable { userRepository.sendStatusPhoneConfirmSms(password) }
+                .flatMapCompletable {
+                    if (BuildConfig.NEW_PROFILE_EDIT) {
+                        Completable.complete()
+                    } else {
+                        userRepository.sendStatusPhoneConfirmSms(password)
+                    }
+                }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeBy(
@@ -108,24 +116,33 @@ class PhoneConfirmPresenter
     }
 
     override fun onCodeSendClick(code: String) {
-        compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
-                                viewState.showWrongCodeError()
-                            } else {
-                                it.printStackTrace()
-                                viewState.showRequestErrorMessage()
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            if (code == "123456") {
+                appData.userPhoneConfirmedSubject.onNext(true)
+                viewState.onPhoneConfirmationComplete()
+            } else {
+                viewState.showWrongCodeError()
+            }
+        } else {
+            compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeBy(
+                            onError = {
+                                if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
+                                    viewState.showWrongCodeError()
+                                } else {
+                                    it.printStackTrace()
+                                    viewState.showRequestErrorMessage()
+                                }
+                            },
+                            onComplete = {
+                                val user = appData.getUser()
+                                user.user_phone_confirmed = true
+                                appData.userChangeSubject.onNext(user.asOptional())
+                                viewState.onPhoneConfirmationComplete()
                             }
-                        },
-                        onComplete = {
-                            val user = appData.getUser()
-                            user.user_phone_confirmed = true
-                            appData.userChangeSubject.onNext(user.asOptional())
-                            viewState.onPhoneConfirmationComplete()
-                        }
-                )
+                    )
+        }
     }
 }
