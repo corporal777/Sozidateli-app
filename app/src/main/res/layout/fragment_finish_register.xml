@@ -49,7 +49,7 @@
             android:layout_marginEnd="32dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2dp"
-            android:text="@string/auth_register"
+            android:text="@string/auth_register_finish"
             android:textColor="@color/auth_title_text"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/llInput"
@@ -76,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="0dp"
                 app:endIconMode="custom"
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null">
@@ -84,6 +83,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFirstName"
                     style="@style/Profile.Edit.Input.SingleLine"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:enabled="false"
                     android:hint="@string/auth_input_first_name_hint"
                     android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
@@ -94,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 app:endIconMode="custom"
                 app:errorEnabled="true"
@@ -102,6 +105,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLastName"
                     style="@style/Profile.Edit.Input.SingleLine"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:enabled="false"
                     android:hint="@string/auth_input_last_name_hint"
                     android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
@@ -112,21 +118,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                app:errorEnabled="false">
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMiddleName"
                     style="@style/Profile.Edit.Input.SingleLine"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_middle_name_hint"
                     android:inputType="textCapWords" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/scNoMiddleName"
-                    style="@style/Profile.Edit.Switch"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:text="@string/profile_edit_user_no_middle_name" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <LinearLayout
@@ -191,45 +195,48 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
+                    android:enabled="false"
                     android:hint="@string/auth_input_email_hint"
                     android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilPassword"
-                style="@style/Profile.Edit.InputLayout"
+            <LinearLayout
+                android:id="@+id/llAgree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                app:endIconMode="password_toggle"
-                app:errorEnabled="true"
-                app:errorIconDrawable="@null">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPassword"
-                    style="@style/Profile.Edit.Input.SingleLine"
-                    android:hint="@string/auth_input_password_hint"
-                    android:inputType="textPassword" />
-            </com.example.ui.views.CustomTextInputLayout>
+                <FrameLayout
+                    android:id="@+id/flAgree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp">
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilPasswordConfirm"
-                style="@style/Profile.Edit.InputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                app:endIconMode="password_toggle"
-                app:errorEnabled="true"
-                app:errorIconDrawable="@null">
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbAgree"
+                        fontPath="fonts/Roboto-Light.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:theme="@style/CheckBox" />
+                </FrameLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPasswordConfirm"
-                    style="@style/Profile.Edit.Input.SingleLine"
-                    android:hint="@string/auth_input_password_confirm_hint"
-                    android:inputType="textPassword" />
-            </com.example.ui.views.CustomTextInputLayout>
+                <TextView
+                    android:id="@+id/tvAgree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/auth_title_text"
+                    tools:text="@string/auth_agree_user_agreement" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvAgreeError"
@@ -240,7 +247,7 @@
                 android:gravity="center"
                 android:text="@string/auth_error_agreement"
                 android:textColor="@color/attention_action"
-                android:visibility="gone" />
+                android:visibility="invisible" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -259,6 +266,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/llInput"
+            app:layout_constraintBottom_toTopOf="@+id/ibCancel"
             app:layout_goneMarginBottom="24dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/ibCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_button_cancel"
+            android:minHeight="@dimen/auth_button_min_height"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/event_calendar_add_to_schedule_text_disabled"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ibRegister"
+            app:layout_goneMarginBottom="24dp" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

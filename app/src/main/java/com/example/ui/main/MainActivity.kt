@@ -45,6 +45,7 @@ import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.stories.StoriesFragment
+import com.example.ui.views.ApiErrorDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -320,6 +321,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showLogin() = findNavController().navigate(R.id.authorization_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.main_navigation, true)
+            .build())
+
+    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String) =
+            findNavController().navigate(R.id.register_email_finish_fragment, bundleOf("code" to code,
+            "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName), NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 

@@ -24,7 +24,6 @@ abstract class ApiRepository(
                 .map { it.response }
     }
 
-
     fun <T> call(request: Maybe<ApiResponse<T>>): Maybe<T> {
         return request
                 .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }

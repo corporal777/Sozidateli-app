@@ -2,6 +2,7 @@ package com.example.api
 
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.data.models.user.UserResp
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -51,7 +52,14 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/register/confirm")
-    fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
+    fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String,
+    @Field("user_name") name: String, @Field("user_last_name") lastName: String,
+    @Field("user_middle_name") middleName: String?, @Field("user_phone") phone: String?,
+    @Field("user_email_new") newEmail: String): Single<ApiResponse<AuthResponse>>
+
+    @FormUrlEncoded
+    @POST("/v1/user/register/confirm/get")
+    fun registerData(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<UserResp>>
 
     @FormUrlEncoded
     @POST("/v1/user/update/change_email_confirm")

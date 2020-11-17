@@ -7,6 +7,7 @@ import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.email.RegisterEmailFragment
+import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
 import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
 import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
@@ -270,4 +271,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributePhoneConfirmFragment(): PhoneConfirmFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFinishRegisterFragment(): FinishRegisterFragment
 }

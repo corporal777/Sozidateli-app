@@ -53,7 +53,8 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
         etMobilePhone.apply {
             onTextChanged {
-                presenter.onChangePhoneText(it?.toString() ?: "")
+                val phone = "+7" + it.toString()
+                presenter.onChangePhoneText(/*it?.toString() ?: ""*/phone)
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
@@ -92,6 +93,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun phoneConfirmEnabled(enabled: Boolean) {
         btnPhoneConfirm.isEnabled = enabled
+        btnPhoneConfirm.isVisible = enabled
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {

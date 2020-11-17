@@ -66,6 +66,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
         fun hideErrorMessage()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String)
     }
 
     interface Presenter : BaseContract.Presenter {

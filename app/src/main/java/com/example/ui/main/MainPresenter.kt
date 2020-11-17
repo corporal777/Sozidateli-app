@@ -309,9 +309,15 @@ class MainPresenter
     override fun onHandleAuthLink(email: String, code: String) {
         if (appData.token != null) return
         isAuthRequired = true
-        authRepository.registerConfirm(email, code)
+        /*authRepository.registerConfirm(email, code)
                 .performOnBackgroundOutOnMain()
-                .subscribe({}, { viewState.showLogin() })
+                .subscribe({ viewState.showFinishRegister() }, { viewState.showLogin() })
+                .call(compositeDisposable)*/
+        authRepository.registerData(email, code)
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.showFinishRegister(it.user?.user_name?: "",
+                        it.user?.user_last_name?: "", it.user?.user_middle_name,
+                it.user?.user_phone, it.user?.user_email?: "", code) }, { viewState.showLogin() })
                 .call(compositeDisposable)
     }
 

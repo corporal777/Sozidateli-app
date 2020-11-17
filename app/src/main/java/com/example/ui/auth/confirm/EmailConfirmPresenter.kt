@@ -31,7 +31,7 @@ class EmailConfirmPresenter
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
         startTimer()
-        checkConfirmed()
+        //checkConfirmed()
     }
 
     override fun onResendClick() {

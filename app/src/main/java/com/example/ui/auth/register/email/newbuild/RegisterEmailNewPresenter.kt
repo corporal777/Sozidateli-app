@@ -42,7 +42,7 @@ class RegisterEmailNewPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribeBy {
                     phoneVerified = it
-                    viewState.updatePhoneConfirmationStatus(it)
+                    //viewState.updatePhoneConfirmationStatus(it)
                 }
     }
 

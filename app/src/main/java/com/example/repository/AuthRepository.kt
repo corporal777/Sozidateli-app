@@ -1,8 +1,8 @@
 package com.example.repository
 
-import com.example.data.models.RegisterStatus
-import com.example.data.models.SnUser
-import com.example.data.models.SnUserData
+import com.example.data.models.*
+import com.example.data.models.user.User
+import com.example.data.models.user.UserResp
 import com.example.ui.snAuth.SnAuth
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -23,7 +23,8 @@ interface AuthRepository {
             middleName: String? = null,
             phone: String? = null
     ): Completable
-    fun registerConfirm(email: String, code: String): Completable
+    fun registerConfirm(email: String, code: String, name: String,lastName: String,
+                        middleName: String?, phone: String?, newEmail: String): Completable
     fun registerEmailResend(email: String): Completable
     fun registerSnResend(email: String, token: String): Completable
 
@@ -35,4 +36,5 @@ interface AuthRepository {
     fun getVkUser(): Single<SnUserData>
     fun getFbUser(): Single<SnUserData>
     fun getOkUser(): Single<SnUserData>
+    fun registerData(email: String, code: String): Single<UserResp>
 }

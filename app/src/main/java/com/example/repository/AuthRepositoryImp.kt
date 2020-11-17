@@ -4,6 +4,8 @@ import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
+import com.example.data.models.user.User
+import com.example.data.models.user.UserResp
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
@@ -19,6 +21,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.json.JSONObject
+import retrofit2.http.Field
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
 import javax.inject.Inject
@@ -84,8 +87,13 @@ class AuthRepositoryImp
         return callAuthCompletable(api.registerEmail(email, password, firstName, lastName, middleName, phone))
     }
 
-    override fun registerConfirm(email: String, code: String): Completable {
-        return callAuthCompletable(api.registerEmailConfirm(email, code))
+    override fun registerData(email: String, code: String): Single<UserResp> {
+        return call(api.registerData(email, code))
+    }
+
+    override fun registerConfirm(email: String, code: String, name: String,lastName: String,
+                                 middleName: String?, phone: String?, newEmail: String): Completable {
+        return callAuthCompletable( /*call(*/api.registerEmailConfirm(email, code, name, lastName, middleName, phone, newEmail)/*.ignoreElement())*/ )
     }
 
     override fun registerEmailResend(email: String): Completable {

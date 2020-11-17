@@ -74,6 +74,7 @@
     <string name="auth_agree_address">https://www.sozidateli.ru/politics</string>
     <string name="auth_register_with_sn">или зарегистрируйтесь с помощью соцсети</string>
     <string name="auth_action_register">Зарегистрироваться</string>
+    <string name="auth_register_finish">Пожалуйста, завершите регистрацию</string>
     <string name="auth_action_continue">Далее</string>
     <string name="auth_error_no_first_name">Введите имя</string>
     <string name="auth_error_no_last_name">Введите фамилию</string>
@@ -550,7 +551,7 @@
     <string name="organization_phones">Номера телефонов</string>
     <string name="organization_address">Адрес</string>
 
-    <string name="qr_scan_label">Поиск меропрятия</string>
+    <string name="qr_scan_label">Поиск мероприятий</string>
     <string name="qr_scan_for_event">Для поиска мероприятия\nотсканируйте QR-код</string>
     <string name="qr_input_for_event">Или введите код\nмероприятия вручную</string>
     <string name="qr_request_camera_permission">Для сканирования необходимо разрешение на доступ к камере</string>
@@ -673,4 +674,6 @@
     <string name="user_profile_delete_confirm_message">Вы действительно хотите удалить ваш профиль?</string>
     <string name="user_profile_delete_confirm_approve">Да</string>
     <string name="user_profile_delete_confirm_decline">Нет</string>
+    <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в “Создателях”</string>
+    <string name="email_exist_error_text">Если это Ваш e-mail, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
 </resources>

@@ -168,3 +168,7 @@ data class User(
         MAX_PROTECTION
     }
 }
+
+data class UserResp(
+        var user: User?
+)
