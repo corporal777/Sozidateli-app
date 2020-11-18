@@ -92,8 +92,8 @@ class AuthRepositoryImp
     }
 
     override fun registerConfirm(email: String, code: String, name: String,lastName: String,
-                                 middleName: String?, phone: String?, newEmail: String): Completable {
-        return callAuthCompletable( /*call(*/api.registerEmailConfirm(email, code, name, lastName, middleName, phone, newEmail)/*.ignoreElement())*/ )
+                                 middleName: String?, phone: String?, newEmail: String?, password: String?): Completable {
+        return callAuthCompletable(api.registerEmailConfirm(email, code, name, lastName, middleName, phone, newEmail, password))
     }
 
     override fun registerEmailResend(email: String): Completable {

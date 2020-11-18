@@ -55,7 +55,8 @@ interface Api {
     fun registerEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String,
     @Field("user_name") name: String, @Field("user_last_name") lastName: String,
     @Field("user_middle_name") middleName: String?, @Field("user_phone") phone: String?,
-    @Field("user_email_new") newEmail: String): Single<ApiResponse<AuthResponse>>
+    @Field("user_email_new") newEmail: String? = null,
+    @Field("user_password") password: String? = null): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/register/confirm/get")

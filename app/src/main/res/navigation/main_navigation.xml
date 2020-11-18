@@ -88,6 +88,27 @@
     </fragment>
 
     <fragment
+        android:id="@+id/to_invite_register"
+        android:name="com.example.ui.auth.register.invite.InviteRegisterFragment"
+        android:label="Register">
+
+        <action
+            android:id="@+id/email_register_to_phone_confirm_fragment"
+            app:destination="@id/phone_confirm_fragment" />
+
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/register_email_finish_fragment"
         android:name="com.example.ui.auth.register.email.finishregister.FinishRegisterFragment"
         android:label="Register">

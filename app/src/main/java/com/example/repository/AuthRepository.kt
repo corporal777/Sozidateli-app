@@ -24,7 +24,7 @@ interface AuthRepository {
             phone: String? = null
     ): Completable
     fun registerConfirm(email: String, code: String, name: String,lastName: String,
-                        middleName: String?, phone: String?, newEmail: String): Completable
+                        middleName: String?, phone: String?, newEmail: String? = null, password: String? = null): Completable
     fun registerEmailResend(email: String): Completable
     fun registerSnResend(email: String, token: String): Completable
 

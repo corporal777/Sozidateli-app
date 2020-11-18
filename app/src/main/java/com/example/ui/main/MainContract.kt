@@ -69,6 +69,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showInviteRegister(email: String, code: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -96,5 +99,6 @@ interface MainContract {
         fun onRequestHideErrorMessage()
 
         fun onStoriesComplete()
+        fun onInviteRegister(email: String, code: String)
     }
 }

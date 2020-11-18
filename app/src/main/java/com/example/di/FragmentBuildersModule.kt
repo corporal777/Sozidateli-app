@@ -9,6 +9,7 @@ import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.email.RegisterEmailFragment
 import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
 import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
+import com.example.ui.auth.register.invite.InviteRegisterFragment
 import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.banned.BannedFragment
@@ -274,4 +275,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFinishRegisterFragment(): FinishRegisterFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeInviteRegisterFragment(): InviteRegisterFragment
 }

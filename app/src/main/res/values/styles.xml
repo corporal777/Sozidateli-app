@@ -418,6 +418,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:colorControlActivated">#FFF</item>
+        <item name="android:buttonTint">@color/button_save_background</item>
     </style>
 
     <style name="Profile.Edit.Button">

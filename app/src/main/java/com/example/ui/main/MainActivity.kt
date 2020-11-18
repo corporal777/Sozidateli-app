@@ -193,6 +193,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
                 val changeEmail = it.getQueryParameter(CHANGE_EMAIL)
+                val usip = it.getQueryParameter(USIP)
 
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
@@ -212,6 +213,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     if (userId != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
+                } else if (changeEmail != null && authCode != null) {
+                    presenter.onInviteRegister(changeEmail, authCode)
                 }
             }
         } else {
@@ -241,6 +244,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             }
         }
+    }
+
+    override fun showInviteRegister(email: String, code: String) {
+        findNavController().navigate(R.id.to_invite_register, bundleOf("code" to code,
+                "email" to email), NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
     }
 
     private fun wasLaunchedFromResents(intent: Intent): Boolean {

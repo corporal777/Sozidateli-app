@@ -98,6 +98,10 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun enableMiddleNameInput(enable: Boolean) {
         etMiddleName.isEnabled = enable
+        if (!enable) {
+            etMiddleName.setText("")
+            presenter.onChangeMiddleNameText("")
+        }
     }
 
     override fun showFirstNameError(show: Boolean) {

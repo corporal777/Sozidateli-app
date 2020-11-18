@@ -306,6 +306,12 @@ class MainPresenter
         viewState.showEvent(event)
     }
 
+    override fun onInviteRegister(email: String, code: String) {
+        if (appData.token != null) return
+        isAuthRequired = true
+        viewState.showInviteRegister(email, code)
+    }
+
     override fun onHandleAuthLink(email: String, code: String) {
         if (appData.token != null) return
         isAuthRequired = true
