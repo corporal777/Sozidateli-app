@@ -28,13 +28,8 @@ class EventDataListItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventAddress.apply {
-                /*val startTime = if (showStartTime) {
-                    conferenceActionStart?.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
-                } else {
-                    null
-                }*/
-                val textList = listOfNotNull(formatAddress(), /*startTime*/"")
-                text = textList.joinToString(/*"$SPACE_NO_BREAK•$SPACE_NO_BREAK"*/)
+                val textList = listOfNotNull(formatAddress())
+                text = textList.joinToString()
             }
             tvEventLabel.text = name
 

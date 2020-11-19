@@ -20,6 +20,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
 import com.example.util.USER_DATA_EMPTY
+import com.example.util.firstLetterToUppercase
 import kotlinx.android.synthetic.main.fragment_user_profile_main_data.*
 import setOnClickListener
 import javax.inject.Inject
@@ -61,7 +62,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
         tvBirthday.text = user.user_birthday?.formatToDefaultDate()
 
-        tvGender.text = user.user_gender
+        tvGender.text = user.user_gender?.firstLetterToUppercase()
 
         tvAddress.text = user.user_short_address ?: user.user_address
 

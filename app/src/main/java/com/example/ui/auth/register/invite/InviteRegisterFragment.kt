@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_invite_register.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPassword
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPasswordConfirm
 import kotlinx.android.synthetic.main.fragment_invite_register.tvPhoneConfirmed
+import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -97,12 +98,11 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
 
         etMobilePhone.apply {
             onTextChanged {
-                val phone = "+7" + it.toString()
-                presenter.onChangePhoneText(phone)
+                presenter.onChangePhoneText(it.toString())
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-
+        etMobilePhone.setText("+7")
         btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
     }
 

@@ -53,12 +53,11 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
         etMobilePhone.apply {
             onTextChanged {
-                val phone = "+7" + it.toString()
-                presenter.onChangePhoneText(/*it?.toString() ?: ""*/phone)
+                presenter.onChangePhoneText(it?.toString() ?: "")
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-
+        etMobilePhone.setText("+7")
         btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
     }
 

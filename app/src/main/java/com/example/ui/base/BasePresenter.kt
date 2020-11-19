@@ -59,7 +59,17 @@ open class BasePresenter<V : BaseContract.View>
             else if (it is ApiError) if (onApiError != null) onApiError(it) else onReceiveApiError(it)
 
             if (onError != null) onError(it)
-            else onReceiveError(it)
+            else {
+                val errors = (it as ApiError).errors
+                if (errors.isNullOrEmpty()) {
+                    onReceiveError(it)
+                } else {
+                    when (errors[0]) {
+                        "User with same email exists" -> viewState.showEmailErrorMessage()
+                        else -> onReceiveError(it)
+                    }
+                }
+            }
         }
     }
 

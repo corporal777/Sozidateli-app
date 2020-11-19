@@ -22,7 +22,7 @@ data class UserAddress(
 
     companion object {
         fun fromUser(user: User): UserAddress = UserAddress(
-                user.user_address,
+                user.user_short_address ?: user.user_address,
                 user.user_address_index,
                 user.user_address_country,
                 user.user_address_federal,

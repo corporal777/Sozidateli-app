@@ -63,7 +63,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         ivClose.setOnClickListener { presenter.onClickClose() }
 
         etMobilePhone.onTextChanged { it?.toString()?.let { text ->
-            presenter.onChangePhoneText("+7$text")
+            presenter.onChangePhoneText(text)
         } }
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
 

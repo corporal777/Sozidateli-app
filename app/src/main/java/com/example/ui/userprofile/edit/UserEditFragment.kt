@@ -33,6 +33,7 @@ import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.firstLetterToUppercase
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.PDFFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
@@ -77,6 +78,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         super.onViewCreated(view, savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                hideKeyboard()
                 presenter.onNavigateUpRequest()
             }
         })
@@ -146,7 +148,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_phone,
                 user.user_phone_show,
                 user.user_phone_confirmed,
-                user.user_gender,
+                user.user_gender?.firstLetterToUppercase(),
                 user.user_birthday,
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
@@ -172,7 +174,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_name,
                 user.user_last_name,
                 user.user_middle_name,
-                user.user_gender,
+                user.user_gender?.firstLetterToUppercase(),
                 user.user_birthday,
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
