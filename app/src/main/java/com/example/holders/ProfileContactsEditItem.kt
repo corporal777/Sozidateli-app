@@ -43,7 +43,8 @@ class ProfileContactsEditItem(
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
     private var mSite = site
-    private var mNoSite = site == USER_DATA_EMPTY
+    private var mNoSite = site == /*USER_DATA_EMPTY*/null
+    private var mNoNetworks = socialNetworks.isNullOrEmpty()
     private var mNoWorkPhone = workPhone == USER_DATA_EMPTY
 
     private var mShowEmail = showEmail
@@ -124,11 +125,16 @@ class ProfileContactsEditItem(
                 }
             }
 
-            tilSite.isEnabled = !mNoSite
+            checkSites()
             etSite.initInput(mSite) { mSite = it.toString() }
             scSite.initSwitch(mNoSite) {
                 mNoSite = it
-                tilSite.isEnabled = !it
+                checkSites()
+            }
+            checkNetworks()
+            scNoSocialNetworks.initSwitch(mNoNetworks) {
+                mNoNetworks = it
+                checkNetworks()
             }
 
             btnEmail.apply {
@@ -139,6 +145,28 @@ class ProfileContactsEditItem(
             scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }
 
             updatePhoneConfirmationStatus(this)
+        }
+    }
+
+    private fun checkSites() {
+        viewHolder.apply {
+            if (mNoSite) {
+                tilSite.visibility = View.GONE
+            } else {
+                tilSite.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun checkNetworks() {
+        viewHolder.apply {
+            if (mNoNetworks) {
+                btnSocialNetworkAdd.visibility = View.GONE
+                llSocialNetworks.visibility = View.GONE
+            } else {
+                btnSocialNetworkAdd.visibility = View.VISIBLE
+                llSocialNetworks.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -224,12 +252,18 @@ class ProfileContactsEditItem(
             }
             if (showMobilePhone != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)
 
-            if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
+            /*if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
-            }
+            }*/
             val siteUpdate = if (mNoSite) USER_DATA_EMPTY
             else mSite
             if (site != siteUpdate) put(User.FIELD_USER_SITE, siteUpdate)
+
+            val networkUpdate = if (mNoNetworks) arrayListOf()
+            else mSocialNetworks
+            if (socialNetworks?.toHashSet() != networkUpdate.toHashSet()) {
+                put(User.FIELD_SOCIAL_LINKS, networkUpdate.filter { it.value.isNotBlank() })
+            }
         }
     }
 }
