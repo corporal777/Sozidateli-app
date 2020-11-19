@@ -66,6 +66,7 @@ interface InviteRegisterContract {
         fun onSaveCode(code: String)
 
         fun onNoMiddleNameChecked(checked: Boolean)
+        fun onAgreeChecked(checked: Boolean)
 
         fun onSaveEmailText(email: String)
         fun onChangeEmailText(email: String)

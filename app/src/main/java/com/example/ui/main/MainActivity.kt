@@ -504,6 +504,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onDestroy()
     }
 
+    override fun showEmailErrorMessage() {
+        ApiErrorDialog(this, getString(R.string.email_exist_error_title),
+        getString(R.string.email_exist_error_text))
+                .setSelectCallback {  }
+    }
+
     override fun getLoadingView(): View = flLoading
 
     override fun layout() = R.layout.activity_main

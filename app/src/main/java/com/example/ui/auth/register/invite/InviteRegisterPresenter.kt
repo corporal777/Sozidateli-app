@@ -35,6 +35,7 @@ class InviteRegisterPresenter
     private var phone: String? = null
     private var phoneVerified: Boolean = false
     private var noMiddleNameChecked = middleName == USER_DATA_EMPTY
+    private var noAgreeChecked = false
 
     override fun attachView(view: InviteRegisterContract.View?) {
         super.attachView(view)
@@ -85,7 +86,7 @@ class InviteRegisterPresenter
             password: String?,
             passwordConfirm: String?
     ) {
-        if (isDataValid(firstName, lastName, email, password, passwordConfirm)) {
+        if (isDataValid(firstName, lastName, email, password, passwordConfirm, noAgreeChecked)) {
             register(
                     email!!,
                     firstName!!,
@@ -127,6 +128,11 @@ class InviteRegisterPresenter
         performDataChange()
     }
 
+    override fun onAgreeChecked(checked: Boolean) {
+        noAgreeChecked = checked
+        performDataChange()
+    }
+
     override fun onPhoneConfirmClick() {
         val phone = this.phone
         val phoneValid = phone.isValidPhoneNumber(phoneNumberUtil)
@@ -160,7 +166,8 @@ class InviteRegisterPresenter
                 lastName,
                 newEmail,
                 password,
-                passwordConfirm
+                passwordConfirm,
+                noAgreeChecked
         ))
     }
 
@@ -169,13 +176,15 @@ class InviteRegisterPresenter
             lastName: String?,
             email: String?,
             password: String?,
-            passwordConfirm: String?
+            passwordConfirm: String?,
+            isAgree: Boolean
     ): Boolean {
         return !firstName.isNullOrBlank()
                 && !lastName.isNullOrBlank()
                 && email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
                 && password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
                 && password == passwordConfirm
+                && isAgree
     }
 
     override fun onSaveCode(code: String) {

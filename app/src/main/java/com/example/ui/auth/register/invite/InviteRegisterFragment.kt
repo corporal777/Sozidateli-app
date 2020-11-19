@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.fragment_invite_register.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPassword
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPasswordConfirm
 import kotlinx.android.synthetic.main.fragment_invite_register.tvPhoneConfirmed
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -72,6 +71,7 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
         etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
         etPasswordConfirm.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordConfirmText(text) } }
         scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
+        cbAgree.setOnCheckedChangeListener { _, checked -> presenter.onAgreeChecked(checked) }
 
         val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
             val linkStart = 11

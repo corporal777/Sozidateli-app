@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import com.example.R
+import com.example.ui.views.ApiErrorDialog
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
@@ -83,6 +85,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     override fun showRequestErrorMessage() {
         mActivity?.showRequestErrorMessage()
+    }
+
+    override fun showEmailErrorMessage() {
+        context?.let {
+            ApiErrorDialog(it, getString(R.string.email_exist_error_title),
+                    getString(R.string.email_exist_error_text))
+                .setSelectCallback {  }
+        }
     }
 
     override fun onDestroyView() {

@@ -267,11 +267,10 @@
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/cbAgree"
                         fontPath="fonts/Roboto-Light.ttf"
+                        style="@style/Profile.Edit.Switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@null"
-                        android:clickable="false"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
                         android:theme="@style/CheckBox" />
