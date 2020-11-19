@@ -2,6 +2,7 @@ package com.example.ui.notification
 
 import android.content.Intent
 import android.net.Uri
+import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
@@ -50,8 +51,9 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
         tvMessage.apply {
             text = notification.message?.parseAsHtml()
-            BetterLinkMovementMethod.linkify(Linkify.ALL, this)
-                    .setOnLinkClickListener(linkClickListener)
+            movementMethod = LinkMovementMethod.getInstance()
+            /*BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+                    .setOnLinkClickListener(linkClickListener)*/
         }
 
         val titleRes: Int
