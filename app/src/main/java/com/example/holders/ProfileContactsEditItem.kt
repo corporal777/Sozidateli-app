@@ -45,7 +45,7 @@ class ProfileContactsEditItem(
     private var mSite = site
     private var mNoSite = site == /*USER_DATA_EMPTY*/null
     private var mNoNetworks = socialNetworks.isNullOrEmpty()
-    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY
+    private var mNoWorkPhone = workPhone == /*USER_DATA_EMPTY*/null
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks ?: emptyList())
@@ -102,14 +102,15 @@ class ProfileContactsEditItem(
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
-
+            checkPhone()
             scShowWorkPhone.initSwitch(mShowWorkPhone) { mShowWorkPhone = it }
             scNoWorkPhone.initSwitch(mNoWorkPhone) {
                 mNoWorkPhone = it
                 if (it) {
                     tilWorkPhone.error = null
                 }
-                tilWorkPhone.isEnabled = !it
+                checkPhone()
+                //tilWorkPhone.isEnabled = !it
             }
 
             llSocialNetworks.removeAllViews()
@@ -145,6 +146,16 @@ class ProfileContactsEditItem(
             scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }
 
             updatePhoneConfirmationStatus(this)
+        }
+    }
+
+    private fun checkPhone() {
+        viewHolder.apply {
+            if (mNoWorkPhone) {
+                tilWorkPhone.visibility = View.GONE
+            } else {
+                tilWorkPhone.visibility = View.VISIBLE
+            }
         }
     }
 
