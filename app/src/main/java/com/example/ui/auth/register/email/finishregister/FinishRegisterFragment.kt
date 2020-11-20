@@ -22,13 +22,17 @@ import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnPhoneConfirm
+import kotlinx.android.synthetic.main.fragment_finish_register.cbAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.etEmail
 import kotlinx.android.synthetic.main.fragment_finish_register.etFirstName
 import kotlinx.android.synthetic.main.fragment_finish_register.etLastName
 import kotlinx.android.synthetic.main.fragment_finish_register.etMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.etMobilePhone
+import kotlinx.android.synthetic.main.fragment_finish_register.flAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
+import kotlinx.android.synthetic.main.fragment_finish_register.tilMobilePhone
+import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvPhoneConfirmed
 import onTextChanged
@@ -127,6 +131,10 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     override fun phoneConfirmEnabled(enabled: Boolean) {
         btnPhoneConfirm.isEnabled = enabled
         btnPhoneConfirm.isVisible = enabled
+    }
+
+    override fun enableRegisterBtn(isEnable: Boolean) {
+        ibRegister.apply { isEnabled = isEnable }
     }
 
     override fun showSnRegistration(snUser: SnUser) {

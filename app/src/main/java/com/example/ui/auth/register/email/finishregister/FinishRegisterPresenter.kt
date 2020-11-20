@@ -40,6 +40,7 @@ class FinishRegisterPresenter
     private var phone: String? = null
     private var isAgree: Boolean = false
     private var code: String = ""
+    private var noAgreeChecked = false
 
     var snUser: SnUser? = null
     private var phoneVerified: Boolean = false
@@ -68,6 +69,7 @@ class FinishRegisterPresenter
     override fun onClickAgree(isAgree: Boolean) {
         this.isAgree = isAgree
         viewState.showAgreementError(false)
+        viewState.enableRegisterBtn(isAgree)
     }
 
     override fun onChangePhoneText(phone: String) {

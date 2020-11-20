@@ -32,6 +32,9 @@ interface FinishRegisterContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneConfirm(phone: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun enableRegisterBtn(isEnable: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {

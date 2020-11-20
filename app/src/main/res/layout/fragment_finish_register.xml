@@ -260,6 +260,7 @@
             android:background="@drawable/background_action_button_selector"
             android:minHeight="@dimen/auth_button_min_height"
             android:text="@string/auth_action_register"
+            android:enabled="false"
             android:textAllCaps="false"
             android:textColor="@color/text_color_action_button"
             android:textSize="14sp"
