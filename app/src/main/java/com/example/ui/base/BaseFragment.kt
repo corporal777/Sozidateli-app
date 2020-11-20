@@ -8,8 +8,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.ui.views.ApiErrorDialog
+import com.example.ui.views.FillProfileDialog
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
@@ -93,6 +96,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
                     getString(R.string.email_exist_error_text))
                 .setSelectCallback {  }
         }
+    }
+
+    override fun showNotificationErrorMessage() {
+        context?.let { FillProfileDialog(it).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) } }
     }
 
     override fun onDestroyView() {

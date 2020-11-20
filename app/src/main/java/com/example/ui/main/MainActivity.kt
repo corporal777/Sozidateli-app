@@ -46,6 +46,7 @@ import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.ApiErrorDialog
+import com.example.ui.views.FillProfileDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -508,6 +509,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ApiErrorDialog(this, getString(R.string.email_exist_error_title),
         getString(R.string.email_exist_error_text))
                 .setSelectCallback {  }
+    }
+
+    override fun showNotificationErrorMessage() {
+        FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
 
     override fun getLoadingView(): View = flLoading

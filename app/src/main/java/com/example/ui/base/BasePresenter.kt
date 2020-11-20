@@ -66,6 +66,7 @@ open class BasePresenter<V : BaseContract.View>
                 } else {
                     when (errors[0]) {
                         "User with same email exists" -> viewState.showEmailErrorMessage()
+                        "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
                         else -> onReceiveError(it)
                     }
                 }
