@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "282948853135",
+    "firebase_url": "https://chatapp-af88f.firebaseio.com",
+    "project_id": "chatapp-af88f",
+    "storage_bucket": "chatapp-af88f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282948853135:android:97e1306ab967cbef56fffa",
+        "android_client_info": {
+          "package_name": "ru.houseofapps.sozidateli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkFW6lRKNC6srvaTaf1I7Z1EIJV8tWybY"
+        },
+        {
+          "current_key": "AIzaSyCxnmHNTIR5JbZEt6x8Iu2YeENDZ7x60vA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282948853135-aqj8cim4hvgoan1urrhcicor65q2gvvq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "282948853135-u0sse53b2mu0pqhtm420g927buum5g4d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.houseofapps.sozidateli"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
