@@ -2,8 +2,7 @@ package com.example.ui.notification
 
 import android.content.Intent
 import android.net.Uri
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
+import android.util.Log
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -51,9 +50,24 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
         tvMessage.apply {
             text = notification.message?.parseAsHtml()
-            movementMethod = LinkMovementMethod.getInstance()
-            /*BetterLinkMovementMethod.linkify(Linkify.ALL, this)
-                    .setOnLinkClickListener(linkClickListener)*/
+            BetterLinkMovementMethod.linkifyHtml(this)
+                    .setOnLinkClickListener { _, url ->
+                        if (url.contains("https") || url.contains("http")) {
+                            val i = Intent(Intent.ACTION_VIEW)
+                            i.data = Uri.parse(url)
+                            startActivity(i)
+                        } else if (url.contains("organization")) {
+                            val organizationId = url.replace("organization", "").replace("/", "")
+                            findNavController().navigate(NotificationFragmentDirections.notificationToOrganizationFragment(organizationId))
+                            Log.INFO
+                        } else if (url.contains("event")) {
+                            val eventId = url.replace("event", "").replace("/", "")
+                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId))
+                        } else {
+                            Log.INFO
+                        }
+                        true
+                    }
         }
 
         val titleRes: Int
@@ -77,8 +91,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
-                        canChangeAccept = true
-                        actionTextRes = R.string.notifications_state_cancelled
+                        //canChangeAccept = true
+                        //actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
                         canAccept = true

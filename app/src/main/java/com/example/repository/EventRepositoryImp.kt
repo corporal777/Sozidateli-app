@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.net.Uri
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.models.*
@@ -187,7 +188,7 @@ class EventRepositoryImp
                 )
                 EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
                         field,
-                        findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())
+                        null/*findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())*/
                 )
                 EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
                         field,

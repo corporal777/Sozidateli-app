@@ -43,9 +43,9 @@ class ProfileContactsEditItem(
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
     private var mSite = site
-    private var mNoSite = site == /*USER_DATA_EMPTY*/null
+    private var mNoSite = site == USER_DATA_EMPTY || site == null
     private var mNoNetworks = socialNetworks.isNullOrEmpty()
-    private var mNoWorkPhone = workPhone == /*USER_DATA_EMPTY*/null
+    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks ?: emptyList())

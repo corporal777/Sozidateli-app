@@ -1,17 +1,17 @@
 package com.example.data.models
 
 data class EventPassport(
-        var series: String? = null,
-        var number: String? = null,
-        var agency: String? = null,
-        var code: String? = null,
+        var serial: String? = null,
+        var num: String? = null,
+        var org: String? = null,
+        var kod: String? = null,
         var date: String? = null
 ) {
     fun isDataComplete(): Boolean {
-        return series?.let { it.length == 4 } ?: false
-                && number?.let { it.length == 6 } ?: false
-                && !agency.isNullOrEmpty()
-                && !code.isNullOrEmpty()
+        return serial?.let { it.length == 4 } ?: false
+                && num?.let { it.length == 6 } ?: false
+                && !org.isNullOrEmpty()
+                && !kod.isNullOrEmpty()
                 && !date.isNullOrEmpty()
     }
 }

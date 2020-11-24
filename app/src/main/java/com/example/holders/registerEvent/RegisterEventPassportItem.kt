@@ -34,9 +34,9 @@ class RegisterEventPassportItem(
             etSerial.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.series)
+                setText(passport.serial)
                 serialTextWatcher = onTextChanged {
-                    passport.series = it?.toString()
+                    passport.serial = it?.toString()
                     onDataChange()
                 }
             }
@@ -44,9 +44,9 @@ class RegisterEventPassportItem(
             etNumber.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.number)
+                setText(passport.num)
                 numberTextWatcher = onTextChanged {
-                    passport.number = it?.toString()
+                    passport.num = it?.toString()
                     onDataChange()
                 }
             }
@@ -54,9 +54,9 @@ class RegisterEventPassportItem(
             etAgency.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.agency)
+                setText(passport.org)
                 agencyTextWatcher = onTextChanged {
-                    passport.agency = it?.toString()
+                    passport.org = it?.toString()
                     onDataChange()
                 }
             }
@@ -82,9 +82,9 @@ class RegisterEventPassportItem(
             etCode.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.code)
+                setText(passport.kod)
                 codeTextWatcher = onTextChanged {
-                    passport.code = it?.toString()
+                    passport.kod = it?.toString()
                     onDataChange()
                 }
             }
