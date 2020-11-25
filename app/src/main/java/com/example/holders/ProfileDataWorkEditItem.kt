@@ -8,11 +8,20 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
+import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
 import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
+import com.example.util.validateEndDate
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.btnRemove
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.etFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.etStart
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.scFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
 import onTextChanged
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,7 +57,8 @@ class ProfileDataWorkEditItem(
             tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
+                isDateValid(viewHolder)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
             }
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
@@ -56,7 +66,8 @@ class ProfileDataWorkEditItem(
             tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
+                isDateValid(viewHolder)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
             }
 
             setFinishEnabled(this, !isNotFinished)
@@ -76,6 +87,16 @@ class ProfileDataWorkEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
+        }
+    }
+
+    private fun isDateValid(viewHolder: GroupieViewHolder) {
+        if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {
+            if (validateEndDate(mStart?: "", mFinish?: "")) {
+                viewHolder.tilFinish.error = viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
+            } else {
+                viewHolder.tilFinish.error = null
+            }
         }
     }
 
