@@ -96,8 +96,17 @@
             android:id="@+id/llSocialNetworks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/networksError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/fill_field"
+            android:textColor="@color/attention_action"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            tools:text="@string/fill_field"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSocialNetworkAdd"
@@ -106,7 +115,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"
             android:text="@string/profile_sn_add" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
@@ -123,7 +131,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:errorEnabled="true"
-            android:visibility="gone"
             app:errorIconDrawable="@null">
 
             <com.google.android.material.textfield.TextInputEditText

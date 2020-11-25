@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.fragment_finish_register.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvPhoneConfirmed
+import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -58,6 +59,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onChangeMiddleNameText(FinishRegisterFragmentArgs.fromBundle(it).middleName ?: "")
             presenter.onChangeEmailText(FinishRegisterFragmentArgs.fromBundle(it).email ?: "")
             presenter.onChangePhoneText(FinishRegisterFragmentArgs.fromBundle(it).phone ?: "")
+            presenter.phoneConfirmed(FinishRegisterFragmentArgs.fromBundle(it).isConfirmed)
             presenter.onSaveCode(FinishRegisterFragmentArgs.fromBundle(it).code ?: "")
         }
     }
@@ -106,13 +108,17 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         super.onDestroyView()
     }
 
-    override fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean) {
+    override fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean, phoneVerified: Boolean) {
         etEmail.setText(email)
         etFirstName.setText(firstName)
         etLastName.setText(lastName)
-        etMiddleName.setText(middleName)
+        if (middleName == "-")
+            etMiddleName.isEnabled = false
+        else
+            etMiddleName.setText(middleName)
         etMobilePhone.setText(phone)
         cbAgree.isChecked = isAgree
+        updatePhoneConfirmationStatus(phoneVerified)
     }
 
     override fun showAgreementError(show: Boolean) {

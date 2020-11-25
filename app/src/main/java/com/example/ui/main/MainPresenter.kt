@@ -323,7 +323,8 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.showFinishRegister(it.user?.user_name?: "",
                         it.user?.user_last_name?: "", it.user?.user_middle_name,
-                it.user?.user_phone, it.user?.user_email?: "", code) }, { viewState.showLogin() })
+                it.user?.user_phone, it.user?.user_email?: "", code,
+                        it.user?.user_phone_confirmed?: false) }, { viewState.showLogin() })
                 .call(compositeDisposable)
     }
 

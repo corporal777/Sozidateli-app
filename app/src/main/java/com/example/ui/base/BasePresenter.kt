@@ -9,6 +9,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import javax.inject.Inject
 
@@ -60,14 +61,16 @@ open class BasePresenter<V : BaseContract.View>
 
             if (onError != null) onError(it)
             else {
-                val errors = (it as ApiError).errors
-                if (errors.isNullOrEmpty()) {
-                    onReceiveError(it)
-                } else {
-                    when (errors[0]) {
-                        "User with same email exists" -> viewState.showEmailErrorMessage()
-                        "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
-                        else -> onReceiveError(it)
+                if (it is HttpException) {
+                    val errors = (it as ApiError).errors
+                    if (errors.isNullOrEmpty()) {
+                        onReceiveError(it)
+                    } else {
+                        when (errors[0]) {
+                            "User with same email exists" -> viewState.showEmailErrorMessage()
+                            "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
+                            else -> onReceiveError(it)
+                        }
                     }
                 }
             }

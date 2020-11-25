@@ -335,9 +335,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String) =
+    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean) =
             findNavController().navigate(R.id.register_email_finish_fragment, bundleOf("code" to code,
-            "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName), NavOptions.Builder()
+            "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName,
+            "isConfirmed" to userPhoneConfirmed), NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 

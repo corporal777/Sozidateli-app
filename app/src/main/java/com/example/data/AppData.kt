@@ -113,6 +113,7 @@ class AppData(
         chatRequestsCount = 0
         chatUnreadMessageCount = 0
         userChangeSubject.onNext(Optional(null))
+        userPhoneConfirmedSubject.onNext(false)
         token = null
     }
 }

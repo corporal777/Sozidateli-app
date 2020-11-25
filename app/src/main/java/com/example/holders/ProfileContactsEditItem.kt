@@ -4,8 +4,11 @@ import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserDataSocialLink
@@ -36,6 +39,7 @@ class ProfileContactsEditItem(
     private lateinit var viewHolder: GroupieViewHolder
 
     private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
+    private val invalidError = context.getString(R.string.fill_field)
 
     private var mMobilePhone = mobilePhone
     private var mShowMobilePhone = showMobilePhone
@@ -43,9 +47,9 @@ class ProfileContactsEditItem(
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
     private var mSite = site
-    private var mNoSite = site == USER_DATA_EMPTY || site == null
+    private var mNoSite = site == USER_DATA_EMPTY || site == null || site == ""
     private var mNoNetworks = socialNetworks.isNullOrEmpty()
-    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null
+    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null || workPhone == ""
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks ?: emptyList())
@@ -91,10 +95,6 @@ class ProfileContactsEditItem(
                 }
             }
 
-            tilWorkPhone.apply {
-                error = null
-                isEnabled = !mNoWorkPhone
-            }
             etWorkPhone.apply {
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
@@ -110,7 +110,6 @@ class ProfileContactsEditItem(
                     tilWorkPhone.error = null
                 }
                 checkPhone()
-                //tilWorkPhone.isEnabled = !it
             }
 
             llSocialNetworks.removeAllViews()
@@ -150,34 +149,28 @@ class ProfileContactsEditItem(
     }
 
     private fun checkPhone() {
-        viewHolder.apply {
-            if (mNoWorkPhone) {
-                tilWorkPhone.visibility = View.GONE
-            } else {
-                tilWorkPhone.visibility = View.VISIBLE
-            }
-        }
+        viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
     }
 
     private fun checkSites() {
-        viewHolder.apply {
-            if (mNoSite) {
-                tilSite.visibility = View.GONE
-            } else {
-                tilSite.visibility = View.VISIBLE
-            }
-        }
+        viewHolder.tilSite.isEnabled = !mNoSite
     }
 
     private fun checkNetworks() {
         viewHolder.apply {
-            if (mNoNetworks) {
-                btnSocialNetworkAdd.visibility = View.GONE
-                llSocialNetworks.visibility = View.GONE
-            } else {
-                btnSocialNetworkAdd.visibility = View.VISIBLE
-                llSocialNetworks.visibility = View.VISIBLE
+            btnSocialNetworkAdd.isEnabled = !mNoNetworks
+            llSocialNetworks.isEnabled = !mNoNetworks
+
+            for (i in 0 until llSocialNetworks.childCount) {
+                val child: View = llSocialNetworks.getChildAt(i)
+                child.isEnabled = !mNoNetworks
+                (child as ViewGroup).forEach { view ->
+                    view.isEnabled = !mNoNetworks
+                }
             }
+
+            if (mNoNetworks)
+                networksError.visibility = View.GONE
         }
     }
 
@@ -224,7 +217,7 @@ class ProfileContactsEditItem(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        if (workPhone != mWorkPhone
+        /*if (workPhone != mWorkPhone
                 && !mWorkPhone.isNullOrEmpty()
                 && !mWorkPhone.isValidPhoneNumber(context)
         ) {
@@ -233,7 +226,7 @@ class ProfileContactsEditItem(
                 requestFocus()
             }
             isValid = false
-        }
+        }*/
 
         if (mobilePhone != mMobilePhone
                 && !mMobilePhone.isNullOrEmpty()
@@ -246,6 +239,31 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
+        if (!mNoSite && mSite.isNullOrEmpty()) {
+            viewHolder.tilSite.apply {
+                error = invalidError
+                requestFocus()
+            }
+            isValid = false
+        }
+
+        if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) {
+            viewHolder.tilWorkPhone.apply {
+                error = invalidError
+                requestFocus()
+            }
+            isValid = false
+        }
+
+        if (!mNoNetworks && mSocialNetworks.size == 1) {
+            if (mSocialNetworks[0].value.isEmpty()) {
+                viewHolder.networksError.apply {
+                    visibility = View.VISIBLE
+                }
+                isValid = false
+            }
+        }
+
         return isValid
     }
 
@@ -253,7 +271,7 @@ class ProfileContactsEditItem(
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
 
-            val workPhoneUpdate = if (mNoWorkPhone) USER_DATA_EMPTY
+            val workPhoneUpdate = if (mNoWorkPhone) ""
             else mWorkPhone
             if (workPhone != workPhoneUpdate) put(User.FIELD_USER_PHONE_WORK, workPhoneUpdate)
             if (showWorkPhone != mShowWorkPhone) put(User.FIELD_USER_PHONE_WORK_SHOW, mShowWorkPhone)
@@ -266,7 +284,7 @@ class ProfileContactsEditItem(
             /*if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
             }*/
-            val siteUpdate = if (mNoSite) USER_DATA_EMPTY
+            val siteUpdate = if (mNoSite) ""
             else mSite
             if (site != siteUpdate) put(User.FIELD_USER_SITE, siteUpdate)
 

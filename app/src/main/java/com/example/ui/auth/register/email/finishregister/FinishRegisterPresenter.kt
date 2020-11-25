@@ -51,11 +51,19 @@ class FinishRegisterPresenter
                 .performOnBackgroundOutOnMain()
                 .subscribeBy {
                     phoneVerified = it
+                    viewState.updatePhoneConfirmationStatus(it)
                 }
     }
 
     override fun attachView(view: FinishRegisterContract.View?) {
         super.attachView(view)
+        initData()
+    }
+
+    private fun initData() {
+        viewState.setData(email, firstName, middleName, lastName, phone, isAgree, phoneVerified)
+        if (!phoneVerified)
+            viewState.phoneConfirmEnabled(phone.isValidPhoneNumber(phoneNumberUtil))
     }
 
     override fun onClickClose() {
@@ -92,7 +100,12 @@ class FinishRegisterPresenter
 
     override fun onSaveCode(code: String) {
         this.code = code
-        viewState.setData(email, firstName, middleName, lastName, phone, isAgree)
+        viewState.setData(email, firstName, middleName, lastName, phone, isAgree, phoneVerified)
+    }
+
+    override fun phoneConfirmed(isConfirmed: Boolean) {
+        //this.phoneVerified = isConfirmed
+        //viewState.phoneConfirmEnabled(phoneVerified)
     }
 
     override fun onChangeNameText(name: String) {

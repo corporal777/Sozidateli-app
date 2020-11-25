@@ -10,7 +10,7 @@ import com.example.ui.auth.base.BaseAuthContract
 interface FinishRegisterContract {
     interface View : BaseAuthContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean)
+        fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean, phoneVerified: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
@@ -48,6 +48,7 @@ interface FinishRegisterContract {
         fun onChangeLastNameText(lastName: String)
         fun onChangeEmailText(email: String)
         fun onSaveCode(code: String)
+        fun phoneConfirmed(isConfirmed: Boolean)
 
         fun onHandleAuthLink()
         fun onPhoneConfirmClick()

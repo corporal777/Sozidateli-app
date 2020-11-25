@@ -677,4 +677,5 @@
     <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в “Создателях”</string>
     <string name="email_exist_error_text">Если это Ваш e-mail, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
     <string name="fill_in_everything_profile_fields">Чтобы выполнить действие, Вам необходимо заполнить поля ” + ” профиля:</string>
+    <string name="fill_field">Заполните поле</string>
 </resources>

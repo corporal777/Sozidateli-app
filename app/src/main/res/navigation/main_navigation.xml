@@ -147,6 +147,11 @@
             app:argType="string"
             app:nullable="true" />
 
+        <argument
+            android:name="isConfirmed"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
     </fragment>
 
     <fragment

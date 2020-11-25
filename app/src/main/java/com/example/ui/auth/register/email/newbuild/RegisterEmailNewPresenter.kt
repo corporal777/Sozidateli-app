@@ -63,8 +63,8 @@ class RegisterEmailNewPresenter
                 phone,
                 phoneVerified
         )
-
-        viewState.phoneConfirmEnabled(phone.isValidPhoneNumber(phoneNumberUtil))
+        if (!phoneVerified)
+            viewState.phoneConfirmEnabled(phone.isValidPhoneNumber(phoneNumberUtil))
         performDataChange()
     }
 
