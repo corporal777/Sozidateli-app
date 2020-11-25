@@ -6,6 +6,7 @@ import com.example.data.models.AcademicDegree
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
+import com.example.util.validateEndDate
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section

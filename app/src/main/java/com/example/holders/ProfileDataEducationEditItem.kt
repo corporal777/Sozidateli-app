@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import com.example.R
@@ -8,7 +9,9 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
+import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
 import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
+import com.example.util.validateEndDate
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
@@ -47,7 +50,8 @@ class ProfileDataEducationEditItem(
             tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
+                isDateValid(viewHolder)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
             }
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
@@ -55,7 +59,8 @@ class ProfileDataEducationEditItem(
             tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, year, month, day).capitalize()
+                isDateValid(viewHolder)
+                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
             }
 
             setFinishEnabled(this, !isNotFinished)
@@ -75,6 +80,16 @@ class ProfileDataEducationEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
+        }
+    }
+
+    private fun isDateValid(viewHolder: GroupieViewHolder) {
+        if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {
+            if (validateEndDate(mStart?: "", mFinish?: "")) {
+                viewHolder.tilFinish.error = viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
+            } else {
+                viewHolder.tilFinish.error = null
+            }
         }
     }
 

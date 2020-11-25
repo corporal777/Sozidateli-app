@@ -361,7 +361,7 @@
     <string name="profile_degrees_level">Ученая степень или звание</string>
     <string name="profile_sciences_level">Специализация</string>
     <string name="profile_sciences_add">Добавить степень, звание</string>
-    <string name="profile_institution_add">Добавить учебное заведение</string>
+    <string name="profile_institution_add">Добавить образовательную организацию</string>
     <string name="profile_institution">Образовательная организация</string>
     <string name="profile_institution_hint">МГУ им. Ломоносова</string>
     <string name="profile_work_experience">Опыт работы</string>
@@ -678,4 +678,5 @@
     <string name="email_exist_error_text">Если это Ваш e-mail, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
     <string name="fill_in_everything_profile_fields">Чтобы выполнить действие, Вам необходимо заполнить поля ” + ” профиля:</string>
     <string name="fill_field">Заполните поле</string>
+    <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
 </resources>
