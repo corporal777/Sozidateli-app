@@ -70,11 +70,12 @@ class PhoneConfirmPresenter
                     appData.userChangeSubject.onNext(user.asOptional())
                 }
                 .flatMapCompletable {
-                    if (BuildConfig.NEW_PROFILE_EDIT) {
+                    /*if (BuildConfig.NEW_PROFILE_EDIT) {
                         Completable.complete()
                     } else {
                         userRepository.sendStatusPhoneConfirmSms(password)
-                    }
+                    }*/
+                    userRepository.sendStatusPhoneConfirmSms(password)
                 }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -121,7 +122,21 @@ class PhoneConfirmPresenter
                 appData.userPhoneConfirmedSubject.onNext(true)
                 viewState.onPhoneConfirmationComplete()
             } else {
-                viewState.showWrongCodeError()
+                compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribeBy(
+                                onError = {
+                                    viewState.onPhoneConfirmationComplete()
+                                },
+                                onComplete = {
+                                    val user = appData.getUser()
+                                    user.user_phone_confirmed = true
+                                    appData.userChangeSubject.onNext(user.asOptional())
+                                    viewState.onPhoneConfirmationComplete()
+                                }
+                        )
+                //viewState.showWrongCodeError()
             }
         } else {
             compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
