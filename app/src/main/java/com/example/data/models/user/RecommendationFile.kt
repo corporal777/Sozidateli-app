@@ -6,10 +6,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class RecommendationFile(
         var id: Int,
-        var type: String?,
-        var name: String?,
-        var desc: String?,
-        var url: String?
+        var type: String? = null,
+        var name: String? = null,
+        var desc: String? = null,
+        var url: String? = null
 ) : Parcelable {
 
     fun getReadableName(): String {

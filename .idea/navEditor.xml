@@ -664,6 +664,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="file_edit_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="image_view_activity">
                     <value>
                       <LayoutPositions>
@@ -744,7 +756,17 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="notification_to_about_event_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="notification_to_event_rating">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="notification_to_organization_fragment">
                               <value>
                                 <LayoutPositions />
                               </value>

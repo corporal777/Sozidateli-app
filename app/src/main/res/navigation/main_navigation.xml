@@ -683,6 +683,21 @@
                 app:argType="string"
                 app:nullable="false" />
         </action>
+
+        <action
+            android:id="@+id/edit_to_file_edit_fragment"
+            app:destination="@id/file_edit_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/file_edit_fragment"
+        android:name="com.example.ui.userprofile.editfile.UserEditFileFragment"
+        tools:layout="@layout/fragment_edit_file_name">
+
+        <argument
+            android:name="file"
+            app:argType="com.example.data.models.user.RecommendationFile" />
+
     </fragment>
 
     <fragment

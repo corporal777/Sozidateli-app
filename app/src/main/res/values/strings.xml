@@ -679,4 +679,5 @@
     <string name="fill_in_everything_profile_fields">Чтобы выполнить действие, Вам необходимо заполнить поля ” + ” профиля:</string>
     <string name="fill_field">Заполните поле</string>
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
+    <string name="user_profile_status_name">Максимальный статус</string>
 </resources>

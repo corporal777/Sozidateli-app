@@ -74,7 +74,32 @@
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="32dp">
+        android:layout_marginTop="20dp">
+
+        <com.example.ui.views.CustomTextInputLayout
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconDrawable="@drawable/ic_arrow_right"
+            app:endIconMode="dropdown_menu">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvState"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:enabled="false"
+                android:hint="@string/user_profile_status_name"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Profile.Edit.InputContainer"
+        android:layout_marginTop="15dp">
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilBirthday"

@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.edit
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
@@ -10,6 +11,7 @@ import com.example.data.models.UserInterest
 import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
+import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -21,7 +23,9 @@ import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -35,6 +39,7 @@ class UserEditPresenter
         private val takePhoto: RxTakePhoto
 ) : BasePresenter<UserEditContract.View>(), UserEditContract.Presenter {
 
+    private val compositeFilesDisposable = CompositeDisposable()
     lateinit var editType: UserEditDataType
 
     private var isFileEdit = false
@@ -181,6 +186,16 @@ class UserEditPresenter
         }
     }
 
+    override fun onSaveFileClick(data: Map<String, Any?>) {
+        onEditSave(data) {
+            appData.userChangeSubject.onNext(appData.getUser().apply {
+                compositeFilesDisposable.dispose()
+                attached_recomendation_files = it.attached_recomendation_files
+            }.asOptional())
+            true
+        }
+    }
+
     override fun onSaveEducationClick(data: Map<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
@@ -225,6 +240,9 @@ class UserEditPresenter
         onEditSave(data) {
             if (BuildConfig.NEW_PROFILE_EDIT) {
                 viewState.updateFilesList(it.attached_recomendation_files)
+                appData.updateUser {
+                    attached_recomendation_files = it.attached_recomendation_files
+                }
             } else {
                 appData.updateUser {
                     attached_recomendation_files = it.attached_recomendation_files
@@ -266,7 +284,7 @@ class UserEditPresenter
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
+            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email)), true) {
                 viewState.showChangeEmailComplete(email)
                 false
             }
@@ -296,6 +314,9 @@ class UserEditPresenter
                 .subscribe({
                     if (BuildConfig.NEW_PROFILE_EDIT) {
                         viewState.updateFilesList(it.attached_recomendation_files)
+                        appData.updateUser {
+                            attached_recomendation_files = it.attached_recomendation_files
+                        }
                     } else {
                         appData.updateUser {
                             attached_recomendation_files = it.attached_recomendation_files
@@ -371,17 +392,37 @@ class UserEditPresenter
         val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
         if (avatar != null) {
             if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), onComplete)
+                updateUser(userRepository.uploadAvatar(avatar), true, onComplete)
             } else {
                 updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, true, onComplete)
             }
         } else {
-            updateUser(userRepository.updateUser(data), onComplete)
+            val updateFiles = data[FIELD_ATTACHED_FILES]
+            if (updateFiles != null) {
+                val uFiles = arrayListOf(updateFiles as RecommendationFile)
+                compositeFilesDisposable += appData.userChangeSubject
+                        .performOnBackgroundOutOnMain()
+                        .subscribeBy {
+                            val files = it.value?.attached_recomendation_files
+                            val update = arrayListOf<RecommendationFile>()
+                            files?.forEach { file ->
+                                val up = uFiles.firstOrNull { f -> f.id ==file.id }
+                                if (up != null) {
+                                    update.add(RecommendationFile(id = file.id, name = up.name))
+                                } else {
+                                    update.add(RecommendationFile(id = file.id, name = file.name))
+                                }
+                            }
+                            updateUser(userRepository.updateUser(mapOf(FIELD_ATTACHED_FILES to update)), false, onComplete)
+                        }
+            } else {
+                updateUser(userRepository.updateUser(data), true, onComplete)
+            }
         }
     }
 
-    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
+    private fun updateUser(request: Single<User>, isBack: Boolean, onComplete: (User) -> Boolean) {
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -391,7 +432,9 @@ class UserEditPresenter
                         it.user_status?.let { status -> user_status = status }
                         it.user_status_detail?.let { details -> user_status_detail = details }
                     }
-                    if (onComplete(it)) viewState.navigateUp()
+                    if (onComplete(it))
+                        if (isBack)
+                            viewState.navigateUp()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

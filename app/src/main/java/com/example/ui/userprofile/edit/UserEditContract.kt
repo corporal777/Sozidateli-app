@@ -146,5 +146,6 @@ interface UserEditContract {
         fun onCancelClick()
 
         fun onNavigateUpRequest()
+        fun onSaveFileClick(data: Map<String, Any?>)
     }
 }

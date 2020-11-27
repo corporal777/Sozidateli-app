@@ -7,14 +7,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -32,11 +35,12 @@ import com.example.extensions.showChangeEmailDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
+import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.FileUtils
 import com.example.util.firstLetterToUppercase
 import com.vincent.filepicker.Constant
-import com.vincent.filepicker.activity.PDFFilePickActivity
-import com.vincent.filepicker.filter.entity.NormalFile
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_user_edit.*
@@ -73,6 +77,15 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     private var onSaveClick: (() -> Unit)? = null
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parentFragmentManager.setFragmentResultListener(FILE_EDIT_CODE, this,
+                FragmentResultListener { requestKey, result ->
+                    val file = result.getParcelable<RecommendationFile>(FILE_PATH)
+                    presenter.onSaveFileClick(mapOf(User.FIELD_ATTACHED_FILES to file))
+                })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -186,7 +199,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 requireContext(),
                 user.attached_recomendation_files ?: emptyList(),
                 { presenter.onAddFileClick() },
-                { presenter.onFileClick(it) },
+                { /*presenter.onFileClick(it)*/
+                    findNavController().navigate(UserEditFragmentDirections.editToFileEditFragment(it))
+                },
                 { presenter.onEditFileClick(it) },
                 { presenter.onSaveAdditionalFilesClick(it) }
         )
@@ -356,7 +371,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showFileSelector() {
-        startActivityForResult(Intent(requireContext(), PDFFilePickActivity::class.java), Constant.REQUEST_CODE_PICK_FILE)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "file/pdf|image/*"
+        startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
+        //startActivityForResult(Intent(requireContext(), PDFFilePickActivity::class.java), Constant.REQUEST_CODE_PICK_FILE)
     }
 
     override fun setFileEditData(file: RecommendationFile) {
@@ -390,10 +408,14 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         super.onActivityResult(requestCode, resultCode, result)
         if (resultCode == RESULT_OK) {
             if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
-                val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
+                result?.data?.let {
+                    val file = FileUtils.getPath(context, it)
+                    presenter.onFilePicked(file)
+                }
+                /*val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
                 file?.let {
                     presenter.onFilePicked(it.path)
-                }
+                }*/
             }
         }
     }
