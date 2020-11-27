@@ -83,10 +83,17 @@ class UserPresenter
                     else it
                 }
                 .subscribe({
-                    profileUserData = ProfileUserData(
-                            it,
-                            !BuildConfig.NEW_PROFILE_EDIT
-                    )
+                    profileUserData = if (BuildConfig.NEW_PROFILE_EDIT) {
+                        ProfileUserData(
+                                it,
+                                !BuildConfig.NEW_PROFILE_EDIT
+                        )
+                    } else {
+                        ProfileUserData(
+                                it,
+                                isCurrentUser()
+                        )
+                    }
                     viewState.apply {
                         setUser(profileUserData)
                         if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
