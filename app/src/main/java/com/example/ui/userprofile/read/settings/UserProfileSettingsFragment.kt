@@ -41,8 +41,10 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         btnPhoneEdit.setOnClickListener(presenter::onChangePhoneClick)
         btnPasswordEdit.setOnClickListener(presenter::onChangePasswordClick)
         btnEmailEdit.setOnClickListener(presenter::onChangeEmailClick)
-        btnPrivacyEdit.setOnClickListener(presenter::onChangePrivacyClick)
         btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
+        scPrivacy.setOnCheckedChangeListener { _, b ->
+            presenter.onChangePrivacyConfirm(b)
+        }
     }
 
     override fun onUserUpdated(user: User?) {
@@ -56,10 +58,6 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
 
         tvEmail.text = user.user_email
 
-        tvPrivacy.text = getString(
-                if (user.isHidden) R.string.user_profile_privacy_hidden
-                else R.string.user_profile_privacy_visible
-        )
     }
 
     override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)

@@ -87,7 +87,7 @@ class UserChatItem(
         return when {
             messageCalendar.isSameDay(now) -> context.getString(R.string.today)
             messageCalendar.isYesterday(now) -> context.getString(R.string.yesterday)
-            else -> dateFormatterFullMothFullYear.format(messageDate)
+            else -> dateFormatterShortMothNoYear.format(messageDate)
         }
     }
 

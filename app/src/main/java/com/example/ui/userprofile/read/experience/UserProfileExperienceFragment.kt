@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
+import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -47,9 +48,13 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
         user ?: return
 
         val work = user.work ?: emptyList()
-        adapter.update(work.mapIndexed { index, socialRoles ->
-            ProfileDataWorkExperienceItem(socialRoles, index == 0)
-        })
+        if (work.isEmpty()) {
+            adapter.update(arrayListOf(EmptyItem(context?.resources?.getString(R.string.no_experience)?: "")))
+        } else {
+            adapter.update(work.mapIndexed { index, socialRoles ->
+                ProfileDataWorkExperienceItem(socialRoles, index == 0)
+            })
+        }
     }
 
     override fun showEdit() {

@@ -238,8 +238,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             ).apply {
                 add(Section().apply {
                     addAll(work.mapIndexed { index, socialRoles ->
-                        ProfileDataWorkExperienceItem(socialRoles, index == 0)
-                    })
+                        ProfileDataWorkExperienceItem(socialRoles, index == 0) })
                     if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditWorkClick() })
                 })
             }
