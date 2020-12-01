@@ -184,7 +184,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 onExpandChange = onItemExpandChange
         ).apply {
             add(initProfileDataPersonalItem(user, editable))
-            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditPersonalDataClick() })
+            if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditPersonalDataClick() })
         }
     }
 
@@ -223,7 +223,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 add(Section().apply {
                     if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
                     addAll(education.map { ProfileDataEducationItem(it) })
-                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditEducationClick() })
+                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditEducationClick() })
                 })
             }
         } else null
@@ -240,7 +240,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     addAll(work.mapIndexed { index, socialRoles ->
                         ProfileDataWorkExperienceItem(socialRoles, index == 0)
                     })
-                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditWorkClick() })
+                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditWorkClick() })
                 })
             }
         } else null
@@ -261,7 +261,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                             addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
                         }
                     })
-                    if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditInterestsClick() })
+                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditInterestsClick() })
                 })
             }
         } else null
@@ -274,7 +274,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         val subgroups = mutableListOf<Group>()
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
             add(ProfileDataNotesItem(notes.let { if (it.isNullOrEmpty()) "-" else it }))
-            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditAdditionalNotesDataClick() })
+            if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditAdditionalNotesDataClick() })
         })
 
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_files), onExpandChange = onItemExpandChange).apply {
@@ -285,7 +285,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     ) { presenter.onFileClick(file) }
                 })
             }
-            if (editable) add(ProfileButtonEditItem(editText) { presenter.onEditAdditionalFilesDataClick() })
+            if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditAdditionalFilesDataClick() })
         })
 
         return if (editable || !notes.isNullOrEmpty() || files.isNotEmpty()) {

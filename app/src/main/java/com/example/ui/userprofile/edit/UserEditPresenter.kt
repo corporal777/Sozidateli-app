@@ -211,6 +211,7 @@ class UserEditPresenter
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 work = it.work
+                user_work_experience_absent = it.user_work_experience_absent
             }.asOptional())
             true
         }

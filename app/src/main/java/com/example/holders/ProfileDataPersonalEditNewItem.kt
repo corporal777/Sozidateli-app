@@ -39,6 +39,7 @@ class ProfileDataPersonalEditNewItem(
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val notes: String?,
+        private val addInfoClick:() -> Unit,
 ) : Item(id) {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -111,6 +112,9 @@ class ProfileDataPersonalEditNewItem(
             etNotes.apply {
                 setText(mNotes)
                 onTextChanged { mNotes = it?.toString() }
+            }
+            btnAddInfo.setOnClickListener {
+                addInfoClick()
             }
         }
     }

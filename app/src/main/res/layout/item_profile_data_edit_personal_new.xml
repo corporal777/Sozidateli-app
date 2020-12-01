@@ -8,6 +8,12 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_last_name"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilSurname"
             style="@style/Profile.Edit.InputLayout"
@@ -29,6 +35,12 @@
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="0dp">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_name"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilName"
             style="@style/Profile.Edit.InputLayout"
@@ -49,6 +61,12 @@
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="0dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_middle_name"/>
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMiddleName"
@@ -101,6 +119,12 @@
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="15dp">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_birthday"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilBirthday"
             style="@style/Profile.Edit.InputLayout"
@@ -127,6 +151,12 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_gender"/>
+
         <com.example.ui.views.CustomTextInputLayout
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
@@ -147,6 +177,12 @@
     </LinearLayout>
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_city"/>
 
         <com.example.ui.views.CustomTextInputLayout
             style="@style/Profile.Edit.InputLayout"
@@ -172,6 +208,27 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_additional_data"/>
+
+            <ImageView
+                android:id="@+id/btnAddInfo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="7dp"
+                app:tint="@color/chat_list_date"
+                app:srcCompat="@drawable/ic_information"/>
+
+        </LinearLayout>
 
         <com.example.ui.views.CustomTextInputLayout
             style="@style/Profile.Edit.InputLayout"

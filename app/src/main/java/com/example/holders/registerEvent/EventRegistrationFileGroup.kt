@@ -18,7 +18,7 @@ class EventRegistrationFileGroup(
 ) : NestedGroup() {
 
     private var fileItem: EventRegistrationFileItem? = null
-    private val fileAddItem = ProfileButtonEditItem(context.getString(R.string.add_file), onAddClick).apply {
+    private val fileAddItem = ProfileButtonEditItem(context.getString(R.string.add_file), true, onAddClick).apply {
         hasDivider = false
     }
 

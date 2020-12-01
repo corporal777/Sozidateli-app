@@ -21,7 +21,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
     private val fileGroup = Section().apply {
         setHeader(ProfileDataAdditionalFileHeaderItem(id))
     }
-    private val addItem = ProfileButtonEditItem(id + 1, context.getString(R.string.add_file), addFileClickListener).apply {
+    private val addItem = ProfileButtonEditItem(id + 1, context.getString(R.string.add_file), true, addFileClickListener).apply {
         hasDivider = false
         compactMargin = true
     }

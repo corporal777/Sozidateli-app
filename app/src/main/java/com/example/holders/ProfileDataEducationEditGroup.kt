@@ -32,7 +32,7 @@ class ProfileDataEducationEditGroup(
 
     private val degrees = Section().apply {
         setHideWhenEmpty(true)
-        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_sciences_add)) {
+        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_sciences_add), false) {
             add(createAcademicDegreeEditItem(null, null))
         }.apply {
             hasDivider = false
@@ -40,7 +40,7 @@ class ProfileDataEducationEditGroup(
         })
     }
     private val educations = Section().apply {
-        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_institution_add)) { add(createEducationItem(null)) }.apply {
+        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_institution_add), false) { add(createEducationItem(null)) }.apply {
             hasDivider = false
             compactMargin = true
         })

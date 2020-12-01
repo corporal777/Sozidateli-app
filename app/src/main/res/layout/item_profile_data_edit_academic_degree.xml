@@ -2,6 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Profile.Edit.InputContainer">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Profile.Edit.TextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_degrees_level"/>
+
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilDegreesLevel"
         style="@style/Profile.Edit.InputLayout.DropDown"
@@ -20,12 +26,19 @@
             android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>
 
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Profile.Edit.TextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/profile_sciences_level"/>
+
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilSciencesLevel"
         style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="5dp">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvSciencesLevel"

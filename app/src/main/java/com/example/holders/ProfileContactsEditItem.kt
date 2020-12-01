@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.UserDataSite
 import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
 import com.example.util.USER_DATA_EMPTY
@@ -29,7 +30,7 @@ class ProfileContactsEditItem(
         private val workPhone: String?,
         private val showWorkPhone: Boolean,
         private val socialNetworks: List<UserDataSocialLink>?,
-        private val site: String?,
+        private val site: List<String>?,
         private val email: String?,
         private val showEmail: Boolean,
         private val changeEmailClick: () -> Unit,
@@ -46,8 +47,8 @@ class ProfileContactsEditItem(
     private var mIsPhoneConfirmed = isPhoneConfirmed
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
-    private var mSite = site
-    private var mNoSite = site == USER_DATA_EMPTY || site == null || site == ""
+    private var mSite = (site?.map { UserDataSite(value = it) } ?: emptyList()).toMutableList()
+    private var mNoSite = site.isNullOrEmpty()
     private var mNoNetworks = socialNetworks.isNullOrEmpty()
     private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null || workPhone == ""
 
@@ -125,8 +126,20 @@ class ProfileContactsEditItem(
                 }
             }
 
+            llSites.removeAllViews()
+            mSite.forEach { initSiteInput(viewHolder, it) }
+            btnSiteAdd.apply {
+                setOnClickListener {
+                    if (!mSite.lastOrNull()?.value.isNullOrBlank()) {
+                        UserDataSite(value = "").apply {
+                            mSite.add(this)
+                            initSiteInput(viewHolder, this)
+                        }
+                    }
+                }
+            }
             checkSites()
-            etSite.initInput(mSite) { mSite = it.toString() }
+
             scSite.initSwitch(mNoSite) {
                 mNoSite = it
                 checkSites()
@@ -153,7 +166,21 @@ class ProfileContactsEditItem(
     }
 
     private fun checkSites() {
-        viewHolder.tilSite.isEnabled = !mNoSite
+        viewHolder.apply {
+            btnSiteAdd.isEnabled = !mNoSite
+            llSites.isEnabled = !mNoSite
+
+            for (i in 0 until llSites.childCount) {
+                val child: View = llSites.getChildAt(i)
+                child.isEnabled = !mNoSite
+                (child as ViewGroup).forEach { view ->
+                    view.isEnabled = !mNoSite
+                }
+            }
+
+            if (mNoSite)
+                sitesError.visibility = View.GONE
+        }
     }
 
     private fun checkNetworks() {
@@ -210,6 +237,30 @@ class ProfileContactsEditItem(
         viewHolder.llSocialNetworks.addView(parent)
     }
 
+    private fun initSiteInput(viewHolder: GroupieViewHolder, site: UserDataSite) {
+        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
+        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+            hint = context.resources.getString(R.string.profile_site)
+            initInput(site.value) { site.value = it?.toString() ?: "" }
+        }
+
+        parent.findViewById<View>(R.id.btnDelete).apply {
+            setOnClickListener {
+                if (mSite.remove(site)) {
+                    if (mSite.isEmpty()) {
+                        site.value = ""
+                        mSite.add(site)
+                        etSn.text?.clear()
+                    } else {
+                        viewHolder.llSites.removeView(it.parent as View)
+                    }
+                }
+            }
+        }
+
+        viewHolder.llSites.addView(parent)
+    }
+
     private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
         isChecked = checked
         setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
@@ -217,16 +268,6 @@ class ProfileContactsEditItem(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        /*if (workPhone != mWorkPhone
-                && !mWorkPhone.isNullOrEmpty()
-                && !mWorkPhone.isValidPhoneNumber(context)
-        ) {
-            viewHolder.tilWorkPhone.apply {
-                error = invalidNumberError
-                requestFocus()
-            }
-            isValid = false
-        }*/
 
         if (mobilePhone != mMobilePhone
                 && !mMobilePhone.isNullOrEmpty()
@@ -239,12 +280,20 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        if (!mNoSite && mSite.isNullOrEmpty()) {
+        /*if (!mNoSite && mSite.isNullOrEmpty()) {
             viewHolder.tilSite.apply {
                 error = invalidError
                 requestFocus()
             }
             isValid = false
+        }*/
+        if (!mNoSite && mSite.size == 1) {
+            if (mSite[0].value.isEmpty()) {
+                viewHolder.sitesError.apply {
+                    visibility = View.VISIBLE
+                }
+                isValid = false
+            }
         }
 
         if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) {
@@ -284,9 +333,14 @@ class ProfileContactsEditItem(
             /*if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
             }*/
-            val siteUpdate = if (mNoSite) ""
+            /*val siteUpdate = if (mNoSite) ""
             else mSite
-            if (site != siteUpdate) put(User.FIELD_USER_SITE, siteUpdate)
+            if (site != siteUpdate) put(User.FIELD_USER_SITE, siteUpdate)*/
+            val siteUpdate = if (mNoSite) arrayListOf()
+            else mSite
+            if (site?.toHashSet() != siteUpdate.toHashSet()) {
+                put(User.FIELD_USER_SITE, siteUpdate.filter { it.value.isNotBlank() }.map { it.value })
+            }
 
             val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks

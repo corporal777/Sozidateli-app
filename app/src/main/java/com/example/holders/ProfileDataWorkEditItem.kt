@@ -50,6 +50,8 @@ class ProfileDataWorkEditItem(
 
     private val now = Date()
 
+    private var isEditable = true
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
@@ -88,6 +90,18 @@ class ProfileDataWorkEditItem(
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
         }
+        isEnabledItems(viewHolder)
+    }
+
+    private fun isEnabledItems(viewHolder: GroupieViewHolder) {
+        viewHolder.apply {
+            etProject.isEnabled = isEditable
+            etPosition.isEnabled = isEditable
+            etStart.isEnabled = isEditable
+            etFinish.isEnabled = isEditable
+            scFinish.isEnabled = isEditable
+            btnRemove.isEnabled = isEditable
+        }
     }
 
     private fun isDateValid(viewHolder: GroupieViewHolder) {
@@ -105,16 +119,16 @@ class ProfileDataWorkEditItem(
         else {
             holder.apply {
                 if (!isStartValid()) tilStart.apply {
-                    error = resources.getString(R.string.profile_work_start_error)
+                    error = resources.getString(R.string.required_field)
                 }
                 if (!isFinishValid()) tilFinish.apply {
                     error = resources.getString(R.string.profile_work_finish_error)
                 }
                 if (!isOrganizationValid()) tilProject.apply {
-                    error = resources.getString(R.string.profile_edit_empty_field_error)
+                    error = resources.getString(R.string.enter_organization)
                 }
                 if (!isPositionValid()) tilPosition.apply {
-                    error = resources.getString(R.string.profile_edit_empty_field_error)
+                    error = resources.getString(R.string.enter_position)
                 }
             }
         }
@@ -176,6 +190,10 @@ class ProfileDataWorkEditItem(
     private fun isOrganizationValid() = !mOrganization.isNullOrBlank()
     private fun isPositionValid() = !mPosition.isNullOrBlank()
     fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid()
+
+    fun hasExp(hasExp: Boolean) {
+        isEditable = !hasExp
+    }
 
     override fun getLayout() = R.layout.item_profile_data_edit_work
 }

@@ -98,7 +98,7 @@ class ProfileDataEducationEditItem(
         else {
             holder.apply {
                 if (!isStartValid()) tilStart.apply {
-                    error = resources.getString(R.string.profile_education_start_error)
+                    error = resources.getString(R.string.required_field)
                 }
                 if (!isFinishValid()) tilFinish.apply {
                     error = resources.getString(R.string.profile_education_finish_error)
@@ -107,7 +107,7 @@ class ProfileDataEducationEditItem(
                     error = resources.getString(R.string.profile_educate_institution_empty_error)
                 }
                 if (!isSpecialityValid()) tilSpeciality.apply {
-                    error = resources.getString(R.string.profile_edit_empty_field_error)
+                    error = resources.getString(R.string.enter_specialty)
                 }
             }
         }

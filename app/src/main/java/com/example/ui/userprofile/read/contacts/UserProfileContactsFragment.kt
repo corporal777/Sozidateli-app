@@ -49,7 +49,7 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         tvPhoneWork.text = user.user_phone_work?.parsePhone(requireContext())
         tvEmail.text = user.user_email
         tvSocialNetworks.text = user.social_links?.joinToString("\n") { it.value }
-        tvSite.text = user.site
+        tvSite.text = user.site?.joinToString("\n") { it }
     }
 
     override fun showEdit() {

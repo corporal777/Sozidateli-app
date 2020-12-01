@@ -84,9 +84,10 @@ data class User(
         val available_sciences: List<String>? = null,
         val available_education: List<String>? = null,
         @SerializedName(FIELD_USER_SITE)
-        var site: String? = null,
+        var site: List<String>? = null,
         @SerializedName(FIELD_USER_HIDDEN)
-        var isHidden: Boolean = false
+        var isHidden: Boolean = false,
+        var user_work_experience_absent: Boolean = false
 ) {
     var isCurrentUser = false
 
@@ -155,6 +156,7 @@ data class User(
         const val FIELD_USER_IS_IN_FAVORITE = "is_in_favorite"
         const val FIELD_USER_SITE = "user_site"
         const val FIELD_USER_HIDDEN = "user_is_hidden"
+        const val FIELD_USER_HAS_WORK_EXPERIENCE = "user_work_experience_absent"
     }
 
     enum class Status {

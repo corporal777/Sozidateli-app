@@ -8,6 +8,12 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_phone_mobile"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMobilePhone"
             style="@style/Profile.Edit.InputLayout"
@@ -53,11 +59,17 @@
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scMobilePhone"
             style="@style/Profile.Edit.Switch"
-            android:text="@string/user_profile_show_to_everyone"
+            android:text="@string/profile_show_in_profile"
             tools:checked="true" />
     </LinearLayout>
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_phone_work"/>
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilWorkPhone"
@@ -79,7 +91,7 @@
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scShowWorkPhone"
             style="@style/Profile.Edit.Switch"
-            android:text="@string/user_profile_show_to_everyone" />
+            android:text="@string/profile_show_in_profile" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scNoWorkPhone"
@@ -91,6 +103,12 @@
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="0dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/social_networks"/>
 
         <LinearLayout
             android:id="@+id/llSocialNetworks"
@@ -125,20 +143,37 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilSite"
-            style="@style/Profile.Edit.InputLayout"
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_site"/>
+
+        <LinearLayout
+            android:id="@+id/llSites"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:errorIconDrawable="@null">
+            android:orientation="vertical" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSite"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:hint="@string/profile_site"
-                android:inputType="textWebEditText" />
-        </com.example.ui.views.CustomTextInputLayout>
+        <TextView
+            android:id="@+id/sitesError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            android:text="@string/fill_field"
+            android:textColor="@color/attention_action"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            tools:text="@string/fill_field"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSiteAdd"
+            style="@style/Profile.Edit.Button"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:layout_marginBottom="8dp"
+            android:text="@string/profile_site_add" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scSite"

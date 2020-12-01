@@ -192,7 +192,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
                 user.user_notes
-        )
+        ) { showWhyUserShouldAddDataToNotesField() }
 
         val files = ProfileDataAdditionalFilesEditNewGroup(
                 2,
@@ -306,8 +306,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         val dataItem = ProfileDataWorkEditGroup(
                 requireContext(),
                 user.user_birthday,
-                work
-        )
+                work,
+                user.user_work_experience_absent
+        ) { presenter.onSaveWorkClick(mapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it)) }
         adapter.update(listOf(dataItem))
         onSaveClick = {
             if (dataItem.checkDataValid()) {
@@ -382,7 +383,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.update(listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-                ProfileButtonEditItem(getString(R.string.add_file)) { presenter.onFileEditSaveClick() }.apply {
+                ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
                     hasDivider = false
                     compactMargin = true
                 }

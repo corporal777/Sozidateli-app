@@ -356,6 +356,7 @@
     <string name="profile_sn_hint">Ссылка на профиль в соцсети</string>
     <string name="profile_site">Сайт</string>
     <string name="profile_sn_add">Добавить соцсеть</string>
+    <string name="profile_site_add">Добавить сайт</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>
     <string name="profile_degrees_level">Ученая степень или звание</string>
@@ -680,4 +681,13 @@
     <string name="fill_field">Заполните поле</string>
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
     <string name="user_profile_status_name">Максимальный статус</string>
+    <string name="user_profile_upload_photo_help">Формат файлов pdf, jpeg, png, tiff
+        \nРазмер файла: до 10Мб.</string>
+    <string name="user_profile_receipt_date">Дата поступления</string>
+    <string name="user_profile_expiration_date">Дата окончания</string>
+    <string name="enter_specialty">Введите специальность</string>
+    <string name="required_field">Обязательное поле</string>
+    <string name="enter_organization">Введите  организацию</string>
+    <string name="enter_position">Введите должность</string>
+    <string name="no_experience">Нет опыта работы</string>
 </resources>
