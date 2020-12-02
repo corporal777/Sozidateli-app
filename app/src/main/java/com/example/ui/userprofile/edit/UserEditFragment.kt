@@ -37,6 +37,8 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
+import com.example.ui.views.ApiErrorDialog
+import com.example.ui.views.InfoDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.FileUtils
 import com.example.util.firstLetterToUppercase
@@ -354,10 +356,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
-        AlertDialog.Builder(requireContext())
-                .setMessage(R.string.profile_edit_additional_notes_data)
-                .setPositiveButton(R.string.ok, null)
-                .show()
+        InfoDialog(requireContext(), getString(R.string.profile_edit_additional_notes_data))
+                .setSelectCallback {  }
     }
 
     override fun setAdditionalFilesData(user: User) {

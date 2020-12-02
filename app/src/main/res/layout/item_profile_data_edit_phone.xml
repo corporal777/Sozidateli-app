@@ -8,6 +8,12 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_phone_mobile"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMobilePhone"
             style="@style/Profile.Edit.InputLayout"
@@ -53,7 +59,7 @@
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scMobilePhone"
             style="@style/Profile.Edit.Switch"
-            android:text="@string/user_profile_show_to_everyone"
+            android:text="@string/profile_show_in_profile"
             tools:checked="true" />
     </LinearLayout>
 </LinearLayout>

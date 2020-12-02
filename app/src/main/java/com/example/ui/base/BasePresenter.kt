@@ -61,7 +61,7 @@ open class BasePresenter<V : BaseContract.View>
 
             if (onError != null) onError(it)
             else {
-                if (it is HttpException) {
+                if (it is ApiError) {
                     val errors = (it as ApiError).errors
                     if (errors.isNullOrEmpty()) {
                         onReceiveError(it)
