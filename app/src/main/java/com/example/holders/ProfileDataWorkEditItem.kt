@@ -1,6 +1,5 @@
 package com.example.holders
 
-import android.widget.EditText
 import com.example.R
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
@@ -17,8 +16,6 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_work.etStart
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.scFinish
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilFinish
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
-import onTextChanged
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileDataWorkEditItem(
@@ -55,7 +52,7 @@ class ProfileDataWorkEditItem(
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
+                profileDateFormat(year, month, day)
             }
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
@@ -64,7 +61,7 @@ class ProfileDataWorkEditItem(
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
-                formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, year, month, day).capitalize()
+                profileDateFormat(year, month, day)
             }
 
             setFinishEnabled(this, !isNotFinished)
@@ -127,33 +124,6 @@ class ProfileDataWorkEditItem(
                 }
             }
         }
-    }
-
-    private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        setText(text)
-        onTextChanged(onTextChanged)
-    }
-
-    private fun formatDate(date: Date): String {
-        return formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE, date.time)
-    }
-
-    private fun formatDateYear(date: Date): String {
-        return formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, date.time)
-    }
-
-    private fun formatDate(format: String, year: Int, month: Int, day: Int): String {
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month)
-            set(Calendar.DAY_OF_MONTH, day)
-        }
-
-        return formatDate(format, calendar.timeInMillis)
-    }
-
-    private fun formatDate(format: String, date: Long): String {
-        return SimpleDateFormat(format, Locale.getDefault()).format(date)
     }
 
     private fun setFinishEnabled(viewHolder: GroupieViewHolder, enabled: Boolean) {

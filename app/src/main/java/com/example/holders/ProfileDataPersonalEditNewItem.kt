@@ -116,11 +116,6 @@ class ProfileDataPersonalEditNewItem(
         }
     }
 
-    private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        setText(text)
-        onTextChanged(onTextChanged)
-    }
-
     private fun TextInputLayout.initNameInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
         editText?.setText(text)
         error = null

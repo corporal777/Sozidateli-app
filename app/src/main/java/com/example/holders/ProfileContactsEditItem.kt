@@ -15,6 +15,7 @@ import com.example.data.models.UserDataSite
 import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
 import com.example.util.USER_DATA_EMPTY
+import com.example.util.initInput
 import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -213,11 +214,6 @@ class ProfileContactsEditItem(
             btnPhoneConfirm.isVisible = !mIsPhoneConfirmed
             tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
-    }
-
-    private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        setText(text)
-        onTextChanged(onTextChanged)
     }
 
     private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {

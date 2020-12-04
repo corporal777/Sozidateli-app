@@ -15,10 +15,7 @@ import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.GENDER_FEMALE
-import com.example.util.GENDER_MALE
-import com.example.util.initSwitch
+import com.example.util.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
@@ -162,11 +159,6 @@ class ProfileDataPersonalEditItem(
             btnPasswordConfirm.isVisible = !mIsPhoneConfirmed
             tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
-    }
-
-    private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        setText(text)
-        onTextChanged(onTextChanged)
     }
 
     private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {

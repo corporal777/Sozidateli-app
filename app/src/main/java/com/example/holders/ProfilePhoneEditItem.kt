@@ -7,6 +7,7 @@ import android.widget.EditText
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.user.User
+import com.example.util.initInput
 import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -74,11 +75,6 @@ class ProfilePhoneEditItem(
             btnPhoneConfirm.isVisible = !mIsPhoneConfirmed
             tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
-    }
-
-    private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        setText(text)
-        onTextChanged(onTextChanged)
     }
 
     fun checkDataValid(): Boolean {

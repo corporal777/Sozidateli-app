@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.R
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
+import com.example.extensions.findItemBy
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
