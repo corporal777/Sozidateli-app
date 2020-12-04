@@ -7,6 +7,7 @@ import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import okhttp3.internal.notifyAll
 
 class ProfileDataWorkEditGroup(
@@ -103,10 +104,12 @@ class ProfileDataWorkEditGroup(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        works.forEach {
-            if (!it.isDataValid()) {
-                isValid = false
-                it.notifyChanged(true)
+        if (hasWork) {
+            works.forEach {
+                if (!it.isDataValid()) {
+                    isValid = false
+                    it.notifyChanged(true)
+                }
             }
         }
         return isValid
