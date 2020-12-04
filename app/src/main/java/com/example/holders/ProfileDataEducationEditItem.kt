@@ -8,10 +8,7 @@ import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
-import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
-import com.example.util.validateEndDate
+import com.example.util.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
@@ -120,11 +117,6 @@ class ProfileDataEducationEditItem(
     private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
         setText(text)
         onTextChanged(onTextChanged)
-    }
-
-    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
-        isChecked = checked
-        setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
     private fun formatDate(date: Date): String {

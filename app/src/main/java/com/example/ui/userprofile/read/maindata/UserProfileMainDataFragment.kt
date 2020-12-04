@@ -72,7 +72,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
         var filesText = ""
         user.attached_recomendation_files?.forEach { file ->
-            filesText += "<a href='${file.url}'>${file.name}</a>\n"
+            filesText += "<a href='${file.url}'>${file.name}</a><br>"
         }
         tvFiles.text = filesText.parseAsHtml()
         BetterLinkMovementMethod.linkifyHtml(tvFiles)

@@ -1,6 +1,8 @@
 package com.example.holders
 
+import android.widget.CheckBox
 import com.example.R
+import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_no_work.*
@@ -16,8 +18,8 @@ class ProfileDataNoExperienceItem: Item {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.scNoExperience.isChecked = hasWork
-        viewHolder.scNoExperience.setOnCheckedChangeListener { _, b ->
-            noWorkListener(b)
+        viewHolder.scNoExperience.initSwitch(hasWork) {
+            noWorkListener(it)
         }
     }
 

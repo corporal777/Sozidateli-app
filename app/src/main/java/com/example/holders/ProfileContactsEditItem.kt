@@ -15,6 +15,7 @@ import com.example.data.models.UserDataSite
 import com.example.data.models.UserDataSocialLink
 import com.example.data.models.user.User
 import com.example.util.USER_DATA_EMPTY
+import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
@@ -267,11 +268,6 @@ class ProfileContactsEditItem(
         viewHolder.llSites.addView(parent)
     }
 
-    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
-        isChecked = checked
-        setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
-    }
-
     fun checkDataValid(): Boolean {
         var isValid = true
 
@@ -286,13 +282,7 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        /*if (!mNoSite && mSite.isNullOrEmpty()) {
-            viewHolder.tilSite.apply {
-                error = invalidError
-                requestFocus()
-            }
-            isValid = false
-        }*/
+
         if (!mNoSite && mSite.size == 1) {
             if (mSite[0].value.isEmpty()) {
                 viewHolder.sitesError.apply {

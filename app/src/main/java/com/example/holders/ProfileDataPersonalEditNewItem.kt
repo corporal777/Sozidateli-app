@@ -15,10 +15,7 @@ import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.GENDER_FEMALE
-import com.example.util.GENDER_MALE
-import com.example.util.USER_DATA_EMPTY
+import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -158,11 +155,6 @@ class ProfileDataPersonalEditNewItem(
                         it.movementMethod = BetterLinkMovementMethod.getInstance()
                     }
                 }
-    }
-
-    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
-        isChecked = checked
-        setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
     fun checkDataValid(): Boolean {

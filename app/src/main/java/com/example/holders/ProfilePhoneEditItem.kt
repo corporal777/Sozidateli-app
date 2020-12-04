@@ -7,6 +7,7 @@ import android.widget.EditText
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.user.User
+import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
@@ -78,11 +79,6 @@ class ProfilePhoneEditItem(
     private fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
         setText(text)
         onTextChanged(onTextChanged)
-    }
-
-    private fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
-        isChecked = checked
-        setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
     }
 
     fun checkDataValid(): Boolean {
