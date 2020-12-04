@@ -1,7 +1,11 @@
 package com.example.ui.auth.confirm
 
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -10,6 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.FinishRegisterDialog
 import kotlinx.android.synthetic.main.fragment_email_confirm.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -37,9 +42,13 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val supportEmail = getString(R.string.support_email)
-        val description = getString(R.string.auth_register_confirm_email_message).format(supportEmail)
-        tvMessage.text = description
+        showDialog()
+        val agreementText = SpannableString(getString(R.string.register_confirm_email_text).format(presenter.email)).apply {
+            val linkStart = 3
+            val linkEnd = 3 + presenter.email.length
+            setSpan(StyleSpan(Typeface.BOLD), linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+        tvMessage.text = agreementText
         btnResend.apply {
             setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
@@ -49,6 +58,13 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
         }
 
         ibClose.setOnClickListener { presenter.onCloseClick() }
+    }
+
+    private fun showDialog() {
+        FinishRegisterDialog(requireContext())
+                .setSelectCallback {
+
+                }
     }
 
     override fun setTimeLeft(seconds: Int) {

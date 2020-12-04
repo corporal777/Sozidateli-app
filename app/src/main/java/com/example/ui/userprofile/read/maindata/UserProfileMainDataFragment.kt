@@ -69,7 +69,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         tvAddress.text = user.user_short_address ?: user.user_address
 
         tvAdditional.text = user.user_notes
-        
+
         var filesText = ""
         user.attached_recomendation_files?.forEach { file ->
             filesText += "<a href='${file.url}'>${file.name}</a>\n"

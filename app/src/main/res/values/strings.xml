@@ -691,4 +691,6 @@
     <string name="enter_position">Введите должность</string>
     <string name="no_experience">Нет опыта работы</string>
     <string name="profile_social_date">Поступление и окончание</string>
+    <string name="register_confirm_email_title">Пожалуйста, подтвердите адрес \nэлектронной почты</string>
+    <string name="register_confirm_email_text">На %s было отправлено письмо со ссылкой и кодом подтверждения. \n\nПожалуйста, перейдите по ссылке в письме.</string>
 </resources>
