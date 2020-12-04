@@ -23,7 +23,7 @@ interface UserRepository {
     fun notificationsUnregister(token: String): Completable
     fun updateUser(data: Map<String, Any?>): Single<User>
     fun uploadAvatar(photo: Bitmap?): Single<User>
-    fun uploadRecommendationFile(file: String): Single<User>
+    fun uploadRecommendationFile(file: String, mimeType: String): Single<User>
     fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
     fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>

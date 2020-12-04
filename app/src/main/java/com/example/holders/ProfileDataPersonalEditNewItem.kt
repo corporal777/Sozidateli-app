@@ -167,18 +167,20 @@ class ProfileDataPersonalEditNewItem(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        viewHolder.apply {
-            if (mSurname.isNullOrEmpty()) {
-                tilSurname.error = emptyInputError
-                isValid = false
-            }
-            if (mName.isNullOrEmpty()) {
-                tilName.error = emptyInputError
-                isValid = false
-            }
-            if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
-                tilMiddleName.error = emptyInputError
-                isValid = false
+        if (::viewHolder.isInitialized) {
+            viewHolder.apply {
+                if (mSurname.isNullOrEmpty()) {
+                    tilSurname.error = emptyInputError
+                    isValid = false
+                }
+                if (mName.isNullOrEmpty()) {
+                    tilName.error = emptyInputError
+                    isValid = false
+                }
+                if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
+                    tilMiddleName.error = emptyInputError
+                    isValid = false
+                }
             }
         }
 

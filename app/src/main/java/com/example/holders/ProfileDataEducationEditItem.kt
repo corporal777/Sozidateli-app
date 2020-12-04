@@ -46,7 +46,7 @@ class ProfileDataEducationEditItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
-            etStart.setText(startDate?.let { formatDate(it).capitalize() })
+            etStart.setText(startDate?.let { formatDateYear(it).capitalize() })
             tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
@@ -55,7 +55,7 @@ class ProfileDataEducationEditItem(
             }
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
-            etFinish.setText(finishDate?.let { formatDate(it).capitalize() })
+            etFinish.setText(finishDate?.let { formatDateYear(it).capitalize() })
             tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
@@ -81,6 +81,10 @@ class ProfileDataEducationEditItem(
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
         }
+    }
+
+    private fun formatDateYear(date: Date): String {
+        return formatDate(DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS, date.time)
     }
 
     private fun isDateValid(viewHolder: GroupieViewHolder) {

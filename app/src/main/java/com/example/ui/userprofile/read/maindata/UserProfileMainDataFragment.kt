@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.View
+import androidx.core.text.parseAsHtml
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -22,6 +23,7 @@ import com.example.util.ClickableSpan
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.firstLetterToUppercase
 import kotlinx.android.synthetic.main.fragment_user_profile_main_data.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -67,15 +69,19 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         tvAddress.text = user.user_short_address ?: user.user_address
 
         tvAdditional.text = user.user_notes
-
-        val filesText = user.attached_recomendation_files?.joinTo(SpannableStringBuilder(), "\n") { file ->
-            file.getReadableName().toSpannable().apply {
-                set(0, this.length, ClickableSpan {
-                    downloadFile(file.url)
-                })
-            }
+        
+        var filesText = ""
+        user.attached_recomendation_files?.forEach { file ->
+            filesText += "<a href='${file.url}'>${file.name}</a>\n"
         }
-        tvFiles.text = filesText
+        tvFiles.text = filesText.parseAsHtml()
+        BetterLinkMovementMethod.linkifyHtml(tvFiles)
+                .setOnLinkClickListener { _, url ->
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.data = Uri.parse(url)
+                    startActivity(i)
+                    true
+                }
     }
 
     private fun downloadFile(file: String?) {

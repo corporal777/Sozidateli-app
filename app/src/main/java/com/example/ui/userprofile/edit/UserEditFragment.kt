@@ -2,19 +2,23 @@ package com.example.ui.userprofile.edit
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.util.Linkify
-import android.util.Log
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentResultListener
@@ -37,20 +41,28 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
-import com.example.ui.views.ApiErrorDialog
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.FileUtils
+import com.example.util.FileUtils.generateFileName
+import com.example.util.FileUtils.getMimeType
+import com.example.util.UriUtils
 import com.example.util.firstLetterToUppercase
 import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_user_edit.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
+
+    var mimeTypes = arrayOf("image/*", "application/pdf")
 
     override val title: String? = null
 
@@ -65,6 +77,16 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     @ProvidePresenter
     fun providePresenter(): UserEditPresenter = presenterProvider.get().apply {
         editType = UserEditFragmentArgs.fromBundle(requireArguments()).type
+    }
+
+    private val galleryImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { uri ->
+        uri?.let {
+            it.data?.data?.let {  file ->
+                val filePath = UriUtils.pickedExistingPicture(requireContext(), file).path
+                val mimeType = UriUtils.getMimeType(requireContext(), file)?: ""
+                presenter.onFilePicked(filePath, mimeType)
+            }
+        }
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -372,10 +394,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showFileSelector() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "file/pdf|image/*"
-        startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
-        //startActivityForResult(Intent(requireContext(), PDFFilePickActivity::class.java), Constant.REQUEST_CODE_PICK_FILE)
+        val intent = Intent()
+        intent.type = "*/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+        galleryImage.launch(intent)
     }
 
     override fun setFileEditData(file: RecommendationFile) {
@@ -411,7 +434,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
                 result?.data?.let {
                     val file = FileUtils.getPath(context, it)
-                    presenter.onFilePicked(file)
+                    val mimeType = FileUtils.getMimeType(context, it)
+                    presenter.onFilePicked(file, mimeType)
                 }
                 /*val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
                 file?.let {

@@ -227,7 +227,19 @@ object FileUtils {
             column
         )
         try {
-            cursor = context.contentResolver.query(
+            context.contentResolver.query(
+                    uri!!, projection, selection, selectionArgs,
+                    null
+            )?.use { cursor ->
+                if (cursor != null && cursor.moveToFirst()) {
+                    if (DEBUG) DatabaseUtils.dumpCursor(cursor)
+                    val column_index = cursor.getColumnIndexOrThrow(column)
+                    return cursor.getString(column_index)
+                } else {
+                    return uri.path
+                }
+            }
+            /*cursor = context.contentResolver.query(
                 uri!!, projection, selection, selectionArgs,
                 null
             )
@@ -235,7 +247,7 @@ object FileUtils {
                 if (DEBUG) DatabaseUtils.dumpCursor(cursor)
                 val column_index = cursor.getColumnIndexOrThrow(column)
                 return cursor.getString(column_index)
-            }
+            }*/
         } catch (e: Exception) {
             Timber.e(e)
         } finally {

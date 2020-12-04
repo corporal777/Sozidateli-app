@@ -3,6 +3,7 @@ package com.example.ui.userprofile.read.settings
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter

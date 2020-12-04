@@ -83,11 +83,11 @@ class UserRepositoryImp
         return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
     }
 
-    override fun uploadRecommendationFile(file: String): Single<User> {
+    override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
         return call(api.uploadDocument(
                 file.let {
                     val imageFile = File(it)
-                    val body = imageFile.asRequestBody("application/pdf".toMediaTypeOrNull())
+                    val body = imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
     }

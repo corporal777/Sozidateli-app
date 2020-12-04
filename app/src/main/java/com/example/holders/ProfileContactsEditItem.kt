@@ -47,7 +47,13 @@ class ProfileContactsEditItem(
     private var mIsPhoneConfirmed = isPhoneConfirmed
     private var mWorkPhone = workPhone
     private var mShowWorkPhone = showWorkPhone
-    private var mSite = (site?.map { UserDataSite(value = it) } ?: emptyList()).toMutableList()
+    private var mSite = (site?.map { UserDataSite(value = it) } ?: emptyList())
+            .map { it.copy() }
+            .let {
+                if (it.isEmpty()) it.plus(UserDataSite(value = ""))
+                else it
+            }
+            .toMutableList()
     private var mNoSite = site.isNullOrEmpty()
     private var mNoNetworks = socialNetworks.isNullOrEmpty()
     private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null || workPhone == ""

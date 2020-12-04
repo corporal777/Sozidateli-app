@@ -6,17 +6,29 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/tvDatesTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/tvProject"
+        android:text="@string/profile_social_date"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpecialty"/>
+
+    <TextView
         android:id="@+id/tvDates"
         style="@style/Profile.Data"
         fontPath="fonts/Roboto-Medium.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDatesTitle"
         tools:ignore="MissingPrefix"
         tools:text="2014 по н.в." />
 
@@ -56,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDates" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvInstitution"
@@ -75,5 +87,5 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSpecialty" />
+        app:layout_constraintTop_toBottomOf="@id/tvDates" />
 </androidx.constraintlayout.widget.ConstraintLayout>

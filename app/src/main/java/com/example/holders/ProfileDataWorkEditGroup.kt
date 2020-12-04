@@ -7,6 +7,7 @@ import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
+import okhttp3.internal.notifyAll
 
 class ProfileDataWorkEditGroup(
         context: Context,
@@ -20,7 +21,7 @@ class ProfileDataWorkEditGroup(
 
     private val noWork = ProfileDataNoExperienceItem { isWorkEditable(it) }
     private val works = mutableListOf<ProfileDataWorkEditItem>()
-    private val addItem = ProfileButtonEditItem(context.getString(R.string.add_record), false) { add(createWorkItem(null)) }.apply {
+    private val addItem = ProfileButtonEditItem(context.getString(R.string.add_record), false) { if (checkDataValid()) { add(createWorkItem(null)) } }.apply {
         hasDivider = false
         compactMargin = true
     }
@@ -70,8 +71,8 @@ class ProfileDataWorkEditGroup(
     override fun getPosition(group: Group): Int {
         return when (group) {
             noWork -> 0
-            addItem -> works.size
-            else -> works.indexOf(group)
+            addItem -> works.size + 1
+            else -> works.indexOf(group) + 1
         }
     }
 

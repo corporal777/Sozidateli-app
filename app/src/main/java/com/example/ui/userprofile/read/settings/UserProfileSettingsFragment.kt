@@ -57,6 +57,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         tvPhoneMobile.text = phone
 
         tvEmail.text = user.user_email
+        scPrivacy.isChecked = user.isHidden
 
     }
 

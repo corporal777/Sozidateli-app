@@ -189,7 +189,7 @@ class UserEditPresenter
     override fun onSaveFileClick(data: Map<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
-                compositeFilesDisposable.dispose()
+                compositeFilesDisposable.clear()
                 attached_recomendation_files = it.attached_recomendation_files
             }.asOptional())
             true
@@ -241,6 +241,7 @@ class UserEditPresenter
         onEditSave(data) {
             if (BuildConfig.NEW_PROFILE_EDIT) {
                 viewState.updateFilesList(it.attached_recomendation_files)
+                compositeFilesDisposable.clear()
                 appData.updateUser {
                     attached_recomendation_files = it.attached_recomendation_files
                 }
@@ -308,8 +309,8 @@ class UserEditPresenter
         viewState.saveOnClick(true)
     }
 
-    override fun onFilePicked(path: String) {
-        compositeDisposable += userRepository.uploadRecommendationFile(path)
+    override fun onFilePicked(path: String, mimeType: String) {
+        compositeDisposable += userRepository.uploadRecommendationFile(path, mimeType)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -401,7 +402,10 @@ class UserEditPresenter
         } else {
             val updateFiles = data[FIELD_ATTACHED_FILES]
             if (updateFiles != null) {
-                val uFiles = arrayListOf(updateFiles as RecommendationFile)
+                val uFiles = if (updateFiles is List<*>)
+                    updateFiles as List<RecommendationFile>
+                else
+                    arrayListOf(updateFiles as RecommendationFile)
                 compositeFilesDisposable += appData.userChangeSubject
                         .performOnBackgroundOutOnMain()
                         .subscribeBy {
@@ -412,7 +416,8 @@ class UserEditPresenter
                                 if (up != null) {
                                     update.add(RecommendationFile(id = file.id, name = up.name))
                                 } else {
-                                    update.add(RecommendationFile(id = file.id, name = file.name))
+                                    if (updateFiles !is List<*>)
+                                        update.add(RecommendationFile(id = file.id, name = file.name))
                                 }
                             }
                             updateUser(userRepository.updateUser(mapOf(FIELD_ATTACHED_FILES to update)), false, onComplete)

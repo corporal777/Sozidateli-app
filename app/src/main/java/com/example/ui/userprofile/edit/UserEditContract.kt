@@ -130,7 +130,7 @@ interface UserEditContract {
 
         fun onAddFileClick()
         fun onEditFileClick(file: RecommendationFile)
-        fun onFilePicked(path: String)
+        fun onFilePicked(path: String, mimeType: String)
         fun onFileEditSaveClick()
         fun onFileEditCancelClick()
         fun onFileClick(file: RecommendationFile)
