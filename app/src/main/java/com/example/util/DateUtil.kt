@@ -7,7 +7,7 @@ fun validateEndDate(mStart: String?, mFinish: String?): Boolean {
     return if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {
         val start = serverDateToMilliseconds(mStart?: "", DATE_FORMAT_SERVER_TIMESTAMP)
         val end = serverDateToMilliseconds(mFinish?: "", DATE_FORMAT_SERVER_TIMESTAMP)
-        start >= end
+        start > end
     } else {
         false
     }

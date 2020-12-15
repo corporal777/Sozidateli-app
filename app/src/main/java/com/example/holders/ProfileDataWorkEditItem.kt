@@ -89,8 +89,8 @@ class ProfileDataWorkEditItem(
         viewHolder.apply {
             etProject.isEnabled = isEditable
             etPosition.isEnabled = isEditable
-            etStart.isEnabled = isEditable
-            etFinish.isEnabled = isEditable
+            tilStart.isEnabled = isEditable
+            tilFinish.isEnabled = isEditable
             scFinish.isEnabled = isEditable
             btnRemove.isEnabled = isEditable
         }

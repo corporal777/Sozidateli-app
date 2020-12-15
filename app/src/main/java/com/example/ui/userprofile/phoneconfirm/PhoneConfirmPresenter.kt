@@ -8,6 +8,8 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_OTHER
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
 import com.example.util.TimerFormatter
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -34,6 +36,7 @@ class PhoneConfirmPresenter
 
     lateinit var phone: String
     lateinit var password: String
+    var screenType = FROM_OTHER
 
     private val timerCompositeDisposable = CompositeDisposable()
     private val smsCompositeDisposable = CompositeDisposable()
@@ -43,12 +46,14 @@ class PhoneConfirmPresenter
         viewState.setPhone(phone)
         compositeDisposable += timerCompositeDisposable
         compositeDisposable += smsCompositeDisposable
-        sendSms()
+        //sendSms()
+        startTimer()
     }
 
     override fun onResendClick() {
         smsCompositeDisposable.clear()
-        sendSms()
+        //sendSms()
+        startTimer()
     }
 
     private fun sendSms() {
@@ -120,6 +125,14 @@ class PhoneConfirmPresenter
         if (BuildConfig.NEW_PROFILE_EDIT) {
             if (code == "123456") {
                 appData.userPhoneConfirmedSubject.onNext(true)
+                // TODO Remove it when sms will be ready
+                //
+                if (screenType == FROM_PROFILE) {
+                    val user = appData.getUser()
+                    user.user_phone_confirmed = true
+                    appData.userChangeSubject.onNext(user.asOptional())
+                }
+                //
                 viewState.onPhoneConfirmationComplete()
             } else {
                 compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)

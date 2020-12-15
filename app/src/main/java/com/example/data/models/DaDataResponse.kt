@@ -5,23 +5,23 @@ data class DaDataResponse(
 )
 
 data class DaDataItem(
-        val value: String,
-        val unrestricted_value: String,
-        val data: DaDataInformation
+        var value: String,
+        var unrestricted_value: String,
+        var data: DaDataInformation
 )
 
 data class DaDataInformation(
-        val postal_code: String?,
-        val country: String?,
-        val federal_district: String?,
-        val region_with_type: String?,
-        val area_with_type: String?,
-        val city_with_type: String?,
-        val city_district_with_type: String?,
-        val settlement_with_type: String?,
-        val street_with_type: String?,
-        val house: String?,
-        val flat: String?,
-        val geo_lat: Double?,
-        val geo_lon: Double?
+        var postal_code: String?,
+        var country: String?,
+        var federal_district: String?,
+        var region_with_type: String?,
+        var area_with_type: String?,
+        var city_with_type: String?,
+        var city_district_with_type: String?,
+        var settlement_with_type: String?,
+        var street_with_type: String?,
+        var house: String?,
+        var flat: String?,
+        var geo_lat: Double?,
+        var geo_lon: Double?
 )

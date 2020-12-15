@@ -333,7 +333,7 @@
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
     <string name="profile_title">Личный кабинет</string>
-    <string name="profile_settings">Настройки профиля</string>
+    <string name="profile_settings">Настройки аккаунта</string>
     <string name="profile_favorite">Избранное</string>
     <string name="profile_me_events">Мои мероприятия</string>
     <string name="profile_current_event">Текущее мероприятие</string>
@@ -528,6 +528,7 @@
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
     <string name="invalid_phone_number_error">Введите правильный номер</string>
+    <string name="register_phone_error">Введите номер в международном формате</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
 
     <string name="no_internet_error_message">Hет подключения к интернету</string>
@@ -683,8 +684,8 @@
     <string name="user_profile_status_name">Максимальный статус</string>
     <string name="user_profile_upload_photo_help">Формат файлов pdf, jpeg, png, tiff
         \nРазмер файла: до 10Мб.</string>
-    <string name="user_profile_receipt_date">Дата поступления</string>
-    <string name="user_profile_expiration_date">Дата окончания</string>
+    <string name="user_profile_receipt_date">Поступление</string>
+    <string name="user_profile_expiration_date">Окончание</string>
     <string name="enter_specialty">Введите специальность</string>
     <string name="required_field">Обязательное поле</string>
     <string name="enter_organization">Введите  организацию</string>
@@ -693,4 +694,5 @@
     <string name="profile_social_date">Поступление и окончание</string>
     <string name="register_confirm_email_title">Пожалуйста, подтвердите адрес \nэлектронной почты</string>
     <string name="register_confirm_email_text">На %s было отправлено письмо со ссылкой и кодом подтверждения. \n\nПожалуйста, перейдите по ссылке в письме.</string>
+    <string name="file_name">Имя файла</string>
 </resources>

@@ -35,6 +35,9 @@ class ProfileContactsEditItem(
         private val site: List<String>?,
         private val email: String?,
         private val showEmail: Boolean,
+        private val user_site_absent: Boolean,
+        private val user_social_links_absent: Boolean,
+        private val user_work_phone_absent: Boolean,
         private val changeEmailClick: () -> Unit,
         private val confirmPhoneClick: (String) -> Unit
 ) : Item() {
@@ -56,9 +59,9 @@ class ProfileContactsEditItem(
                 else it
             }
             .toMutableList()
-    private var mNoSite = site.isNullOrEmpty()
-    private var mNoNetworks = socialNetworks.isNullOrEmpty()
-    private var mNoWorkPhone = workPhone == USER_DATA_EMPTY || workPhone == null || workPhone == ""
+    private var mNoSite = user_site_absent
+    private var mNoNetworks = user_social_links_absent
+    private var mNoWorkPhone = user_work_phone_absent
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks ?: emptyList())
@@ -130,6 +133,8 @@ class ProfileContactsEditItem(
                             mSocialNetworks.add(this)
                             initSocialNetworkInput(viewHolder, this)
                         }
+                    } else {
+                        networksError.visibility = View.VISIBLE
                     }
                 }
             }
@@ -143,6 +148,8 @@ class ProfileContactsEditItem(
                             mSite.add(this)
                             initSiteInput(viewHolder, this)
                         }
+                    } else {
+                        sitesError.visibility = View.VISIBLE
                     }
                 }
             }
@@ -233,6 +240,7 @@ class ProfileContactsEditItem(
                     } else {
                         viewHolder.llSocialNetworks.removeView(it.parent as View)
                     }
+                    viewHolder.networksError.visibility = View.GONE
                 }
             }
         }
@@ -257,6 +265,7 @@ class ProfileContactsEditItem(
                     } else {
                         viewHolder.llSites.removeView(it.parent as View)
                     }
+                    viewHolder.sitesError.visibility = View.GONE
                 }
             }
         }
@@ -267,6 +276,13 @@ class ProfileContactsEditItem(
     fun checkDataValid(): Boolean {
         var isValid = true
 
+        if (mMobilePhone.isNullOrBlank()) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
+            }
+            isValid = false
+        }
         if (mobilePhone != mMobilePhone
                 && !mMobilePhone.isNullOrEmpty()
                 && !mMobilePhone.isValidPhoneNumber(context)
@@ -278,31 +294,12 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-
-        if (!mNoSite && mSite.size == 1) {
-            if (mSite[0].value.isEmpty()) {
-                viewHolder.sitesError.apply {
-                    visibility = View.VISIBLE
-                }
-                isValid = false
-            }
-        }
-
         if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) {
             viewHolder.tilWorkPhone.apply {
                 error = invalidError
                 requestFocus()
             }
             isValid = false
-        }
-
-        if (!mNoNetworks && mSocialNetworks.size == 1) {
-            if (mSocialNetworks[0].value.isEmpty()) {
-                viewHolder.networksError.apply {
-                    visibility = View.VISIBLE
-                }
-                isValid = false
-            }
         }
 
         return isValid
@@ -339,6 +336,9 @@ class ProfileContactsEditItem(
             if (socialNetworks?.toHashSet() != networkUpdate.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, networkUpdate.filter { it.value.isNotBlank() })
             }
+            put(User.FIELD_USER_SITE_ABSENT, mNoSite)
+            put(User.FIELD_USER_SOCIAL_LINKS_ABSENT, mNoNetworks)
+            put(User.FIELD_USER_WORK_PHONE_ABSENT, mNoWorkPhone)
         }
     }
 }

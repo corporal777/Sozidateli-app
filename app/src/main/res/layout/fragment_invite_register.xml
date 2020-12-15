@@ -251,18 +251,17 @@
                 android:id="@+id/llAgree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <FrameLayout
+                <RelativeLayout
                     android:id="@+id/flAgree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp">
+                    android:gravity="center">
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/cbAgree"
@@ -270,16 +269,18 @@
                         style="@style/Profile.Edit.Switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_centerVertical="true"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
                         android:theme="@style/CheckBox" />
-                </FrameLayout>
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tvAgree"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textColor="@color/auth_title_text"
                     tools:text="@string/auth_agree_user_agreement" />
             </LinearLayout>

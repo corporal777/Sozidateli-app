@@ -137,6 +137,7 @@ class UserEditPresenter
 
     override fun onSavePersonalClick(data: Map<String, Any?>) {
         onEditSave(data) {
+            compositeFilesDisposable.clear()
             appData.updateUser {
                 user_email = it.user_email
                 user_email_show = it.user_email_show
@@ -164,6 +165,7 @@ class UserEditPresenter
                 user_address_house = it.user_address_house
                 user_address_flat = it.user_address_flat
                 user_notes = it.user_notes
+                attached_recomendation_files = it.attached_recomendation_files
             }
             true
         }
@@ -181,6 +183,9 @@ class UserEditPresenter
                 user_email = it.user_email
                 user_email_show = it.user_email_show
                 site = it.site
+                user_site_absent = it.user_site_absent
+                user_social_links_absent = it.user_social_links_absent
+                user_work_phone_absent = it.user_work_phone_absent
             }.asOptional())
             true
         }
@@ -286,7 +291,7 @@ class UserEditPresenter
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email)), true) {
+            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
                 viewState.showChangeEmailComplete(email)
                 false
             }
@@ -394,10 +399,10 @@ class UserEditPresenter
         val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
         if (avatar != null) {
             if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), true, onComplete)
+                updateUser(userRepository.uploadAvatar(avatar), onComplete)
             } else {
                 updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, true, onComplete)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
             }
         } else {
             val updateFiles = data[FIELD_ATTACHED_FILES]
@@ -412,7 +417,7 @@ class UserEditPresenter
                             val files = it.value?.attached_recomendation_files
                             val update = arrayListOf<RecommendationFile>()
                             files?.forEach { file ->
-                                val up = uFiles.firstOrNull { f -> f.id ==file.id }
+                                val up = uFiles.firstOrNull { f -> f.id == file.id }
                                 if (up != null) {
                                     update.add(RecommendationFile(id = file.id, name = up.name))
                                 } else {
@@ -420,15 +425,17 @@ class UserEditPresenter
                                         update.add(RecommendationFile(id = file.id, name = file.name))
                                 }
                             }
-                            updateUser(userRepository.updateUser(mapOf(FIELD_ATTACHED_FILES to update)), false, onComplete)
+                            data.minus(FIELD_ATTACHED_FILES)
+                            data.plus(mapOf(FIELD_ATTACHED_FILES to update))
+                            updateUser(userRepository.updateUser(data), onComplete)
                         }
             } else {
-                updateUser(userRepository.updateUser(data), true, onComplete)
+                updateUser(userRepository.updateUser(data), onComplete)
             }
         }
     }
 
-    private fun updateUser(request: Single<User>, isBack: Boolean, onComplete: (User) -> Boolean) {
+    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -439,8 +446,7 @@ class UserEditPresenter
                         it.user_status_detail?.let { details -> user_status_detail = details }
                     }
                     if (onComplete(it))
-                        if (isBack)
-                            viewState.navigateUp()
+                        viewState.navigateUp()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

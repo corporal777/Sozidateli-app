@@ -1,13 +1,17 @@
 package com.example.ui.views
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Point
+import android.text.method.ScrollingMovementMethod
+import android.view.Display
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.example.R
 
-class InfoDialog(val context: Context, val title: String) {
+class InfoDialog(val context: Context, val title: String, val activity: Activity) {
 
     private var onSelect: (isOk: Boolean) -> Unit = {}
 
@@ -18,13 +22,21 @@ class InfoDialog(val context: Context, val title: String) {
 
     init {
         builder.setView(layout)
-        layout.findViewById<TextView>(R.id.tvMessage).text = title
+        val display: Display = activity.windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        layout.findViewById<TextView>(R.id.tvMessage).apply {
+            maxWidth = size.x - 150
+            text = title
+            movementMethod = ScrollingMovementMethod()
+        }
         layout.findViewById<Button>(R.id.btnPositive).setOnClickListener {
             onSelect.invoke(true)
             alertDialog.dismiss()
         }
         alertDialog = builder.create()
         alertDialog.show()
+
     }
 
     fun setSelectCallback(block: (isOk: Boolean) -> Unit): InfoDialog {

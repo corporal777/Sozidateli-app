@@ -58,6 +58,10 @@ fun String.parseToDate(parser: DateFormat): Date? {
     }
 }
 
+fun longToDate(date: Long): String =
+    SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR).format(date)
+
+
 fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
     return parseToDate(parser)?.let { formatter.format(it) }
 }

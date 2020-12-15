@@ -8,9 +8,9 @@ import com.google.android.material.textfield.TextInputEditText
 class PrefixEditText : TextInputEditText {
     var mOriginalLeftPadding = -1f
 
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context?, attrs: AttributeSet?,
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?,
                 defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
     }
 

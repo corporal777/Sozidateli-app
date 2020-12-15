@@ -3,6 +3,7 @@ package com.example.ui.main
 import android.Manifest
 import android.app.NotificationManager
 import android.location.Location
+import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -15,10 +16,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.ACTION_REQUEST_COUNT
-import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
-import com.example.util.ChatHelper
-import com.example.util.ConnectivityProvider
+import com.example.util.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -30,6 +28,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
@@ -307,8 +306,6 @@ class MainPresenter
     }
 
     override fun onInviteRegister(email: String, code: String) {
-        if (appData.token != null) return
-        isAuthRequired = true
         viewState.showInviteRegister(email, code)
     }
 
@@ -324,7 +321,7 @@ class MainPresenter
                 .subscribe({ viewState.showFinishRegister(it.user?.user_name?: "",
                         it.user?.user_last_name?: "", it.user?.user_middle_name,
                 it.user?.user_phone, it.user?.user_email?: "", code,
-                        it.user?.user_phone_confirmed?: false) }, { viewState.showLogin() })
+                        it.user?.user_phone_confirmed?: false, it.user?.user_middle_name == USER_DATA_EMPTY) }, { viewState.showLogin() })
                 .call(compositeDisposable)
     }
 

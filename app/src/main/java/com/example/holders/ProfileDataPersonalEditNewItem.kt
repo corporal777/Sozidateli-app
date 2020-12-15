@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.UserAddress
@@ -15,6 +16,7 @@ import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
+import com.example.extensions.longToDate
 import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -23,7 +25,6 @@ import initAsDatePicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
-import java.util.*
 
 class ProfileDataPersonalEditNewItem(
         id: Long,
@@ -36,7 +37,8 @@ class ProfileDataPersonalEditNewItem(
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val notes: String?,
-        private val addInfoClick:() -> Unit,
+        private val fragmentManager: FragmentManager,
+        private val addInfoClick:() -> Unit
 ) : Item(id) {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -48,7 +50,7 @@ class ProfileDataPersonalEditNewItem(
     private var mMiddleName = middleName
 
     private var mGender = gender
-    private var mBirthday = birthday?.formatToDefaultDate()
+    var mBirthday = birthday?.formatToDefaultDate()
     private var mShowBirthday = showBirthday
     private var mAddress = address
     private var mNotes = notes
@@ -83,7 +85,7 @@ class ProfileDataPersonalEditNewItem(
             }
 
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
-            tilBirthday.initAsDatePicker(
+            /*tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },
                     maxDate = Calendar.getInstance().apply {
                         add(Calendar.YEAR, -14)
@@ -91,6 +93,13 @@ class ProfileDataPersonalEditNewItem(
                             .time
             ) { year, month, day ->
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
+            }*/
+
+            etBirthday.setOnClickListener {
+                fragmentManager.showDatePicker(mBirthday?: "",
+                        onDateSelected = { date ->
+                            etBirthday.setText(longToDate(date))
+                        })
             }
 
             etCity.apply {
@@ -202,6 +211,7 @@ class ProfileDataPersonalEditNewItem(
                 put(User.FIELD_USER_ADDRESS_FLAT, mAddress.flat ?: "")
             }
             if (notes != mNotes) put(User.FIELD_USER_NOTES, mNotes)
+
         }
     }
 

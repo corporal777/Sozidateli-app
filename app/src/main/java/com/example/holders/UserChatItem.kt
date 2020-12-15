@@ -85,8 +85,8 @@ class UserChatItem(
         val now = Calendar.getInstance()
 
         return when {
-            messageCalendar.isSameDay(now) -> context.getString(R.string.today)
-            messageCalendar.isYesterday(now) -> context.getString(R.string.yesterday)
+            messageCalendar.isSameDay(now) -> defaultTimeFormatter.format(messageDate)//context.getString(R.string.today)
+            //messageCalendar.isYesterday(now) -> context.getString(R.string.yesterday)
             else -> dateFormatterShortMothNoYear.format(messageDate)
         }
     }

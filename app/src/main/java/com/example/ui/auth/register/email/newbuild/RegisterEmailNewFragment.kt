@@ -11,7 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_finish_register.*
+import isValidPhoneNumber
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import kotlinx.android.synthetic.main.fragment_register_email_new.btnPhoneConfirm
 import kotlinx.android.synthetic.main.fragment_register_email_new.etEmail
@@ -57,13 +57,17 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
         scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
 
         ibRegister.setOnClickListener {
-            presenter.onClickRegister(
-                    etEmail.text?.toString(),
-                    etFirstName.text?.toString(),
-                    etLastName.text?.toString(),
-                    etPassword.text?.toString(),
-                    etPasswordConfirm.text?.toString(),
-            )
+            if (etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {
+                presenter.onClickRegister(
+                        etEmail.text?.toString(),
+                        etFirstName.text?.toString(),
+                        etLastName.text?.toString(),
+                        etPassword.text?.toString(),
+                        etPasswordConfirm.text?.toString(),
+                )
+            } else {
+                showWrongPhoneError(true)
+            }
         }
 
         etMobilePhone.apply {
@@ -72,7 +76,6 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-        etMobilePhone.setText("+7")
         btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
     }
 
@@ -102,7 +105,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(RegisterEmailNewFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, ""))
+        findNavController().navigate(RegisterEmailNewFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, "", null))
     }
 
     override fun phoneConfirmEnabled(enabled: Boolean) {
@@ -147,11 +150,12 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun showWrongPhoneError(show: Boolean) {
         tilMobilePhone.apply {
-            error = if (show) getString(R.string.invalid_phone_number_error) else null
+            error = if (show) getString(R.string.register_phone_error) else null
         }
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
+        btnPhoneConfirm.apply { isEnabled = isEnable }
         ibRegister.apply { isEnabled = isEnable }
     }
 

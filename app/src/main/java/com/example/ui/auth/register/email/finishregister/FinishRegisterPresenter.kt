@@ -1,5 +1,6 @@
 package com.example.ui.auth.register.email.finishregister
 
+import android.content.Context
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -41,6 +42,7 @@ class FinishRegisterPresenter
     private var isAgree: Boolean = false
     private var code: String = ""
     private var noAgreeChecked = false
+    private var noMiddleNameChecked = false
 
     var snUser: SnUser? = null
     private var phoneVerified: Boolean = false
@@ -101,6 +103,11 @@ class FinishRegisterPresenter
     override fun onSaveCode(code: String) {
         this.code = code
         viewState.setData(email, firstName, middleName, lastName, phone, isAgree, phoneVerified)
+    }
+
+    override fun onNoMiddleNameChecked(checked: Boolean) {
+        noMiddleNameChecked = checked
+        viewState.enableMiddleNameInput(!checked)
     }
 
     override fun phoneConfirmed(isConfirmed: Boolean) {

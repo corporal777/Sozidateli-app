@@ -19,6 +19,7 @@ import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.ClickableSpan
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.firstLetterToUppercase
@@ -52,7 +53,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
     override fun onUserUpdated(user: User?) {
         user ?: return
         tvId.text = getString(R.string.profile_uid, user.user_id)
-
+        val jObject = DaDataUtil.getLocationJson(requireContext())
         tvLastName.text = user.user_last_name
 
         tvName.text = user.user_name
@@ -66,7 +67,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
         tvGender.text = user.user_gender?.firstLetterToUppercase()
 
-        tvAddress.text = user.user_short_address ?: user.user_address
+        tvAddress.text = DaDataUtil.formatParam(user.user_short_address, jObject) ?: DaDataUtil.formatParam(user.user_address, jObject)
 
         tvAdditional.text = user.user_notes
 

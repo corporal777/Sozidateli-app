@@ -131,6 +131,13 @@
                     android:layout_marginBottom="8dp"
                     android:hint="@string/auth_input_middle_name_hint"
                     android:inputType="textCapWords" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/scNoMiddleName"
+                    style="@style/Profile.Edit.Switch"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/profile_edit_user_no_middle_name" />
             </com.example.ui.views.CustomTextInputLayout>
 
             <LinearLayout

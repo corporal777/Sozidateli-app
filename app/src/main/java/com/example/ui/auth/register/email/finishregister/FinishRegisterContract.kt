@@ -1,5 +1,6 @@
 package com.example.ui.auth.register.email.finishregister
 
+import android.content.Context
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -35,6 +36,9 @@ interface FinishRegisterContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableRegisterBtn(isEnable: Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun enableMiddleNameInput(enable: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -52,5 +56,6 @@ interface FinishRegisterContract {
 
         fun onHandleAuthLink()
         fun onPhoneConfirmClick()
+        fun onNoMiddleNameChecked(checked: Boolean)
     }
 }

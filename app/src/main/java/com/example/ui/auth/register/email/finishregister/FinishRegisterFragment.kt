@@ -20,6 +20,8 @@ import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
+import com.example.util.initSwitch
+import isValidPhoneNumber
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnPhoneConfirm
 import kotlinx.android.synthetic.main.fragment_finish_register.cbAgree
@@ -35,12 +37,13 @@ import kotlinx.android.synthetic.main.fragment_finish_register.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvPhoneConfirmed
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
+
+    private var isNoMiddleName = false
 
     @InjectPresenter
     lateinit var presenter: FinishRegisterPresenter
@@ -61,18 +64,21 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onChangePhoneText(FinishRegisterFragmentArgs.fromBundle(it).phone ?: "")
             presenter.phoneConfirmed(FinishRegisterFragmentArgs.fromBundle(it).isConfirmed)
             presenter.onSaveCode(FinishRegisterFragmentArgs.fromBundle(it).code ?: "")
+            isNoMiddleName = FinishRegisterFragmentArgs.fromBundle(it).isNoMiddleName
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ivClose.setOnClickListener { presenter.onClickClose() }
-
+        //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
+        scNoMiddleName.initSwitch(isNoMiddleName) {
+            presenter.onNoMiddleNameChecked(it)
+        }
         etMobilePhone.onTextChanged { it?.toString()?.let { text ->
             presenter.onChangePhoneText(text)
         } }
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
-
         val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
             val linkStart = 11
             val linkEnd = length
@@ -98,9 +104,14 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onHandleAuthLink()
         }
         ibRegister.setOnClickListener {
-            presenter.onHandleAuthLink()
+            if (etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {
+                presenter.onHandleAuthLink()
+            } else {
+                showWrongPhoneError(true)
+            }
         }
         btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
+        //scNoMiddleName.isChecked = isNoMiddleName
     }
 
     override fun onDestroyView() {
@@ -108,14 +119,25 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         super.onDestroyView()
     }
 
+    override fun enableMiddleNameInput(enable: Boolean) {
+        etMiddleName.isEnabled = enable
+        if (!enable) {
+            etMiddleName.setText("")
+            presenter.onChangeMiddleNameText("")
+        }
+    }
+
     override fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean, phoneVerified: Boolean) {
         etEmail.setText(email)
         etFirstName.setText(firstName)
         etLastName.setText(lastName)
-        if (middleName == "-")
+        if (middleName == "-") {
             etMiddleName.isEnabled = false
-        else
+            scNoMiddleName.isChecked = true
+        } else {
             etMiddleName.setText(middleName)
+            scNoMiddleName.isChecked = false
+        }
         etMobilePhone.setText(phone)
         cbAgree.isChecked = isAgree
         updatePhoneConfirmationStatus(phoneVerified)
@@ -143,7 +165,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun showSnRegistration(snUser: SnUser) {
+    override fun showSnRegistration(snUser: SnUser) { 
 
     }
 
@@ -158,12 +180,12 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     override fun showWrongPhoneError(show: Boolean) {
         tilMobilePhone.apply {
-            error = if (show) getString(R.string.invalid_phone_number_error) else null
+            error = if (show) getString(R.string.register_phone_error) else null
         }
     }
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(FinishRegisterFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, ""))
+        findNavController().navigate(FinishRegisterFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, "", null))
     }
 
     override fun layout() = R.layout.fragment_finish_register

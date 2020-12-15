@@ -1,5 +1,6 @@
 package com.example.ui.auth.register.email.newbuild
 
+import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.SnUser

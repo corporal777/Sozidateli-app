@@ -152,6 +152,11 @@
             app:argType="boolean"
             android:defaultValue="false" />
 
+        <argument
+            android:name="isNoMiddleName"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
     </fragment>
 
     <fragment
@@ -912,5 +917,9 @@
             android:name="password"
             app:argType="string"
             app:nullable="false" />
+        <argument
+            android:name="screenType"
+            app:argType="java.lang.Integer"
+            app:nullable="true" />
     </fragment>
 </navigation>

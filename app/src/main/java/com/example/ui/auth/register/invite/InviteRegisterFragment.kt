@@ -128,7 +128,7 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
     }
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(InviteRegisterFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, ""))
+        findNavController().navigate(InviteRegisterFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, "", null))
     }
 
     override fun phoneConfirmEnabled(enabled: Boolean) {

@@ -601,4 +601,9 @@
         <item name="android:textColor">@color/chat_list_date</item>
         <item name="android:layout_marginBottom">9dp</item>
     </style>
+
+    <style name="DatePickerStyle" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+    </style>
 </resources>

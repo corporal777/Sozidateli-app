@@ -1,5 +1,6 @@
 package com.example.ui.auth.register.email.newbuild
 
+import android.content.Context
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy

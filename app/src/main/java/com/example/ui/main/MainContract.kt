@@ -68,7 +68,7 @@ interface MainContract {
         fun hideErrorMessage()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean)
+        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showInviteRegister(email: String, code: String)

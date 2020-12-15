@@ -2,6 +2,7 @@ package com.example.ui.views.suggestFieldView
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -9,8 +10,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.DaDataItem
-import com.example.data.models.UserAddress
 import com.example.util.SimpleTextWatcher
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -52,6 +55,7 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
 
     override fun setSuggested(list: List<DaDataItem>) {
         adapter.apply {
+            DaDataUtil.formatLocations(context, list)
             clear()
             addAll(list.map { it.value })
             notifyDataSetChanged()

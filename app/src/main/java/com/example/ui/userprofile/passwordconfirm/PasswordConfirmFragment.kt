@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
 import kotlinx.android.synthetic.main.fragment_confirm_password.*
 import onTextChanged
 import javax.inject.Inject
@@ -49,6 +50,7 @@ class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, To
     }
 
     override fun showPhoneConfirm(phone: String, password: String) {
-        findNavController().navigate(PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(phone, password))
+        hideKeyboard()
+        findNavController().navigate(PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(phone, password, FROM_PROFILE))
     }
 }

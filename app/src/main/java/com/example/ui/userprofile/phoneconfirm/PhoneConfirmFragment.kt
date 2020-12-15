@@ -37,6 +37,7 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
     fun providePresenter(): PhoneConfirmPresenter = presenterProvider.get().apply {
         phone = args.phone
         password = args.password
+        screenType = args.screenType?: FROM_OTHER
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,5 +77,10 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
 
     override fun onPhoneConfirmationComplete() {
         findNavController().navigateUp()
+    }
+
+    companion object {
+        const val FROM_PROFILE = 1
+        const val FROM_OTHER = 2
     }
 }

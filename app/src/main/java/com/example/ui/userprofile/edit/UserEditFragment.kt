@@ -34,6 +34,7 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
+import com.example.extensions.longToDate
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.*
@@ -42,10 +43,9 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
 import com.example.ui.views.InfoDialog
+import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.FileUtils
-import com.example.util.FileUtils.generateFileName
-import com.example.util.FileUtils.getMimeType
 import com.example.util.UriUtils
 import com.example.util.firstLetterToUppercase
 import com.vincent.filepicker.Constant
@@ -53,16 +53,13 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_user_edit.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
+    private var isUpdateInfo = true
 
     override val title: String? = null
 
@@ -205,39 +202,51 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setPersonalDataNew(user: User) {
-        val dataItem = ProfileDataPersonalEditNewItem(
-                1,
-                requireContext(),
-                user.user_name,
-                user.user_last_name,
-                user.user_middle_name,
-                user.user_gender?.firstLetterToUppercase(),
-                user.user_birthday,
-                user.user_birthday_show,
-                UserAddress.fromUser(user),
-                user.user_notes
-        ) { showWhyUserShouldAddDataToNotesField() }
+        if (isUpdateInfo) {
+            val dataItem = ProfileDataPersonalEditNewItem(
+                    1,
+                    requireContext(),
+                    user.user_name,
+                    user.user_last_name,
+                    user.user_middle_name,
+                    user.user_gender?.firstLetterToUppercase(),
+                    user.user_birthday,
+                    user.user_birthday_show,
+                    DaDataUtil.formatSavedLocation(requireContext(), UserAddress.fromUser(user)),
+                    user.user_notes,
+                    childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
 
-        val files = ProfileDataAdditionalFilesEditNewGroup(
-                2,
-                requireContext(),
-                user.attached_recomendation_files ?: emptyList(),
-                { presenter.onAddFileClick() },
-                { /*presenter.onFileClick(it)*/
-                    findNavController().navigate(UserEditFragmentDirections.editToFileEditFragment(it))
-                },
-                { presenter.onEditFileClick(it) },
-                { presenter.onSaveAdditionalFilesClick(it) }
-        )
+            val files = ProfileDataAdditionalFilesEditNewGroup(
+                    2,
+                    requireContext(),
+                    user.attached_recomendation_files ?: emptyList(),
+                    {
+                        isUpdateInfo = false
+                        presenter.onAddFileClick()
+                    },
+                    {
+                        presenter.onFileClick(it)
+                        //findNavController().navigate(UserEditFragmentDirections.editToFileEditFragment(it))
+                    },
+                    { presenter.onEditFileClick(it) },
+                    {
+                        isUpdateInfo = false
+                        presenter.onSaveAdditionalFilesClick(it)
+                    }
+            )
 
-        adapter.update(listOf(dataItem, files))
+            adapter.update(listOf(dataItem, files))
 
-        onSaveClick = {
-            recyclerView.requestFocus()
-            if (dataItem.checkDataValid()) {
-                presenter.onSavePersonalClick(dataItem.getDataToSave())
+            onSaveClick = {
+                recyclerView.requestFocus()
+                if (dataItem.checkDataValid()) {
+                    val dataToSave = dataItem.getDataToSave() as MutableMap
+                    dataToSave[User.FIELD_ATTACHED_FILES] = files.getCurrentFilesToSave()
+                    presenter.onSavePersonalClick(dataToSave)
+                }
             }
         }
+        isUpdateInfo = true
     }
 
     override fun setContactsData(user: User) {
@@ -252,6 +261,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.site,
                 user.user_email,
                 user.user_email_show,
+                user.user_site_absent,
+                user.user_social_links_absent,
+                user.user_work_phone_absent,
                 presenter::onChangeEmailClick,
                 presenter::onConfirmPhoneClick
         )
@@ -378,7 +390,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
-        InfoDialog(requireContext(), getString(R.string.profile_edit_additional_notes_data))
+        InfoDialog(requireContext(), getString(R.string.profile_edit_additional_notes_data), requireActivity())
                 .setSelectCallback {  }
     }
 

@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.R
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
+import com.example.extensions.forEachGroups
+import com.example.extensions.forEachItems
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -26,7 +28,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
         compactMargin = true
     }
 
-    private val fileItems = mutableListOf<ProfileDataFileEditableItem>()
+    private val fileItems = mutableListOf<ProfileDataFileEditableItemNew>()
 
     init {
         updateFiles(files)
@@ -60,8 +62,8 @@ class ProfileDataAdditionalFilesEditNewGroup(
         return 2
     }
 
-    private fun createFileItem(id: Long, file: RecommendationFile): ProfileDataFileEditableItem {
-        return ProfileDataFileEditableItem(
+    private fun createFileItem(id: Long, file: RecommendationFile): ProfileDataFileEditableItemNew {
+        return ProfileDataFileEditableItemNew(
                 id,
                 file,
                 onFileClick,
@@ -72,5 +74,14 @@ class ProfileDataAdditionalFilesEditNewGroup(
                     ))
                 }
         )
+    }
+
+    fun getCurrentFilesToSave(): List<RecommendationFile> {
+        val result = mutableListOf<RecommendationFile>()
+        fileGroup.forEachGroups<ProfileDataFileEditableItemNew> {
+            result.add(RecommendationFile(id = it.file.id, type = it.file.type,
+            name = it.newName, desc = it.file.desc, url = it.file.url))
+        }
+        return result
     }
 }

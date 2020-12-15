@@ -29,6 +29,7 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User

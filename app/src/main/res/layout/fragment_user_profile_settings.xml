@@ -137,7 +137,6 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:text="@string/user_profile_delete_profile"
-                android:textColor="@color/user_profile_delete_profile_text"
                 android:textStyle="normal" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
