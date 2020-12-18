@@ -25,6 +25,7 @@ import initAsDatePicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
+import java.util.*
 
 class ProfileDataPersonalEditNewItem(
         id: Long,
@@ -85,7 +86,7 @@ class ProfileDataPersonalEditNewItem(
             }
 
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
-            /*tilBirthday.initAsDatePicker(
+            tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },
                     maxDate = Calendar.getInstance().apply {
                         add(Calendar.YEAR, -14)
@@ -93,14 +94,14 @@ class ProfileDataPersonalEditNewItem(
                             .time
             ) { year, month, day ->
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
-            }*/
+            }
 
-            etBirthday.setOnClickListener {
+            /*etBirthday.setOnClickListener {
                 fragmentManager.showDatePicker(mBirthday?: "",
                         onDateSelected = { date ->
                             etBirthday.setText(longToDate(date))
                         })
-            }
+            }*/
 
             etCity.apply {
                 setTextWithoutSearch(mAddress.address)

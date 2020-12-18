@@ -1,5 +1,7 @@
 package com.example.util
 
+import android.Manifest
+
 const val DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%02d.%02d.%d"
 const val DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%02d.%02d.%d %02d:%02d"
 const val DATE_FORMAT_SHORT_MONTH_FULL_YEAR = "dd.MM.yyyy"
@@ -79,3 +81,7 @@ const val IMAGE_MAX_SIZE_AVATAR = 1024
 const val IMAGE_MAX_SIZE_CHAT = 1024
 
 const val USER_DATA_EMPTY = "-"
+
+const val REQUEST_GALLERY = 12
+val REQUIRED_GALLERY_PERMISSIONS =
+        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)

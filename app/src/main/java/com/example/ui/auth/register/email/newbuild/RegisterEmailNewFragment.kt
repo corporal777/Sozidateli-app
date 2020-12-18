@@ -150,7 +150,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun showWrongPhoneError(show: Boolean) {
         tilMobilePhone.apply {
-            error = if (show) getString(R.string.register_phone_error) else null
+            error = if (show) getString(R.string.invalid_phone_number_second_error) else null
         }
     }
 

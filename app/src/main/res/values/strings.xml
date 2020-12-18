@@ -527,7 +527,8 @@
     <string name="sorry_not_found">Извините по Вашему\nзапросу ничего\nне найдено</string>
 
     <string name="not_connection_error">Не удалось устновить соединение</string>
-    <string name="invalid_phone_number_error">Введите правильный номер</string>
+    <string name="invalid_phone_number_error">Введите номер телефона</string>
+    <string name="invalid_phone_number_second_error">Введите корректный номер</string>
     <string name="register_phone_error">Введите номер в международном формате</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
 
@@ -673,7 +674,7 @@
     <string name="user_profile_privacy_edit">Изменить</string>
     <string name="user_profile_delete_profile">Удалить профиль</string>
     <string name="user_profile_delete_confirm_title">Удаление профиля</string>
-    <string name="user_profile_delete_confirm_message">Вы действительно хотите удалить ваш профиль?</string>
+    <string name="user_profile_delete_confirm_message">Вы действительно хотите удалить Ваш профиль?</string>
     <string name="user_profile_delete_confirm_approve">Да</string>
     <string name="user_profile_delete_confirm_decline">Нет</string>
     <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в “Создателях”</string>
@@ -681,7 +682,7 @@
     <string name="fill_in_everything_profile_fields">Чтобы выполнить действие, Вам необходимо заполнить поля ” + ” профиля:</string>
     <string name="fill_field">Заполните поле</string>
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
-    <string name="user_profile_status_name">Максимальный статус</string>
+    <string name="user_profile_status_name">Максимальный</string>
     <string name="user_profile_upload_photo_help">Формат файлов pdf, jpeg, png, tiff
         \nРазмер файла: до 10Мб.</string>
     <string name="user_profile_receipt_date">Поступление</string>

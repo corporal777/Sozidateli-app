@@ -9,7 +9,8 @@ data class RecommendationFile(
         var type: String? = null,
         var name: String? = null,
         var desc: String? = null,
-        var url: String? = null
+        var url: String? = null,
+        var newName: String? = null
 ) : Parcelable {
 
     fun getReadableName(): String {

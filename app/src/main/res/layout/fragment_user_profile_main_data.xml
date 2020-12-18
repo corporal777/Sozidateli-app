@@ -104,7 +104,7 @@
                 style="@style/Profile.User.Data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/user_profile_birthday_hint" />
+                android:hint="@string/user_profile_additional_hint" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"
@@ -117,7 +117,7 @@
                 style="@style/Profile.User.Data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/user_profile_gender_hint" />
+                android:hint="@string/user_profile_additional_hint" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"
@@ -130,7 +130,7 @@
                 style="@style/Profile.User.Data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/user_profile_address_hint" />
+                android:hint="@string/user_profile_additional_hint" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"

@@ -12,7 +12,13 @@ import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_phone.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_phone.btnPhoneConfirm
+import kotlinx.android.synthetic.main.item_profile_data_edit_phone.etMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_phone.scMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_phone.tilMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_phone.tvPhoneConfirmed
 import onTextChanged
 
 class ProfilePhoneEditItem(
@@ -26,7 +32,7 @@ class ProfilePhoneEditItem(
     private lateinit var viewHolder: GroupieViewHolder
 
     private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
-
+    private val invalidNumberSecondError = context.getString(R.string.invalid_phone_number_second_error)
     private var mMobilePhone = mobilePhone
     private var mShowMobilePhone = showMobilePhone
     private var mIsPhoneConfirmed = isPhoneConfirmed
@@ -67,6 +73,7 @@ class ProfilePhoneEditItem(
             }
 
             updatePhoneConfirmationStatus(this)
+            validatePhone()
         }
     }
 
@@ -79,19 +86,30 @@ class ProfilePhoneEditItem(
 
     fun checkDataValid(): Boolean {
         var isValid = true
-
+        isValid = validatePhone()
         if (mobilePhone != mMobilePhone
                 && !mMobilePhone.isNullOrEmpty()
                 && !mMobilePhone.isValidPhoneNumber(context)
         ) {
             viewHolder.tilMobilePhone.apply {
-                error = invalidNumberError
+                error = invalidNumberSecondError
                 requestFocus()
             }
             isValid = false
         }
 
         return isValid
+    }
+
+    private fun validatePhone(): Boolean {
+        if (mMobilePhone.isNullOrBlank()) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
+            }
+            return false
+        }
+        return true
     }
 
     fun getDataToSave(): Map<String, Any?> {

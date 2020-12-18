@@ -2,6 +2,8 @@ package com.example.holders
 
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.InputFilter
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +47,7 @@ class ProfileContactsEditItem(
     private lateinit var viewHolder: GroupieViewHolder
 
     private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
+    private val invalidNumberSecondError = context.getString(R.string.invalid_phone_number_second_error)
     private val invalidError = context.getString(R.string.fill_field)
 
     private var mMobilePhone = mobilePhone
@@ -90,6 +93,7 @@ class ProfileContactsEditItem(
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
+            validatePhone()
 
             scMobilePhone.initSwitch(mShowMobilePhone) { mShowMobilePhone = it }
 
@@ -121,6 +125,7 @@ class ProfileContactsEditItem(
                 if (it) {
                     tilWorkPhone.error = null
                 }
+                etWorkPhone.setText("")
                 checkPhone()
             }
 
@@ -227,7 +232,13 @@ class ProfileContactsEditItem(
         var csn = sn
         val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
-            initInput(csn.value) { csn.value = it?.toString() ?: "" }
+            filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
+                source.toString().filterNot {
+                    it.isWhitespace()
+                }
+            })
+            inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+            initInput(csn.value) { csn.value = it?.toString()?: "" }
         }
 
         parent.findViewById<View>(R.id.btnDelete).apply {
@@ -251,8 +262,14 @@ class ProfileContactsEditItem(
     private fun initSiteInput(viewHolder: GroupieViewHolder, site: UserDataSite) {
         val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+            filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
+                source.toString().filterNot {
+                    it.isWhitespace()
+                }
+            })
+            inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             hint = context.resources.getString(R.string.profile_site)
-            initInput(site.value) { site.value = it?.toString() ?: "" }
+            initInput(site.value) { site.value = it?.toString()?: ""}
         }
 
         parent.findViewById<View>(R.id.btnDelete).apply {
@@ -276,19 +293,14 @@ class ProfileContactsEditItem(
     fun checkDataValid(): Boolean {
         var isValid = true
 
-        if (mMobilePhone.isNullOrBlank()) {
-            viewHolder.tilMobilePhone.apply {
-                error = invalidNumberError
-                requestFocus()
-            }
-            isValid = false
-        }
+        isValid = validatePhone()
+
         if (mobilePhone != mMobilePhone
                 && !mMobilePhone.isNullOrEmpty()
                 && !mMobilePhone.isValidPhoneNumber(context)
         ) {
             viewHolder.tilMobilePhone.apply {
-                error = invalidNumberError
+                error = invalidNumberSecondError
                 requestFocus()
             }
             isValid = false
@@ -303,6 +315,17 @@ class ProfileContactsEditItem(
         }
 
         return isValid
+    }
+
+    private fun validatePhone(): Boolean {
+        if (mMobilePhone.isNullOrBlank()) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
+            }
+            return false
+        }
+        return true
     }
 
     fun getDataToSave(): Map<String, Any?> {

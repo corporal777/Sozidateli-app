@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import com.example.R
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
@@ -72,6 +73,11 @@ class ProfileDataEducationEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
+
+            if (position == 1)
+                btnRemove.visibility = View.GONE
+            else
+                btnRemove.visibility = View.VISIBLE
         }
     }
 

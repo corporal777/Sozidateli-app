@@ -17,7 +17,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
         addFileClickListener: () -> Unit,
         private val onFileClick: (RecommendationFile) -> Unit,
         private val onFileEditClick: (RecommendationFile) -> Unit,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit
+        private val saveClickListener: (data: Map<String, Any?>, files: List<RecommendationFile>) -> Unit
 ) : NestedGroup() {
 
     private val fileGroup = Section().apply {
@@ -71,7 +71,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
                 { item ->
                     saveClickListener(mapOf(
                             User.FIELD_ATTACHED_FILES to fileItems.filter { item != it }.map { it.file }
-                    ))
+                    ), getCurrentFilesToSave())
                 }
         )
     }
@@ -80,7 +80,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
         val result = mutableListOf<RecommendationFile>()
         fileGroup.forEachGroups<ProfileDataFileEditableItemNew> {
             result.add(RecommendationFile(id = it.file.id, type = it.file.type,
-            name = it.newName, desc = it.file.desc, url = it.file.url))
+            name = it.file.name, desc = it.file.desc, url = it.file.url, newName = it.file.newName))
         }
         return result
     }

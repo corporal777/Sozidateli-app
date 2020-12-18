@@ -29,7 +29,7 @@ object UriUtils {
     }
 
     private fun generateFileName(): String {
-        return "ei_${System.currentTimeMillis()}"
+        return /*"ei_${System.currentTimeMillis()}"*/"имя_файла"
     }
 
     private fun writeToFile(inputStream: InputStream, file: File) {

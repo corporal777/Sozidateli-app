@@ -15,18 +15,18 @@ class ProfileDataFileEditableItemNew(
         private val onRemoveClick: (ProfileDataFileEditableItemNew) -> Unit
 ) : Item(id) {
 
-    var newName = ""
+    //var newName = ""
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             val fileName = (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file"
-            newName = fileName
+            //newName = fileName
             tvFileName.apply {
                 text = fileName
                 isClickable = false
             }
             etFileName.apply {
-                initInput(fileName) { newName = it.toString() }
+                initInput(file.newName) { file.newName = it.toString() }
             }
             btnEdit.setOnClickListener { onEditClick(file) }
             btnDelete.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItemNew) }

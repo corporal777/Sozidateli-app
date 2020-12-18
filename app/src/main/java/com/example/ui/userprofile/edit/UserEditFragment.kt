@@ -10,7 +10,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.TextView
@@ -45,9 +47,7 @@ import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_P
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.FileUtils
-import com.example.util.UriUtils
-import com.example.util.firstLetterToUppercase
+import com.example.util.*
 import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -60,6 +60,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
+    private var mainInfoFiles: List<RecommendationFile>? = null
 
     override val title: String? = null
 
@@ -79,9 +80,15 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     private val galleryImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { uri ->
         uri?.let {
             it.data?.data?.let {  file ->
-                val filePath = UriUtils.pickedExistingPicture(requireContext(), file).path
-                val mimeType = UriUtils.getMimeType(requireContext(), file)?: ""
-                presenter.onFilePicked(filePath, mimeType)
+                val filePath = FileUtils.getPath(requireContext(), file)
+                val mimeType = FileUtils.getMimeType(requireContext(), file)
+                if (filePath.isEmpty()) {
+                    val path = UriUtils.pickedExistingPicture(requireContext(), file).path
+                    val type = UriUtils.getMimeType(requireContext(), file)?: ""
+                    presenter.onFilePicked(path, type)
+                } else {
+                    presenter.onFilePicked(filePath, mimeType)
+                }
             }
         }
     }
@@ -216,22 +223,31 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     user.user_notes,
                     childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
 
+            user.attached_recomendation_files?.forEach {
+                it.newName = (if (it.desc.isNullOrBlank()) it.name else it.desc) ?: "file"
+            }
+
             val files = ProfileDataAdditionalFilesEditNewGroup(
                     2,
                     requireContext(),
                     user.attached_recomendation_files ?: emptyList(),
                     {
+                        mainInfoFiles = adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
+                            true
+                        }?.getCurrentFilesToSave()
                         isUpdateInfo = false
                         presenter.onAddFileClick()
                     },
                     {
                         presenter.onFileClick(it)
-                        //findNavController().navigate(UserEditFragmentDirections.editToFileEditFragment(it))
                     },
-                    { presenter.onEditFileClick(it) },
                     {
+                        presenter.onEditFileClick(it)
+                    },
+                    { data, files ->
+                        mainInfoFiles = files
                         isUpdateInfo = false
-                        presenter.onSaveAdditionalFilesClick(it)
+                        presenter.onSaveAdditionalFilesClick(data)
                     }
             )
 
@@ -241,7 +257,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 recyclerView.requestFocus()
                 if (dataItem.checkDataValid()) {
                     val dataToSave = dataItem.getDataToSave() as MutableMap
-                    dataToSave[User.FIELD_ATTACHED_FILES] = files.getCurrentFilesToSave()
+                    val file = files.getCurrentFilesToSave()
+                    file.forEach { f ->
+                        if (f.name != f.newName)
+                            f.name = f.newName
+                    }
+                    dataToSave[User.FIELD_ATTACHED_FILES] = file
                     presenter.onSavePersonalClick(dataToSave)
                 }
             }
@@ -298,6 +319,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun updateFilesList(files: List<RecommendationFile>?) {
+        files?.forEach {
+            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.url == it.url }
+            if (editedName != null)
+                it.newName = editedName.newName
+        }
+        mainInfoFiles = null
         adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
             true
         }?.updateFiles(files ?: emptyList())
@@ -406,11 +433,16 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showFileSelector() {
-        val intent = Intent()
-        intent.type = "*/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        galleryImage.launch(intent)
+        PermissionsBuilder(REQUEST_GALLERY)
+                .addPermissions(REQUIRED_GALLERY_PERMISSIONS)
+                .setPermissionsGrantedCallback {
+                    val intent = Intent()
+                    intent.type = "*/*"
+                    intent.action = Intent.ACTION_GET_CONTENT
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                    galleryImage.launch(intent)
+                }
+                .request()
     }
 
     override fun setFileEditData(file: RecommendationFile) {

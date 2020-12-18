@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.edit
 
 import android.graphics.Bitmap
+import android.system.Os.remove
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
@@ -419,10 +420,10 @@ class UserEditPresenter
                             files?.forEach { file ->
                                 val up = uFiles.firstOrNull { f -> f.id == file.id }
                                 if (up != null) {
-                                    update.add(RecommendationFile(id = file.id, name = up.name))
+                                    update.add(RecommendationFile(id = file.id, name = up.newName))
                                 } else {
                                     if (updateFiles !is List<*>)
-                                        update.add(RecommendationFile(id = file.id, name = file.name))
+                                        update.add(RecommendationFile(id = file.id, name = file.newName))
                                 }
                             }
                             data.minus(FIELD_ATTACHED_FILES)

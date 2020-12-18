@@ -1,13 +1,16 @@
 package com.example.ui.base
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.R
@@ -17,6 +20,7 @@ import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
+    private val params = PermissionsParams()
     protected var mActivity: BaseActivity? = null
         private set
 
@@ -106,5 +110,44 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         super.onDestroyView()
         hideKeyboard()
         hideAllLoadingDialogs()
+    }
+
+    class PermissionsParams {
+        var permissionsToRequest = arrayOf<String>()
+        var permissionsGrantedCallback: () -> Unit = {}
+        var requestCode:Int = -1
+    }
+
+    val askMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
+        if (allPermissionsGranted(params.permissionsToRequest))
+            params.permissionsGrantedCallback.invoke()
+    }
+
+    inner class PermissionsBuilder(requestCode: Int) {
+
+        init {
+            params.requestCode = requestCode
+        }
+
+        fun setPermissionsGrantedCallback(block: () -> Unit): PermissionsBuilder {
+            params.permissionsGrantedCallback = block
+            return this
+        }
+
+        fun addPermissions(permission: Array<String>): PermissionsBuilder {
+            params.permissionsToRequest = permission
+            return this
+        }
+
+        fun request() {
+            if (allPermissionsGranted(params.permissionsToRequest))
+                params.permissionsGrantedCallback.invoke()
+            else
+                askMultiplePermissions.launch(params.permissionsToRequest)
+        }
+    }
+
+    private fun allPermissionsGranted(permissionsToRequest: Array<String>) = permissionsToRequest.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 }

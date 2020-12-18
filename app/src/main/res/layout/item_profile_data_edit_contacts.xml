@@ -142,7 +142,8 @@
             android:text="@string/user_profile_no_social_networks" />
     </LinearLayout>
 
-    <LinearLayout style="@style/Profile.Edit.InputContainer">
+    <LinearLayout style="@style/Profile.Edit.InputContainer"
+        android:layout_marginEnd="0dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.TextViewTitle"

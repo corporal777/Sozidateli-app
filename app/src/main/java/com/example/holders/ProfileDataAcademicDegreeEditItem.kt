@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import com.example.R
@@ -8,6 +9,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.btnRemove
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 
 class ProfileDataAcademicDegreeEditItem(
         degreesLevel: String?,
@@ -33,6 +36,11 @@ class ProfileDataAcademicDegreeEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataAcademicDegreeEditItem) }
+
+            if (position == 1)
+                btnRemove.visibility = View.GONE
+            else
+                btnRemove.visibility = View.VISIBLE
         }
     }
 
