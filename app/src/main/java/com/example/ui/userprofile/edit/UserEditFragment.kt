@@ -323,6 +323,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.url == it.url }
             if (editedName != null)
                 it.newName = editedName.newName
+            else
+                it.newName = it.name
         }
         mainInfoFiles = null
         adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {

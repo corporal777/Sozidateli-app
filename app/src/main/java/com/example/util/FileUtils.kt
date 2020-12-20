@@ -301,14 +301,24 @@ object FileUtils {
                 if (id != null && id.startsWith("raw:")) {
                     return id.substring(4)
                 }
+                var longId: Long = 0
                 val contentUriPrefixesToTry = arrayOf(
                         "content://downloads/public_downloads",
                         "content://downloads/my_downloads"
                 )
+
+                try {
+                    longId = java.lang.Long.valueOf(id)
+                } catch (e: Exception) {
+                    println("catched exception %s, splitting the id now".format(e.toString()))
+                    val split = id.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    longId = java.lang.Long.valueOf(split[1])
+                }
+
                 for (contentUriPrefix in contentUriPrefixesToTry) {
                     val contentUri = ContentUris.withAppendedId(
                             Uri.parse(contentUriPrefix),
-                            java.lang.Long.valueOf(id)
+                            /*java.lang.Long.valueOf(id)*/longId
                     )
                     try {
                         val path = getDataColumn(
@@ -523,6 +533,7 @@ object FileUtils {
         var name = name ?: return null
         var file = File(directory, name)
         if (file.exists()) {
+            file.delete()
             var fileName = name
             var extension = ""
             val dotIndex = name.lastIndexOf('.')

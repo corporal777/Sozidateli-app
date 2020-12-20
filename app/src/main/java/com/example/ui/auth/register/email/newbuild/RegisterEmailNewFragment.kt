@@ -13,7 +13,6 @@ import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
-import kotlinx.android.synthetic.main.fragment_register_email_new.btnPhoneConfirm
 import kotlinx.android.synthetic.main.fragment_register_email_new.etEmail
 import kotlinx.android.synthetic.main.fragment_register_email_new.etFirstName
 import kotlinx.android.synthetic.main.fragment_register_email_new.etLastName
@@ -76,7 +75,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-        btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
+        //.setOnClickListener { presenter.onPhoneConfirmClick() }
     }
 
     override fun setData(
@@ -100,7 +99,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun updatePhoneConfirmationStatus(confirmed: Boolean) {
-        btnPhoneConfirm.isVisible = !confirmed
+        //btnPhoneConfirm.isVisible = !confirmed
         tvPhoneConfirmed.isVisible = confirmed
     }
 
@@ -109,8 +108,8 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun phoneConfirmEnabled(enabled: Boolean) {
-        btnPhoneConfirm.isEnabled = enabled
-        btnPhoneConfirm.isVisible = enabled
+        //btnPhoneConfirm.isEnabled = enabled
+        //btnPhoneConfirm.isVisible = enabled
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
@@ -155,7 +154,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        btnPhoneConfirm.apply { isEnabled = isEnable }
+        //btnPhoneConfirm.apply { isEnabled = isEnable }
         ibRegister.apply { isEnabled = isEnable }
     }
 

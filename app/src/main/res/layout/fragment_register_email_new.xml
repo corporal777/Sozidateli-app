@@ -70,6 +70,24 @@
             app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle">
 
             <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilLastName"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLastName"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/auth_input_last_name_hint"
+                    android:inputType="textCapWords" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilFirstName"
                 style="@style/Profile.Edit.InputLayout"
                 android:layout_width="match_parent"
@@ -85,24 +103,6 @@
                     android:id="@+id/etFirstName"
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:hint="@string/auth_input_first_name_hint"
-                    android:inputType="textCapWords" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilLastName"
-                style="@style/Profile.Edit.InputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                app:endIconMode="custom"
-                app:errorEnabled="true"
-                app:errorIconDrawable="@null">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastName"
-                    style="@style/Profile.Edit.Input.SingleLine"
-                    android:hint="@string/auth_input_last_name_hint"
                     android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
 
@@ -149,7 +149,7 @@
                         android:inputType="phone" />
                 </com.example.ui.views.CustomTextInputLayout>
 
-                <androidx.appcompat.widget.AppCompatButton
+                <!--<androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnPhoneConfirm"
                     style="@style/Profile.Edit.Button"
                     android:layout_marginTop="0dp"
@@ -159,7 +159,7 @@
                     android:enabled="false"
                     android:text="@string/profile_edit_confirm_password"
                     android:visibility="gone"
-                    tools:visibility="visible" />
+                    tools:visibility="visible" />-->
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPhoneConfirmed"
