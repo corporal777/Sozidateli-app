@@ -135,7 +135,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     override fun showPasswordError(show: Boolean) {
         tilPassword.error = if (show) getString(
                 if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
-                else R.string.auth_error_short_password
+                else R.string.auth_error_short_password_length
         ) else null
     }
 

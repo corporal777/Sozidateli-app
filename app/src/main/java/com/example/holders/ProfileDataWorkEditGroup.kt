@@ -47,10 +47,7 @@ class ProfileDataWorkEditGroup(
         try {
             addItem.hasExp(it)
             notifyItemChanged(works.size + 1)
-            works.forEachIndexed { index, profileDataWorkEditItem ->
-                profileDataWorkEditItem.hasExp(it)
-                notifyItemChanged(index + 1)
-            }
+            isDeleteVisible(it)
             hasWork = !it
         } catch (e: IllegalStateException) {
             exeption(!hasWork)
@@ -84,9 +81,23 @@ class ProfileDataWorkEditGroup(
 
     private fun add(item: ProfileDataWorkEditItem) {
         works.add(item)
+        isDeleteVisible(!hasWork)
         super.add(item)
         notifyItemInserted(works.size)
     }
+
+    private fun isDeleteVisible(hasWork: Boolean) {
+        works.forEachIndexed { index, profileDataWorkEditItem ->
+            profileDataWorkEditItem.hasExp(hasWork)
+            if (works.size == 1) {
+                profileDataWorkEditItem.isDeleteVisible = index != 0
+            } else {
+                profileDataWorkEditItem.isDeleteVisible = true
+            }
+            notifyItemChanged(index + 1)
+        }
+    }
+
 
     private fun createWorkItem(socialRoles: SocialRoles?): ProfileDataWorkEditItem {
         return ProfileDataWorkEditItem(
@@ -99,6 +110,7 @@ class ProfileDataWorkEditGroup(
             val position = getItemCountBeforeGroup(item) + 1
             remove(item)
             works.remove(item)
+            isDeleteVisible(!hasWork)
             notifyItemRemoved(position)
         }
     }

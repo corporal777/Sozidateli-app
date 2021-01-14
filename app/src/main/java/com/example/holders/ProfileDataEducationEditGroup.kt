@@ -6,7 +6,7 @@ import com.example.data.models.AcademicDegree
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
-import com.example.util.validateEndDate
+import com.example.extensions.forEachItems
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -22,10 +22,17 @@ class ProfileDataEducationEditGroup(
         academicDegrees: List<AcademicDegree>
 ) : NestedGroup() {
 
+    var validatorSize = 3
+
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel, availableEducations) {
         if (it) {
-            if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, null))
+            validatorSize = 4
+            if (degrees.itemCount == 0) {
+                degrees.add(createAcademicDegreeEditItem(null, null))
+                isDeleteVisible()
+            }
         } else {
+            validatorSize= 3
             degrees.clear()
         }
     }
@@ -35,6 +42,7 @@ class ProfileDataEducationEditGroup(
         setFooter(ProfileButtonEditItem(context.getString(R.string.profile_sciences_add), false) {
             if (checkDataValid()) {
                 add(createAcademicDegreeEditItem(null, null))
+                isDeleteVisible()
             }
         }.apply {
             hasDivider = false
@@ -42,7 +50,12 @@ class ProfileDataEducationEditGroup(
         })
     }
     private val educations = Section().apply {
-        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_institution_add), false) { if (checkDataValid()) { add(createEducationItem(null)) } }.apply {
+        setFooter(ProfileButtonEditItem(context.getString(R.string.profile_institution_add), false) {
+            if (checkDataValid()) {
+                add(createEducationItem(null))
+                isDeleteVisible()
+            }
+        }.apply {
             hasDivider = false
             compactMargin = true
         })
@@ -51,6 +64,7 @@ class ProfileDataEducationEditGroup(
     init {
         academicDegrees.map { createAcademicDegreeEditItem(it.degree, it.specialisation) }.let {
             if (educationLevel != null && educationLevel == availableEducations.lastOrNull()) {
+                validatorSize = 4
                 if (it.isEmpty()) {
                     degrees.add(createAcademicDegreeEditItem(null, null))
                 } else {
@@ -70,6 +84,7 @@ class ProfileDataEducationEditGroup(
                 degrees,
                 educations
         ))
+        isDeleteVisible()
     }
 
     override fun getGroup(position: Int): Group {
@@ -94,6 +109,7 @@ class ProfileDataEducationEditGroup(
         return ProfileDataAcademicDegreeEditItem(degree, specialisation, availableDegrees, availableSciences) {
             degrees.remove(it)
             if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, null))
+            isDeleteVisible()
         }
     }
 
@@ -106,6 +122,32 @@ class ProfileDataEducationEditGroup(
                 birthday
         ) {
             educations.remove(it)
+            isDeleteVisible()
+        }
+    }
+
+    private fun isDeleteVisible() {
+        this.forEachItems { item, position ->
+            if (this.itemCount <= validatorSize) {
+                when (item) {
+                    is ProfileDataEducationEditItem -> {
+                        item.isDeleteVisible = position != 1
+                    }
+                    is ProfileDataAcademicDegreeEditItem -> {
+                        item.isDeleteVisible = position != 1
+                    }
+                }
+            } else {
+                when (item) {
+                    is ProfileDataEducationEditItem -> {
+                        item.isDeleteVisible = true
+                    }
+                    is ProfileDataAcademicDegreeEditItem -> {
+                        item.isDeleteVisible = true
+                    }
+                }
+            }
+            notifyChanged()
         }
     }
 

@@ -28,6 +28,8 @@ class ProfileDataWorkEditItem(
         private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit
 ) : Item() {
 
+    var isDeleteVisible = true
+
     var mStart = start
         private set
     var mFinish = finish
@@ -82,10 +84,11 @@ class ProfileDataWorkEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
-            if (position == 1)
-                btnRemove.visibility = View.GONE
-            else
+
+            if (isDeleteVisible)
                 btnRemove.visibility = View.VISIBLE
+            else
+                btnRemove.visibility = View.GONE
         }
         isEnabledItems(viewHolder)
     }

@@ -81,6 +81,7 @@
     <string name="auth_error_wrong_email">Введите корректный e-mail</string>
     <string name="auth_error_wrong_login">Пожалуйста, укажите корректный логин</string>
     <string name="auth_error_no_password">Введите пароль</string>
+    <string name="auth_error_short_password_length">Пароль должен содержать больше 5 символов</string>
     <string name="auth_error_short_password">Больше 5 символов</string>
     <string name="auth_error_password_do_not_match">Пароли не совпадают</string>
     <string name="auth_error_agreement">Согласитесь с условиями</string>

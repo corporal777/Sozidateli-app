@@ -11,6 +11,13 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.btnRemove
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.etFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.etStart
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.scFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.tilFinish
+import kotlinx.android.synthetic.main.item_profile_data_edit_education.tilStart
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import java.util.*
 
 class ProfileDataEducationEditItem(
@@ -21,6 +28,8 @@ class ProfileDataEducationEditItem(
         birthday: String?,
         private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit
 ) : Item() {
+
+    var isDeleteVisible = true
 
     var mStart = start
         private set
@@ -74,10 +83,10 @@ class ProfileDataEducationEditItem(
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
 
-            if (position == 1)
-                btnRemove.visibility = View.GONE
-            else
+            if (isDeleteVisible)
                 btnRemove.visibility = View.VISIBLE
+            else
+                btnRemove.visibility = View.GONE
         }
     }
 

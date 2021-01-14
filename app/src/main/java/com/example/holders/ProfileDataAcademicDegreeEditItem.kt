@@ -11,6 +11,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.btnRemove
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 
 class ProfileDataAcademicDegreeEditItem(
         degreesLevel: String?,
@@ -19,6 +20,8 @@ class ProfileDataAcademicDegreeEditItem(
         private val availableSciences: List<String>,
         private val onRemoveClickListener: (ProfileDataAcademicDegreeEditItem) -> Unit
 ) : Item() {
+
+    var isDeleteVisible = true
 
     var mDegreesLevel = degreesLevel
         private set
@@ -37,10 +40,10 @@ class ProfileDataAcademicDegreeEditItem(
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataAcademicDegreeEditItem) }
 
-            if (position == 1)
-                btnRemove.visibility = View.GONE
-            else
+            if (isDeleteVisible)
                 btnRemove.visibility = View.VISIBLE
+            else
+                btnRemove.visibility = View.GONE
         }
     }
 
