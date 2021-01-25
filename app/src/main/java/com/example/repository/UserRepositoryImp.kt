@@ -273,4 +273,11 @@ class UserRepositoryImp
     override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())
     }
+
+    override fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel> =
+            newApi.getEventCalendar(data.toMap())
+
+    override fun logout(id: Int): Completable = newApi.logout(id)
+
+    override fun changePassword(id: Int, body: PasswordBody): Completable = newApi.changePassword(id, body)
 }
