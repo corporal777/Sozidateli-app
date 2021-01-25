@@ -61,5 +61,6 @@ interface UserRepository {
     fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
     fun deleteRecommendedFile(fileId : Int): Completable
     fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
+    fun deleteProfile(): Completable
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
 }
