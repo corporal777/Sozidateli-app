@@ -2,7 +2,9 @@ package com.example.repository
 
 import android.graphics.Bitmap
 import com.example.api.Api
+import com.example.api.NewApi
 import com.example.data.AppData
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
@@ -23,12 +25,34 @@ import javax.inject.Inject
 class UserRepositoryImp
 @Inject constructor(
         private val api: Api,
+        private val newApi: NewApi,
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
+
+    override fun getUserShortNew(id: Int): Maybe<UserDetail> = newApi.getUserShort(id).map { it }.doOnSuccess {
+        appData.setUserShortNew(it)
+    }
+
+    override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
+            newApi.updateProfile(id, map).doOnSuccess {
+                appData.setUserShortNew(it)
+            }
+
+    override fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail> =
+            newApi.confirmEmailCode(id, body).doOnSuccess {
+                appData.login(it.token)
+                appData.saveId(it.id)
+            }
 
     override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
         appData.setUserShort(it)
     }
+
+    override fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable =
+            newApi.confirmPhoneCode(id, body)
+
+    override fun sendPhoneCode(id: Int, phone: String): Completable =
+            newApi.sendPhoneCode(id, phone)
 
     override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
@@ -139,4 +163,11 @@ class UserRepositoryImp
     override fun deleteProfile(): Completable {
         return call(api.deleteProfile())
     }
+
+    override fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel> =
+            newApi.getEventCalendar(data.toMap())
+
+    override fun logout(id: Int): Completable = newApi.logout(id)
+
+    override fun changePassword(id: Int, body: PasswordBody): Completable = newApi.changePassword(id, body)
 }

@@ -2,13 +2,14 @@ package com.example.ui.profile
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface ProfileContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUser(user: User)
+        fun setUser(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showProfile(uid: String)

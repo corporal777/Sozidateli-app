@@ -23,7 +23,7 @@ class UserProfilePresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileContract.View>(appData), UserProfileContract.Presenter {
 
     override fun onEditAvatarClick() {
-        val avatar = user.user_avatar?.takeIf { it.isNotBlank() }
+        val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
         viewState.showTakePictureChooser(avatar != null)
     }
 
@@ -47,7 +47,7 @@ class UserProfilePresenter @Inject constructor(
                 .subscribeSimple(
                         onSuccess = {
                             updateUserInternal {
-                                user_avatar = it.user_avatar
+                                image?.uri = it.user_avatar
                             }
                         }
                 )
@@ -60,7 +60,7 @@ class UserProfilePresenter @Inject constructor(
                 .subscribeSimple(
                         onSuccess = {
                             updateUserInternal {
-                                user_avatar = it.user_avatar
+                                image?.uri = it.user_avatar
                             }
                         }
                 )

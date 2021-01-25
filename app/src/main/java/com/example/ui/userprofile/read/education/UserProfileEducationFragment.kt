@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.holders.ProfileDataEducationItem
@@ -45,10 +46,10 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val educationLevel = user.user_education
+        /*val educationLevel = user.user_education
         val academicDegrees = user.academic_degree ?: emptyList()
         val education = user.education ?: emptyList()
 
@@ -57,7 +58,7 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
             addAll(education.map { ProfileDataEducationItem(it) })
         }
 
-        adapter.update(listOf(educationGroup))
+        adapter.update(listOf(educationGroup))*/
     }
 
     override fun showEdit() {

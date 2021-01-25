@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -44,10 +45,10 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
         btnExperience.setOnClickListener(presenter::onExperienceClick)
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
         ivAvatar.apply {
-            val avatarUrl = user.user_avatar?.takeIf { it.isNotBlank() }
+            val avatarUrl = user.image?.uri?.takeIf { it.isNotBlank() }
             clipToOutline = true
             transitionName = avatarUrl
             Picasso.get()

@@ -23,7 +23,7 @@ class ProfilePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += userRepository.getUserFull()
+        compositeDisposable += userRepository.getUserShortNew(appData.getId())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.setUser(it)
@@ -32,7 +32,7 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.getUser())
+        viewState.setUser(appData.getUserNew())
     }
 
     override fun onProfileClick() = viewState.showProfile(appData.getUser().user_id.toString())
@@ -46,7 +46,7 @@ class ProfilePresenter
     override fun onBannedClick() = viewState.showBanned()
 
     override fun onSupportClick() {
-        viewState.openSupportEmail(appData.getUser().user_id.toString())
+        viewState.openSupportEmail(appData.getId().toString())
     }
 
     override fun onRateClick() {
@@ -54,8 +54,7 @@ class ProfilePresenter
     }
 
     override fun onLogoutClick() {
-        compositeDisposable += userRepository.getFcmToken()
-                .flatMapCompletable { userRepository.notificationsUnregister(it.token) }
+        compositeDisposable += userRepository.logout(appData.getId())
                 .doOnComplete {
                     appData.isSubscribedToPush = false
                     haChat.disconnect()
@@ -70,6 +69,22 @@ class ProfilePresenter
                             viewState.showRequestErrorMessage()
                         }
                 )
+        /*compositeDisposable += userRepository.getFcmToken()
+                .flatMapCompletable { userRepository.notificationsUnregister(it.token) }
+                .doOnComplete {
+                    appData.isSubscribedToPush = false
+                    haChat.disconnect()
+                    appData.logout()
+                    notificationManager.cancelAll()
+                }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeBy(
+                        onError = {
+                            it.printStackTrace()
+                            viewState.showRequestErrorMessage()
+                        }
+                )*/
     }
 
     override fun onSettingsClick() {

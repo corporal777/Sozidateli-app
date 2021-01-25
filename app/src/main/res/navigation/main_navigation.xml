@@ -35,6 +35,10 @@
         android:label="Login email">
 
         <action
+            android:id="@+id/login_to_mail"
+            app:destination="@+id/recommendations_fragment"/>
+
+        <action
             android:id="@+id/login_to_register_email_action"
             app:destination="@id/register_email_fragment"
             app:popUpTo="@id/authorization_fragment" />
@@ -112,6 +116,10 @@
         android:id="@+id/register_email_finish_fragment"
         android:name="com.example.ui.auth.register.email.finishregister.FinishRegisterFragment"
         android:label="Register">
+
+        <action
+            android:id="@+id/register_to_mail"
+            app:destination="@+id/recommendations_fragment"/>
 
         <action
             android:id="@+id/email_register_to_phone_confirm_fragment"

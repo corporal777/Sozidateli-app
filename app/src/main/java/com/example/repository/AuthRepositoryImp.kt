@@ -2,13 +2,18 @@ package com.example.repository
 
 import androidx.core.os.bundleOf
 import com.example.api.Api
+import com.example.api.NewApi
 import com.example.data.AppData
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.RegisterBody
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.UserResp
+import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
+import com.example.util.ApiErrorParser
 import com.facebook.AccessToken
 import com.facebook.GraphRequest
 import com.vk.sdk.api.VKApi
@@ -24,13 +29,15 @@ import org.json.JSONObject
 import retrofit2.http.Field
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
+import java.net.ConnectException
 import javax.inject.Inject
 
 
 class AuthRepositoryImp
 @Inject constructor(
         private val appData: AppData,
-        private val api: Api
+        private val api: Api,
+        private val newApi: NewApi
 ) : ApiRepository(appData), AuthRepository {
 
     override fun authSocialNetwork(snAuth: SnAuth): Single<Pair<RegisterStatus, SnUser>> {
@@ -73,18 +80,13 @@ class AuthRepositoryImp
     }
 
     override fun authEmailOrPhone(email: String, password: String): Completable {
-        return callAuthCompletable(api.authEmailOrPhone(email, password))
+        return callNewAuthCompletable(newApi.authEmailOrPhone(AuthBody(email, password)))
     }
 
-    override fun register(
-            email: String,
-            password: String,
-            firstName: String,
-            lastName: String,
-            middleName: String?,
-            phone: String?
-    ): Completable {
-        return callAuthCompletable(api.registerEmail(email, password, firstName, lastName, middleName, phone))
+    override fun register(body: RegisterBody): Completable {
+        return newApi.registerEmail(body).doOnSuccess {
+            appData.setUserShortNew(it)
+        }.ignoreElement()
     }
 
     override fun registerData(email: String, code: String): Single<UserResp> {
@@ -97,12 +99,14 @@ class AuthRepositoryImp
     }
 
     override fun registerEmailResend(email: String): Completable {
-        return callAuthCompletable(api.registerEmailResend(email))
+        return newApi.registerEmailResend(email)
     }
 
-    override fun registerSnResend(email: String, token: String): Completable {
+
+
+    /*override fun registerSnResend(email: String, token: String): Completable {
         return callAuthCompletable(api.registerSnResend(email, token))
-    }
+    }*/
 
     override fun sendRecoveryEmail(email: String): Completable {
         return callAuthCompletable(api.sendEmailRecovery(email))
@@ -177,6 +181,16 @@ class AuthRepositoryImp
                 }
             })
         }
+    }
+
+    private fun callNewAuthCompletable(authRequest: Single<NewAuthResponse>): Completable {
+        return authRequest.doOnSuccess {
+            val token = it?.token
+            if (token != null) {
+                appData.login(token)
+                appData.saveId(it.id)
+            }
+        }.doOnSuccess { appData.token = it.token }.map { it }.ignoreElement()
     }
 
     private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {

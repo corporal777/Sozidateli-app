@@ -1,11 +1,14 @@
 package com.example.repository
 
+import com.example.data.bodies.RegisterBody
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.UserResp
 import com.example.ui.snAuth.SnAuth
 import io.reactivex.Completable
 import io.reactivex.Single
+import retrofit2.http.Body
+import retrofit2.http.Path
 
 interface AuthRepository {
 
@@ -15,18 +18,11 @@ interface AuthRepository {
     fun confirmEmailSocialNetwork(id: String, code: String): Completable
 
     fun authEmailOrPhone(email: String, password: String): Completable
-    fun register(
-            email: String,
-            password: String,
-            firstName: String,
-            lastName: String,
-            middleName: String? = null,
-            phone: String? = null
-    ): Completable
+    fun register(body: RegisterBody): Completable
     fun registerConfirm(email: String, code: String, name: String,lastName: String,
                         middleName: String?, phone: String?, newEmail: String? = null, password: String? = null): Completable
     fun registerEmailResend(email: String): Completable
-    fun registerSnResend(email: String, token: String): Completable
+    //fun registerSnResend(email: String, token: String): Completable
 
     fun sendRecoveryEmail(email: String): Completable
     fun checkRecoveryCode(email: String, code: String): Completable

@@ -3,6 +3,7 @@ package com.example.ui.userprofile.base
 import androidx.annotation.CallSuper
 import com.example.data.AppData
 import com.example.data.models.Optional
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -12,15 +13,15 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
         private val appData: AppData
 ) : BasePresenter<V>(), BaseUserProfileContract.Presenter {
 
-    protected val user: User
-        get() = appData.getUser()
+    protected val user: UserDetail
+        get() = appData.getUserNew()
 
     @CallSuper
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val updated = kotlin.runCatching { onUserUpdated(user) }.isSuccess
 
-        compositeDisposable += appData.userChangeSubject
+        compositeDisposable += appData.userNewChangeSubject
                 .skip(if (updated) 1 else 0)
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
@@ -28,13 +29,13 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
                 )
     }
 
-    private fun onUserUpdated(optionalUser: Optional<User>) {
+    private fun onUserUpdated(optionalUser: Optional<UserDetail>) {
         onUserUpdated(optionalUser.value)
     }
 
-    protected open fun onUserUpdated(user: User?) {
+    protected open fun onUserUpdated(user: UserDetail?) {
         viewState.onUserUpdated(user)
     }
 
-    protected fun updateUserInternal(update: User.() -> Unit) = appData.updateUser(update)
+    protected fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)
 }
