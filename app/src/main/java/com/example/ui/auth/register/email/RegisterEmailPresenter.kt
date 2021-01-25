@@ -1,6 +1,8 @@
 package com.example.ui.auth.register.email
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.bodies.RegisterBody
+import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -110,7 +112,9 @@ class RegisterEmailPresenter
     }
 
     private fun register(email: String, firstName: String, lastName: String, password: String) {
-        compositeDisposable += authRepository.register(email, password, firstName, lastName)
+        compositeDisposable += authRepository.register(RegisterBody(password = password,
+                name = firstName, lastName = lastName,
+                email = FieldDetails(value = email, isVisible = true)))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

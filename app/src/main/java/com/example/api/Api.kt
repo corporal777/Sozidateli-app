@@ -31,15 +31,15 @@ interface Api {
     @POST("/v1/user/auth/social/confirm_email")
     fun confirmEmailSocialNetwork(@Field("id") id: String, @Field("code") code: String): Single<ApiResponse<AuthResponse>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/auth")
-    fun authEmailOrPhone(@Field("username") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
+    fun authEmailOrPhone(@Field("username") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/auth/status")
     fun registerStatus(@Field("user_email") email: String?, @Field("social_provider") snType: String?, @Field("social_id") snId: String?): Single<ApiResponse<RegisterStatus>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/register")
     fun registerEmail(
             @Field("user_email") email: String,
@@ -48,7 +48,7 @@ interface Api {
             @Field("user_last_name") lastName: String,
             @Field("user_middle_name") middleName: String?,
             @Field("user_phone") phone: String?
-    ): Single<ApiResponse<AuthResponse>>
+    ): Single<ApiResponse<AuthResponse>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/register/confirm")
@@ -66,13 +66,13 @@ interface Api {
     @POST("/v1/user/update/change_email_confirm")
     fun changeEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/register_resend")
     fun registerEmailResend(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/social/resend_confirm")
-    fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>*/
 
     @GET("/v1/user/info/short")
     fun getUserShort(): Maybe<ApiResponse<UserShort>>

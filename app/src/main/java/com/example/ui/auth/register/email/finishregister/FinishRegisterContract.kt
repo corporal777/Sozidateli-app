@@ -39,6 +39,9 @@ interface FinishRegisterContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun openHome()
     }
 
     interface Presenter : BaseAuthContract.Presenter {

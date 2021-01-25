@@ -72,12 +72,14 @@ android {
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
+            buildConfigField "String", "NEW_API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
         }
         beta {
             initWith(debug)
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+            buildConfigField "String", "NEW_API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
             matchingFallbacks = ['debug', 'release']
@@ -85,6 +87,7 @@ android {
         "new" {
             initWith(debug)
             buildConfigField "String", "API_URL", "\"http://new-api.sozidateli-houseofapps.ru/\""
+            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
             matchingFallbacks = ['debug', 'release']

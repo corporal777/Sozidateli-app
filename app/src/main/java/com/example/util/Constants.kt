@@ -42,6 +42,8 @@ const val PATH_SN_AUTHORIZATION = "social"
 const val FIELD_SN_AUTHORIZATION_USER_ID = "usa_id"
 const val PATH_EVENT = "event"
 const val PATH_CHANGE_EMAIL = "email-change"
+const val REGISTER_CONFIRM = "register-confirm"
+const val PATH_CONFIRM_EMAIL = "email-confirm"
 const val PATH_HIDDEN = "hidden"
 
 const val REQUEST_CODE_SELECT_PDF = 12

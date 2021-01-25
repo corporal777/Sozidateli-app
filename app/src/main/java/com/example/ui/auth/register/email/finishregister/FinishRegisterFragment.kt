@@ -121,6 +121,10 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         //scNoMiddleName.isChecked = isNoMiddleName
     }
 
+    override fun openHome() {
+        findNavController().navigate(FinishRegisterFragmentDirections.registerToMail())
+    }
+
     override fun onDestroyView() {
         tvAgree.text.toSpannable().clearSpans()
         super.onDestroyView()

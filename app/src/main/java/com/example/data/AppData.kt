@@ -69,11 +69,13 @@ class AppData(
     var interests: List<Interest>? = null
 
     private var user: User? = null
+    private var newUser: UserDetail? = null
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
 
     val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
+    val userNewChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
@@ -93,6 +95,16 @@ class AppData(
         setUser(userShort.toUser())
     }
 
+    fun setUserShortNew(user: UserDetail) {
+        val changed = this.newUser != user
+        this.newUser = user
+        appPrefs.userId = user.id
+        if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun getUserNew(): UserDetail = newUser
+            ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+
     fun getUser(): User = user
             ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
@@ -100,9 +112,22 @@ class AppData(
         userChangeSubject.onNext(getUser().apply(update).asOptional())
     }
 
+    fun updateUserNew(update: UserDetail.() -> Unit) {
+        userNewChangeSubject.onNext(getUserNew().apply(update).asOptional())
+    }
+
     fun login(token: String) {
         isLoggedOut = false
         this.token = token
+    }
+
+    fun saveId(id: Int?) {
+        if (id!= null)
+            appPrefs.userId = id
+    }
+
+    fun getId(): Int {
+        return appPrefs.userId?: 0
     }
 
     fun logout() {

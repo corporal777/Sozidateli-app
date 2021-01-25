@@ -3,6 +3,8 @@ package com.example.ui.auth.register.email.newbuild
 import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.RegisterBody
+import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -196,7 +198,19 @@ class RegisterEmailNewPresenter
             middleName: String?,
             phone: String?
     ) {
-        compositeDisposable += authRepository.register(email, password, firstName, lastName, middleName, phone)
+        val midName = if (middleName.isNullOrEmpty())
+            null
+        else
+            FieldDetails(value = middleName)
+
+        val phoneNumber = if (phone.isNullOrEmpty())
+            null
+        else
+            arrayListOf(FieldDetails(value = phone.replace(" ", ""), type = "personal", isVisible = true))
+
+        compositeDisposable += authRepository.register(RegisterBody(password = password,
+                name = firstName, lastName = lastName, middleName = midName,
+                email = FieldDetails(value = email, isVisible = true), phone = phoneNumber))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
