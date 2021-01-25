@@ -208,12 +208,12 @@ class MainPresenter
                 }
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { calendar ->
+                /*.flatMapMaybe { calendar ->
                     if (calendar.isEmpty()) Maybe.empty()
                     else getLocation()
                             .timeout(5, TimeUnit.SECONDS)
                             .map { calendar to it }
-                }
+                }*/
                 .observeOn(Schedulers.io())
                 //.flatMapCompletable { Completable.complete() }
                 //.onErrorComplete()
