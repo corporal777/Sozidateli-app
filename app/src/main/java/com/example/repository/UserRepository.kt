@@ -9,6 +9,9 @@ import com.google.firebase.iid.InstanceIdResult
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import retrofit2.http.Body
+import retrofit2.http.Path
+import retrofit2.http.Query
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
