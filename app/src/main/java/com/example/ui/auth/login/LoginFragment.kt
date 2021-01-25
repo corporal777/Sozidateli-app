@@ -11,6 +11,7 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.auth.authorization.AuthorizationFragmentDirections
+import com.example.ui.auth.register.email.finishregister.FinishRegisterFragmentDirections
 import com.example.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged

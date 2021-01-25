@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.*
@@ -47,17 +48,17 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         }
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val phone = user.user_phone?.parsePhone(requireContext())
+        val phone = user.phone?.firstOrNull { it.type == "personal" }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
         btnPhoneEdit.isVisible = phone != null
         tvPhoneMobile.text = phone
 
-        tvEmail.text = user.user_email
-        scPrivacy.isChecked = user.isHidden
+        tvEmail.text = user.email?.value
+        scPrivacy.isChecked = user.state?.isHidden?: false
 
     }
 

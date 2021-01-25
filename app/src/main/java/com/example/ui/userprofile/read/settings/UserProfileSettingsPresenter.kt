@@ -3,6 +3,13 @@ package com.example.ui.userprofile.read.settings
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.PasswordBody
+import com.example.data.bodies.RegisterBody
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
+import com.example.data.models.UserDetail.Companion.USER_EMAIL
+import com.example.data.models.UserDetail.Companion.USER_STATE
+import com.example.data.models.UserState
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
@@ -31,10 +38,17 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
     override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        val data = mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)
-        updateUser(data) {
-            viewState.showPasswordChangeComplete()
-        }
+        compositeDisposable += userRepository.changePassword(appData.getId(), PasswordBody(password = newPassword))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            it.printStackTrace()
+                            viewState.showUpdateError(it.message)
+                        },
+                        onComplete = {
+                            viewState.showPasswordChangeComplete()
+                        })
     }
 
     override fun onChangeEmailClick() {
@@ -43,8 +57,8 @@ class UserProfileSettingsPresenter @Inject constructor(
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(mapOf(User.FIELD_USER_EMAIL to email)) {
-                it.user_email = email
+            updateUser(mapOf(USER_EMAIL to FieldDetails(value = email))) {
+                it.email?.value = email
                 viewState.showChangeEmailComplete(email)
             }
         } else {
@@ -57,8 +71,8 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
     override fun onChangePrivacyConfirm(hidden: Boolean) {
-        updateUser(mapOf(User.FIELD_USER_HIDDEN to hidden)) {
-            it.isHidden = hidden
+        updateUser(mapOf(USER_STATE to UserState(isHidden = hidden))) {
+            it.state?.isHidden = hidden
         }
     }
 
@@ -80,8 +94,8 @@ class UserProfileSettingsPresenter @Inject constructor(
                 )
     }
 
-    private fun updateUser(data: Map<String, Any?>, onComplete: (User) -> Unit) {
-        compositeDisposable += userRepository.updateUser(data)
+    private fun updateUser(data: Map<String, Any?>, onComplete: (UserDetail) -> Unit) {
+        compositeDisposable += userRepository.updateProfile(appData.getId(), data)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -91,11 +105,11 @@ class UserProfileSettingsPresenter @Inject constructor(
                         },
                         onSuccess = {
                             user.apply {
-                                user_phone_confirmed = it.user_phone_confirmed
-                                it.user_status?.let { status -> user_status = status }
-                                it.user_status_detail?.let { details -> user_status_detail = details }
+                                phone = it.phone
+                                /*it.user_status?.let { status -> user_status = status }
+                                it.user_status_detail?.let { details -> user_status_detail = details }*/
                             }
-                            appData.updateUser(onComplete)
+                            appData.updateUserNew(onComplete)
                         })
     }
 }

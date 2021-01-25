@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
@@ -50,30 +51,30 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
-        tvId.text = getString(R.string.profile_uid, user.user_id)
+        tvId.text = getString(R.string.profile_uid, user.id)
         val jObject = DaDataUtil.getLocationJson(requireContext())
-        tvLastName.text = user.user_last_name
+        tvLastName.text = user.lastName
 
-        tvName.text = user.user_name
+        tvName.text = user.name
 
         tvMiddleName.text = user.getMiddleName()
-        val isNoMiddleNameChecked = user.user_middle_name == USER_DATA_EMPTY
+        val isNoMiddleNameChecked = user.middleName?.value == USER_DATA_EMPTY
         tvMiddleNameTitle.isVisible = !isNoMiddleNameChecked
         tvMiddleName.isVisible = !isNoMiddleNameChecked
 
-        tvBirthday.text = user.user_birthday?.formatToDefaultDate()
+        tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
 
-        tvGender.text = user.user_gender?.firstLetterToUppercase()
+        tvGender.text = user.gender?.firstLetterToUppercase()
 
-        tvAddress.text = DaDataUtil.formatParam(user.user_short_address, jObject) ?: DaDataUtil.formatParam(user.user_address, jObject)
+        tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject) ?: DaDataUtil.formatParam(user.address?.country, jObject)
 
-        tvAdditional.text = user.user_notes
+        tvAdditional.text = user.notes
 
         var filesText = ""
-        user.attached_recomendation_files?.forEach { file ->
-            filesText += "<a href='${file.url}'>${file.name}</a><br>"
+        user.binds?.recommendationFile?.forEach { file ->
+            filesText += "<a href='${file.uri}'>${file.name}</a><br>"
         }
         tvFiles.text = filesText.parseAsHtml()
         BetterLinkMovementMethod.linkifyHtml(tvFiles)

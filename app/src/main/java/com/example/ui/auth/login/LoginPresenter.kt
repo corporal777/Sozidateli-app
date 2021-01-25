@@ -1,9 +1,11 @@
 package com.example.ui.auth.login
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
+import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
@@ -20,6 +22,8 @@ class LoginPresenter
 @Inject constructor(
         private val authRepository: AuthRepository,
         private val phoneNumberUtil: PhoneNumberUtil,
+        private val userRepository: UserRepository,
+        private val appData: AppData,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager), LoginContract.Presenter {
 

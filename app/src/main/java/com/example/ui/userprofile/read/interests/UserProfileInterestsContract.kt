@@ -4,13 +4,14 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Interest
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
 interface UserProfileInterestsContract {
     interface View : BaseUserProfileContract.View {
 
-        override fun onUserUpdated(user: User?) = Unit
+        override fun onUserUpdated(user: UserDetail?) = Unit
 
         @StateStrategyType(AddToEndStrategy::class)
         fun onInterestsUpdated(interests: Map<Interest, List<Interest>>)

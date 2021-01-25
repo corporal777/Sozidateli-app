@@ -36,11 +36,11 @@ class EmailConfirmPresenter
 
     override fun onResendClick() {
         val snAuth = this.snUser?.snAuth
-        val request = if (snAuth != null) {
+        /*val request = if (snAuth != null) {
             authRepository.registerSnResend(email, snAuth.token)
-        } else {
-            authRepository.registerEmailResend(email)
-        }
+        } else {*/
+        val request = authRepository.registerEmailResend(email)
+        //}
 
         compositeDisposable += request
                 .withCheckInternetConnectivity()

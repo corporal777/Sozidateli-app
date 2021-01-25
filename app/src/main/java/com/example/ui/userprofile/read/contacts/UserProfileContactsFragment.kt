@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.extensions.parsePhone
@@ -38,18 +39,18 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val phone = user.user_phone?.parsePhone(requireContext())
+        val phone = user.phone?.firstOrNull { it.type == "personal" }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
         tvPhoneMobile.text = phone
 
-        tvPhoneWork.text = user.user_phone_work?.parsePhone(requireContext())
-        tvEmail.text = user.user_email
-        tvSocialNetworks.text = user.social_links?.joinToString("\n") { it.value }
-        tvSite.text = user.site?.joinToString("\n") { it }
+        tvPhoneWork.text = user.phone?.firstOrNull { it.type == "work" }?.value?.parsePhone(requireContext())
+        tvEmail.text = user.email?.value
+        tvSocialNetworks.text = user.socialLinks?.value?.joinToString("\n") { it }
+        tvSite.text = user.site?.value?.joinToString("\n") { it }
     }
 
     override fun showEdit() {

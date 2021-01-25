@@ -202,11 +202,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     presenter.onHandleEvent(lastPath)
                 } else if (lastPath == PATH_CHANGE_EMAIL) {
-                    if (changeEmail != null && authCode != null) {
+                    /*if (changeEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(changeEmail, authCode)
-                    }
+                    }*/
                 } else if (authEmail != null && authCode != null) {
-                    presenter.onHandleAuthLink(authEmail, authCode)
+                    //presenter.onHandleAuthLink(authEmail, authCode)
                 } else if (authCode != null && recoverEmail != null) {
                     presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
                 } else if (lastPath == PATH_SN_AUTHORIZATION) {
@@ -216,6 +216,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }
                 } else if (changeEmail != null && authCode != null) {
                     presenter.onInviteRegister(changeEmail, authCode)
+                } else if (lastPath == REGISTER_CONFIRM) {
+                    presenter.onHandleAuthLink(/*authEmail, */authCode)
+                } else if (lastPath == PATH_CONFIRM_EMAIL) {
+                    presenter.onHandleChangeEmailConfirm(authCode)
                 }
             }
         } else {
