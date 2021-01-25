@@ -1,5 +1,6 @@
 package com.example.ui.auth.login
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
@@ -30,6 +31,7 @@ interface LoginContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
+
     }
 
     interface Presenter : BaseAuthContract.Presenter {

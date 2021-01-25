@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
 import com.example.holders.EmptyItem
@@ -44,17 +45,17 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val work = user.work ?: emptyList()
+        /*val work = user.work ?: emptyList()
         if (work.isEmpty()) {
             adapter.update(arrayListOf(EmptyItem(context?.resources?.getString(R.string.no_experience)?: "")))
         } else {
             adapter.update(work.mapIndexed { index, socialRoles ->
                 ProfileDataWorkExperienceItem(socialRoles, index == 0)
             })
-        }
+        }*/
     }
 
     override fun showEdit() {

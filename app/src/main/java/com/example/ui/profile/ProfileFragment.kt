@@ -13,6 +13,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.MyEventsFilter
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -56,8 +57,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
     }
 
-    override fun setUser(user: User) {
-        val avatar = user.user_avatar
+    override fun setUser(user: UserDetail) {
+        val avatar = user.image?.uri
         Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
         tvName.text = user.fullName
     }

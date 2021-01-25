@@ -4,7 +4,15 @@ import android.content.Context
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.RegisterBody
+import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
+import com.example.data.models.UserDetail.Companion.USER_EMAIL
+import com.example.data.models.UserDetail.Companion.USER_LAST_NAME
+import com.example.data.models.UserDetail.Companion.USER_MIDDLE_NAME
+import com.example.data.models.UserDetail.Companion.USER_NAME
+import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -31,6 +39,7 @@ class FinishRegisterPresenter
         private val appData: AppData,
         private val authRepository: AuthRepository,
         private val phoneNumberUtil: PhoneNumberUtil,
+        private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager), FinishRegisterContract.Presenter {
 
@@ -128,11 +137,19 @@ class FinishRegisterPresenter
     }
 
     override fun onHandleAuthLink() {
-        authRepository.registerConfirm(email?: "", code, firstName?: "",
+        userRepository.updateProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
+                USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = "personal", isVisible = true, isConfirmed = phoneVerified))))
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.openHome() }, { })
+                .call(compositeDisposable)
+
+
+        /*authRepository.registerConfirm(email?: "", code, firstName?: "",
                 lastName?: "", middleName, phone, email?: "")
                 .performOnBackgroundOutOnMain()
                 .subscribe({ }, { })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {

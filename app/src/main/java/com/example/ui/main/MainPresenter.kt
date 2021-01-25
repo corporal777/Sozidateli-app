@@ -8,6 +8,8 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.EventsCalendarListBody
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
@@ -107,15 +109,15 @@ class MainPresenter
 
     private fun loadUser() {
         if (isAuthRequired) viewState.showLoadingDialog()
-        val loadUser = userRepository.getUserShort()
-                .doOnSuccess { inappList = LinkedList(it.inapps) }
+        val loadUser = userRepository.getUserShortNew(appData.getId())
+                //.doOnSuccess { inappList = LinkedList(it.inapps) }
                 .ignoreElement()
         val loadCalendar = checkUserLocation()
         compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
                 .andThen(Completable.defer { checkInternetConnected() })
-                .andThen(subscribeToNotifications())
-                .doOnComplete { connectToSocket(appData.getUser().user_id) }
-                .andThen(Completable.defer { checkShowGreetings() })
+                //.andThen(subscribeToNotifications())
+                //.doOnComplete { connectToSocket(appData.getId()) }
+                //.andThen(Completable.defer { checkShowGreetings() })
                 .andThen(Maybe.defer { checkUserEvent() })
                 .performOnBackgroundOutOnMain()
                 .subscribe({ isMustShowEvent ->
@@ -188,40 +190,43 @@ class MainPresenter
     }
 
     private fun checkUserEvent(): Maybe<Boolean> {
-        return appData.getUser().default_event?.let { event ->
+        return /*appData.getUser().default_event?.let { event ->
             userEventData.load(event.id)
                     .andThen(Maybe.just(true))
                     .onErrorReturn { false }
-        } ?: Maybe.just(false)
+        } ?:*/ Maybe.just(false)
     }
 
     private fun checkUserLocation(): Completable {
-        return userRepository.userEventCalendar()
-                .flatMapObservable { Observable.fromIterable(it) }
+        return userRepository.getEventCalendar(EventsCalendarListBody())
+                .flatMapObservable { Observable.fromIterable(it.data) }
                 .filter { calendar ->
                     val now = System.currentTimeMillis() / 1000
-                    calendar.time.any { time -> time.end > now && time.start <= now }
+                    //calendar.time.any { time -> time.end > now && time.start <= now }
+                    serverDateToMilliseconds(calendar.holdingDate?.to?: "", DATE_FORMAT_SERVER_TIMESTAMP) > now &&
+                            serverDateToMilliseconds(calendar.holdingDate?.from?: "", DATE_FORMAT_SERVER_TIMESTAMP) <= now
                 }
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { calendar ->
+                /*.flatMapMaybe { calendar ->
                     if (calendar.isEmpty()) Maybe.empty()
                     else getLocation()
                             .timeout(5, TimeUnit.SECONDS)
                             .map { calendar to it }
-                }
+                }*/
                 .observeOn(Schedulers.io())
-                .onErrorComplete()
+                .flatMapCompletable { Completable.complete() }
+                /*.onErrorComplete()
                 .flatMapCompletable {
                     val calendar = it.first
                     val location = it.second
-                    val ids = calendar.map { calendarItem -> calendarItem.eventId }
-                    val atEvents = calendar.map { calendarItem ->
+                    val ids = calendar.map { calendarItem -> calendarItem.id }
+                    /*val atEvents = calendar.map { calendarItem ->
                         checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
-                    }
+                    }*/
                     userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
-                .onErrorComplete()
+                .onErrorComplete()*/
     }
 
     private fun getLocation(): Maybe<Location> {
@@ -319,20 +324,31 @@ class MainPresenter
         viewState.showInviteRegister(email, code)
     }
 
-    override fun onHandleAuthLink(email: String, code: String) {
+    override fun onHandleAuthLink(/*email: String, */code: String) {
         if (appData.token != null) return
         isAuthRequired = true
         /*authRepository.registerConfirm(email, code)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.showFinishRegister() }, { viewState.showLogin() })
                 .call(compositeDisposable)*/
-        authRepository.registerData(email, code)
+
+        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code))
+                .performOnBackgroundOutOnMain()
+                .subscribe({ appData.getUserNew().apply {
+                    viewState.showFinishRegister(name?: "",
+                            lastName?: "", middleName?.value,
+                            phone?.get(0)?.value, email?.value?: "", code,
+                            phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
+                } }, { viewState.showLogin() })
+                .call(compositeDisposable)
+
+        /*authRepository.registerData(email, code)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.showFinishRegister(it.user?.user_name?: "",
                         it.user?.user_last_name?: "", it.user?.user_middle_name,
                 it.user?.user_phone, it.user?.user_email?: "", code,
                         it.user?.user_phone_confirmed?: false, it.user?.user_middle_name == USER_DATA_EMPTY) }, { viewState.showLogin() })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     override fun onHandleRecoverPasswordLink(email: String, code: String) {
@@ -344,9 +360,9 @@ class MainPresenter
                 }.call(compositeDisposable)
     }
 
-    override fun onHandleChangeEmailConfirm(email: String, code: String) {
+    override fun onHandleChangeEmailConfirm(code: String) {
         if (isAuthRequired) return
-        userRepository.changeEmailConfirm(email, code)
+        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

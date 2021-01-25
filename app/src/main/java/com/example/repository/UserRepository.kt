@@ -1,6 +1,7 @@
 package com.example.repository
 
 import android.graphics.Bitmap
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -9,8 +10,11 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.Body
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserRepository {
+    fun getUserShortNew(id: Int): Maybe<UserDetail>
     fun getUserShort(): Maybe<UserShort>
     fun getUserFull(): Maybe<User>
     fun getLastNotification(): Single<List<Notification>>
@@ -44,6 +48,14 @@ interface UserRepository {
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 
     fun deleteProfile(): Completable
+    fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
+    fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
+    fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
+    fun sendPhoneCode(id: Int, phone: String): Completable
+
+    fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel>
+    fun logout(id: Int): Completable
+    fun changePassword(id: Int, body: PasswordBody): Completable
     fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
 }

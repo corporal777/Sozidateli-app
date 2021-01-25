@@ -3,6 +3,7 @@ package com.example.ui.userprofile.read.interests
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Interest
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.repository.CommonRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
@@ -17,18 +18,18 @@ class UserProfileInterestsPresenter @Inject constructor(
         private val commonRepository: CommonRepository
 ) : BaseUserProfilePresenter<UserProfileInterestsContract.View>(appData), UserProfileInterestsContract.Presenter {
 
-    override fun onUserUpdated(user: User?) {
+    override fun onUserUpdated(user: UserDetail?) {
         val userInterests = user?.interests
         if (userInterests.isNullOrEmpty()) {
             viewState.onInterestsUpdated(emptyMap())
         } else {
-            compositeDisposable += commonRepository.getInterests()
+            /*compositeDisposable += commonRepository.getInterests()
                     .map { groupUserInterests(userInterests, it) }
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
                         viewState.onInterestsUpdated(it)
-                    }
+                    }*/
         }
     }
 
