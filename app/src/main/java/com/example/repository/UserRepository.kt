@@ -60,4 +60,5 @@ interface UserRepository {
     fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel>
     fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
     fun deleteRecommendedFile(fileId : Int): Completable
+    fun deleteProfile(): Completable
 }
