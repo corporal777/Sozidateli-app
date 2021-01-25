@@ -187,6 +187,10 @@ class UserRepositoryImp
         return /*call(api.deleteProfile())*/newApi.deleteProfile(id)
     }
 
+    override fun deleteProfile(): Completable {
+        return newApi.deleteProfile(appData.getId())
+    }
+
     override fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel> =
             newApi.getEventCalendar(data.toMap())
 

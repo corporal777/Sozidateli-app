@@ -2,6 +2,8 @@ package com.example.ui.userprofile.read.interests
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.Interest
+import com.example.data.models.UserDetail
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.repository.CommonRepository
