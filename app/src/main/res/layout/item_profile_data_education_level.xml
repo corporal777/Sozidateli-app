@@ -28,8 +28,25 @@
         style="@style/Profile.Data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="@string/user_profile_additional_hint"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
+        tools:text="Среднее профессиональное" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSpecializationTitle"
+        style="@style/Profile.Edit.InputTitle"
+        android:layout_marginBottom="0dp"
+        android:text="@string/search_filter_specialization" />
+
+    <TextView
+        android:id="@+id/tvSpecializationLevel"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:hint="@string/user_profile_additional_hint"
         tools:text="Среднее профессиональное" />
 
     <View style="@style/ViewDivider.Horizontal" />

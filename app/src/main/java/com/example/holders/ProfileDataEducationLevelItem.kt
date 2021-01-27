@@ -20,8 +20,14 @@ class ProfileDataEducationLevelItem(
                 tvDegreesTitle.isVisible = false
                 tvDegreesLevel.isVisible = false
             } else {
-                tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
+                /*tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
                     "${degree.degree}, ${degree.specialisation}"
+                }*/
+                tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
+                    "${degree.degree}"
+                }
+                tvSpecializationLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
+                    "${degree.specialisation}"
                 }
                 tvDegreesTitle.isVisible = true
                 tvDegreesLevel.isVisible = true

@@ -517,6 +517,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="editDegreeFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1480" />
+                            <option name="y" value="2627" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="email_confirm_fragment">
                     <value>
                       <LayoutPositions>
@@ -1332,6 +1344,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="edit_to_edit">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="edit_to_file_edit_fragment">
                               <value>
                                 <LayoutPositions />
                               </value>

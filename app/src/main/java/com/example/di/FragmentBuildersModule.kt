@@ -61,6 +61,7 @@ import com.example.ui.userprofile.edit.UserEditFragment
 import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.userprofile.UserProfileFragment
+import com.example.ui.userprofile.academicdegree.EditDegreeFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment
 import com.example.ui.userprofile.read.contacts.UserProfileContactsFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
@@ -282,4 +283,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserEditFileFragment(): UserEditFileFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEditDegreeFragment(): EditDegreeFragment
 }

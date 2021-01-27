@@ -2,19 +2,13 @@ package com.example.ui.userprofile.edit
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.text.util.Linkify
 import android.util.Log
 import android.view.View
-import android.webkit.MimeTypeMap
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -36,12 +30,15 @@ import com.example.data.models.asOptional
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
-import com.example.extensions.longToDate
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
+import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
+import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.ITEM_POSITION
+import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
 import com.example.ui.views.InfoDialog
@@ -112,6 +109,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 FragmentResultListener { requestKey, result ->
                     val file = result.getParcelable<RecommendationFile>(FILE_PATH)
                     presenter.onSaveFileClick(mapOf(User.FIELD_ATTACHED_FILES to file))
+                })
+        parentFragmentManager.setFragmentResultListener(DEGREE_EDIT_CODE, this,
+                FragmentResultListener { requestKey, result ->
+                    val degreesLevel = result.getString(DEGREES_LEVEL)
+                    val sciencesLevel = result.getString(SCIENCES_LEVEL)
+                    val position = result.getInt(ITEM_POSITION)
+                    (adapter.getGroup(1) as ProfileDataEducationEditGroup).addDegree(degreesLevel, sciencesLevel, position)
                 })
     }
 
@@ -347,6 +351,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setEducationData(user: User) {
+        val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
+            null else user.academic_degree
         val dataItem = ProfileDataEducationEditGroup(
                 requireContext(),
                 user.user_birthday,
@@ -355,8 +361,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.available_degrees ?: emptyList(),
                 user.available_sciences ?: emptyList(),
                 user.education ?: emptyList(),
-                user.academic_degree ?: emptyList()
-        )
+                /*user.academic_degree ?: emptyList()*/academicDegree ?: emptyList()
+        ) { degreesLevel, sciencesLevel, position ->
+            findNavController().navigate(UserEditFragmentDirections.actionUserEditFragmentToEditDegreeFragment(degreesLevel, sciencesLevel, position))
+        }
         adapter.update(listOf(dataItem))
 
         onSaveClick = {

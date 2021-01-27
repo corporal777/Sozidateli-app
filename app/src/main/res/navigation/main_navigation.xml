@@ -692,6 +692,28 @@
         <action
             android:id="@+id/edit_to_file_edit_fragment"
             app:destination="@id/file_edit_fragment" />
+        <action
+            android:id="@+id/action_user_edit_fragment_to_editDegreeFragment"
+            app:destination="@id/editDegreeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editDegreeFragment"
+        android:name="com.example.ui.userprofile.academicdegree.EditDegreeFragment"
+        android:label="EditDegreeFragment"
+        tools:layout="@layout/fragment_edit_degree">
+
+        <argument
+            android:name="degreesLevel"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="sciencesLevel"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -922,4 +944,5 @@
             app:argType="java.lang.Integer"
             app:nullable="true" />
     </fragment>
+
 </navigation>
