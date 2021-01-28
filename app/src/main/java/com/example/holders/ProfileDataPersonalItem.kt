@@ -12,6 +12,7 @@ import com.example.util.ClickableSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_personal.*
+import removeUrlUnderline
 import setTextDataOrHide
 
 class ProfileDataPersonalItem(
@@ -46,7 +47,11 @@ class ProfileDataPersonalItem(
             groupGender.setTextDataOrHide(tvGender, gender)
             groupBirthday.setTextDataOrHide(tvBirthday, birthday)
             groupCity.setTextDataOrHide(tvCity, city)
-            groupSocialNetworks.setTextDataOrHide(tvSocialNetworks, socialNetworks?.joinToString("\n"))
+            //groupSocialNetworks.setTextDataOrHide(tvSocialNetworks, socialNetworks?.joinToString("\n"))
+            tvSocialNetworks.apply {
+                text = socialNetworks?.joinToString("\n")
+                removeUrlUnderline()
+            }
 
             tvPhoneConfirmed.isVisible = mobilePhoneConfirmed
         }

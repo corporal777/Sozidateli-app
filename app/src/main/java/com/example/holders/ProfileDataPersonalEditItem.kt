@@ -4,8 +4,10 @@ import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
@@ -21,7 +23,17 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.*
-import onTextChanged
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.btnEmail
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.btnSocialNetworkAdd
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.etWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.llSocialNetworks
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scNoSocialNetworks
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scShowEmail
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilMobilePhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tvPhoneConfirmed
 import setOnClickListener
 import java.util.*
 
@@ -39,6 +51,7 @@ class ProfileDataPersonalEditItem(
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val socialNetworks: List<UserDataSocialLink>?,
+        private val user_social_links_absent: Boolean,
         private val changeEmailClick: () -> Unit,
         private val confirmPhoneClick: (String) -> Unit
 ) : Item() {
@@ -56,6 +69,7 @@ class ProfileDataPersonalEditItem(
     private var mBirthday = birthday?.formatToDefaultDate()
     private var mShowBirthday = showBirthday
     private var mAddress = address
+    private var mNoNetworks = user_social_links_absent
     private var mSocialNetworks = (socialNetworks ?: emptyList())
             .map { it.copy() }
             .let {
@@ -150,7 +164,31 @@ class ProfileDataPersonalEditItem(
                 }
             }
 
+            checkNetworks()
+            scNoSocialNetworks.initSwitch(mNoNetworks) {
+                mNoNetworks = it
+                checkNetworks()
+            }
+
             updatePhoneConfirmationStatus(this)
+        }
+    }
+
+    private fun checkNetworks() {
+        viewHolder.apply {
+            btnSocialNetworkAdd.isEnabled = !mNoNetworks
+            llSocialNetworks.isEnabled = !mNoNetworks
+
+            for (i in 0 until llSocialNetworks.childCount) {
+                val child: View = llSocialNetworks.getChildAt(i)
+                child.isEnabled = !mNoNetworks
+                (child as ViewGroup).forEach { view ->
+                    view.isEnabled = !mNoNetworks
+                }
+            }
+
+            /*if (mNoNetworks)
+                networksError.visibility = View.GONE*/
         }
     }
 
@@ -244,9 +282,17 @@ class ProfileDataPersonalEditItem(
                 put(User.FIELD_USER_ADDRESS_FLAT, mAddress.flat ?: "")
             }
 
-            if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
+            /*if (socialNetworks?.toHashSet() != mSocialNetworks.toHashSet()) {
                 put(User.FIELD_SOCIAL_LINKS, mSocialNetworks.filter { it.value.isNotBlank() })
+            }*/
+
+            val networkUpdate = if (mNoNetworks) arrayListOf()
+            else mSocialNetworks
+            if (socialNetworks?.toHashSet() != networkUpdate.toHashSet()) {
+                put(User.FIELD_SOCIAL_LINKS, networkUpdate.filter { it.value.isNotBlank() })
             }
+
+            put(User.FIELD_USER_SOCIAL_LINKS_ABSENT, mNoNetworks)
         }
     }
 

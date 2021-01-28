@@ -167,6 +167,7 @@ class UserEditPresenter
                 user_address_flat = it.user_address_flat
                 user_notes = it.user_notes
                 attached_recomendation_files = it.attached_recomendation_files
+                user_social_links_absent = it.user_social_links_absent
             }
             true
         }

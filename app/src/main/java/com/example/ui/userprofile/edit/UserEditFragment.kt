@@ -198,6 +198,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday_show,
                 UserAddress.fromUser(user),
                 user.social_links,
+                user.user_social_links_absent,
                 { presenter.onChangeEmailClick() },
                 { presenter.onConfirmPhoneClick(it) }
         )
