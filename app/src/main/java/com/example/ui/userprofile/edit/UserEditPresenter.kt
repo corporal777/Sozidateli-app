@@ -124,7 +124,7 @@ class UserEditPresenter
         viewState.navigateUp()
     }
 
-    override fun onSaveMainClick(data: Map<String, Any?>) {
+    override fun onSaveMainClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_avatar = it.user_avatar
@@ -136,7 +136,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSavePersonalClick(data: Map<String, Any?>) {
+    override fun onSavePersonalClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             compositeFilesDisposable.clear()
             appData.updateUser {
@@ -173,7 +173,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveContactsClick(data: Map<String, Any?>) {
+    override fun onSaveContactsClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_phone = it.user_phone
@@ -193,7 +193,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveFileClick(data: Map<String, Any?>) {
+    override fun onSaveFileClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 compositeFilesDisposable.clear()
@@ -203,7 +203,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveEducationClick(data: Map<String, Any?>) {
+    override fun onSaveEducationClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_education = it.user_education
@@ -214,7 +214,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveWorkClick(data: Map<String, Any?>) {
+    override fun onSaveWorkClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 work = it.work
@@ -226,7 +226,7 @@ class UserEditPresenter
 
     override fun onSaveInterestsClick(data: List<Interest>) {
         viewState.showLoadingDialog()
-        onEditSave(mapOf(User.FIELD_INTERESTS to data)) {
+        onEditSave(mutableMapOf(User.FIELD_INTERESTS to data)) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 interests = it.interests
             }.asOptional())
@@ -236,7 +236,7 @@ class UserEditPresenter
     }
 
     override fun onSaveAdditionalNotesClick(notes: String?) {
-        onEditSave(mapOf(User.FIELD_USER_NOTES to notes)) {
+        onEditSave(mutableMapOf(User.FIELD_USER_NOTES to notes)) {
             appData.userChangeSubject.onNext(appData.getUser().apply {
                 user_notes = it.user_notes
             }.asOptional())
@@ -244,11 +244,10 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveAdditionalFilesClick(data: Map<String, Any?>) {
+    override fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>) {
         onEditSave(data) {
             if (BuildConfig.NEW_PROFILE_EDIT) {
                 viewState.updateFilesList(it.attached_recomendation_files)
-                compositeFilesDisposable.clear()
                 appData.updateUser {
                     attached_recomendation_files = it.attached_recomendation_files
                 }
@@ -257,6 +256,7 @@ class UserEditPresenter
                     attached_recomendation_files = it.attached_recomendation_files
                 }
             }
+            compositeFilesDisposable.clear()
             false
         }
     }
@@ -338,7 +338,7 @@ class UserEditPresenter
     }
 
     override fun onFileEditSaveClick() {
-        onEditSave(mapOf(
+        onEditSave(mutableMapOf(
                 User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
                         ?: emptyList())
         )) {
@@ -392,7 +392,7 @@ class UserEditPresenter
         return groups
     }
 
-    private fun onEditSave(data: Map<String, Any?>, onComplete: (User) -> Boolean) {
+    private fun onEditSave(data: MutableMap<String, Any?>, onComplete: (User) -> Boolean) {
         if (data.isEmpty()) {
             viewState.navigateUp()
             return
@@ -424,11 +424,11 @@ class UserEditPresenter
                                     update.add(RecommendationFile(id = file.id, name = up.newName))
                                 } else {
                                     if (updateFiles !is List<*>)
-                                        update.add(RecommendationFile(id = file.id, name = file.newName))
+                                        update.add(RecommendationFile(id = file.id, name = file.name))
                                 }
                             }
-                            data.minus(FIELD_ATTACHED_FILES)
-                            data.plus(mapOf(FIELD_ATTACHED_FILES to update))
+                            data.remove(FIELD_ATTACHED_FILES)
+                            data.put(FIELD_ATTACHED_FILES, update)
                             updateUser(userRepository.updateUser(data), onComplete)
                         }
             } else {

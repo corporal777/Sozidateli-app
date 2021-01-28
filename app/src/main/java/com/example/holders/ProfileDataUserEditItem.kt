@@ -128,7 +128,7 @@ class ProfileDataUserEditItem(
         return !hasError
     }
 
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (name != mName) put(User.FIELD_USER_NAME, mName)
             if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)

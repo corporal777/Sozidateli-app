@@ -108,7 +108,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         parentFragmentManager.setFragmentResultListener(FILE_EDIT_CODE, this,
                 FragmentResultListener { requestKey, result ->
                     val file = result.getParcelable<RecommendationFile>(FILE_PATH)
-                    presenter.onSaveFileClick(mapOf(User.FIELD_ATTACHED_FILES to file))
+                    presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
                 })
         parentFragmentManager.setFragmentResultListener(DEGREE_EDIT_CODE, this,
                 FragmentResultListener { requestKey, result ->
@@ -382,7 +382,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.user_birthday,
                 work,
                 user.user_work_experience_absent
-        ) { presenter.onSaveWorkClick(mapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it)) }
+        ) { presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it)) }
         adapter.update(listOf(dataItem))
         onSaveClick = {
             if (dataItem.checkDataValid()) {
@@ -461,16 +461,18 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.update(listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-                ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
+                /*ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
                     hasDivider = false
                     compactMargin = true
-                }
+                }*/
         ))
 
         onSaveClick = {
             hideKeyboard()
             file.desc = editItem.mName
-            presenter.onFileEditSaveClick()
+            file.newName = editItem.mName
+            presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
+            //presenter.onFileEditSaveClick()
         }
     }
 

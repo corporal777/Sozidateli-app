@@ -135,17 +135,17 @@ interface UserEditContract {
         fun onFileEditCancelClick()
         fun onFileClick(file: RecommendationFile)
 
-        fun onSaveMainClick(data: Map<String, Any?>)
-        fun onSavePersonalClick(data: Map<String, Any?>)
-        fun onSaveContactsClick(data: Map<String, Any?>)
-        fun onSaveEducationClick(data: Map<String, Any?>)
-        fun onSaveWorkClick(data: Map<String, Any?>)
+        fun onSaveMainClick(data: MutableMap<String, Any?>)
+        fun onSavePersonalClick(data: MutableMap<String, Any?>)
+        fun onSaveContactsClick(data: MutableMap<String, Any?>)
+        fun onSaveEducationClick(data: MutableMap<String, Any?>)
+        fun onSaveWorkClick(data: MutableMap<String, Any?>)
         fun onSaveInterestsClick(data: List<Interest>)
         fun onSaveAdditionalNotesClick(notes: String?)
-        fun onSaveAdditionalFilesClick(data: Map<String, Any?>)
+        fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>)
         fun onCancelClick()
 
         fun onNavigateUpRequest()
-        fun onSaveFileClick(data: Map<String, Any?>)
+        fun onSaveFileClick(data: MutableMap<String, Any?>)
     }
 }

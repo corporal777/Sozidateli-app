@@ -250,7 +250,7 @@ class ProfileDataPersonalEditItem(
         return isValid
     }
 
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
             if (workPhone != mWorkPhone) put(User.FIELD_USER_PHONE_WORK, mWorkPhone)

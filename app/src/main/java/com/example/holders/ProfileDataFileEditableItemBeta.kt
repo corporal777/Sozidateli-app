@@ -2,17 +2,16 @@ package com.example.holders
 
 import com.example.R
 import com.example.data.models.user.RecommendationFile
-import com.example.util.initInput
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_editable_file_new.*
+import kotlinx.android.synthetic.main.item_profile_data_editable_file_beta.*
 
-class ProfileDataFileEditableItemNew(
+class ProfileDataFileEditableItemBeta(
         id: Long,
         val file: RecommendationFile,
         private val onFileClick: (RecommendationFile) -> Unit,
         private val onEditClick: (RecommendationFile) -> Unit,
-        private val onRemoveClick: (ProfileDataFileEditableItemNew) -> Unit
+        private val onRemoveClick: (ProfileDataFileEditableItemBeta) -> Unit
 ) : Item(id) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -22,14 +21,11 @@ class ProfileDataFileEditableItemNew(
                 text = fileName
                 isClickable = false
             }
-            etFileName.apply {
-                initInput(file.newName) { file.newName = it.toString() }
-            }
             btnEdit.setOnClickListener { onEditClick(file) }
-            btnDelete.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItemNew) }
+            btnRemove.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItemBeta) }
             tvFileName.setOnClickListener { onFileClick(file) }
         }
     }
 
-    override fun getLayout() = R.layout.item_profile_data_editable_file_new
+    override fun getLayout() = R.layout.item_profile_data_editable_file_beta
 }

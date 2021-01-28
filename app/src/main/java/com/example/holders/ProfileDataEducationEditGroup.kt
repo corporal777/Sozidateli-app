@@ -226,7 +226,7 @@ class ProfileDataEducationEditGroup(
         return isValid
     }
 
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         val degrees = mutableListOf<AcademicDegree>()
         this.degrees.forEachGroups</*ProfileDataAcademicDegreeEditItem*/ProfileDataAcademicDegreeEditNewItem> {
             degrees.add(AcademicDegree(it.mDegreesLevel, it.mSciencesLevel))
@@ -242,7 +242,7 @@ class ProfileDataEducationEditGroup(
             ))
         }
 
-        return mapOf(
+        return mutableMapOf(
                 User.FIELD_USER_EDUCATION to educationLevelItem.mEducationLevel,
                 User.FIELD_ACADEMIC_DEGREE to degrees,
                 User.FIELD_EDUCATION to educations

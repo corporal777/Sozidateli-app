@@ -128,9 +128,9 @@ class ProfileDataWorkEditGroup(
         return isValid
     }
 
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         return if (hasWork) {
-            mapOf(
+            mutableMapOf(
                     User.FIELD_WORK to works.map {
                         mapOf(
                                 SocialRoles.FIELD_BEGIN to it.mStart,
@@ -142,7 +142,7 @@ class ProfileDataWorkEditGroup(
                     User.FIELD_USER_HAS_WORK_EXPERIENCE to !hasWork
             )
         } else {
-            mapOf(
+            mutableMapOf(
                     User.FIELD_WORK to arrayListOf<SocialRoles>(),
                     User.FIELD_USER_HAS_WORK_EXPERIENCE to !hasWork
             )

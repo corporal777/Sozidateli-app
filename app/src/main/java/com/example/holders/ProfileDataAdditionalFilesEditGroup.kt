@@ -14,7 +14,7 @@ class ProfileDataAdditionalFilesEditGroup(
         addFileClickListener: () -> Unit,
         private val onFileClick: (RecommendationFile) -> Unit,
         private val onFileEditClick: (RecommendationFile) -> Unit,
-        private val saveClickListener: (data: Map<String, Any?>) -> Unit
+        private val saveClickListener: (data: MutableMap<String, Any?>) -> Unit
 ) : NestedGroup() {
 
     private val fileGroup = Section().apply {
@@ -25,7 +25,7 @@ class ProfileDataAdditionalFilesEditGroup(
         compactMargin = true
     }
 
-    private val fileItems = mutableListOf<ProfileDataFileEditableItem>()
+    private val fileItems = mutableListOf</*ProfileDataFileEditableItem*/ProfileDataFileEditableItemBeta>()
 
     init {
         fileItems.addAll(files.map { createFileItem(it) })
@@ -53,14 +53,14 @@ class ProfileDataAdditionalFilesEditGroup(
         return 2
     }
 
-    private fun createFileItem(file: RecommendationFile): ProfileDataFileEditableItem {
-        return ProfileDataFileEditableItem(
+    private fun createFileItem(file: RecommendationFile): /*ProfileDataFileEditableItem*/ProfileDataFileEditableItemBeta {
+        return /*ProfileDataFileEditableItem*/ProfileDataFileEditableItemBeta(
                 ID_FILE + file.id,
                 file,
                 onFileClick,
                 onFileEditClick,
                 { item ->
-                    saveClickListener(mapOf(
+                    saveClickListener(mutableMapOf(
                             User.FIELD_ATTACHED_FILES to fileItems.filter { item != it }.map { it.file }
                     ))
                 }

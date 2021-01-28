@@ -112,7 +112,7 @@ class ProfilePhoneEditItem(
         return true
     }
 
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (mobilePhone != mMobilePhone) {
                 put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
