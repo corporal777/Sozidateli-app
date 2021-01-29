@@ -11,6 +11,7 @@ import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
 import com.example.extensions.forEachItems
 import com.example.ui.views.ClearDegreeDialog
+import com.example.util.DEGREES_MAX_SIZE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -73,7 +74,8 @@ class ProfileDataEducationEditGroup(
     }
 
     private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
-        openDegreeEdit(null, null, degrees.itemCount)
+        if (degrees.itemCount < DEGREES_MAX_SIZE)
+            openDegreeEdit(null, null, degrees.itemCount)
     }
 
     private val degrees = Section().apply {

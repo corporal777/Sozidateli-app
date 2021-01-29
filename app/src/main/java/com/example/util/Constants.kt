@@ -85,3 +85,5 @@ const val USER_DATA_EMPTY = "-"
 const val REQUEST_GALLERY = 12
 val REQUIRED_GALLERY_PERMISSIONS =
         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+const val DEGREES_MAX_SIZE = 10
