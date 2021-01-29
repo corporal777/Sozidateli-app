@@ -1,7 +1,9 @@
 package com.example.util
 
+import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.PopupWindow
 import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.google.android.material.datepicker.CalendarConstraints
@@ -59,4 +61,10 @@ fun FragmentManager.showDatePicker(
         onDateSelected.invoke(it)
     }
     picker.show(this, "")
+}
+
+fun PopupWindow.settings() {
+    isOutsideTouchable = true
+    softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+    inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
 }

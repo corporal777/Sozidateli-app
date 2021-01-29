@@ -216,4 +216,5 @@
     <color name="profile_edit_button_background_enabled">#EBE9EE</color>
     <color name="profile_edit_button_text_disabled">#FFFFFF</color>
     <color name="profile_edit_button_text_enabled">#000000</color>
+    <color name="dialog_buttons">#007AFF</color>
 </resources>

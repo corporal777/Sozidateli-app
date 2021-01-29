@@ -1,13 +1,16 @@
 package com.example.holders
 
 import android.content.Context
+import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.AppCompatCheckBox
 import com.example.R
 import com.example.data.models.AcademicDegree
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
 import com.example.extensions.forEachItems
+import com.example.ui.views.ClearDegreeDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -26,6 +29,7 @@ class ProfileDataEducationEditGroup(
 
     var validatorSize = 3
     var hasAcademicDegree = false
+    var data: MutableList<ProfileDataAcademicDegreeEditNewItem> = mutableListOf()
 
     private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel, availableEducations,
             academicDegrees.isNotEmpty(), {
@@ -44,11 +48,29 @@ class ProfileDataEducationEditGroup(
         if (it) {
             isDeleteVisible()
             addDegreeButton.setButtonVisibility(View.VISIBLE)
+            returnDegree()
         } else {
             addDegreeButton.setButtonVisibility(View.GONE)
+            saveDegree()
             degrees.clear()
         }
-    })
+    }, {
+        saveDegree() }, {
+        returnDegree() })
+
+    private fun saveDegree() {
+        data = mutableListOf()
+        degrees.forEachGroups<ProfileDataAcademicDegreeEditNewItem> { group ->
+            data.add(group)
+        }
+    }
+
+    private fun returnDegree() {
+        if (data.isNotEmpty()) {
+            degrees.addAll(data)
+            data = mutableListOf()
+        }
+    }
 
     private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
         openDegreeEdit(null, null, degrees.itemCount)

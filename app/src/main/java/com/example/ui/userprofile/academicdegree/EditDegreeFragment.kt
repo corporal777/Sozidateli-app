@@ -63,6 +63,8 @@ class EditDegreeFragment: BaseFragment(), EditDegreeContract.View, ToolbarFragme
     }
 
     override fun setUserData(user: User) {
+        mDegreesLevel = if (mDegreesLevel == null)
+            user.available_degrees?.first() else mDegreesLevel
         setupDropDown(tvDegreesLevel, tilDegreesLevel, user.available_degrees?: emptyList(), mDegreesLevel) {
             mDegreesLevel = it
             validateSaveButton()
@@ -86,7 +88,7 @@ class EditDegreeFragment: BaseFragment(), EditDegreeContract.View, ToolbarFragme
     }
 
     private fun validateSaveButton() {
-        btnSave.isEnabled = mDegreesLevel != null && mSciencesLevel != null
+        btnSave.isEnabled = mDegreesLevel != null
     }
 
     override fun setTitle() {

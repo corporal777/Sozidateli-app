@@ -699,4 +699,7 @@
     <string name="register_confirm_email_text">На %s было отправлено письмо со ссылкой и кодом подтверждения. \n\nПожалуйста, перейдите по ссылке в письме.</string>
     <string name="file_name">Имя файла</string>
     <string name="academic_degree">Ученые степни</string>
+    <string name="yes">Да</string>
+    <string name="nope">Отмена</string>
+    <string name="change_degree_text">Данный уровень образования не подразумевает наличия учёной степени.\n\nИнформацыя об учёной степени будет удалена. Вы уверкны?</string>
 </resources>
