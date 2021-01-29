@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.Interest
 import com.example.data.models.UserAddress
@@ -352,25 +353,47 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setEducationData(user: User) {
-        val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
-            null else user.academic_degree
-        val dataItem = ProfileDataEducationEditGroup(
-                requireContext(),
-                user.user_birthday,
-                user.user_education,
-                user.available_education ?: emptyList(),
-                user.available_degrees ?: emptyList(),
-                user.available_sciences ?: emptyList(),
-                user.education ?: emptyList(),
-                /*user.academic_degree ?: emptyList()*/academicDegree ?: emptyList()
-        ) { degreesLevel, sciencesLevel, position ->
-            findNavController().navigate(UserEditFragmentDirections.actionUserEditFragmentToEditDegreeFragment(degreesLevel, sciencesLevel, position))
-        }
-        adapter.update(listOf(dataItem))
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
+                null else user.academic_degree
+            val dataItem = ProfileDataEducationEditGroupNew(
+                    requireContext(),
+                    user.user_birthday,
+                    user.user_education,
+                    user.available_education ?: emptyList(),
+                    user.available_degrees ?: emptyList(),
+                    user.available_sciences ?: emptyList(),
+                    user.education ?: emptyList(),
+                    academicDegree ?: emptyList()
+            )
+            adapter.update(listOf(dataItem))
 
-        onSaveClick = {
-            if (dataItem.checkDataValid()) {
-                presenter.onSaveEducationClick(dataItem.getDataToSave())
+            onSaveClick = {
+                if (dataItem.checkDataValid()) {
+                    presenter.onSaveEducationClick(dataItem.getDataToSave())
+                }
+            }
+        } else {
+            val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
+                null else user.academic_degree
+            val dataItem = ProfileDataEducationEditGroup(
+                    requireContext(),
+                    user.user_birthday,
+                    user.user_education,
+                    user.available_education ?: emptyList(),
+                    user.available_degrees ?: emptyList(),
+                    user.available_sciences ?: emptyList(),
+                    user.education ?: emptyList(),
+                    academicDegree ?: emptyList()
+            ) { degreesLevel, sciencesLevel, position ->
+                findNavController().navigate(UserEditFragmentDirections.actionUserEditFragmentToEditDegreeFragment(degreesLevel, sciencesLevel, position))
+            }
+            adapter.update(listOf(dataItem))
+
+            onSaveClick = {
+                if (dataItem.checkDataValid()) {
+                    presenter.onSaveEducationClick(dataItem.getDataToSave())
+                }
             }
         }
     }
