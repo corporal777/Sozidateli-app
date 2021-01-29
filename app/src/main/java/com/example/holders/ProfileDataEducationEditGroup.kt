@@ -55,9 +55,7 @@ class ProfileDataEducationEditGroup(
             saveDegree()
             degrees.clear()
         }
-    }, {
-        saveDegree() }, {
-        returnDegree() })
+    })
 
     private fun saveDegree() {
         data = mutableListOf()

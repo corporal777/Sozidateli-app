@@ -19,9 +19,7 @@ class ProfileDataEducationLevelEditItem(
         private val availableEducations: List<String>,
         private val isAcademicDegree: Boolean,
         private val onEducationLevelSelected: (isLast: Boolean) -> Unit,
-        private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit,
-        private val saveDegrees: () -> Unit,
-        private val reloadEducation: () -> Unit
+        private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit
 ) : Item() {
 
     private lateinit var popupReceiving: EducationPopupWindow
@@ -80,14 +78,10 @@ class ProfileDataEducationLevelEditItem(
                     }
                     onSelect(it)
                 }
-                /*if (isTrigger(it)) {
-                    reloadEducation()
-                }*/
                 popupReceiving.hidePopup()
             }
             popupReceiving.getOldEducationCallback {
                 if (it.isAgree) {
-                    //saveDegrees()
                     popupReceiving.updateSelection(it.newEducation)
                 } else {
                     popupReceiving.updateSelection(textView.text.toString())
