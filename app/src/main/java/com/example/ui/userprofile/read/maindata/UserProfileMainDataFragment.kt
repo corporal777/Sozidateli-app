@@ -22,6 +22,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.ClickableSpan
+import com.example.util.GENDER_MALE
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.firstLetterToUppercase
 import kotlinx.android.synthetic.main.fragment_user_profile_main_data.*
@@ -66,7 +67,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
         tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
 
-        tvGender.text = user.gender?.firstLetterToUppercase()
+        tvGender.text = setGender(user)
 
         tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject) ?: DaDataUtil.formatParam(user.address?.country, jObject)
 
@@ -97,5 +98,12 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
     override fun showEdit() {
         findNavController().navigate(UserProfileMainDataFragmentDirections.toEdit(UserEditDataType.PERSONAL))
+    }
+
+    private fun setGender(user: UserDetail): String {
+        return when (user.gender) {
+            GENDER_MALE -> requireContext().getString(R.string.profile_gender_male)
+            else -> requireContext().getString(R.string.profile_gender_female)
+        }
     }
 }

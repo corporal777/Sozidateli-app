@@ -95,9 +95,18 @@ class AppData(
         setUser(userShort.toUser())
     }
 
-    fun setUserShortNew(user: UserDetail) {
+    fun setAllUserInfo(user: UserDetail) {
         val changed = this.newUser != user
         this.newUser = user
+        appPrefs.userId = user.id
+        if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun setUserShortNew(user: UserDetail) {
+        val changed = this.newUser != user
+        val binds = this.newUser?.binds
+        this.newUser = user
+        this.newUser?.binds = binds
         appPrefs.userId = user.id
         if (changed) userNewChangeSubject.onNext(newUser.asOptional())
     }

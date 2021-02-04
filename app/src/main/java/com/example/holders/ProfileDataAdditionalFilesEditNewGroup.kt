@@ -2,6 +2,7 @@ package com.example.holders
 
 import android.content.Context
 import com.example.R
+import com.example.data.models.FileModel
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
@@ -12,12 +13,15 @@ import com.xwray.groupie.Section
 class ProfileDataAdditionalFilesEditNewGroup(
         private val id: Long,
         context: Context,
-        files: List<RecommendationFile>,
+        files: List<FileModel>,
         addFileClickListener: () -> Unit,
-        private val onFileClick: (RecommendationFile) -> Unit,
-        private val onFileEditClick: (RecommendationFile) -> Unit,
-        private val saveClickListener: (data: MutableMap<String, Any?>, files: List<RecommendationFile>) -> Unit
+        private val onFileClick: (FileModel) -> Unit,
+        private val onFileEditClick: (FileModel) -> Unit,
+        private val saveClickListener: (data: MutableMap<String, Any?>, files: List<FileModel>) -> Unit,
+        private val deleteFile: (data: FileModel) -> Unit
 ) : NestedGroup() {
+
+    private var filesSave = files.map { FileModel(id = it.id, user = it.user, mimeType = it.mimeType, size = it.size, name = it.name, uri = it.uri) }
 
     private val fileGroup = Section().apply {
         setHeader(ProfileDataAdditionalFileHeaderItem(id))
@@ -35,7 +39,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
         add(addItem)
     }
 
-    fun updateFiles(files: List<RecommendationFile>) {
+    fun updateFiles(files: List<FileModel>) {
         fileItems.clear()
         fileItems.addAll(files.mapIndexed { index, file -> createFileItem(id + 2 + index, file) })
         fileGroup.update(fileItems)
@@ -61,25 +65,27 @@ class ProfileDataAdditionalFilesEditNewGroup(
         return 2
     }
 
-    private fun createFileItem(id: Long, file: RecommendationFile): ProfileDataFileEditableItemNew {
+    private fun createFileItem(id: Long, file: FileModel): ProfileDataFileEditableItemNew {
         return ProfileDataFileEditableItemNew(
                 id,
                 file,
                 onFileClick,
                 onFileEditClick,
                 { item ->
-                    saveClickListener(mutableMapOf(
+                    deleteFile(item.file)
+                    /*saveClickListener(mutableMapOf(
                             User.FIELD_ATTACHED_FILES to fileItems.filter { item != it }.map { it.file }
-                    ), getCurrentFilesToSave())
+                    ), getCurrentFilesToSave())*/
                 }
         )
     }
 
-    fun getCurrentFilesToSave(): List<RecommendationFile> {
-        val result = mutableListOf<RecommendationFile>()
+    fun getCurrentFilesToSave(): List<FileModel> {
+        val result = mutableListOf<FileModel>()
         fileGroup.forEachGroups<ProfileDataFileEditableItemNew> {
-            result.add(RecommendationFile(id = it.file.id, type = it.file.type,
-            name = it.file.name, desc = it.file.desc, url = it.file.url, newName = it.file.newName))
+            val f = filesSave.firstOrNull { file -> file.id == it.file.id }
+            if (f != null && f.name != it.file.name)
+                result.add(FileModel(id = it.file.id, name = it.file.name, user = it.file.user, mimeType = it.file.mimeType, size = it.file.size, uri = it.file.uri))
         }
         return result
     }

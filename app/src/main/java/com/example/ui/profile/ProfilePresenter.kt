@@ -35,7 +35,7 @@ class ProfilePresenter
         viewState.setUser(appData.getUserNew())
     }
 
-    override fun onProfileClick() = viewState.showProfile(appData.getUser().user_id.toString())
+    override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
 
     override fun onFavoritesClick() = viewState.showFavorites()
 

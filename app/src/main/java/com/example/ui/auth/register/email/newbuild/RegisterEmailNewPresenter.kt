@@ -10,6 +10,7 @@ import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
@@ -206,7 +207,7 @@ class RegisterEmailNewPresenter
         val phoneNumber = if (phone.isNullOrEmpty())
             null
         else
-            arrayListOf(FieldDetails(value = phone.replace(" ", ""), type = "personal", isVisible = true))
+            arrayListOf(FieldDetails(value = phone.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true))
 
         compositeDisposable += authRepository.register(RegisterBody(password = password,
                 name = firstName, lastName = lastName, middleName = midName,

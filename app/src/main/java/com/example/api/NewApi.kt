@@ -1,10 +1,12 @@
 package com.example.api
 
+import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 @JvmSuppressWildcards
@@ -14,7 +16,7 @@ interface NewApi {
     fun authEmailOrPhone(@Body body: AuthBody): Single<NewAuthResponse>
 
     @GET("v1/user/{id}")
-    fun getUserShort(@Path("id") id: Int): Maybe<UserDetail>
+    fun getUserShort(@Path("id") id: Int, @Query("binds") binds: List<String>?): Maybe<UserDetail>
 
     @POST("v1/user")
     fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
@@ -42,4 +44,25 @@ interface NewApi {
 
     @PATCH("v1/user/{id}/password")
     fun changePassword(@Path("id") id: Int, @Body body: PasswordBody): Completable
+
+    @PATCH("v1/user/{id}/deactivate")
+    fun deleteProfile(@Path("id") id: Int): Completable
+
+    @Multipart
+    @PATCH("v1/user/{id}/image")
+    fun changeUserImage(@Path("id") id: Int, @Part image: MultipartBody.Part?): Single<ImageModel>
+
+    @DELETE("v1/user/{id}/image")
+    fun deleteImage(@Path("id") id: Int): Completable
+
+    @Multipart
+    @POST("v1/user-recommendation-file")
+    fun uploadRecommendedFile(@Part body: List<MultipartBody.Part?>): Single<ImageModel>
+
+    @Multipart
+    @PATCH("v1/user-recommendation-file/{id}")
+    fun changeRecommendedFile(@Path("id") fileId : Int, @Part body: List<MultipartBody.Part?>): Single<ImageModel>
+
+    @DELETE("v1/user-recommendation-file/{id}")
+    fun deleteRecommendedFile(@Path("id") fileId : Int): Completable
 }

@@ -51,8 +51,8 @@ const val REQUEST_CODE_PERMISSION_READ_FILE = 13
 
 const val FIELD_ATTACH_RECOMMENDATION_FILE = "attached_recomendation_files"
 
-const val GENDER_MALE = "male"
-const val GENDER_FEMALE = "female"
+const val GENDER_MALE = "M"
+const val GENDER_FEMALE = "F"
 
 const val SN_VK = "vk"
 const val SN_OK = "ok"
@@ -90,3 +90,5 @@ val REQUIRED_GALLERY_PERMISSIONS =
         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
 const val DEGREES_MAX_SIZE = 10
+const val PHONE_PERSONAL = "personal"
+const val PHONE_WORK = "work"
