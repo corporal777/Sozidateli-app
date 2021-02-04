@@ -17,6 +17,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import toBodyPart
 import java.io.File
@@ -29,8 +30,9 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUserShortNew(id: Int): Maybe<UserDetail> = newApi.getUserShort(id).map { it }.doOnSuccess {
-        appData.setUserShortNew(it)
+    override fun getUserShortNew(id: Int): Maybe<UserDetail> = newApi.getUserShort(id,
+            arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights")).map { it }.doOnSuccess {
+        appData.setAllUserInfo(it)
     }
 
     override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
@@ -107,6 +109,14 @@ class UserRepositoryImp
         return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
     }
 
+    override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
+        return newApi.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
+    }
+
+    override fun deleteImage(): Completable {
+        return newApi.deleteImage(appData.getId())
+    }
+
     override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
         return call(api.uploadDocument(
                 file.let {
@@ -114,6 +124,18 @@ class UserRepositoryImp
                     val body = imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
+    }
+
+    override fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel> {
+        return newApi.uploadRecommendedFile(body)
+    }
+
+    override fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel> {
+        return newApi.changeRecommendedFile(fileId, body)
+    }
+
+    override fun deleteRecommendedFile(fileId: Int): Completable {
+        return newApi.deleteRecommendedFile(fileId)
     }
 
     override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
@@ -160,8 +182,8 @@ class UserRepositoryImp
         return call(api.setUserAtEvent(events, atEvent, lat, lon))
     }
 
-    override fun deleteProfile(): Completable {
-        return call(api.deleteProfile())
+    override fun deleteProfile(id: Int): Completable {
+        return /*call(api.deleteProfile())*/newApi.deleteProfile(id)
     }
 
     override fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel> =

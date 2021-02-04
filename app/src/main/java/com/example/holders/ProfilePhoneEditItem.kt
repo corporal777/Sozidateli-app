@@ -6,7 +6,10 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
+import com.example.util.PHONE_PERSONAL
 import com.example.util.initInput
 import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -114,11 +117,12 @@ class ProfilePhoneEditItem(
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (mobilePhone != mMobilePhone) {
+            put(UserDetail.USER_PHONE, FieldDetails(value = mMobilePhone?.replace(" ","")?.replace("-", ""), type = PHONE_PERSONAL, isVisible = mShowMobilePhone, isConfirmed = isPhoneConfirmed))
+            /*if (mobilePhone != mMobilePhone) {
                 put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
                 put(User.FIELD_USER_PHONE_MOBILE, mMobilePhone)
             }
-            if (showMobilePhone != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)
+            if (showMobilePhone != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)*/
         }
     }
 }

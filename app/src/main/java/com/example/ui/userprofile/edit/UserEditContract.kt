@@ -5,7 +5,9 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.FileModel
 import com.example.data.models.Interest
+import com.example.data.models.UserDetail
 import com.example.data.models.UserInterest
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
@@ -15,7 +17,7 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 interface UserEditContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setMainData(user: User, avatar: Bitmap?)
+        fun setMainData(user: UserDetail, avatar: Bitmap?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDisabledMainInputInfo()
@@ -30,19 +32,19 @@ interface UserEditContract {
         fun showUpdateError(message: String? = null)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPersonalData(user: User)
+        fun setPersonalData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPersonalDataNew(user: User)
+        fun setPersonalDataNew(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContactsData(user: User)
+        fun setContactsData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPhoneData(user: User)
+        fun setPhoneData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateFilesList(files: List<RecommendationFile>?)
+        fun updateFilesList(files: List<FileModel>?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
@@ -54,25 +56,25 @@ interface UserEditContract {
         fun showPhoneConfirm(phone: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEducationData(user: User)
+        fun setEducationData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setWorkData(user: User)
+        fun setWorkData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAdditionalNotesData(user: User)
+        fun setAdditionalNotesData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAdditionalFilesData(user: User)
+        fun setAdditionalFilesData(user: UserDetail)
 
         @StateStrategyType(SkipStrategy::class)
         fun showFileSelector()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setFileEditData(file: RecommendationFile)
+        fun setFileEditData(file: FileModel)
 
         @StateStrategyType(SkipStrategy::class)
         fun downloadFile(file: String)
@@ -129,11 +131,11 @@ interface UserEditContract {
         //additional data
 
         fun onAddFileClick()
-        fun onEditFileClick(file: RecommendationFile)
+        fun onEditFileClick(file: FileModel)
         fun onFilePicked(path: String, mimeType: String)
         fun onFileEditSaveClick()
         fun onFileEditCancelClick()
-        fun onFileClick(file: RecommendationFile)
+        fun onFileClick(file: FileModel)
 
         fun onSaveMainClick(data: MutableMap<String, Any?>)
         fun onSavePersonalClick(data: MutableMap<String, Any?>)
@@ -147,5 +149,7 @@ interface UserEditContract {
 
         fun onNavigateUpRequest()
         fun onSaveFileClick(data: MutableMap<String, Any?>)
+        fun onDeleteFilesClick(data: FileModel)
+        fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
     }
 }

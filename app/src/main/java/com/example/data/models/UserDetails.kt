@@ -5,30 +5,30 @@ import com.google.gson.annotations.SerializedName
 
 data class UserDetail(
         val id: Int,
-        val name: String? = null,
+        var name: String? = null,
         @SerializedName("lastName")
-        val lastName: String? = null,
+        var lastName: String? = null,
         @SerializedName("middleName")
-        val middleName: FieldDetails? = null,
+        var middleName: FieldDetails? = null,
         @SerializedName("createdDate")
         val createdDate: String? = null,
         @SerializedName("modifiedDate")
         val modifiedDate: String? = null,
-        val email: FieldDetails? = null,
+        var email: FieldDetails? = null,
         var phone: List<FieldDetails>? = null,
-        val site: FieldListDetails? = null,
+        var site: FieldListDetails? = null,
         @SerializedName("socialLinks")
-        val socialLinks: FieldListDetails? = null,
-        val birthday: FieldDetails? = null,
-        val image: ImageModel? = null,
-        val gender: String? = null,
+        var socialLinks: FieldListDetails? = null,
+        var birthday: FieldDetails? = null,
+        var image: ImageModel? = null,
+        var gender: String? = null,
         val address: NewUserAddress? = null,
         val state: UserState? = null,
         val interests: List<Int>? = null,
-        val notes: String? = null,
+        var notes: String? = null,
         @SerializedName("educationLevel")
         val educationLevel: Int? = null,
-        val binds: UserBinds? = null
+        var binds: UserBinds? = null
 ) {
 
         val fullName: String
@@ -52,6 +52,11 @@ data class UserDetail(
                 const val USER_MIDDLE_NAME = "middleName"
                 const val USER_PHONE = "phone"
                 const val USER_STATE = "state"
+                const val USER_GENDER = "gender"
+                const val USER_BIRTHDAY = "birthday"
+                const val USER_NOTES = "notes"
+                const val USER_SITE = "site"
+                const val USER_SOCIAL_LINKS = "socialLinks"
         }
 }
 
@@ -63,7 +68,7 @@ data class UserBinds(
         @SerializedName("work-experience")
         val workExperience: WorkExperienceModel? = null,
         @SerializedName("recommendation-file")
-        val recommendationFile: List<FileModel>? = null,
+        var recommendationFile: List<FileModel>? = null,
         val organization: List<OrganizationModel>? = null,
         @SerializedName("userOrganizationRights")
         val userOrganizationRights: List<UserOrganizationRights>? = null
@@ -89,7 +94,7 @@ data class FileModel(
         @SerializedName("mimeType")
         val mimeType: String? = null,
         val size: Long? = null,
-        val name: String? = null,
+        var name: String? = null,
         val uri: String? = null
 )
 
@@ -201,7 +206,10 @@ data class ImageModel(
         @SerializedName("mimeType")
         val mimeType: String? = null,
         val size: Long? = null,
-        var uri: String? = null
+        var uri: String? = null,
+        val name: String? = null,
+        val id: Int? = null,
+        val user: Int? = null
 )
 
 data class FieldDetails(
@@ -216,11 +224,8 @@ data class FieldDetails(
 )
 
 data class FieldListDetails(
+        @SerializedName("values")
         val value: List<String>? = null,
         val type: String? = null,
-        @SerializedName("isVisible")
-        val isVisible: Boolean? = null,
-        @SerializedName("isConfirmed")
-        val isConfirmed: Boolean? = null,
         val absent: Boolean? = null
 )

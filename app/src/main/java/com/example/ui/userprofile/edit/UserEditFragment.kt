@@ -24,10 +24,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.Interest
-import com.example.data.models.UserAddress
-import com.example.data.models.UserInterest
-import com.example.data.models.asOptional
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
@@ -58,7 +55,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
-    private var mainInfoFiles: List<RecommendationFile>? = null
+    private var mainInfoFiles: List<FileModel>? = null
 
     override val title: String? = null
 
@@ -136,12 +133,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
-    override fun setMainData(user: User, avatar: Bitmap?) {
+    override fun setMainData(user: UserDetail, avatar: Bitmap?) {
         val dataItem = ProfileDataUserEditItem(
                 avatar,
-                user.user_name,
-                user.user_last_name,
-                user.user_middle_name,
+                user.name,
+                user.lastName,
+                user.middleName?.value,
                 { presenter.onRemoveAvatarClick() },
                 { presenter.onEditAvatarClick() },
                 { presenter.onDisabledMainInputInfoClick() }
@@ -184,10 +181,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.notifyItemChanged(0, avatar.asOptional())
     }
 
-    override fun setPersonalData(user: User) {
-        val dataItem = ProfileDataPersonalEditItem(
+    override fun setPersonalData(user: UserDetail) {
+        /*val dataItem = ProfileDataPersonalEditItem(
                 requireContext(),
-                user.user_email,
+                user.email?.value,
                 user.user_email_show,
                 user.user_phone_work,
                 user.user_phone_work_show,
@@ -212,32 +209,32 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             if (dataItem.checkDataValid()) {
                 presenter.onSavePersonalClick(dataItem.getDataToSave())
             }
-        }
+        }*/
     }
 
-    override fun setPersonalDataNew(user: User) {
+    override fun setPersonalDataNew(user: UserDetail) {
         if (isUpdateInfo) {
             val dataItem = ProfileDataPersonalEditNewItem(
                     1,
                     requireContext(),
-                    user.user_name,
-                    user.user_last_name,
-                    user.user_middle_name,
-                    user.user_gender?.firstLetterToUppercase(),
-                    user.user_birthday,
-                    user.user_birthday_show,
-                    DaDataUtil.formatSavedLocation(requireContext(), UserAddress.fromUser(user)),
-                    user.user_notes,
+                    user.name,
+                    user.lastName,
+                    user.middleName?.value,
+                    user.gender?.firstLetterToUppercase(),
+                    user.birthday?.value,
+                    user.birthday?.isVisible?: false,
+                    DaDataUtil.formatSavedLocation(requireContext(), user.address),
+                    user.notes,
                     childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
 
-            user.attached_recomendation_files?.forEach {
+            /*user.binds?.recommendationFile?.forEach {
                 it.newName = (if (it.desc.isNullOrBlank()) it.name else it.desc) ?: "file"
-            }
+            }*/
 
             val files = ProfileDataAdditionalFilesEditNewGroup(
                     2,
                     requireContext(),
-                    user.attached_recomendation_files ?: emptyList(),
+                    user.binds?.recommendationFile ?: emptyList(),
                     {
                         mainInfoFiles = adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
                             true
@@ -255,6 +252,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                         mainInfoFiles = files
                         isUpdateInfo = false
                         presenter.onSaveAdditionalFilesClick(data)
+                    }, {
+                        presenter.onDeleteFilesClick(it)
                     }
             )
 
@@ -265,33 +264,31 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 if (dataItem.checkDataValid()) {
                     val dataToSave = dataItem.getDataToSave() as MutableMap
                     val file = files.getCurrentFilesToSave()
-                    file.forEach { f ->
+
+                    presenter.updateFiles(file.toMutableList(), dataToSave)
+                    /*file.forEach { f ->
                         if (f.name != f.newName)
                             f.name = f.newName
                     }
                     dataToSave[User.FIELD_ATTACHED_FILES] = file
-                    presenter.onSavePersonalClick(dataToSave)
+                    presenter.onSavePersonalClick(dataToSave)*/
                 }
             }
         }
         isUpdateInfo = true
     }
 
-    override fun setContactsData(user: User) {
+    override fun setContactsData(user: UserDetail) {
+        val userPhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
+        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
         val item = ProfileContactsEditItem(
                 requireContext(),
-                user.user_phone,
-                user.user_phone_show,
-                user.user_phone_confirmed,
-                user.user_phone_work,
-                user.user_phone_work_show,
-                user.social_links,
+                userPhone,
+                workPhone,
+                user.socialLinks,
                 user.site,
-                user.user_email,
-                user.user_email_show,
-                user.user_site_absent,
-                user.user_social_links_absent,
-                user.user_work_phone_absent,
+                user.email,
+                user.email?.isVisible?: false,
                 presenter::onChangeEmailClick,
                 presenter::onConfirmPhoneClick
         )
@@ -306,12 +303,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }
     }
 
-    override fun setPhoneData(user: User) {
+    override fun setPhoneData(user: UserDetail) {
+        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
         val item = ProfilePhoneEditItem(
                 requireContext(),
-                user.user_phone,
-                user.user_phone_show,
-                user.user_phone_confirmed,
+                phone?.value,
+                phone?.isVisible?: false,
+                phone?.isConfirmed?: false,
                 presenter::onConfirmPhoneClick
         )
 
@@ -325,13 +323,17 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }
     }
 
-    override fun updateFilesList(files: List<RecommendationFile>?) {
+    override fun updateFilesList(files: List<FileModel>?) {
         files?.forEach {
-            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.url == it.url }
-            if (editedName != null)
+            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
+            /*if (editedName != null)
                 it.newName = editedName.newName
             else
-                it.newName = it.name
+                it.newName = it.name*/
+            if (editedName != null)
+                it.name = editedName.name
+            else
+                it.name = it.name
         }
         mainInfoFiles = null
         adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
@@ -353,8 +355,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    override fun setEducationData(user: User) {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
+    override fun setEducationData(user: UserDetail) {
+        /*if (BuildConfig.NEW_PROFILE_EDIT) {
             val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
                 null else user.academic_degree
             val dataItem = ProfileDataEducationEditGroupNew(
@@ -396,11 +398,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     presenter.onSaveEducationClick(dataItem.getDataToSave())
                 }
             }
-        }
+        }*/
     }
 
-    override fun setWorkData(user: User) {
-        val work = user.work ?: emptyList()
+    override fun setWorkData(user: UserDetail) {
+        /*val work = user.work ?: emptyList()
         val dataItem = ProfileDataWorkEditGroup(
                 requireContext(),
                 user.user_birthday,
@@ -412,7 +414,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             if (dataItem.checkDataValid()) {
                 presenter.onSaveWorkClick(dataItem.getDataToSave())
             }
-        }
+        }*/
     }
 
     override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
@@ -445,8 +447,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         onSaveClick = { presenter.onSaveInterestsClick(userInterests) }
     }
 
-    override fun setAdditionalNotesData(user: User) {
-        val dataItem = ProfileDataNotesEditItem(1L, user.user_notes)
+    override fun setAdditionalNotesData(user: UserDetail) {
+        val dataItem = ProfileDataNotesEditItem(1L, user.notes)
         adapter.update(listOf(ProfileDataNotesDescriptionItem(0L) { showWhyUserShouldAddDataToNotesField() }, dataItem))
         onSaveClick = { presenter.onSaveAdditionalNotesClick(dataItem.mNotes) }
     }
@@ -456,15 +458,15 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 .setSelectCallback {  }
     }
 
-    override fun setAdditionalFilesData(user: User) {
-        adapter.update(listOf(ProfileDataAdditionalFilesEditGroup(
+    override fun setAdditionalFilesData(user: UserDetail) {
+        /*adapter.update(listOf(ProfileDataAdditionalFilesEditGroup(
                 requireContext(),
-                user.attached_recomendation_files ?: emptyList(),
+                user.binds.recommendationFile ?: emptyList(),
                 { presenter.onAddFileClick() },
                 { presenter.onFileClick(it) },
                 { presenter.onEditFileClick(it) },
                 { presenter.onSaveAdditionalFilesClick(it) }
-        )))
+        )))*/
     }
 
     override fun showFileSelector() {
@@ -480,8 +482,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 .request()
     }
 
-    override fun setFileEditData(file: RecommendationFile) {
-        val editItem = ProfileDataFileEditItem(file.desc)
+    override fun setFileEditData(file: FileModel) {
+        val editItem = ProfileDataFileEditItem(file.name)
         adapter.update(listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
@@ -493,10 +495,9 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
         onSaveClick = {
             hideKeyboard()
-            file.desc = editItem.mName
-            file.newName = editItem.mName
+            /*file.desc = editItem.mName
+            file.newName = editItem.mName*/
             presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
-            //presenter.onFileEditSaveClick()
         }
     }
 

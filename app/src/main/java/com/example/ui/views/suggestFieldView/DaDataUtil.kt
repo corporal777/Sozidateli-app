@@ -2,6 +2,7 @@ package com.example.ui.views.suggestFieldView
 
 import android.content.Context
 import com.example.data.models.DaDataItem
+import com.example.data.models.NewUserAddress
 import com.example.data.models.UserAddress
 import org.json.JSONException
 import org.json.JSONObject
@@ -30,6 +31,25 @@ object DaDataUtil {
             it.data.flat = formatParam(it.data.flat, jObject)
         }
         return data
+    }
+
+    fun formatSavedLocation(context: Context, data: NewUserAddress?): UserAddress {
+        val jObject = getLocationJson(context)
+        val address = formatParam(data?.city?.value, jObject)
+        val index = formatParam(data?.index, jObject)
+        val country = formatParam(data?.country, jObject)
+        val federal = formatParam(data?.federal, jObject)
+        val region = formatParam(data?.region, jObject)
+        val area = formatParam(data?.area, jObject)
+        val city = formatParam(data?.city?.value, jObject)
+        val district = formatParam(data?.area, jObject)
+        val settlement = formatParam(data?.settlement, jObject)
+        val street = formatParam(data?.street, jObject)
+        val house = formatParam(data?.house, jObject)
+        val flat = formatParam(data?.flat, jObject)
+        return UserAddress(address = address, index = index, country = country, federal = federal,
+                region = region, area = area, city = city, district = district, settlement = settlement,
+                street = street, house = house, flat = flat)
     }
 
     fun formatSavedLocation(context: Context, data: UserAddress): UserAddress {

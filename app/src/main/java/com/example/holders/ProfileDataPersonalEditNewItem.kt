@@ -11,7 +11,9 @@ import androidx.core.text.toSpannable
 import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.data.models.FieldDetails
 import com.example.data.models.UserAddress
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
@@ -113,6 +115,7 @@ class ProfileDataPersonalEditNewItem(
             tvGender.apply {
                 keyListener = null
                 setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, mutableListOf(genderMale, genderFemale)))
+                mGender = setGender()
                 initInput(mGender) { mGender = it.toString() }
             }
 
@@ -186,16 +189,16 @@ class ProfileDataPersonalEditNewItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (name != mName) put(User.FIELD_USER_NAME, mName)
-            if (surname != mSurname) put(User.FIELD_USER_LAST_NAME, mSurname)
+            if (name != mName) put(UserDetail.USER_NAME, mName)
+            if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
             val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
-            if (this@ProfileDataPersonalEditNewItem.middleName != middleName) put(User.FIELD_USER_MIDDLE_NAME, middleName)
-            if (gender != mGender) put(User.FIELD_USER_GENDER, getGender())
+            if (this@ProfileDataPersonalEditNewItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
+            if (gender != mGender) put(UserDetail.USER_GENDER, getGender())
             mBirthday?.formatToDefaultServerDate()?.let {
-                if (birthday != it) put(User.FIELD_USER_BIRTHDAY, it)
+                if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
-            if (showBirthday != mShowBirthday) put(User.FIELD_USER_BIRTHDAY_SHOW, mShowBirthday)
-            if (address != mAddress) {
+            //if (showBirthday != mShowBirthday) put(User.FIELD_USER_BIRTHDAY_SHOW, mShowBirthday)
+            /*if (address != mAddress) {
                 put(User.FIELD_USER_ADDRESS, mAddress.address ?: "")
                 put(User.FIELD_USER_ADDRESS_INDEX, mAddress.index ?: "")
                 put(User.FIELD_USER_ADDRESS_COUNTRY, mAddress.country ?: "")
@@ -210,8 +213,8 @@ class ProfileDataPersonalEditNewItem(
                 put(User.FIELD_USER_ADDRESS_STREET, mAddress.street ?: "")
                 put(User.FIELD_USER_ADDRESS_HOUSE, mAddress.house ?: "")
                 put(User.FIELD_USER_ADDRESS_FLAT, mAddress.flat ?: "")
-            }
-            if (notes != mNotes) put(User.FIELD_USER_NOTES, mNotes)
+            }*/
+            if (notes != mNotes) put(UserDetail.USER_NOTES, mNotes)
 
         }
     }
@@ -221,6 +224,13 @@ class ProfileDataPersonalEditNewItem(
             genderMale -> GENDER_MALE
             genderFemale -> GENDER_FEMALE
             else -> null
+        }
+    }
+
+    private fun setGender(): String {
+        return when (gender) {
+            GENDER_MALE -> genderMale
+            else -> genderFemale
         }
     }
 }
