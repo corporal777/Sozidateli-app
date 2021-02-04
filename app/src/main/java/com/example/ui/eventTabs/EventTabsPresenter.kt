@@ -24,7 +24,7 @@ class EventTabsPresenter
         @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
 
-    private val userEvent = eventData.userEvent!!
+    /*private*/ val userEvent = eventData.userEvent!!
     private var isInternetConnected = false
     private var isFirstAttach = false
 

@@ -21,6 +21,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.contacts.EventContactsFragmentArgs
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -82,6 +83,8 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             }
 
             bottomNavigation.apply {
+                val itemLocation = menu.findItem(R.id.event_location)
+                itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address.isNullOrBlank()
                 setOnNavigationItemSelectedListener(null)
                 selectedItemId = tabId
                 setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)

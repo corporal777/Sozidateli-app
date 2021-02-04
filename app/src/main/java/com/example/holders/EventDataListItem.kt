@@ -28,8 +28,10 @@ class EventDataListItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventAddress.apply {
-                val textList = listOfNotNull(formatAddress())
-                text = textList.joinToString()
+                if (!address.isNullOrEmpty()) {
+                    val textList = listOfNotNull(formatAddress())
+                    text = textList.joinToString()
+                }
             }
             tvEventLabel.text = name
 

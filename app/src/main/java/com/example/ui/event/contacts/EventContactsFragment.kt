@@ -116,8 +116,12 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
             }
 
         })
-
-        setupMap(mapInfo)
+        if (!address.isNullOrEmpty()) {
+            setupMap(mapInfo)
+            llMapContent.visibility = View.VISIBLE
+        } else {
+            llMapContent.visibility = View.GONE
+        }
     }
 
     private fun setupMap(mapInfo: MapInfo?) {
