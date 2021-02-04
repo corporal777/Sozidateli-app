@@ -20,6 +20,7 @@ import com.example.ui.auth.register.email.RegisterEmailContract
 import com.example.ui.auth.register.email.newbuild.RegisterEmailNewContract
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Single
@@ -139,7 +140,7 @@ class FinishRegisterPresenter
     override fun onHandleAuthLink() {
         userRepository.updateProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
                 USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = "personal", isVisible = true, isConfirmed = phoneVerified))))
+                USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = phoneVerified))))
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.openHome() }, { })
                 .call(compositeDisposable)

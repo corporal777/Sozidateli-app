@@ -16,6 +16,7 @@ import com.example.extensions.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BottomDialog
+import com.example.util.PHONE_PERSONAL
 import kotlinx.android.synthetic.main.fragment_user_profile_settings.*
 import setOnClickListener
 import javax.inject.Inject
@@ -51,7 +52,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
     override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val phone = user.phone?.firstOrNull { it.type == "personal" }?.value?.parsePhone(requireContext())
+        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
         btnPhoneEdit.isVisible = phone != null

@@ -9,9 +9,8 @@ import com.google.firebase.iid.InstanceIdResult
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.Path
-import retrofit2.http.Query
+import okhttp3.MultipartBody
+import retrofit2.http.*
 
 interface UserRepository {
     fun getUserShortNew(id: Int): Maybe<UserDetail>
@@ -47,7 +46,7 @@ interface UserRepository {
     fun userEventCalendar(): Maybe<List<UserEventCalendar>>
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 
-    fun deleteProfile(): Completable
+    fun deleteProfile(id: Int): Completable
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
     fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
@@ -56,5 +55,10 @@ interface UserRepository {
     fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel>
     fun logout(id: Int): Completable
     fun changePassword(id: Int, body: PasswordBody): Completable
+    fun changeUserImage(photo: Bitmap?): Single<ImageModel>
+    fun deleteImage(): Completable
+    fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel>
+    fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
+    fun deleteRecommendedFile(fileId : Int): Completable
     fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
 }

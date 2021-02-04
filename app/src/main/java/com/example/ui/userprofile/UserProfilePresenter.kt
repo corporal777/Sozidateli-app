@@ -41,26 +41,26 @@ class UserProfilePresenter @Inject constructor(
                             cropMode = CropImageView.CropMode.SQUARE
                     )
                 }
-                .flatMap { userRepository.uploadAvatar(it) }
+                .flatMap { userRepository.changeUserImage(it) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onSuccess = {
                             updateUserInternal {
-                                image?.uri = it.user_avatar
+                                image = it
                             }
                         }
                 )
     }
 
     override fun onRemovePhotoClick() {
-        compositeDisposable += userRepository.updateUser(mapOf(User.FIELD_USER_AVATAR to null))
+        compositeDisposable += userRepository.deleteImage()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
-                        onSuccess = {
+                        onComplete = {
                             updateUserInternal {
-                                image?.uri = it.user_avatar
+                                image = null
                             }
                         }
                 )

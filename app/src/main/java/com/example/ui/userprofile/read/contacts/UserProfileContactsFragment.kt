@@ -13,6 +13,8 @@ import com.example.data.models.user.User
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
 import kotlinx.android.synthetic.main.fragment_user_profile_contacts.*
 import setOnClickListener
 import javax.inject.Inject
@@ -42,12 +44,12 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
     override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        val phone = user.phone?.firstOrNull { it.type == "personal" }?.value?.parsePhone(requireContext())
+        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
         tvPhoneMobile.text = phone
 
-        tvPhoneWork.text = user.phone?.firstOrNull { it.type == "work" }?.value?.parsePhone(requireContext())
+        tvPhoneWork.text = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value?.parsePhone(requireContext())
         tvEmail.text = user.email?.value
         tvSocialNetworks.text = user.socialLinks?.value?.joinToString("\n") { it }
         tvSite.text = user.site?.value?.joinToString("\n") { it }
