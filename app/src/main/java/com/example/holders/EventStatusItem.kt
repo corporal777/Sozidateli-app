@@ -145,11 +145,13 @@ class EventStatusItem(
                     clickAction = { onEventClickListener.onActionCancel(eventId) }
                 }
                 Event.RegistrationStatus.DECLINED -> {
-                    visibility = organizationEmails.isNullOrEmpty().not()
-                    textBackground = R.drawable.background_event_action
-                    textRes = R.string.event_action_write_to_organisation
-                    clickAction = {
-                        onEventClickListener.onActionWriteToOrganization(organizationEmails ?: emptyList())
+                    if (BuildConfig.NEW_PROFILE_EDIT) {
+                        visibility = organizationEmails.isNullOrEmpty().not()
+                        textBackground = R.drawable.background_event_action
+                        textRes = R.string.event_action_write_to_organisation
+                        clickAction = {
+                            onEventClickListener.onActionWriteToOrganization(organizationEmails ?: emptyList())
+                        }
                     }
                 }
                 else -> {
