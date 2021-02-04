@@ -337,11 +337,11 @@ class ProfileContactsEditItem(
                 put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
             }
 
-            val networkUpdate = if (mNoNetworks) arrayListOf()
+            /*val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks
             if (mNoNetworks != socialNetworks?.absent || socialNetworks.value?.toHashSet() != networkUpdate.toHashSet()) {
                 put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
-            }
+            }*/
         }
     }
 }

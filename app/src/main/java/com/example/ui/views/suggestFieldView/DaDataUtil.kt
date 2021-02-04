@@ -35,13 +35,13 @@ object DaDataUtil {
 
     fun formatSavedLocation(context: Context, data: NewUserAddress?): UserAddress {
         val jObject = getLocationJson(context)
-        val address = formatParam(data?.city, jObject)
+        val address = formatParam(data?.city?.value, jObject)
         val index = formatParam(data?.index, jObject)
         val country = formatParam(data?.country, jObject)
         val federal = formatParam(data?.federal, jObject)
         val region = formatParam(data?.region, jObject)
         val area = formatParam(data?.area, jObject)
-        val city = formatParam(data?.city, jObject)
+        val city = formatParam(data?.city?.value, jObject)
         val district = formatParam(data?.area, jObject)
         val settlement = formatParam(data?.settlement, jObject)
         val street = formatParam(data?.street, jObject)
