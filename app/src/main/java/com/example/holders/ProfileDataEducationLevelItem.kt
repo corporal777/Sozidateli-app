@@ -3,13 +3,17 @@ package com.example.holders
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.AcademicDegree
+import com.example.data.models.AcademicDegreeModel
+import com.example.data.models.EducationLevel
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_education_level.*
 
 class ProfileDataEducationLevelItem(
         private val education: String?,
-        private val academicDegrees: List<AcademicDegree>
+        private val academicDegrees: List<AcademicDegreeModel>,
+        private val availableDegrees: List<EducationLevel>,
+        private val availableSpecialities: List<EducationLevel>
 ) : Item() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -23,7 +27,7 @@ class ProfileDataEducationLevelItem(
                 tvSpecializationLevel.isVisible = false
             } else {
                 tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
-                    "${degree.degree}"
+                    "${availableDegrees.firstOrNull { item -> item.id == degree.degree }?.name}"
                 }
                 val sp = academicDegrees.joinToString() { item ->
                     "${item.specialisation}"
@@ -38,7 +42,7 @@ class ProfileDataEducationLevelItem(
                     tvSpecializationTitle.isVisible = true
                     tvSpecializationLevel.isVisible = true
                 }
-                
+
                 tvDegreesTitle.isVisible = true
                 tvDegreesLevel.isVisible = true
             }

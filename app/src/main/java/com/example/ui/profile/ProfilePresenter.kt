@@ -27,7 +27,9 @@ class ProfilePresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.setUser(it)
+                    getAdditionalData()
                 }, { it.printStackTrace() })
+
     }
 
     override fun attachView(view: ProfileContract.View?) {
@@ -85,6 +87,20 @@ class ProfilePresenter
                             viewState.showRequestErrorMessage()
                         }
                 )*/
+    }
+
+    private fun getAdditionalData() {
+        compositeDisposable += userRepository.getEducationLevel()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
+
+        compositeDisposable += userRepository.getSpeciality()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
+
+        compositeDisposable += userRepository.getAcademicDegrees()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
     }
 
     override fun onSettingsClick() {

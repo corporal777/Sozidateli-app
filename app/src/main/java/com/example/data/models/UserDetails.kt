@@ -24,11 +24,14 @@ data class UserDetail(
         var gender: String? = null,
         val address: NewUserAddress? = null,
         val state: UserState? = null,
-        val interests: List<Int>? = null,
+        var interests: List<Int>? = null,
         var notes: String? = null,
         @SerializedName("educationLevel")
-        val educationLevel: Int? = null,
-        var binds: UserBinds? = null
+        var educationLevel: Int? = null,
+        var binds: UserBinds? = null,
+        var educationLevelList: List<EducationLevel>? = null,
+        var speciality: List<EducationLevel>? = null,
+        var academicDegrees: List<EducationLevel>? = null
 ) {
 
         val fullName: String
@@ -57,16 +60,19 @@ data class UserDetail(
                 const val USER_NOTES = "notes"
                 const val USER_SITE = "site"
                 const val USER_SOCIAL_LINKS = "socialLinks"
+                const val USER_WORK_EXPERIENCE = "work-experience"
+                const val USER_INTERESTS = "interests"
+                const val USER_EDUCATION_LEVEL = "educationLevel"
         }
 }
 
 data class UserBinds(
         val rights: UserRightsModel? = null,
-        val education: List<EducationModel>? = null,
+        var education: List<EducationModel>? = null,
         @SerializedName("academic-degree")
-        val academicDegree: List<AcademicDegreeModel>? = null,
+        var academicDegree: List<AcademicDegreeModel>? = null,
         @SerializedName("work-experience")
-        val workExperience: WorkExperienceModel? = null,
+        var workExperience: WorkExperienceModel? = null,
         @SerializedName("recommendation-file")
         var recommendationFile: List<FileModel>? = null,
         val organization: List<OrganizationModel>? = null,
@@ -99,20 +105,32 @@ data class FileModel(
 )
 
 data class WorkExperienceModel(
+        var absent: Boolean? = null,
+        var models: List<WorkExperience>? = null
+)
+
+data class WorkExperienceServerModel(
         val absent: Boolean? = null,
-        val models: List<AcademicDegreeModel>? = null
+        val data: List<WorkExperience>? = null
+)
+
+data class WorkExperience(
+        val id: Int?,
+        val begin: String?,
+        val end: String?,
+        val organization: String?,
+        val position: String?,
+        val description: String?
 )
 
 data class AcademicDegreeModel(
         val id: Int? = null,
-        val user: Int? = null,
         val speciality: Int? = null,
         val degree: Int? = null
 )
 
 data class EducationModel(
         val id: Int? = null,
-        val user: Int? = null,
         val begin: String? = null,
         val end: String? = null,
         val organization: String? = null,
@@ -218,7 +236,7 @@ data class FieldDetails(
         @SerializedName("isVisible")
         val isVisible: Boolean? = true,
         @SerializedName("isConfirmed")
-        val isConfirmed: Boolean? = false,
+        var isConfirmed: Boolean? = false,
         val absent: Boolean? = false,
         val title: String? = null
 )

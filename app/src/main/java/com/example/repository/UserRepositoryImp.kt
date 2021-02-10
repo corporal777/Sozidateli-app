@@ -15,6 +15,7 @@ import durdinapps.rxfirebase2.RxHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.functions.Function3
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -196,6 +197,74 @@ class UserRepositoryImp
     override fun logout(id: Int): Completable = newApi.logout(id)
 
     override fun changePassword(id: Int, body: PasswordBody): Completable = newApi.changePassword(id, body)
+
+    override fun checkIfPasswordValid(password: String): Completable =
+            newApi.checkIfPasswordValid(appData.getId(), password)
+
+    override fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel> =
+            newApi.updateWorkExperience(appData.getId(), body).doOnSuccess {
+                appData.updateWorkExperience(it)
+            }
+
+    override fun getInterestsList(ids: List<Int>?): Single<InterestsModel> =
+            newApi.getInterestsList(200, ids)
+
+    override fun getEducationLevel(): Single<EducationLevelModel> {
+        val education = appData.getUserNew().educationLevelList
+        return if (education != null) {
+            Single.just(EducationLevelModel(education, 6))
+        } else {
+            newApi.getEducationLevel()
+                    .doOnSuccess {
+                        appData.updateEducationLevel(it.data)
+                    }
+        }
+    }
+
+    override fun getSpeciality(): Single<EducationLevelModel> {
+        val speciality = appData.getUserNew().speciality
+        return if (speciality != null) {
+            Single.just(EducationLevelModel(speciality, 23))
+        } else {
+            newApi.getSpeciality(100)
+                    .doOnSuccess {
+                        appData.updateSpeciality(it.data)
+                    }
+        }
+    }
+
+    override fun getAcademicDegrees(): Single<EducationLevelModel> {
+        val academicDegrees = appData.getUserNew().academicDegrees
+        return if (academicDegrees != null) {
+            Single.just(EducationLevelModel(academicDegrees, 4))
+        } else {
+            newApi.getAcademicDegrees()
+                    .doOnSuccess {
+                        appData.updateAcademicDegrees(it.data)
+                    }
+        }
+    }
+
+    override fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
+            newApi.updateUserEducation(appData.getId(), body)
+                    .doOnSuccess {
+                        appData.updateUserEducation(it.data)
+                    }
+
+    override fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
+            newApi.updateUserAcademicDegree(appData.getId(), body)
+                    .doOnSuccess {
+                        appData.updateUserAcademicDegree(it.data)
+                    }
+
+    override fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String> {
+        return Single.zip(updateUserEducation(EducationBodyModel(educationsList)),
+                updateUserAcademicDegree(AcademicDegreeBodyModel(degree)),
+                updateProfile(appData.getId(), mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)),
+                Function3<EducationBodyModel, AcademicDegreeBodyModel, UserDetail, String> { t1, t2, t3 ->
+                    return@Function3 ""
+        })
+    }
 
     override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())

@@ -7,6 +7,8 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.data.models.EducationLevel
+import com.example.ui.views.ClearDegreeDialog
 import com.example.ui.views.educationlist.EducationPopupWindow
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -15,7 +17,7 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_education_level.*
 
 class ProfileDataEducationLevelEditItem(
         educationLevel: String?,
-        private val availableEducations: List<String>,
+        private val availableEducations: List<EducationLevel>,
         private val isAcademicDegree: Boolean,
         private val onEducationLevelSelected: (isLast: Boolean) -> Unit,
         private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit
@@ -31,7 +33,7 @@ class ProfileDataEducationLevelEditItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            setupDropDown(tvEducationLevel, scAcadDegry, availableEducations, mEducationLevel) {
+            setupDropDown(tvEducationLevel, scAcadDegry, availableEducations.map { it.name }, mEducationLevel) {
                 mEducationLevel = it
                 //checkLastEducationSelected()
             }
@@ -121,7 +123,7 @@ class ProfileDataEducationLevelEditItem(
     private fun isTrigger(text: String?) = text == "Более одного высшего" || text == "Высшее"
 
     private fun checkLastEducationSelected() {
-        onEducationLevelSelected(mEducationLevel == availableEducations.lastOrNull())
+        onEducationLevelSelected(mEducationLevel == availableEducations.lastOrNull()?.name)
     }
 
     fun isDataValid() = mEducationLevel != null

@@ -3,14 +3,19 @@ package com.example.ui.userprofile.phoneconfirm
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
+import com.example.data.bodies.PhoneCodeBody
 import com.example.data.models.ApiError
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_OTHER
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
+import com.example.util.PHONE_PERSONAL
 import com.example.util.TimerFormatter
+import com.example.util.phoneToServer
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -62,25 +67,16 @@ class PhoneConfirmPresenter
             setTimeLeft(null)
         }
 
-        val updateMap = mapOf(
-                User.FIELD_USER_STATUS_PHONE to phone,
-                User.FIELD_USER_PHONE_MOBILE to phone
-        )
-        smsCompositeDisposable += userRepository.updateUser(updateMap)
+        smsCompositeDisposable += userRepository.updateProfile(appData.getId(),
+                mapOf(UserDetail.USER_PHONE to arrayListOf(FieldDetails(value = phone.phoneToServer(), type = PHONE_PERSONAL, isVisible = true, isConfirmed = false))))
                 .doOnSuccess {
-                    val user = appData.getUser().apply {
-                        user_phone = phone
-                        user_status_phone = phone
+                    val user = appData.getUserNew().apply {
+                        phone = it.phone
                     }
-                    appData.userChangeSubject.onNext(user.asOptional())
+                    appData.userNewChangeSubject.onNext(user.asOptional())
                 }
                 .flatMapCompletable {
-                    /*if (BuildConfig.NEW_PROFILE_EDIT) {
-                        Completable.complete()
-                    } else {
-                        userRepository.sendStatusPhoneConfirmSms(password)
-                    }*/
-                    userRepository.sendStatusPhoneConfirmSms(password)
+                    userRepository.sendPhoneCode(appData.getId(), phone)
                 }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -122,55 +118,24 @@ class PhoneConfirmPresenter
     }
 
     override fun onCodeSendClick(code: String) {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
-            if (code == "123456") {
-                appData.userPhoneConfirmedSubject.onNext(true)
-                // TODO Remove it when sms will be ready
-                //
-                if (screenType == FROM_PROFILE) {
-                    val user = appData.getUser()
-                    user.user_phone_confirmed = true
-                    appData.userChangeSubject.onNext(user.asOptional())
-                }
-                //
-                viewState.onPhoneConfirmationComplete()
-            } else {
-                compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
-                        .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
-                        .subscribeBy(
-                                onError = {
-                                    viewState.onPhoneConfirmationComplete()
-                                },
-                                onComplete = {
-                                    val user = appData.getUser()
-                                    user.user_phone_confirmed = true
-                                    appData.userChangeSubject.onNext(user.asOptional())
-                                    viewState.onPhoneConfirmationComplete()
-                                }
-                        )
-                //viewState.showWrongCodeError()
-            }
-        } else {
-            compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeBy(
-                            onError = {
-                                if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
-                                    viewState.showWrongCodeError()
-                                } else {
-                                    it.printStackTrace()
-                                    viewState.showRequestErrorMessage()
-                                }
-                            },
-                            onComplete = {
-                                val user = appData.getUser()
-                                user.user_phone_confirmed = true
-                                appData.userChangeSubject.onNext(user.asOptional())
-                                viewState.onPhoneConfirmationComplete()
+        compositeDisposable += userRepository.confirmPhoneCode(appData.getId(), PhoneCodeBody(phone, code))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeBy(
+                        onError = {
+                            if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
+                                viewState.showWrongCodeError()
+                            } else {
+                                it.printStackTrace()
+                                viewState.showRequestErrorMessage()
                             }
-                    )
-        }
+                        },
+                        onComplete = {
+                            val user = appData.getUserNew()
+                            user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed = true
+                            appData.userNewChangeSubject.onNext(user.asOptional())
+                            viewState.onPhoneConfirmationComplete()
+                        }
+                )
     }
 }

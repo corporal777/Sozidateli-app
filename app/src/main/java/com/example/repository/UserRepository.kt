@@ -62,5 +62,15 @@ interface UserRepository {
     fun deleteRecommendedFile(fileId : Int): Completable
     fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
     fun deleteProfile(): Completable
+    fun checkIfPasswordValid(password: String): Completable
+
+    fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
+    fun getInterestsList(ids: List<Int>?): Single<InterestsModel>
+    fun getEducationLevel(): Single<EducationLevelModel>
+    fun getSpeciality(): Single<EducationLevelModel>
+    fun getAcademicDegrees(): Single<EducationLevelModel>
+    fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel>
+    fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
+    fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
 }

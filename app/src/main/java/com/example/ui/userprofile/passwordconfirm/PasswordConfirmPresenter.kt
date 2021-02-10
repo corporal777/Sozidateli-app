@@ -23,7 +23,7 @@ class PasswordConfirmPresenter
     lateinit var phone: String
 
     override fun onClickConfirmPassword(password: String) {
-        compositeDisposable += userRepository.checkPassword(password)
+        compositeDisposable += userRepository.checkIfPasswordValid(password)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeBy(

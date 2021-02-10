@@ -68,3 +68,5 @@ fun PopupWindow.settings() {
     softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
     inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
 }
+
+fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")

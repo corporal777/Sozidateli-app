@@ -222,9 +222,9 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
+                    /*if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
                     addAll(education.map { ProfileDataEducationItem(it) })
-                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditEducationClick() })
+                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditEducationClick() })*/
                 })
             }
         } else null
@@ -254,7 +254,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     getString(R.string.profile_interests),
                     onExpandChange = onItemExpandChange
             ).apply {
-                add(Section().apply {
+                /*add(Section().apply {
                     addAll(nonNullInterests.map {
                         val parent = it.key
                         val childList = it.value
@@ -263,7 +263,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                         }
                     })
                     if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditInterestsClick() })
-                })
+                })*/
             }
         } else null
     }

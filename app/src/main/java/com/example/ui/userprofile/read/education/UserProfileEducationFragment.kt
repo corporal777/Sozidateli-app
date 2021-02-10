@@ -49,16 +49,17 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
     override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        /*val educationLevel = user.user_education
-        val academicDegrees = user.academic_degree ?: emptyList()
-        val education = user.education ?: emptyList()
+        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel }?.name
+        val academicDegrees = user.binds?.academicDegree ?: emptyList()
+        val education = user.binds?.education ?: emptyList()
 
         val educationGroup = Section().apply {
-            if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
+            if (educationLevel != null) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees,
+                    user.academicDegrees?: emptyList(), user.speciality?: emptyList()))
             addAll(education.map { ProfileDataEducationItem(it) })
         }
 
-        adapter.update(listOf(educationGroup))*/
+        adapter.update(listOf(educationGroup))
     }
 
     override fun showEdit() {
