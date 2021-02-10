@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
 import java.util.*
 
 class ProfileDataWorkEditItem(
+        id: Int?,
         start: String?,
         finish: String?,
         organization: String?,
@@ -30,6 +31,8 @@ class ProfileDataWorkEditItem(
 
     var isDeleteVisible = true
 
+    var mId = id
+        private set
     var mStart = start
         private set
     var mFinish = finish

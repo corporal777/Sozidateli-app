@@ -3,8 +3,10 @@ package com.example.holders
 import android.content.Context
 import android.util.Log
 import com.example.R
+import com.example.data.models.*
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
+import com.example.data.models.user.UserData
 import com.example.extensions.findItemBy
 import com.example.ui.views.NoWorkDialog
 import com.xwray.groupie.Group
@@ -14,13 +16,12 @@ import okhttp3.internal.notifyAll
 
 class ProfileDataWorkEditGroup(
         context: Context,
-        private val birthday: String?,
-        workList: List<SocialRoles>,
-        private val workExperienceAbsent: Boolean,
+        private val birthday: FieldDetails?,
+        work: WorkExperienceModel?,
         private val exeption: (workCheckB: Boolean) -> Unit
 ) : NestedGroup() {
 
-    private var hasWork = workExperienceAbsent
+    private var hasWork = work?.absent?: false
 
     private val noWork = ProfileDataNoExperienceItem {
         if (it && works.size >= 1 && !works[0].mOrganization.isNullOrEmpty()) {
@@ -40,17 +41,19 @@ class ProfileDataWorkEditGroup(
 
     init {
         add(noWork)
-        workList.map { createWorkItem(it) }.let {
-            if (it.isEmpty()) {
+        work?.models?.map { createWorkItem(it) }.let {
+            if (it?.isEmpty() == true) {
                 add(createWorkItem(null))
             } else {
-                works.addAll(it)
-                addAll(it)
+                it?.let { it1 ->
+                    works.addAll(it1)
+                    addAll(it1)
+                }
             }
         }
         add(addItem)
-        isWorkEditable(workExperienceAbsent)
-        noWork.hasWork(workExperienceAbsent)
+        isWorkEditable(work?.absent?: false)
+        noWork.hasWork(work?.absent?: false)
     }
 
     private fun setHasWork() {
@@ -114,13 +117,14 @@ class ProfileDataWorkEditGroup(
     }
 
 
-    private fun createWorkItem(socialRoles: SocialRoles?): ProfileDataWorkEditItem {
+    private fun createWorkItem(socialRoles: WorkExperience?): ProfileDataWorkEditItem {
         return ProfileDataWorkEditItem(
+                socialRoles?.id,
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
                 socialRoles?.position,
-                birthday
+                birthday?.value
         ) { item ->
             val position = getItemCountBeforeGroup(item) + 1
             remove(item)
@@ -143,24 +147,13 @@ class ProfileDataWorkEditGroup(
         return isValid
     }
 
-    fun getDataToSave(): MutableMap<String, Any?> {
-        return if (hasWork) {
-            mutableMapOf(
-                    User.FIELD_WORK to works.map {
-                        mapOf(
-                                SocialRoles.FIELD_BEGIN to it.mStart,
-                                SocialRoles.FIELD_END to if (it.isNotFinished) null else it.mFinish,
-                                SocialRoles.FIELD_ORGANIZATION to it.mOrganization,
-                                SocialRoles.FIELD_POSITION to it.mPosition
-                        )
-                    },
-                    User.FIELD_USER_HAS_WORK_EXPERIENCE to !hasWork
-            )
-        } else {
-            mutableMapOf(
-                    User.FIELD_WORK to arrayListOf<SocialRoles>(),
-                    User.FIELD_USER_HAS_WORK_EXPERIENCE to !hasWork
-            )
-        }
+    fun getDataToSave(): WorkExperienceServerModel {
+        return if (hasWork)
+            WorkExperienceServerModel(absent = !hasWork, data = works.map {
+                WorkExperience(id = it.mId, begin = it.mStart, end = it.mFinish,
+                        organization = it.mOrganization, position = it.mPosition, description = "")
+            })
+        else
+            WorkExperienceServerModel(absent = !hasWork, data = arrayListOf())
     }
 }

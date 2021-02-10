@@ -65,4 +65,28 @@ interface NewApi {
 
     @DELETE("v1/user-recommendation-file/{id}")
     fun deleteRecommendedFile(@Path("id") fileId : Int): Completable
+
+    @GET("v1/user/{id}/password/check")
+    fun checkIfPasswordValid(@Path("id") id : Int, @Query("password") password: String): Completable
+
+    @PATCH("v1/user-work-experience/user/{id}")
+    fun updateWorkExperience(@Path("id") id : Int, @Body body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
+
+    @GET("v1/interest")
+    fun getInterestsList(@Query("limit") limit: Int, @Query("id") ids: List<Int>?): Single<InterestsModel>
+
+    @GET("v1/education-level")
+    fun getEducationLevel(): Single<EducationLevelModel>
+
+    @GET("v1/speciality")
+    fun getSpeciality(@Query("limit") limit: Int): Single<EducationLevelModel>
+
+    @GET("v1/academic-degrees")
+    fun getAcademicDegrees(): Single<EducationLevelModel>
+
+    @PATCH("v1/user-education/user/{id}")
+    fun updateUserEducation(@Path("id") id : Int, @Body body: EducationBodyModel): Single<EducationBodyModel>
+
+    @PATCH("v1/user-academic-degree/user/{id}")
+    fun updateUserAcademicDegree(@Path("id") id : Int, @Body body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
 }

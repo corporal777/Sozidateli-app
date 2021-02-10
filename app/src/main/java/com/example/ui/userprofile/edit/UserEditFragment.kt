@@ -227,10 +227,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     user.notes,
                     childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
 
-            /*user.binds?.recommendationFile?.forEach {
-                it.newName = (if (it.desc.isNullOrBlank()) it.name else it.desc) ?: "file"
-            }*/
-
             val files = ProfileDataAdditionalFilesEditNewGroup(
                     2,
                     requireContext(),
@@ -242,19 +238,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                         isUpdateInfo = false
                         presenter.onAddFileClick()
                     },
-                    {
-                        presenter.onFileClick(it)
-                    },
-                    {
-                        presenter.onEditFileClick(it)
-                    },
+                    { presenter.onFileClick(it) },
+                    { presenter.onEditFileClick(it) },
                     { data, files ->
                         mainInfoFiles = files
                         isUpdateInfo = false
                         presenter.onSaveAdditionalFilesClick(data)
-                    }, {
-                        presenter.onDeleteFilesClick(it)
-                    }
+                    }, { presenter.onDeleteFilesClick(it) }
             )
 
             adapter.update(listOf(dataItem, files))
@@ -264,14 +254,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 if (dataItem.checkDataValid()) {
                     val dataToSave = dataItem.getDataToSave() as MutableMap
                     val file = files.getCurrentFilesToSave()
-
                     presenter.updateFiles(file.toMutableList(), dataToSave)
-                    /*file.forEach { f ->
-                        if (f.name != f.newName)
-                            f.name = f.newName
-                    }
-                    dataToSave[User.FIELD_ATTACHED_FILES] = file
-                    presenter.onSavePersonalClick(dataToSave)*/
                 }
             }
         }
@@ -326,10 +309,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun updateFilesList(files: List<FileModel>?) {
         files?.forEach {
             val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
-            /*if (editedName != null)
-                it.newName = editedName.newName
-            else
-                it.newName = it.name*/
             if (editedName != null)
                 it.name = editedName.name
             else
@@ -356,37 +335,40 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setEducationData(user: UserDetail) {
-        /*if (BuildConfig.NEW_PROFILE_EDIT) {
-            val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
-                null else user.academic_degree
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
+                null else user.binds?.academicDegree
             val dataItem = ProfileDataEducationEditGroupNew(
                     requireContext(),
-                    user.user_birthday,
-                    user.user_education,
-                    user.available_education ?: emptyList(),
-                    user.available_degrees ?: emptyList(),
-                    user.available_sciences ?: emptyList(),
-                    user.education ?: emptyList(),
+                    user.birthday,
+                    user.educationLevel,
+                    user.educationLevelList ?: emptyList(),
+                    user.academicDegrees ?: emptyList(),
+                    user.speciality ?: emptyList(),
+                    user.binds?.education ?: emptyList(),
                     academicDegree ?: emptyList()
             )
             adapter.update(listOf(dataItem))
 
             onSaveClick = {
                 if (dataItem.checkDataValid()) {
-                    presenter.onSaveEducationClick(dataItem.getDataToSave())
+                    presenter.onSaveEducationClick(
+                            dataItem.getEducationLevelToSave(),
+                            dataItem.getEducationsToSave(),
+                            dataItem.getDegreeToSave())
                 }
             }
         } else {
-            val academicDegree = if (user.academic_degree?.size == 1 && user.academic_degree?.get(0)?.degree == "")
-                null else user.academic_degree
+            val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
+                null else user.binds?.academicDegree
             val dataItem = ProfileDataEducationEditGroup(
                     requireContext(),
-                    user.user_birthday,
-                    user.user_education,
-                    user.available_education ?: emptyList(),
-                    user.available_degrees ?: emptyList(),
-                    user.available_sciences ?: emptyList(),
-                    user.education ?: emptyList(),
+                    user.birthday,
+                    user.educationLevel,
+                    user.educationLevelList ?: emptyList(),
+                    user.academicDegrees ?: emptyList(),
+                    user.speciality ?: emptyList(),
+                    user.binds?.education ?: emptyList(),
                     academicDegree ?: emptyList()
             ) { degreesLevel, sciencesLevel, position ->
                 findNavController().navigate(UserEditFragmentDirections.actionUserEditFragmentToEditDegreeFragment(degreesLevel, sciencesLevel, position))
@@ -395,30 +377,32 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
 
             onSaveClick = {
                 if (dataItem.checkDataValid()) {
-                    presenter.onSaveEducationClick(dataItem.getDataToSave())
+                    presenter.onSaveEducationClick(
+                            dataItem.getEducationLevelToSave(),
+                            dataItem.getEducationsToSave(),
+                            dataItem.getDegreeToSave())
                 }
             }
-        }*/
+        }
     }
 
     override fun setWorkData(user: UserDetail) {
-        /*val work = user.work ?: emptyList()
+        val work = user.binds?.workExperience
         val dataItem = ProfileDataWorkEditGroup(
                 requireContext(),
-                user.user_birthday,
+                user.birthday,
                 work,
-                user.user_work_experience_absent
-        ) { presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it)) }
+        ) { /*presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it))*/ }
         adapter.update(listOf(dataItem))
         onSaveClick = {
             if (dataItem.checkDataValid()) {
                 presenter.onSaveWorkClick(dataItem.getDataToSave())
             }
-        }*/
+        }
     }
 
-    override fun setInterestsData(interests: Map<Interest, List<UserInterest>>) {
-        val findUserInterests: () -> List<Interest> = {
+    override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
+        val findUserInterests: () -> List<InterestNew> = {
             interests.values.flatten().filter { item -> item.isUserInterest }
                     .map { item -> item.interest }
         }
@@ -428,7 +412,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         adapter.update(interests.map {
             val parent = it.key
             val childList = it.value
-            ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
+            ProfileExpandableSubtitleGroup(parent.name?: "", onExpandChange = onItemExpandChange).apply {
                 titleItem.badgeCount = childList.count { child -> child.isUserInterest }
                 val interestsItems = childList.mapIndexed { index, interest ->
                     ProfileDataInterestEditItem(interest, index != childList.size - 1) {
@@ -519,10 +503,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     val mimeType = FileUtils.getMimeType(context, it)
                     presenter.onFilePicked(file, mimeType)
                 }
-                /*val file = result?.getParcelableExtra<NormalFile>(Constant.RESULT_PICK_FILE)
-                file?.let {
-                    presenter.onFilePicked(it.path)
-                }*/
             }
         }
     }

@@ -2,6 +2,7 @@ package com.example.holders
 
 import android.view.ViewGroup
 import com.example.R
+import com.example.data.models.WorkExperience
 import com.example.data.models.user.SocialRoles
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileDataWorkExperienceItem(
-        private val work: SocialRoles,
+        private val work: WorkExperience,
         private val compactTopMargin: Boolean
 ) : Item() {
 
