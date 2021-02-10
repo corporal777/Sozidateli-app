@@ -24,6 +24,7 @@ import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.internal.util.HalfSerializer.onComplete
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -92,7 +93,7 @@ class UserEditPresenter
                         }
                         UserEditDataType.INTERESTS -> viewState.apply {
                             setInterestsTitle()
-                            //setInterestsData(user)
+                            getInterests(user)
                             saveOnClick(true)
                         }
                         UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
@@ -181,17 +182,9 @@ class UserEditPresenter
         onEditSaveNew(data) {
             appData.userNewChangeSubject.onNext(appData.getUserNew().apply {
                 phone = it.phone
-                /*user_phone_show = it.user_phone_show
-                user_phone_confirmed = it.user_phone_confirmed
-                user_phone_work = it.user_phone_work
-                user_phone_work_show = it.user_phone_work_show*/
                 socialLinks = it.socialLinks
                 email = it.email
-                //user_email_show = it.user_email_show
                 site = it.site
-                //user_site_absent = it.user_site_absent
-                //user_social_links_absent = it.user_social_links_absent
-                //user_work_phone_absent = it.user_work_phone_absent
             }.asOptional())
             true
         }
@@ -207,35 +200,37 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveEducationClick(data: MutableMap<String, Any?>) {
-        onEditSave(data) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                user_education = it.user_education
-                education = it.education
-                academic_degree = it.academic_degree
-            }.asOptional())
-            true
-        }
+    override fun onSaveEducationClick(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
+        compositeDisposable += userRepository.updateUserEducationScreen(educationLevel, educationsList, degree)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.navigateUp()
+                }, {
+                    it.printStackTrace()
+                    viewState.showUpdateError(it.message)
+                })
     }
 
-    override fun onSaveWorkClick(data: MutableMap<String, Any?>) {
-        onEditSave(data) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                work = it.work
-                user_work_experience_absent = it.user_work_experience_absent
-            }.asOptional())
-            true
-        }
+    override fun onSaveWorkClick(data: WorkExperienceServerModel) {
+        compositeDisposable += userRepository.updateWorkExperience(data)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+
+                    viewState.navigateUp()
+                }, {
+                    it.printStackTrace()
+                    viewState.showUpdateError(it.message)
+                })
     }
 
-    override fun onSaveInterestsClick(data: List<Interest>) {
+    override fun onSaveInterestsClick(data: List<InterestNew>) {
         viewState.showLoadingDialog()
-        onEditSave(mutableMapOf(User.FIELD_INTERESTS to data)) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                interests = it.interests
-            }.asOptional())
+        updateUserNew(userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id }))) {
+            it.interests = data.map { item -> item.id?: 0 }
             viewState.hideAllLoadingDialogs()
-            true
+            false
         }
     }
 
@@ -359,7 +354,8 @@ class UserEditPresenter
 
     override fun onChangeEmailConfirm(email: String) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(userRepository.updateUser(mapOf(User.FIELD_USER_EMAIL to email))) {
+            updateUserNew(userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email)))) {
+                it.email?.value = email
                 viewState.showChangeEmailComplete(email)
                 false
             }
@@ -452,10 +448,10 @@ class UserEditPresenter
         file.uri?.let { viewState.downloadFile(it) }
     }
 
-    private fun setInterestsData(user: User) {
+    private fun getInterests(user: UserDetail) {
         if (isInterestsLoaded) return
-        compositeDisposable += commonRepository.getInterests()
-                .map { groupUserInterests(user, it) }
+        compositeDisposable += userRepository.getInterestsList(null)
+                .map { groupUserInterests(user, it.data) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -466,13 +462,13 @@ class UserEditPresenter
                 })
     }
 
-    private fun groupUserInterests(user: User, interests: List<Interest>): Map<Interest, List<UserInterest>> {
-        val userInterests = user.interests ?: emptyList()
-        val groups = mutableMapOf<Interest, MutableList<UserInterest>>()
-        interests.forEach { interest ->
+    private fun groupUserInterests(user: UserDetail, interests: List<InterestNew>?): Map<InterestNew, List<UserInterest>> {
+        val userInterests = user.interests?.map { it } ?: emptyList()
+        val groups = mutableMapOf<InterestNew, MutableList<UserInterest>>()
+        interests?.forEach { interest ->
             val parent = interests.find { parent -> parent.id == interest.parent }
             parent?.let {
-                val isUserInterest = userInterests.find { userInterest -> userInterest.id == interest.id } != null
+                val isUserInterest = userInterests.find { userInterest -> userInterest == interest.id } != null
                 groups.getOrPut(parent) { mutableListOf() }.add(UserInterest(interest, isUserInterest))
             }
         }

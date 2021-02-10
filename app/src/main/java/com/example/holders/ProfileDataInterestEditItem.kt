@@ -11,12 +11,12 @@ class ProfileDataInterestEditItem(
         private val userInterest: UserInterest,
         private val compactBottom: Boolean,
         private val onCheckChanged: () -> Unit
-) : Item(userInterest.interest.id.toLong()) {
+) : Item(userInterest.interest.id?.toLong()?: 0) {
 
     override fun bind(viewHolder:GroupieViewHolder, position: Int) {
         viewHolder.apply {
             cbInterest.apply {
-                text = userInterest.interest.value
+                text = userInterest.interest.name
                 isChecked = userInterest.isUserInterest
                 setOnCheckedChangeListener { _, isChecked ->
                     userInterest.isUserInterest = isChecked

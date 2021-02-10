@@ -5,10 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.FileModel
-import com.example.data.models.Interest
-import com.example.data.models.UserDetail
-import com.example.data.models.UserInterest
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
@@ -62,7 +59,7 @@ interface UserEditContract {
         fun setWorkData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setInterestsData(interests: Map<Interest, List<UserInterest>>)
+        fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setAdditionalNotesData(user: UserDetail)
@@ -140,9 +137,9 @@ interface UserEditContract {
         fun onSaveMainClick(data: MutableMap<String, Any?>)
         fun onSavePersonalClick(data: MutableMap<String, Any?>)
         fun onSaveContactsClick(data: MutableMap<String, Any?>)
-        fun onSaveEducationClick(data: MutableMap<String, Any?>)
-        fun onSaveWorkClick(data: MutableMap<String, Any?>)
-        fun onSaveInterestsClick(data: List<Interest>)
+        fun onSaveEducationClick(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
+        fun onSaveWorkClick(data: WorkExperienceServerModel)
+        fun onSaveInterestsClick(data: List<InterestNew>)
         fun onSaveAdditionalNotesClick(notes: String?)
         fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>)
         fun onCancelClick()

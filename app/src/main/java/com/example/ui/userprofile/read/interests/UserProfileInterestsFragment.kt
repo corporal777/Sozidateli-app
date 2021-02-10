@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Interest
+import com.example.data.models.InterestNew
 import com.example.data.models.UserEditDataType
 import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestItem
@@ -53,11 +54,11 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onInterestsUpdated(interests: Map<Interest, List<Interest>>) {
+    override fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>) {
         val items = interests.map {
             val parent = it.key
             val childList = it.value
-            ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
+            ProfileExpandableSubtitleGroup(parent.name?: "", onExpandChange = onItemExpandChange).apply {
                 addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
             }
         }

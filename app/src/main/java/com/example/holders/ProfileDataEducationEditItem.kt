@@ -2,6 +2,7 @@ package com.example.holders
 
 import android.view.View
 import com.example.R
+import com.example.data.models.FieldDetails
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth
@@ -21,16 +22,19 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import java.util.*
 
 class ProfileDataEducationEditItem(
+        id: Int?,
         start: String?,
         finish: String?,
         organization: String?,
         speciality: String?,
-        birthday: String?,
+        birthday: FieldDetails?,
         private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit
 ) : Item() {
 
     var isDeleteVisible = true
 
+    var mId = id
+        private set
     var mStart = start
         private set
     var mFinish = finish
@@ -42,7 +46,8 @@ class ProfileDataEducationEditItem(
     var isNotFinished = mFinish == null
         private set
 
-    private val birthday = birthday?.parseToDate(defaultServerDateFormatter)
+    private var isDateCheckboxWasSet = false
+    private val birthday = birthday?.value?.parseToDate(defaultServerDateFormatter)
     private val now = Date()
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -66,12 +71,16 @@ class ProfileDataEducationEditItem(
             }
 
             setFinishEnabled(this, !isNotFinished)
-            scFinish.initSwitch(isNotFinished) {
-                tilFinish.error = null
-                mFinish = null
-                etFinish.text = null
-                setFinishEnabled(this, !it)
+            if (!isDateCheckboxWasSet) {
+                scFinish.initSwitch(isNotFinished) {
+                    tilFinish.error = null
+                    mFinish = null
+                    etFinish.text = null
+                    setFinishEnabled(this, !it)
+                }
+                isDateCheckboxWasSet = true
             }
+
             etInstitution.initInput(mInstitution) {
                 tilInstitution.error = null
                 mInstitution = it.toString()

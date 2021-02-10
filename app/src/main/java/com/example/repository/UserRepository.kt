@@ -61,4 +61,14 @@ interface UserRepository {
     fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
     fun deleteRecommendedFile(fileId : Int): Completable
     fun deleteProfile(): Completable
+    fun checkIfPasswordValid(password: String): Completable
+
+    fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
+    fun getInterestsList(ids: List<Int>?): Single<InterestsModel>
+    fun getEducationLevel(): Single<EducationLevelModel>
+    fun getSpeciality(): Single<EducationLevelModel>
+    fun getAcademicDegrees(): Single<EducationLevelModel>
+    fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel>
+    fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
+    fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
 }

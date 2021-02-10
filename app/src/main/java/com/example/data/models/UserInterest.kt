@@ -1,6 +1,6 @@
 package com.example.data.models
 
 data class UserInterest(
-        val interest: Interest,
+        val interest: InterestNew,
         var isUserInterest: Boolean
 )

@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
@@ -105,10 +106,45 @@ class AppData(
     fun setUserShortNew(user: UserDetail) {
         val changed = this.newUser != user
         val binds = this.newUser?.binds
+        val educationLevelList = this.newUser?.educationLevelList
+        val speciality = this.newUser?.speciality
+        val academicDegrees = this.newUser?.academicDegrees
         this.newUser = user
         this.newUser?.binds = binds
+        this.newUser?.educationLevelList = educationLevelList
+        this.newUser?.speciality = speciality
+        this.newUser?.academicDegrees = academicDegrees
         appPrefs.userId = user.id
         if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updateWorkExperience(data: WorkExperienceServerModel) {
+        this.newUser?.binds?.workExperience?.absent = data.absent
+        this.newUser?.binds?.workExperience?.models = data.data
+        userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updateEducationLevel(data: List<EducationLevel>?) {
+        this.newUser?.educationLevelList = data
+        userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updateSpeciality(data: List<EducationLevel>?) {
+        this.newUser?.speciality = data
+        userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updateUserEducation(data: List<EducationModel>?) {
+        this.newUser?.binds?.education = data
+    }
+
+    fun updateUserAcademicDegree(data: List<AcademicDegreeModel>?) {
+        this.newUser?.binds?.academicDegree = data
+    }
+
+    fun updateAcademicDegrees(data: List<EducationLevel>?) {
+        this.newUser?.academicDegrees = data
+        userNewChangeSubject.onNext(newUser.asOptional())
     }
 
     fun getUserNew(): UserDetail = newUser

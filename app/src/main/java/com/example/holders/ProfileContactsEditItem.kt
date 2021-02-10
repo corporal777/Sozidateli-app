@@ -58,7 +58,7 @@ class ProfileContactsEditItem(
     private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
 
     private var mShowEmail = showEmail
-    private var mSocialNetworks = (socialNetworks?.value?.map { UserDataSocialLink(value = "") } ?: emptyList())
+    private var mSocialNetworks = (socialNetworks?.value?.map { UserDataSocialLink(value = it) } ?: emptyList())
             .map { it.copy() }
             .let {
                 if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
@@ -321,51 +321,27 @@ class ProfileContactsEditItem(
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            //if (showEmail != mShowEmail) put(User.FIELD_USER_EMAIL_SHOW, mShowEmail)
             if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
-            /*val workPhoneUpdate = if (mNoWorkPhone) ""
-            else mWorkPhone
-            if (workPhone?.value != workPhoneUpdate) put(User.FIELD_USER_PHONE_WORK, workPhoneUpdate)
-            if (workPhone?.isVisible != mShowWorkPhone) put(User.FIELD_USER_PHONE_WORK_SHOW, mShowWorkPhone)
-            if (mobilePhone?.value != mMobilePhone) {
-                put(User.FIELD_USER_STATUS_PHONE, mMobilePhone)
-                put(User.FIELD_USER_PHONE_MOBILE, mMobilePhone)
-            }
-            if (mobilePhone?.isVisible != mShowMobilePhone) put(User.FIELD_USER_PHONE_MOBILE_SHOW, mShowMobilePhone)*/
             val workPhoneUpdate = if (mNoWorkPhone) ""
-            else mWorkPhone
+            else mWorkPhone.phoneToServer()
             put(UserDetail.USER_PHONE, arrayListOf(
-                    FieldDetails(value = mMobilePhone, type = PHONE_PERSONAL, isConfirmed = mIsPhoneConfirmed, isVisible = mShowMobilePhone, absent = false),
+                    FieldDetails(value = mMobilePhone.phoneToServer(),
+                            type = PHONE_PERSONAL, isConfirmed = mIsPhoneConfirmed, isVisible = mShowMobilePhone, absent = false),
                     FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone)
             ))
 
-
-            /*val siteUpdate = if (mNoSite) arrayListOf()
-            else mSite
-            if (site?.value?.toHashSet() != siteUpdate.toHashSet()) {
-                put(User.FIELD_USER_SITE, siteUpdate.filter { it.value.isNotBlank() }.map { it.value })
-            }*/
             val siteUpdate = if (mNoSite) arrayListOf()
             else mSite
-            if (site?.value?.toHashSet() != siteUpdate.toHashSet()) {
+            if (mNoSite != site?.absent || site.value?.toHashSet() != siteUpdate.toHashSet()) {
                 put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
             }
 
-            /*val networkUpdate = if (mNoNetworks) arrayListOf()
-            else mSocialNetworks
-            if (socialNetworks?.value?.toHashSet() != networkUpdate.toHashSet()) {
-                put(User.FIELD_SOCIAL_LINKS, networkUpdate.filter { it.value.isNotBlank() })
-            }*/
             val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks
-            if (socialNetworks?.value?.toHashSet() != networkUpdate.toHashSet()) {
+            if (mNoNetworks != socialNetworks?.absent || socialNetworks.value?.toHashSet() != networkUpdate.toHashSet()) {
                 put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
-
-            //put(User.FIELD_USER_SITE_ABSENT, mNoSite)
-            //put(User.FIELD_USER_SOCIAL_LINKS_ABSENT, mNoNetworks)
-            //put(User.FIELD_USER_WORK_PHONE_ABSENT, mNoWorkPhone)
         }
     }
 }

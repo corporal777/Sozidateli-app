@@ -1,6 +1,7 @@
 package com.example.holders
 
 import com.example.R
+import com.example.data.models.EducationModel
 import com.example.data.models.user.SocialRoles
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
@@ -13,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileDataEducationItem(
-        private val education: SocialRoles
+        private val education: EducationModel
 ) : Item() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -26,7 +27,7 @@ class ProfileDataEducationItem(
                 text = years
             }
 
-            tvSpecialty.text = education.specialty
+            tvSpecialty.text = education.speciality
             tvInstitution.text = education.organization
         }
     }

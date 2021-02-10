@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import com.example.R
-import com.example.data.models.AcademicDegree
+import com.example.data.models.*
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
@@ -17,13 +17,13 @@ import com.xwray.groupie.Section
 
 class ProfileDataEducationEditGroup(
         context: Context,
-        private val birthday: String?,
-        private val educationLevel: String?,
-        private val availableEducations: List<String>,
-        private val availableDegrees: List<String>,
-        private val availableSciences: List<String>,
-        education: List<SocialRoles>,
-        academicDegrees: List<AcademicDegree>,
+        private val birthday: FieldDetails?,
+        private val educationLevel: Int?,
+        private val availableEducations: List<EducationLevel>,
+        private val availableDegrees: List<EducationLevel>,
+        private val availableSciences: List<EducationLevel>,
+        education: List<EducationModel>,
+        academicDegrees: List<AcademicDegreeModel>,
         private val openDegreeEdit: (degreesLevel: String?, sciencesLevel: String?, position: Int) -> Unit
 ) : NestedGroup() {
 
@@ -31,7 +31,7 @@ class ProfileDataEducationEditGroup(
     var hasAcademicDegree = false
     var data: MutableList<ProfileDataAcademicDegreeEditNewItem> = mutableListOf()
 
-    private val educationLevelItem = ProfileDataEducationLevelEditItem(educationLevel, availableEducations,
+    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel }?.name, availableEducations,
             academicDegrees.isNotEmpty(), {
         if (it) {
             validatorSize = 4
@@ -103,9 +103,11 @@ class ProfileDataEducationEditGroup(
     init {
         if (academicDegrees.isNotEmpty()) {
             academicDegrees.map {
-                createAcademicDegreeEditItem(it.degree, it.specialisation)
+                createAcademicDegreeEditItem(availableDegrees.firstOrNull { degree -> degree.id == it.degree }?.name,
+                        availableSciences.firstOrNull { science -> science.id == it.speciality }?.name )
             }.let {
-                if (educationLevel != null && (educationLevel == availableEducations.lastOrNull() || educationLevel == availableEducations[availableEducations.size - 2])) {
+                val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel }?.name
+                if (educationLevel != null && (edLevel == availableEducations.lastOrNull()?.name || edLevel == availableEducations[availableEducations.size - 2].name)) {
                     validatorSize = 4
                     if (it.isEmpty()) {
                         degrees.add(createAcademicDegreeEditItem(null, null))
@@ -181,12 +183,13 @@ class ProfileDataEducationEditGroup(
         }
     }
 
-    private fun createEducationItem(socialRoles: SocialRoles?): ProfileDataEducationEditItem {
+    private fun createEducationItem(socialRoles: EducationModel?): ProfileDataEducationEditItem {
         return ProfileDataEducationEditItem(
+                socialRoles?.id,
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
-                socialRoles?.specialty,
+                socialRoles?.speciality,
                 birthday
         ) {
             educations.remove(it)
@@ -247,28 +250,28 @@ class ProfileDataEducationEditGroup(
         return isValid
     }
 
-    fun getDataToSave(): MutableMap<String, Any?> {
-        val degrees = mutableListOf<AcademicDegree>()
-        this.degrees.forEachGroups</*ProfileDataAcademicDegreeEditItem*/ProfileDataAcademicDegreeEditNewItem> {
-            degrees.add(AcademicDegree(it.mDegreesLevel, it.mSciencesLevel))
-        }
-
-        val educations = mutableListOf<Map<String, Any?>>()
-        this.educations.forEachGroups<ProfileDataEducationEditItem> {
-            educations.add(mapOf(
-                    SocialRoles.FIELD_BEGIN to it.mStart,
-                    SocialRoles.FIELD_END to if (it.isNotFinished) null else it.mFinish,
-                    SocialRoles.FIELD_ORGANIZATION to it.mInstitution,
-                    SocialRoles.FIELD_SPECIALITY to it.mSpeciality
+    fun getDegreeToSave(): List<AcademicDegreeModel>? {
+        val degrees = mutableListOf<AcademicDegreeModel>()
+        this.degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> {
+            degrees.add(AcademicDegreeModel(
+                    id = it.mId,
+                    speciality = availableSciences.firstOrNull { degree -> degree.name == it.mSciencesLevel }?.id,
+                    degree = availableDegrees.firstOrNull { degree -> degree.name == it.mDegreesLevel }?.id
             ))
         }
-
-        return mutableMapOf(
-                User.FIELD_USER_EDUCATION to educationLevelItem.mEducationLevel,
-                User.FIELD_ACADEMIC_DEGREE to degrees,
-                User.FIELD_EDUCATION to educations
-        )
+        return degrees
     }
+
+    fun getEducationsToSave(): List<EducationModel>? {
+        val educations = mutableListOf<EducationModel>()
+        this.educations.forEachGroups<ProfileDataEducationEditItem> {
+            educations.add(EducationModel(id = it.mId, begin = it.mStart,
+                    end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality))
+        }
+        return educations
+    }
+
+    fun getEducationLevelToSave(): Int? = availableEducations.firstOrNull { it.name == educationLevelItem.mEducationLevel }?.id
 
     override fun getGroupCount(): Int {
         return 4
