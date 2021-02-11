@@ -34,6 +34,7 @@ import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
@@ -350,9 +351,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showRecommendations() = findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build())
+    override fun showRecommendations() {
+        if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment)
+            findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
+                    .setPopUpTo(R.id.main_navigation, true)
+                    .build())
+    }
 
     override fun showEvent() = findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
