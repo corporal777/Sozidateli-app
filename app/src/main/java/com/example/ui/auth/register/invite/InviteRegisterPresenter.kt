@@ -2,11 +2,17 @@ package com.example.ui.auth.register.invite
 
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.RegisterBody
+import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
+import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
@@ -19,8 +25,10 @@ import javax.inject.Inject
 @InjectViewState
 class InviteRegisterPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val authRepository: AuthRepository,
         private val phoneNumberUtil: PhoneNumberUtil,
+        private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager), InviteRegisterContract.Presenter {
 
@@ -115,10 +123,38 @@ class InviteRegisterPresenter
             phone: String?
     ) {
         val newEm = if (this.email == email) null else email
-        authRepository.registerConfirm(this.email?: "", code, firstName,
+        /*authRepository.registerConfirm(this.email?: "", code, firstName,
                 lastName, middleName, phone, newEm, password)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ if (newEm != null) viewState.showEmailDialog(newEm) }, { })
+                .call(compositeDisposable)*/
+        val midName = if (middleName.isNullOrEmpty())
+            null
+        else
+            FieldDetails(value = middleName)
+
+        val phoneNumber = if (phone.isNullOrEmpty())
+            null
+        else
+            arrayListOf(FieldDetails(value = phone.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true))
+        compositeDisposable += authRepository.register(RegisterBody(password = password,
+                name = firstName, lastName = lastName, middleName = midName,
+                email = FieldDetails(value = email, isVisible = true), phone = phoneNumber))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    confirmCode(newEm)
+                }
+    }
+
+    private fun confirmCode(newEm: String?) {
+        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    if (newEm != null) viewState.showEmailDialog(newEm)
+                }, { })
                 .call(compositeDisposable)
     }
 
@@ -189,7 +225,7 @@ class InviteRegisterPresenter
 
     override fun onSaveCode(code: String) {
         this.code = code
-        authRepository.registerData(email?: "", code)
+        /*authRepository.registerData(email?: "", code)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     this.firstName = it.user?.user_name
@@ -200,7 +236,7 @@ class InviteRegisterPresenter
                             middleName?: "",
                             email?: "")
                 }, {  })
-                .call(compositeDisposable)
+                .call(compositeDisposable)*/
     }
 
     override fun onClickClose() {
