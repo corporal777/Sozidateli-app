@@ -237,6 +237,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
+                    if (work.isNullOrEmpty()) add(ProfileNoWorkExperienceItem(resources.getString(R.string.no_experience)))
                     addAll(work.mapIndexed { index, socialRoles ->
                         ProfileDataWorkExperienceItem(socialRoles, index == 0) })
                     if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditWorkClick() })

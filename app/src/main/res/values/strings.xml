@@ -418,7 +418,7 @@
     <string name="profile_education_finish">Окончание</string>
     <string name="profile_education_finish_error">Выберите корректную дату окончания</string>
     <string name="profile_education_not_finished">По настоящее время</string>
-    <string name="profile_education_academic_degree">Есть ученая степень или звание</string>
+    <string name="profile_education_academic_degree">Есть ученая степень и/или звание</string>
     <string name="profile_additional_data">Дополнительные сведения</string>
     <string name="profile_work_start">Начало</string>
     <string name="profile_work_start_error">Выберите дату начала</string>

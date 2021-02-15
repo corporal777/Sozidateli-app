@@ -16,19 +16,29 @@ class ProfileDataEducationLevelItem(
         viewHolder.apply {
             tvEducationLevel.text = education
 
-            if (academicDegrees.isEmpty()) {
+            if ((academicDegrees.size == 1 && academicDegrees[0].degree == "") || academicDegrees.isEmpty()) {
                 tvDegreesTitle.isVisible = false
                 tvDegreesLevel.isVisible = false
+                tvSpecializationTitle.isVisible = false
+                tvSpecializationLevel.isVisible = false
             } else {
-                /*tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
-                    "${degree.degree}, ${degree.specialisation}"
-                }*/
                 tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
                     "${degree.degree}"
                 }
-                tvSpecializationLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
-                    "${degree.specialisation}"
+                val sp = academicDegrees.joinToString() { item ->
+                    "${item.specialisation}"
                 }
+                if (sp.isEmpty()) {
+                    tvSpecializationTitle.isVisible = false
+                    tvSpecializationLevel.isVisible = false
+                } else {
+                    tvSpecializationLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
+                        "${degree.specialisation}"
+                    }
+                    tvSpecializationTitle.isVisible = true
+                    tvSpecializationLevel.isVisible = true
+                }
+                
                 tvDegreesTitle.isVisible = true
                 tvDegreesLevel.isVisible = true
             }

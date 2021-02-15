@@ -208,12 +208,12 @@ class ProfileDataEducationEditGroupNew(
             educationLevelItem.notifyChanged(true)
         }
 
-        degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> {
+        /*degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> {
             if (!it.isDataValid()) {
                 isValid = false
                 it.notifyChanged(true)
             }
-        }
+        }*/
 
         educations.forEachGroups<ProfileDataEducationEditItem> {
             if (!it.isDataValid()) {
