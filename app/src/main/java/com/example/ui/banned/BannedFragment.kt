@@ -65,7 +65,7 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
                         it.user.user_city,
                         it.user.user_avatar,
                         { presenter.onUserClick(it) },
-                        UserSubscribeButton.Action.UNBLOCK,
+                        //UserSubscribeButton.Action.UNBLOCK,
                         { presenter.onUnblockLick(it) }
                 )
             })

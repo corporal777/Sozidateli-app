@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -26,8 +27,10 @@ class FavoriteEventsPresenter
         @Connectivity connectivity: Observable<Boolean>
 ) : EventListPresenter<FavoriteEventsContract.View>(appData, eventData, eventRepository, userRepository, connectivity), FavoriteEventsContract.Presenter {
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getFavoriteEvents(limit, offset)
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
+        //return eventRepository.getFavoriteEvents(limit, offset)
+        //TODO Finish this screen
+        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset))
     }
 
     override fun onEventActionClick(event: Event) {

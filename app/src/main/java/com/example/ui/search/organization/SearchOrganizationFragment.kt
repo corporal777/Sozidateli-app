@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
@@ -19,7 +20,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, Organization, SearchFilter.Organization>(), SearchOrganizationContract.View {
+class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, OrganizationNew, SearchFilter.OrganizationNew>(), SearchOrganizationContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchOrganizationPresenter
@@ -30,16 +31,16 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
-    override fun showOrganization(organization: Organization) {
-        findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id))
+    override fun showOrganization(organization: OrganizationNew) {
+        findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id.toString()))
     }
 
-    override fun changeSubscription(organization: Organization) {
-        val idLong = organization.id.toLong()
+    override fun changeSubscription(organization: OrganizationNew) {
+        val idLong = organization.id
         adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
     }
 
-    override fun createItem(itemData: Organization?): Group {
+    override fun createItem(itemData: OrganizationNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else OrganizationItem(
                 itemData,
@@ -49,7 +50,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     }
 
     @SuppressLint("InflateParams")
-    override fun createFilterView(filter: SearchFilter.Organization): View {
+    override fun createFilterView(filter: SearchFilter.OrganizationNew): View {
         return layoutInflater.inflate(R.layout.layout_filter_organization, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)

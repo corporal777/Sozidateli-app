@@ -1,11 +1,13 @@
 package com.example.holders
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationNew
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -14,18 +16,19 @@ import kotlinx.android.synthetic.main.item_organization.*
 import parseColor
 
 class OrganizationItem(
-        private val organization: Organization,
+        private val organization: OrganizationNew,
         private val onOrganizationClick: () -> Unit,
         private val onSubscribeClick: (() -> Unit)? = null
-) : Item(organization.id.toLong()) {
+) : Item(organization.id?: 0) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvOrganizationName.text = organization.name
+            tvOrganizationName.text = organization.legalInformation?.name?.short
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
-                    setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+                    //TODO not ready on api side
+                    //setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
                     setOnClickListener { onSubscribeClick.invoke() }
                     true
                 } else {
@@ -34,15 +37,15 @@ class OrganizationItem(
             }
 
             tvOrganizationImageName.apply {
-                text = organization.name
+                text = organization.legalInformation?.name?.short
                 clipToOutline = true
-                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
+                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)
                         ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
             ivOrganizationImage.apply {
                 clipToOutline = true
-                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it }).into(this)
+                Picasso.get().load(organization.logo.let { if (it?.uri.isNullOrBlank()) null else it?.uri }).into(this)
             }
         }
     }

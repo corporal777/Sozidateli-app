@@ -5,6 +5,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.data.models.SubEvent
 import com.example.extensions.findItemBy
 import com.example.holders.EventFavoriteItem
@@ -27,8 +28,9 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     @ProvidePresenter
     fun providePresenter(): FavoriteEventsPresenter = presenterProvider.get()
 
-    override fun setData(events: List<Event?>) {
-        dataGroup.update(events.map {
+    override fun setData(events: List<EventNew?>) {
+        //TODO Finish this screen
+        /*dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
             else EventFavoriteItem(
                     it,
@@ -36,7 +38,7 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
                     { presenter.onEventActionClick(it) },
                     { presenter.onEventSubeventsClick(it) }
             )
-        })
+        })*/
         swipeToRefresh.isRefreshing = false
     }
 

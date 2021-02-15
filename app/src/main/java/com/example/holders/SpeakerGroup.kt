@@ -16,7 +16,7 @@ open class SpeakerGroup(
             speaker.user.user_city,
             speaker.user.user_avatar,
             { onSpeakerClick(speaker) },
-            speaker.user.getUserSubscribeAction(),
+            //speaker.user.getUserSubscribeAction(),
             { onFavoriteChangeClick(speaker) }
     ).apply {
         registerGroupDataObserver(this@SpeakerGroup)

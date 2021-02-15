@@ -2,6 +2,7 @@ package com.example.repository
 
 import android.net.Uri
 import com.example.api.Api
+import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.user.User
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class EventRepositoryImp
 @Inject constructor(
         private val api: Api,
+        private val newApi: NewApi,
         appData: AppData
 ) : ApiRepository(appData), EventRepository {
 
@@ -233,4 +235,10 @@ class EventRepositoryImp
     override fun unsubscribeFromSubEvent(event: String, activity: String): Completable {
         return call(api.unsubscribeFromSubEvent(event, activity))
     }
+
+    //Alfa API
+    override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
+            newApi.getEventsList(map)
+                    .map { PaginationResponse(it.totalCount, it.data?: arrayListOf()) }
+
 }

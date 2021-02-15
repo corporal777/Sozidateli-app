@@ -38,10 +38,10 @@ class OrganizationPresenter
     }
 
     private fun loadData(withLoadingPlaceholder: Boolean) {
-        compositeDisposable += organizationRepository.getOrganizationById(organizationId)
+        compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
                 .performOnBackgroundOutOnMain()
                 .flatMap {
-                    Maybe.zip(it.organization.logo.loadBitmap(), it.organization.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
+                    Maybe.zip(it.logo?.uri.loadBitmap(), it.image?.uri.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
                         OrganizationDataAndImages(it, logo.value, bg.value)
                     })
                             .toSingle()
@@ -52,18 +52,20 @@ class OrganizationPresenter
                 }
                 .subscribe({
                     val organizationData = it.data
-                    val uid = appData.getUser().user_id
-                    organizationData.members.forEach { member ->
-                        member.user?.isCurrentUser = member.user?.user_id == uid
+                    val uid = appData.getId()
+                    organizationData.binds?.member?.forEach { member ->
+                        //member.user?.isCurrentUser = member.user == uid
                     }
                     viewState.setOrganization(
                             it.logo,
                             it.background,
-                            organizationData.organization,
+                            organizationData
+                            /*organizationData.organization,
                             organizationData.events,
-                            organizationData.members
+                            organizationData.members*/
                     )
-                    viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
+                    //TODO not ready on api side
+                    //viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
                 }, {
                     it.printStackTrace()
                 })
@@ -116,13 +118,14 @@ class OrganizationPresenter
         viewState.showUsers(organizationId)
     }
 
-    override fun onUserClick(user: User) {
-        viewState.showUser(user.user_id.toString())
+    override fun onUserClick(user: UserDetail) {
+        viewState.showUser(user.id.toString())
     }
 
-    override fun onUserActionCLick(user: User) {
-        val id = user.user_id.toString()
-        val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
+    override fun onUserActionCLick(user: UserDetail) {
+        val id = user.id.toString()
+        //TODO not ready on api side
+        /*val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
         else userRepository.addToFavorite(id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
@@ -130,7 +133,7 @@ class OrganizationPresenter
                 .subscribeSimple {
                     user.is_in_favorite = !user.is_in_favorite
                     viewState.updateUser(user)
-                }
+                }*/
     }
 
     override fun onActionRegister(event: String) {
@@ -194,7 +197,7 @@ class OrganizationPresenter
     }
 
     private class OrganizationDataAndImages(
-            val data: OrganizationData,
+            val data: OrganizationNew,
             val logo: Bitmap?,
             val background: Bitmap?
     )

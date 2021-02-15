@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
@@ -26,8 +27,10 @@ class MyEventsPresenter
 
     lateinit var filter: MyEventsFilter
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getEventList(limit, offset, getFilterData())
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
+        //return eventRepository.getEventList(limit, offset, getFilterData())
+        //TODO Finish this screen
+        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset))
     }
 
     override fun onFirstViewAttach() {
