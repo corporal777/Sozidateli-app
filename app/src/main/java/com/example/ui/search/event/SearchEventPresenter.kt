@@ -48,7 +48,7 @@ class SearchEventPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val loadInterests = commonRepository.getInterests()
+        /*val loadInterests = commonRepository.getInterests()
                 .map { interests ->
                     interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
                 }
@@ -64,7 +64,7 @@ class SearchEventPresenter
                         },
                         onSuccess = {
                             isCommonDataLoaded = true
-                        })
+                        })*/
     }
 
     override fun onResume(searchInterface: SearchInterface) {

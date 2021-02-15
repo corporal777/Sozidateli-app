@@ -60,7 +60,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                         it.user_city,
                         it.user_avatar,
                         { presenter.onUserClick(it) },
-                        it.getUserSubscribeAction(),
+                        //it.getUserSubscribeAction(),
                         { presenter.onUserRemoveFromFavoritesClick(it) }
                 )
             })

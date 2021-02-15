@@ -3,6 +3,7 @@ package com.example.ui.organizations.list
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.OneExecutionByTagStateStrategy
@@ -17,7 +18,7 @@ interface OrganizationsContract {
         fun setFavoritesHeader()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setOrganizations(organizations: List<Organization?>)
+        fun setOrganizations(organizations: List<OrganizationNew?>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showNoFilterEmptyListPlaceholder()
@@ -26,15 +27,15 @@ interface OrganizationsContract {
         fun showFavoritesEmptyListPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showOrganization(organization: Organization)
+        fun showOrganization(organization: OrganizationNew)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFavorites()
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onOrganizationClick(organization: Organization)
-        fun onRemoveFromFavoriteClick(organization: Organization)
+        fun onOrganizationClick(organization: OrganizationNew)
+        fun onRemoveFromFavoriteClick(organization: OrganizationNew)
         fun onRefreshRequest()
         fun onFavoritesClick()
     }

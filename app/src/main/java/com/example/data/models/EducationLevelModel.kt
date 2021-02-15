@@ -1,6 +1,8 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class EducationLevelModel(
         val data: List<EducationLevel>?,
@@ -8,8 +10,9 @@ data class EducationLevelModel(
         val totalCount: Int?
 )
 
+@Parcelize
 data class EducationLevel(
         val id: Int?,
         val name: String,
         val order: Int?
-)
+): Parcelable

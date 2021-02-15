@@ -2,9 +2,7 @@ package com.example.ui.event.list
 
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.EventRegisterCheckField
+import com.example.data.models.*
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -16,6 +14,7 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -33,8 +32,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private val pagination: PaginationDataSourceFactory<Event?> = PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<Event?>
+    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<EventNew?>
 
     private var isFirstAttach = true
 
@@ -142,5 +141,5 @@ abstract class EventListPresenter<V : EventListContract.View>(
         paginationList.invalidate()
     }
 
-    protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
+    protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>>
 }

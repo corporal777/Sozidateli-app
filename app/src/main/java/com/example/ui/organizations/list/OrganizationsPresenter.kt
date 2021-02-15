@@ -3,6 +3,7 @@ package com.example.ui.organizations.list
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Organization
 import com.example.data.models.Organization.Companion.FIELD_IS_IN_FAVORITE
+import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
 import com.example.di.Connectivity
 import com.example.extensions.buildList
@@ -25,7 +26,13 @@ class OrganizationsPresenter
     lateinit var filter: OrganizationsFilter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getOrganizations(limit, offset, getFilterData())
+        //organizationRepository.getOrganizations(limit, offset, getFilterData())
+        organizationRepository.searchOrganizations(
+                mutableMapOf<String, Any>().apply {
+                    put(OrganizationNew.ORGANIZATION_LIMIT, limit)
+                    put(OrganizationNew.ORGANIZATION_OFFSET, offset)
+                }
+        )
     }
             .buildList(enablePlaceholders = true)
 
@@ -72,17 +79,18 @@ class OrganizationsPresenter
         else pagination.invalidate()
     }
 
-    override fun onOrganizationClick(organization: Organization) {
+    override fun onOrganizationClick(organization: OrganizationNew) {
         viewState.showOrganization(organization)
     }
 
-    override fun onRemoveFromFavoriteClick(organization: Organization) {
-        val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
+    override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
+        //TODO not ready on api side
+        /*val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
         else organizationRepository.subscribe(organization.id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple { pagination.invalidate() }
+                .subscribeSimple { pagination.invalidate() }*/
     }
 
     override fun onItemTake(position: Int) {

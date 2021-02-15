@@ -1,10 +1,9 @@
 package com.example.repository
 
 import com.example.api.Api
+import com.example.api.NewApi
 import com.example.data.AppData
-import com.example.data.models.Organization
-import com.example.data.models.OrganizationData
-import com.example.data.models.OrganizationMember
+import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -14,6 +13,7 @@ import javax.inject.Inject
 class OrganizationRepositoryImp
 @Inject constructor(
         private val api: Api,
+        private val newApi: NewApi,
         appData: AppData
 ) : ApiRepository(appData), OrganizationRepository {
 
@@ -36,5 +36,13 @@ class OrganizationRepositoryImp
 
     override fun getMembers(limit: Int, offset: Int, orgId: String): Maybe<PaginationResponse<OrganizationMember>> {
         return callPagination(api.organizationMembers(orgId, limit, offset))
+    }
+
+    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+        return newApi.searchOrganizations(map).map { PaginationResponse(it.totalCount, it.data?: arrayListOf()) }
+    }
+
+    override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
+        return newApi.getOrganizationDetails(organizationId, arrayListOf("rights", "leader", "member", "user", "userOrganizationRights"))
     }
 }
