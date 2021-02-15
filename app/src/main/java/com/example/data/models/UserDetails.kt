@@ -201,6 +201,7 @@ data class UserState(
         val isSuspend: BooleanModel? = null,
 ): Parcelable
 
+@Parcelize
 data class BooleanModel(
         val value: Boolean? = null,
         val till: String? = null

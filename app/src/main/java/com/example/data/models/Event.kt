@@ -89,7 +89,7 @@ data class Event(
         REGISTRATION_PARTICIPANTS,
         REGISTRATION_PARTICIPANTS_ENDS,
         CONFERENCE_IN_PROGRESS,
-        IN_DRAFT*/
+        IN_DRAFT
     }
 
     enum class RegistrationStatus {
