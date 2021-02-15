@@ -1,12 +1,13 @@
 package com.example.repository
 
-import com.example.data.models.Organization
-import com.example.data.models.OrganizationData
-import com.example.data.models.OrganizationMember
+import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface OrganizationRepository {
     fun subscribe(orgId: String): Completable
@@ -14,4 +15,6 @@ interface OrganizationRepository {
     fun getOrganizations(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Organization?>>
     fun getOrganizationById(id: String): Single<OrganizationData>
     fun getMembers(limit: Int, offset: Int, orgId: String): Maybe<PaginationResponse<OrganizationMember>>
+    fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>>
+    fun getOrganizationDetails(organizationId : String): Single<OrganizationNew>
 }

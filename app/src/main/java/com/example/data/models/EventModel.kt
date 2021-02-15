@@ -42,9 +42,9 @@ data class EventState (
     val registration: EventStateRegistration? = null,
     val rating: EventStateRating? = null,
     @SerializedName("isPublic")
-    val isPublic: Int? = null,
+    val isPublic: Boolean? = null,
     @SerializedName("isHidden")
-    val isHidden: Int? = null
+    val isHidden: Boolean? = null
 )
 
 data class EventStateRegistration (

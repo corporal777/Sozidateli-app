@@ -11,6 +11,14 @@ sealed class SearchFilter : Serializable {
             var subscription: Boolean? = null
     ) : SearchFilter()
 
+    data class OrganizationNew(
+            var address: String? = null,
+            var name: String? = null,
+            var inn: String? = null,
+            var type: String? = null,
+            var subscription: Boolean? = null
+    ) : SearchFilter()
+
     data class Event(
             var address: String? = null,
             var name: String? = null,

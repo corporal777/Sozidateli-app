@@ -5,17 +5,14 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.Organization
-import com.example.data.models.OrganizationMember
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface OrganizationContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: Organization, events: List<Event>, users: List<OrganizationMember>)
+        fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEvents(organizationId: String)
@@ -72,8 +69,8 @@ interface OrganizationContract {
         fun onGoToEventClick(event: Event)
 
         fun onShowMoreUsersClick()
-        fun onUserClick(user: User)
-        fun onUserActionCLick(user: User)
+        fun onUserClick(user: UserDetail)
+        fun onUserActionCLick(user: UserDetail)
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

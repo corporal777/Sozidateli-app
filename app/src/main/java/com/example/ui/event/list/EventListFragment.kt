@@ -11,12 +11,10 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.SearchFilter
-import com.example.data.models.takeFormat
+import com.example.data.models.*
 import com.example.extensions.getAffiliationString
 import com.example.holders.*
+import com.example.holders.EventGroup
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
@@ -79,23 +77,24 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setData(events: List<Event?>) {
-        dataGroup.update(events.map {
+    override fun setData(events: List<EventNew?>) {
+        /*dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroup(
-                    it.id,
-                    it.status,
+                    it.id.toString(),
+                    it.status?.value,
                     it.userRegistration,
-                    it.backgroundColor,
+                    it.backgroundColor?.value,
                     it.backgroundImage,
-                    it.takeFormat(),
+                    EventFormat(name = it.format?.custom?: ""),
                     it.email,
                     !it.canRegister,
                     onEventClickListener,
                     createEventDataListItem(event = it),
                     it.userAgreement
             )
-        })
+        })*/
+        //TODO finished screen
         swipeToRefresh.isRefreshing = false
     }
 

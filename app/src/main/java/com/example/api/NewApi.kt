@@ -89,4 +89,13 @@ interface NewApi {
 
     @PATCH("v1/user-academic-degree/user/{id}")
     fun updateUserAcademicDegree(@Path("id") id : Int, @Body body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
+
+    @GET("v1/event")
+    fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+
+    @GET("v1/organization")
+    fun searchOrganizations(@QueryMap map: Map<String, Any>): Maybe<OrganizationNewModel>
+
+    @GET("v1/organization/{id}")
+    fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: List<String>?): Single<OrganizationNew>
 }

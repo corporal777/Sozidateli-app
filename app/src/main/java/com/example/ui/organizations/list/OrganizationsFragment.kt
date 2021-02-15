@@ -7,6 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
@@ -31,7 +32,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
 
     @ProvidePresenter
     fun providePresenter(): OrganizationsPresenter = presenterProvider.get().apply {
-        filter = OrganizationsFragmentArgs.fromBundle(arguments!!).filter
+        filter = OrganizationsFragmentArgs.fromBundle(requireArguments()).filter
     }
 
     private val headGroup = Section()
@@ -74,7 +75,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         ))
     }
 
-    override fun setOrganizations(organizations: List<Organization?>) {
+    override fun setOrganizations(organizations: List<OrganizationNew?>) {
         organizationSection.update(organizations.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
             else OrganizationItem(
@@ -99,8 +100,8 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showOrganization(organization: Organization) {
-        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization.id).build().toBundle())
+    override fun showOrganization(organization: OrganizationNew) {
+        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle())
     }
 
     override fun showFavorites() {

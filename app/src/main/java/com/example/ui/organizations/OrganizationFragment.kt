@@ -3,6 +3,7 @@ package com.example.ui.organizations
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
@@ -101,7 +102,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: Organization, events: List<Event>, users: List<OrganizationMember>) {
+    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/) {
         ivBackground.apply {
             clipToOutline = true
             if (background == null) {
@@ -109,7 +110,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             } else {
                 isVisible = true
                 setImageBitmap(background)
-                setOnImageClickListener(this, organization.background)
+                setOnImageClickListener(this, organization.backgroundColor?.value)
             }
         }
         ivLogo.apply {
@@ -119,20 +120,20 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             } else {
                 isInvisible = false
                 setImageBitmap(logo)
-                setOnImageClickListener(this, organization.logo)
+                setOnImageClickListener(this, organization.logo?.uri)
             }
         }
 
         tvOrganizationImageName.apply {
-            text = organization.name
+            text = organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
             clipToOutline = true
-            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
+            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)
                     ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
         }
 
-        tvName.text = organization.name
+        tvName.text = organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
 
-        val links = organization.webLinks?.joinToString(separator = "\n")
+        val links = organization.site?.joinToString(separator = "\n")
         val hasLinks = !links.isNullOrEmpty()
         tvLinksTitle.isVisible = hasLinks
         tvLinks.apply {
@@ -141,7 +142,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val snLinks = organization.socialLinks?.joinToString(separator = "\n")
+        val snLinks = organization.socialLink?.joinToString(separator = "\n")
         val hasSnLinks = !snLinks.isNullOrEmpty()
         tvSnLinksTitle.isVisible = hasSnLinks
         tvSnLinks.apply {
@@ -150,7 +151,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val emails = organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val emails = organization.email?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasEmails = !emails.isNullOrEmpty()
         tvEmailTitle.isVisible = hasEmails
         tvEmail.apply {
@@ -159,7 +160,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val phones = organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val phones = organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasPhones = !phones.isNullOrEmpty()
         tvPhoneTitle.isVisible = hasPhones
         tvPhone.apply {
@@ -167,41 +168,43 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             text = phones
             removeUrlUnderline()
         }
+        if (!organization.address.isNullOrEmpty()) {
+            val hasAddress = !organization.address[0].fullValue.isNullOrEmpty() ||
+                    !organization.address.isNullOrEmpty()
 
-        val hasAddress = !organization.addressShort.isNullOrEmpty() ||
-                !organization.address.isNullOrEmpty()
-
-        tvAddressTitle.isVisible = hasAddress
-        tvAddress.apply {
-            isVisible = hasAddress
-            text = organization.addressShort ?: organization.address
+            tvAddressTitle.isVisible = hasAddress
+            tvAddress.apply {
+                isVisible = hasAddress
+                text = organization.address[0].fullValue// ?: organization.address
+            }
         }
 
         tvDescription.apply {
-            isVisible = !organization.descriptionFull.isNullOrEmpty()
-            text = organization.descriptionFull
+            isVisible = !organization.description.isNullOrEmpty()
+            text = organization.description
         }
 
-        tvPeoples.text = getString(R.string.organization_peoples).format(organization.totalMembers)
+        tvPeoples.text = getString(R.string.organization_peoples).format(organization.binds?.user?.size)
         rvPeoples.adapter = usersAdapter.apply {
-            update(users.mapNotNull {
-                val user = it.user ?: return@mapNotNull null
+            organization.binds?.user?.mapNotNull {
+                val user = it ?: return@mapNotNull null
                 UserItem(
-                        user.user_id,
+                        user.id,
                         user.fullName,
-                        user.user_city,
-                        user.user_avatar,
+                        user.address?.city,
+                        user.image?.uri,
                         { presenter.onUserClick(user) },
-                        user.getUserSubscribeAction(),
+                        //user.getUserSubscribeAction(),
                         { presenter.onUserActionCLick(user) })
-            })
+            }?.let { update(it) }
         }
         btnPeoples.apply {
-            isVisible = organization.totalMembers > users.size
+            isVisible = true//organization.totalMembers > users.size
             setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
         tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
+        /*tvEvents.text = getString(R.string.organization_events).format(organization.totalEvents)
         rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 update(events.map {
@@ -230,7 +233,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         btnEvents.apply {
             isVisible = organization.totalEvents > events.size
             setOnClickListener { presenter.onShowMoreEventsClick() }
-        }
+        }*/
 
         llContent.isVisible = true
         swipeToRefresh.isRefreshing = false

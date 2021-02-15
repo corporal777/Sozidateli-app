@@ -7,6 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
+import retrofit2.http.QueryMap
 
 interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event?>>
@@ -44,4 +45,7 @@ interface EventRepository {
 
     fun subscribeToSubevent(event: String, activity: String): Completable
     fun unsubscribeFromSubEvent(event: String, activity: String): Completable
+
+    //Alfa API
+    fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
 }

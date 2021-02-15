@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -12,7 +13,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setData(events: List<Event?>)
+        fun setData(events: List<EventNew?>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder()
