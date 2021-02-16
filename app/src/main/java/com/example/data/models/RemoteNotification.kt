@@ -9,7 +9,7 @@ data class RemoteNotification(
         val user_id: Int,
         val organization_id: Int,
         val assistance_id: Int,
-        val project_id: Int,
+        val project_id: Long,
         val event_id: Int,
         val code: String?,
         val type: String,

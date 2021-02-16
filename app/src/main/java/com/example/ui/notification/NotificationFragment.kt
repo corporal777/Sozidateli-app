@@ -1,9 +1,15 @@
 package com.example.ui.notification
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.util.Linkify
 import android.util.Log
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.text.parseAsHtml
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -73,8 +79,9 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         val titleRes: Int
         var actionTextRes: Int? = null
         var canRate = false
-        var canAccept = false
-        var canChangeAccept = false
+        var isAccepted = false
+        //var canAccept = false
+        //var canChangeAccept = false
 
         when (notification.type) {
             Notification.Type.SIMPLE -> {
@@ -87,7 +94,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         actionTextRes = R.string.notifications_state_disabled
                     }
                     Notification.AcceptState.ACCEPTED -> {
-                        canChangeAccept = true
+                        isAccepted = true
+                        //canChangeAccept = true
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
@@ -95,7 +103,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         //actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
-                        canAccept = true
+                        //canAccept = true
                     }
                 }
             }
@@ -120,19 +128,40 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         }
 
         btnAccept.apply {
-            isVisible = canAccept
+            //isVisible = canAccept
             setOnClickListener { presenter.onNotificationAcceptClick() }
         }
 
         btnCancel.apply {
-            isVisible = canAccept
-            setOnClickListener { presenter.onNotificationCancelClick() }
+            //isVisible = canAccept
+            setOnClickListener {
+                if (isAccepted)
+                    showCancelInfo()
+                else
+                    presenter.onNotificationCancelClick()
+            }
         }
 
-        btnChangeDecision.apply {
+        /*btnChangeDecision.apply {
             isVisible = canChangeAccept
             setOnClickListener { presenter.onNotificationChangeDecisionClick() }
-        }
+        }*/
+    }
+
+    private fun showCancelInfo() {
+        val supportEmail = requireContext().getString(R.string.support_email)
+        val message = requireContext().getString(R.string.cancel_invite_text).format(supportEmail).toSpannable()
+        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+
+        AlertDialog.Builder(requireContext())
+                .setMessage(message)
+                .setPositiveButton(R.string.ok, null)
+                .show()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.let {
+                        it.movementMethod = BetterLinkMovementMethod.getInstance()
+                    }
+                }
     }
 
     override fun showUrl(url: String) {

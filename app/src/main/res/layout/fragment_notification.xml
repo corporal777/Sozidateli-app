@@ -64,7 +64,7 @@
                 tools:text="@string/notifications_state_accepted"
                 tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <!--<androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnChangeDecision"
                 style="@style/Notification.ActionButton"
                 fontPath="fonts/Roboto-Bold.ttf"
@@ -76,7 +76,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/tvActionText"
                 app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                tools:visibility="visible" />
+                tools:visibility="visible" />-->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnRate"

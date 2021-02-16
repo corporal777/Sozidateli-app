@@ -702,4 +702,5 @@
     <string name="yes">Да</string>
     <string name="nope">Отмена</string>
     <string name="change_degree_text">Данный уровень образования не подразумевает наличия учёной степени.\n\nИнформацыя об учёной степени будет удалена. Вы уверкны?</string>
+    <string name="cancel_invite_text">Чтобы отклонить приглашение, обратитесь в службу технической поддержки: %s</string>
 </resources>
