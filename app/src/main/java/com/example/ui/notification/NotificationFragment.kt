@@ -21,6 +21,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.CtpDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
@@ -149,19 +150,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
     }
 
     private fun showCancelInfo() {
-        val supportEmail = requireContext().getString(R.string.support_email)
-        val message = requireContext().getString(R.string.cancel_invite_text).format(supportEmail).toSpannable()
-        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-
-        AlertDialog.Builder(requireContext())
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-                .apply {
-                    findViewById<TextView>(android.R.id.message)?.let {
-                        it.movementMethod = BetterLinkMovementMethod.getInstance()
-                    }
-                }
+        CtpDialog(requireContext())
+                .setSelectCallback {}
     }
 
     override fun showUrl(url: String) {
