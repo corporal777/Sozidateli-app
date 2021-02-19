@@ -200,7 +200,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val lastPath = it.lastPathSegment
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
-                    presenter.onHandleEvent(lastPath)
+                    if (lastPath.contains(PATH_HIDDEN))
+                        presenter.onHandleEvent(authCode)
+                    else
+                        presenter.onHandleEvent(lastPath)
                 } else if (lastPath == PATH_CHANGE_EMAIL) {
                     if (changeEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(changeEmail, authCode)

@@ -23,7 +23,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 46
-        versionName "0.9.46"
+        versionName "0.9.47"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,7 +33,7 @@ android {
     }
 
     signingConfigs {
-        def localFile = rootProject.file("release.properties")
+        /*def localFile = rootProject.file("release.properties")
         def propertiesFile = localFile.exists() ? localFile : new File("/home/service/keystore/fond/release.properties")
         if (propertiesFile.exists()) {
             def properties = new Properties()
@@ -44,6 +44,12 @@ android {
                 storePassword properties.keyStorePassword
                 storeFile rootProject.file(properties.keyStorePath)
             }
+        }*/
+        release {
+            storeFile file("fond.jks")
+            storePassword "fondkeystore"
+            keyAlias "fondalias"
+            keyPassword "fondaliaskey"
         }
     }
 
