@@ -90,7 +90,8 @@ data class User(
         var user_work_experience_absent: Boolean = false,
         var user_site_absent: Boolean = false,
         var user_social_links_absent: Boolean = false,
-        var user_work_phone_absent: Boolean = false
+        var user_work_phone_absent: Boolean = false,
+        var user_phone_work_additional: String? = null
 ) {
     var isCurrentUser = false
 
@@ -163,6 +164,7 @@ data class User(
         const val FIELD_USER_SITE_ABSENT = "user_site_absent"
         const val FIELD_USER_SOCIAL_LINKS_ABSENT = "user_social_links_absent"
         const val FIELD_USER_WORK_PHONE_ABSENT = "user_work_phone_absent"
+        const val FIELD_USER_WORK_PHONE_ADDITIONAL = "user_phone_work_additional"
     }
 
     enum class Status {

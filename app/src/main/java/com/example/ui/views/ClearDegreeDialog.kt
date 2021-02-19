@@ -1,29 +1,32 @@
 package com.example.ui.views
 
 import android.content.Context
-import android.content.DialogInterface.BUTTON_NEGATIVE
-import android.content.DialogInterface.BUTTON_POSITIVE
-import androidx.core.content.ContextCompat
+import android.view.LayoutInflater
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import com.example.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ClearDegreeDialog(val context: Context) {
 
     private var onSelect: (isAgree: Boolean) -> Unit = {}
 
+    private val layout = LayoutInflater.from(context).inflate(R.layout.dialog_clear_degree, null)
+
+    private lateinit var alertDialog: AlertDialog
+    val builder = AlertDialog.Builder(context)
+
     init {
-        val dialog = MaterialAlertDialogBuilder(context)
-                .setMessage(R.string.change_degree_text)
-                .setNegativeButton(context.resources.getString(R.string.nope)) { dialog, _ ->
-                    onSelect.invoke(false)
-                    dialog.dismiss()
-                }
-                .setPositiveButton(context.resources.getString(R.string.yes)) { dialog, _ ->
-                    onSelect.invoke(true)
-                    dialog.dismiss()
-                }.show()
-        dialog.getButton(BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.dialog_buttons))
-        dialog.getButton(BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.dialog_buttons))
+        builder.setView(layout)
+        layout.findViewById<Button>(R.id.btnPositive).setOnClickListener {
+            onSelect.invoke(true)
+            alertDialog.dismiss()
+        }
+        layout.findViewById<Button>(R.id.btnNegative).setOnClickListener {
+            onSelect.invoke(false)
+            alertDialog.dismiss()
+        }
+        alertDialog = builder.create()
+        alertDialog.show()
     }
 
     fun setSelectCallback(block: (isAgree: Boolean) -> Unit): ClearDegreeDialog {

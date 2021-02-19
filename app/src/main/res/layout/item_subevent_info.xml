@@ -9,6 +9,19 @@
     android:paddingBottom="20dp">
 
     <TextView
+        android:id="@+id/tvTitle"
+        fontPath="fonts/Roboto-Medium.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:textColor="@color/text_color_title"
+        android:textSize="18sp"
+        tools:ignore="MissingPrefix"
+        tools:text="Прикладная че то там сессия" />
+
+    <TextView
         android:id="@+id/tvTime"
         fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="wrap_content"
@@ -34,19 +47,6 @@
         android:textSize="16sp"
         tools:ignore="MissingPrefix"
         tools:text="Павильон 1" />
-
-    <TextView
-        android:id="@+id/tvTitle"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:textColor="@color/text_color_title"
-        android:textSize="18sp"
-        tools:ignore="MissingPrefix"
-        tools:text="Прикладная че то там сессия" />
 
     <com.example.ui.views.UserSubscribeButton
         android:id="@+id/btnSubscribe"

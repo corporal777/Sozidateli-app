@@ -1,5 +1,6 @@
 package com.example.holders
 
+import additionalNumber
 import androidx.core.view.isVisible
 import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -9,7 +10,8 @@ import removeUrlUnderline
 
 class ProfileFieldTextItem(
         private val title: String,
-        private val data: CharSequence
+        private val data: CharSequence,
+        private val additional: String?
 ) : Item() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -21,6 +23,7 @@ class ProfileFieldTextItem(
                 text = data
                 removeUrlUnderline()
             }
+            tvAdditionalNumber.additionalNumber(additional)
         }
     }
 

@@ -15,7 +15,8 @@ import javax.inject.Provider
 
 class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
 
-    override val title: CharSequence? = null
+    override val title: CharSequence
+        get() = requireContext().resources.getString(R.string.tags)
 
     @InjectPresenter
     lateinit var presenter: TagsPresenter

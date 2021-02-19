@@ -168,6 +168,7 @@ class UserEditPresenter
                 user_notes = it.user_notes
                 attached_recomendation_files = it.attached_recomendation_files
                 user_social_links_absent = it.user_social_links_absent
+                user_phone_work_additional = it.user_phone_work_additional
             }
             true
         }

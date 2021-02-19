@@ -1,5 +1,6 @@
 package com.example.holders
 
+import additionalNumber
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import androidx.core.text.set
@@ -25,6 +26,7 @@ class ProfileDataPersonalItem(
         private val birthday: String?,
         private val city: String?,
         private val socialNetworks: List<String>?,
+        private val user_phone_work_additional: String?,
         private val onOrganizationClick: (Organization) -> Unit
 ) : Item() {
 
@@ -42,6 +44,7 @@ class ProfileDataPersonalItem(
             })
 
             groupEmail.setTextDataOrHide(tvEmail, email)
+            tvAdditionalNumber.additionalNumber(user_phone_work_additional)
             groupPhoneWork.apply { setTextDataOrHide(tvPhoneWork, workPhone?.parsePhone(context)) }
             groupPhoneMobile.apply { setTextDataOrHide(tvPhoneMobile, mobilePhone?.parsePhone(context)) }
             groupGender.setTextDataOrHide(tvGender, gender)

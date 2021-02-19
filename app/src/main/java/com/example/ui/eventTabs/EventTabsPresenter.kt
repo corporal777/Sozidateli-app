@@ -50,7 +50,8 @@ class EventTabsPresenter
         if (isFirstAttach) isFirstAttach = false
         else if (!isInternetConnected) {
             viewState.apply {
-                showMyScheduleTab()
+                showAboutTab(userEvent.eventId)
+                //showMyScheduleTab()
                 showNoConnectionMessage(false)
             }
         }

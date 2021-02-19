@@ -347,6 +347,7 @@
     <string name="profile_contacts">Контактные данные</string>
     <string name="profile_phone_mobile">Мобильный телефон</string>
     <string name="profile_phone_work">Рабочий телефон</string>
+    <string name="profile_additional_number">Добавочный номер</string>
     <string name="profile_phone_hint">+7 (927) 298–16–17</string>
     <string name="profile_phone_number_must_be_in_international_format">Номер нужно вводить в международном формате с \"+\" в начале</string>
     <string name="profile_birthday">Дата рождения</string>
@@ -548,7 +549,7 @@
     <string name="organization_main_data">Общая информация</string>
     <string name="organization_peoples">Сотрудники (%d)</string>
     <string name="organization_peoples_watch">Смотреть всех</string>
-    <string name="organization_events">Мероприятия организации (%d)</string>
+    <string name="organization_events">Мероприятия организации</string> <!-- (%d) -->
     <string name="organization_events_watch">Смотреть все мероприятия</string>
     <string name="organization_links">Ссылки</string>
     <string name="organization_sn_links">Соцсети</string>
@@ -701,9 +702,12 @@
     <string name="academic_degree">Ученые степни</string>
     <string name="yes">Да</string>
     <string name="nope">Отмена</string>
-    <string name="change_degree_text">Данный уровень образования не подразумевает наличия учёной степени.\n\nИнформацыя об учёной степени будет удалена. Вы уверкны?</string>
+    <string name="change_degree_text">Данный уровень образования не подразумевает наличия учёной степени.\n\nИнформация об учёной степени будет удалена. Вы уверены?</string>
     <string name="cancel_invite_text">Чтобы отклонить приглашение, обратитесь в службу технической поддержки: %s</string>
     <string name="dear_user_text">Уважаемый пользователь!</string>
     <string name="ctp_text">Ранее Вы подтвердили свое участие в реализации проекта в качестве члена команды и передали данные о себе в заявку на участие в конкурсе Фонда президентских грантов. Если вы хотите отказаться от участия в реализации проекта, обратитесь, пожалуйста, в службу поддержки по адресу %s.
         \n\nНе забудьте указать в письме причину вашего отказа, это упростит работу наших сотрудников и ускорит решение вашей проблемы.</string>
+    <string name="event">Событие</string>
+    <string name="phone">Телефон</string>
+    <string name="tags">Теги</string>
 </resources>

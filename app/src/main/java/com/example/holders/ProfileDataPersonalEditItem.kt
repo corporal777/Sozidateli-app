@@ -52,6 +52,7 @@ class ProfileDataPersonalEditItem(
         private val address: UserAddress,
         private val socialNetworks: List<UserDataSocialLink>?,
         private val user_social_links_absent: Boolean,
+        private val user_phone_work_additional: String?,
         private val changeEmailClick: () -> Unit,
         private val confirmPhoneClick: (String) -> Unit
 ) : Item() {
@@ -70,6 +71,7 @@ class ProfileDataPersonalEditItem(
     private var mShowBirthday = showBirthday
     private var mAddress = address
     private var mNoNetworks = user_social_links_absent
+    private var mAdditionalPhone = user_phone_work_additional
     private var mSocialNetworks = (socialNetworks ?: emptyList())
             .map { it.copy() }
             .let {
@@ -96,6 +98,11 @@ class ProfileDataPersonalEditItem(
                     if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error = null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
+            }
+            etAdditionalNumber.apply {
+                initInput(mAdditionalPhone) {
+                    mAdditionalPhone = it.toString()
+                }
             }
             tilMobilePhone.apply { error = null }
             etMobilePhone.apply {
@@ -264,6 +271,7 @@ class ProfileDataPersonalEditItem(
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(User.FIELD_USER_BIRTHDAY, it)
             }
+            if (mAdditionalPhone != user_phone_work_additional) put(User.FIELD_USER_WORK_PHONE_ADDITIONAL, mAdditionalPhone)
             if (showBirthday != mShowBirthday) put(User.FIELD_USER_BIRTHDAY_SHOW, mShowBirthday)
             if (address != mAddress) {
                 put(User.FIELD_USER_ADDRESS, mAddress.address ?: "")

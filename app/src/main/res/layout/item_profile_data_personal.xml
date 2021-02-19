@@ -95,6 +95,20 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPhoneWorkTitle"
         tools:text="+7 (927) 298-16-17" />
 
+    <TextView
+        android:id="@+id/tvAdditionalNumber"
+        style="@style/Profile.Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:textColor="@color/profile_data_text_link"
+        android:layout_marginStart="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvPhoneWork"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneWorkTitle"
+        tools:text="12345" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupPhoneWork"
         android:layout_width="wrap_content"

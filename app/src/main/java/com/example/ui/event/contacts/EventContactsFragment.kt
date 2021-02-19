@@ -93,14 +93,14 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     ) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map {
-                ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext()))
+                ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext()), it.additional)
             })
-            addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email) })
+            addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email, null) })
             if (webLinks.isNotEmpty()) {
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n")))
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n"), null))
             }
             if (socialLinks.isNotEmpty()) {
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n")))
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n"), null))
             }
             if (!address.isNullOrEmpty()) {
                 val clickableSpan = ClickableSpan(drawUnderline = false) {
@@ -109,10 +109,10 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 val addressClickable = address.toSpannable().apply {
                     set(0, address.length, clickableSpan)
                 }
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable))
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable, null))
             }
             if (!place.isNullOrEmpty()) {
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place))
+                add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place, null))
             }
 
         })

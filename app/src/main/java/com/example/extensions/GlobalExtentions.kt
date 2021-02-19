@@ -202,6 +202,10 @@ fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
     }
 }
 
+fun TextView.additionalNumber(number: String?) {
+    text = if (!number.isNullOrEmpty()) " (доб.$number)" else ""
+}
+
 fun View.setSelectableItemBackgroundBorderless() = with(TypedValue()) {
     context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, this, true)
     setBackgroundResource(resourceId)

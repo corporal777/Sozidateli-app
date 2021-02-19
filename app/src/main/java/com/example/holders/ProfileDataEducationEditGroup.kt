@@ -10,7 +10,6 @@ import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
 import com.example.extensions.forEachItems
-import com.example.ui.views.ClearDegreeDialog
 import com.example.util.DEGREES_MAX_SIZE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup

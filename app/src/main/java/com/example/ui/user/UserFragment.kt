@@ -208,6 +208,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 birthday,
                 city,
                 socialNetworks?.map { it.value },
+                user.user_phone_work_additional,
                 onOrganizationClickListener)
     }
 

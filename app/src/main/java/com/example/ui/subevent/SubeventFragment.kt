@@ -2,6 +2,7 @@ package com.example.ui.subevent
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -15,6 +16,7 @@ import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -24,7 +26,8 @@ import javax.inject.Provider
 
 class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment {
 
-    override val title: CharSequence? = null
+    override val title: CharSequence
+            get() = requireContext().resources.getString(R.string.event)
 
     @InjectPresenter
     lateinit var presenter: SubeventPresenter

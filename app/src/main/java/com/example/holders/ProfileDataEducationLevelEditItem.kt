@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
-import com.example.ui.views.ClearDegreeDialog
 import com.example.ui.views.educationlist.EducationPopupWindow
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

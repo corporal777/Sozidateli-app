@@ -149,17 +149,20 @@
                     style="@style/Profile.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:text="@string/organization_links" />
+                    android:text="@string/event_contacts_site" />
 
                 <TextView
                     android:id="@+id/tvLinks"
                     style="@style/Profile.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:textColorHighlight="@android:color/white"
                     android:autoLink="web"
                     tools:text="http://google.com" />
 
@@ -168,6 +171,7 @@
                     style="@style/Profile.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:text="@string/organization_sn_links" />
@@ -177,6 +181,7 @@
                     style="@style/Profile.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:autoLink="web"
@@ -187,6 +192,7 @@
                     style="@style/Profile.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:text="@string/organization_email" />
@@ -196,6 +202,7 @@
                     style="@style/Profile.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:autoLink="email"
@@ -206,15 +213,17 @@
                     style="@style/Profile.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:text="@string/organization_phones" />
+                    android:text="@string/phone" />
 
                 <TextView
                     android:id="@+id/tvPhone"
                     style="@style/Profile.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:autoLink="phone"
@@ -225,6 +234,7 @@
                     style="@style/Profile.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:text="@string/organization_address" />
@@ -234,6 +244,7 @@
                     style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     tools:ignore="MissingPrefix"
@@ -305,6 +316,7 @@
 
                 <TextView
                     android:id="@+id/tvEvents"
+                    fontPath="fonts/Roboto-Bold.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_horizontal_default"

@@ -3,10 +3,12 @@ package com.example.ui.organizations
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
@@ -38,6 +40,7 @@ import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_organization.*
@@ -45,13 +48,14 @@ import kotlinx.android.synthetic.main.fragment_organization.btnAction
 import kotlinx.android.synthetic.main.fragment_organization.llContent
 import kotlinx.android.synthetic.main.fragment_status.scrollContainer
 import parseColor
+import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
 class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarFragment {
 
     override val title: CharSequence
-        get() = ""
+        get() = requireContext().resources.getString(R.string.profile_work_organization)
 
     @InjectPresenter
     lateinit var presenter: OrganizationPresenter
@@ -133,6 +137,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvLinks.apply {
             isVisible = hasLinks
             text = links
+            removeUrlUnderline()
         }
 
         val snLinks = organization.socialLinks?.joinToString(separator = "\n")
@@ -141,6 +146,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvSnLinks.apply {
             isVisible = hasSnLinks
             text = snLinks
+            removeUrlUnderline()
         }
 
         val emails = organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }
@@ -149,6 +155,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvEmail.apply {
             isVisible = hasEmails
             text = emails
+            removeUrlUnderline()
         }
 
         val phones = organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }
@@ -157,6 +164,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvPhone.apply {
             isVisible = hasPhones
             text = phones
+            removeUrlUnderline()
         }
 
         val hasAddress = !organization.addressShort.isNullOrEmpty() ||
@@ -192,7 +200,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
-        tvEvents.text = getString(R.string.organization_events).format(organization.totalEvents)
+        tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
         rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 update(events.map {
