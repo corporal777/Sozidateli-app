@@ -88,7 +88,7 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
                     -100L,
                     event.name,
                     null,
-                    event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
+                    event.conferenceStart?.formatToEventDatesIntervalNew(event.conferenceFinish),
                     event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
                     event.registrationHeadline,
                     event.registrationSubtitle

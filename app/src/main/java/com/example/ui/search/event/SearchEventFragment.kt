@@ -20,6 +20,7 @@ import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
 import com.example.holders.PlaceholderItem
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
@@ -74,7 +75,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
     }
 
     override fun showEventRequest(event: String) {

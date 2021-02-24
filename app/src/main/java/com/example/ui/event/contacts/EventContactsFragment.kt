@@ -46,7 +46,8 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
         private const val MAP_TAG = "com.example.ui.event.contacts.EventContactsFragment.SupportMapFragment"
     }
 
-    override val title: String? = null
+    override val title: String?
+        get() = requireContext().resources.getString(R.string.user_profile_contacts)
 
     @InjectPresenter
     lateinit var presenter: EventContactsPresenter

@@ -21,6 +21,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -69,7 +70,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                             Log.INFO
                         } else if (url.contains("event")) {
                             val eventId = url.replace("event", "").replace("/", "")
-                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId))
+                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
                         } else {
                             Log.INFO
                         }

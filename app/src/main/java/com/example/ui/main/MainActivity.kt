@@ -36,6 +36,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
@@ -354,7 +355,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
     }
 
     override fun showStories() {

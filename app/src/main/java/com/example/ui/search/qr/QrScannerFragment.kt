@@ -16,6 +16,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import kotlinx.android.synthetic.main.fragment_qr_scanner.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -62,7 +63,7 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View, ToolbarFragmen
     }
 
     override fun showEvent(event: Event) {
-        findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragment(event.id))
+        findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragment(event.id, ABOUT_FROM_OTHER))
     }
 
     override fun showEventNotFoundError() {

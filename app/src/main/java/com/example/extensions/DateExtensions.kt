@@ -131,6 +131,42 @@ fun String?.formatToEventDatesInterval(finish: String?): String? {
     }.toString()
 }
 
+fun String?.formatToEventDatesIntervalNew(finish: String?): String? {
+    val start = this
+
+    val startDate = start?.parseToDate(defaultServerDateFormatter)
+    val endDate = finish?.parseToDate(defaultServerDateFormatter)
+    val startCalendar = startDate?.calendar()
+    val endCalendar = endDate?.calendar()?.takeIf { startCalendar?.isSameDay(it) != true }
+    val startMonth = startCalendar?.get(Calendar.MONTH)
+    val endMonth = endCalendar?.get(Calendar.MONTH)
+
+    val startFormatter = if (startCalendar != null) {
+        SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+    } else {
+        null
+    }
+
+    val endFormatter = if (endCalendar != null) {
+        SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+    } else {
+        null
+    }
+
+    return StringBuilder().apply {
+        if (startFormatter != null) {
+            if (startFormatter != null && endFormatter != null && startMonth == endMonth) {
+                append(startCalendar?.get(Calendar.DAY_OF_MONTH))
+                append(" - ")
+            } else {
+                append(startFormatter.format(startDate))
+                if (endFormatter != null) append(" - ")
+            }
+        }
+        if (endFormatter != null) append(endFormatter.format(endDate))
+    }.toString()
+}
+
 fun Calendar.formatToDefaultTime(): String {
     val formatter = if (this.isSameYear(Calendar.getInstance())) defaultDateTimeFormatterNoYear
     else defaultDateFormatter

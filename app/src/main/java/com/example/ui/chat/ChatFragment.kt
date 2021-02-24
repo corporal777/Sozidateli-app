@@ -33,6 +33,8 @@ import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_EVENT
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarButton
@@ -329,7 +331,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
     }
 
     override fun setUserAvatar(url: String) {

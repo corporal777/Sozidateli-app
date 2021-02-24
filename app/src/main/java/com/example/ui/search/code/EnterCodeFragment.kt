@@ -10,6 +10,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import kotlinx.android.synthetic.main.fragment_enter_code.*
 import onTextChanged
 import javax.inject.Inject
@@ -54,7 +55,7 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View, ToolbarFragmen
     }
 
     override fun showEvent(event: Event) {
-        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(event.id))
+        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(event.id, ABOUT_FROM_OTHER))
     }
 
     override fun showEventNotFoundError() {

@@ -55,6 +55,8 @@ import javax.inject.Provider
 
 class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragment {
 
+    private var screenType = ABOUT_FROM_OTHER
+
     override val title: String? = null
 
     override fun layout() = R.layout.fragment_about_event
@@ -68,6 +70,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     @ProvidePresenter
     fun providePresenter(): AboutEventPresenter = presenterProvider.get().apply {
         eventId = AboutEventFragmentArgs.fromBundle(requireArguments()).eventId
+        screenType = AboutEventFragmentArgs.fromBundle(requireArguments()).screenType
     }
 
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
@@ -156,7 +159,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 eventData.organization?.name,
                 eventData.name,
                 null,
-                eventData.conferenceStart.formatToEventDatesInterval(eventData.conferenceFinish),
+                eventData.conferenceStart.formatToEventDatesIntervalNew(eventData.conferenceFinish),
                 eventData.conferenceRegistrationFinishDate
                         ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
                 eventData.isFavorite ?: false,
@@ -285,7 +288,12 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             }
         }
 
-        flRegister.isVisible = visibility
+        when (screenType) {
+            ABOUT_FROM_EVENT -> flRegister.isVisible = false
+            else -> flRegister.isVisible = visibility
+        }
+
+        //flRegister.isVisible = visibility
 
         flRegister.btnAction.apply {
             text = textRes?.let { getString(it) }
@@ -500,5 +508,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         this.toolbarContentActionBar = toolbarContentActionBar
+    }
+
+    companion object {
+        const val ABOUT_FROM_EVENT = 1
+        const val ABOUT_FROM_OTHER = 2
     }
 }

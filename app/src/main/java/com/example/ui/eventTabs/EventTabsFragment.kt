@@ -20,6 +20,8 @@ import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_EVENT
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.contacts.EventContactsFragmentArgs
 import com.example.ui.event.location.EventLocationFragment
@@ -112,7 +114,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     override fun showScheduleTab() = selectTab(R.id.tab_event_schedule)
 
-    override fun showAboutTab(eventId: String) = selectTab(R.id.about_event, AboutEventFragmentArgs.Builder(eventId).build().toBundle())
+    override fun showAboutTab(eventId: String) = selectTab(R.id.about_event, AboutEventFragmentArgs.Builder(eventId, ABOUT_FROM_EVENT).build().toBundle())
 
     override fun showMapTab(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) = selectTab(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
 

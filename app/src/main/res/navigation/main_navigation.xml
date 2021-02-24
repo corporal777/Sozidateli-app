@@ -783,6 +783,9 @@
             android:name="eventId"
             app:argType="string"
             app:nullable="false" />
+        <argument
+            android:name="screenType"
+            app:argType="integer"/>
     </fragment>
 
     <fragment

@@ -18,6 +18,7 @@ import com.example.data.models.takeFormat
 import com.example.extensions.getAffiliationString
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
@@ -146,7 +147,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
                 R.id.about_event_fragment,
-                AboutEventFragmentArgs.Builder(event).build().toBundle(),
+                AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
                 null,
                 eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
     }

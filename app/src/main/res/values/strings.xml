@@ -129,7 +129,7 @@
     <string name="about_event_time">Время</string>
     <string name="about_event_date">Дата</string>
     <string name="about_event_partners">Партнеры</string>
-    <string name="about_event_registration_finish">Заявки принимаются до</string>
+    <string name="about_event_registration_finish">Заявки принимаются по</string>
     <string name="about_event_registration_closed">Прием заявок закрыт</string>
 
     <string name="news_read_more">Подробнее</string>

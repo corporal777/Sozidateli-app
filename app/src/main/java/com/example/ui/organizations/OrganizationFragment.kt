@@ -33,6 +33,7 @@ import com.example.holders.EventStatusItem
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
@@ -284,7 +285,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
     }
 
     override fun showEventRequest(event: String) {
@@ -307,7 +308,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event.id).build().toBundle())
+        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event.id, ABOUT_FROM_OTHER).build().toBundle())
     }
 
     override fun showEventRequest(event: Event) {
