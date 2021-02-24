@@ -59,7 +59,7 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
             addAll(education.map { ProfileDataEducationItem(it) })
         }
 
-        adapter.update(listOf(educationGroup))*/
+        adapter.update(listOf(educationGroup))
     }
 
     override fun showEdit() {
