@@ -11,10 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.SearchFilter
-import com.example.data.models.takeFormat
+import com.example.data.models.*
 import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
@@ -46,12 +43,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
         AlertDialog.Builder(requireContext())
                 .setItems(
                         emails.map { it.getAffiliationString(underlinedEmail = true) }
@@ -65,10 +62,10 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EmailAffiliation) {
+    override fun showWriteToOrganization(email: EventPhoneModel) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
@@ -89,8 +86,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
     }
 
     override fun createItem(itemData: Event?): Group {
-        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventGroup(
+        return /*if (itemData == null)*/ PlaceholderItem(PlaceholderItem.Type.EVENT)
+        /*else EventGroup(
                 itemData.id,
                 itemData.status,
                 itemData.userRegistration,
@@ -110,7 +107,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                     showStartTime = false
                 },
                 itemData.userAgreement
-        )
+        )*/
     }
 
     @SuppressLint("InflateParams")

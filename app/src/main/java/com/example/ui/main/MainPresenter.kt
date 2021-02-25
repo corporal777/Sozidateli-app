@@ -208,25 +208,25 @@ class MainPresenter
                 }
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                /*.flatMapMaybe { calendar ->
+                .flatMapMaybe { calendar ->
                     if (calendar.isEmpty()) Maybe.empty()
                     else getLocation()
                             .timeout(5, TimeUnit.SECONDS)
                             .map { calendar to it }
-                }*/
+                }
                 .observeOn(Schedulers.io())
-                .flatMapCompletable { Completable.complete() }
-                /*.onErrorComplete()
+                //.flatMapCompletable { Completable.complete() }
+                //.onErrorComplete()
                 .flatMapCompletable {
                     val calendar = it.first
                     val location = it.second
                     val ids = calendar.map { calendarItem -> calendarItem.id }
-                    /*val atEvents = calendar.map { calendarItem ->
-                        checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
-                    }*/
+                    val atEvents = calendar.map { calendarItem ->
+                        checkUserLocationInEventArea(location, calendarItem.address?.lat?: 0.0, calendarItem.address?.lon?: 0.0)
+                    }
                     userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
-                .onErrorComplete()*/
+                .onErrorComplete()
     }
 
     private fun getLocation(): Maybe<Location> {

@@ -45,10 +45,10 @@ interface OrganizationContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>)
+        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EmailAffiliation)
+        fun showWriteToOrganization(email: EventPhoneModel)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
@@ -80,11 +80,11 @@ interface OrganizationContract {
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EmailAffiliation>)
+        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
-        fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
+        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
         fun onShowEditProfileClick()
     }
 }

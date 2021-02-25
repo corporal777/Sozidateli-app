@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.OrganizationsFilter
 import com.example.holders.EventDataListItem
@@ -47,7 +48,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
         ))
     }
 
-    override fun createEventDataListItem(event: Event): EventDataListItem {
+    override fun createEventDataListItem(event: EventNew): EventDataListItem {
         return super.createEventDataListItem(event).apply {
             showStartTime = false
         }
