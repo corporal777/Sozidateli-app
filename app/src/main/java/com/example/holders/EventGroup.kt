@@ -1,8 +1,8 @@
 package com.example.holders
 
-import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
+import com.example.data.models.EventPhoneModel
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -14,7 +14,7 @@ class EventGroup(
         backgroundColor: String?,
         logo: String?,
         format: EventFormat?,
-        organizationEmails: List<EmailAffiliation>?,
+        organizationEmails: List<EventPhoneModel>?,
         conferenceRegistrationClosed: Boolean,
         eventClickListener: EventStatusItem.OnEventClickListener,
         private val dataItem: Item,

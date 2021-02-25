@@ -24,7 +24,7 @@ data class EventNew(
         @SerializedName("requestsApply")
         val requestsApply: RequestApplyModel? = null,
         val organization: Int? = null,
-        val regularity: Int? = null,
+        val regularity: EventRegularity? = null,
         val topic: TopicModel? = null,
         @SerializedName("backgroundColor")
         val backgroundColor: BackgroundColorModel? = null,
@@ -41,7 +41,8 @@ data class EventNew(
         @SerializedName("userAgreement")
         val userAgreement: EventUserAgreement? = null,
         val image: EventUserAgreement? = null,
-        val address: NewUserAddress? = null
+        val address: NewUserAddress? = null,
+        val binds: EventBindsModel? = null
 ) {
 
         companion object {
@@ -54,6 +55,37 @@ data class EventNew(
                 const val EVENT_ORGANIZATION = "organization"
         }
 }
+
+@Parcelize
+data class EventBindsModel(
+        val organization: OrganizationNew? = null,
+        val activity: List<EventActivityModel>? = null
+): Parcelable {
+
+        fun getFirstActionStartDate(): String? {
+                return if (activity.isNullOrEmpty())
+                        null
+                else
+                        activity.first().holdingDate?.from
+        }
+}
+
+@Parcelize
+data class EventActivityModel(
+        val id: Int? = null,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
+        @SerializedName("createdBy")
+        val createdBy: Int? = null,
+        val event: Int? = null,
+        val title: String? = null,
+        val description: String? = null,
+        @SerializedName("holdingDate")
+        val holdingDate: DateModel? = null/*,
+        val auditorium: Any? = null,
+        val member: List<Any>? = null,
+        val tag: List<Any>? = null*/
+): Parcelable
 
 @Parcelize
 data class EventUserAgreement(
@@ -118,14 +150,15 @@ data class BackgroundColorModel(
         val value: String? = null
 ): Parcelable
 
+@Parcelize
 data class DateModel(
         val from: String? = null,
         val to: String? = null
-)
+): Parcelable
 
 data class RequestApplyModel(
         @SerializedName("dateLimit")
         val dateLimit: String? = null,
         @SerializedName("isClosed")
-        val isClosed: Boolean? = null
+        val isClosed: Int? = null
 )
