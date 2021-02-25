@@ -29,15 +29,16 @@ class ProfileDataEducationLevelItem(
                 tvDegreesLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
                     "${availableDegrees.firstOrNull { item -> item.id == degree.degree }?.name}"
                 }
-                val sp = academicDegrees.joinToString() { item ->
-                    "${item.speciality}"
+                val sp = academicDegrees.joinToString(separator = "") { item ->
+                    if (item.speciality != null) "${item.speciality}" else ""
                 }
                 if (sp.isEmpty()) {
                     tvSpecializationTitle.isVisible = false
                     tvSpecializationLevel.isVisible = false
                 } else {
                     tvSpecializationLevel.text = academicDegrees.joinToString(separator = "\n") { degree ->
-                        "${degree.speciality}"
+                        val degre = availableSpecialities.firstOrNull { item -> item.id == degree.speciality }?.name
+                        degre ?: ""
                     }
                     tvSpecializationTitle.isVisible = true
                     tvSpecializationLevel.isVisible = true

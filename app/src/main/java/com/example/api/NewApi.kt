@@ -81,7 +81,7 @@ interface NewApi {
     @GET("v1/speciality")
     fun getSpeciality(@Query("limit") limit: Int): Single<EducationLevelModel>
 
-    @GET("v1/academic-degrees")
+    @GET("v1/academic-degree")
     fun getAcademicDegrees(): Single<EducationLevelModel>
 
     @PATCH("v1/user-education/user/{id}")
