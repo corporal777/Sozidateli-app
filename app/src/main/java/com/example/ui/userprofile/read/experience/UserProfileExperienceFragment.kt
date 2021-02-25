@@ -48,14 +48,14 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
     override fun onUserUpdated(user: UserDetail?) {
         user ?: return
 
-        /*val work = user.work ?: emptyList()
+        val work = user.binds?.workExperience?.models ?: emptyList()
         if (work.isEmpty()) {
             adapter.update(arrayListOf(EmptyItem(context?.resources?.getString(R.string.no_experience)?: "")))
         } else {
             adapter.update(work.mapIndexed { index, socialRoles ->
                 ProfileDataWorkExperienceItem(socialRoles, index == 0)
             })
-        }*/
+        }
     }
 
     override fun showEdit() {

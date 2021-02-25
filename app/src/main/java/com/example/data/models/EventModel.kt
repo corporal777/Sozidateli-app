@@ -23,7 +23,7 @@ data class EventModel (
        val requestsApply: RequestsApplyModel? = null,
        val organization: Int? = null,
        val format: FormatModel? = null,
-       val regularity: Int? = null,
+       val regularity: EventRegularity? = null,
        @SerializedName("targetedAudience")
        val targetedAudience: List<Int>? = null,
        val topic: TopicModel? = null,
@@ -36,6 +36,11 @@ data class EventModel (
        @SerializedName("backgroundColor")
        val backgroundColor: ColorModel? = null,
        val state: EventState? = null
+)
+
+data class EventRegularity(
+        val value: Int? = null,
+        val custom: String? = null
 )
 
 data class EventState (
