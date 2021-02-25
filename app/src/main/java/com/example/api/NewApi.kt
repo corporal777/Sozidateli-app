@@ -98,4 +98,7 @@ interface NewApi {
 
     @GET("v1/organization/{id}")
     fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: List<String>?): Single<OrganizationNew>
+
+    @GET("v1/event-format")
+    fun getEventFormatsList(@QueryMap map: Map<String, Any>): Single<EventFormatsModel>
 }

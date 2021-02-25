@@ -92,7 +92,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             // do nothing
         }
 
-        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
             // do nothing
         }
 

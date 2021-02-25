@@ -6,6 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.EventNew
+import com.example.data.models.EventPhoneModel
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -28,10 +29,10 @@ interface EventListContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>)
+        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EmailAffiliation)
+        fun showWriteToOrganization(email: EventPhoneModel)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
@@ -52,12 +53,12 @@ interface EventListContract {
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EmailAffiliation>)
+        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
 
-        fun onWriteToOrganizationEmailChosen(email: EmailAffiliation)
+        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
 
         fun onShowEditProfileClick()
     }

@@ -5,7 +5,7 @@ class EventsCalendarListBody {
     val sortType: String = "desc"
     val limit: Int = 20
     val offset: Int = 0
-    var binds: String? = null
+    var binds: String? = "rights,organization,tag,page,activity,user-registration,user-form-result"
     var id: List<Int>? = null
     var name: List<String>? = null
     var code: List<String>? = null

@@ -74,7 +74,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
@@ -267,7 +267,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         item.notifyChanged(user.getUserSubscribeAction())
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
         AlertDialog.Builder(requireContext())
                 .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
                     val email = emails[which]
@@ -278,10 +278,10 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EmailAffiliation) {
+    override fun showWriteToOrganization(email: EventPhoneModel) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }

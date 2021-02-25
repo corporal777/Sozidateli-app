@@ -1,10 +1,12 @@
 package com.example.ui.event.list.recommendations
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.EventNew
+import com.example.data.models.EventNew.Companion.EVENT_BINDS
 import com.example.data.models.EventNew.Companion.EVENT_LIMIT
 import com.example.data.models.EventNew.Companion.EVENT_OFFSET
 import com.example.data.models.EventNewModel
@@ -30,7 +32,8 @@ class RecommendationsPresenter
 
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //return eventRepository.getEventRecommendations(limit, offset)
-        return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset))
+        return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset,
+                EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result"/*arrayListOf("destination-scheme", "auditorium", "partner", "member", "form")*/))
     }
 
     override fun onSearchClick() = viewState.showSearch()

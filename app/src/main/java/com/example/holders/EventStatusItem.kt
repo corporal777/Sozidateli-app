@@ -22,6 +22,7 @@ import com.example.R
 import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
+import com.example.data.models.EventPhoneModel
 import com.example.util.ClickableSpan
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -40,7 +41,7 @@ class EventStatusItem(
         private val backgroundColor: String?,
         private val logo: String?,
         private val format: EventFormat?,
-        private val organizationEmails: List<EmailAffiliation>?,
+        private val organizationEmails: List<EventPhoneModel>?,
         private val conferenceRegistrationClosed: Boolean,
         private val onEventClickListener: OnEventClickListener,
         private val userAgreement: String?,
@@ -257,7 +258,7 @@ class EventStatusItem(
         fun onActionRegister(event: String)
         fun onActionShowEvent(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EmailAffiliation>)
+        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
         fun onShowEventClick(view: View, event: String)
         fun onShowFilterClick(format: Int)
     }

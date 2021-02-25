@@ -106,11 +106,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 }
     }
 
-    override fun onActionWriteToOrganization(emails: List<EmailAffiliation>) {
+    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: EmailAffiliation) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
         viewState.showWriteToOrganization(email)
     }
 
