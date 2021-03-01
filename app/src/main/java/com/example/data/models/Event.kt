@@ -1,7 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Event(
         @SerializedName("event_id")
         val id: String,
@@ -50,8 +53,9 @@ data class Event(
         @SerializedName("can_register")
         val canRegister: Boolean,
         @SerializedName("user_agreement")
-        val userAgreement: String?
-) {
+        val userAgreement: String?,
+        val link: String?
+): Parcelable {
 
     enum class Status {
         CONFERENCE_ENDS,

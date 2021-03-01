@@ -14,7 +14,11 @@
             android:layout_height="wrap_content"
             android:text="@string/profile_phone_mobile"/>
 
-        <com.example.ui.views.CustomTextInputLayout
+        <com.example.ui.views.PhoneView
+            android:id="@+id/etMobilePhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <!--<com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMobilePhone"
             style="@style/Profile.Edit.InputLayout"
             android:layout_width="match_parent"
@@ -28,7 +32,7 @@
                 style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_phone_mobile"
                 android:inputType="phone" />
-        </com.example.ui.views.CustomTextInputLayout>
+        </com.example.ui.views.CustomTextInputLayout>-->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPhoneConfirm"

@@ -113,6 +113,14 @@ class StoriesFragment : BaseFragment(), StoriesContract.View, DoNotCheckConnecti
             3 -> R.drawable.st_4_fg
             else -> throw IllegalStateException("No file for position: $position")
         }))
+
+        ivTextImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
+            0 -> R.drawable.st_1_text
+            1 -> R.drawable.st_2_text
+            2 -> R.drawable.st_3_text
+            3 -> R.drawable.st_4_text
+            else -> throw IllegalStateException("No file for position: $position")
+        }))
     }
 
     override fun layout() = R.layout.fragment_stories

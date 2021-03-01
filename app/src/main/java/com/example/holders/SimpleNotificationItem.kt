@@ -13,8 +13,9 @@ class SimpleNotificationItem(
         private val notification: Notification,
         onReadMoreClickListener: OnNotificationReadMoreClickListener,
         onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-        private val onNotificationReadClickListener: OnNotificationReadClickListener
-) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
+        private val onNotificationReadClickListener: OnNotificationReadClickListener,
+        private val openEventListener: OnOpenEventListener
+) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener, openEventListener) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)

@@ -710,4 +710,5 @@
     <string name="event">Событие</string>
     <string name="phone">Телефон</string>
     <string name="tags">Теги</string>
+    <string name="notification_event_title">Сообщение от организаторов мероприятия: %s</string>
 </resources>

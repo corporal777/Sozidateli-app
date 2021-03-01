@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_register_email_new.ivClose
 import kotlinx.android.synthetic.main.fragment_register_email_new.tilEmail
 import kotlinx.android.synthetic.main.fragment_register_email_new.tilFirstName
 import kotlinx.android.synthetic.main.fragment_register_email_new.tilLastName
-import kotlinx.android.synthetic.main.fragment_register_email_new.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_register_email_new.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_register_email_new.tvPhoneConfirmed
 import onTextChanged
@@ -56,7 +55,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
         scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
 
         ibRegister.setOnClickListener {
-            if (etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {
+            if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()/*etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())*/) {
                 presenter.onClickRegister(
                         etEmail.text?.toString(),
                         etFirstName.text?.toString(),
@@ -68,14 +67,17 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
                 showWrongPhoneError(true)
             }
         }
-
         etMobilePhone.apply {
+            getPhoneCallback {
+                presenter.onChangePhoneText(it)
+            }
+        }
+        /*etMobilePhone.apply {
             onTextChanged {
                 presenter.onChangePhoneText(it?.toString() ?: "")
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        }
-        //.setOnClickListener { presenter.onPhoneConfirmClick() }
+        }*/
     }
 
     override fun setData(
@@ -148,9 +150,10 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showWrongPhoneError(show: Boolean) {
-        tilMobilePhone.apply {
+        etMobilePhone.showError(show)
+        /*tilMobilePhone.apply {
             error = if (show) getString(R.string.invalid_phone_number_second_error) else null
-        }
+        }*/
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {

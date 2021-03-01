@@ -1,6 +1,7 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -16,7 +17,9 @@ data class RemoteNotification(
         val time: String,
         val text: String?,
         val status: String?,
-        val extra: String?
+        val extra: String?,
+        val event_activity_id: Int?,
+        val event: Event?
 ) : Parcelable {
     companion object {
         const val TYPE_RATE = "event_poll"

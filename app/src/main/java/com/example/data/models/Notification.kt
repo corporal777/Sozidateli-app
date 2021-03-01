@@ -1,6 +1,7 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -12,8 +13,13 @@ data class Notification(
         val type: Type,
         var wasRead: Boolean,
         var acceptState: AcceptState = AcceptState.NONE,
-        val rateId: String? = null
-) : Parcelable {
+        val rateId: String? = null,
+        @SerializedName("event_id")
+        val eventId: Int?,
+        @SerializedName("event_activity_id")
+        val eventActivityId: Int?,
+        val eventInfo: NotificationEventInfo?
+        ) : Parcelable {
 
     enum class Type {
         SIMPLE, ACCEPTABLE, RATE
@@ -44,8 +50,17 @@ data class Notification(
                         RemoteNotification.STATUS_CANCELLED -> AcceptState.DISABLED
                         else -> AcceptState.NONE
                     },
-                    if (remoteNotification.event_id == 0) null else remoteNotification.event_id.toString()
+                    if (remoteNotification.event_id == 0) null else remoteNotification.event_id.toString(),
+                    remoteNotification.event_id,
+                    remoteNotification.event_activity_id,
+                    if (remoteNotification.event == null) null else NotificationEventInfo(remoteNotification.event.name, remoteNotification.event.link)
             )
         }
     }
 }
+
+@Parcelize
+data class NotificationEventInfo(
+        val name: String?,
+        val link: String?
+): Parcelable

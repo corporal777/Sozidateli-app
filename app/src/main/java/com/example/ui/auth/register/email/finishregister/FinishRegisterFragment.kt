@@ -21,7 +21,6 @@ import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
 import com.example.util.initSwitch
-import isValidPhoneNumber
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnPhoneConfirm
 import kotlinx.android.synthetic.main.fragment_finish_register.cbAgree
@@ -33,7 +32,7 @@ import kotlinx.android.synthetic.main.fragment_finish_register.etMobilePhone
 import kotlinx.android.synthetic.main.fragment_finish_register.flAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
-import kotlinx.android.synthetic.main.fragment_finish_register.tilMobilePhone
+import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvPhoneConfirmed
@@ -75,7 +74,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         scNoMiddleName.initSwitch(isNoMiddleName) {
             presenter.onNoMiddleNameChecked(it)
         }
-        etMobilePhone.onTextChanged { it?.toString()?.let { text ->
+        etMobilePhone.getPhoneCallback { it.let { text ->
             presenter.onChangePhoneText(text)
         } }
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
@@ -104,7 +103,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onHandleAuthLink()
         }
         ibRegister.setOnClickListener {
-            if (etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {
+            if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
                 presenter.onHandleAuthLink()
             } else {
                 showWrongPhoneError(true)
@@ -138,7 +137,8 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             etMiddleName.setText(middleName)
             scNoMiddleName.isChecked = false
         }
-        etMobilePhone.setText(phone)
+        //etMobilePhone.setText(phone)
+        etMobilePhone.setPhone(phone?: "")
         cbAgree.isChecked = isAgree
         updatePhoneConfirmationStatus(phoneVerified)
     }
@@ -179,9 +179,10 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun showWrongPhoneError(show: Boolean) {
-        tilMobilePhone.apply {
+        etMobilePhone.showError(show)
+        /*tilMobilePhone.apply {
             error = if (show) getString(R.string.register_phone_error) else null
-        }
+        }*/
     }
 
     override fun showPhoneConfirm(phone: String) {

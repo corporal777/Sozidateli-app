@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -18,8 +17,8 @@ import com.example.R
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.base.BaseFragment
 import com.example.util.ClickableSpan
-import kotlinx.android.synthetic.main.fragment_invite_register.*
 import kotlinx.android.synthetic.main.fragment_invite_register.btnPhoneConfirm
+import kotlinx.android.synthetic.main.fragment_invite_register.cbAgree
 import kotlinx.android.synthetic.main.fragment_invite_register.etEmail
 import kotlinx.android.synthetic.main.fragment_invite_register.etFirstName
 import kotlinx.android.synthetic.main.fragment_invite_register.etLastName
@@ -33,11 +32,10 @@ import kotlinx.android.synthetic.main.fragment_invite_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_invite_register.tilEmail
 import kotlinx.android.synthetic.main.fragment_invite_register.tilFirstName
 import kotlinx.android.synthetic.main.fragment_invite_register.tilLastName
-import kotlinx.android.synthetic.main.fragment_invite_register.tilMobilePhone
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPassword
 import kotlinx.android.synthetic.main.fragment_invite_register.tilPasswordConfirm
+import kotlinx.android.synthetic.main.fragment_invite_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_invite_register.tvPhoneConfirmed
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -97,12 +95,17 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
         }
 
         etMobilePhone.apply {
+            getPhoneCallback {
+                presenter.onChangePhoneText(it)
+            }
+        }
+        /*etMobilePhone.apply {
             onTextChanged {
                 presenter.onChangePhoneText(it.toString())
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-        etMobilePhone.setText("+7")
+        etMobilePhone.setText("+7")*/
         btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
     }
 
@@ -122,9 +125,10 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
     }
 
     override fun showWrongPhoneError(show: Boolean) {
-        tilMobilePhone.apply {
+        etMobilePhone.showError(show)
+        /*tilMobilePhone.apply {
             error = if (show) getString(R.string.invalid_phone_number_error) else null
-        }
+        }*/
     }
 
     override fun showPhoneConfirm(phone: String) {

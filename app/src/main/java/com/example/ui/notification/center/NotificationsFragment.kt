@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -13,6 +14,9 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.notification.NotificationFragmentDirections
+import com.example.ui.notification.NotificationFragmentDirections.notificationToAboutEventFragment
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -53,6 +57,8 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     private val rateClickListener: OnNotificationRateClickListener = { presenter.onNotificationRateClick(it) }
 
+    private val openEventListener: OnOpenEventListener = { findNavController().navigate(NotificationsFragmentDirections.notificationToAboutEventFragment(it, AboutEventFragment.ABOUT_FROM_OTHER)) }
+
     private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
         presenter.onNotificationUrlClick(url)
         true
@@ -81,9 +87,9 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         adapter.update(notifications.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
             else when (it.type) {
-                Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, linkClickListener, readClickListener)
-                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, linkClickListener, acceptClickListener, changeDecisionClickListener)
-                Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener)
+                Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, linkClickListener, readClickListener, openEventListener)
+                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, linkClickListener, acceptClickListener, changeDecisionClickListener, openEventListener)
+                Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener, openEventListener)
             }
         })
         swipeToRefresh.isRefreshing = false

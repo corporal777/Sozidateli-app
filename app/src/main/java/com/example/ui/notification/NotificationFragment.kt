@@ -25,6 +25,7 @@ import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -116,7 +117,20 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         }
 
         tvTitle.apply {
-            text = getString(titleRes)
+            if (notification.eventId != 0 && notification.eventActivityId == 0) {
+                text = context.resources.getString(R.string.notification_event_title,
+                        "<br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
+                BetterLinkMovementMethod.linkifyHtml(this)
+                        .setOnLinkClickListener { _, url ->
+                            val eventMass = url.split("event")
+                            val eventId = eventMass.last().replace("/", "")
+                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
+                            true
+                        }
+                removeUrlUnderline()
+            } else {
+                text = getString(titleRes)
+            }
         }
 
         tvActionText.apply {

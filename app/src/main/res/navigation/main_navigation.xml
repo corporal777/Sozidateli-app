@@ -495,6 +495,10 @@
         <action
             android:id="@+id/notifications_center_to_event_rating"
             app:destination="@id/event_rating_fragment" />
+
+        <action
+            android:id="@+id/notification_to_about_event_fragment"
+            app:destination="@id/about_event_fragment" />
     </fragment>
 
     <fragment

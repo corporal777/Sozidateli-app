@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_phone.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_phone.btnPhoneConfirm
 import kotlinx.android.synthetic.main.item_profile_data_edit_phone.etMobilePhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_phone.scMobilePhone
-import kotlinx.android.synthetic.main.item_profile_data_edit_phone.tilMobilePhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_phone.tvPhoneConfirmed
 import onTextChanged
 
@@ -42,9 +41,19 @@ class ProfilePhoneEditItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            tilMobilePhone.apply { error = null }
+            //tilMobilePhone.apply { error = null }
             etMobilePhone.apply {
-                initInput(mMobilePhone) {
+                setPhone(mMobilePhone?: "")
+                getPhoneCallback {
+                    mMobilePhone = it
+                    if (it.isNotEmpty() == true && getError() != null) showError(false)
+
+                    if (isPhoneConfirmed) {
+                        mIsPhoneConfirmed = mMobilePhone == mobilePhone
+                        updatePhoneConfirmationStatus(viewHolder)
+                    }
+                }
+                /*initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
                     if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
 
@@ -53,21 +62,22 @@ class ProfilePhoneEditItem(
                         updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
-                addTextChangedListener(PhoneNumberFormattingTextWatcher())
+                addTextChangedListener(PhoneNumberFormattingTextWatcher())*/
             }
 
             scMobilePhone.initSwitch(mShowMobilePhone) { mShowMobilePhone = it }
 
             btnPhoneConfirm.apply {
                 setOnClickListener {
-                    val phone = etMobilePhone.text.toString()
+                    val phone = etMobilePhone.getFullNumberWithPlus()//etMobilePhone.text.toString()
                     if (phone.isValidPhoneNumber(context)) {
                         confirmPhoneClick(phone)
                     } else {
-                        tilMobilePhone.apply {
+                        etMobilePhone.showErrorWithFocus(invalidNumberError)
+                        /*tilMobilePhone.apply {
                             error = invalidNumberError
                             requestFocus()
-                        }
+                        }*/
                     }
                 }
             }
@@ -91,10 +101,11 @@ class ProfilePhoneEditItem(
                 && !mMobilePhone.isNullOrEmpty()
                 && !mMobilePhone.isValidPhoneNumber(context)
         ) {
-            viewHolder.tilMobilePhone.apply {
+            viewHolder.etMobilePhone.showErrorWithFocus(invalidNumberSecondError)
+            /*viewHolder.tilMobilePhone.apply {
                 error = invalidNumberSecondError
                 requestFocus()
-            }
+            }*/
             isValid = false
         }
 
@@ -103,10 +114,11 @@ class ProfilePhoneEditItem(
 
     private fun validatePhone(): Boolean {
         if (mMobilePhone.isNullOrBlank()) {
-            viewHolder.tilMobilePhone.apply {
+            viewHolder.etMobilePhone.showErrorWithFocus(invalidNumberError)
+            /*viewHolder.tilMobilePhone.apply {
                 error = invalidNumberError
                 requestFocus()
-            }
+            }*/
             return false
         }
         return true

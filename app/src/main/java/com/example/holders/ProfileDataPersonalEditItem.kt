@@ -5,7 +5,6 @@ import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.EditText
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
@@ -31,8 +30,6 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_personal.llSocialNe
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scMobilePhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scNoSocialNetworks
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.scShowEmail
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilMobilePhone
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tilWorkPhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal.tvPhoneConfirmed
 import setOnClickListener
 import java.util.*
@@ -91,21 +88,42 @@ class ProfileDataPersonalEditItem(
                 text = email
                 setOnClickListener(changeEmailClick)
             }
-            tilWorkPhone.apply { error = null }
+            etWorkPhone.showError(false)
+            //tilWorkPhone.apply { error = null }
             etWorkPhone.apply {
+                setPhone(mWorkPhone?: "")
+                getPhoneCallback {
+                    mWorkPhone = it.toString()
+                    if (it?.isNotEmpty() == true && getError() != null) showError(false)
+                }
+            }
+            /*etWorkPhone.apply {
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
                     if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error = null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
-            }
+            }*/
             etAdditionalNumber.apply {
                 initInput(mAdditionalPhone) {
                     mAdditionalPhone = it.toString()
                 }
             }
-            tilMobilePhone.apply { error = null }
+            etMobilePhone.showError(false)
+            //tilMobilePhone.apply { error = null }
             etMobilePhone.apply {
+                setPhone(mMobilePhone?: "")
+                getPhoneCallback {
+                    mMobilePhone = it
+                    if (it.isNotEmpty() == true && getError() != null) showError(false)
+
+                    if (isPhoneConfirmed) {
+                        mIsPhoneConfirmed = mMobilePhone == mobilePhone
+                        updatePhoneConfirmationStatus(viewHolder)
+                    }
+                }
+            }
+            /*etMobilePhone.apply {
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
                     if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
@@ -116,7 +134,7 @@ class ProfileDataPersonalEditItem(
                     }
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
-            }
+            }*/
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
             tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },
@@ -159,14 +177,17 @@ class ProfileDataPersonalEditItem(
 
             btnPasswordConfirm.apply {
                 setOnClickListener {
-                    val phone = etMobilePhone.text.toString()
+                    val phone = etMobilePhone.getFullNumberWithPlus()
                     if (phone.isValidPhoneNumber(context)) {
                         confirmPhoneClick(phone)
                     } else {
-                        tilMobilePhone.apply {
+                        viewHolder.etMobilePhone.apply {
+                            showErrorWithFocus(invalidNumberError)
+                        }
+                        /*tilMobilePhone.apply {
                             error = invalidNumberError
                             requestFocus()
-                        }
+                        }*/
                     }
                 }
             }
@@ -236,10 +257,13 @@ class ProfileDataPersonalEditItem(
                 && !mWorkPhone.isNullOrEmpty()
                 && !mWorkPhone.isValidPhoneNumber(context)
         ) {
-            viewHolder.tilWorkPhone.apply {
+            viewHolder.etWorkPhone.apply {
+                showErrorWithFocus(invalidNumberError)
+            }
+            /*viewHolder.tilWorkPhone.apply {
                 error = invalidNumberError
                 requestFocus()
-            }
+            }*/
             isValid = false
         }
 
@@ -247,10 +271,13 @@ class ProfileDataPersonalEditItem(
                 && !mMobilePhone.isNullOrEmpty()
                 && !mMobilePhone.isValidPhoneNumber(context)
         ) {
-            viewHolder.tilMobilePhone.apply {
+            viewHolder.etMobilePhone.apply {
+                showErrorWithFocus(invalidNumberError)
+            }
+            /*viewHolder.tilMobilePhone.apply {
                 error = invalidNumberError
                 requestFocus()
-            }
+            }*/
             isValid = false
         }
 

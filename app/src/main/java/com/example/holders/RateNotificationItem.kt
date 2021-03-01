@@ -17,8 +17,9 @@ class RateNotificationItem(
         private val notification: Notification,
         onReadMoreClickListener: OnNotificationReadMoreClickListener,
         onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-        private val rateClickListener: OnNotificationRateClickListener
-) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener) {
+        private val rateClickListener: OnNotificationRateClickListener,
+        private val openEventListener: OnOpenEventListener
+) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener, openEventListener) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
