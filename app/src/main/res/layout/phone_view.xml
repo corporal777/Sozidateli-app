@@ -20,7 +20,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCountryCodePhone"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:paddingStart="105dp"
+            android:paddingStart="115dp"
             android:hint="@string/profile_phone_mobile"
             android:inputType="phone" />
 
