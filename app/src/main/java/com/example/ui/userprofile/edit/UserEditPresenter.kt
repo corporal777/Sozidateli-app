@@ -422,7 +422,7 @@ class UserEditPresenter
                             files?.forEach { file ->
                                 val up = uFiles.firstOrNull { f -> f.id == file.id }
                                 if (up != null) {
-                                    update.add(RecommendationFile(id = file.id, name = up.newName))
+                                    update.add(RecommendationFile(id = file.id, name = if (up.newName.isNullOrEmpty()) up.name else up.newName))
                                 } else {
                                     if (updateFiles !is List<*>)
                                         update.add(RecommendationFile(id = file.id, name = file.name))
