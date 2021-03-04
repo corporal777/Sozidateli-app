@@ -25,15 +25,16 @@
     <string name="tab_organizations_title">Организаторы</string>
 
     <string name="my_events_title">Мои мероприятия</string>
-    <string name="my_events_accepted">Участие одобрено</string>
+    <string name="my_events_accepted">Участие подтверждено</string>
     <string name="my_events_pending">Заявка на рассмотрении</string>
     <string name="my_events_declined">Заявка не подтверждена</string>
 
     <string name="organizations_favorites">Избранное</string>
-    <string name="organizations_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке организаций</string>
-    <string name="events_favorites_empty_list_description">Нажмите “Добавить в избранное” в списке мероприятий</string>
+    <string name="organizations_favorites_empty_list_description">Увы, пока Вы не добавили ни одной организации \nДобавьте организации в избранное, чтобы первым узнавать об их новых мероприятиях</string>
+    <string name="events_favorites_empty_list_description">Увы, пока Вы не добавили ни одного мероприятия \nДобавьте мероприятия в избранное, чтобы получать быстрый доступ и следить за их статусами</string>
+    <string name="user_favorites_empty_list_description">Увы, пока Вы не добавили ни одного пользователя \nДобавьте пользователей в избранное, чтобы иметь быстрый доступ к важным для Вас людям</string>
 
-    <string name="event_status_approved">Участие одобрено</string>
+    <string name="event_status_approved">Участие подтверждено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
     <string name="event_status_finished">Мероприятие завершено</string>
     <string name="event_status_decline">Заявка не подтверждена</string>
@@ -361,7 +362,7 @@
     <string name="profile_site_add">Добавить сайт</string>
     <string name="profile_education">Образование ученая степень звание</string>
     <string name="profile_education_level">Уровень образования</string>
-    <string name="profile_degrees_level">Ученая степень или звание</string>
+    <string name="profile_degrees_level">Ученая степень и/или звание</string>
     <string name="profile_sciences_level">Специализация</string>
     <string name="profile_sciences_add">Добавить степень, звание</string>
     <string name="profile_institution_add">Добавить образовательную организацию</string>
@@ -566,7 +567,7 @@
 
     <string name="code_input_label">Ввод кода</string>
     <string name="code_input_hint">Введите код</string>
-    <string name="code_input_no_code">Если вы не видите код при входе в мероприятие - обратитесь к специалистам на информационной стойке</string>
+    <string name="code_input_no_code">Введите код, предоставленный Вам организатором мероприятия</string>
 
     <string name="size_b">Б</string>
     <string name="size_kb">Kб</string>

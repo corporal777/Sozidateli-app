@@ -53,7 +53,7 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
 
     override fun showEmptyListPlaceholder() {
         dataGroup.update(listOf(NoDataItem(
-                getString(R.string.empty_list_placeholder_message),
+                /*getString(R.string.empty_list_placeholder_message)*/"",
                 getString(R.string.events_favorites_empty_list_description)
         )))
         swipeToRefresh.isRefreshing = false
