@@ -23,7 +23,7 @@ class ProfileDataWorkEditGroup(
     private var hasWork = workExperienceAbsent
 
     private val noWork = ProfileDataNoExperienceItem {
-        if (it && addItem.itemCount > 0) {
+        if (it && works.size >= 1 && !works[0].mOrganization.isNullOrEmpty()) {
             NoWorkDialog(context)
                     .setSelectCallback { isDelete ->
                         if (isDelete)
