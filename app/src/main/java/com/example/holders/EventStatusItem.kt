@@ -51,7 +51,7 @@ class EventStatusItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             itemContainer.apply {
-                alpha = if (status == Event.Status.CONFERENCE_ENDS) 0.4f else 1f
+                alpha = if (status == Event.Status.FINISHED) 0.4f else 1f
                 clipToOutline = true
                 setOnClickListener { onEventClickListener.onShowEventClick(itemView, eventId) }
             }
@@ -79,7 +79,7 @@ class EventStatusItem(
 
             setApproveStatus(tvStatus)
 
-            tvFinished.isVisible = status == Event.Status.CONFERENCE_ENDS
+            tvFinished.isVisible = status == Event.Status.FINISHED
 
             decorActionButton(btnEventAction)
         }
@@ -124,7 +124,7 @@ class EventStatusItem(
         when {
             !canShowActionButton ||
                     status == null ||
-                    status == Event.Status.CONFERENCE_ENDS -> {
+                    status == Event.Status.FINISHED -> {
                 visibility = false
             }
             conferenceRegistrationClosed &&

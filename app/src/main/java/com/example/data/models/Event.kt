@@ -54,12 +54,38 @@ data class Event(
 ) {
 
     enum class Status {
-        CONFERENCE_ENDS,
+        @SerializedName("preparing")
+        PREPARING,
+
+        @SerializedName("awaiting")
+        AWAITING,
+
+        @SerializedName("approved")
+        APPROVED,
+
+        @SerializedName("declined")
+        DECLINED,
+
+        @SerializedName("banned")
+        BANNED,
+
+        @SerializedName("registration")
+        REGISTRATION,
+
+        @SerializedName("registrationFinished")
+        REGISTRATION_FINISHED,
+
+        @SerializedName("running")
+        RUNNING,
+
+        @SerializedName("finished")
+        FINISHED
+        /*CONFERENCE_ENDS,
         IN_ARCHIVE,
         REGISTRATION_PARTICIPANTS,
         REGISTRATION_PARTICIPANTS_ENDS,
         CONFERENCE_IN_PROGRESS,
-        IN_DRAFT
+        IN_DRAFT*/
     }
 
     enum class RegistrationStatus {

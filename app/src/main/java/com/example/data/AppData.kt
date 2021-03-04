@@ -83,6 +83,13 @@ class AppData(
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
     val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
     val userPhoneConfirmedSubject = BehaviorSubject.createDefault(false)
+    private var eventFormats: List<NewEventFormat>? = null
+
+    fun setEventFormats(formats: List<NewEventFormat>?) {
+        eventFormats = formats
+    }
+
+    fun getEventFormats() = eventFormats
 
     fun setUser(user: User) {
         val changed = this.user != user

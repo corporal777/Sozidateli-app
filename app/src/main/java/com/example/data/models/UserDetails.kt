@@ -226,7 +226,14 @@ data class NewUserAddress(
         @SerializedName("fullValue")
         val fullValue: String? = null,
         val description: AddressDescription? = null,
-): Parcelable
+): Parcelable {
+
+        fun getShortAddress(): String {
+                return if (!region.isNullOrEmpty())
+                        city?: ""
+                else "$region, $city"
+        }
+}
 
 @Parcelize
 data class AddressDescription(
