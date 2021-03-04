@@ -712,4 +712,7 @@
     <string name="phone">Телефон</string>
     <string name="tags">Теги</string>
     <string name="notification_event_title">Сообщение от организаторов мероприятия: %s</string>
+    <string name="yes_delete">Да, хочу удалить</string>
+    <string name="work_experience_data_delete_text">Все данные об опыте работы будут удалены.</string>
+    <string name="work_experience_data_delete_title">Вы действительно хотите удалить данные?</string>
 </resources>

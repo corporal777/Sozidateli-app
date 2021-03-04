@@ -6,6 +6,7 @@ import com.example.R
 import com.example.data.models.user.SocialRoles
 import com.example.data.models.user.User
 import com.example.extensions.findItemBy
+import com.example.ui.views.NoWorkDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -21,7 +22,16 @@ class ProfileDataWorkEditGroup(
 
     private var hasWork = workExperienceAbsent
 
-    private val noWork = ProfileDataNoExperienceItem { isWorkEditable(it) }
+    private val noWork = ProfileDataNoExperienceItem {
+        if (it && addItem.itemCount > 0) {
+            NoWorkDialog(context)
+                    .setSelectCallback { isDelete ->
+                        if (isDelete)
+                            isWorkEditable(it)
+                        else setHasWork()
+                    }
+        } else isWorkEditable(it)
+    }
     private val works = mutableListOf<ProfileDataWorkEditItem>()
     private val addItem = ProfileButtonEditItem(context.getString(R.string.add_record), false) { if (checkDataValid()) { add(createWorkItem(null)) } }.apply {
         hasDivider = false
@@ -41,6 +51,11 @@ class ProfileDataWorkEditGroup(
         add(addItem)
         isWorkEditable(workExperienceAbsent)
         noWork.hasWork(workExperienceAbsent)
+    }
+
+    private fun setHasWork() {
+        noWork.hasWork(false)
+        noWork.notifyChanged()
     }
 
     private fun isWorkEditable(it: Boolean) {

@@ -1,6 +1,5 @@
 package com.example.holders
 
-import android.widget.CheckBox
 import com.example.R
 import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
