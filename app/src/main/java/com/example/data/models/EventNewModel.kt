@@ -28,7 +28,7 @@ data class EventNew(
         val topic: TopicModel? = null,
         @SerializedName("backgroundColor")
         val backgroundColor: BackgroundColorModel? = null,
-        val status: EventStatusModel? = null,
+        val status: EventsStatusModel? = null,
         val state: EventStateModel? = null,
         val format: EventFormatModel? = null,
         @SerializedName("targetedAudience")
@@ -42,7 +42,8 @@ data class EventNew(
         val userAgreement: EventUserAgreement? = null,
         val image: EventUserAgreement? = null,
         val address: NewUserAddress? = null,
-        val binds: EventBindsModel? = null
+        val binds: EventBindsModel? = null,
+        var userRegistration: Event.RegistrationStatus? = null
 ) {
 
         companion object {
@@ -59,7 +60,9 @@ data class EventNew(
 @Parcelize
 data class EventBindsModel(
         val organization: OrganizationNew? = null,
-        val activity: List<EventActivityModel>? = null
+        val activity: List<EventActivityModel>? = null,
+        val userRegister: UserRegisterModel? = null,
+        val rights: EventRights? = null
 ): Parcelable {
 
         fun getFirstActionStartDate(): String? {
@@ -69,6 +72,31 @@ data class EventBindsModel(
                         activity.first().holdingDate?.from
         }
 }
+
+@Parcelize
+data class EventRights(
+        val read: Boolean? = null,
+        val edit: Boolean? = null,
+        val delete: Boolean? = null,
+        @SerializedName("sendReview")
+        val sendReview: Boolean? = null,
+        val approve: Boolean? = null,
+        val decline: Boolean? = null,
+        val ban: Boolean? = null,
+        val unban: Boolean? = null,
+        val registration: Boolean = true,
+        val feedback: Boolean? = null
+): Parcelable
+
+@Parcelize
+data class UserRegisterModel(
+        val id: Int? = null,
+        val event: Int? = null,
+        val user: Int? = null,
+        val status: EventStatusModel? = null,
+        @SerializedName("wasPresent")
+        val wasPresent: Int? = null
+): Parcelable
 
 @Parcelize
 data class EventActivityModel(
@@ -109,7 +137,8 @@ data class EventPhoneModel(
 
 data class EventFormatModel(
         val value: Int? = null,
-        val custom: String? = null
+        val custom: String? = null,
+        var name: String? = null
 )
 
 data class EventStateModel(
@@ -138,7 +167,14 @@ data class EventRatingModel(
 
 @Parcelize
 data class EventStatusModel(
-        val value: Event.Status,
+        val value: Event.RegistrationStatus,
+        val changed: String? = null,
+        val comments: String? = null
+): Parcelable
+
+@Parcelize
+data class EventsStatusModel(
+        val value: Event.Status? = null,
         val changed: String? = null,
         val comments: String? = null
 ): Parcelable

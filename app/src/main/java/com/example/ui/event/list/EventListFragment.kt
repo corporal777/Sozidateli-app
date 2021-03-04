@@ -82,16 +82,16 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroup(
                     it.id.toString(),
-                    Event.Status.IN_DRAFT,//it.status?.value,
-                    Event.RegistrationStatus.PENDING,//it.userRegistration,
+                    it.status?.value,
+                    it.binds?.userRegister?.status?.value,
                     it.binds?.organization?.backgroundColor?.value,
                     it.binds?.organization?.logo?.uri,
-                    EventFormat(name = it.format?.custom?: ""),
+                    EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
                     it.binds?.organization?.email,
-                    false, //!it.canRegister,
+                    !it.binds?.rights?.registration!!,
                     onEventClickListener,
                     createEventDataListItem(event = it),
-                    "test" //it.userAgreement
+                    it.userAgreement?.uri
             )
         })
         //TODO finished screen
@@ -102,7 +102,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         return EventDataListItem(
                 -event.id?.toLong()!!,
                 event.name,
-                event.address?.city ?: event.address?.settlement,
+                event.address?.getShortAddress(),
                 event.holdingDate?.from,
                 event.binds?.getFirstActionStartDate()
         )

@@ -172,7 +172,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         groupAdapter.update(listOf(
                 EventGroup(
                         eventData.id,
-                        if (eventData.status == Event.Status.CONFERENCE_ENDS) Event.Status.CONFERENCE_ENDS else null,
+                        if (eventData.status == Event.Status.FINISHED) Event.Status.FINISHED else null,
                         userRegistration,
                         eventData.backgroundColor,
                         eventData.backgroundImage,
@@ -188,8 +188,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 
-                    val hasRating = (eventData.status == Event.Status.CONFERENCE_ENDS ||
-                            eventData.status == Event.Status.IN_ARCHIVE) &&
+                    val hasRating = (eventData.status == Event.Status.FINISHED /*||
+                            eventData.status == Event.Status.IN_ARCHIVE*/) &&
                             eventData.ratingStartAt != null &&
                             userRegistration == Event.RegistrationStatus.APPROVED
 
@@ -240,7 +240,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         var visibility = true
 
         when {
-            event.status == Event.Status.CONFERENCE_ENDS -> {
+            event.status == Event.Status.FINISHED -> {
                 visibility = false
             }
             !event.canRegister -> {

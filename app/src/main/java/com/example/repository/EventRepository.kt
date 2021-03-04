@@ -48,4 +48,5 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventFormatsList(map: Map<String, Any>): Single<List<NewEventFormat>?>
 }

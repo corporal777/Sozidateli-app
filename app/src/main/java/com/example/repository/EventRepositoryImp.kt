@@ -20,7 +20,7 @@ class EventRepositoryImp
 @Inject constructor(
         private val api: Api,
         private val newApi: NewApi,
-        appData: AppData
+        val appData: AppData
 ) : ApiRepository(appData), EventRepository {
 
     override fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>?): Maybe<PaginationResponse<Event?>> {
@@ -241,4 +241,14 @@ class EventRepositoryImp
             newApi.getEventsList(map)
                     .map { PaginationResponse(it.totalCount, it.data?: arrayListOf()) }
 
+    override fun getEventFormatsList(map: Map<String, Any>): Single<List<NewEventFormat>?> {
+        val eventFormats = appData.getEventFormats()
+        return if (eventFormats.isNullOrEmpty())
+            newApi.getEventFormatsList(map)
+                    .doOnSuccess {
+                        appData.setEventFormats(it.data)
+                    }.map { it.data }
+        else
+            Single.just(eventFormats)
+    }
 }
