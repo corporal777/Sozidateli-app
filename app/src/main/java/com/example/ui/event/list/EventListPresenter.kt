@@ -50,7 +50,22 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {
                     if (it.isEmpty()) viewState.showEmptyListPlaceholder()
-                    else viewState.setData(it)
+                    else {
+                        compositeDisposable += eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
+                                .performOnBackgroundOutOnMain()
+                                .subscribeSimple(
+                                        onError = { error ->
+                                            viewState.setData(it)
+                                        },
+                                        onSuccess = { formats ->
+                                            it.forEach { event ->
+                                                event?.format?.name = formats?.firstOrNull { f -> f.id == event?.format?.value }?.name
+                                            }
+                                            viewState.setData(it)
+                                        }
+                                )
+                        //viewState.setData(it)
+                    }
                 }
 
         compositeDisposable += connectivity
