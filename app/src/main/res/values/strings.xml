@@ -30,9 +30,10 @@
     <string name="my_events_declined">Заявка не подтверждена</string>
 
     <string name="organizations_favorites">Избранное</string>
-    <string name="organizations_favorites_empty_list_description">Увы, пока Вы не добавили ни одной организации \nДобавьте организации в избранное, чтобы первым узнавать об их новых мероприятиях</string>
-    <string name="events_favorites_empty_list_description">Увы, пока Вы не добавили ни одного мероприятия \nДобавьте мероприятия в избранное, чтобы получать быстрый доступ и следить за их статусами</string>
-    <string name="user_favorites_empty_list_description">Увы, пока Вы не добавили ни одного пользователя \nДобавьте пользователей в избранное, чтобы иметь быстрый доступ к важным для Вас людям</string>
+    <string name="blank_list_error">Увы…</string>
+    <string name="organizations_favorites_empty_list_description">Пока Вы не добавили ни одной организации. \nДобавьте организации в избранное, чтобы первым узнавать об их новых мероприятиях</string>
+    <string name="events_favorites_empty_list_description">Пока Вы не добавили ни одного мероприятия. \nДобавьте мероприятия в избранное, чтобы получать быстрый доступ и следить за их статусами</string>
+    <string name="user_favorites_empty_list_description">Пока Вы не добавили ни одного пользователя. \nДобавьте пользователей в избранное, чтобы иметь быстрый доступ к важным для Вас людям</string>
 
     <string name="event_status_approved">Участие подтверждено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>

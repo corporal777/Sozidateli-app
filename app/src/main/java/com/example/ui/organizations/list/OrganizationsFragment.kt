@@ -93,7 +93,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
 
     override fun showFavoritesEmptyListPlaceholder() {
         organizationSection.update(listOf(NoDataItem(
-                /*getString(R.string.empty_list_placeholder_message)*/"",
+                /*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
                 getString(R.string.organizations_favorites_empty_list_description)
         )))
         swipeToRefresh.isRefreshing = false

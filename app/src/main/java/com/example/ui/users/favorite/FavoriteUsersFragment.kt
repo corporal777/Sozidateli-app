@@ -50,7 +50,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
 
     override fun setData(data: List<User?>) {
         if (data.isEmpty()) {
-            adapter.update(listOf(NoDataItem(/*getString(R.string.empty_list_placeholder_message)*/"",
+            adapter.update(listOf(NoDataItem(/*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
                     getString(R.string.user_favorites_empty_list_description))))
         } else {
             adapter.update(data.map {
