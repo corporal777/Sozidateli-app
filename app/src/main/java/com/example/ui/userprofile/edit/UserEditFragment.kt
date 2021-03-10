@@ -139,6 +139,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 user.name,
                 user.lastName,
                 user.middleName?.value,
+                user.state?.nameEdited?: false,
                 { presenter.onRemoveAvatarClick() },
                 { presenter.onEditAvatarClick() },
                 { presenter.onDisabledMainInputInfoClick() }

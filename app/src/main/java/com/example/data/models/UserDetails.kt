@@ -201,6 +201,7 @@ data class UserState(
         val isSuspend: BooleanModel? = null,
 ): Parcelable
 
+@Parcelize
 data class BooleanModel(
         val value: Boolean? = null,
         val till: String? = null
@@ -225,12 +226,16 @@ data class NewUserAddress(
         @SerializedName("fullValue")
         val fullValue: String? = null,
         val description: AddressDescription? = null,
+        var shortAddres: String? = null
 ): Parcelable {
 
         fun getShortAddress(): String {
-                return if (!region.isNullOrEmpty())
-                        city?: ""
-                else "$region, $city"
+                return if (!shortAddres.isNullOrEmpty())
+                        shortAddres?: ""
+                else
+                        if (!region.isNullOrEmpty())
+                                city?: ""
+                        else "$region, $city"
         }
 }
 

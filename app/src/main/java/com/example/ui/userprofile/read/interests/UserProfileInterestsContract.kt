@@ -4,9 +4,9 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Interest
+import com.example.data.models.UserDetail
 import com.example.data.models.InterestNew
 import com.example.data.models.InterestsModel
-import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
