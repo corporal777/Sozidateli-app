@@ -13,6 +13,7 @@ import com.example.util.settings
 class EducationPopupWindow(val context: Context, val data: List<String>): PopupWindow() {
 
     private var popupWindow: PopupWindow
+    private var currentSelection: String? = null
     var list: RecyclerView
     private var educationClickCallback: (item: String) -> Unit = {}
     private var getOldEducation: (education: EducationChangeModel) -> Unit = {}
@@ -62,7 +63,16 @@ class EducationPopupWindow(val context: Context, val data: List<String>): PopupW
         educationClickCallback.invoke(education)
     }
 
-    private fun isTrigger(text: String?) = text == "Более одного высшего" || text == "Высшее"
+    fun setCurrentSelection(selection: String) {
+        currentSelection = selection
+    }
+
+    private fun isTrigger(text: String?): Boolean {
+        return if (text == "Более одного высшего" || text == "Высшее")
+            currentSelection != "Более одного высшего" || currentSelection != "Высшее"
+        else
+            !(currentSelection == "Более одного высшего" || currentSelection == "Высшее")
+    }
 }
 
 data class EducationChangeModel(val isAgree: Boolean, val newEducation: String)
