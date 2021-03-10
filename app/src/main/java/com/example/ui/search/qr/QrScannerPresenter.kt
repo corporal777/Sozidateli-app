@@ -32,7 +32,8 @@ class QrScannerPresenter
 
     override fun onDecodeQrCode(code: String) {
         val uri = Uri.parse(code)
-        val parsedCode = uri.lastPathSegment
+        val codee = uri.getQueryParameter("code")
+        val parsedCode = codee ?: uri.lastPathSegment
         if (parsedCode == null) viewState.showEventNotFoundError()
         else {
             compositeDisposable += eventRepository.getEventByCode(parsedCode)

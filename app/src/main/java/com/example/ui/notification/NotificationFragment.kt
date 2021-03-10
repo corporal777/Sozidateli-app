@@ -8,6 +8,8 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.text.parseAsHtml
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -23,6 +25,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
+import com.example.ui.views.ProfileDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import removeUrlUnderline
@@ -89,6 +92,10 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         when (notification.type) {
             Notification.Type.SIMPLE -> {
                 titleRes = R.string.notifications_simple_title
+                btnAccept.isEnabled = false
+                btnCancel.isEnabled = false
+                btnAccept.isVisible = false
+                btnCancel.isVisible = false
             }
             Notification.Type.ACCEPTABLE -> {
                 titleRes = R.string.notifications_acceptable_title
@@ -97,15 +104,29 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         actionTextRes = R.string.notifications_state_disabled
                     }
                     Notification.AcceptState.ACCEPTED -> {
+                        btnAccept.enableOrDisableButton(false)
+                        btnCancel.enableOrDisableButton(true)
+                        /*btnAccept.isEnabled = false
+                        btnCancel.isEnabled = true*/
                         isAccepted = true
                         //canChangeAccept = true
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
+                        btnAccept.enableOrDisableButton(true)
+                        btnCancel.enableOrDisableButton(false)
+                        /*btnAccept.isEnabled = true
+                        btnAccept.setBackgroundResource(R.drawable.background_corners)
+                        btnCancel.isEnabled = false
+                        btnCancel.setBackgroundResource(R.drawable.background_corners_disabled)*/
                         //canChangeAccept = true
                         //actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
+                        btnAccept.enableOrDisableButton(true)
+                        btnCancel.enableOrDisableButton(true)
+                        /*btnAccept.isEnabled = true
+                        btnCancel.isEnabled = true*/
                         //canAccept = true
                     }
                 }
@@ -164,6 +185,14 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         }*/
     }
 
+    fun AppCompatButton.enableOrDisableButton(isEnabledd: Boolean) {
+        isEnabled = isEnabledd
+        if (isEnabledd)
+            setBackgroundResource(R.drawable.background_corners)
+        else
+            setBackgroundResource(R.drawable.background_corners_disabled)
+    }
+
     private fun showCancelInfo() {
         CtpDialog(requireContext())
                 .setSelectCallback {}
@@ -173,6 +202,10 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         startActivity(Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(url)
         })
+    }
+
+    override fun showErrorDialog(errors: List<String>, projectName: String) {
+        ProfileDialog(requireContext(), projectName, errors).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
 
     override fun showRating(eventId: String) {

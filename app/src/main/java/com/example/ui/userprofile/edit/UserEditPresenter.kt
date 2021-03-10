@@ -6,10 +6,7 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
-import com.example.data.models.Interest
-import com.example.data.models.UserEditDataType
-import com.example.data.models.UserInterest
-import com.example.data.models.asOptional
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
@@ -60,11 +57,27 @@ class UserEditPresenter
                         }
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
-                            if (BuildConfig.NEW_PROFILE_EDIT) {
+                            compositeDisposable += userRepository.getAddress(AddressBody(query = user.user_short_address?: ""))
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribe({ add ->
+                                        user.user_short_address = add[0].region
+                                        if (BuildConfig.NEW_PROFILE_EDIT) {
+                                            setPersonalDataNew(user)
+                                        } else {
+                                            setPersonalData(user)
+                                        }
+                                    }, {
+                                        if (BuildConfig.NEW_PROFILE_EDIT) {
+                                            setPersonalDataNew(user)
+                                        } else {
+                                            setPersonalData(user)
+                                        }
+                                    })
+                            /*if (BuildConfig.NEW_PROFILE_EDIT) {
                                 setPersonalDataNew(user)
                             } else {
                                 setPersonalData(user)
-                            }
+                            }*/
                             saveOnClick(true)
                         }
                         UserEditDataType.CONTACTS -> viewState.apply {
@@ -131,6 +144,7 @@ class UserEditPresenter
                 user_name = it.user_name
                 user_last_name = it.user_last_name
                 user_middle_name = it.user_middle_name
+                user_name_edited = it.user_name_edited
             }.asOptional())
             true
         }

@@ -46,13 +46,13 @@ class PhoneConfirmPresenter
         viewState.setPhone(phone)
         compositeDisposable += timerCompositeDisposable
         compositeDisposable += smsCompositeDisposable
-        //sendSms()
+        sendSms()
         startTimer()
     }
 
     override fun onResendClick() {
         smsCompositeDisposable.clear()
-        //sendSms()
+        sendSms()
         startTimer()
     }
 

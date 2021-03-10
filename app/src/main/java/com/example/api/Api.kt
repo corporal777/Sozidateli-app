@@ -327,4 +327,7 @@ interface Api {
 
     @POST("/v1/common/formats")
     fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>
+
+    @POST("/v1/address")
+    fun getAddress(@Body body: AddressBody): Maybe<ApiResponse<List<AddressResponse>>>
 }

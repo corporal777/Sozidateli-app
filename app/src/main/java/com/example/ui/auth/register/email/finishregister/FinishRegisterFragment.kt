@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
@@ -70,6 +71,13 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ivClose.setOnClickListener { presenter.onClickClose() }
+        if (BuildConfig.NEW_PROFILE_EDIT) {
+            tilMiddleName.visibility = View.VISIBLE
+            phone_layout.visibility = View.VISIBLE
+        } else {
+            tilMiddleName.visibility = View.GONE
+            phone_layout.visibility = View.GONE
+        }
         //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
         scNoMiddleName.initSwitch(isNoMiddleName) {
             presenter.onNoMiddleNameChecked(it)

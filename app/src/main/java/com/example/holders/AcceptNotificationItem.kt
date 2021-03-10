@@ -56,6 +56,21 @@ class AcceptNotificationItem(
             btnCancel.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
             btnChangeDecision.isVisible = !isReadMoreVisible && isEnabled && !isAcceptable
             tvAcceptState.isVisible = !isReadMoreVisible && !isAcceptable
+
+            /*when(notification.acceptState) {
+                Notification.AcceptState.NONE -> {
+
+                }
+                Notification.AcceptState.ACCEPTED -> {
+
+                }
+                Notification.AcceptState.DISABLED -> {
+
+                }
+                Notification.AcceptState.CANCELED -> {
+
+                }
+            }*/
         }
     }
 

@@ -30,6 +30,10 @@ class UserRepositoryImp
         appData.setUserShort(it)
     }
 
+    override fun getAddress(body: AddressBody): Maybe<List<AddressResponse>> =  call(api.getAddress(body)).doOnSuccess {
+
+    }
+
     override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
     override fun getLastNotification() = call(api.getLastNotification())

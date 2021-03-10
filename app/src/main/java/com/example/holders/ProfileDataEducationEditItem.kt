@@ -111,10 +111,16 @@ class ProfileDataEducationEditItem(
                     error = resources.getString(R.string.profile_education_finish_error)
                 }
                 if (!isOrganizationValid()) tilInstitution.apply {
-                    error = resources.getString(R.string.profile_educate_institution_empty_error)
+                    error = if ((mInstitution?.length?: 0) < 9 && (mInstitution?.length?: 0) > 0)
+                        resources.getString(R.string.ten_letters_error)
+                    else
+                        resources.getString(R.string.profile_educate_institution_empty_error)
                 }
                 if (!isSpecialityValid()) tilSpeciality.apply {
-                    error = resources.getString(R.string.enter_specialty)
+                    error = if ((mSpeciality?.length?: 0) < 4 && (mSpeciality?.length?: 0) > 0)
+                        resources.getString(R.string.five_letters_error)
+                    else
+                        resources.getString(R.string.enter_specialty)
                 }
             }
         }
@@ -145,8 +151,14 @@ class ProfileDataEducationEditItem(
         }
     }
 
-    private fun isOrganizationValid() = !mInstitution.isNullOrBlank()
-    private fun isSpecialityValid() = !mSpeciality.isNullOrBlank()
+    private fun isOrganizationValid(): Boolean {
+        return (mInstitution?.length?: 0) >= 9
+        //!mInstitution.isNullOrBlank()
+    }
+    private fun isSpecialityValid(): Boolean {
+        return (mSpeciality?.length?: 0) >= 4
+        //!mSpeciality.isNullOrBlank()
+    }
     fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isSpecialityValid()
 
     override fun getLayout() = R.layout.item_profile_data_edit_education

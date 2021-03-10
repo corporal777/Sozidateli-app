@@ -3,7 +3,7 @@ package com.example.data.models
 import com.example.data.models.user.UserData
 
 data class ProfileUserData(
-        private val userData: UserData,
+        var userData: UserData,
         val editable: Boolean
 ) {
     var user

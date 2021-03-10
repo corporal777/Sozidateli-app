@@ -16,6 +16,9 @@ interface NotificationContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRating(eventId: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showErrorDialog(errors: List<String>, projectName: String)
     }
 
     interface Presenter : BaseContract.Presenter {

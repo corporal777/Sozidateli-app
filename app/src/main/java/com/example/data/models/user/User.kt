@@ -91,7 +91,8 @@ data class User(
         var user_site_absent: Boolean = false,
         var user_social_links_absent: Boolean = false,
         var user_work_phone_absent: Boolean = false,
-        var user_phone_work_additional: String? = null
+        var user_phone_work_additional: String? = null,
+        var user_name_edited: Boolean = false
 ) {
     var isCurrentUser = false
 

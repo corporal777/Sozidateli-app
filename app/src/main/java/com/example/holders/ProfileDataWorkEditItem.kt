@@ -48,6 +48,7 @@ class ProfileDataWorkEditItem(
     private var isEditable = true
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        isEnabledItems(viewHolder)
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
             etStart.setText(startDate?.let { formatDateYear(it).capitalize() })
@@ -90,7 +91,6 @@ class ProfileDataWorkEditItem(
             else
                 btnRemove.visibility = View.GONE
         }
-        isEnabledItems(viewHolder)
     }
 
     private fun isEnabledItems(viewHolder: GroupieViewHolder) {
@@ -125,10 +125,16 @@ class ProfileDataWorkEditItem(
                     error = resources.getString(R.string.profile_work_finish_error)
                 }
                 if (!isOrganizationValid()) tilProject.apply {
-                    error = resources.getString(R.string.enter_organization)
+                    error = if ((mOrganization?.length?: 0) < 9 && (mOrganization?.length?: 0) > 0)
+                        resources.getString(R.string.ten_letters_error)
+                    else
+                        resources.getString(R.string.enter_organization)
                 }
                 if (!isPositionValid()) tilPosition.apply {
-                    error = resources.getString(R.string.enter_position)
+                    error = if ((mPosition?.length?: 0) < 4 && (mPosition?.length?: 0) > 0)
+                        resources.getString(R.string.five_letters_error)
+                    else
+                        resources.getString(R.string.enter_position)
                 }
             }
         }
@@ -159,8 +165,14 @@ class ProfileDataWorkEditItem(
         }
     }
 
-    private fun isOrganizationValid() = !mOrganization.isNullOrBlank()
-    private fun isPositionValid() = !mPosition.isNullOrBlank()
+    private fun isOrganizationValid(): Boolean {
+        return (mOrganization?.length?: 0) >= 9
+        //!mOrganization.isNullOrBlank()
+    }
+    private fun isPositionValid(): Boolean {
+        return (mPosition?.length?: 0) >= 4
+        //!mPosition.isNullOrBlank()
+    }
     fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid()
 
     fun hasExp(hasExp: Boolean) {

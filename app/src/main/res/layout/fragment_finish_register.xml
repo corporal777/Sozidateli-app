@@ -120,6 +120,7 @@
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:visibility="gone"
                 app:endIconMode="custom"
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null">
@@ -139,8 +140,10 @@
             </com.example.ui.views.CustomTextInputLayout>
 
             <LinearLayout
+                android:id="@+id/phone_layout"
                 style="@style/Profile.Edit.InputContainer"
-                android:layout_marginTop="0dp">
+                android:layout_marginTop="0dp"
+                android:visibility="gone">
 
                 <!--<com.example.ui.views.CustomTextInputLayout
                     android:id="@+id/tilMobilePhone"

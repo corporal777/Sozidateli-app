@@ -18,7 +18,8 @@ data class Notification(
         val eventId: Int?,
         @SerializedName("event_activity_id")
         val eventActivityId: Int?,
-        val eventInfo: NotificationEventInfo?
+        val eventInfo: NotificationEventInfo?,
+        val event: Event?
         ) : Parcelable {
 
     enum class Type {
@@ -53,7 +54,8 @@ data class Notification(
                     if (remoteNotification.event_id == 0) null else remoteNotification.event_id.toString(),
                     remoteNotification.event_id,
                     remoteNotification.event_activity_id,
-                    if (remoteNotification.event == null) null else NotificationEventInfo(remoteNotification.event.name, remoteNotification.event.link)
+                    if (remoteNotification.event == null) null else NotificationEventInfo(remoteNotification.event.name, remoteNotification.event.link),
+                    remoteNotification.event
             )
         }
     }

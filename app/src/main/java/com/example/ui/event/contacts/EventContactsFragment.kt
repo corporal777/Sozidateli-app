@@ -39,7 +39,7 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
 
     companion object {
         private val MAP_OPTIONS_DEFAULT = GoogleMapOptions()
-                .liteMode(true)
+                //.liteMode(true)
                 .mapToolbarEnabled(false)
                 .zoomControlsEnabled(false)
 

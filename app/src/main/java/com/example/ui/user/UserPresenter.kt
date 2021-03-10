@@ -94,10 +94,20 @@ class UserPresenter
                                 isCurrentUser()
                         )
                     }
-                    viewState.apply {
-                        setUser(profileUserData)
-                        if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                    }
+                    compositeDisposable += userRepository.getAddress(AddressBody(query = profileUserData.userData.user.user_short_address?: ""))
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({ add ->
+                                viewState.apply {
+                                    profileUserData.userData.user.user_short_address = add[0].region
+                                    setUser(profileUserData)
+                                    if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                                }
+                            }, {
+                                viewState.apply {
+                                    setUser(profileUserData)
+                                    if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                                }
+                            })
                 }, { it.printStackTrace() })
     }
 

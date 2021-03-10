@@ -17,6 +17,7 @@ class ProfileDataUserEditItem(
         private val name: String?,
         private val surname: String?,
         private val middleName: String?,
+        private val userNameEdited: Boolean,
         private val removePhotoClickListener: () -> Unit,
         private val changePhotoClickListener: () -> Unit,
         private val onDisabledInputInfoClickListener: () -> Unit
@@ -29,7 +30,7 @@ class ProfileDataUserEditItem(
 
     private var mNoMiddleNameChecked = middleName == USER_DATA_EMPTY
 
-    private val isCanChangeName = middleName.isNullOrEmpty()
+    private val isCanChangeName = userNameEdited//middleName.isNullOrEmpty()
 
     private lateinit var emptyInputError: String
 

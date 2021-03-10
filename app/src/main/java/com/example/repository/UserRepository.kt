@@ -8,6 +8,7 @@ import com.google.firebase.iid.InstanceIdResult
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import retrofit2.http.Body
 
 interface UserRepository {
     fun getUserShort(): Maybe<UserShort>
@@ -43,4 +44,5 @@ interface UserRepository {
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 
     fun deleteProfile(): Completable
+    fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
 }
