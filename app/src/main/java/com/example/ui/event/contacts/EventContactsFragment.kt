@@ -113,9 +113,13 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable, null))
             }
             if (!place.isNullOrEmpty()) {
+                flMapContainer.isVisible = true
+                llMapAction.isVisible = true
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place, null))
+            } else {
+                flMapContainer.isVisible = false
+                llMapAction.isVisible = false
             }
-
         })
         if (!address.isNullOrEmpty()) {
             setupMap(mapInfo)

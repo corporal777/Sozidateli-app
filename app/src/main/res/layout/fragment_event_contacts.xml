@@ -35,7 +35,9 @@
             <FrameLayout
                 android:id="@+id/flMapContainer"
                 android:layout_width="match_parent"
-                android:layout_height="331dp" />
+                android:visibility="gone"
+                android:layout_height="331dp"
+                tools:visibility="visible"/>
 
             <LinearLayout
                 android:id="@+id/llMapAction"
