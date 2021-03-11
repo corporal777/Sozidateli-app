@@ -64,6 +64,7 @@ class ProfileDataEducationLevelEditItem(
             text = initialVariant
             validateCheckbox(initialVariant, cb)
             setOnClickListener {
+                popupReceiving.setCurrentSelection(textView.text.toString())
                 popupReceiving.showPopup(this)
             }
             popupReceiving.setEducationClickCallback {
