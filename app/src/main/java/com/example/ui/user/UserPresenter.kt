@@ -98,7 +98,8 @@ class UserPresenter
                             .performOnBackgroundOutOnMain()
                             .subscribe({ add ->
                                 viewState.apply {
-                                    profileUserData.userData.user.user_short_address = add[0].region
+                                    if (add.isNotEmpty())
+                                        profileUserData.userData.user.user_short_address = add[0].region
                                     setUser(profileUserData)
                                     if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                                 }

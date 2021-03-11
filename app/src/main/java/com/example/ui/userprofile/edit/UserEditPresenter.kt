@@ -60,7 +60,8 @@ class UserEditPresenter
                             compositeDisposable += userRepository.getAddress(AddressBody(query = user.user_short_address?: ""))
                                     .performOnBackgroundOutOnMain()
                                     .subscribe({ add ->
-                                        user.user_short_address = add[0].region
+                                        if (add.isNotEmpty())
+                                            user.user_short_address = add[0].region
                                         if (BuildConfig.NEW_PROFILE_EDIT) {
                                             setPersonalDataNew(user)
                                         } else {
