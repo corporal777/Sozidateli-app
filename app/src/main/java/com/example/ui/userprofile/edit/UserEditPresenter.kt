@@ -68,7 +68,7 @@ class UserEditPresenter
                                     .performOnBackgroundOutOnMain()
                                     .subscribe({ add ->
                                         if (add.isNotEmpty())
-                                            user.user_short_address = add[0].region
+                                            user.address?.shortAddres = add[0].region
                                         if (BuildConfig.NEW_PROFILE_EDIT) {
                                             setPersonalDataNew(user)
                                         } else {
