@@ -14,6 +14,7 @@ import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
@@ -127,7 +128,10 @@ class RegisterEmailFragment : BaseFragment(), RegisterEmailContract.View {
     }
 
     override fun showEmailConfirmation(email: String, password: String) {
-        findNavController().navigate(RegisterEmailFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
+        if (BuildConfig.NEW_PROFILE_EDIT)
+            findNavController().navigate(RegisterEmailFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
+        else
+            findNavController().navigate(RegisterEmailFragmentDirections.actionRegisterEmailFragmentToAuthorizationFragment().setShowFinishRegister(true))
     }
 
     override fun showSnRegistration(snUser: SnUser) {

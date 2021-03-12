@@ -330,4 +330,7 @@ interface Api {
 
     @POST("/v1/address")
     fun getAddress(@Body body: AddressBody): Maybe<ApiResponse<List<AddressResponse>>>
+
+    @GET("/v/user/profile-check")
+    fun getNotFilledFields(): Maybe<ApiResponse<List<NotFilledFields>>>
 }

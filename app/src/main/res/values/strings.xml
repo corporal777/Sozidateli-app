@@ -131,7 +131,7 @@
     <string name="about_event_time">Время</string>
     <string name="about_event_date">Дата</string>
     <string name="about_event_partners">Партнеры</string>
-    <string name="about_event_registration_finish">Заявки принимаются по</string>
+    <string name="about_event_registration_finish">Заявки принимаются до</string>
     <string name="about_event_registration_closed">Прием заявок закрыт</string>
 
     <string name="news_read_more">Подробнее</string>
@@ -718,6 +718,6 @@
     <string name="work_experience_data_delete_title">Вы действительно хотите удалить данные?</string>
     <string name="ten_letters_error">Пожалуйста, введите ботя бы 10 символов.</string>
     <string name="five_letters_error">Пожалуйста, введите ботя бы 5 символов.</string>
-    <string name="profile_fields_title">Вы почти в команде проекта &lt;&lt;%s&gt;&gt;</string>
-    <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе &lt;&lt;Уведомления&gt;&gt;.</string>
+    <string name="profile_fields_title">Вы почти в команде проекта «%s»</string>
+    <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе «Уведомления».</string>
 </resources>

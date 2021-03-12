@@ -16,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingPrefix"
+        android:lineSpacingExtra="@dimen/lines_space"
         tools:text="@string/notifications_simple_title" />
 
     <TextView

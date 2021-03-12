@@ -15,6 +15,11 @@
         android:name="com.example.ui.auth.authorization.AuthorizationFragment"
         android:label="Login">
 
+        <argument
+            android:name="showFinishRegister"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+
         <action
             android:id="@+id/login_to_login_email_action"
             app:destination="@id/login_fragment" />
@@ -27,6 +32,7 @@
         <action
             android:id="@+id/authorization_fragment_to_register_sn_fragment"
             app:destination="@id/register_sn_fragment" />
+
     </fragment>
 
     <fragment
@@ -82,9 +88,19 @@
             app:popUpTo="@id/authorization_fragment" />
 
         <action
+            android:id="@+id/email_register_to_authorization_fragment"
+            app:destination="@id/authorization_fragment"
+            app:popUpTo="@id/authorization_fragment" />
+
+        <action
             android:id="@+id/email_register_to_sn_register"
             app:destination="@id/register_sn_fragment"
             app:popUpTo="@id/authorization_fragment" />
+
+        <action
+            android:id="@+id/action_register_email_fragment_to_authorization_fragment"
+            app:destination="@id/authorization_fragment"
+            app:popUpTo="@id/authorization_fragment"/>
     </fragment>
 
     <fragment

@@ -19,7 +19,9 @@ data class RemoteNotification(
         val status: String?,
         val extra: String?,
         val event_activity_id: Int?,
-        val event: Event?
+        val event: Event?,
+        @SerializedName("project_invite")
+        val project_name: String? = null
 ) : Parcelable {
     companion object {
         const val TYPE_RATE = "event_poll"

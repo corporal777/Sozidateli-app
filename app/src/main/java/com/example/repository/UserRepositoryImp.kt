@@ -143,4 +143,8 @@ class UserRepositoryImp
     override fun deleteProfile(): Completable {
         return call(api.deleteProfile())
     }
+
+    override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
+        return call(api.getNotFilledFields())
+    }
 }

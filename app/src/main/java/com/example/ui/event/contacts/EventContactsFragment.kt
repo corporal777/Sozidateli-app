@@ -31,6 +31,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_event_contacts.*
+import java.text.DecimalFormat
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt

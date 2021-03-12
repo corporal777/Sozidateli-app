@@ -45,4 +45,5 @@ interface UserRepository {
 
     fun deleteProfile(): Completable
     fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
+    fun getNotFilledFields(): Maybe<List<NotFilledFields>>
 }

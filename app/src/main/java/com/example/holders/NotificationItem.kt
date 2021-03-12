@@ -46,7 +46,7 @@ abstract class NotificationItem(
         getTitleView(viewHolder).apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
                 text = context.resources.getString(R.string.notification_event_title,
-                        "<br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
+                        "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                         .setOnLinkClickListener { _, url ->
                             val eventMass = url.split("event")
