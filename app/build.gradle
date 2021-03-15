@@ -17,11 +17,11 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'jacoco-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 51
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

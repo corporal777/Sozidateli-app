@@ -202,7 +202,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     if (lastPath.contains(PATH_HIDDEN))
-                        presenter.onHandleEvent(authCode)
+                        presenter.onHandleEvent(authCode?: "")
                     else
                         presenter.onHandleEvent(lastPath)
                 } else if (lastPath == PATH_CHANGE_EMAIL) {

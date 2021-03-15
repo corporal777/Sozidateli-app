@@ -8,6 +8,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import kotlin.jvm.Throws
 
 
 object UriUtils {
@@ -18,7 +19,7 @@ object UriUtils {
         val directory = tempImageDirectory(context)
         val photoFile = File(directory, generateFileName() + "." + getMimeType(context, photoUri))
         photoFile.createNewFile()
-        writeToFile(pictureInputStream, photoFile)
+        writeToFile(pictureInputStream!!, photoFile)
         return photoFile
     }
 
