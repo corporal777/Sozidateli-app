@@ -7,10 +7,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import com.example.R
-import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
@@ -24,7 +22,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
     override fun showLoadingDialog() {

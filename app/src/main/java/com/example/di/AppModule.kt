@@ -22,10 +22,10 @@ import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
+import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
 import ru.houseofapps.chat.HAChat
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Singleton
 
 @Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class, DataDataRetrofitModule::class])

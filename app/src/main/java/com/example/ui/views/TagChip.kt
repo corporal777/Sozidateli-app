@@ -7,7 +7,7 @@ import android.view.Gravity
 import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.core.content.ContextCompat
 import com.example.R
-import uk.co.chrisjenx.calligraphy.CalligraphyUtils
+import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class TagChip : AppCompatToggleButton {
 

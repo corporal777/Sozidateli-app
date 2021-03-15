@@ -9,8 +9,10 @@ import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
+import io.github.inflationx.calligraphy3.CalligraphyConfig
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor
+import io.github.inflationx.viewpump.ViewPump
 import timber.log.Timber
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import javax.inject.Inject
 
 class App : Application(), HasActivityInjector, HasServiceInjector {
@@ -48,7 +50,14 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
                 .build()
                 .apply { inject(this@App) }
 
-        CalligraphyConfig.initDefault(calligraphyConfig)
+        //CalligraphyConfig.initDefault(calligraphyConfig)
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(CalligraphyInterceptor(
+                        CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                                .setFontAttrId(R.attr.fontPath)
+                                .build()))
+                .build())
         VKSdk.initialize(this)
     }
 

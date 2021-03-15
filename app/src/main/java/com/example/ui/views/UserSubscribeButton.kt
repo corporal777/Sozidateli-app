@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.example.R
 import com.example.extensions.dp
-import uk.co.chrisjenx.calligraphy.CalligraphyUtils
+import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class UserSubscribeButton : AppCompatButton {
 
