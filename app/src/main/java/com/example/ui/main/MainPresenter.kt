@@ -14,6 +14,7 @@ import com.example.data.models.RemoteNotification
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
+import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.*
@@ -54,7 +55,8 @@ class MainPresenter
         private val locationProviderClient: FusedLocationProviderClient,
         private val rxPermissions: RxPermissions,
         private val notificationManager: NotificationManager,
-        private val connectivityProvider: ConnectivityProvider
+        private val connectivityProvider: ConnectivityProvider,
+        private val eventRepository: EventRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     lateinit var newMessageTitleText: String
@@ -302,7 +304,15 @@ class MainPresenter
 
     override fun onHandleEvent(event: String) {
         if (isAuthRequired) return
-        viewState.showEvent(event)
+        compositeDisposable += eventRepository.getEventByCode(event)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.showEvent(it.event.id)
+                }, {
+                    it.printStackTrace()
+                })
+        //viewState.showEvent(event)
     }
 
     override fun onInviteRegister(email: String, code: String) {
