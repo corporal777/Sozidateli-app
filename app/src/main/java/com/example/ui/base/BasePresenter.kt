@@ -62,14 +62,19 @@ open class BasePresenter<V : BaseContract.View>
             if (onError != null) onError(it)
             else {
                 if (it is ApiError) {
-                    val errors = (it as ApiError).errors
-                    if (errors.isNullOrEmpty()) {
-                        onReceiveError(it)
-                    } else {
-                        when (errors[0]) {
-                            "User with same email exists" -> viewState.showEmailErrorMessage()
-                            "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
-                            else -> onReceiveError(it)
+                    when (it.code) {
+                        409 -> viewState.showEmailErrorMessage()
+                        else -> {
+                            val errors = (it as ApiError).errors
+                            if (errors.isNullOrEmpty()) {
+                                onReceiveError(it)
+                            } else {
+                                when (errors[0]) {
+                                    "User with same email exists" -> viewState.showEmailErrorMessage()
+                                    "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
+                                    else -> onReceiveError(it)
+                                }
+                            }
                         }
                     }
                 }

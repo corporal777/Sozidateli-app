@@ -6,6 +6,7 @@ import com.example.exceptions.NoInternetConnectionException
 import com.example.util.ApiErrorParser
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.*
+import retrofit2.HttpException
 import java.net.ConnectException
 
 abstract class ApiRepository(
@@ -69,6 +70,8 @@ abstract class ApiRepository(
         if (throwable is ConnectException) return NoInternetConnectionException()
 
         return ApiErrorParser.parse(throwable)?.apply {
+            if ((throwable as HttpException).code() == 409)
+                code = 409
             saveSession(session?.token)
         } ?: throwable
     }

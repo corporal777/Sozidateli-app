@@ -1,7 +1,7 @@
 package com.example.data.models
 
 class ApiError(
-        val code: Int,
+        var code: Int,
         val session: Session?,
         val errors: List<String>
 ) : Throwable() {
