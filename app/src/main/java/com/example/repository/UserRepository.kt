@@ -76,12 +76,4 @@ interface UserRepository {
     fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
     fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
-    fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
-    fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
-    fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
-    fun sendPhoneCode(id: Int, phone: String): Completable
-
-    fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel>
-    fun logout(id: Int): Completable
-    fun changePassword(id: Int, body: PasswordBody): Completable
 }

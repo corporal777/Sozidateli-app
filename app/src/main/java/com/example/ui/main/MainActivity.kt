@@ -222,9 +222,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 } else if (changeEmail != null && authCode != null) {
                     presenter.onInviteRegister(changeEmail, authCode)
                 } else if (lastPath == REGISTER_CONFIRM) {
-                    presenter.onHandleAuthLink(/*authEmail, */authCode)
+                    presenter.onHandleAuthLink(/*authEmail, */authCode?: "")
                 } else if (lastPath == PATH_CONFIRM_EMAIL) {
-                    presenter.onHandleChangeEmailConfirm(authCode)
+                    presenter.onHandleChangeEmailConfirm(authCode?: "")
                 }
             }
         } else {
