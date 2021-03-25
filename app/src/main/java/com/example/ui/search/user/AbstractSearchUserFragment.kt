@@ -52,10 +52,10 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 tilTheme.isVisible = false
                 tilSpec.isVisible = false
             } else {
-                initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
+                /*initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
                     filter.theme = theme
                     filter.spec = spec
-                }
+                }*/
                 tilTheme.isVisible = true
                 tilSpec.isVisible = true
             }

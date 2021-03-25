@@ -68,7 +68,7 @@ interface UserRepository {
     fun checkIfPasswordValid(password: String): Completable
 
     fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
-    fun getInterestsList(ids: List<Int>?): Single<InterestsModel>
+    fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel>
     fun getEducationLevel(): Single<EducationLevelModel>
     fun getSpeciality(): Single<EducationLevelModel>
     fun getAcademicDegrees(): Single<EducationLevelModel>

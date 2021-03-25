@@ -88,7 +88,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.binds?.organization?.logo?.uri,
                     EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
                     it.binds?.organization?.email,
-                    !it.binds?.rights?.registration!!,
+                    it.binds?.rights?.registration != false,
                     onEventClickListener,
                     createEventDataListItem(event = it),
                     it.userAgreement?.uri

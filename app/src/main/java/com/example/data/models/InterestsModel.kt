@@ -3,7 +3,7 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class InterestsModel(
-        val data: List<InterestNew>?,
+        val data: List<InterestNew>,
         @SerializedName("totalCount")
         val totalCount: Int?
 )

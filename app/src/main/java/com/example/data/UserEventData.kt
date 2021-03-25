@@ -1,12 +1,10 @@
 package com.example.data
 
 import com.example.data.database.UserEventDao
-import com.example.data.models.EventActivity
-import com.example.data.models.EventInfo
-import com.example.data.models.EventScheduleCalendarDay
-import com.example.data.models.UserEvent
+import com.example.data.models.*
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.repository.EventRepository
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -47,7 +45,26 @@ class UserEventData(
     }
 
     private fun loadInternal(eventId: String): Completable {
-        val eventInfo = eventRepository.getEventInfo(eventId)
+        val event = eventRepository.getEventDetails(eventId)
+        val formats = eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
+        return Maybe.zip(event, formats, BiFunction<EventNew, List<NewEventFormat>, UserEvent> { event, formats ->
+            event.format?.name = formats.firstOrNull { f -> f.id == event.format?.value }?.name
+            UserEvent(event.id.toString(),
+                    EventInfo(event, event.binds?.partner?: arrayListOf(), event.binds?.page?: arrayListOf(),
+                            event.binds?.userRegister, event.state?.rating?.askDelay, event.binds?.form),
+                    EventActivity(event.binds?.activity?: arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf()), System.currentTimeMillis())
+        })
+                .doOnSuccess { userEventDao.insert(it) }
+                .onErrorResumeNext(loadEventCache(eventId).toMaybe())
+                .doOnSuccess {
+                    val dateFormat = defaultServerDateFormatter
+                    days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
+                    userEvent = it
+                    isDataFromLocalStorage = it.isDataFromLocalStorage
+                    dataLoadingDate = it.updatedAt
+                }
+                .ignoreElement()
+        /*val eventInfo = eventRepository.getEventInfo(eventId)
         val eventActivity = eventRepository.getEventActivity(eventId)
         return Maybe.zip(eventInfo, eventActivity, BiFunction<EventInfo, EventActivity, UserEvent> { info, activity ->
             UserEvent(eventId, info, activity, System.currentTimeMillis())
@@ -61,7 +78,7 @@ class UserEventData(
                     isDataFromLocalStorage = it.isDataFromLocalStorage
                     dataLoadingDate = it.updatedAt
                 }
-                .ignoreElement()
+                .ignoreElement()*/
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {

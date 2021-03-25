@@ -210,7 +210,7 @@ class UserRepositoryImp
                 appData.updateWorkExperience(it)
             }
 
-    override fun getInterestsList(ids: List<Int>?): Single<InterestsModel> =
+    override fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel> =
             newApi.getInterestsList(200, ids)
 
     override fun getEducationLevel(): Single<EducationLevelModel> {

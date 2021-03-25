@@ -30,7 +30,7 @@ class MyEventsPresenter
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //return eventRepository.getEventList(limit, offset, getFilterData())
         //TODO Finish this screen
-        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset))
+        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset, EventNew.EVENT_BINDS to "rights"))
     }
 
     override fun onFirstViewAttach() {

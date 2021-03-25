@@ -4,6 +4,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Document
+import com.example.data.models.FileModel
 import com.example.ui.base.BaseContract
 
 interface PageContract {
@@ -14,7 +15,7 @@ interface PageContract {
                 contentTitle: String,
                 title: String?,
                 content: String?,
-                documents: List<Document>?
+                documents: List<FileModel>?
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -22,6 +23,6 @@ interface PageContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onDocumentClick(document: Document)
+        fun onDocumentClick(document: FileModel)
     }
 }

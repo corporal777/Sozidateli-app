@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import com.example.R
 import com.example.data.models.Interest
+import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
@@ -148,7 +149,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }, onVariantChange = onSubscriptionChange)
     }
 
-    protected fun initInterests(interests: Map<Interest, List<Interest>>,
+    protected fun initInterests(interests: Map<InterestNew, List<InterestNew>>,
                                 tvTheme: AutoCompleteTextView,
                                 tilSpec: TextInputLayout, tvSpec: AutoCompleteTextView,
                                 theme: Int?, spec: Int?, onInterestChange: (theme: Int?, spec: Int?) -> Unit) {
@@ -165,9 +166,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         initDropDownView(
                 tvTheme,
                 themes,
-                selectedTheme?.value,
+                selectedTheme?.name,
                 null,
-                transformKey = { it.value },
+                transformKey = { it.name?: "" },
                 findValue = { it?.id },
                 onVariantChange = { id ->
                     currentTheme = id
@@ -182,7 +183,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         initSpec(tilSpec, tvSpec, specs, spec, onSpecChange)
     }
 
-    private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<Interest>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
+    private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<InterestNew>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
         if (interests == null) {
             textView.isEnabled = false
             textView.text = null
@@ -192,9 +193,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             initDropDownView(
                     textView,
                     interests,
-                    selectedTheme?.value,
+                    selectedTheme?.name,
                     null,
-                    transformKey = { it.value },
+                    transformKey = { it.name?: "" },
                     findValue = { it?.id },
                     onVariantChange = { onSpecChange(it) }
             )
@@ -203,7 +204,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }
     }
 
-    private fun findInterest(id: Int?, interests: Collection<Interest>): Interest? {
+    private fun findInterest(id: Int?, interests: Collection<InterestNew>): InterestNew? {
         return id?.let { interests.find { it.id == id } }
     }
 

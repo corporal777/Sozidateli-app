@@ -1,6 +1,8 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class EventsListModel (
         val data: List<EventModel>? = null,
@@ -38,10 +40,11 @@ data class EventModel (
        val state: EventState? = null
 )
 
+@Parcelize
 data class EventRegularity(
         val value: Int? = null,
         val custom: String? = null
-)
+): Parcelable
 
 data class EventState (
     val registration: EventStateRegistration? = null,
@@ -88,7 +91,8 @@ data class FormatModel (
     val custom: String? = null
 )
 
+@Parcelize
 data class TopicModel (
         val category: Int? = null,
         val subcategories: List<Int>? = null
-)
+): Parcelable

@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -7,7 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
-import retrofit2.http.QueryMap
+import retrofit2.http.*
 
 interface EventRepository {
     fun getEventList(limit: Int, offset: Int, filter: Map<String, Any>? = null): Maybe<PaginationResponse<Event?>>
@@ -48,5 +49,12 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventFormatsList(map: Map<String, Any>): Single<List<NewEventFormat>?>
+    fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
+    fun getEventDetails(eventId: String): Maybe<EventNew>
+    fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable
+    fun getPageDetails(pageId: String): Single<PageModel>
+    fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>
+    fun getPartnerDetails(partnerId : String): Single<PartnerModel>
+    fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel>
+    fun deleteFromFavorite(id : String): Completable
 }

@@ -2,10 +2,7 @@ package com.example.ui.event.contacts
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.MapInfo
-import com.example.data.models.PhoneAffiliation
-import com.example.data.models.Place
+import com.example.data.models.*
 import com.example.ui.base.BaseContract
 
 interface EventContactsContract {
@@ -13,8 +10,8 @@ interface EventContactsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(
-                phones: List<PhoneAffiliation>,
-                emails: List<EmailAffiliation>,
+                phones: List<EventPhoneModel>,
+                emails: List<EventPhoneModel>,
                 webLinks: List<String>,
                 socialLinks: List<String>,
                 address: String?,

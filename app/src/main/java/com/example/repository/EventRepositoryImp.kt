@@ -4,6 +4,7 @@ import android.net.Uri
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -14,6 +15,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import okhttp3.RequestBody
+import retrofit2.http.Field
 import javax.inject.Inject
 
 class EventRepositoryImp
@@ -145,7 +147,8 @@ class EventRepositoryImp
     }
 
     override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
-        return Single.zip(
+        return Single.just(EventRatingData(EventData("","",), arrayListOf(), null, null))
+        /*return Single.zip(
                 getEventRating(eventId),
                 getEventRatingForm(eventId),
                 BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
@@ -156,7 +159,7 @@ class EventRepositoryImp
                             ratingValue = eventInfo.ratingValue
                     )
                 }
-        )
+        )*/
     }
 
     private fun createFieldsData(
@@ -239,9 +242,17 @@ class EventRepositoryImp
     //Alfa API
     override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
             newApi.getEventsList(map)
-                    .map { PaginationResponse(it.totalCount, it.data?: arrayListOf()) }
+                    .map {
+                        val eventFormats = appData.getEventFormats()
+                        if (!eventFormats.isNullOrEmpty()) {
+                            it.data?.forEach { ev ->
+                                ev?.format?.name = eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                            }
+                        }
+                        PaginationResponse(it.totalCount, it.data?: arrayListOf())
+                    }
 
-    override fun getEventFormatsList(map: Map<String, Any>): Single<List<NewEventFormat>?> {
+    override fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>> {
         val eventFormats = appData.getEventFormats()
         return if (eventFormats.isNullOrEmpty())
             newApi.getEventFormatsList(map)
@@ -249,6 +260,40 @@ class EventRepositoryImp
                         appData.setEventFormats(it.data)
                     }.map { it.data }
         else
-            Single.just(eventFormats)
+            Maybe.just(eventFormats)
     }
+
+    override fun getEventDetails(eventId: String): Maybe<EventNew> =
+        newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium")
+                .map {
+                    val eventFormats = appData.getEventFormats()
+                    if (!eventFormats.isNullOrEmpty()) {
+                        it.format?.name = eventFormats.firstOrNull { f -> f.id == it.format?.value }?.name
+                    }
+                    it
+                }
+
+    override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =
+            newApi.mailToEvent(message, event, isPush, isInApp)
+
+    override fun getPageDetails(pageId: String): Single<PageModel> =
+            newApi.getPageDetails(pageId)
+
+    override fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>> =
+            newApi.getSpeakers(map)
+                    .map {
+                        PaginationResponse(
+                                it.totalCount,
+                                it.data
+                        )
+                    }
+
+    override fun getPartnerDetails(partnerId: String): Single<PartnerModel> =
+            newApi.getPartnerDetails(partnerId, "event")
+
+    override fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel> =
+            newApi.addToFavorite(body)
+
+    override fun deleteFromFavorite(id: String): Completable =
+            newApi.deleteFromFavorite(id)
 }

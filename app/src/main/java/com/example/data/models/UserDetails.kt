@@ -34,7 +34,8 @@ data class UserDetail(
         var binds: UserBinds? = null,
         var educationLevelList: List<EducationLevel>? = null,
         var speciality: List<EducationLevel>? = null,
-        var academicDegrees: List<EducationLevel>? = null
+        var academicDegrees: List<EducationLevel>? = null,
+        var isCurrentUser: Boolean? = false
 ): Parcelable {
 
         val fullName: String
@@ -105,6 +106,8 @@ data class OrganizationModel(
 data class FileModel(
         val id: Int? = null,
         val user: Int? = null,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
         @SerializedName("mimeType")
         val mimeType: String? = null,
         val size: Long? = null,

@@ -1,10 +1,7 @@
 package com.example.ui.event.contacts
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.MapInfo
-import com.example.data.models.PhoneAffiliation
-import com.example.data.models.Place
+import com.example.data.models.*
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
@@ -18,8 +15,8 @@ class EventContactsPresenter
     }
 
     lateinit var eventName: String
-    lateinit var phones: List<PhoneAffiliation>
-    lateinit var emails: List<EmailAffiliation>
+    lateinit var phones: List<EventPhoneModel>
+    lateinit var emails: List<EventPhoneModel>
     lateinit var webLinks: List<String>
     lateinit var socialLinks: List<String>
     var address: String? = null

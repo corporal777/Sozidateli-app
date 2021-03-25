@@ -27,8 +27,7 @@ class OrganizationItem(
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
-                    //TODO not ready on api side
-                    //setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+                    setAction(if (organization.binds?.userFavorite != null) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
                     setOnClickListener { onSubscribeClick.invoke() }
                     true
                 } else {
@@ -39,8 +38,10 @@ class OrganizationItem(
             tvOrganizationImageName.apply {
                 text = organization.legalInformation?.name?.short
                 clipToOutline = true
-                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)
-                        ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
+                if (!organization.backgroundColor?.value.isNullOrEmpty())
+                    ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)))
+                else
+                    ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
             ivOrganizationImage.apply {

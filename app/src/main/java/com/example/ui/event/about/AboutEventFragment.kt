@@ -147,64 +147,64 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun setEventData(
-            eventData: EventData,
+            eventData: EventNew,
             userRegistration: Event.RegistrationStatus?,
-            pages: List<EventPage>,
-            partners: List<EventParther>,
+            pages: List<PageModel>?,
+            partners: List<PartnerModel>?,
             showContacts: Boolean,
             userAgreement: String?
     ) {
         val aboutItem = EventDataAboutItem(
-                -eventData.id.toLong(),
-                eventData.organization?.name,
+                -(eventData.id?.toLong()?: 0),
+                "eventData.binds?.organization?.name",
                 eventData.name,
                 null,
-                eventData.conferenceStart.formatToEventDatesIntervalNew(eventData.conferenceFinish),
-                eventData.conferenceRegistrationFinishDate
+                eventData.holdingDate?.from.formatToEventDatesIntervalNew(eventData.holdingDate?.to),
+                eventData.requestsApply?.dateLimit
                         ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
-                eventData.isFavorite ?: false,
+                eventData.binds?.userFavorite != null,
                 { presenter.onChangeFavoriteClick() },
-                { eventData.organizationId?.let { presenter.onOrganizationClick(it) } }
+                { eventData.organization?.let { presenter.onOrganizationClick(it.toString()) } }
         ).apply {
             this@AboutEventFragment.aboutItem = this
         }
 
         groupAdapter.update(listOf(
                 EventGroup(
-                        eventData.id,
-                        if (eventData.status == Event.Status.FINISHED) Event.Status.FINISHED else null,
+                        eventData.id.toString(),
+                        if (eventData.status?.value == Event.Status.FINISHED) Event.Status.FINISHED else null,
                         userRegistration,
-                        eventData.backgroundColor,
-                        eventData.backgroundImage,
-                        eventData.takeFormat(),
+                        eventData.binds?.organization?.backgroundColor?.value,
+                        eventData.binds?.organization?.logo?.uri,
+                        EventFormat(name = if (eventData.format?.name.isNullOrEmpty()) eventData.format?.custom?: "" else eventData.format?.name?: ""),
                         null,
-                        !eventData.canRegister,
+                        !eventData.binds?.rights?.registration!!,
                         eventClickListener,
                         aboutItem,
-                        eventData.userAgreement,
+                        eventData.userAgreement?.name,
                         false
                 ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 
-                    val hasRating = (eventData.status == Event.Status.FINISHED /*||
+                    val hasRating = (eventData.status?.value == Event.Status.FINISHED /*||
                             eventData.status == Event.Status.IN_ARCHIVE*/) &&
-                            eventData.ratingStartAt != null &&
+                            /*eventData.ratingStartAt != null &&*/
                             userRegistration == Event.RegistrationStatus.APPROVED
 
-                    val hasPages = pages.isNotEmpty()
+                    val hasPages = pages?.isNotEmpty()
                     val hasAgreement = userAgreement.isNullOrEmpty().not()
 
                     if (BuildConfig.NEW_PROFILE_EDIT) {
                         add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
-                            hasBottomPadding = !hasRating && !hasAgreement && hasPages
+                            hasBottomPadding = !hasRating && !hasAgreement && hasPages == true
                         })
                     }
 
                     if (hasRating) {
                         add(EventPageItem(-100, getString(R.string.about_event_rate), presenter::onRateClick).apply {
-                            hasBottomPadding = !hasAgreement && hasPages
+                            hasBottomPadding = !hasAgreement && hasPages == true
                         })
                     }
 
@@ -214,36 +214,36 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                                 getString(R.string.about_event_agreement),
                                 presenter::onAgreementClick
                         ).apply {
-                            hasBottomPadding = hasPages
+                            hasBottomPadding = hasPages == true
                         })
                     }
 
-                    addAll(pages.mapIndexed { index, item ->
-                        EventPageItem(item.id, item.menu) { presenter.onPageClick(item) }.apply {
+                    addAll(pages?.mapIndexed { index, item ->
+                        EventPageItem(item.id?: 0, item.name?: "") { presenter.onPageClick(item) }.apply {
                             hasBottomPadding = index == pages.size - 1
                         }
-                    })
+                    }?: arrayListOf())
                 },
 
                 Section().apply {
                     setHeader(PartnersTitleItem(-50))
                     setHideWhenEmpty(true)
-                    addAll(partners.map { EventPartnerItem(it.id, it.logo, it.name) { presenter.onPartnerClick(it) } })
+                    addAll(partners?.map { EventPartnerItem(it.id?: 0, it.logo?.uri, it.name) { presenter.onPartnerClick(it) } }?: arrayListOf())
                 }
         ))
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun setActionButton(event: EventData, userRegistration: Event.RegistrationStatus?) {
+    override fun setActionButton(event: EventNew, userRegistration: Event.RegistrationStatus?) {
         var textRes: Int? = null
         var clickAction: (() -> Unit)? = null
         var visibility = true
 
         when {
-            event.status == Event.Status.FINISHED -> {
+            event.status?.value == Event.Status.FINISHED -> {
                 visibility = false
             }
-            !event.canRegister -> {
+            !event.binds?.rights?.registration!! -> {
                 when (userRegistration) {
                     Event.RegistrationStatus.APPROVED -> {
                         textRes = R.string.event_action_show_event
@@ -276,7 +276,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     else -> {
                         textRes = R.string.event_action_participate
                         clickAction = {
-                            val agreement = event.userAgreement
+                            val agreement = event.userAgreement?.name
                             if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || agreement.isNullOrEmpty()) {
                                 presenter.onGoToEventClick()
                             } else {
@@ -293,7 +293,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             else -> flRegister.isVisible = visibility
         }
 
-        //flRegister.isVisible = visibility
+        flRegister.isVisible = visibility
 
         flRegister.btnAction.apply {
             text = textRes?.let { getString(it) }
@@ -388,7 +388,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 }
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EmailAffiliation>) {
+    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
         AlertDialog.Builder(requireContext())
                 .setItems(
                         emails.map { it.getAffiliationString(underlinedEmail = true) }
@@ -402,10 +402,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EmailAffiliation) {
+    override fun showWriteToOrganization(email: EventPhoneModel) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.email))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
@@ -449,8 +449,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun showContacts(
             eventName: String,
-            phones: List<PhoneAffiliation>,
-            emails: List<EmailAffiliation>,
+            phones: List<EventPhoneModel>,
+            emails: List<EventPhoneModel>,
             webLinks: List<String>?,
             socialLinks: List<String>?,
             address: String?,

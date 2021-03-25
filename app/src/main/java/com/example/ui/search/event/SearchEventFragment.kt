@@ -28,7 +28,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFilter.Event>(), SearchEventContract.View {
+class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, SearchFilter.EventNew>(), SearchEventContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchEventPresenter
@@ -85,33 +85,33 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                 .build())
     }
 
-    override fun createItem(itemData: Event?): Group {
-        return /*if (itemData == null)*/ PlaceholderItem(PlaceholderItem.Type.EVENT)
-        /*else EventGroup(
-                itemData.id,
-                itemData.status,
-                itemData.userRegistration,
-                itemData.backgroundColor,
-                itemData.backgroundImage,
-                itemData.takeFormat(),
-                itemData.organization?.emails,
-                !itemData.canRegister,
+    override fun createItem(itemData: EventNew?): Group {
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
+        else EventGroup(
+                itemData.id.toString(),
+                itemData.status?.value,
+                itemData.binds?.userRegister?.status?.value,
+                itemData.binds?.organization?.backgroundColor?.value,
+                itemData.binds?.organization?.logo?.uri,
+                EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
+                itemData.binds?.organization?.email,
+                !itemData.binds?.rights?.registration!!,
                 onEventClickListener,
                 EventDataListItem(
-                        -itemData.id.toLong(),
+                        -(itemData.id?.toLong()?: 0),
                         itemData.name,
-                        itemData.shortAddress ?: itemData.addressCity,
-                        itemData.conferenceStart,
-                        itemData.conferenceFirstActivityStart
+                        itemData.address?.getShortAddress(),
+                        itemData.holdingDate?.from,
+                        itemData.binds.getFirstActionStartDate()
                 ).apply {
                     showStartTime = false
                 },
-                itemData.userAgreement
-        )*/
+                itemData.userAgreement?.name
+        )
     }
 
     @SuppressLint("InflateParams")
-    override fun createFilterView(filter: SearchFilter.Event): View {
+    override fun createFilterView(filter: SearchFilter.EventNew): View {
         return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
@@ -144,7 +144,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, Event, SearchFi
                         formats,
                         formats.find { it.id == filter.format }?.name,
                         null,
-                        { it.name },
+                        { it.name?: "" },
                         { it?.id },
                         { filter.format = it }
                 )

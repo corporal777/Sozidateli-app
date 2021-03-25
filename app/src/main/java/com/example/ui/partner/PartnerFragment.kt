@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Partner
+import com.example.data.models.PartnerModel
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
@@ -38,14 +39,14 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         }
     }
 
-    override fun setData(partner: Partner, logo: Bitmap?, background: Bitmap?) {
+    override fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?) {
         ivBackground.apply {
             clipToOutline = true
             if (background == null) {
                 isVisible = false
             } else {
                 setImageBitmap(background)
-                setOnImageClickListener(this, partner.background)
+                setOnImageClickListener(this, partner.image?.uri)
             }
         }
         ivLogo.apply {
@@ -54,12 +55,12 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 setImageBitmap(logo)
-                setOnImageClickListener(this, partner.logo)
+                setOnImageClickListener(this, partner.logo?.uri)
             }
         }
 
         tvName.apply {
-            isVisible = !partner.name.isEmpty()
+            isVisible = partner.name?.isNotEmpty() == true
             text = partner.name
         }
 
@@ -68,7 +69,8 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
             text = partner.description
         }
 
-        val link = partner.web?.takeIf { it.isNotBlank() }
+        //val link = partner.web?.takeIf { it.isNotBlank() }
+        val link = partner.site?.joinToString("\n") { it.value?: "" }
 
         tvLinksTitle.isVisible = link != null
 
@@ -78,8 +80,8 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
             removeUrlUnderline()
         }
 
-        llSupportType.isVisible = !partner.typeSupport.isNullOrEmpty()
-        tvSupportType.text = partner.typeSupport
+        llSupportType.isVisible = !partner.supportType.isNullOrEmpty()
+        tvSupportType.text = partner.supportType
 
         llContent.isVisible = true
     }

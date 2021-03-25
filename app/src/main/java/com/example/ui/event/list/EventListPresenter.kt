@@ -64,7 +64,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
                                             viewState.setData(it)
                                         }
                                 )
-                        //viewState.setData(it)
                     }
                 }
 

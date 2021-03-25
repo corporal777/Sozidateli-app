@@ -2,14 +2,11 @@ package com.example.ui.search.event
 
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.EventPhoneModel
-import com.example.data.models.SearchFilter
+import com.example.data.models.*
 import com.example.ui.search.SearchContract
 
 interface SearchEventContract {
-    interface View : SearchContract.View<Event, SearchFilter.Event> {
+    interface View : SearchContract.View<EventNew, SearchFilter.EventNew> {
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
 
@@ -26,7 +23,7 @@ interface SearchEventContract {
         fun selectEvent()
     }
 
-    interface Presenter : SearchContract.Presenter<Event> {
+    interface Presenter : SearchContract.Presenter<EventNew> {
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
         fun onActionWriteToOrganization(emails: List<EventPhoneModel>)

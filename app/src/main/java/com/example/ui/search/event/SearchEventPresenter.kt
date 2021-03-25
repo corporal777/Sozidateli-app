@@ -36,23 +36,35 @@ class SearchEventPresenter
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository
-) : SearchPresenter<SearchEventContract.View, Event, SearchFilter.Event>(), SearchEventContract.Presenter {
+) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(), SearchEventContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        eventRepository.getEventList(limit, offset, buildFilter())
+        val data = mutableMapOf<String, Any>().apply {
+            put(EventNew.EVENT_LIMIT, limit)
+            put(EventNew.EVENT_OFFSET, offset)
+            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+            if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
+            if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")
+            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, "%"+filter.dateStart+"%")
+            if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
+            val category = filter.spec ?: filter.theme
+            if (category != null) put(EventNew.EVENT_CATEGORY, category)
+        }
+        eventRepository.getEventsList(data)
     }
 
     private var isCommonDataLoaded = false
-    private var interests: Map<Interest, List<Interest>>? = null
-    private var formats: List<EventFormat>? = null
+    private var interests: Map<InterestNew, List<InterestNew>>? = null
+    private var formats: List<NewEventFormat>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        /*val loadInterests = commonRepository.getInterests()
+        val loadInterests = userRepository.getInterestsList(null)
                 .map { interests ->
-                    interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
+                    interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
                 }
-        compositeDisposable += Maybe.zip(loadInterests, commonRepository.getEventFormats(), BiFunction<Map<Interest, List<Interest>>, List<EventFormat>, Unit> { interests, formats ->
+        compositeDisposable += Maybe.zip(loadInterests, eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)),
+                BiFunction<Map<InterestNew, List<InterestNew>>, List<NewEventFormat>, Unit> { interests, formats ->
             this.interests = interests
             this.formats = formats
         })
@@ -64,14 +76,33 @@ class SearchEventPresenter
                         },
                         onSuccess = {
                             isCommonDataLoaded = true
-                        })*/
+                        })
+    }
+
+    private fun groupUserInterests(
+            userInterests: List<Int>?,
+            interests: List<InterestNew>?
+    ): Map<InterestNew, MutableList<InterestNew>> {
+        val groups = mutableMapOf<InterestNew, MutableList<InterestNew>>()
+        val headers = interests?.filter { it.parent == 0 }
+        headers?.forEach {
+            val parent = interests.filter { parent -> parent.parent == it.id }
+            parent.let { it1 ->
+                userInterests?.forEach { usIn ->
+                    val isUserInterest = it1.find { it2 -> it2.id == usIn }
+                    if (isUserInterest != null)
+                        groups.getOrPut(it) { mutableListOf() }.add(isUserInterest)
+                }
+            }
+        }
+        return groups
     }
 
     override fun onResume(searchInterface: SearchInterface) {
         super.onResume(searchInterface)
         searchInterface.apply {
             val initWithFilter = this.initWithFilter
-            if (initWithFilter != null && initWithFilter is SearchFilter.Event) {
+            if (initWithFilter != null && initWithFilter is SearchFilter.EventNew) {
                 tmpFilter = initWithFilter
                 filter = initWithFilter
                 this.initWithFilter = null
@@ -138,23 +169,23 @@ class SearchEventPresenter
 
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
         put(FILTER_SHOW_CANCELED, true)
-        if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
+        //if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
         val address = filter.address
         if (!address.isNullOrEmpty()) put(FILTER_ADDRESS, address)
-        val name = filter.name
-        if (!name.isNullOrEmpty()) put(FILTER_NAME, name)
+        /*val name = filter.name
+        if (!name.isNullOrEmpty()) put(FILTER_NAME, name)*/
         val registration = filter.registration
         if (registration != null) put(FILTER_REGISTRATION, registration)
-        val dateStart = filter.dateStart
-        if (dateStart != null) put(FILTER_DATE_START, dateStart)
+        /*val dateStart = filter.dateStart
+        if (dateStart != null) put(FILTER_DATE_START, dateStart)*/
         val dateFinish = filter.dateFinish
         if (dateFinish != null) put(FILTER_DATE_FINISH, dateFinish)
-        val category = filter.spec ?: filter.theme
-        if (category != null) put(FILTER_CATEGORY, category)
-        val format = filter.format
-        if (format != null) put(FILTER_FORMAT, format)
+        /*val category = filter.spec ?: filter.theme
+        if (category != null) put(FILTER_CATEGORY, category)*/
+        /*val format = filter.format
+        if (format != null) put(FILTER_FORMAT, format)*/
     }
 
-    override fun createFilter() = SearchFilter.Event()
-    override fun copyFilter(filter: SearchFilter.Event) = filter.copy()
+    override fun createFilter() = SearchFilter.EventNew()
+    override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
 }

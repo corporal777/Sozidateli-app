@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.repository.EventRepository
@@ -64,8 +66,7 @@ class OrganizationPresenter
                             organizationData.events,
                             organizationData.members*/
                     )
-                    //TODO not ready on api side
-                    //viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
+                    viewState.setSubscribed(organizationData.binds?.userFavorite != null)
                 }, {
                     it.printStackTrace()
                 })
@@ -123,6 +124,7 @@ class OrganizationPresenter
     }
 
     override fun onUserActionCLick(user: UserDetail) {
+
         val id = user.id.toString()
         //TODO not ready on api side
         /*val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)

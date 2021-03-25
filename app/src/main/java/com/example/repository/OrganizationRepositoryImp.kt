@@ -39,10 +39,13 @@ class OrganizationRepositoryImp
     }
 
     override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
-        return newApi.searchOrganizations(map).map { PaginationResponse(it.totalCount, it.data?: arrayListOf()) }
+        return newApi.searchOrganizations(map)
+                .map {
+                    PaginationResponse(it.totalCount, it.data?: arrayListOf())
+                }
     }
 
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
-        return newApi.getOrganizationDetails(organizationId, arrayListOf("rights", "leader", "member", "user", "userOrganizationRights"))
+        return newApi.getOrganizationDetails(organizationId, "rights,leader,member,user,userFavorite")
     }
 }

@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Document
+import com.example.data.models.FileModel
 import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -58,7 +59,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
             contentTitle: String,
             title: String?,
             content: String?,
-            documents: List<Document>?
+            documents: List<FileModel>?
     ) {
         toolbarContentActionBar.title = contentTitle
 

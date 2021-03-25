@@ -37,7 +37,7 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
 
     @ProvidePresenter
     fun providePresenter(): SubeventPresenter = presenterProvider.get().apply {
-        val args = SubeventFragmentArgs.fromBundle(arguments!!)
+        val args = SubeventFragmentArgs.fromBundle(requireArguments())
         event = args.eventId
         subevent = args.subeventId
     }
@@ -67,9 +67,9 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
     }
 
     override fun setSpeakers(speakers: List<Speaker>) {
-        speakersSection.update(speakers.map { speaker ->
+        /*speakersSection.update(speakers.map { speaker ->
             SpeakerGroup(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
-        })
+        })*/
     }
 
     override fun showSpeakerProfile(speaker: Speaker) {

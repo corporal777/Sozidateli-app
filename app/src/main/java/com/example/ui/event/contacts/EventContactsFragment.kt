@@ -13,10 +13,7 @@ import androidx.core.view.updateLayoutParams
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.MapInfo
-import com.example.data.models.PhoneAffiliation
-import com.example.data.models.Place
+import com.example.data.models.*
 import com.example.extensions.parsePhone
 import com.example.holders.ProfileFieldTextItem
 import com.example.interfaces.ToolbarFragment
@@ -84,8 +81,8 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     }
 
     override fun setData(
-            phones: List<PhoneAffiliation>,
-            emails: List<EmailAffiliation>,
+            phones: List<EventPhoneModel>,
+            emails: List<EventPhoneModel>,
             webLinks: List<String>,
             socialLinks: List<String>,
             address: String?,
@@ -95,9 +92,9 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     ) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map {
-                ProfileFieldTextItem(it.affiliation ?: "", it.phone.parsePhone(requireContext()), it.additional)
+                ProfileFieldTextItem(it.title ?: "", it.value?.parsePhone(requireContext())?: "", /*it.additional*/"")
             })
-            addAll(emails.map { ProfileFieldTextItem(it.affiliation ?: "", it.email, null) })
+            addAll(emails.map { ProfileFieldTextItem(it.title ?: "", it.value?: "", null) })
             if (webLinks.isNotEmpty()) {
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n"), null))
             }

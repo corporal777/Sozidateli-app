@@ -33,6 +33,20 @@ sealed class SearchFilter : Serializable {
         var formats: List<EventFormat>? = null
     }
 
+    data class EventNew(
+            var address: String? = null,
+            var name: String? = null,
+            var dateStart: String? = null,
+            var dateFinish: String? = null,
+            var registration: String? = null,
+            var theme: Int? = null,
+            var spec: Int? = null,
+            var format: Int? = null
+    ) : SearchFilter() {
+        var interests: Map<InterestNew, List<InterestNew>>? = null
+        var formats: List<NewEventFormat>? = null
+    }
+
     data class User(
             var name: String? = null,
             var address: String? = null,

@@ -1,6 +1,5 @@
 package com.example.api
 
-import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
 import io.reactivex.Completable
@@ -73,7 +72,7 @@ interface NewApi {
     fun updateWorkExperience(@Path("id") id : Int, @Body body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
 
     @GET("v1/interest")
-    fun getInterestsList(@Query("limit") limit: Int, @Query("id") ids: List<Int>?): Single<InterestsModel>
+    fun getInterestsList(@Query("limit") limit: Int, @Query("id") ids: List<Int>?): Maybe<InterestsModel>
 
     @GET("v1/education-level")
     fun getEducationLevel(): Single<EducationLevelModel>
@@ -97,8 +96,34 @@ interface NewApi {
     fun searchOrganizations(@QueryMap map: Map<String, Any>): Maybe<OrganizationNewModel>
 
     @GET("v1/organization/{id}")
-    fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: List<String>?): Single<OrganizationNew>
+    fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: String?): Single<OrganizationNew>
 
     @GET("v1/event-format")
-    fun getEventFormatsList(@QueryMap map: Map<String, Any>): Single<EventFormatsModel>
+    fun getEventFormatsList(@QueryMap map: Map<String, Any>): Maybe<EventFormatsModel>
+
+    @GET("v1/user/{id}/get-profile-fullness")
+    fun checkUserProfile(@Path("id") organizationId : String): Single<UserProfileFieldsModel>
+
+    @GET("v1/event/{id}")
+    fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
+
+    @FormUrlEncoded
+    @POST("v1/event-mailing")
+    fun mailToEvent(@Field("message") message: String, @Field("event") event: String,
+                    @Field("isPush") isPush: Boolean, @Field("isInApp") isInApp: Boolean): Completable
+
+    @GET("v1/event-page/{id}")
+    fun getPageDetails(@Path("id") pageId : String): Single<PageModel>
+
+    @GET("v1/event-member")
+    fun getSpeakers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<MemberModel>>>
+
+    @GET("v1/event-partner/{id}")
+    fun getPartnerDetails(@Path("id") partnerId : String, @Query("binds") binds: String): Single<PartnerModel>
+
+    @POST("v1/user-favorites")
+    fun addToFavorite(@Body body: AddToFavoriteModel): Single<AddFavoriteModel>
+
+    @DELETE("v1/user-favorites/{id}")
+    fun deleteFromFavorite(@Path("id") id : String): Completable
 }

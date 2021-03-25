@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Speaker
+import com.example.data.models.MemberModel
 import com.example.extensions.findItemBy
 import com.example.holders.SpeakerGroup
 import com.example.holders.UserItem
@@ -32,7 +32,7 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
 
     @ProvidePresenter
     fun providePresenter(): EventSpeakersPresenter = presenterProvider.get().apply {
-        eventId = EventSpeakersFragmentArgs.fromBundle(arguments!!).eventId
+        eventId = EventSpeakersFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
     private val groupAdapter by lazy {
@@ -55,7 +55,7 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
     }
 
 
-    override fun setData(data: List<Speaker>) {
+    override fun setData(data: List<MemberModel>) {
         groupAdapter.update(data.map { speaker ->
             SpeakerGroup(
                     speaker,
@@ -66,15 +66,16 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun updateSpeaker(speaker: Speaker) {
-        val idLong = speaker.uid.toLong()
+    override fun updateSpeaker(speaker: MemberModel) {
+        val idLong = speaker.user?.toLong()
         groupAdapter.findItemBy { item: UserItem -> item.id == idLong }?.apply {
-            notifyChanged(speaker.user.getUserSubscribeAction())
+            //Speaker
+            //notifyChanged(speaker.user.getUserSubscribeAction())
         }
     }
 
-    override fun showSpeaker(speaker: Speaker) {
-        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.uid).build().toBundle())
+    override fun showSpeaker(speaker: MemberModel) {
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.user.toString()).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list

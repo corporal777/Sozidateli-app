@@ -2,6 +2,7 @@ package com.example.ui.page
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.models.Document
+import com.example.data.models.FileModel
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -21,16 +22,16 @@ class PagePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getPage(dataEventId, dataPageId)
+        compositeDisposable += eventRepository.getPageDetails(/*dataEventId, */dataPageId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.setContent(it.picture, it.menu, it.title, it.content, it.files)
+                    viewState.setContent(/*it.picture*/"", it.name?: "", it.title, it.content, it.files)
                 }
     }
 
-    override fun onDocumentClick(document: Document) {
-        document.file?.let { viewState.openLinkInBrowser(it) }
+    override fun onDocumentClick(document: FileModel) {
+        document.let { viewState.openLinkInBrowser(it.uri?: "") }
     }
 }

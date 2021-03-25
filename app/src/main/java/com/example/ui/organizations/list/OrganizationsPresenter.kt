@@ -1,12 +1,17 @@
 package com.example.ui.organizations.list
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.models.EventUserFavorite
 import com.example.data.models.Organization
 import com.example.data.models.Organization.Companion.FIELD_IS_IN_FAVORITE
 import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
 import com.example.di.Connectivity
 import com.example.extensions.buildList
+import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationDataSourceFactory
@@ -19,18 +24,20 @@ import javax.inject.Inject
 @InjectViewState
 class OrganizationsPresenter
 @Inject constructor(
+        private val appData: AppData,
         private val organizationRepository: OrganizationRepository,
+        private val eventRepository: EventRepository,
         @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<OrganizationsContract.View>(), OrganizationsContract.Presenter {
 
     lateinit var filter: OrganizationsFilter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        //organizationRepository.getOrganizations(limit, offset, getFilterData())
         organizationRepository.searchOrganizations(
                 mutableMapOf<String, Any>().apply {
                     put(OrganizationNew.ORGANIZATION_LIMIT, limit)
                     put(OrganizationNew.ORGANIZATION_OFFSET, offset)
+                    put(OrganizationNew.ORGANIZATION_BINDS, "userFavorite")
                 }
         )
     }
@@ -84,13 +91,24 @@ class OrganizationsPresenter
     }
 
     override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
-        //TODO not ready on api side
-        /*val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
-        else organizationRepository.subscribe(organization.id)
-        compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { pagination.invalidate() }*/
+        val isSubscribed = organization.binds?.userFavorite != null
+        if (isSubscribed) {
+            compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        organization.binds?.userFavorite = null
+                        pagination.invalidate()
+                    }
+        } else {
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_ORGANIZATION, organization.id?.toInt())))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        pagination.invalidate()
+                    }
+        }
     }
 
     override fun onItemTake(position: Int) {

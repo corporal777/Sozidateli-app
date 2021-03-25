@@ -1,20 +1,20 @@
 package com.example.holders
 
-import com.example.data.models.Speaker
+import com.example.data.models.MemberModel
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 open class SpeakerGroup(
-        private var speaker: Speaker,
-        private val onSpeakerClick: (Speaker) -> Unit,
-        private val onFavoriteChangeClick: (Speaker) -> Unit
+        private var speaker: MemberModel,
+        private val onSpeakerClick: (MemberModel) -> Unit,
+        private val onFavoriteChangeClick: (MemberModel) -> Unit
 ) : NestedGroup() {
 
     private val userItem = UserItem(
-            speaker.user.user_id,
-            speaker.user.fullName,
-            speaker.user.user_city,
-            speaker.user.user_avatar,
+            speaker.binds?.user?.id?: 0,
+            speaker.binds?.user?.fullName?: "",
+            speaker.binds?.user?.address?.city,
+            speaker.binds?.user?.image?.uri,
             { onSpeakerClick(speaker) },
             //speaker.user.getUserSubscribeAction(),
             { onFavoriteChangeClick(speaker) }
@@ -25,8 +25,8 @@ open class SpeakerGroup(
     private val descriptionItem: SpeakerDescriptionItem?
 
     init {
-        val description = speaker.description
-        descriptionItem = if (!description.isNullOrBlank()) SpeakerDescriptionItem(-speaker.uid.toLong(), description)
+        val description = "speaker.description"
+        descriptionItem = if (!description.isNullOrBlank()) SpeakerDescriptionItem(-(speaker.user?.toLong()?:0), description)
         else null
     }
 

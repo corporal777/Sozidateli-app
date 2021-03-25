@@ -71,7 +71,9 @@ data class OrganizationBindsModel(
         val rights: OrganizationRightsModel? = null,
         val leader: List<OrganizationLeaderModel>? = null,
         val member: List<OrganizationMemberModel>? = null,
-        val user: List<UserDetail>? = null
+        val user: List<UserDetail>? = null,
+        @SerializedName("userFavorite")
+        var userFavorite: EventUserFavorite? = null
 ): Parcelable
 
 @Parcelize
