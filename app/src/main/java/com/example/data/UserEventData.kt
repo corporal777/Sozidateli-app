@@ -47,13 +47,11 @@ class UserEventData(
     private fun loadInternal(eventId: String): Completable {
         val event = eventRepository.getEventDetails(eventId)
         val formats = eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
-        return Maybe.zip(event, formats, BiFunction<EventNew, List<NewEventFormat>, UserEvent> { event, formats ->
-            event.format?.name = formats.firstOrNull { f -> f.id == event.format?.value }?.name
-            UserEvent(event.id.toString(),
-                    EventInfo(event, event.binds?.partner?: arrayListOf(), event.binds?.page?: arrayListOf(),
-                            event.binds?.userRegister, event.state?.rating?.askDelay, event.binds?.form),
-                    EventActivity(event.binds?.activity?: arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf()), System.currentTimeMillis())
-        })
+        return Maybe.zip(event, formats, BiFunction<EventInfo, List<NewEventFormat>, UserEvent> { event, formats ->
+            event.event.format?.name = formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
+            UserEvent(event.event.id.toString(),
+                    event, EventActivity(event.event.binds?.activity?: arrayListOf(), arrayListOf(),
+                            arrayListOf(), arrayListOf()), System.currentTimeMillis()) })
                 .doOnSuccess { userEventDao.insert(it) }
                 .onErrorResumeNext(loadEventCache(eventId).toMaybe())
                 .doOnSuccess {

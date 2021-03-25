@@ -86,7 +86,8 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
             bottomNavigation.apply {
                 val itemLocation = menu.findItem(R.id.event_location)
-                itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address.isNullOrBlank()
+                //TODO need to fix
+                //itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address.isNullOrBlank()
                 setOnNavigationItemSelectedListener(null)
                 selectedItemId = tabId
                 setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
@@ -107,7 +108,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         bottomNavigation.apply { setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener) }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(childFragmentCallback, false)
-        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
     override fun showMyScheduleTab() = selectTab(R.id.tab_event_my_schedule)

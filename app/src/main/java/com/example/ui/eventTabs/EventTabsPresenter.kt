@@ -96,8 +96,7 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        compositeDisposable += eventRepository.setDefaultEvent("0")
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+        compositeDisposable += userRepository.getUserShort().ignoreElement().onErrorComplete()
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -109,6 +108,19 @@ class EventTabsPresenter
                         onNoInternetConnectionException = {
                             viewState.showNoConnectionMessage(true)
                         })
+        /*compositeDisposable += eventRepository.setDefaultEvent("0")
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onComplete = {
+                            eventData.clear()
+                            viewState.showEventList()
+                        },
+                        onNoInternetConnectionException = {
+                            viewState.showNoConnectionMessage(true)
+                        })*/
     }
 
     private fun selectTab(command: TabSelectCommand) {
@@ -121,10 +133,11 @@ class EventTabsPresenter
                 is TabSelectCommand.AboutEvent -> showAboutTab(userEvent.eventId)
                 is TabSelectCommand.Map -> {
                     val eventInfo = userEvent.eventInfo
-                    showMapTab(eventInfo.event.name,
+                    //TODO neew to fix
+                    /*showMapTab(eventInfo.event.name,
                             eventInfo.event.createMapInfo(),
                             eventInfo.places.toTypedArray()
-                    )
+                    )*/
                 }
             }
             setBackClickHandlerEnabled(tabSelectStack.size > 1)

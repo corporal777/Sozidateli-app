@@ -147,7 +147,14 @@ class EventRepositoryImp
     }
 
     override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
-        return Single.just(EventRatingData(EventData("","",), arrayListOf(), null, null))
+        return Single.just(EventRatingData(EventData("","", null,null,null,null,
+                "",null,null,null,null,null,
+                null,null,null,null,
+                null,null,null,null,null,null,null
+                ,null,null,null, arrayListOf(), arrayListOf()
+                , arrayListOf(), arrayListOf(),null,null,null
+                ,null,null,null,null,null
+                ,false,false,null), arrayListOf(), null, null))
         /*return Single.zip(
                 getEventRating(eventId),
                 getEventRatingForm(eventId),
@@ -263,14 +270,15 @@ class EventRepositoryImp
             Maybe.just(eventFormats)
     }
 
-    override fun getEventDetails(eventId: String): Maybe<EventNew> =
+    override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium")
                 .map {
                     val eventFormats = appData.getEventFormats()
                     if (!eventFormats.isNullOrEmpty()) {
                         it.format?.name = eventFormats.firstOrNull { f -> f.id == it.format?.value }?.name
                     }
-                    it
+                    EventInfo(it, it.binds?.partner?: arrayListOf(), it.binds?.page?: arrayListOf(),
+                            it.binds?.userRegister, it.state?.rating?.askDelay, it.binds?.form)
                 }
 
     override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =

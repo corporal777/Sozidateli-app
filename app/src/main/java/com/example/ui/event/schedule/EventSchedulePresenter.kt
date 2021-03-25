@@ -85,23 +85,25 @@ constructor(
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
         val subEvents = userEvent.activity.activities.let {
-            it.filter { event ->
+            //TODO need to fix
+            /*it.filter { event ->
                 val date = defaultServerDateTimeFormatter.parse(event.start)
                 filterSubEvent(event)
                         && filterTags(event, selectedTags)
                         && date.time > day.millis.startOfDay() && date.time < day.millis.endOfDay()
-            }
+            }*/
         }
 
         viewState.apply {
-            setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
+            //TODO need to fix
+            /*setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
             if (subEvents.isEmpty()) {
                 showEmptyDayPlaceholder()
                 hideCurrentDay()
             } else {
                 currentDay?.let { day -> showCurrentDay(day) }
                 hidePlaceholder()
-            }
+            }*/
         }
     }
 

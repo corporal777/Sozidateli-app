@@ -36,8 +36,9 @@ class FavoriteSubeventPresenter @Inject constructor(
                 .subscribeSimple(
                         onError = { it.printStackTrace() },
                         onSuccess = {
-                            actions = it.activities
-                            setData(groupData(it.activities))
+                            //TODO need to fix
+                            /*actions = it.activities
+                            setData(groupData(it.activities))*/
                         }
                 )
     }
