@@ -102,7 +102,7 @@ interface NewApi {
     fun getEventFormatsList(@QueryMap map: Map<String, Any>): Maybe<EventFormatsModel>
 
     @GET("v1/user/{id}/get-profile-fullness")
-    fun checkUserProfile(@Path("id") organizationId : String): Single<UserProfileFieldsModel>
+    fun checkUserProfile(@Path("id") organizationId : String): Single<List<UserProfileFields>>
 
     @GET("v1/event/{id}")
     fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
@@ -126,4 +126,7 @@ interface NewApi {
 
     @DELETE("v1/user-favorites/{id}")
     fun deleteFromFavorite(@Path("id") id : String): Completable
+
+    @GET("v1/address/search")
+    fun searchAddress(@Query("query") query: String?, @Query("limit") limit: Int): Single<SearchAddressModel>
 }

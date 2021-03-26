@@ -130,13 +130,19 @@ class SearchEventPresenter
     }
 
     override fun onActionShowEvent(event: String) {
-        compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }
+        /*compositeDisposable += eventRepository.setDefaultEvent(event)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }*/
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)

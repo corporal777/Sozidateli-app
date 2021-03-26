@@ -278,7 +278,7 @@ class EventRepositoryImp
                         it.format?.name = eventFormats.firstOrNull { f -> f.id == it.format?.value }?.name
                     }
                     EventInfo(it, it.binds?.partner?: arrayListOf(), it.binds?.page?: arrayListOf(),
-                            it.binds?.userRegister, it.state?.rating?.askDelay, it.binds?.form)
+                            if (it.binds?.userRegister?.isNotEmpty() == true) it.binds.userRegister[0] else null, it.state?.rating?.askDelay, it.binds?.form)
                 }
 
     override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =
@@ -304,4 +304,7 @@ class EventRepositoryImp
 
     override fun deleteFromFavorite(id: String): Completable =
             newApi.deleteFromFavorite(id)
+
+    override fun checkUserProfile(): Single<List<UserProfileFields>> =
+            newApi.checkUserProfile(appData.getId().toString())
 }

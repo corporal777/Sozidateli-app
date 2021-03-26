@@ -21,9 +21,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_EVENT
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.event.contacts.EventContactsFragmentArgs
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment

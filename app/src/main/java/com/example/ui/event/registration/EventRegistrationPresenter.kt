@@ -171,7 +171,7 @@ class EventRegistrationPresenter
 
     override fun onSuccessGoToEvent() {
         compositeDisposable += eventRepository.setDefaultEvent(eventId)
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(eventId))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()

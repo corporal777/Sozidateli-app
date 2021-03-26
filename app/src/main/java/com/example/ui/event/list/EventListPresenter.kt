@@ -85,7 +85,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionRegister(event: String) {
-        compositeDisposable += eventRepository.eventRegisterCheck(event)
+        compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -98,9 +98,9 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 )
     }
 
-    private fun checkRegistrationFields(event: String, fields: List<EventRegisterCheckField>) {
-        val filtered = fields.mapNotNull { it.title }
-        if (fields.isEmpty()) {
+    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields>) {
+        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        if (filtered.isEmpty()) {
             viewState.showEventRequest(event)
         } else {
             viewState.showRegistrationFieldsRequest(filtered)
@@ -130,7 +130,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onActionShowEvent(event: String) {
         compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()

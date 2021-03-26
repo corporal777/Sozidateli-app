@@ -16,7 +16,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface UserRepository {
-    fun getUserShortNew(id: Int): Maybe<UserDetail>
+    fun getUserShortNew(): Maybe<UserDetail>
     fun getUserShort(): Maybe<UserShort>
     fun getUserFull(): Maybe<User>
     fun getLastNotification(): Single<List<Notification>>
@@ -76,4 +76,5 @@ interface UserRepository {
     fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
     fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
+    fun searchAddress(query: String?): Single<SearchAddressModel>
 }

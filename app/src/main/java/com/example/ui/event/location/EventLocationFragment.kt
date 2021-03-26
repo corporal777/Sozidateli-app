@@ -31,7 +31,7 @@ class EventLocationFragment : BaseFragment(), EventLocationContract.View, Toolba
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = "EventLocationPresenter")
     fun providePresenter(): EventLocationPresenter = presenterProvider.get().apply {
-        val args = EventLocationFragmentArgs.fromBundle(arguments!!)
+        val args = EventLocationFragmentArgs.fromBundle(requireArguments())
         mapInfo = args.mapInfo
         places = args.places
     }

@@ -50,7 +50,7 @@ class AboutEventPresenter
         viewState.apply {
             setEventData(
                     eventInfo.event,
-                    eventInfo.event.binds?.userRegister?.status?.value,
+                    if (eventInfo.event.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds.userRegister[0].status?.value else null,
                     eventInfo.event.binds?.page,
                     eventInfo.event.binds?.partner,
                     hasContacts(),
@@ -59,7 +59,7 @@ class AboutEventPresenter
 
             setActionButton(
                     eventInfo.event,
-                    eventInfo.event.binds?.userRegister?.status?.value
+                    if (eventInfo.event.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds.userRegister[0].status?.value else null
             )
         }
     }
@@ -113,7 +113,7 @@ class AboutEventPresenter
     }
 
     override fun onGoToEventClick() {
-        compositeDisposable += eventRepository.eventRegisterCheck(eventId)
+        compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -126,9 +126,9 @@ class AboutEventPresenter
                 )
     }
 
-    private fun checkRegistrationFields(fields: List<EventRegisterCheckField>) {
-        val filtered = fields.mapNotNull { it.title }
-        if (fields.isEmpty()) {
+    private fun checkRegistrationFields(fields: List<UserProfileFields>) {
+        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        if (filtered.isEmpty()) {
             viewState.showEventRequest(eventId)
         } else {
             viewState.showRegistrationFieldsRequest(filtered)
@@ -136,11 +136,11 @@ class AboutEventPresenter
     }
 
     override fun onShowEditProfileClick() {
-        viewState.showEditProfile(appData.getUser().user_id.toString())
+        viewState.showEditProfile(appData.getId().toString())
     }
 
     override fun onSelectEventClick() {
-        compositeDisposable += userRepository.getUserShort().ignoreElement().onErrorComplete()
+        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .andThen(userEventData.load(eventId))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()

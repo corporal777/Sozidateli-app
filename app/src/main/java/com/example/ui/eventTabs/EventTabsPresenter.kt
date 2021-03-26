@@ -96,7 +96,7 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        compositeDisposable += userRepository.getUserShort().ignoreElement().onErrorComplete()
+        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -133,8 +133,7 @@ class EventTabsPresenter
                 is TabSelectCommand.AboutEvent -> showAboutTab(userEvent.eventId)
                 is TabSelectCommand.Map -> {
                     val eventInfo = userEvent.eventInfo
-                    //TODO neew to fix
-                    /*showMapTab(eventInfo.event.name,
+                    /*showMapTab(eventInfo.event.name?: "",
                             eventInfo.event.createMapInfo(),
                             eventInfo.places.toTypedArray()
                     )*/

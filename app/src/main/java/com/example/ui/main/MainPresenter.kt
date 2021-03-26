@@ -109,7 +109,7 @@ class MainPresenter
 
     private fun loadUser() {
         if (isAuthRequired) viewState.showLoadingDialog()
-        val loadUser = userRepository.getUserShortNew(appData.getId())
+        val loadUser = userRepository.getUserShortNew()
                 //.doOnSuccess { inappList = LinkedList(it.inapps) }
                 .ignoreElement()
         val loadCalendar = checkUserLocation()

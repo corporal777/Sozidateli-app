@@ -197,6 +197,7 @@ class ProfileDataPersonalEditNewItem(
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
+            if (address != mAddress) put(UserDetail.USER_ADDRESS, mAddress)
             //if (showBirthday != mShowBirthday) put(User.FIELD_USER_BIRTHDAY_SHOW, mShowBirthday)
             /*if (address != mAddress) {
                 put(User.FIELD_USER_ADDRESS, mAddress.address ?: "")

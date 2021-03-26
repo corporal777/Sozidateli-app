@@ -108,7 +108,8 @@ data class EventUserFavorite(
 data class EventBindsModel(
         val organization: OrganizationNew? = null,
         val activity: List<EventActivityModel>? = null,
-        val userRegister: UserRegisterModel? = null,
+        @SerializedName("userRegister")
+        val userRegister: List<UserRegisterModel>? = null,
         val rights: EventRights? = null,
         val partner: List<PartnerModel>? = null,
         val page: List<PageModel>? = null,

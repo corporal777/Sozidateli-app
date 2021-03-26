@@ -83,7 +83,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             else EventGroup(
                     it.id.toString(),
                     it.status?.value,
-                    it.binds?.userRegister?.status?.value,
+                    if (it.binds?.userRegister?.isNotEmpty() == true) it.binds.userRegister[0].status?.value else null,
                     it.binds?.organization?.backgroundColor?.value,
                     it.binds?.organization?.logo?.uri,
                     EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),

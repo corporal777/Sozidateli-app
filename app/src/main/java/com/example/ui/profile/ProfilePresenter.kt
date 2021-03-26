@@ -23,7 +23,7 @@ class ProfilePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += userRepository.getUserShortNew(appData.getId())
+        compositeDisposable += userRepository.getUserShortNew()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.setUser(it)

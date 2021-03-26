@@ -57,4 +57,5 @@ interface EventRepository {
     fun getPartnerDetails(partnerId : String): Single<PartnerModel>
     fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel>
     fun deleteFromFavorite(id : String): Completable
+    fun checkUserProfile(): Single<List<UserProfileFields>>
 }

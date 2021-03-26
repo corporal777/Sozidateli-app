@@ -64,11 +64,11 @@ class UserEditPresenter
                         }
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
-                            compositeDisposable += userRepository.getAddress(AddressBody(query = user.address?.getShortAddress()?: ""))
+                            compositeDisposable += userRepository.searchAddress(user.address?.getShortAddress()?: "")
                                     .performOnBackgroundOutOnMain()
                                     .subscribe({ add ->
-                                        if (add.isNotEmpty())
-                                            user.address?.shortAddres = add[0].region
+                                        if (add.data?.isNotEmpty() == true)
+                                            user.address?.shortAddres = add.data[0].region
                                         if (BuildConfig.NEW_PROFILE_EDIT) {
                                             setPersonalDataNew(user)
                                         } else {

@@ -31,7 +31,7 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUserShortNew(id: Int): Maybe<UserDetail> = newApi.getUserShort(id,
+    override fun getUserShortNew(): Maybe<UserDetail> = newApi.getUserShort(appData.getId(),
             arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights")).map { it }.doOnSuccess {
         appData.setAllUserInfo(it)
     }
@@ -60,6 +60,9 @@ class UserRepositoryImp
     override fun getAddress(body: AddressBody): Maybe<List<AddressResponse>> =  call(api.getAddress(body)).doOnSuccess {
 
     }
+
+    override fun searchAddress(query: String?): Single<SearchAddressModel> =
+            newApi.searchAddress(query, 20)
 
     override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 

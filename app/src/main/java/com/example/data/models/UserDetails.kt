@@ -67,6 +67,7 @@ data class UserDetail(
                 const val USER_WORK_EXPERIENCE = "work-experience"
                 const val USER_INTERESTS = "interests"
                 const val USER_EDUCATION_LEVEL = "educationLevel"
+                const val USER_ADDRESS = "address"
         }
 }
 

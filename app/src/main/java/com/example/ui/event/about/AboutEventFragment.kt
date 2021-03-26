@@ -293,7 +293,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             else -> flRegister.isVisible = visibility
         }
 
-        flRegister.isVisible = visibility
+        //flRegister.isVisible = visibility
 
         flRegister.btnAction.apply {
             text = textRes?.let { getString(it) }

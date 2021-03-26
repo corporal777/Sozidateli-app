@@ -90,7 +90,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         else EventGroup(
                 itemData.id.toString(),
                 itemData.status?.value,
-                itemData.binds?.userRegister?.status?.value,
+                if (itemData.binds?.userRegister?.isNotEmpty() == true) itemData.binds.userRegister[0].status?.value else null,
                 itemData.binds?.organization?.backgroundColor?.value,
                 itemData.binds?.organization?.logo?.uri,
                 EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),

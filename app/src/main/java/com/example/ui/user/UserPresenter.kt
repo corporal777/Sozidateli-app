@@ -94,12 +94,12 @@ class UserPresenter
                                 isCurrentUser()
                         )
                     }
-                    compositeDisposable += userRepository.getAddress(AddressBody(query = profileUserData.userData.user.user_short_address?: ""))
+                    compositeDisposable += userRepository.searchAddress(profileUserData.userData.user.user_short_address?: "")
                             .performOnBackgroundOutOnMain()
                             .subscribe({ add ->
                                 viewState.apply {
-                                    if (add.isNotEmpty())
-                                        profileUserData.userData.user.user_short_address = add[0].region
+                                    if (add.data?.isNotEmpty() == true)
+                                        profileUserData.userData.user.user_short_address = add.data[0].region
                                     setUser(profileUserData)
                                     if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                                 }
@@ -274,7 +274,7 @@ class UserPresenter
         return loadBitmap()
     }
 
-    private fun isCurrentUser() = userId == appData.getUser().user_id.toString()
+    private fun isCurrentUser() = userId == appData.getId().toString()
 
     override fun onRefreshRequest() {
         loadUserData(false)
