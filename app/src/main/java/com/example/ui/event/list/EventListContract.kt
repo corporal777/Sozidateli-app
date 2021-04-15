@@ -14,7 +14,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setData(events: List<EventNew?>)
+        fun setData(events: List</*EventNew*/Event?>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder()
@@ -29,10 +29,10 @@ interface EventListContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
+        fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel)
+        fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
@@ -53,12 +53,12 @@ interface EventListContract {
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
+        fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
 
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
+        fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation)
 
         fun onShowEditProfileClick()
     }

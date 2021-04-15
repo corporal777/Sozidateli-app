@@ -48,7 +48,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
         ))
     }
 
-    override fun createEventDataListItem(event: EventNew): EventDataListItem {
+    override fun createEventDataListItem(event: /*EventNew*/Event): EventDataListItem {
         return super.createEventDataListItem(event).apply {
             showStartTime = false
         }

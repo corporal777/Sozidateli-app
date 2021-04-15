@@ -40,7 +40,36 @@ class OrganizationPresenter
     }
 
     private fun loadData(withLoadingPlaceholder: Boolean) {
-        compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
+        compositeDisposable += organizationRepository.getOrganizationById(organizationId)
+                .performOnBackgroundOutOnMain()
+                .flatMap {
+                    Maybe.zip(it.organization.logo.loadBitmap(), it.organization.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
+                        OrganizationDataAndImages(it, logo.value, bg.value)
+                    })
+                            .toSingle()
+                }
+                .let {
+                    if (withLoadingPlaceholder) it.withLoadingDialog(viewState)
+                    else it
+                }
+                .subscribe({
+                    val organizationData = it.data
+                    val uid = appData.getUser().user_id
+                    organizationData.members.forEach { member ->
+                        member.user?.isCurrentUser = member.user?.user_id == uid
+                    }
+                    viewState.setOrganization(
+                            it.logo,
+                            it.background,
+                            organizationData.organization,
+                            organizationData.events,
+                            organizationData.members
+                    )
+                    viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
+                }, {
+                    it.printStackTrace()
+                })
+        /*compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
                 .performOnBackgroundOutOnMain()
                 .flatMap {
                     Maybe.zip(it.logo?.uri.loadBitmap(), it.image?.uri.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
@@ -69,7 +98,7 @@ class OrganizationPresenter
                     viewState.setSubscribed(organizationData.binds?.userFavorite != null)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     override fun attachView(view: OrganizationContract.View?) {
@@ -119,15 +148,13 @@ class OrganizationPresenter
         viewState.showUsers(organizationId)
     }
 
-    override fun onUserClick(user: UserDetail) {
-        viewState.showUser(user.id.toString())
+    override fun onUserClick(user: /*UserDetail*/User) {
+        viewState.showUser(/*user.id.toString()*/user.user_id.toString())
     }
 
-    override fun onUserActionCLick(user: UserDetail) {
-
-        val id = user.id.toString()
-        //TODO not ready on api side
-        /*val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
+    override fun onUserActionCLick(user:/* UserDetail*/User) {
+        val id = user.user_id.toString()/*user.id.toString()*/
+        val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
         else userRepository.addToFavorite(id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
@@ -135,11 +162,11 @@ class OrganizationPresenter
                 .subscribeSimple {
                     user.is_in_favorite = !user.is_in_favorite
                     viewState.updateUser(user)
-                }*/
+                }
     }
 
     override fun onActionRegister(event: String) {
-        compositeDisposable += eventRepository.checkUserProfile()
+        compositeDisposable += eventRepository.eventRegisterCheck(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -150,10 +177,22 @@ class OrganizationPresenter
                             checkRegistrationFields(event, it)
                         }
                 )
+        /*compositeDisposable += eventRepository.checkUserProfile()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(event, emptyList())
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(event, it)
+                        }
+                )*/
     }
 
-    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields>) {
-        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+    private fun checkRegistrationFields(event: String, fields: List</*UserProfileFields*/EventRegisterCheckField>) {
+        //val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
             viewState.showEventRequest(event)
         } else {
@@ -172,28 +211,28 @@ class OrganizationPresenter
                 .subscribeSimple { loadData(false) }
     }
 
-    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
+    override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
+    override fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation) {
         viewState.showWriteToOrganization(email)
     }
 
     override fun onActionShowEvent(event: String) {
-        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }
-        /*compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+        /*compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }*/
+        compositeDisposable += eventRepository.setDefaultEvent(event)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
@@ -205,7 +244,7 @@ class OrganizationPresenter
     }
 
     private class OrganizationDataAndImages(
-            val data: OrganizationNew,
+            val data: /*OrganizationNew*/OrganizationData,
             val logo: Bitmap?,
             val background: Bitmap?
     )

@@ -77,8 +77,8 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     }
 
     override fun setData(
-            phones: List<EventPhoneModel>,
-            emails: List<EventPhoneModel>,
+            phones: List</*EventPhoneModel*/PhoneAffiliation>,
+            emails: List</*EventPhoneModel*/EmailAffiliation>,
             webLinks: List<String>,
             socialLinks: List<String>,
             address: String?,
@@ -88,9 +88,9 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
     ) {
         groupAdapter.update(mutableListOf<Item>().apply {
             addAll(phones.map {
-                ProfileFieldTextItem(it.title ?: "", it.value?.parsePhone(requireContext())?: "", /*it.additional*/"")
+                ProfileFieldTextItem(/*it.title*/it.affiliation ?: "", /*it.value?*/it.phone.parsePhone(requireContext())?: "", it.additional)
             })
-            addAll(emails.map { ProfileFieldTextItem(it.title ?: "", it.value?: "", null) })
+            addAll(emails.map { ProfileFieldTextItem(/*it.title*/it.affiliation ?: "", /*it.value?: ""*/it.email, null) })
             if (webLinks.isNotEmpty()) {
                 add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n"), null))
             }

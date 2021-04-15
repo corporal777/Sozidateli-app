@@ -15,8 +15,8 @@ class EventContactsPresenter
     }
 
     lateinit var eventName: String
-    lateinit var phones: List<EventPhoneModel>
-    lateinit var emails: List<EventPhoneModel>
+    lateinit var phones: List</*EventPhoneModel*/PhoneAffiliation>
+    lateinit var emails: List</*EventPhoneModel*/EmailAffiliation>
     lateinit var webLinks: List<String>
     lateinit var socialLinks: List<String>
     var address: String? = null

@@ -50,7 +50,7 @@ interface EventRepository {
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
-    fun getEventDetails(eventId: String): Maybe<EventInfo>
+    //fun getEventDetails(eventId: String): Maybe<EventInfo>
     fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable
     fun getPageDetails(pageId: String): Single<PageModel>
     fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>

@@ -16,14 +16,37 @@ import kotlinx.android.synthetic.main.item_organization.*
 import parseColor
 
 class OrganizationItem(
-        private val organization: OrganizationNew,
+        private val organization: /*OrganizationNew*/Organization,
         private val onOrganizationClick: () -> Unit,
         private val onSubscribeClick: (() -> Unit)? = null
-) : Item(organization.id?: 0) {
+) : Item(organization.id.toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvOrganizationName.text = organization.legalInformation?.name?.short
+            tvOrganizationName.text = organization.name
+            itemView.setOnClickListener { onOrganizationClick.invoke() }
+            btnAction.apply {
+                isVisible = if (onSubscribeClick != null) {
+                    setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+                    setOnClickListener { onSubscribeClick.invoke() }
+                    true
+                } else {
+                    false
+                }
+            }
+
+            tvOrganizationImageName.apply {
+                text = organization.name
+                clipToOutline = true
+                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
+                        ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
+            }
+
+            ivOrganizationImage.apply {
+                clipToOutline = true
+                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it }).into(this)
+            }
+            /*tvOrganizationName.text = organization.legalInformation?.name?.short
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
@@ -47,7 +70,7 @@ class OrganizationItem(
             ivOrganizationImage.apply {
                 clipToOutline = true
                 Picasso.get().load(organization.logo.let { if (it?.uri.isNullOrBlank()) null else it?.uri }).into(this)
-            }
+            }*/
         }
     }
 

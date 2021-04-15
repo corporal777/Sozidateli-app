@@ -39,14 +39,14 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         }
     }
 
-    override fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?) {
+    override fun setData(partner: /*PartnerModel*/Partner, logo: Bitmap?, background: Bitmap?) {
         ivBackground.apply {
             clipToOutline = true
             if (background == null) {
                 isVisible = false
             } else {
                 setImageBitmap(background)
-                setOnImageClickListener(this, partner.image?.uri)
+                setOnImageClickListener(this, /*partner.image?.uri*/partner.background)
             }
         }
         ivLogo.apply {
@@ -55,7 +55,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
                 isVisible = false
             } else {
                 setImageBitmap(logo)
-                setOnImageClickListener(this, partner.logo?.uri)
+                setOnImageClickListener(this, /*partner.logo?.uri*/partner.logo)
             }
         }
 
@@ -70,7 +70,7 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
         }
 
         //val link = partner.web?.takeIf { it.isNotBlank() }
-        val link = partner.site?.joinToString("\n") { it.value?: "" }
+        val link = /*partner.site?.joinToString("\n") { it.value?: "" }*/partner.web?.takeIf { it.isNotBlank() }
 
         tvLinksTitle.isVisible = link != null
 
@@ -80,8 +80,8 @@ class PartnerFragment : BaseFragment(), PartnerContract.View, ToolbarFragment {
             removeUrlUnderline()
         }
 
-        llSupportType.isVisible = !partner.supportType.isNullOrEmpty()
-        tvSupportType.text = partner.supportType
+        llSupportType.isVisible = /*!partner.supportType.isNullOrEmpty()*/!partner.typeSupport.isNullOrEmpty()
+        tvSupportType.text = /*partner.supportType*/partner.typeSupport
 
         llContent.isVisible = true
     }

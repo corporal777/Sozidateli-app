@@ -28,9 +28,8 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     @ProvidePresenter
     fun providePresenter(): FavoriteEventsPresenter = presenterProvider.get()
 
-    override fun setData(events: List<EventNew?>) {
-        //TODO Finish this screen
-        /*dataGroup.update(events.map {
+    override fun setData(events: List</*EventNew*/Event?>) {
+        dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
             else EventFavoriteItem(
                     it,
@@ -38,7 +37,7 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
                     { presenter.onEventActionClick(it) },
                     { presenter.onEventSubeventsClick(it) }
             )
-        })*/
+        })
         swipeToRefresh.isRefreshing = false
     }
 

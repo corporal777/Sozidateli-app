@@ -27,11 +27,13 @@ class MyEventsPresenter
 
     lateinit var filter: MyEventsFilter
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        //return eventRepository.getEventList(limit, offset, getFilterData())
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
+        return eventRepository.getEventList(limit, offset, getFilterData())
+    }
+    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //TODO Finish this screen
         return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset, EventNew.EVENT_BINDS to "rights"))
-    }
+    }*/
 
     override fun onFirstViewAttach() {
         when (filter) {

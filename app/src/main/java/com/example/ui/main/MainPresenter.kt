@@ -109,6 +109,39 @@ class MainPresenter
 
     private fun loadUser() {
         if (isAuthRequired) viewState.showLoadingDialog()
+        val loadUser = userRepository.getUserShort()
+                .doOnSuccess { inappList = LinkedList(it.inapps) }
+                .ignoreElement()
+        val loadCalendar = checkUserLocation()
+        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
+                .andThen(Completable.defer { checkInternetConnected() })
+                .andThen(subscribeToNotifications())
+                .doOnComplete { connectToSocket(appData.getUser().user_id) }
+                .andThen(Completable.defer { checkShowGreetings() })
+                .andThen(Maybe.defer { checkUserEvent() })
+                .performOnBackgroundOutOnMain()
+                .subscribe({ isMustShowEvent ->
+                    viewState.apply {
+                        hideLoadingDialog()
+                        if (isMustShowEvent) showEvent()
+                        else showRecommendations()
+                        checkIntent()
+                        showNextInapp()
+                    }
+
+                    initInternetConnectionCheck()
+//                    AuthBackground.clear()
+                }, {
+                    it.printStackTrace()
+                    isAuthRequired = true
+                    viewState.apply {
+                        hideLoadingDialog()
+                        showLogin()
+                        checkIntent()
+                    }
+                    initInternetConnectionCheck()
+                })
+        /*if (isAuthRequired) viewState.showLoadingDialog()
         val loadUser = userRepository.getUserShortNew()
                 //.doOnSuccess { inappList = LinkedList(it.inapps) }
                 .ignoreElement()
@@ -140,7 +173,7 @@ class MainPresenter
                         checkIntent()
                     }
                     initInternetConnectionCheck()
-                })
+                })*/
     }
 
     private fun initInternetConnectionCheck() {
@@ -190,15 +223,46 @@ class MainPresenter
     }
 
     private fun checkUserEvent(): Maybe<Boolean> {
-        return /*appData.getUser().default_event?.let { event ->
+        return appData.getUser().default_event?.let { event ->
             userEventData.load(event.id)
                     .andThen(Maybe.just(true))
                     .onErrorReturn { false }
-        } ?:*/ Maybe.just(false)
+        } ?: Maybe.just(false)
+        /*return /*appData.getUser().default_event?.let { event ->
+            userEventData.load(event.id)
+                    .andThen(Maybe.just(true))
+                    .onErrorReturn { false }
+        } ?:*/ Maybe.just(false)*/
     }
 
     private fun checkUserLocation(): Completable {
-        return userRepository.getEventCalendar(EventsCalendarListBody())
+        return userRepository.userEventCalendar()
+                .flatMapObservable { Observable.fromIterable(it) }
+                .filter { calendar ->
+                    val now = System.currentTimeMillis() / 1000
+                    calendar.time.any { time -> time.end > now && time.start <= now }
+                }
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapMaybe { calendar ->
+                    if (calendar.isEmpty()) Maybe.empty()
+                    else getLocation()
+                            .timeout(5, TimeUnit.SECONDS)
+                            .map { calendar to it }
+                }
+                .observeOn(Schedulers.io())
+                .onErrorComplete()
+                .flatMapCompletable {
+                    val calendar = it.first
+                    val location = it.second
+                    val ids = calendar.map { calendarItem -> calendarItem.eventId }
+                    val atEvents = calendar.map { calendarItem ->
+                        checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
+                    }
+                    userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
+                }
+                .onErrorComplete()
+        /*return userRepository.getEventCalendar(EventsCalendarListBody())
                 .flatMapObservable { Observable.fromIterable(it.data) }
                 .filter { calendar ->
                     val now = System.currentTimeMillis() / 1000
@@ -226,7 +290,7 @@ class MainPresenter
                     }
                     userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
-                .onErrorComplete()
+                .onErrorComplete()*/
     }
 
     private fun getLocation(): Maybe<Location> {

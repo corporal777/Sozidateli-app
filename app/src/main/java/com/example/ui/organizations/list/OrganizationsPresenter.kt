@@ -33,13 +33,14 @@ class OrganizationsPresenter
     lateinit var filter: OrganizationsFilter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.searchOrganizations(
+        organizationRepository.getOrganizations(limit, offset, getFilterData())
+        /*organizationRepository.searchOrganizations(
                 mutableMapOf<String, Any>().apply {
                     put(OrganizationNew.ORGANIZATION_LIMIT, limit)
                     put(OrganizationNew.ORGANIZATION_OFFSET, offset)
                     put(OrganizationNew.ORGANIZATION_BINDS, "userFavorite")
                 }
-        )
+        )*/
     }
             .buildList(enablePlaceholders = true)
 
@@ -86,12 +87,18 @@ class OrganizationsPresenter
         else pagination.invalidate()
     }
 
-    override fun onOrganizationClick(organization: OrganizationNew) {
+    override fun onOrganizationClick(organization: /*OrganizationNew*/Organization) {
         viewState.showOrganization(organization)
     }
 
-    override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
-        val isSubscribed = organization.binds?.userFavorite != null
+    override fun onRemoveFromFavoriteClick(organization: /*OrganizationNew*/Organization) {
+        val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
+        else organizationRepository.subscribe(organization.id)
+        compositeDisposable += request
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { pagination.invalidate() }
+        /*val isSubscribed = organization.binds?.userFavorite != null
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
                     .performOnBackgroundOutOnMain()
@@ -108,7 +115,7 @@ class OrganizationsPresenter
                         organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                         pagination.invalidate()
                     }
-        }
+        }*/
     }
 
     override fun onItemTake(position: Int) {

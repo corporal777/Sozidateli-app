@@ -270,7 +270,7 @@ class EventRepositoryImp
             Maybe.just(eventFormats)
     }
 
-    override fun getEventDetails(eventId: String): Maybe<EventInfo> =
+    /*override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium")
                 .map {
                     val eventFormats = appData.getEventFormats()
@@ -279,7 +279,7 @@ class EventRepositoryImp
                     }
                     EventInfo(it, it.binds?.partner?: arrayListOf(), it.binds?.page?: arrayListOf(),
                             if (it.binds?.userRegister?.isNotEmpty() == true) it.binds.userRegister[0] else null, it.state?.rating?.askDelay, it.binds?.form)
-                }
+                }*/
 
     override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =
             newApi.mailToEvent(message, event, isPush, isInApp)

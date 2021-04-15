@@ -75,7 +75,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         ))
     }
 
-    override fun setOrganizations(organizations: List<OrganizationNew?>) {
+    override fun setOrganizations(organizations: List</*OrganizationNew*/Organization?>) {
         organizationSection.update(organizations.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
             else OrganizationItem(
@@ -100,7 +100,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showOrganization(organization: OrganizationNew) {
+    override fun showOrganization(organization: /*OrganizationNew*/Organization) {
         findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle())
     }
 

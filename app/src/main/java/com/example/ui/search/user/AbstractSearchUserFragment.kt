@@ -25,7 +25,7 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 itemData.user_city,
                 itemData.user_avatar,
                 { presenter.onUserClick(itemData) },
-                //itemData.getUserSubscribeAction(),
+                itemData.getUserSubscribeAction(),
                 { presenter.onUserActionCLick(itemData) }
         )
     }

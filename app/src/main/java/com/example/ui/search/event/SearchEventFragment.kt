@@ -28,7 +28,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, SearchFilter.EventNew>(), SearchEventContract.View {
+class SearchEventFragment : SearchFragment<SearchEventPresenter, /*EventNew*/Event, SearchFilter./*EventNew*/Event>(), SearchEventContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchEventPresenter
@@ -43,12 +43,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
+    override fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>) {
         AlertDialog.Builder(requireContext())
                 .setItems(
                         emails.map { it.getAffiliationString(underlinedEmail = true) }
@@ -62,10 +62,10 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EventPhoneModel) {
+    override fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(/*email.value*/email.email))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
@@ -85,10 +85,29 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 .build())
     }
 
-    override fun createItem(itemData: EventNew?): Group {
+    override fun createItem(itemData: /*EventNew*/Event?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
         else EventGroup(
-                itemData.id.toString(),
+                itemData.id,
+                itemData.status,
+                itemData.userRegistration,
+                itemData.backgroundColor,
+                itemData.backgroundImage,
+                itemData.takeFormat(),
+                itemData.organization?.emails,
+                !itemData.canRegister,
+                onEventClickListener,
+                EventDataListItem(
+                        -itemData.id.toLong(),
+                        itemData.name,
+                        itemData.shortAddress ?: itemData.addressCity,
+                        itemData.conferenceStart,
+                        itemData.conferenceFirstActivityStart
+                ).apply {
+                    showStartTime = false
+                },
+                itemData.userAgreement
+                /*itemData.id.toString(),
                 itemData.status?.value,
                 if (itemData.binds?.userRegister?.isNotEmpty() == true) itemData.binds.userRegister[0].status?.value else null,
                 itemData.binds?.organization?.backgroundColor?.value,
@@ -106,12 +125,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 ).apply {
                     showStartTime = false
                 },
-                itemData.userAgreement?.name
+                itemData.userAgreement?.name*/
         )
     }
 
     @SuppressLint("InflateParams")
-    override fun createFilterView(filter: SearchFilter.EventNew): View {
+    override fun createFilterView(filter: SearchFilter./*EventNew*/Event): View {
         return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)

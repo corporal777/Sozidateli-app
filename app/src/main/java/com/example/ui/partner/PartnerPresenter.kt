@@ -27,7 +27,22 @@ class PartnerPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getPartnerDetails(dataPartnerId)
+        compositeDisposable += eventRepository.getPartnerById(dataEventId, dataPartnerId)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .flatMap {
+                    Maybe.zip(it.logo.loadBitmap(), it.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, PartnerAndImages> { logo, bg ->
+                        PartnerAndImages(it, logo.value, bg.value)
+                    })
+                            .toSingle()
+                }
+                .subscribeSimple {
+                    viewState.apply {
+                        setData(it.partner, it.logo, it.background)
+                    }
+                }
+        /*compositeDisposable += eventRepository.getPartnerDetails(dataPartnerId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -41,11 +56,11 @@ class PartnerPresenter
                     viewState.apply {
                         setData(it.partner, it.logo, it.background)
                     }
-                }
+                }*/
     }
 
     private class PartnerAndImages(
-            val partner: PartnerModel,
+            val partner: /*PartnerModel*/Partner,
             val logo: Bitmap?,
             val background: Bitmap?
     )

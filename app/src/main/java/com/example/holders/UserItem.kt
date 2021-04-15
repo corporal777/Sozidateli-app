@@ -15,8 +15,15 @@ class UserItem(
         private val description: String?,
         private val avatar: String?,
         private val onUserClick: () -> Unit,
-        //var action: UserSubscribeButton.Action? = null,
+        var action: UserSubscribeButton.Action? = null,
         private val onActionClick: (() -> Unit)? = null
+        /*private val id: Int,
+        private val name: String,
+        private val description: String?,
+        private val avatar: String?,
+        private val onUserClick: () -> Unit,
+        //var action: UserSubscribeButton.Action? = null,
+        private val onActionClick: (() -> Unit)? = null*/
 ) : Item(id.toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -28,7 +35,7 @@ class UserItem(
             }
             ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
             itemView.setOnClickListener { onUserClick.invoke() }
-            /*btnAction.apply {
+            btnAction.apply {
                 val action = this@UserItem.action
                 visibility = if (action != null) {
                     setAction(action)
@@ -37,7 +44,7 @@ class UserItem(
                 } else {
                     View.GONE
                 }
-            }*/
+            }
         }
     }
 
@@ -60,7 +67,7 @@ class UserItem(
         if (id != other.id) return false
         if (name != other.name) return false
         if (avatar != other.avatar) return false
-        //if (action != other.action) return false
+        if (action != other.action) return false
 
         return true
     }
@@ -69,7 +76,7 @@ class UserItem(
         var result = id
         result = 31 * result + name.hashCode()
         result = 31 * result + (avatar?.hashCode() ?: 0)
-        //result = 31 * result + (action?.hashCode() ?: 0)
+        result = 31 * result + (action?.hashCode() ?: 0)
         return result
     }
 }

@@ -1,5 +1,6 @@
 package com.example.holders
 
+import com.example.data.models.EmailAffiliation
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
 import com.example.data.models.EventPhoneModel
@@ -14,7 +15,7 @@ class EventGroup(
         backgroundColor: String?,
         logo: String?,
         format: EventFormat?,
-        organizationEmails: List<EventPhoneModel>?,
+        organizationEmails: List</*EventPhoneModel*/EmailAffiliation>?,
         conferenceRegistrationClosed: Boolean,
         eventClickListener: EventStatusItem.OnEventClickListener,
         private val dataItem: Item,

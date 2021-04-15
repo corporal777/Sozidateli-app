@@ -15,7 +15,7 @@ interface PageContract {
                 contentTitle: String,
                 title: String?,
                 content: String?,
-                documents: List<FileModel>?
+                documents: List</*FileModel*/Document>?
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -23,6 +23,6 @@ interface PageContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onDocumentClick(document: FileModel)
+        fun onDocumentClick(document: /*FileModel*/Document)
     }
 }

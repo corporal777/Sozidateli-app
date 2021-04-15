@@ -12,7 +12,7 @@ import com.example.ui.base.BaseContract
 interface OrganizationContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/)
+        fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: /*OrganizationNew*/Organization, events: List<Event>, users: List<OrganizationMember>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEvents(organizationId: String)
@@ -45,10 +45,10 @@ interface OrganizationContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
+        fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel)
+        fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
@@ -69,8 +69,8 @@ interface OrganizationContract {
         fun onGoToEventClick(event: Event)
 
         fun onShowMoreUsersClick()
-        fun onUserClick(user: UserDetail)
-        fun onUserActionCLick(user: UserDetail)
+        fun onUserClick(user: /*UserDetail*/User)
+        fun onUserActionCLick(user: /*UserDetail*/User)
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()
@@ -80,11 +80,11 @@ interface OrganizationContract {
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
+        fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
+        fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation)
         fun onShowEditProfileClick()
     }
 }

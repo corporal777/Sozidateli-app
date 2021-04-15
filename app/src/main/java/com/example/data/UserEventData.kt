@@ -45,7 +45,7 @@ class UserEventData(
     }
 
     private fun loadInternal(eventId: String): Completable {
-        val event = eventRepository.getEventDetails(eventId)
+        /*val event = eventRepository.getEventDetails(eventId)
         val formats = eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
         return Maybe.zip(event, formats, BiFunction<EventInfo, List<NewEventFormat>, UserEvent> { event, formats ->
             event.event.format?.name = formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
@@ -61,8 +61,8 @@ class UserEventData(
                     isDataFromLocalStorage = it.isDataFromLocalStorage
                     dataLoadingDate = it.updatedAt
                 }
-                .ignoreElement()
-        /*val eventInfo = eventRepository.getEventInfo(eventId)
+                .ignoreElement()*/
+        val eventInfo = eventRepository.getEventInfo(eventId)
         val eventActivity = eventRepository.getEventActivity(eventId)
         return Maybe.zip(eventInfo, eventActivity, BiFunction<EventInfo, EventActivity, UserEvent> { info, activity ->
             UserEvent(eventId, info, activity, System.currentTimeMillis())
@@ -76,7 +76,7 @@ class UserEventData(
                     isDataFromLocalStorage = it.isDataFromLocalStorage
                     dataLoadingDate = it.updatedAt
                 }
-                .ignoreElement()*/
+                .ignoreElement()
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {

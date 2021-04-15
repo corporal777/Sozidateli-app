@@ -7,6 +7,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MemberModel
+import com.example.data.models.Speaker
 import com.example.extensions.findItemBy
 import com.example.holders.SpeakerGroup
 import com.example.holders.UserItem
@@ -55,7 +56,7 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
     }
 
 
-    override fun setData(data: List<MemberModel>) {
+    override fun setData(data: List</*MemberModel*/Speaker>) {
         groupAdapter.update(data.map { speaker ->
             SpeakerGroup(
                     speaker,
@@ -66,15 +67,15 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun updateSpeaker(speaker: MemberModel) {
-        val idLong = speaker.user?.toLong()
+    override fun updateSpeaker(speaker: /*MemberModel*/Speaker) {
+        val idLong = /*speaker.user?.toLong()*/speaker.uid.toLong()
         groupAdapter.findItemBy { item: UserItem -> item.id == idLong }?.apply {
             //Speaker
             //notifyChanged(speaker.user.getUserSubscribeAction())
         }
     }
 
-    override fun showSpeaker(speaker: MemberModel) {
+    override fun showSpeaker(speaker: /*MemberModel*/Speaker) {
         findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.user.toString()).build().toBundle())
     }
 

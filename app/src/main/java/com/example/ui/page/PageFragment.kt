@@ -59,7 +59,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
             contentTitle: String,
             title: String?,
             content: String?,
-            documents: List<FileModel>?
+            documents: List</*FileModel*/Document>?
     ) {
         toolbarContentActionBar.title = contentTitle
 

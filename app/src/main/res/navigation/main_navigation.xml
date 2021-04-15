@@ -867,11 +867,11 @@
 
         <argument
             android:name="phones"
-            app:argType="com.example.data.models.EventPhoneModel[]" />
+            app:argType="com.example.data.models.PhoneAffiliation[]" />
 
         <argument
             android:name="emails"
-            app:argType="com.example.data.models.EventPhoneModel[]" />
+            app:argType="com.example.data.models.EmailAffiliation[]" />
 
         <argument
             android:name="webLinks"

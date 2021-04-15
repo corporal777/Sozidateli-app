@@ -74,7 +74,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String) = presenter.onActionCancel(event)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
     }
@@ -102,7 +102,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/) {
+    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: /*OrganizationNew*/Organization, events: List<Event>, users: List<OrganizationMember>) {
         ivBackground.apply {
             clipToOutline = true
             if (background == null) {
@@ -110,7 +110,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             } else {
                 isVisible = true
                 setImageBitmap(background)
-                setOnImageClickListener(this, organization.backgroundColor?.value)
+                setOnImageClickListener(this, /*organization.backgroundColor?.value*/organization.background)
             }
         }
         ivLogo.apply {
@@ -120,20 +120,21 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             } else {
                 isInvisible = false
                 setImageBitmap(logo)
-                setOnImageClickListener(this, organization.logo?.uri)
+                setOnImageClickListener(this, /*organization.logo?.uri*/organization.logo)
             }
         }
 
         tvOrganizationImageName.apply {
-            text = organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
+            text = organization.name/*organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short*/
             clipToOutline = true
-            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)
+            ViewCompat.setBackgroundTintList(this, /*ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value)
+                    ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)*/ColorStateList.valueOf(organization.backgroundColor.parseColor()
                     ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
         }
 
-        tvName.text = organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
+        tvName.text = organization.name/*organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short*/
 
-        val links = organization.site?.joinToString(separator = "\n")
+        val links = organization.webLinks?.joinToString(separator = "\n")/*organization.site?.joinToString(separator = "\n")*/
         val hasLinks = !links.isNullOrEmpty()
         tvLinksTitle.isVisible = hasLinks
         tvLinks.apply {
@@ -142,7 +143,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val snLinks = organization.socialLink?.joinToString(separator = "\n")
+        val snLinks = organization.socialLinks?.joinToString(separator = "\n")/*organization.socialLink?.joinToString(separator = "\n")*/
         val hasSnLinks = !snLinks.isNullOrEmpty()
         tvSnLinksTitle.isVisible = hasSnLinks
         tvSnLinks.apply {
@@ -151,7 +152,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val emails = organization.email?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val emails = organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }/*organization.email?.joinToString(separator = "\n") { it.getAffiliationString() }*/
         val hasEmails = !emails.isNullOrEmpty()
         tvEmailTitle.isVisible = hasEmails
         tvEmail.apply {
@@ -160,7 +161,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
 
-        val phones = organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val phones = organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }/*organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() }*/
         val hasPhones = !phones.isNullOrEmpty()
         tvPhoneTitle.isVisible = hasPhones
         tvPhone.apply {
@@ -169,24 +170,35 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             removeUrlUnderline()
         }
         if (!organization.address.isNullOrEmpty()) {
-            val hasAddress = !organization.address[0].fullValue.isNullOrEmpty() ||
+            val hasAddress = !organization.addressShort.isNullOrEmpty()/*!organization.address[0].fullValue.isNullOrEmpty()*/ ||
                     !organization.address.isNullOrEmpty()
 
             tvAddressTitle.isVisible = hasAddress
             tvAddress.apply {
                 isVisible = hasAddress
-                text = organization.address[0].fullValue// ?: organization.address
+                text = organization.addressShort ?: organization.address/*organization.address[0].fullValue*/// ?: organization.address
             }
         }
 
         tvDescription.apply {
-            isVisible = !organization.description.isNullOrEmpty()
-            text = organization.description
+            isVisible = !organization.descriptionFull.isNullOrEmpty()/*!organization.description.isNullOrEmpty()*/
+            text = organization.descriptionFull/*organization.description*/
         }
 
-        tvPeoples.text = getString(R.string.organization_peoples).format(organization.binds?.user?.size)
+        tvPeoples.text = getString(R.string.organization_peoples).format(organization.totalMembers/*organization.binds?.user?.size*/)
         rvPeoples.adapter = usersAdapter.apply {
-            organization.binds?.user?.mapNotNull {
+            update(users.mapNotNull {
+                val user = it.user ?: return@mapNotNull null
+                UserItem(
+                        user.user_id,
+                        user.fullName,
+                        user.user_city,
+                        user.user_avatar,
+                        { presenter.onUserClick(user) },
+                        user.getUserSubscribeAction(),
+                        { presenter.onUserActionCLick(user) })
+            })
+            /*organization.binds?.user?.mapNotNull {
                 val user = it ?: return@mapNotNull null
                 UserItem(
                         user.id,
@@ -196,7 +208,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                         { presenter.onUserClick(user) },
                         //user.getUserSubscribeAction(),
                         { presenter.onUserActionCLick(user) })
-            }?.let { update(it) }
+            }?.let { update(it) }*/
         }
         btnPeoples.apply {
             isVisible = true//organization.totalMembers > users.size
@@ -267,7 +279,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         item.notifyChanged(user.getUserSubscribeAction())
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
+    override fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>) {
         AlertDialog.Builder(requireContext())
                 .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
                     val email = emails[which]
@@ -278,10 +290,10 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EventPhoneModel) {
+    override fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(/*email.value*/email.email))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }

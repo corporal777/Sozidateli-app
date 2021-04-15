@@ -26,15 +26,17 @@ class OrganizationEventsPresenter
 
     lateinit var organizationId: String
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        /*return eventRepository.getEventList(limit, offset, mapOf(
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
+        return eventRepository.getEventList(limit, offset, mapOf(
                 "organisation" to organizationId,
                 Event.FILTER_SHOW_CANCELED to true
-        ))*/
+        ))
+    }
+    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //TODO Finish this screen
         return eventRepository.getEventsList(mapOf(
                 EventNew.EVENT_LIMIT to limit,
                 EventNew.EVENT_OFFSET to offset,
                 EventNew.EVENT_ORGANIZATION to organizationId))
-    }
+    }*/
 }

@@ -35,6 +35,7 @@ interface NewApi {
     @GET("v1/user/{id}/phone/confirm")
     fun sendPhoneCode(@Path("id") id: Int, @Query("phone") phone: String): Completable
 
+    //+
     @GET("v1/event")
     fun getEventCalendar(@QueryMap map: Map<String, Any>): Maybe<EventsListModel>
 
@@ -89,47 +90,60 @@ interface NewApi {
     @PATCH("v1/user-academic-degree/user/{id}")
     fun updateUserAcademicDegree(@Path("id") id : Int, @Body body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
 
+    //+
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
+    //+
     @GET("v1/organization")
     fun searchOrganizations(@QueryMap map: Map<String, Any>): Maybe<OrganizationNewModel>
 
+    //+
     @GET("v1/organization/{id}")
     fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: String?): Single<OrganizationNew>
 
+    //+
     @GET("v1/event-format")
     fun getEventFormatsList(@QueryMap map: Map<String, Any>): Maybe<EventFormatsModel>
 
+    //+
     @GET("v1/user/{id}/get-profile-fullness")
     fun checkUserProfile(@Path("id") organizationId : String): Single<List<UserProfileFields>>
 
+    //+
     @GET("v1/event/{id}")
     fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
 
+    //+
     @FormUrlEncoded
     @POST("v1/event-mailing")
     fun mailToEvent(@Field("message") message: String, @Field("event") event: String,
                     @Field("isPush") isPush: Boolean, @Field("isInApp") isInApp: Boolean): Completable
 
+    //+
     @GET("v1/event-page/{id}")
     fun getPageDetails(@Path("id") pageId : String): Single<PageModel>
 
+    //+
     @GET("v1/event-member")
     fun getSpeakers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<MemberModel>>>
 
+    //+
     @GET("v1/event-partner/{id}")
     fun getPartnerDetails(@Path("id") partnerId : String, @Query("binds") binds: String): Single<PartnerModel>
 
+    //+
     @POST("v1/user-favorites")
     fun addToFavorite(@Body body: AddToFavoriteModel): Single<AddFavoriteModel>
 
+    //+
     @DELETE("v1/user-favorites/{id}")
     fun deleteFromFavorite(@Path("id") id : String): Completable
 
     @GET("v1/address/search")
     fun searchAddress(@Query("query") query: String?, @Query("limit") limit: Int): Single<SearchAddressModel>
 
+    //+
     @GET("v1/user-notification")
     fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
 }

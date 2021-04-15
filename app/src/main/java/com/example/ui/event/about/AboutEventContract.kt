@@ -12,17 +12,25 @@ interface AboutEventContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventData(
-                eventData: EventNew,
+                eventData: EventData,
+                userRegistration: Event.RegistrationStatus?,
+                pages: List<EventPage>,
+                partners: List<EventParther>,
+                showContacts: Boolean,
+                userAgreement: String?
+                /*eventData: EventNew,
                 userRegistration: Event.RegistrationStatus?,
                 pages: List<PageModel>?,
                 partners: List<PartnerModel>?,
                 showContacts: Boolean,
-                userAgreement: String?
+                userAgreement: String?*/
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
-                event: EventNew,
+                /*event: EventNew,
+                userRegistration: Event.RegistrationStatus?*/
+                event: EventData,
                 userRegistration: Event.RegistrationStatus?
         )
 
@@ -39,7 +47,8 @@ interface AboutEventContract {
         fun showSpeakers(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showContacts(eventName: String, phones: List<EventPhoneModel>, emails: List<EventPhoneModel>, webLinks: List<String>?, socialLinks: List<String>?, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
+        //fun showContacts(eventName: String, phones: List<EventPhoneModel>, emails: List<EventPhoneModel>, webLinks: List<String>?, socialLinks: List<String>?, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
+        fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>?, socialLinks: List<String>?, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
@@ -72,10 +81,10 @@ interface AboutEventContract {
         fun showWriteToOrganizationError()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel)
+        fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
+        fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
@@ -92,8 +101,8 @@ interface AboutEventContract {
         fun onSpeakersClick()
         fun onGoToEventClick()
         fun onSelectEventClick()
-        fun onPageClick(page: PageModel)
-        fun onPartnerClick(partner: PartnerModel)
+        fun onPageClick(page: /*PageModel*/EventPage)
+        fun onPartnerClick(partner: /*PartnerModel*/EventParther)
         fun onLogoClick()
         fun onRefreshRequest()
         fun onShowFilterClick(format: Int)
@@ -106,7 +115,7 @@ interface AboutEventContract {
 
         fun onActionCancel()
         fun onActionWriteToOrganization()
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
+        fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation)
 
         fun onShowEditProfileClick()
     }

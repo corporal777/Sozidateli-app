@@ -6,7 +6,7 @@ import com.example.data.models.*
 import com.example.ui.search.SearchContract
 
 interface SearchEventContract {
-    interface View : SearchContract.View<EventNew, SearchFilter.EventNew> {
+    interface View : SearchContract.View</*EventNew*/Event, SearchFilter./*EventNew*/Event> {
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
 
@@ -14,22 +14,22 @@ interface SearchEventContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>)
+        fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel)
+        fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation)
 
         @StateStrategyType(SkipStrategy::class)
         fun selectEvent()
     }
 
-    interface Presenter : SearchContract.Presenter<EventNew> {
+    interface Presenter : SearchContract.Presenter</*EventNew*/Event> {
         fun onActionRegister(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel>)
+        fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFormatClick(format: Int)
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel)
+        fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation)
     }
 }

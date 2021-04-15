@@ -83,7 +83,10 @@ data class Event(
         RUNNING,
 
         @SerializedName("finished")
-        FINISHED
+        FINISHED,
+
+        CONFERENCE_ENDS,
+        IN_ARCHIVE
         /*CONFERENCE_ENDS,
         IN_ARCHIVE,
         REGISTRATION_PARTICIPANTS,

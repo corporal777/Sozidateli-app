@@ -27,11 +27,13 @@ class FavoriteEventsPresenter
         @Connectivity connectivity: Observable<Boolean>
 ) : EventListPresenter<FavoriteEventsContract.View>(appData, eventData, eventRepository, userRepository, connectivity), FavoriteEventsContract.Presenter {
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        //return eventRepository.getFavoriteEvents(limit, offset)
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
+        return eventRepository.getFavoriteEvents(limit, offset)
+    }
+    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //TODO Finish this screen
         return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset))
-    }
+    }*/
 
     override fun onEventActionClick(event: Event) {
         val isFavorite = event.isInFavorites
