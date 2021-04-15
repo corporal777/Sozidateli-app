@@ -57,7 +57,7 @@ android {
         buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
 
         applicationVariants.all { variant ->
-            def buildType = variant.buildType.name
+            def buildType = variant.buildType.name + "-Frankenstein"
             variant.outputs.all {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
