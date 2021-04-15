@@ -60,6 +60,8 @@ data class EventNew(
                 const val EVENT_START_DATE = "holdingDate"
                 const val EVENT_FORMAT = "format"
                 const val EVENT_CATEGORY = "topicCategory"
+                const val EVENT_STATUS = "status"
+                const val EVENT_HIDDEN = "stateIsHidden"
         }
 }
 

@@ -1,7 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.gradle_version = '3.6.3'
     ext.kotlin_version = '1.4.10'
     ext.leakcanary_version = '1.6.3'
     ext.dagger_version = '2.21'
@@ -16,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${gradle_version}"
+        classpath "com.android.tools.build:gradle:3.6.3"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'

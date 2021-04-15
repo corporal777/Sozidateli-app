@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Notification
+import com.example.data.models.NotificationModel
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -32,6 +33,12 @@ class NotificationsPresenter
     private var blockInvalidation = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
+        /*userRepository.getNotifications(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
+                NotificationModel.NOTIFICATION_OFFSET to offset)).map { response ->
+            PaginationResponse(response.totalCount, response.data.map {
+                Notification.fromRemoteNotification(it)
+            })
+        }*/
         userRepository.getNotifications(limit, offset).map { response ->
             PaginationResponse(response.totalCount, response.data.map {
                 Notification.fromRemoteNotification(it)

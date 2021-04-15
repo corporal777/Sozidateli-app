@@ -273,6 +273,16 @@ class UserRepositoryImp
         })
     }
 
+    override fun getNotifications(map: Map<String, Any>): Maybe<PaginationResponse<NotificationModel>> {
+        return newApi.getNotifications(map)
+                .map {
+                    PaginationResponse(
+                            it.totalCount,
+                            it.data
+                    )
+                }
+    }
+
     override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())
     }

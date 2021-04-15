@@ -7,8 +7,10 @@ import com.example.data.UserEventData
 import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventNew.Companion.EVENT_BINDS
+import com.example.data.models.EventNew.Companion.EVENT_HIDDEN
 import com.example.data.models.EventNew.Companion.EVENT_LIMIT
 import com.example.data.models.EventNew.Companion.EVENT_OFFSET
+import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.models.EventNewModel
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
@@ -33,7 +35,8 @@ class RecommendationsPresenter
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //return eventRepository.getEventRecommendations(limit, offset)
         return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset,
-                EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result"/*arrayListOf("destination-scheme", "auditorium", "partner", "member", "form")*/))
+                EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result"/*,
+                EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false))
     }
 
     override fun onSearchClick() = viewState.showSearch()

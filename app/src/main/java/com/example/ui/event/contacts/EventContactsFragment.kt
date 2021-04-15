@@ -1,7 +1,6 @@
 package com.example.ui.event.contacts
 
 import android.content.Intent
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.Toast
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -28,16 +26,14 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_event_contacts.*
-import java.text.DecimalFormat
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.roundToInt
 
 class EventContactsFragment : BaseFragment(), EventContactsContract.View, ToolbarFragment {
 
     companion object {
         private val MAP_OPTIONS_DEFAULT = GoogleMapOptions()
-                //.liteMode(true)
+                .liteMode(true)
                 .mapToolbarEnabled(false)
                 .zoomControlsEnabled(false)
 

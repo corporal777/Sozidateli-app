@@ -129,4 +129,7 @@ interface NewApi {
 
     @GET("v1/address/search")
     fun searchAddress(@Query("query") query: String?, @Query("limit") limit: Int): Single<SearchAddressModel>
+
+    @GET("v1/user-notification")
+    fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
 }
