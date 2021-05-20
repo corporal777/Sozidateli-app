@@ -8,7 +8,6 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Event
-import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.OrganizationsFilter
 import com.example.holders.EventDataListItem
@@ -34,7 +33,15 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
     lateinit var presenterProvider: Provider<RecommendationsPresenter>
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = "RecommendationsPresenter")
-    fun providePresenter(): RecommendationsPresenter = presenterProvider.get()
+    fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
+        try {
+            val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
+            if (args.isOpenProfile)
+                findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToProfileFragment(true))
+        } catch (e: Exception) {
+
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +78,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
     }
 
     override fun showAccount() {
-        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToProfileFragment())
+        findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToProfileFragment(false))
     }
 
     override fun showNotifications() {

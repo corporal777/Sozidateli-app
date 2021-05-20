@@ -3,16 +3,16 @@ package com.example.ui.userprofile.read.settings
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.PasswordBody
 import com.example.data.bodies.RegisterBody
-import com.example.data.models.FieldDetails
-import com.example.data.models.UserDetail
+import com.example.data.models.*
 import com.example.data.models.UserDetail.Companion.USER_EMAIL
 import com.example.data.models.UserDetail.Companion.USER_STATE
-import com.example.data.models.UserState
-import com.example.data.models.asOptional
 import com.example.data.models.user.User
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
+import com.example.ui.status.StatusPresenter
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
@@ -26,7 +26,8 @@ class UserProfileSettingsPresenter @Inject constructor(
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val haChat: HAChat,
-        private val notificationManager: NotificationManager
+        private val notificationManager: NotificationManager,
+        private val authRepository: AuthRepository
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData), UserProfileSettingsContract.Presenter {
 
     override fun onChangePhoneClick() {
@@ -64,6 +65,44 @@ class UserProfileSettingsPresenter @Inject constructor(
         } else {
             viewState.showUpdateError()
         }
+    }
+
+    override fun sendPhone(phone: String) {
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideDialogProgress()
+                    viewState.phoneSuccess(phone)
+                }, {
+                    viewState.hideDialogProgress()
+                    it.printStackTrace()
+                })
+    }
+
+    override fun onPasswordInputComplete(password: String, phone: String) {
+        compositeDisposable += userRepository.checkPasswordNew(password)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.hideDialogProgress2()
+                    viewState.passwordSuccess(phone)
+                }, {
+                    viewState.hideDialogProgress2()
+                    viewState.showRequestErrorMessage()
+                })
+    }
+
+    override fun confirmCode(phone: String, code: String) {
+        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideDialogProgress()
+                    appData.updatePhone(phone)
+                    viewState.codeSuccess()
+                }, {
+                    viewState.hideDialogProgress()
+                    it.printStackTrace()
+                })
     }
 
     override fun onChangePrivacyClick() {

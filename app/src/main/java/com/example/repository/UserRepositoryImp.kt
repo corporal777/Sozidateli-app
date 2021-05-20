@@ -174,6 +174,10 @@ class UserRepositoryImp
         return call(api.checkPassword(password))
     }
 
+    override fun checkPasswordNew(password: String): Completable {
+        return newApi.checkPassword(appData.getId(), password)
+    }
+
     override fun sendStatusPhoneConfirmSms(password: String): Completable {
         return call(api.sendStatusPhoneConfirmSms(password))
     }

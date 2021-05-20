@@ -3,6 +3,7 @@ package com.example.ui.base
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.models.ApiError
 import com.example.exceptions.NoInternetConnectionException
+import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -72,8 +73,28 @@ open class BasePresenter<V : BaseContract.View>
                                 when (errors[0]) {
                                     "User with same email exists" -> viewState.showEmailErrorMessage()
                                     "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
+                                    "such phone already registered" -> viewState.showPhoneErrorMessage()
                                     else -> onReceiveError(it)
                                 }
+                            }
+                        }
+                    }
+                } else if (it is HttpException) {
+                    when (it.code()) {
+                        409 -> {
+                            try {
+                                val error = Gson().fromJson(
+                                        it.response()?.errorBody()?.string(),
+                                        Errors::class.java
+                                )
+                                when (error.errors[0].message) {
+                                    "User with same email exists" -> viewState.showEmailErrorMessage()
+                                    "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
+                                    "such phone already registered" -> viewState.showPhoneErrorMessage()
+                                    else -> onReceiveError(it)
+                                }
+                            } catch (e: Exception) {
+
                             }
                         }
                     }
@@ -81,6 +102,8 @@ open class BasePresenter<V : BaseContract.View>
             }
         }
     }
+    data class Errors(val errors: List<ErrorModel>)
+    data class ErrorModel(val code: String? = null, val field: String? = null, val message: String? = null)
 
     fun Completable.subscribeSimple(
             onError: ((Throwable) -> Unit)? = null,

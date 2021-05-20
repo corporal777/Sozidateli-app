@@ -165,7 +165,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     override fun showAccount() {
-        findNavController().navigate(EventTabsFragmentDirections.mainToProfile())
+        findNavController().navigate(EventTabsFragmentDirections.mainToProfile(false))
     }
 
     override fun showEventList() {

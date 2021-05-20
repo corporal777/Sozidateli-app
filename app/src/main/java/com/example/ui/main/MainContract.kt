@@ -41,7 +41,7 @@ interface MainContract {
         fun showRating(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDialogRecoverPassword(email: String, code: String)
+        fun showDialogRecoverPassword(/*email: String,*/ code: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showDialogChangeEmailSuccess()
@@ -71,7 +71,7 @@ interface MainContract {
         fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showInviteRegister(email: String, code: String)
+        fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -79,14 +79,14 @@ interface MainContract {
         fun onOpenNotStartDestination()
         fun onOpenChatDestination(chatId: String?)
         fun onOpenCheckConnectionDestination(check: Boolean)
-        fun onHandleAuthLink(/*email: String, */code: String)
-        fun onHandleRecoverPasswordLink(email: String, code: String)
-        fun onHandleChangeEmailConfirm(code: String)
+        fun onHandleAuthLink(emaill: String, code: String)
+        fun onHandleRecoverPasswordLink(/*email: String,*/ code: String)
+        fun onHandleChangeEmailConfirm(code: String, email: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEvent(event: String)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
-        fun onSetPassword(email: String, code: String, password: String)
+        fun onSetPassword(/*email: String, */code: String, password: String)
 
         fun onInappHidden()
         fun onInappAcceptClick(inapp: Notification)
@@ -99,6 +99,6 @@ interface MainContract {
         fun onRequestHideErrorMessage()
 
         fun onStoriesComplete()
-        fun onInviteRegister(email: String, code: String)
+        fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String)
     }
 }

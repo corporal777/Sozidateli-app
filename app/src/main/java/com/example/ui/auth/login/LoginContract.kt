@@ -1,5 +1,6 @@
 package com.example.ui.auth.login
 
+import android.content.Context
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -36,8 +37,8 @@ interface LoginContract {
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickBack()
-        fun onChangeLoginText(login: String)
-        fun onChangePasswordText(password: String)
+        fun onChangeLoginText(login: String, context: Context)
+        fun onChangePasswordText(password: String, context: Context)
         fun onClickLogin(login: String, password: String)
         fun onClickRecoverPassword()
     }

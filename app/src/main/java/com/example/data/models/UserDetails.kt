@@ -32,9 +32,12 @@ data class UserDetail(
         @SerializedName("educationLevel")
         var educationLevel: Int? = null,
         var binds: UserBinds? = null,
+        @SerializedName("educationLevelList")
         var educationLevelList: List<EducationLevel>? = null,
         var speciality: List<EducationLevel>? = null,
+        @SerializedName("academicDegrees")
         var academicDegrees: List<EducationLevel>? = null,
+        @SerializedName("isCurrentUser")
         var isCurrentUser: Boolean? = false
 ): Parcelable {
 
@@ -200,7 +203,7 @@ data class UserState(
         @SerializedName("isHidden")
         var isHidden: Boolean? = null,
         @SerializedName("isBlocked")
-        val isBlocked: Boolean? = null,
+        val isBlocked: Int? = null,
         @SerializedName("isSuspend")
         val isSuspend: BooleanModel? = null,
 ): Parcelable

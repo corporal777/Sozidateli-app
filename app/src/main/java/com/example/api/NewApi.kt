@@ -20,8 +20,14 @@ interface NewApi {
     @POST("v1/user")
     fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
 
-    @GET("v1/user/email/confirm")
-    fun registerEmailResend(@Query("email") email: String): Completable
+    @GET("v1/user/{id}/email/confirm/send")
+    fun registerEmailResend(@Path("id") id: Int, @Query("email") email: String): Completable
+
+    @GET("v1/user/{id}/phone/confirm/send")
+    fun registerPhoneResend(@Path("id") id: Int, @Query("type") type: String, @Query("phone") email: String): Completable
+
+    @POST("v1/user/{id}/phone/confirm")
+    fun confirmPhone(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<NewAuthResponse>
 
     @PATCH("v1/user/{id}")
     fun updateProfile(@Path("id") id: Int, @Body map: Map<String, Any?>): Single<UserDetail>
@@ -146,4 +152,16 @@ interface NewApi {
     //+
     @GET("v1/user-notification")
     fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
+
+    @GET("v1/user/password/recover/send")
+    fun sendEmailRecovery(@Query("type") type: String, @Query("value") value: String): Completable
+
+    @GET("v1/user/password/recover/check")
+    fun checkPasswordRecover(@Query("type") type: String, @Query("code") code: String): Completable
+
+    @POST("v1/user/password/recover")
+    fun recoverPassword(@Body body: RecoverPasswordBody): Single<NewAuthResponse>
+
+    @GET("v1/user/{id}/password/check")
+    fun checkPassword(@Path("id") id : Int, @Query("password") password: String): Completable
 }

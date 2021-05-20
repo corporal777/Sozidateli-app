@@ -116,6 +116,11 @@
             android:id="@+id/email_register_to_phone_confirm_fragment"
             app:destination="@id/phone_confirm_fragment" />
 
+        <action
+            android:id="@+id/invite_register_to_mail"
+            app:destination="@+id/recommendations_fragment"
+            app:popUpTo="@id/main_navigation"/>
+
         <argument
             android:name="code"
             app:argType="string"
@@ -123,6 +128,21 @@
 
         <argument
             android:name="email"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="lastName"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="middleName"
             app:argType="string"
             app:nullable="false" />
 
@@ -135,7 +155,8 @@
 
         <action
             android:id="@+id/register_to_mail"
-            app:destination="@+id/recommendations_fragment"/>
+            app:destination="@+id/recommendations_fragment"
+            app:popUpTo="@id/main_navigation"/>
 
         <action
             android:id="@+id/email_register_to_phone_confirm_fragment"
@@ -187,6 +208,10 @@
         android:id="@+id/register_email_new_fragment"
         android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment"
         android:label="Register">
+
+        <action
+            android:id="@+id/register_to_finish_register"
+            app:destination="@id/register_email_finish_fragment"/>
 
         <action
             android:id="@+id/email_register_to_email_confirm"
@@ -286,6 +311,9 @@
         <action
             android:id="@+id/recommendations_fragment_to_notifications_fragment"
             app:destination="@id/notifications_fragment" />
+        <argument
+            android:name="isOpenProfile"
+            app:argType="boolean"/>
     </fragment>
 
     <fragment
@@ -453,6 +481,9 @@
         <action
             android:id="@+id/action_profile_fragment_to_user_profile_settings_fragment"
             app:destination="@id/user_profile_settings_fragment" />
+        <argument
+            android:name="isShowPopup"
+            app:argType="boolean" />
     </fragment>
 
     <fragment

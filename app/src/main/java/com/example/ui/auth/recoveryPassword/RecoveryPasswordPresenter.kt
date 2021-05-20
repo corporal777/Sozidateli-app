@@ -1,10 +1,14 @@
 package com.example.ui.auth.recoveryPassword
 
+import android.content.Context
+import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.ApiError
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
+import com.example.util.Utils
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -22,6 +26,7 @@ class RecoveryPasswordPresenter
     }
 
     var email = ""
+    var loginType = "email"
 
     private var onUserUnderstandEverything = false
 
@@ -32,9 +37,9 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onRecoveryClick() {
-        if (isDataValid()) {
-            compositeDisposable += authRepository.sendRecoveryEmail(email)
+    override fun onRecoveryClick(context: Context) {
+        if (isDataValid(context)) {
+            compositeDisposable += authRepository.sendRecoveryEmail(loginType, email)
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
@@ -55,18 +60,25 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onChangeEmailText(email: String) {
+    override fun onChangeEmailText(email: String, context: Context) {
         viewState.showEmailError(false)
         this.email = email
-        performDataChange()
+        performDataChange(context)
     }
 
-    private fun performDataChange() {
-        viewState.enableRecoveryBtn(isDataValid())
+    private fun performDataChange(context: Context) {
+        viewState.enableRecoveryBtn(isDataValid(context))
     }
 
-    private fun isDataValid(): Boolean {
-        return AuthValidateUtil.isValidEmail(email)
+    private fun isDataValid(context: Context): Boolean {
+        return if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
+            loginType = "phone"
+            Utils.newPhoneValidator(context, email)
+        } else {
+            loginType = "email"
+            AuthValidateUtil.isValidEmail(email)
+        }
+        //return AuthValidateUtil.isValidEmail(email)
     }
 
     override fun onUserUnderstand() {
@@ -74,6 +86,13 @@ class RecoveryPasswordPresenter
             onUserUnderstandEverything = true
             viewState.navigateUp()
         }
+    }
+
+    override fun onSetPassword(code: String, password: String) {
+        authRepository.recoverPasswordNew(RecoverPasswordBody("phone", code, password))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({}, {  }).call(compositeDisposable)
     }
 
     override fun onCloseClick() {

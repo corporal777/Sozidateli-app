@@ -50,6 +50,15 @@ interface InviteRegisterContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun showEmailDialog(email: String)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun unblockTokenListener()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun openHome()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun blockTokenListener()
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -58,7 +67,8 @@ interface InviteRegisterContract {
                 firstName: String?,
                 lastName: String?,
                 password: String?,
-                passwordConfirm: String?
+                isAgree: Boolean
+                //passwordConfirm: String?
         )
 
         fun onClickClose()
@@ -68,14 +78,15 @@ interface InviteRegisterContract {
         fun onNoMiddleNameChecked(checked: Boolean)
         fun onAgreeChecked(checked: Boolean)
 
-        fun onSaveEmailText(email: String)
+        fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String)
         fun onChangeEmailText(email: String)
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)
         fun onChangeMiddleNameText(middleName: String)
-        fun onChangePasswordText(password: String)
+        fun onChangePasswordText(password: String, isValid: Boolean)
         fun onChangePasswordConfirmText(password: String)
         fun onChangePhoneText(phone: String)
         fun onPhoneConfirmClick()
+        fun getData()
     }
 }

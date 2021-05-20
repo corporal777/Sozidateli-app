@@ -1,6 +1,11 @@
 package com.example.data.bodies
 
 data class AuthBody(
-        var email: String,
-        var password: String
+        var login: LoginModel,
+        var password: LoginModel
+)
+
+data class LoginModel(
+        val type: String,
+        val value: String
 )

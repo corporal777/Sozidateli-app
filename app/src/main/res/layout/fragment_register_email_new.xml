@@ -129,7 +129,7 @@
                     android:text="@string/profile_edit_user_no_middle_name" />
             </com.example.ui.views.CustomTextInputLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 style="@style/Profile.Edit.InputContainer"
                 android:layout_marginTop="0dp">
 
@@ -137,24 +137,8 @@
                     android:id="@+id/etMobilePhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <!--<com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilMobilePhone"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMobilePhone"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/profile_phone_mobile"
-                        android:inputType="phone" />
-                </com.example.ui.views.CustomTextInputLayout>-->
-
-
-                <androidx.appcompat.widget.AppCompatTextView
+             <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvPhoneConfirmed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -167,7 +151,7 @@
                     android:text="@string/profile_edit_phone_confirmed"
                     android:textColor="@color/profile_status_complete"
                     android:visibility="gone" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilEmail"
@@ -185,11 +169,34 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:hint="@string/auth_input_email_hint"
+                    android:hint="@string/auth_input_email_or_phone_hint"
                     android:inputType="textEmailAddress" />
+
             </com.example.ui.views.CustomTextInputLayout>
 
             <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilEmailAgain"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:visibility="gone"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmailAgain"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/auth_input_email_again_hint"
+                    android:inputType="textEmailAddress" />
+
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <!--<com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilPassword"
                 style="@style/Profile.Edit.InputLayout"
                 android:layout_width="match_parent"
@@ -223,7 +230,14 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:hint="@string/auth_input_password_confirm_hint"
                     android:inputType="textPassword" />
-            </com.example.ui.views.CustomTextInputLayout>
+            </com.example.ui.views.CustomTextInputLayout>-->
+
+            <com.example.ui.views.passwordView.PasswordCustomView
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"/>
 
             <TextView
                 android:id="@+id/tvAgreeError"

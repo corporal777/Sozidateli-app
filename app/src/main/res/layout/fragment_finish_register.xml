@@ -139,27 +139,11 @@
                     android:text="@string/profile_edit_user_no_middle_name" />
             </com.example.ui.views.CustomTextInputLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/phone_layout"
                 style="@style/Profile.Edit.InputContainer"
                 android:layout_marginTop="0dp"
                 android:visibility="gone">
-
-                <!--<com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilMobilePhone"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMobilePhone"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/profile_phone_mobile"
-                        android:inputType="phone" />
-                </com.example.ui.views.CustomTextInputLayout>-->
 
                 <com.example.ui.views.PhoneView
                     android:id="@+id/etMobilePhone"
@@ -190,7 +174,7 @@
                     android:text="@string/profile_edit_phone_confirmed"
                     android:textColor="@color/profile_status_complete"
                     android:visibility="gone" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilEmail"
@@ -214,10 +198,85 @@
             </com.example.ui.views.CustomTextInputLayout>
 
             <LinearLayout
+                android:id="@+id/layPhoneConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginEnd="@dimen/margin_horizontal_default">
+
+                <TextView
+                    android:id="@+id/tvText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray"
+                    tools:text="@string/code_dialog_text"/>
+
+                <com.example.ui.views.CustomTextInputLayout
+                    android:id="@+id/tilCode"
+                    style="@style/Profile.Edit.InputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    app:endIconMode="custom"
+                    app:errorEnabled="true"
+                    app:errorIconDrawable="@null">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCode"
+                        style="@style/Profile.Edit.Input.SingleLine"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:maxLength="9"
+                        android:hint="@string/auth_error_no_code"
+                        android:inputType="numberDecimal" />
+                </com.example.ui.views.CustomTextInputLayout>
+
+                <TextView
+                    android:id="@+id/tvTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:gravity="start"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnResend"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/auth_register_confirm_email_timer_two" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnResend"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingEnd="16dp"
+                    android:text="@string/send_code_again"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llAgree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:visibility="gone"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

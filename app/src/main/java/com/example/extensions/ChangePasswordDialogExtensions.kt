@@ -4,21 +4,30 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.R
+import com.example.ui.views.passwordView.PasswordCustomView
 import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.dialog_change_password.view.*
+import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 
 fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPassword: String, newPasswordConfirm: String) -> Unit) {
     val emptyFieldError = getString(R.string.profile_edit_empty_field_error)
     val shortPasswordError = getString(R.string.auth_error_short_password)
+    var isNewValid = false
 
     val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
     val tilOldPassword = view.findViewById<TextInputLayout>(R.id.tilOldPassword)
     val etOldPassword = view.findViewById<EditText>(R.id.etOldPassword).apply {
         onTextChanged { tilOldPassword.error = null }
     }
-    val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
+    val password = view.findViewById<PasswordCustomView>(R.id.password).apply {
+        setShowAgree(false)
+        setPasswordValidCallback {
+            isNewValid = it.isValid
+        }
+    }
+    /*val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
     val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
         onTextChanged {
             tilNewPassword.error = if (it != null && !AuthValidateUtil.isValidPassword(it.toString())) shortPasswordError else null
@@ -33,7 +42,7 @@ fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPasswo
                 null
             }
         }
-    }
+    }*/
 
     AlertDialog.Builder(requireContext())
             .setTitle(R.string.profile_password_change)
@@ -47,15 +56,16 @@ fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPasswo
                         setOnClickListener {
                             var hasError = false
                             val oldPassword = etOldPassword.text?.toString()
-                            val newPassword = etNewPassword.text?.toString()
-                            val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
+                            //val newPassword = etNewPassword.text?.toString()
+                            //val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
+                            val newPassword = password.etPassword.text?.toString()
 
                             if (oldPassword.isNullOrEmpty()) {
                                 tilOldPassword.error = emptyFieldError
                                 hasError = true
                             }
 
-                            if (newPassword != null && !AuthValidateUtil.isValidPassword(newPassword)) {
+                            /*if (newPassword != null && !AuthValidateUtil.isValidPassword(newPassword)) {
                                 tilNewPassword.error = shortPasswordError
                                 hasError = true
                             }
@@ -76,6 +86,10 @@ fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPasswo
 
                             if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
                                 onConfirm(oldPassword, newPassword, newPasswordConfirm)
+                                dismiss()
+                            }*/
+                            if (!hasError && oldPassword != null && isNewValid && newPassword != null) {
+                                onConfirm(oldPassword, newPassword, newPassword)
                                 dismiss()
                             }
                         }

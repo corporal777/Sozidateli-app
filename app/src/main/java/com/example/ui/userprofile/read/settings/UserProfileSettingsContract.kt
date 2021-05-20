@@ -31,6 +31,21 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneEdit()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideDialogProgress()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideDialogProgress2()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun phoneSuccess(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun passwordSuccess(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun codeSuccess()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -47,5 +62,9 @@ interface UserProfileSettingsContract {
 
         fun onDeleteProfileClick()
         fun onDeleteProfileConfirm()
+
+        fun sendPhone(phone: String)
+        fun onPasswordInputComplete(password: String, phone: String)
+        fun confirmCode(phone: String, code: String)
     }
 }

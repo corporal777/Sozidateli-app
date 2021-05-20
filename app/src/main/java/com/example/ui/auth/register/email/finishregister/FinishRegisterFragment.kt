@@ -2,6 +2,7 @@ package com.example.ui.auth.register.email.finishregister
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -9,10 +10,12 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.text.clearSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -20,23 +23,25 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
+import com.example.ui.main.MainActivity
+import com.example.ui.views.AddPhoneEmailDialog.Companion.CODE_SIZE
 import com.example.util.ClickableSpan
 import com.example.util.initSwitch
+import kotlinx.android.synthetic.main.fragment_email_confirm.*
 import kotlinx.android.synthetic.main.fragment_finish_register.*
-import kotlinx.android.synthetic.main.fragment_finish_register.btnPhoneConfirm
+import kotlinx.android.synthetic.main.fragment_finish_register.btnResend
 import kotlinx.android.synthetic.main.fragment_finish_register.cbAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.etEmail
 import kotlinx.android.synthetic.main.fragment_finish_register.etFirstName
 import kotlinx.android.synthetic.main.fragment_finish_register.etLastName
 import kotlinx.android.synthetic.main.fragment_finish_register.etMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.etMobilePhone
 import kotlinx.android.synthetic.main.fragment_finish_register.flAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
 import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
-import kotlinx.android.synthetic.main.fragment_finish_register.tvPhoneConfirmed
+import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -44,6 +49,11 @@ import javax.inject.Provider
 class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     private var isNoMiddleName = false
+    private var loginType = "email"
+
+    private val timerMessage by lazy {
+        getString(R.string.auth_register_confirm_email_timer_two)
+    }
 
     @InjectPresenter
     lateinit var presenter: FinishRegisterPresenter
@@ -60,32 +70,47 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onChangeNameText(FinishRegisterFragmentArgs.fromBundle(it).name ?: "")
             presenter.onChangeLastNameText(FinishRegisterFragmentArgs.fromBundle(it).lastName ?: "")
             presenter.onChangeMiddleNameText(FinishRegisterFragmentArgs.fromBundle(it).middleName ?: "")
-            presenter.onChangeEmailText(FinishRegisterFragmentArgs.fromBundle(it).email ?: "")
+            val email = FinishRegisterFragmentArgs.fromBundle(it).email ?: ""
+            presenter.onChangeEmailText(email)
             presenter.onChangePhoneText(FinishRegisterFragmentArgs.fromBundle(it).phone ?: "")
             presenter.phoneConfirmed(FinishRegisterFragmentArgs.fromBundle(it).isConfirmed)
             presenter.onSaveCode(FinishRegisterFragmentArgs.fromBundle(it).code ?: "")
             isNoMiddleName = FinishRegisterFragmentArgs.fromBundle(it).isNoMiddleName
+            loginType = if (email.isEmpty()) "phone" else "email"
+            presenter.loginType = loginType
+            if (loginType == "email") {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                presenter.getData()
+            } else presenter.startTimer()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ivClose.setOnClickListener { presenter.onClickClose() }
+        cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
+        cbAgree.isChecked = true
         if (BuildConfig.NEW_PROFILE_EDIT) {
             tilMiddleName.visibility = View.VISIBLE
-            phone_layout.visibility = View.VISIBLE
+            llAgree.visibility = View.GONE
+            //phone_layout.visibility = View.VISIBLE
         } else {
             tilMiddleName.visibility = View.GONE
-            phone_layout.visibility = View.GONE
+            llAgree.visibility = View.VISIBLE
+            //phone_layout.visibility = View.GONE
         }
         //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
         scNoMiddleName.initSwitch(isNoMiddleName) {
             presenter.onNoMiddleNameChecked(it)
         }
-        etMobilePhone.getPhoneCallback { it.let { text ->
+        /*etMobilePhone.getPhoneCallback { it.let { text ->
             presenter.onChangePhoneText(text)
-        } }
+        } }*/
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+        etCode.onTextChanged {
+            tilCode.error = null
+            it?.toString()?.let { text -> presenter.onChangeCodeText(text) }
+        }
         val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
             val linkStart = 11
             val linkEnd = length
@@ -104,30 +129,75 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
                 isChecked = !isChecked
             }
         }
-
-        cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
-
+        btnResend.apply {
+            setTextColor(ColorStateList(
+                    arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
+                    intArrayOf(ContextCompat.getColor(requireContext(), R.color.colorAccent), ContextCompat.getColor(requireContext(), R.color.action_button_disabled_text_color))
+            ))
+            setOnClickListener { presenter.sendCodeAgain() }
+        }
         ibCancel.setOnClickListener {
-            presenter.onHandleAuthLink()
+            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+            presenter.logout()
         }
         ibRegister.setOnClickListener {
-            if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
-                presenter.onHandleAuthLink()
+            when (loginType) {
+                "phone" -> {
+                    if (etCode.text?.length != CODE_SIZE) {
+                        tilCode.error = resources.getString(R.string.auth_error_no_code)
+                    } else {
+                        (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                        presenter.onHandleAuthLink()
+                    }
+                }
+                "email" -> {
+                    (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                    presenter.onHandleAuthLink()
+                }
+            }
+
+            /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
+            presenter.onHandleAuthLink()
             } else {
                 showWrongPhoneError(true)
+            }*/
+        }
+        //btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
+        //scNoMiddleName.isChecked = isNoMiddleName
+        when (loginType) {
+            "phone" -> {
+                tvText.text = requireContext().resources.getString(R.string.code_dialog_text, presenter.phone)
+                layPhoneConfirm.isVisible = true
+            }
+            "email" -> {
+                layPhoneConfirm.isVisible = false
             }
         }
-        btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
-        //scNoMiddleName.isChecked = isNoMiddleName
+    }
+
+    override fun logedout() {
+        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
+        findNavController().navigate(R.id.register_email_new_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
+    }
+
+    override fun codeError() {
+        tilCode.error = resources.getString(R.string.auth_error_code)
     }
 
     override fun openHome() {
-        findNavController().navigate(FinishRegisterFragmentDirections.registerToMail())
+        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
+        findNavController().navigate(FinishRegisterFragmentDirections.registerToMail(true))
     }
 
     override fun onDestroyView() {
         tvAgree.text.toSpannable().clearSpans()
         super.onDestroyView()
+    }
+
+    override fun codeSuccess() {
+        Toast.makeText(requireContext(), "Код был отправлен повторно", Toast.LENGTH_SHORT).show()
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
@@ -139,7 +209,14 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean, phoneVerified: Boolean) {
-        etEmail.setText(email)
+        when (loginType) {
+            "phone" -> {
+                etEmail.setText(phone)
+            }
+            "email" -> {
+                etEmail.setText(email)
+            }
+        }
         etFirstName.setText(firstName)
         etLastName.setText(lastName)
         if (middleName == "-") {
@@ -150,9 +227,13 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             scNoMiddleName.isChecked = false
         }
         //etMobilePhone.setText(phone)
-        etMobilePhone.setPhone(phone?: "")
+        //etMobilePhone.setPhone(phone?: "")
         cbAgree.isChecked = isAgree
         updatePhoneConfirmationStatus(phoneVerified)
+    }
+
+    override fun unblockTokenListener() {
+        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
     }
 
     override fun showAgreementError(show: Boolean) {
@@ -164,13 +245,13 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun updatePhoneConfirmationStatus(confirmed: Boolean) {
-        btnPhoneConfirm.isVisible = !confirmed
-        tvPhoneConfirmed.isVisible = confirmed
+        /*btnPhoneConfirm.isVisible = !confirmed
+        tvPhoneConfirmed.isVisible = confirmed*/
     }
 
     override fun phoneConfirmEnabled(enabled: Boolean) {
-        btnPhoneConfirm.isEnabled = enabled
-        btnPhoneConfirm.isVisible = enabled
+        /*btnPhoneConfirm.isEnabled = enabled
+        btnPhoneConfirm.isVisible = enabled*/
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
@@ -190,9 +271,19 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         }
     }
 
+    override fun setTimeLeft(seconds: Int) {
+        val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        tvTimer.text = String.format(timerMessage, quantity)
+    }
+
+    override fun setCanResend(canResend: Boolean) {
+        btnResend.isEnabled = canResend
+        tvTimer.isInvisible = canResend
+    }
+
     override fun showWrongPhoneError(show: Boolean) {
-        etMobilePhone.showError(show)
-        /*tilMobilePhone.apply {
+        /*etMobilePhone.showError(show)
+        tilMobilePhone.apply {
             error = if (show) getString(R.string.register_phone_error) else null
         }*/
     }

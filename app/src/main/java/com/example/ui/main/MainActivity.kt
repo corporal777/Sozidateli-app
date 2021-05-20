@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.ActionBar
@@ -58,6 +60,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import kotlinx.android.synthetic.main.item_action_button.view.*
 import kotlinx.android.synthetic.main.layout_inapp.*
+import org.json.JSONObject
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -193,6 +197,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (Intent.ACTION_VIEW == appLinkAction) {
             intent.data?.also {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
+                val email = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
                 val changeEmail = it.getQueryParameter(CHANGE_EMAIL)
@@ -212,19 +217,32 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }*/
                 } else if (authEmail != null && authCode != null) {
                     //presenter.onHandleAuthLink(authEmail, authCode)
-                } else if (authCode != null && recoverEmail != null) {
-                    presenter.onHandleRecoverPasswordLink(recoverEmail, authCode)
+                } else if (/*authCode != null && recoverEmail != null*/lastPath == PASSWORD_RECOVERY && authCode != null) {
+                    presenter.onHandleRecoverPasswordLink(/*recoverEmail, */authCode)
                 } else if (lastPath == PATH_SN_AUTHORIZATION) {
                     val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
                     if (userId != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
                 } else if (changeEmail != null && authCode != null) {
-                    presenter.onInviteRegister(changeEmail, authCode)
+                    if (lastPath == REGISTER_CONFIRM) {
+                        showFinishRegister("", "", "", "", email?: "", authCode, false, false)
+                        //presenter.onHandleAuthLink(email?: "", authCode?: "")
+                    } else {
+                        //if (lastPath == PATH_CONFIRM_EMAIL)
+                            presenter.onHandleChangeEmailConfirm(authCode?: "", email?: "")
+                        //else presenter.onInviteRegister(changeEmail, authCode)
+                    }
                 } else if (lastPath == REGISTER_CONFIRM) {
-                    presenter.onHandleAuthLink(/*authEmail, */authCode?: "")
+                    presenter.onHandleAuthLink(email?: "", authCode?: "")
                 } else if (lastPath == PATH_CONFIRM_EMAIL) {
-                    presenter.onHandleChangeEmailConfirm(authCode?: "")
+                    presenter.onHandleChangeEmailConfirm(authCode?: "", email?: "")
+                } else if (lastPath == LINKED_REGISTER) {
+                    val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
+                    val text = String(base, StandardCharsets.UTF_8)
+                    val json = JSONObject(text)
+                    presenter.onInviteRegister(json["email"].toString(), authCode?: "", if (json["name"].toString() != "null") json["name"].toString() else "",
+                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "", if (json["middleName"].toString() != "null") json["middleName"].toString() else "")
                 }
             }
         } else {
@@ -256,9 +274,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun showInviteRegister(email: String, code: String) {
+    override fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String) {
         findNavController().navigate(R.id.to_invite_register, bundleOf("code" to code,
-                "email" to email), NavOptions.Builder()
+                "email" to email, "name" to name, "lastName" to lastName, "middleName" to middleName), NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build())
     }
@@ -271,7 +289,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         handleIntent(intent)
     }
 
-    override fun showDialogRecoverPassword(email: String, code: String) {
+    override fun showDialogRecoverPassword(/*email: String,*/ code: String) {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_password_recovery, null, false)
         val alert = AlertDialog.Builder(this)
                 .setTitle(R.string.recovery_set_password_title)
@@ -279,9 +297,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 .create()
 
         var password = ""
-        var passwordConfirm = ""
+        //var passwordConfirm = ""
 
-        val validatePassword = {
+        view.password.setPasswordValidCallback {
+            password = it.password?: ""
+            view.btnSave.isEnabled = it.isValid
+        }
+        /*val validatePassword = {
             val isPasswordValid = AuthValidateUtil.isValidPassword(password)
             val isPasswordsMatch = password == passwordConfirm
             view.tvPasswordHintLength.apply {
@@ -289,11 +311,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 else highlightError()
             }
             view.btnSave.isEnabled = isPasswordValid && isPasswordsMatch
-        }
+        }*/
 
         view.btnSave.isEnabled = false
 
-        view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+        /*view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             password = charSequence.toString()
             validatePassword()
         })
@@ -301,11 +323,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         view.etConfirmPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             passwordConfirm = charSequence.toString()
             validatePassword()
-        })
+        })*/
 
         view.btnSave.setOnClickListener {
             alert.dismiss()
-            presenter.onSetPassword(email, code, password)
+            presenter.onSetPassword(/*email,*/ code, password)
         }
 
         alert.show()
@@ -524,8 +546,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 .setSelectCallback {  }
     }
 
+    override fun showPhoneErrorMessage() {
+        ApiErrorDialog(this, getString(R.string.phone_exist_error_title),
+                getString(R.string.phone_exist_error_text))
+                .setSelectCallback {  }
+    }
+
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
+    }
+
+    fun setIgnoreTokenListener(isIgnore: Boolean) {
+        presenter.ignoreTokenListener(isIgnore)
     }
 
     override fun getLoadingView(): View = flLoading

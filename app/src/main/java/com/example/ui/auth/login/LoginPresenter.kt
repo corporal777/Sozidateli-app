@@ -1,7 +1,10 @@
 package com.example.ui.auth.login
 
+import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.LoginModel
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
@@ -9,6 +12,9 @@ import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
+import com.example.util.Utils.isContainLetters
+import com.example.util.Utils.isPhone
+import com.example.util.Utils.newPhoneValidator
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
@@ -34,6 +40,7 @@ class LoginPresenter
 
     var login = ""
     var password = ""
+    var loginType = "email"
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -44,16 +51,16 @@ class LoginPresenter
 
     override fun onClickBack() = viewState.navigateUp()
 
-    override fun onChangeLoginText(login: String) {
+    override fun onChangeLoginText(login: String, context: Context) {
         this.login = login
         viewState.showLoginError(false)
-        performDataChange()
+        performDataChange(context)
     }
 
-    override fun onChangePasswordText(password: String) {
+    override fun onChangePasswordText(password: String, context: Context) {
         this.password = password
         viewState.showPasswordError(false)
-        performDataChange()
+        performDataChange(context)
     }
 
     override fun onClickRecoverPassword() {
@@ -62,7 +69,7 @@ class LoginPresenter
     }
 
     override fun onClickLogin(login: String, password: String) {
-        compositeDisposable += authRepository.authEmailOrPhone(login, password)
+        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, login), LoginModel("common", password)))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -83,13 +90,20 @@ class LoginPresenter
                 )
     }
 
-    private fun performDataChange() {
-        viewState.enableLoginBtn(isDataValid())
+    private fun performDataChange(context: Context) {
+        viewState.enableLoginBtn(isDataValid(context))
     }
 
-    private fun isDataValid(): Boolean {
-        return (AuthValidateUtil.isValidEmail(login) || login.isValidPhoneNumber())
-                && password.isNotEmpty()
+    private fun isDataValid(context: Context): Boolean {
+        /*return (AuthValidateUtil.isValidEmail(login) || login.isValidPhoneNumber())
+                && password.isNotEmpty()*/
+        return if (isPhone(login) && !isContainLetters(login)) {
+            loginType = "phone"
+            newPhoneValidator(context, login) && password.isNotEmpty()
+        } else {
+            loginType = "email"
+            AuthValidateUtil.isValidEmail(login) && password.isNotEmpty()
+        }
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {

@@ -5,6 +5,8 @@ import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
+import com.example.data.bodies.ConfirmCodeBody
+import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.*
 import com.example.data.models.user.User
@@ -79,8 +81,8 @@ class AuthRepositoryImp
         return callAuthCompletable(api.confirmEmailSocialNetwork(id, code))
     }
 
-    override fun authEmailOrPhone(email: String, password: String): Completable {
-        return callNewAuthCompletable(newApi.authEmailOrPhone(AuthBody(email, password)))
+    override fun authEmailOrPhone(login: AuthBody): Completable {
+        return callNewAuthCompletable(newApi.authEmailOrPhone(login))
     }
 
     override fun register(body: RegisterBody): Completable {
@@ -99,10 +101,16 @@ class AuthRepositoryImp
     }
 
     override fun registerEmailResend(email: String): Completable {
-        return newApi.registerEmailResend(email)
+        return newApi.registerEmailResend(appData.getId(), email)
     }
 
+    override fun registerPhoneResend(type: String, phone: String): Completable {
+        return newApi.registerPhoneResend(appData.getId(), type, phone)
+    }
 
+    override fun confirmPhone(body: ConfirmCodeBody): Completable {
+        return callNewAuthCompletable(newApi.confirmPhone(appData.getId(), body))
+    }
 
     /*override fun registerSnResend(email: String, token: String): Completable {
         return callAuthCompletable(api.registerSnResend(email, token))
@@ -110,6 +118,10 @@ class AuthRepositoryImp
 
     override fun sendRecoveryEmail(email: String): Completable {
         return callAuthCompletable(api.sendEmailRecovery(email))
+    }
+
+    override fun sendRecoveryEmail(type: String, email: String): Completable {
+        return newApi.sendEmailRecovery(type, email)
     }
 
     override fun checkRecoveryCode(email: String, code: String): Completable {
@@ -201,5 +213,13 @@ class AuthRepositoryImp
             }
         })
                 .ignoreElement()
+    }
+
+    override fun checkRecoveryCodeNew(type: String, code: String): Completable {
+        return newApi.checkPasswordRecover(type, code)
+    }
+
+    override fun recoverPasswordNew(body: RecoverPasswordBody): Completable {
+        return callNewAuthCompletable(newApi.recoverPassword(body))
     }
 }

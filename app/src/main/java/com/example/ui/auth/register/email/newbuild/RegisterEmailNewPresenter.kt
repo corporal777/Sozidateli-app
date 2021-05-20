@@ -7,11 +7,13 @@ import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
+import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
+import com.example.util.Utils
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -27,6 +29,8 @@ class RegisterEmailNewPresenter
         private val appData: AppData,
         private val authRepository: AuthRepository,
         private val phoneNumberUtil: PhoneNumberUtil,
+        private val context: Context,
+        private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager), RegisterEmailNewContract.Presenter {
 
@@ -35,10 +39,14 @@ class RegisterEmailNewPresenter
     private var middleName: String? = null
     private var noMiddleNameChecked = middleName == USER_DATA_EMPTY
     private var email: String? = null
+    private var emailAgain: String? = null
     private var password: String? = null
     private var passwordConfirm: String? = null
     private var phone: String? = null
     private var phoneVerified: Boolean = false
+    private var isAgree: Boolean = false
+    private var isPasswordValid: Boolean = false
+    var loginType = "email"
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -65,7 +73,8 @@ class RegisterEmailNewPresenter
                 password,
                 passwordConfirm,
                 phone,
-                phoneVerified
+                phoneVerified,
+                isAgree
         )
         if (!phoneVerified)
             viewState.phoneConfirmEnabled(phone.isValidPhoneNumber(phoneNumberUtil))
@@ -81,9 +90,10 @@ class RegisterEmailNewPresenter
             firstName: String?,
             lastName: String?,
             password: String?,
-            passwordConfirm: String?
+            //passwordConfirm: String?,
+            isAgree: Boolean
     ) {
-        if (isDataValid(firstName, lastName, email, password, passwordConfirm)) {
+        if (isDataValid(firstName, lastName, email, password, /*passwordConfirm,*/ isAgree)) {
             register(
                     email!!,
                     firstName!!,
@@ -99,19 +109,42 @@ class RegisterEmailNewPresenter
                 showLastNameError(lastName.isNullOrEmpty())
                 showPasswordError(password.isNullOrEmpty() || password.length < 6)
                 showPasswordConfirmError(password != passwordConfirm)
+                if (loginType == "email")
+                    showEmailAgainError(email != emailAgain)
+                showAgreementError(!isAgree)
             }
         }
     }
 
-    override fun onChangeEmailText(email: String) {
+    override fun onChangeEmailText(email: String, context: Context) {
         this.email = email
         viewState.showEmailError(false)
+        if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
+            loginType = "phone"
+            Utils.newPhoneValidator(context, email)
+        } else {
+            loginType = "email"
+            AuthValidateUtil.isValidEmail(email)
+        }
+        viewState.changeFieldType(loginType)
+        performDataChange()
+    }
+
+    override fun onChangeEmailAgainText(email: String) {
+        this.emailAgain = email
+        viewState.showEmailAgainError(this.emailAgain != email)
         performDataChange()
     }
 
     override fun onChangeFirstNameText(firstName: String) {
         this.firstName = firstName
         viewState.showFirstNameError(false)
+        performDataChange()
+    }
+
+    override fun onClickAgree(isAgree: Boolean) {
+        this.isAgree = isAgree
+        viewState.showAgreementError(false)
         performDataChange()
     }
 
@@ -139,13 +172,19 @@ class RegisterEmailNewPresenter
         performDataChange()
     }
 
+    override fun onChangeNewPasswordText(password: String, isValid: Boolean) {
+        this.password = password
+        this.isPasswordValid = isValid
+        performDataChange()
+    }
+
     override fun onChangePasswordConfirmText(password: String) {
         this.passwordConfirm = password
         viewState.showPasswordConfirmError(this.password != password)
         performDataChange()
     }
 
-    override fun onChangePhoneText(phone: String) {
+    override fun onChangePhoneText(phone: String, context: Context) {
         viewState.apply {
             if (phoneVerified) {
                 updatePhoneConfirmationStatus(this@RegisterEmailNewPresenter.phone == phone)
@@ -173,7 +212,8 @@ class RegisterEmailNewPresenter
                 lastName,
                 email,
                 password,
-                passwordConfirm
+                //passwordConfirm,
+                isAgree
         ))
     }
 
@@ -182,13 +222,16 @@ class RegisterEmailNewPresenter
             lastName: String?,
             email: String?,
             password: String?,
-            passwordConfirm: String?
+            //passwordConfirm: String?,
+            isAgree: Boolean
     ): Boolean {
         return !firstName.isNullOrBlank()
                 && !lastName.isNullOrBlank()
-                && email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
+                //&& email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
                 && password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
-                && password == passwordConfirm
+                && isPasswordValid//&& password == passwordConfirm
+                && isAgree
+                && if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(context, email?: "")
     }
 
     private fun register(
@@ -204,19 +247,44 @@ class RegisterEmailNewPresenter
         else
             FieldDetails(value = middleName)
 
-        val phoneNumber = if (phone.isNullOrEmpty())
-            null
-        else
-            arrayListOf(FieldDetails(value = phone.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true))
+        var phoneNumber: ArrayList<FieldDetails>? = null
+        var em: FieldDetails? = null
+        when (loginType) {
+            "email" -> {
+                em = FieldDetails(value = email, isVisible = true)
+            }
+            "phone" -> {
+                phoneNumber = if (email.isNullOrEmpty())
+                    null
+                else
+                    arrayListOf(FieldDetails(value = email.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true))
+            }
+        }
 
         compositeDisposable += authRepository.register(RegisterBody(password = password,
                 name = firstName, lastName = lastName, middleName = midName,
-                email = FieldDetails(value = email, isVisible = true), phone = phoneNumber))
+                email = em, phone = phoneNumber))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.showEmailConfirmation(email, password)
+                    when (loginType) {
+                        "email" -> {
+                            viewState.showEmailConfirmation(email, password)
+                        }
+                        "phone" -> {
+                            compositeDisposable += authRepository.registerPhoneResend("personal", email)
+                                    .performOnBackgroundOutOnMain()
+                                    .withLoadingDialog(viewState)
+                                    .subscribe({
+                                        viewState.showFinishRegister(firstName,
+                                                lastName, middleName,
+                                                phoneNumber?.get(0)?.value, em?.value?: "", "code",
+                                                false, middleName == USER_DATA_EMPTY)
+
+                                    }, { it.printStackTrace() })
+                        }
+                    }
                 }
     }
 

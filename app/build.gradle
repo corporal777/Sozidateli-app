@@ -26,7 +26,9 @@ android {
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    dataBinding {
+        enabled = true
+    }
     lintOptions {
         abortOnError false
         lintConfig file("../lint.xml")

@@ -10,6 +10,7 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EmailCodeBody
 import com.example.data.bodies.EventsCalendarListBody
+import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
@@ -40,6 +41,7 @@ import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
 import withLoadingDialog
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -61,6 +63,7 @@ class MainPresenter
         private val eventRepository: EventRepository
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
+    private var isRegister = false
     lateinit var newMessageTitleText: String
     lateinit var photoMessageText: String
     lateinit var chatAcceptMessageText: String
@@ -102,7 +105,7 @@ class MainPresenter
                             checkIntent()
                         }
                     } else {
-                        loadUser()
+                        if (!isRegister) loadUser()
                     }
                 }
     }
@@ -384,26 +387,44 @@ class MainPresenter
         //viewState.showEvent(event)
     }
 
-    override fun onInviteRegister(email: String, code: String) {
-        viewState.showInviteRegister(email, code)
+    override fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String) {
+        viewState.showInviteRegister(email, code, name, lastName, middleName)
     }
 
-    override fun onHandleAuthLink(/*email: String, */code: String) {
-        if (appData.token != null) return
+    override fun onHandleAuthLink(emaill: String, code: String) {
+        //if (appData.token != null) return
         isAuthRequired = true
         /*authRepository.registerConfirm(email, code)
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.showFinishRegister() }, { viewState.showLogin() })
                 .call(compositeDisposable)*/
-
-        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code))
+        isRegister = true
+        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = emaill))
                 .performOnBackgroundOutOnMain()
-                .subscribe({ appData.getUserNew().apply {
-                    viewState.showFinishRegister(name?: "",
-                            lastName?: "", middleName?.value,
-                            phone?.get(0)?.value, email?.value?: "", code,
-                            phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
-                } }, { viewState.showLogin() })
+                .subscribe({
+                    compositeDisposable += userRepository.getUserShortNew()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                viewState.showFinishRegister(it.name?: "",
+                                        it.lastName?: "", it.middleName?.value,
+                                        it.phone?.get(0)?.value, it.email?.value?: "", code,
+                                        it.phone?.get(0)?.isConfirmed ?: false, it.middleName?.value == USER_DATA_EMPTY)
+                            }, { viewState.showLogin() })
+                    /*try {
+                        appData.getUserNew().apply {
+                            viewState.showFinishRegister(name?: "",
+                                    lastName?: "", middleName?.value,
+                                    phone?.get(0)?.value, email?.value?: "", code,
+                                    phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
+                        }
+                    } catch (e: Exception) {
+                        viewState.showLogin()
+                    }*/
+                    isRegister = false
+                }, {
+                    viewState.showLogin()
+                    isRegister = false
+                })
                 .call(compositeDisposable)
 
         /*authRepository.registerData(email, code)
@@ -415,18 +436,18 @@ class MainPresenter
                 .call(compositeDisposable)*/
     }
 
-    override fun onHandleRecoverPasswordLink(email: String, code: String) {
-        authRepository.checkRecoveryCode(email, code)
+    override fun onHandleRecoverPasswordLink(/*email: String, */code: String) {
+        authRepository.checkRecoveryCodeNew("email", code)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe {
-                    viewState.showDialogRecoverPassword(email, code)
+                    viewState.showDialogRecoverPassword(/*email,*/ code)
                 }.call(compositeDisposable)
     }
 
-    override fun onHandleChangeEmailConfirm(code: String) {
+    override fun onHandleChangeEmailConfirm(code: String, email: String) {
         if (isAuthRequired) return
-        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code))
+        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -470,11 +491,11 @@ class MainPresenter
                 .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
     }
 
-    override fun onSetPassword(email: String, code: String, password: String) {
-        authRepository.setPassword(email, code, password)
+    override fun onSetPassword(/*email: String, */code: String, password: String) {
+        authRepository.recoverPasswordNew(RecoverPasswordBody("email", code, password))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({}, { viewState.showDialogRecoverPassword(email, code) }).call(compositeDisposable)
+                .subscribe({}, { viewState.showDialogRecoverPassword(/*email,*/ code) }).call(compositeDisposable)
     }
 
 
@@ -628,6 +649,10 @@ class MainPresenter
     override fun onRequestHideErrorMessage() {
         errorMessageDisposable.clear()
         viewState.hideErrorMessage()
+    }
+
+    fun ignoreTokenListener(isIgnore: Boolean) {
+        isRegister = isIgnore
     }
 
     companion object {

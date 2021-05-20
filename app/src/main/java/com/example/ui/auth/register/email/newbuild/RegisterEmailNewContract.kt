@@ -20,7 +20,8 @@ interface RegisterEmailNewContract {
                 password: String?,
                 passwordConfirm: String?,
                 phone: String?,
-                phoneVerified: Boolean
+                phoneVerified: Boolean,
+                isAgree: Boolean
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -33,6 +34,9 @@ interface RegisterEmailNewContract {
         fun showEmailConfirmation(email: String, password: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -40,6 +44,9 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEmailError(show: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEmailAgainError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showPasswordError(show: Boolean)
@@ -64,6 +71,9 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun changeFieldType(type: String)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -73,17 +83,21 @@ interface RegisterEmailNewContract {
                 firstName: String?,
                 lastName: String?,
                 password: String?,
-                passwordConfirm: String?
+                //passwordConfirm: String?,
+                isAgree: Boolean
         )
 
-        fun onChangeEmailText(email: String)
+        fun onChangeEmailText(email: String, context: Context)
+        fun onChangeEmailAgainText(email: String)
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)
         fun onChangeMiddleNameText(middleName: String)
         fun onNoMiddleNameChecked(checked: Boolean)
         fun onChangePasswordText(password: String)
         fun onChangePasswordConfirmText(password: String)
-        fun onChangePhoneText(phone: String)
+        fun onChangeNewPasswordText(password: String, isValid: Boolean)
+        fun onChangePhoneText(phone: String, context: Context)
         fun onPhoneConfirmClick()
+        fun onClickAgree(isAgree: Boolean)
     }
 }

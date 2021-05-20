@@ -1,0 +1,7 @@
+package com.example.data.bodies
+
+data class RecoverPasswordBody(
+        val type: String,
+        val code: String,
+        val password: String
+)

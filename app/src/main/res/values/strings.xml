@@ -50,10 +50,11 @@
     <string name="auth_or_login">Уже есть аккаунт?</string>
     <string name="auth_label_login">Войти</string>
     <string name="email">E-mail</string>
+    <string name="email_or_phone">E-mail или телефон</string>
     <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
     <string name="auth_action_login">Войти</string>
-    <string name="auth_login_with_email">с помощью Вашей электронной почты</string>
+    <string name="auth_login_with_email">с помощью Вашей электронной почты или телефона</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
     <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
@@ -64,12 +65,15 @@
     <string name="auth_register_confirm_email_title">Ура, Вы почти достигли своей цели!</string>
     <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
+    <string name="auth_register_confirm_email_timer_two">Повторная отправка возможна через %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
     <string name="auth_input_first_name_hint">Укажите Ваше имя</string>
     <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
     <string name="auth_input_middle_name_hint">Укажите Ваше отчество</string>
     <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
+    <string name="auth_input_email_or_phone_hint">Мобильный телефон или эл. адрес</string>
+    <string name="auth_input_email_again_hint">Ввведите эл. адрес повторно</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
@@ -86,7 +90,10 @@
     <string name="auth_error_short_password_length">Пароль должен содержать больше 5 символов</string>
     <string name="auth_error_short_password">Больше 5 символов</string>
     <string name="auth_error_password_do_not_match">Пароли не совпадают</string>
+    <string name="auth_error_email_do_not_match">Эл. адреса не совпадают</string>
     <string name="auth_error_agreement">Согласитесь с условиями</string>
+    <string name="auth_error_no_code">Введите код</string>
+    <string name="auth_error_code">Неверный код</string>
     <plurals name="seconds_timer">
         <item quantity="zero">%d секунд</item>
         <item quantity="one">%d секунду</item>
@@ -328,7 +335,7 @@
     <string name="recovery_confirm_email_message">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо с инструкцией по восстановлению пароля.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
     <string name="recovery_set_password_title">Пожалуйста, укажите новый пароль и нажмите кнопку «Сохранить»</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
-    <string name="recovery_password_wrong_email_error">Упс… Такой пользователь не найден.\nПожалуйста, убедитесь, что указали правильный e-mail, и повторите попытку.</string>
+    <string name="recovery_password_wrong_email_error">Упс… Такой пользователь не найден.\nПожалуйста, убедитесь, что указали правильный %s, и повторите попытку.</string>
 
     <string name="profile_label">Личный кабинет</string>
     <string name="profile_current_user_label">Профиль</string>
@@ -684,6 +691,8 @@
     <string name="user_profile_delete_confirm_decline">Нет</string>
     <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в “Создателях”</string>
     <string name="email_exist_error_text">Если это Ваш e-mail, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
+    <string name="phone_exist_error_title">Упс… Данный номер телефона уже зарегистрирован в “Создателях”</string>
+    <string name="phone_exist_error_text">Если это Ваш номер телефона, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
     <string name="fill_in_everything_profile_fields">Чтобы выполнить действие, Вам необходимо заполнить поля ” + ” профиля:</string>
     <string name="fill_field">Заполните поле</string>
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
@@ -720,4 +729,18 @@
     <string name="five_letters_error">Пожалуйста, введите ботя бы 5 символов.</string>
     <string name="profile_fields_title">Вы почти в команде проекта «%s»</string>
     <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе «Уведомления».</string>
+    <string name="password_invalid">Слишком простой пароль. Рекомендуем добавить:</string>
+    <string name="password_valid">Отлично, это безопасный пароль.</string>
+    <string name="password_uppercase_letters">- Заглавные и строчные латинские буквы</string>
+    <string name="password_numbers">- Цифры</string>
+    <string name="password_to_small">- 8 символов</string>
+    <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальный символы (!%&lt;&gt; и тд), кирилица. Пожалуйста, используйте только латиницу и цифры.</string>
+    <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
+    <string name="add_phone_dialog_text">Чтобы пользоваться всеми возможностями сайта, пожалуйста, введите ваш актуальный номер телефона.</string>
+    <string name="add_email_dialog_title">Добавьте Ваш эл. фдрес</string>
+    <string name="add_email_dialog_text">Чтобы пользоваться всеми возможностями сайта, пожалуйста, введите ваш актуальный эл. адрес</string>
+    <string name="code_dialog_title">Пожалуйста, введите код</string>
+    <string name="code_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения. </string>
+    <string name="send_code_again">Выслать код повторно</string>
+    <string name="new_phone_number">Введите новый номер телефона</string>
 </resources>

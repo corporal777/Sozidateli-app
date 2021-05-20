@@ -1,6 +1,7 @@
 package com.example.ui.profile
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
@@ -34,6 +35,18 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSettings()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun emailSuccess()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideDialogProgress()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun phoneSuccess(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun codeSuccess()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -46,5 +59,8 @@ interface ProfileContract {
         fun onRateClick()
         fun onLogoutClick()
         fun onSettingsClick()
+        fun sendEmail(email: String)
+        fun sendPhone(phone: String)
+        fun confirmCode(phone: String, code: String)
     }
 }

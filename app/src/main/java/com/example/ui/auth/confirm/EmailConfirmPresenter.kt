@@ -1,6 +1,8 @@
 package com.example.ui.auth.confirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.LoginModel
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
@@ -31,6 +33,7 @@ class EmailConfirmPresenter
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
         startTimer()
+        onResendClick()
         //checkConfirmed()
     }
 
@@ -80,7 +83,7 @@ class EmailConfirmPresenter
                 .flatMapCompletable {
                     val snUser = this.snUser
                     if (snUser != null) authRepository.authSocialNetwork(snUser.snAuth.snType.code, snUser.snAuth.token)
-                    else authRepository.authEmailOrPhone(email, password)
+                    else authRepository.authEmailOrPhone(AuthBody(LoginModel(email, "email"), LoginModel(password, "common")))
                 }
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {}

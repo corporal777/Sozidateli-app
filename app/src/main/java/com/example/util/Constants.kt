@@ -21,6 +21,7 @@ const val DATE_TIME_FORMAT_DEFAULT_NO_YEAR = "dd.MM HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT_FULL_MONTH = "dd MMMM yyyy HH:mm"
 
 const val AUTH_CONFIRM_EMAIL_EMAIL = "confirm_email"
+const val AUTH_CONFIRM_EMAIL = "email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 
 const val RECOVERY_EMAIL = "recover_email"
@@ -43,7 +44,9 @@ const val FIELD_SN_AUTHORIZATION_USER_ID = "usa_id"
 const val PATH_EVENT = "event"
 const val PATH_CHANGE_EMAIL = "email-change"
 const val REGISTER_CONFIRM = "register-confirm"
+const val PASSWORD_RECOVERY = "password-recovery"
 const val PATH_CONFIRM_EMAIL = "email-confirm"
+const val LINKED_REGISTER = "external-registration-confirm"
 const val PATH_HIDDEN = "hidden"
 
 const val REQUEST_CODE_SELECT_PDF = 12

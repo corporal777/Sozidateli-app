@@ -1,8 +1,11 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.ConfirmCodeBody
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -10,6 +13,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import withLoadingDialog
+import java.lang.Exception
 import javax.inject.Inject
 
 @InjectViewState
@@ -18,7 +22,8 @@ class ProfilePresenter
         private val userRepository: UserRepository,
         private val haChat: HAChat,
         private val appData: AppData,
-        private val notificationManager: NotificationManager
+        private val notificationManager: NotificationManager,
+        private val authRepository: AuthRepository
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override fun onFirstViewAttach() {
@@ -34,7 +39,15 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.setUser(appData.getUserNew())
+        try {
+            viewState.setUser(appData.getUserNew())
+        } catch (e: Exception) {
+            compositeDisposable += userRepository.getUserShortNew()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        viewState.setUser(appData.getUserNew())
+                    }, { it.printStackTrace() })
+        }
     }
 
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
@@ -101,6 +114,42 @@ class ProfilePresenter
         compositeDisposable += userRepository.getAcademicDegrees()
                 .performOnBackgroundOutOnMain()
                 .subscribe({}, { it.printStackTrace() })
+    }
+
+    override fun sendEmail(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideDialogProgress()
+                    viewState.emailSuccess()
+                }, {
+                    viewState.hideDialogProgress()
+                    it.printStackTrace()
+                })
+    }
+
+    override fun sendPhone(phone: String) {
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideDialogProgress()
+                    viewState.phoneSuccess(phone)
+                }, {
+                    viewState.hideDialogProgress()
+                    it.printStackTrace()
+                })
+    }
+
+    override fun confirmCode(phone: String, code: String) {
+        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.hideDialogProgress()
+                    viewState.codeSuccess()
+                }, {
+                    viewState.hideDialogProgress()
+                    it.printStackTrace()
+                })
     }
 
     override fun onSettingsClick() {

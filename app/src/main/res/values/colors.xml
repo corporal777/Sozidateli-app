@@ -36,6 +36,7 @@
     <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>
     <color name="badge_attention_high">#FF0000</color>
+    <color name="badge_attention_null">#BB3C3C43</color>
 
     <color name="action_button_enabled_background_color">#bd9b72</color>
     <color name="action_button_disabled_background_color">#E7E6E6</color>

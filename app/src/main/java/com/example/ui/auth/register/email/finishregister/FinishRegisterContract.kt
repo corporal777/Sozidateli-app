@@ -42,6 +42,24 @@ interface FinishRegisterContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun openHome()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun codeSuccess()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun codeError()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun logedout()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun unblockTokenListener()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setTimeLeft(seconds: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setCanResend(canResend: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -51,14 +69,17 @@ interface FinishRegisterContract {
 
         fun onChangePhoneText(phone: String)
         fun onChangeMiddleNameText(middleName: String)
+        fun onChangeCodeText(code: String)
         fun onChangeNameText(name: String)
         fun onChangeLastNameText(lastName: String)
         fun onChangeEmailText(email: String)
         fun onSaveCode(code: String)
         fun phoneConfirmed(isConfirmed: Boolean)
-
+        fun sendCodeAgain()
         fun onHandleAuthLink()
         fun onPhoneConfirmClick()
         fun onNoMiddleNameChecked(checked: Boolean)
+        fun getData()
+        fun logout()
     }
 }

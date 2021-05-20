@@ -32,10 +32,11 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         etLogin.apply {
-            addTextChangedListener(PhoneNumberFormattingTextWatcher())
-            onTextChanged { it?.toString()?.let { text -> presenter.onChangeLoginText(text) } }
+            /*addTextChangedListener(PhoneNumberFormattingTextWatcher())
+            onTextChanged { it?.toString()?.let { text -> presenter.onChangeLoginText(text) } }*/
+            onTextChanged { it?.toString()?.let { text -> presenter.onChangeLoginText(text, requireContext()) } }
         }
-        etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
+        etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text, requireContext()) } }
 
         btnForgotPassword.setOnClickListener { presenter.onClickRecoverPassword() }
         ibLogin.setOnClickListener {

@@ -102,6 +102,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         }
     }
 
+    override fun showPhoneErrorMessage() {
+        context?.let {
+            ApiErrorDialog(it, getString(R.string.phone_exist_error_title),
+                    getString(R.string.phone_exist_error_text))
+                    .setSelectCallback {  }
+        }
+    }
+
     override fun showNotificationErrorMessage() {
         context?.let { FillProfileDialog(it).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) } }
     }

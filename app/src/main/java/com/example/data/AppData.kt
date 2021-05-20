@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
+import com.example.util.PHONE_PERSONAL
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
@@ -108,6 +109,16 @@ class AppData(
         this.newUser = user
         appPrefs.userId = user.id
         if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updatePhone(phone: String) {
+        this.newUser?.phone?.forEach {
+            if (it.type == PHONE_PERSONAL){
+                it.value = phone
+                it.isConfirmed = true
+            }
+        }
+        userNewChangeSubject.onNext(newUser.asOptional())
     }
 
     fun setUserShortNew(user: UserDetail) {

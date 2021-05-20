@@ -36,6 +36,9 @@ interface BaseContract {
         fun showEmailErrorMessage()
 
         @StateStrategyType(SkipStrategy::class)
+        fun showPhoneErrorMessage()
+
+        @StateStrategyType(SkipStrategy::class)
         fun showNotificationErrorMessage()
     }
 
