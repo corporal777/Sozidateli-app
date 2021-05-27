@@ -144,10 +144,20 @@ class PasswordCustomView: FrameLayout {
             errors.add(resources.getString(R.string.password_numbers))
         }
 
-        if (password?.matches(Regex(".*[A-Z].*")) == true) levelCounter -= 1
+        if (password?.matches(Regex(".*[A-Z].*")) == true && password.matches(Regex(".*[a-z].*"))) levelCounter -= 1
         else {
             isValid = false
-            errors.add(resources.getString(R.string.password_uppercase_letters))
+            when {
+                password?.matches(Regex(".*[A-Z].*")) == true -> {
+                    errors.add(resources.getString(R.string.password_letters))
+                }
+                password?.matches(Regex(".*[a-z].*")) == true -> {
+                    errors.add(resources.getString(R.string.password_lowercase_letters))
+                }
+                else -> {
+                    errors.add(resources.getString(R.string.password_uppercase_letters))
+                }
+            }
         }
 
         usedUnacceptableSymbols = pattern.matcher(password).matches() != true
@@ -178,8 +188,13 @@ class PasswordCustomView: FrameLayout {
                 tvErrors.text = errors.joinToString(";\n", postfix = ".")
             }
             hideShowAgree(isValid)
-            matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
-            onPasswordValid(PasswordModel(isValid && etPassword.text.toString() == etPasswordConfirm.text.toString(), password))
+            if (etPasswordConfirm.text.toString().isEmpty()) {
+                matchPasswords(true, isValid)
+            } else {
+                matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
+            }
+            //matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
+            onPasswordValid(PasswordModel(isValid && etPasswordConfirm.text.toString().isNotEmpty() && etPassword.text.toString() == etPasswordConfirm.text.toString(), password))
         } else {
             first.setBackgroundResource(R.drawable.password_red)
             second.setBackgroundResource(R.drawable.password_gray)

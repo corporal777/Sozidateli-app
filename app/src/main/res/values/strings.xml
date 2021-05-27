@@ -732,8 +732,10 @@
     <string name="password_invalid">Слишком простой пароль. Рекомендуем добавить:</string>
     <string name="password_valid">Отлично, это безопасный пароль.</string>
     <string name="password_uppercase_letters">- Заглавные и строчные латинские буквы</string>
+    <string name="password_lowercase_letters">- Заглавные буквы</string>
+    <string name="password_letters">- Строчные буквы</string>
     <string name="password_numbers">- Цифры</string>
-    <string name="password_to_small">- 8 символов</string>
+    <string name="password_to_small">- Больше символов</string>
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальный символы (!%&lt;&gt; и тд), кирилица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
     <string name="add_phone_dialog_text">Чтобы пользоваться всеми возможностями сайта, пожалуйста, введите ваш актуальный номер телефона.</string>

@@ -288,6 +288,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:layout_marginVertical="5dp"
                 android:gravity="center"
                 android:text="@string/auth_error_agreement"
                 android:textColor="@color/attention_action"
