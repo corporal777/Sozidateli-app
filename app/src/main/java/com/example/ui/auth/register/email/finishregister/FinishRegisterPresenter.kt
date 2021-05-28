@@ -219,7 +219,7 @@ class FinishRegisterPresenter
                 compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone?: "", phoneCode?: ""))
                         .performOnBackgroundOutOnMain()
                         .subscribe({
-                            userRepository.updateProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                            userRepository.updateProfile(appData.getId(), mapOf(/*USER_EMAIL to FieldDetails(value = email, isVisible = true), */USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
                                     USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))))
                                     .performOnBackgroundOutOnMain()
@@ -235,8 +235,8 @@ class FinishRegisterPresenter
                         .performOnBackgroundOutOnMain()
                         .subscribe({
                             userRepository.updateProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
-                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))))
+                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked)/*,
+                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))*/))
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)
                                     .subscribe({ viewState.openHome() }, { })

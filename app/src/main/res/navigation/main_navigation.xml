@@ -226,6 +226,9 @@
         <action
             android:id="@+id/email_register_to_phone_confirm_fragment"
             app:destination="@id/phone_confirm_fragment" />
+        <action
+            android:id="@+id/action_register_email_new_fragment_to_authorization_fragment"
+            app:destination="@id/authorization_fragment" />
     </fragment>
 
     <fragment

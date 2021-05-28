@@ -14,6 +14,7 @@ import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.Utils
+import com.example.util.Utils.validatePhoneBeforeSend
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -257,7 +258,7 @@ class RegisterEmailNewPresenter
                 phoneNumber = if (email.isNullOrEmpty())
                     null
                 else
-                    arrayListOf(FieldDetails(value = email.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true))
+                    arrayListOf(FieldDetails(value = validatePhoneBeforeSend(email)/*email.replace(" ", "")*/, type = PHONE_PERSONAL, isVisible = true))
             }
         }
 
@@ -273,7 +274,7 @@ class RegisterEmailNewPresenter
                             viewState.showEmailConfirmation(email, password)
                         }
                         "phone" -> {
-                            compositeDisposable += authRepository.registerPhoneResend("personal", email)
+                            compositeDisposable += authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)
                                     .subscribe({

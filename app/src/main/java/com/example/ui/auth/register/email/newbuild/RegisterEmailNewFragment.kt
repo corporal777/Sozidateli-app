@@ -194,7 +194,8 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showEmailConfirmation(email: String, password: String) {
-        findNavController().navigate(RegisterEmailNewFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
+        findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToAuthorizationFragment().setShowFinishRegister(true))
+        //findNavController().navigate(RegisterEmailNewFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
     }
 
     override fun showSnRegistration(snUser: SnUser) {

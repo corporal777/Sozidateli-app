@@ -163,7 +163,26 @@ class PasswordCustomView: FrameLayout {
         usedUnacceptableSymbols = pattern.matcher(password).matches() != true
 
         if (!usedUnacceptableSymbols) {
-            when (levelCounter) {
+            if (!isValid) {
+                first.setBackgroundResource(R.drawable.password_red)
+                second.setBackgroundResource(R.drawable.password_gray)
+                third.setBackgroundResource(R.drawable.password_gray)
+                tvResult.text = resources.getString(R.string.password_invalid)
+                tvErrors.text = errors.joinToString(";\n", postfix = ".")
+            } else if (isValid && etPasswordConfirm.text.toString().isEmpty()) {
+                first.setBackgroundResource(R.drawable.password_yellow)
+                second.setBackgroundResource(R.drawable.password_yellow)
+                third.setBackgroundResource(R.drawable.password_gray)
+                tvResult.text = resources.getString(R.string.password_valid_but_low)
+                tvErrors.text = ""
+            } else {
+                first.setBackgroundResource(R.drawable.password_green)
+                second.setBackgroundResource(R.drawable.password_green)
+                third.setBackgroundResource(R.drawable.password_green)
+                tvResult.text = resources.getString(R.string.password_valid)
+                tvErrors.text = ""
+            }
+            /*when (levelCounter) {
                 3, 2 -> {
                     first.setBackgroundResource(R.drawable.password_red)
                     second.setBackgroundResource(R.drawable.password_gray)
@@ -186,14 +205,10 @@ class PasswordCustomView: FrameLayout {
             } else {
                 tvResult.text = resources.getString(R.string.password_invalid)
                 tvErrors.text = errors.joinToString(";\n", postfix = ".")
-            }
+            }*/
             hideShowAgree(isValid)
-            if (etPasswordConfirm.text.toString().isEmpty()) {
-                matchPasswords(true, isValid)
-            } else {
-                matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
-            }
-            //matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
+            if (etPasswordConfirm.text.toString().isEmpty()) matchPasswords(true, isValid)
+            else matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
             onPasswordValid(PasswordModel(isValid && etPasswordConfirm.text.toString().isNotEmpty() && etPassword.text.toString() == etPasswordConfirm.text.toString(), password))
         } else {
             first.setBackgroundResource(R.drawable.password_red)

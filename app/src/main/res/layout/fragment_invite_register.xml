@@ -300,7 +300,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:background="@drawable/background_action_button_selector"
             android:minHeight="@dimen/auth_button_min_height"

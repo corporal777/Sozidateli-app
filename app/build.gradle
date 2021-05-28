@@ -14,7 +14,8 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 apply plugin: 'com.google.firebase.firebase-perf'
 
-apply plugin: 'jacoco-android'
+//apply plugin: 'jacoco-android'
+apply plugin: "com.hiya.jacoco-android"
 
 android {
     compileSdkVersion 29

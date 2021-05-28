@@ -730,6 +730,7 @@
     <string name="profile_fields_title">Вы почти в команде проекта «%s»</string>
     <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе «Уведомления».</string>
     <string name="password_invalid">Слишком простой пароль. Рекомендуем добавить:</string>
+    <string name="password_valid_but_low">Слишком простой пароль. Рекомендуем добавить больше символов.</string>
     <string name="password_valid">Отлично, это безопасный пароль.</string>
     <string name="password_uppercase_letters">- Заглавные и строчные латинские буквы</string>
     <string name="password_lowercase_letters">- Заглавные буквы</string>

@@ -43,12 +43,32 @@ object Utils {
     }
 
     fun newPhoneValidator(context: Context, phone: String): Boolean {
-        val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
+        var isValid = true
+        if (phone.contains("+")) {
+            if (phone.length == 12) {
+                if (phone.substring(0, 3) != "+79") isValid = false
+            } else isValid = false
+        } else {
+            if (phone.length == 11) {
+                val firstNumber = phone.substring(0, 2)
+                if (firstNumber != "79" && firstNumber != "89") isValid = false
+            } else isValid = false
+        }
+        /*val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
         val parsedPhone = try {
             phoneNumberUtil.parse(phone, null)
         } catch (e: Throwable) {
             return false
         }
-        return phoneNumberUtil.isValidNumber(parsedPhone)
+        return phoneNumberUtil.isValidNumber(parsedPhone)*/
+        return isValid
+    }
+
+    fun validatePhoneBeforeSend(phone: String): String {
+        val phoneResult = if (!phone.contains("+")) "+$phone" else phone
+        val sb = StringBuilder(phoneResult)
+        if (phone.substring(0, 1) == "8")
+            sb.setCharAt(1, '7')
+        return sb.toString()
     }
 }
