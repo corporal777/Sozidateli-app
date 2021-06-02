@@ -15,18 +15,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="beta.sozidateli.ru"
+                    android:host="beta-lk.sozidateli.ru"
                     android:pathPrefix="/profile"
                     android:scheme="https" />
 
                 <data
-                    android:host="beta.sozidateli.ru"
-                    android:pathPrefix="/social"
+                    android:host="beta-lk.sozidateli.ru"
+                    android:pathPrefix="/auth"
                     android:scheme="https" />
 
                 <data
                     android:host="www.sozidateli.ru"
-                    android:pathPrefix="/event"
+                    android:pathPrefix="/social"
                     android:scheme="https" />
 
                 <data

@@ -3,6 +3,8 @@ package com.example.ui.auth.register.email.newbuild
 import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.LoginModel
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
@@ -271,7 +273,12 @@ class RegisterEmailNewPresenter
                 .subscribeSimple {
                     when (loginType) {
                         "email" -> {
-                            viewState.showEmailConfirmation(email, password)
+                            authRepository.registerEmailResend(email)
+                                    .performOnBackgroundOutOnMain()
+                                    .withLoadingDialog(viewState)
+                                    .subscribe({
+                                        viewState.showEmailConfirmation(email, password)
+                                    }, { it.printStackTrace() })
                         }
                         "phone" -> {
                             compositeDisposable += authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))

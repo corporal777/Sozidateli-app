@@ -56,11 +56,11 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
     }
 
     override fun showEmailRegistration() {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
+        //if (BuildConfig.NEW_PROFILE_EDIT) {
             findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
-        } else {
+        /*} else {
             findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
-        }
+        }*/
     }
 
     override fun showSnRegistration(snUser: SnUser) {
