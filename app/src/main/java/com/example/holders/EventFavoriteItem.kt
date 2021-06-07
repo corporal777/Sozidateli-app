@@ -6,6 +6,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
+import com.example.data.models.EventNew
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -15,34 +16,34 @@ import parseColor
 import setOnClickListener
 
 class EventFavoriteItem(
-        val event: Event,
+        val event: /*Event*/EventNew,
         private val onEventClick: () -> Unit,
         private val onEventActionClick: () -> Unit,
         private val onEventSubeventsClick: () -> Unit
-) : Item(event.id.toLong()) {
+) : Item(event.id?.toLong()?: 0) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvEventName.text = event.name
             ivLogo.apply {
                 clipToOutline = true
-                Picasso.get().load(event.backgroundImage.let { if (it.isNullOrBlank()) null else it })
+                Picasso.get().load(event.image?.uri.let { if (it.isNullOrBlank()) null else it }/*event.backgroundImage.let { if (it.isNullOrBlank()) null else it }*/)
                         .into(this)
             }
 
             tvImageName.apply {
                 text = event.name
                 clipToOutline = true
-                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(event.backgroundColor.parseColor()
+                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(event.backgroundColor?.value.parseColor()
                         ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
             btnSubevents.apply {
-                isVisible = event.activities?.any { it.isInFavorites } ?: false
+                //isVisible = event.activities?.any { it.isInFavorites } ?: false
                 setOnClickListener(onEventSubeventsClick)
             }
             userSubscribeButton.apply {
-                setAction(this, event.isInFavorites)
+                setAction(this, event.binds?.userFavorite != null)
                 setOnClickListener(onEventActionClick)
             }
 

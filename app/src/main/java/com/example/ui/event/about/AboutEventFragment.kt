@@ -92,7 +92,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             // do nothing
         }
 
-        override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) {
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
             // do nothing
         }
 
@@ -147,82 +147,82 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun setEventData(
-            /*eventData: EventNew,
+            eventData: EventNew?,
             userRegistration: Event.RegistrationStatus?,
             pages: List<PageModel>?,
             partners: List<PartnerModel>?,
             showContacts: Boolean,
-            userAgreement: String?*/
-            eventData: EventData,
+            userAgreement: String?
+            /*eventData: EventData?,
             userRegistration: Event.RegistrationStatus?,
             pages: List<EventPage>,
             partners: List<EventParther>,
             showContacts: Boolean,
-            userAgreement: String?
+            userAgreement: String?*/
     ) {
-        /*val aboutItem = EventDataAboutItem(
-                -(eventData.id?.toLong()?: 0),
-                "eventData.binds?.organization?.name",
-                eventData.name,
-                null,
-                eventData.holdingDate?.from.formatToEventDatesIntervalNew(eventData.holdingDate?.to),
-                eventData.requestsApply?.dateLimit
-                        ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
-                eventData.binds?.userFavorite != null,
-                { presenter.onChangeFavoriteClick() },
-                { eventData.organization?.let { presenter.onOrganizationClick(it.toString()) } }
-        ).apply {
-            this@AboutEventFragment.aboutItem = this
-        }*/
         val aboutItem = EventDataAboutItem(
-                -eventData.id.toLong(),
-                eventData.organization?.name,
-                eventData.name,
+                -(eventData?.id?.toLong()?: 0),
+                "eventData.binds?.organization?.name",
+                eventData?.name,
                 null,
-                eventData.conferenceStart.formatToEventDatesIntervalNew(eventData.conferenceFinish),
-                eventData.conferenceRegistrationFinishDate
+                eventData?.holdingDate?.from.formatToEventDatesIntervalNew(eventData?.holdingDate?.to),
+                eventData?.requestsApply?.dateLimit
                         ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
-                eventData.isFavorite ?: false,
+                eventData?.binds?.userFavorite != null,
                 { presenter.onChangeFavoriteClick() },
-                { eventData.organizationId?.let { presenter.onOrganizationClick(it) } }
+                { eventData?.organization?.let { presenter.onOrganizationClick(it.toString()) } }
         ).apply {
             this@AboutEventFragment.aboutItem = this
         }
+        /*val aboutItem = EventDataAboutItem(
+                -(eventData?.id?.toLong()?:0),
+                eventData?.organization?.name,
+                eventData?.name,
+                null,
+                eventData?.conferenceStart.formatToEventDatesIntervalNew(eventData?.conferenceFinish),
+                eventData?.conferenceRegistrationFinishDate
+                        ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothFullYear),
+                eventData?.isFavorite ?: false,
+                { presenter.onChangeFavoriteClick() },
+                { eventData?.organizationId?.let { presenter.onOrganizationClick(it) } }
+        ).apply {
+            this@AboutEventFragment.aboutItem = this
+        }*/
 
         groupAdapter.update(listOf(
                 EventGroup(
-                        eventData.id,
-                        if (eventData.status == Event.Status.CONFERENCE_ENDS) Event.Status.CONFERENCE_ENDS else null,
+                        /*eventData?.id?: "0",
+                        if (eventData?.status == Event.Status.CONFERENCE_ENDS) Event.Status.CONFERENCE_ENDS else null,
                         userRegistration,
-                        eventData.backgroundColor,
-                        eventData.backgroundImage,
-                        eventData.takeFormat(),
+                        eventData?.backgroundColor,
+                        eventData?.backgroundImage,
+                        eventData?.takeFormat(),
                         null,
-                        !eventData.canRegister,
+                        !(eventData?.canRegister?: false),
                         eventClickListener,
                         aboutItem,
-                        eventData.userAgreement,
-                        false
-                        /*eventData.id.toString(),
-                        if (eventData.status?.value == Event.Status.FINISHED) Event.Status.FINISHED else null,
-                        userRegistration,
-                        eventData.binds?.organization?.backgroundColor?.value,
-                        eventData.binds?.organization?.logo?.uri,
-                        EventFormat(name = if (eventData.format?.name.isNullOrEmpty()) eventData.format?.custom?: "" else eventData.format?.name?: ""),
-                        null,
-                        !eventData.binds?.rights?.registration!!,
-                        eventClickListener,
-                        aboutItem,
-                        eventData.userAgreement?.name,
+                        eventData?.userAgreement,
                         false*/
+                        eventData?.id.toString(),
+                        if (eventData?.status?.value == Event.Status.FINISHED) Event.Status.FINISHED else null,
+                        userRegistration,
+                        eventData?.binds?.organization?.backgroundColor?.value,
+                        eventData?.binds?.organization?.logo?.uri,
+                        EventFormat(name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom?: "" else eventData?.format?.name?: ""),
+                        null,
+                        !eventData?.binds?.rights?.registration!!,
+                        eventClickListener,
+                        aboutItem,
+                        eventData?.userAgreement?.name,
+                        false
                 ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 
-                    val hasRating = (/*eventData.status?.value*/eventData.status == Event.Status.FINISHED ||
-                            eventData.status == Event.Status.IN_ARCHIVE) &&
-                            eventData.ratingStartAt != null &&
+                    val hasRating = (eventData.status?.value/*eventData?.status*/ == Event.Status.FINISHED ||
+                            eventData.status?.value/*eventData?.status*/ == Event.Status.IN_ARCHIVE) &&
+                            //eventData.ratingStartAt != null &&
                             userRegistration == Event.RegistrationStatus.APPROVED
 
                     val hasPages = pages?.isNotEmpty()
@@ -251,7 +251,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     }
 
                     addAll(pages?.mapIndexed { index, item ->
-                        EventPageItem(item.id?: 0, /*item.name?: ""*/ item.menu) { presenter.onPageClick(item) }.apply {
+                        EventPageItem(item.id?: 0, item.name?: "" /*item.menu*/) { presenter.onPageClick(item) }.apply {
                             hasBottomPadding = index == pages.size - 1
                         }
                     }?: arrayListOf())
@@ -260,22 +260,22 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 Section().apply {
                     setHeader(PartnersTitleItem(-50))
                     setHideWhenEmpty(true)
-                    addAll(partners?.map { EventPartnerItem(it.id?: 0, /*it.logo?.uri*/it.logo, it.name) { presenter.onPartnerClick(it) } }?: arrayListOf())
+                    addAll(partners?.map { EventPartnerItem(it.id?: 0, it.logo?.uri/*it.logo*/, it.name) { presenter.onPartnerClick(it) } }?: arrayListOf())
                 }
         ))
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun setActionButton(event: /*EventNew*/EventData, userRegistration: Event.RegistrationStatus?) {
+    override fun setActionButton(event: EventNew/*EventData*/?, userRegistration: Event.RegistrationStatus?) {
         var textRes: Int? = null
         var clickAction: (() -> Unit)? = null
         var visibility = true
 
         when {
-            /*event.status?.value*/event.status == Event.Status.FINISHED -> {
+            event?.status?.value/*event?.status*/ == Event.Status.FINISHED -> {
                 visibility = false
             }
-            /*!event.binds?.rights?.registration!!*/!event.canRegister -> {
+            !event?.binds?.rights?.registration!!/*!(event?.canRegister?: false)*/ -> {
                 when (userRegistration) {
                     Event.RegistrationStatus.APPROVED -> {
                         textRes = R.string.event_action_show_event
@@ -301,14 +301,14 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         clickAction = { presenter.onActionCancel() }
                     }
                     Event.RegistrationStatus.DECLINED -> {
-                        visibility = event.email.isNullOrEmpty().not()
+                        visibility = event?.email.isNullOrEmpty().not()
                         textRes = R.string.event_action_write_to_organisation
                         clickAction = { presenter.onActionWriteToOrganization() }
                     }
                     else -> {
                         textRes = R.string.event_action_participate
                         clickAction = {
-                            val agreement = event.userAgreement//event.userAgreement?.name
+                            val agreement = /*event?.userAgreement*/event.userAgreement?.name
                             if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || agreement.isNullOrEmpty()) {
                                 presenter.onGoToEventClick()
                             } else {
@@ -420,7 +420,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 }
     }
 
-    override fun showWriteToOrganizationEmails(emails: List</*EventPhoneModel*/EmailAffiliation>) {
+    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
         AlertDialog.Builder(requireContext())
                 .setItems(
                         emails.map { it.getAffiliationString(underlinedEmail = true) }
@@ -434,10 +434,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 .show()
     }
 
-    override fun showWriteToOrganization(email: /*EventPhoneModel*/EmailAffiliation) {
+    override fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(/*email.value*/email.email))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value/*email.email*/))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
@@ -480,7 +480,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showContacts(
-            /*eventName: String,
+            eventName: String,
             phones: List<EventPhoneModel>,
             emails: List<EventPhoneModel>,
             webLinks: List<String>?,
@@ -488,8 +488,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             address: String?,
             place: String?,
             mapInfo: MapInfo?,
-            places: List<Place>?*/
-            eventName: String,
+            places: List<Place>?
+            /*eventName: String,
             phones: List<PhoneAffiliation>,
             emails: List<EmailAffiliation>,
             webLinks: List<String>?,
@@ -497,18 +497,9 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             address: String?,
             place: String?,
             mapInfo: MapInfo?,
-            places: List<Place>?
+            places: List<Place>?*/
     ) {
         findNavController().navigate(R.id.contacts_fragment, EventContactsFragmentArgs.Builder(
-                eventName,
-                phones.toTypedArray(),
-                emails.toTypedArray(),
-                webLinks?.toTypedArray()?: arrayOf(),
-                socialLinks?.toTypedArray()?: arrayOf(),
-                address,
-                place,
-                mapInfo,
-                places?.toTypedArray()
                 /*eventName,
                 phones.toTypedArray(),
                 emails.toTypedArray(),
@@ -518,6 +509,15 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 place,
                 mapInfo,
                 places?.toTypedArray()*/
+                eventName,
+                phones.toTypedArray(),
+                emails.toTypedArray(),
+                webLinks?.toTypedArray()?: arrayOf(),
+                socialLinks?.toTypedArray()?: arrayOf(),
+                address,
+                place,
+                mapInfo,
+                places?.toTypedArray()
         ).build().toBundle())
     }
 

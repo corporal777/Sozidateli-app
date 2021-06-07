@@ -20,7 +20,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, /*OrganizationNew*/Organization, SearchFilter./*OrganizationNew*/Organization>(), SearchOrganizationContract.View {
+class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/>(), SearchOrganizationContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchOrganizationPresenter
@@ -31,16 +31,16 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, /
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
-    override fun showOrganization(organization: /*OrganizationNew*/Organization) {
+    override fun showOrganization(organization: OrganizationNew/*Organization*/) {
         findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id.toString()))
     }
 
-    override fun changeSubscription(organization: /*OrganizationNew*/Organization) {
-        val idLong = organization.id.toLong()
+    override fun changeSubscription(organization: OrganizationNew/*Organization*/) {
+        val idLong = organization.id?.toLong()
         adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
     }
 
-    override fun createItem(itemData: /*OrganizationNew*/Organization?): Group {
+    override fun createItem(itemData: OrganizationNew/*Organization*/?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else OrganizationItem(
                 itemData,
@@ -50,7 +50,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, /
     }
 
     @SuppressLint("InflateParams")
-    override fun createFilterView(filter: SearchFilter./*OrganizationNew*/Organization): View {
+    override fun createFilterView(filter: SearchFilter.OrganizationNew/*Organization*/): View {
         return layoutInflater.inflate(R.layout.layout_filter_organization, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)

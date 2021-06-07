@@ -56,7 +56,7 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
     }
 
 
-    override fun setData(data: List</*MemberModel*/Speaker>) {
+    override fun setData(data: List<MemberModel/*Speaker*/>) {
         groupAdapter.update(data.map { speaker ->
             SpeakerGroup(
                     speaker,
@@ -67,15 +67,15 @@ class EventSpeakersFragment : BaseFragment(), EventSpeakersContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun updateSpeaker(speaker: /*MemberModel*/Speaker) {
-        val idLong = /*speaker.user?.toLong()*/speaker.uid.toLong()
+    override fun updateSpeaker(speaker: MemberModel/*Speaker*/) {
+        val idLong = speaker.user?.toLong()/*speaker.uid.toLong()*/
         groupAdapter.findItemBy { item: UserItem -> item.id == idLong }?.apply {
             //Speaker
             //notifyChanged(speaker.user.getUserSubscribeAction())
         }
     }
 
-    override fun showSpeaker(speaker: /*MemberModel*/Speaker) {
+    override fun showSpeaker(speaker: MemberModel/*Speaker*/) {
         findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.user.toString()).build().toBundle())
     }
 

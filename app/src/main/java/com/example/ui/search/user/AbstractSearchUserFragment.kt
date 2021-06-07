@@ -18,8 +18,8 @@ import onTextChanged
 abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : SearchFragment<P, User, SearchFilter.User>(), SearchUserContract.View {
 
     override fun createItem(itemData: User?): Group {
-        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
-        else UserItem(
+        return /*if (itemData == null)*/ PlaceholderItem(PlaceholderItem.Type.USER)
+        /*else UserItem(
                 itemData.user_id,
                 itemData.fullName,
                 itemData.user_city,
@@ -27,7 +27,7 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 { presenter.onUserClick(itemData) },
                 itemData.getUserSubscribeAction(),
                 { presenter.onUserActionCLick(itemData) }
-        )
+        )*/
     }
 
     override fun updateUser(user: User) {

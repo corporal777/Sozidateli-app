@@ -43,7 +43,7 @@ data class EventNew(
         val userAgreement: EventUserAgreement? = null,
         val image: EventUserAgreement? = null,
         val address: NewUserAddress? = null,
-        val binds: EventBindsModel? = null,
+        var binds: EventBindsModel? = null,
         var userRegistration: Event.RegistrationStatus? = null
 ): Parcelable {
 
@@ -387,5 +387,5 @@ data class RequestApplyModel(
         @SerializedName("dateLimit")
         val dateLimit: String? = null,
         @SerializedName("isClosed")
-        val isClosed: Int? = null
+        val isClosed: Boolean? = null
 ): Parcelable

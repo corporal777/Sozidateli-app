@@ -8,6 +8,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationMember
+import com.example.data.models.OrganizationNewMemberModel
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -30,7 +31,7 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
 
     @ProvidePresenter
     fun providePresenter(): OrganizationMembersPresenter = presenterProvider.get().apply {
-        organizationId = OrganizationMembersFragmentArgs.fromBundle(arguments!!).organizationId
+        organizationId = OrganizationMembersFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 
     val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
@@ -53,10 +54,10 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setData(members: List<OrganizationMember>) {
+    override fun setData(members: List</*OrganizationMember*/OrganizationNewMemberModel>) {
         adapter.update(members.mapNotNull {
-            val user = it.user ?: return@mapNotNull null
-            OrganizationUserItem(it.id, user.fullName, user.user_avatar, it.position) { presenter.onMemberClick(it) }
+            val user = it.binds?.user ?: return@mapNotNull null
+            OrganizationUserItem(it.binds.user.id, user.fullName, user.image?.uri, it.position?.value) { presenter.onMemberClick(it) }
         })
         swipeToRefresh.isRefreshing = false
     }

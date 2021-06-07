@@ -164,4 +164,13 @@ interface NewApi {
 
     @GET("v1/user/{id}/password/check")
     fun checkPassword(@Path("id") id : Int, @Query("password") password: String): Completable
+
+    @GET("v1/user-favorites")
+    fun getFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<FavoriteModel>>>
+
+    @GET("v1/user-favorites")
+    fun getEventFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<EventFavoriteModel>>>
+
+    @GET("v1/organization-member")
+    fun getOrganizationMembers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationNewMemberModel>>>
 }

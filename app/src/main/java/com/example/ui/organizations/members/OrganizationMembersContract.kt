@@ -4,13 +4,14 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.OrganizationMember
+import com.example.data.models.OrganizationNewMemberModel
 import com.example.ui.base.BaseContract
 import com.example.util.pagination.PaginationListGroupAdapter
 
 interface OrganizationMembersContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(members: List<OrganizationMember>)
+        fun setData(members: List</*OrganizationMember*/OrganizationNewMemberModel>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
@@ -20,7 +21,7 @@ interface OrganizationMembersContract {
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onMemberClick(member: OrganizationMember)
+        fun onMemberClick(member: /*OrganizationMember*/OrganizationNewMemberModel)
         fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()
     }

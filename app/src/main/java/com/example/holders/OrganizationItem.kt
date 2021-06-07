@@ -16,14 +16,14 @@ import kotlinx.android.synthetic.main.item_organization.*
 import parseColor
 
 class OrganizationItem(
-        private val organization: /*OrganizationNew*/Organization,
+        private val organization: OrganizationNew/*Organization*/,
         private val onOrganizationClick: () -> Unit,
         private val onSubscribeClick: (() -> Unit)? = null
-) : Item(organization.id.toLong()) {
+) : Item(organization.id?.toLong()?: 0) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvOrganizationName.text = organization.name
+            /*tvOrganizationName.text = organization.name
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
@@ -45,8 +45,8 @@ class OrganizationItem(
             ivOrganizationImage.apply {
                 clipToOutline = true
                 Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it }).into(this)
-            }
-            /*tvOrganizationName.text = organization.legalInformation?.name?.short
+            }*/
+            tvOrganizationName.text = organization.legalInformation?.name?.short
             itemView.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
@@ -70,7 +70,7 @@ class OrganizationItem(
             ivOrganizationImage.apply {
                 clipToOutline = true
                 Picasso.get().load(organization.logo.let { if (it?.uri.isNullOrBlank()) null else it?.uri }).into(this)
-            }*/
+            }
         }
     }
 

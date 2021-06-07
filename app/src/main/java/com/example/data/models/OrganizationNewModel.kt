@@ -38,7 +38,7 @@ data class OrganizationNew(
     @SerializedName("isSpecial")
     val isSpecial: Boolean? = null,
     //val state: Any? = null,
-    val binds: OrganizationBindsModel? = null
+    var binds: OrganizationBindsModel? = null
 ): Parcelable {
 
     companion object {

@@ -170,7 +170,7 @@ class ProfileDataWorkEditItem(
 
     private fun isOrganizationValid(): Boolean {
         return (mOrganization?.length?: 0) >= 9
-        //!mOrganization.isNullOrBlank()
+        //!mwOrganization.isNullOrBlank()
     }
     private fun isPositionValid(): Boolean {
         return (mPosition?.length?: 0) >= 4

@@ -4,11 +4,8 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.models.EventUserFavorite
-import com.example.data.models.Organization
+import com.example.data.models.*
 import com.example.data.models.Organization.Companion.FIELD_IS_IN_FAVORITE
-import com.example.data.models.OrganizationNew
-import com.example.data.models.OrganizationsFilter
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -33,16 +30,30 @@ class OrganizationsPresenter
     lateinit var filter: OrganizationsFilter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getOrganizations(limit, offset, getFilterData())
-        /*organizationRepository.searchOrganizations(
-                mutableMapOf<String, Any>().apply {
-                    put(OrganizationNew.ORGANIZATION_LIMIT, limit)
-                    put(OrganizationNew.ORGANIZATION_OFFSET, offset)
-                    put(OrganizationNew.ORGANIZATION_BINDS, "userFavorite")
-                }
-        )*/
-    }
-            .buildList(enablePlaceholders = true)
+        //organizationRepository.getOrganizations(limit, offset, getFilterData())
+        when (filter) {
+            OrganizationsFilter.FAVORITES, OrganizationsFilter.FAVORITES_NO_TITLE -> {
+                organizationRepository.getFavoriteOrganization(
+                        mutableMapOf<String, Any>().apply {
+                            put(FavoriteModel.ORGANIZATION_FAVORITE_LIMIT, limit)
+                            put(FavoriteModel.ORGANIZATION_FAVORITE_OFFSET, offset)
+                            put(FavoriteModel.ORGANIZATION_FAVORITE_TYPE, FavoriteModel.ORGANIZATION_TYPE)
+                            put(FavoriteModel.ORGANIZATION_FAVORITE_LOAD_MODEL, true)
+                            put(FavoriteModel.ORGANIZATION_FAVORITE_USER, appData.getId())
+                        }
+                )
+            }
+            OrganizationsFilter.NONE -> {
+                organizationRepository.searchOrganizations(
+                        mutableMapOf<String, Any>().apply {
+                            put(OrganizationNew.ORGANIZATION_LIMIT, limit)
+                            put(OrganizationNew.ORGANIZATION_OFFSET, offset)
+                            put(OrganizationNew.ORGANIZATION_BINDS, "userFavorite")
+                        }
+                )
+            }
+        }
+    }.buildList(enablePlaceholders = true)
 
     private var firstLaunch = true
 
@@ -87,25 +98,26 @@ class OrganizationsPresenter
         else pagination.invalidate()
     }
 
-    override fun onOrganizationClick(organization: /*OrganizationNew*/Organization) {
+    override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
         viewState.showOrganization(organization)
     }
 
-    override fun onRemoveFromFavoriteClick(organization: /*OrganizationNew*/Organization) {
-        val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
+    override fun onRemoveFromFavoriteClick(organization: OrganizationNew/*Organization*/) {
+        /*val request = if (organization.isSubscribed == true) organizationRepository.unsubscribe(organization.id)
         else organizationRepository.subscribe(organization.id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribeSimple { pagination.invalidate() }
-        /*val isSubscribed = organization.binds?.userFavorite != null
+                .subscribeSimple { pagination.invalidate() }*/
+        val isSubscribed = organization.binds?.userFavorite != null
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
                         organization.binds?.userFavorite = null
-                        pagination.invalidate()
+                        viewState.changeSubscription(organization)
+                        //pagination.invalidate()
                     }
         } else {
             compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_ORGANIZATION, organization.id?.toInt())))
@@ -113,9 +125,10 @@ class OrganizationsPresenter
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
                         organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                        pagination.invalidate()
+                        viewState.changeSubscription(organization)
+                        //pagination.invalidate()
                     }
-        }*/
+        }
     }
 
     override fun onItemTake(position: Int) {

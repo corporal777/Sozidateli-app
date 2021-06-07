@@ -131,7 +131,7 @@ class PasswordCustomView: FrameLayout {
         var isValid = true
         var usedUnacceptableSymbols = false
         var levelCounter = 3
-        var errors = mutableListOf<String>()
+        val errors = mutableListOf<String>()
         if ((password?.length?: 0) >= PASSWORD_MIN_LENGTH) levelCounter -= 1
         else {
             isValid = false
@@ -169,7 +169,7 @@ class PasswordCustomView: FrameLayout {
                 third.setBackgroundResource(R.drawable.password_gray)
                 tvResult.text = resources.getString(R.string.password_invalid)
                 tvErrors.text = errors.joinToString(";\n", postfix = ".")
-            } else if (isValid && etPasswordConfirm.text.toString().isEmpty()) {
+            } else if (isValid && etPasswordConfirm.text.toString().isEmpty() && (etPassword.text?.length?: 0) < 9) {
                 first.setBackgroundResource(R.drawable.password_yellow)
                 second.setBackgroundResource(R.drawable.password_yellow)
                 third.setBackgroundResource(R.drawable.password_gray)

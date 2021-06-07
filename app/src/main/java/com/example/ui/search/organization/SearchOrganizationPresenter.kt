@@ -30,11 +30,11 @@ class SearchOrganizationPresenter
         private val appData: AppData,
         private val organizationRepository: OrganizationRepository,
         private val eventRepository: EventRepository
-) : SearchPresenter<SearchOrganizationContract.View, /*OrganizationNew*/Organization, SearchFilter./*OrganizationNew*/Organization>(), SearchOrganizationContract.Presenter {
+) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/>(), SearchOrganizationContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getOrganizations(limit, offset, buildFilter())
-        /*organizationRepository.searchOrganizations(
+        //organizationRepository.getOrganizations(limit, offset, buildFilter())
+        organizationRepository.searchOrganizations(
                 mutableMapOf<String, Any>().apply {
                     put(ORGANIZATION_LIMIT, limit)
                     put(ORGANIZATION_OFFSET, offset)
@@ -47,15 +47,15 @@ class SearchOrganizationPresenter
                     val address = filter.address
                     if (!address.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_STREET, address)
                 }
-        )*/
+        )
     }
 
-    override fun onOrganizationClick(organization: /*OrganizationNew*/Organization) {
+    override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
         viewState.showOrganization(organization)
     }
 
-    override fun onOrganizationSubscriptionClick(organization: /*OrganizationNew*/Organization) {
-        val isSubscribed = organization.isSubscribed ?: false
+    override fun onOrganizationSubscriptionClick(organization: OrganizationNew/*Organization*/) {
+        /*val isSubscribed = organization.isSubscribed ?: false
         val request = if (isSubscribed) organizationRepository.unsubscribe(organization.id)
         else organizationRepository.subscribe(organization.id)
 
@@ -64,8 +64,8 @@ class SearchOrganizationPresenter
                 .subscribeSimple {
                     organization.isSubscribed = !isSubscribed
                     viewState.changeSubscription(organization)
-                }
-        /*val isSubscribed = organization.binds?.userFavorite != null
+                }*/
+        val isSubscribed = organization.binds?.userFavorite != null
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
                     .performOnBackgroundOutOnMain()
@@ -82,7 +82,7 @@ class SearchOrganizationPresenter
                         organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                         viewState.changeSubscription(organization)
                     }
-        }*/
+        }
     }
 
     private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
@@ -99,8 +99,8 @@ class SearchOrganizationPresenter
         if (subscription != null) put(FILTER_SUBSCRIPTION, subscription)
     }
 
-    override fun createFilter() = SearchFilter./*OrganizationNew*/Organization()
-    override fun copyFilter(filter: SearchFilter./*OrganizationNew*/Organization) = filter.copy()
+    override fun createFilter() = SearchFilter.OrganizationNew/*Organization*/()
+    override fun copyFilter(filter: SearchFilter.OrganizationNew/*Organization*/) = filter.copy()
 
     companion object {
         private const val FILTER_CONTENT = "content"

@@ -10,8 +10,8 @@ interface EventContactsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(
-                phones: List</*EventPhoneModel*/PhoneAffiliation>,
-                emails: List</*EventPhoneModel*/EmailAffiliation>,
+                phones: List<EventPhoneModel/*PhoneAffiliation*/>,
+                emails: List<EventPhoneModel/*EmailAffiliation*/>,
                 webLinks: List<String>,
                 socialLinks: List<String>,
                 address: String?,

@@ -32,6 +32,7 @@ class OrganizationPresenter
 ) : BasePresenter<OrganizationContract.View>(), OrganizationContract.Presenter {
 
     lateinit var organizationId: String
+    lateinit var organization: OrganizationNew
     private var scroll = 0
 
     override fun onFirstViewAttach() {
@@ -40,7 +41,7 @@ class OrganizationPresenter
     }
 
     private fun loadData(withLoadingPlaceholder: Boolean) {
-        compositeDisposable += organizationRepository.getOrganizationById(organizationId)
+        /*compositeDisposable += organizationRepository.getOrganizationById(organizationId)
                 .performOnBackgroundOutOnMain()
                 .flatMap {
                     Maybe.zip(it.organization.logo.loadBitmap(), it.organization.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
@@ -68,8 +69,8 @@ class OrganizationPresenter
                     viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
                 }, {
                     it.printStackTrace()
-                })
-        /*compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
+                })*/
+        compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
                 .performOnBackgroundOutOnMain()
                 .flatMap {
                     Maybe.zip(it.logo?.uri.loadBitmap(), it.image?.uri.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
@@ -87,6 +88,7 @@ class OrganizationPresenter
                     organizationData.binds?.member?.forEach { member ->
                         //member.user?.isCurrentUser = member.user == uid
                     }
+                    organization = organizationData
                     viewState.setOrganization(
                             it.logo,
                             it.background,
@@ -98,7 +100,7 @@ class OrganizationPresenter
                     viewState.setSubscribed(organizationData.binds?.userFavorite != null)
                 }, {
                     it.printStackTrace()
-                })*/
+                })
     }
 
     override fun attachView(view: OrganizationContract.View?) {
@@ -123,38 +125,52 @@ class OrganizationPresenter
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += organizationRepository.subscribe(organizationId)
+        compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_ORGANIZATION, organizationId.toInt())))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                    viewState.setSubscribed(true)
+                }
+        /*compositeDisposable += organizationRepository.subscribe(organizationId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.setSubscribed(true)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     override fun onUnsubscribeClick() {
-        compositeDisposable += organizationRepository.unsubscribe(organizationId)
+        compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    organization.binds?.userFavorite = null
+                    viewState.setSubscribed(false)
+                }
+        /*compositeDisposable += organizationRepository.unsubscribe(organizationId)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.setSubscribed(false)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     override fun onShowMoreUsersClick() {
         viewState.showUsers(organizationId)
     }
 
-    override fun onUserClick(user: /*UserDetail*/User) {
-        viewState.showUser(/*user.id.toString()*/user.user_id.toString())
+    override fun onUserClick(user: UserDetail/*User*/) {
+        viewState.showUser(user.id.toString()/*user.user_id.toString()*/)
     }
 
-    override fun onUserActionCLick(user:/* UserDetail*/User) {
-        val id = user.user_id.toString()/*user.id.toString()*/
-        val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
+    override fun onUserActionCLick(user: UserDetail/*User*/) {
+        val id = /*user.user_id.toString()*/user.id.toString()
+        /*val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
         else userRepository.addToFavorite(id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
@@ -162,22 +178,11 @@ class OrganizationPresenter
                 .subscribeSimple {
                     user.is_in_favorite = !user.is_in_favorite
                     viewState.updateUser(user)
-                }
+                }*/
     }
 
     override fun onActionRegister(event: String) {
-        compositeDisposable += eventRepository.eventRegisterCheck(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            checkRegistrationFields(event, emptyList())
-                        },
-                        onSuccess = {
-                            checkRegistrationFields(event, it)
-                        }
-                )
-        /*compositeDisposable += eventRepository.checkUserProfile()
+        /*compositeDisposable += eventRepository.eventRegisterCheck(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -188,11 +193,22 @@ class OrganizationPresenter
                             checkRegistrationFields(event, it)
                         }
                 )*/
+        compositeDisposable += eventRepository.checkUserProfile()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(event, emptyList())
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(event, it)
+                        }
+                )
     }
 
-    private fun checkRegistrationFields(event: String, fields: List</*UserProfileFields*/EventRegisterCheckField>) {
-        //val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
-        val filtered = fields.mapNotNull { it.title }
+    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {
+        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        //val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
             viewState.showEventRequest(event)
         } else {
@@ -211,28 +227,28 @@ class OrganizationPresenter
                 .subscribeSimple { loadData(false) }
     }
 
-    override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) {
+    override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/) {
         viewState.showWriteToOrganization(email)
     }
 
     override fun onActionShowEvent(event: String) {
-        /*compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }*/
-        compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }
+        /*compositeDisposable += eventRepository.setDefaultEvent(event)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }*/
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
@@ -244,7 +260,7 @@ class OrganizationPresenter
     }
 
     private class OrganizationDataAndImages(
-            val data: /*OrganizationNew*/OrganizationData,
+            val data: OrganizationNew/*OrganizationData*/,
             val logo: Bitmap?,
             val background: Bitmap?
     )

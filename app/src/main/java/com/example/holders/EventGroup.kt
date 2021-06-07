@@ -15,7 +15,7 @@ class EventGroup(
         backgroundColor: String?,
         logo: String?,
         format: EventFormat?,
-        organizationEmails: List</*EventPhoneModel*/EmailAffiliation>?,
+        organizationEmails: List<EventPhoneModel/*EmailAffiliation*/>?,
         conferenceRegistrationClosed: Boolean,
         eventClickListener: EventStatusItem.OnEventClickListener,
         private val dataItem: Item,

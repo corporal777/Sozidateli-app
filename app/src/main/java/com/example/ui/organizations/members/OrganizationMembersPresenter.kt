@@ -1,7 +1,9 @@
 package com.example.ui.organizations.members
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationMember
+import com.example.data.models.OrganizationNewMemberModel
 import com.example.extensions.buildList
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
@@ -23,9 +25,20 @@ class OrganizationMembersPresenter
     private var scrollPosition = 0
     private var scrollOffset = 0
 
+    //OrganizationMember
+
     val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getMembers(limit, offset, organizationId)
+        organizationRepository.getOrganizationMembers(
+                mutableMapOf<String, Any>().apply {
+                    put(OrganizationMember.MEMBERS_LIMIT, limit)
+                    put(OrganizationMember.MEMBERS_OFFSET, offset)
+                    put(OrganizationMember.MEMBERS_BINDS, "user")
+                    put(OrganizationMember.MEMBERS_ORGANIZATION, organizationId)
+                })
     }.buildList()
+    /*val pagination = PaginationDataSourceFactory { limit, offset ->
+        organizationRepository.getMembers(limit, offset, organizationId)
+    }.buildList()*/
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -39,8 +52,8 @@ class OrganizationMembersPresenter
                 })
     }
 
-    override fun onMemberClick(member: OrganizationMember) {
-        viewState.showUser(member.user?.user_id.toString())
+    override fun onMemberClick(member: /*OrganizationMember*/OrganizationNewMemberModel) {
+        viewState.showUser(member.user?.toString()?: "")
     }
 
     override fun onScrollChange(position: Int, offset: Int) {

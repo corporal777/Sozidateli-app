@@ -3,7 +3,7 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class EventInfo(
-        /*val event: EventNew,
+        val event: EventNew,
         /*@SerializedName("place")
         val places: List<Place>,*/
         val partners: List<PartnerModel>,
@@ -13,8 +13,8 @@ data class EventInfo(
         @SerializedName("value")
         val ratingValue: Int?,
         @SerializedName("fields")
-        val responseFields: List<EventFormModel?>?*/
-        val event: EventData,
+        val responseFields: List<EventFormModel?>?
+        /*val event: EventData,
         @SerializedName("place")
         val places: List<Place>,
         val partners: List<EventParther>,
@@ -24,5 +24,5 @@ data class EventInfo(
         @SerializedName("value")
         val ratingValue: Int?,
         @SerializedName("fields")
-        val responseFields: List<EventRegisterResponseField?>?
+        val responseFields: List<EventRegisterResponseField?>?*/
 )

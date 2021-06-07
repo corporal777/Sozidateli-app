@@ -1,15 +1,13 @@
 package com.example.repository
 
-import com.example.data.models.Agreement
-import com.example.data.models.EventFormat
-import com.example.data.models.Interest
+import com.example.data.models.*
 import io.reactivex.Maybe
 
 interface CommonRepository {
 
-    fun getInterests(): Maybe<List<Interest>>
+    fun getInterests(): Maybe<List<Interest/*InterestNew*/>>
 
     fun getAgreement(): Maybe<Agreement>
 
-    fun getEventFormats(): Maybe<List<EventFormat>>
+    fun getEventFormats(): Maybe<List<EventFormat/*NewEventFormat*/>>
 }

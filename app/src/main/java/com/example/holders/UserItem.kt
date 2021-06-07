@@ -10,6 +10,13 @@ import kotlinx.android.synthetic.main.item_user.*
 import setCircleImage
 
 class UserItem(
+        /*private val id: Int,
+        private val name: String,
+        private val description: String?,
+        private val avatar: String?,
+        private val onUserClick: () -> Unit,
+        var action: UserSubscribeButton.Action? = null,
+        private val onActionClick: (() -> Unit)? = null*/
         private val id: Int,
         private val name: String,
         private val description: String?,
@@ -17,13 +24,6 @@ class UserItem(
         private val onUserClick: () -> Unit,
         var action: UserSubscribeButton.Action? = null,
         private val onActionClick: (() -> Unit)? = null
-        /*private val id: Int,
-        private val name: String,
-        private val description: String?,
-        private val avatar: String?,
-        private val onUserClick: () -> Unit,
-        //var action: UserSubscribeButton.Action? = null,
-        private val onActionClick: (() -> Unit)? = null*/
 ) : Item(id.toLong()) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {

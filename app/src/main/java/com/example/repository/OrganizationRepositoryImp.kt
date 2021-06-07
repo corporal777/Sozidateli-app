@@ -38,6 +38,13 @@ class OrganizationRepositoryImp
         return callPagination(api.organizationMembers(orgId, limit, offset))
     }
 
+    override fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNewMemberModel>> {
+        return newApi.getOrganizationMembers(map)
+                .map {
+                    PaginationResponse(it.totalCount, it.data)
+                }
+    }
+
     override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
         return newApi.searchOrganizations(map)
                 .map {
@@ -47,5 +54,15 @@ class OrganizationRepositoryImp
 
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
         return newApi.getOrganizationDetails(organizationId, "rights,leader,member,user,userFavorite")
+    }
+
+    override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+        return newApi.getFavoritesList(map)
+                .map {
+                    it.data.forEach { org ->
+                        org.entity?.model?.binds = OrganizationBindsModel(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
+                    }
+                    PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                }
     }
 }

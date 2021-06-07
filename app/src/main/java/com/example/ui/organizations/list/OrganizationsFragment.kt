@@ -9,6 +9,7 @@ import com.example.R
 import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
+import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -75,7 +76,12 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         ))
     }
 
-    override fun setOrganizations(organizations: List</*OrganizationNew*/Organization?>) {
+    override fun changeSubscription(organization: OrganizationNew/*Organization*/) {
+        val idLong = organization.id?.toLong()
+        adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
+    }
+
+    override fun setOrganizations(organizations: List<OrganizationNew/*Organization*/?>) {
         organizationSection.update(organizations.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
             else OrganizationItem(
@@ -100,7 +106,7 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showOrganization(organization: /*OrganizationNew*/Organization) {
+    override fun showOrganization(organization: OrganizationNew/*Organization*/) {
         findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle())
     }
 

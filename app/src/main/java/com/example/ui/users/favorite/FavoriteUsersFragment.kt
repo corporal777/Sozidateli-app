@@ -54,8 +54,8 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                     getString(R.string.user_favorites_empty_list_description))))
         } else {
             adapter.update(data.map {
-                if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
-                else UserItem(
+                /*if (it == null)*/ PlaceholderItem(PlaceholderItem.Type.USER)
+                /*else UserItem(
                         it.user_id,
                         it.fullName,
                         it.user_city,
@@ -63,7 +63,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                         { presenter.onUserClick(it) },
                         it.getUserSubscribeAction(),
                         { presenter.onUserRemoveFromFavoritesClick(it) }
-                )
+                )*/
             })
         }
 

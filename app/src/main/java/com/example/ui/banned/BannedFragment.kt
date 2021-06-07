@@ -60,6 +60,13 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             adapter.update(userChats.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
+                        /*it.id,
+                        it.user.fullName,
+                        it.user.user_city,
+                        it.user.user_avatar,
+                        { presenter.onUserClick(it) },
+                        UserSubscribeButton.Action.UNBLOCK,
+                        { presenter.onUnblockLick(it) }*/
                         it.id,
                         it.user.fullName,
                         it.user.user_city,
@@ -67,13 +74,6 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
                         { presenter.onUserClick(it) },
                         UserSubscribeButton.Action.UNBLOCK,
                         { presenter.onUnblockLick(it) }
-                        /*it.id,
-                        it.user.fullName,
-                        it.user.user_city,
-                        it.user.user_avatar,
-                        { presenter.onUserClick(it) },
-                        //UserSubscribeButton.Action.UNBLOCK,
-                        { presenter.onUnblockLick(it) }*/
                 )
             })
         }

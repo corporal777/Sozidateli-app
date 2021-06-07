@@ -41,7 +41,7 @@ class EventStatusItem(
         private val backgroundColor: String?,
         private val logo: String?,
         private val format: EventFormat?,
-        private val organizationEmails: List</*EventPhoneModel*/EmailAffiliation>?,
+        private val organizationEmails: List<EventPhoneModel/*EmailAffiliation*/>?,
         private val conferenceRegistrationClosed: Boolean,
         private val onEventClickListener: OnEventClickListener,
         private val userAgreement: String?,
@@ -258,7 +258,7 @@ class EventStatusItem(
         fun onActionRegister(event: String)
         fun onActionShowEvent(event: String)
         fun onActionCancel(event: String)
-        fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>)
+        fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
         fun onShowEventClick(view: View, event: String)
         fun onShowFilterClick(format: Int)
     }

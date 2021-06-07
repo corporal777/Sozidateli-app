@@ -18,7 +18,7 @@ interface OrganizationsContract {
         fun setFavoritesHeader()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setOrganizations(organizations: List</*OrganizationNew*/Organization?>)
+        fun setOrganizations(organizations: List<OrganizationNew/*Organization*/?>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showNoFilterEmptyListPlaceholder()
@@ -27,15 +27,18 @@ interface OrganizationsContract {
         fun showFavoritesEmptyListPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showOrganization(organization: /*OrganizationNew*/Organization)
+        fun showOrganization(organization: OrganizationNew/*Organization*/)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFavorites()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun changeSubscription(organization: OrganizationNew/*Organization*/)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onOrganizationClick(organization: /*OrganizationNew*/Organization)
-        fun onRemoveFromFavoriteClick(organization: /*OrganizationNew*/Organization)
+        fun onOrganizationClick(organization: OrganizationNew/*Organization*/)
+        fun onRemoveFromFavoriteClick(organization: OrganizationNew/*Organization*/)
         fun onRefreshRequest()
         fun onFavoritesClick()
     }

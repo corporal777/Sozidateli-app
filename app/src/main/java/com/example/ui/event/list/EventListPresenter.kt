@@ -32,14 +32,14 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private val pagination: PaginationDataSourceFactory</*EventNew*/Event?> = PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList</*EventNew*/Event?>
+    private val pagination: PaginationDataSourceFactory<EventNew/*Event*/?> = PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<EventNew/*Event*/?>
 
     private var isFirstAttach = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(List(20) { null })
+        /*viewState.setData(List(20) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -60,8 +60,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
                         hasNoConnectionError = false
                         paginationList.invalidate()
                     }
-                }
-        /*viewState.setData(List(20) { null })
+                }*/
+        viewState.setData(List(20) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -96,7 +96,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
                         hasNoConnectionError = false
                         paginationList.invalidate()
                     }
-                }*/
+                }
     }
 
     override fun attachView(view: V?) {
@@ -107,18 +107,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionRegister(event: String) {
-        compositeDisposable += eventRepository.eventRegisterCheck(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            checkRegistrationFields(event, emptyList())
-                        },
-                        onSuccess = {
-                            checkRegistrationFields(event, it)
-                        }
-                )
-        /*compositeDisposable += eventRepository.checkUserProfile()
+        /*compositeDisposable += eventRepository.eventRegisterCheck(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -129,11 +118,22 @@ abstract class EventListPresenter<V : EventListContract.View>(
                             checkRegistrationFields(event, it)
                         }
                 )*/
+        compositeDisposable += eventRepository.checkUserProfile()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            checkRegistrationFields(event, emptyList())
+                        },
+                        onSuccess = {
+                            checkRegistrationFields(event, it)
+                        }
+                )
     }
 
-    private fun checkRegistrationFields(event: String, fields: List</*UserProfileFields*/EventRegisterCheckField>) {
-        //val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
-        val filtered = fields.mapNotNull { it.title }
+    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {
+        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        //val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
             viewState.showEventRequest(event)
         } else {
@@ -154,11 +154,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 }
     }
 
-    override fun onActionWriteToOrganization(emails: List</*EventPhoneModel*/EmailAffiliation>) {
+    override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/) {
         viewState.showWriteToOrganization(email)
     }
 
@@ -189,5 +189,5 @@ abstract class EventListPresenter<V : EventListContract.View>(
         paginationList.invalidate()
     }
 
-    protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse</*EventNew*/Event?>>
+    protected abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew/*Event*/?>>
 }

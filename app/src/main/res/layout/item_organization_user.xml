@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:src="@drawable/ic_arrow_right"
-        android:tint="@android:color/black"
+        app:tint="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -10,18 +10,18 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventSpeakersContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(data: List</*MemberModel*/Speaker>)
+        fun setData(data: List<MemberModel/*Speaker*/>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeaker(speaker: /*MemberModel*/Speaker)
+        fun showSpeaker(speaker: MemberModel/*Speaker*/)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSpeaker(speaker: /*MemberModel*/Speaker)
+        fun updateSpeaker(speaker: MemberModel/*Speaker*/)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onSpeakerClick(speaker: /*MemberModel*/Speaker)
-        fun onSpeakerFavoriteChangeClick(speaker: /*MemberModel*/Speaker)
+        fun onSpeakerClick(speaker: MemberModel/*Speaker*/)
+        fun onSpeakerFavoriteChangeClick(speaker: MemberModel/*Speaker*/)
         fun onRefreshRequest()
     }
 }

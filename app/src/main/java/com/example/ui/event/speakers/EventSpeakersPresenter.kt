@@ -25,33 +25,33 @@ class EventSpeakersPresenter
 
     lateinit var eventId: String
 
-    /*val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getSpeakers(
+    val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getSpeakers(
     mapOf(MemberModel.MEMBER_EVENT to eventId, MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
     MemberModel.MEMBER_LIMIT to limit, MemberModel.MEMBER_OFFSET to offset)) }
-            .buildList()*/
-    val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventSpeakers(eventId, limit, offset) }
             .buildList()
+    /*val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventSpeakers(eventId, limit, offset) }
+            .buildList()*/
 
     private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Observable.create(pagination)
+        /*compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     val uid = appData.getUser().user_id
                     it.forEach { speaker -> speaker.user.isCurrentUser = speaker.user.user_id == uid }
                     viewState.apply { setData(it) }
-                }
-        /*compositeDisposable += Observable.create(pagination)
+                }*/
+        compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     val uid = appData.getId()
                     it.forEach { speaker -> speaker.binds?.user?.isCurrentUser = speaker.binds?.user?.id == uid }
                     viewState.apply { setData(it) }
-                }*/
+                }
     }
 
     override fun attachView(view: EventSpeakersContract.View?) {
@@ -60,11 +60,11 @@ class EventSpeakersPresenter
         else pagination.invalidate()
     }
 
-    override fun onSpeakerClick(speaker: /*MemberModel*/Speaker) = viewState.showSpeaker(speaker)
+    override fun onSpeakerClick(speaker: MemberModel/*Speaker*/) = viewState.showSpeaker(speaker)
 
-    override fun onSpeakerFavoriteChangeClick(speaker: /*MemberModel*/Speaker) {
-        val id = /*speaker.binds?.user?.id.toString()*/speaker.user.user_id.toString()
-        val request = if (!speaker.user.is_in_favorite) userRepository.addToFavorite(id)
+    override fun onSpeakerFavoriteChangeClick(speaker: MemberModel/*Speaker*/) {
+        val id = speaker.binds?.user?.id.toString()/*speaker.user.user_id.toString()*/
+        /*val request = if (!speaker.user.is_in_favorite) userRepository.addToFavorite(id)
         else userRepository.removeFromFavorite(id)
 
         compositeDisposable += request.performOnBackgroundOutOnMain()
@@ -74,7 +74,7 @@ class EventSpeakersPresenter
                 }) {
                     speaker.user.is_in_favorite = !speaker.user.is_in_favorite
                     viewState.updateSpeaker(speaker)
-                }
+                }*/
     }
 
     override fun onItemTake(position: Int) {

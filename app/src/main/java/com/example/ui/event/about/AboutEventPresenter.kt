@@ -27,7 +27,7 @@ class AboutEventPresenter
 ) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
 
     lateinit var eventId: String
-    private lateinit var event: EventInfo
+    private var event: EventInfo? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -35,28 +35,28 @@ class AboutEventPresenter
 
         val userEventInfo = userEventData.userEvent?.eventInfo
 
-        /*val eventInfoMaybe = if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
+        val eventInfoMaybe = if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
         else eventRepository.getEventDetails(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
         compositeDisposable += eventInfoMaybe
-                .subscribeSimple(onSuccess = ::setEventInfoData)*/
-        val eventInfoMaybe = if (userEventInfo?.event?.id == eventId) Maybe.just(userEventInfo)
+                .subscribeSimple(onSuccess = ::setEventInfoData)
+        /*val eventInfoMaybe = if (userEventInfo?.event?.id == eventId) Maybe.just(userEventInfo)
         else eventRepository.getEventInfo(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
         compositeDisposable += eventInfoMaybe
-                .subscribeSimple(onSuccess = ::setEventInfoData)
+                .subscribeSimple(onSuccess = ::setEventInfoData)*/
     }
 
-    private fun setEventInfoData(eventInfo: EventInfo) {
+    private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
         //val event = eventInfo
-        val event = eventInfo.event
+        val event = eventInfo?.event
         viewState.apply {
-            setEventData(
+            /*setEventData(
                     event,
                     eventInfo.userRegistration?.status,
                     eventInfo.pages,
@@ -68,20 +68,20 @@ class AboutEventPresenter
             setActionButton(
                     event,
                     eventInfo.userRegistration?.status
-            )
-            /*setEventData(
-                    eventInfo.event,
-                    if (eventInfo.event.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds.userRegister[0].status?.value else null,
-                    eventInfo.event.binds?.page,
-                    eventInfo.event.binds?.partner,
+            )*/
+            setEventData(
+                    eventInfo?.event,
+                    if (eventInfo?.event?.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds?.userRegister?.get(0)?.status?.value else null,
+                    eventInfo?.event?.binds?.page,
+                    eventInfo?.event?.binds?.partner,
                     hasContacts(),
-                    eventInfo.event.userAgreement?.name
+                    eventInfo?.event?.userAgreement?.name
             )
 
             setActionButton(
-                    eventInfo.event,
-                    if (eventInfo.event.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds.userRegister[0].status?.value else null
-            )*/
+                    eventInfo?.event,
+                    if (eventInfo?.event?.binds?.userRegister?.isNotEmpty() == true) eventInfo.event.binds?.userRegister?.get(0)?.status?.value else null
+            )
         }
     }
 
@@ -94,22 +94,22 @@ class AboutEventPresenter
     }
 
     override fun onAgreementClick() {
-        //event.event.userAgreement?.name?.takeIf { it.isNotEmpty() }?.let { viewState.showAgreement(it) }
-        event.event.userAgreement?.takeIf { it.isNotEmpty() }?.let { viewState.showAgreement(it) }
+        event?.event?.userAgreement?.name?.takeIf { it.isNotEmpty() }?.let { viewState.showAgreement(it) }
+        //event.event.userAgreement?.takeIf { it.isNotEmpty() }?.let { viewState.showAgreement(it) }
     }
 
-    override fun onPageClick(page: /*PageModel*/EventPage) {
+    override fun onPageClick(page: PageModel/*EventPage*/) {
         checkInternetAndRun { viewState.showPage(eventId, page.id.toString()) }
     }
 
-    override fun onPartnerClick(partner: /*PartnerModel*/EventParther) {
+    override fun onPartnerClick(partner: PartnerModel/*EventParther*/) {
         checkInternetAndRun { viewState.showPartner(eventId, partner.id.toString()) }
     }
 
     override fun onContactsClick() {
-        val eventData = event.event
+        val eventData = event?.event
         viewState.showContacts(
-                eventData.name,
+                /*eventData.name,
                 eventData.phone,
                 eventData.email,
                 eventData.web,
@@ -117,22 +117,22 @@ class AboutEventPresenter
                 eventData.address,
                 eventData.place,
                 eventData.createMapInfo(),
-                event.places
-                /*eventData.name?: "",
-                eventData.phone?: arrayListOf(),
-                eventData.email?: arrayListOf(),
-                eventData.site?.map { s -> s.value?: "" },
-                eventData.socialLink?.map { l -> l.value?: "" },
-                eventData.address?.getShortAddress(),
-                eventData.address?.description?.place,
-                MapInfo(eventData.address?.lat, eventData.address?.lon, eventData.address?.description?.title, eventData.address?.description?.description),
-                /*event.places*/arrayListOf()*/
+                event.places*/
+                eventData?.name?: "",
+                eventData?.phone?: arrayListOf(),
+                eventData?.email?: arrayListOf(),
+                eventData?.site?.map { s -> s.value?: "" },
+                eventData?.socialLink?.map { l -> l.value?: "" },
+                eventData?.address?.getShortAddress(),
+                eventData?.address?.description?.place,
+                MapInfo(eventData?.address?.lat, eventData?.address?.lon, eventData?.address?.description?.title, eventData?.address?.description?.description),
+                /*event.places*/arrayListOf()
         )
     }
 
     private fun hasContacts(): Boolean {
-        val eventData = event.event
-        return eventData.name.isNotEmpty()
+        val eventData = event?.event
+        /*return eventData.name.isNotEmpty()
                 || eventData.phone.isNotEmpty()
                 || eventData.email.isNotEmpty()
                 || eventData.web.isNotEmpty()
@@ -140,16 +140,16 @@ class AboutEventPresenter
                 || eventData.address?.isNotEmpty() ?: false
                 || eventData.place?.isNotEmpty() ?: false
                 || eventData.createMapInfo() != null
-                || event.places.isNotEmpty()
-        /*eventData.name?.isNotEmpty() == true
-                || eventData.phone?.isNotEmpty() == true
-                || eventData.email?.isNotEmpty() == true
-                || eventData.site?.isNotEmpty() == true
-                || eventData.socialLink?.isNotEmpty() == true
-                || eventData.address?.getShortAddress()?.isNotEmpty() ?: false
-                || eventData.address?.description?.place?.isNotEmpty() ?: false
-                || /*eventData.createMapInfo()*/eventData.address?.description != null
-                /*|| event.places.isNotEmpty()*/*/
+                || event.places.isNotEmpty()*/
+       return eventData?.name?.isNotEmpty() == true
+                || eventData?.phone?.isNotEmpty() == true
+                || eventData?.email?.isNotEmpty() == true
+                || eventData?.site?.isNotEmpty() == true
+                || eventData?.socialLink?.isNotEmpty() == true
+                || eventData?.address?.getShortAddress()?.isNotEmpty() ?: false
+                || eventData?.address?.description?.place?.isNotEmpty() ?: false
+                || /*eventData.createMapInfo()*/eventData?.address?.description != null
+                /*|| event.places.isNotEmpty()*/
     }
 
     override fun onGoToEventClick() {
@@ -192,35 +192,35 @@ class AboutEventPresenter
     }
 
     override fun onSelectEventClick() {
-        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
-                .andThen(userEventData.load(eventId))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }
-                /*compositeDisposable += eventRepository.setDefaultEvent(eventId)
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+       /* compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
                 .andThen(userEventData.load(eventId))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }*/
+        compositeDisposable += eventRepository.setDefaultEvent(eventId)
+                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                .andThen(userEventData.load(eventId))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }
     }
 
     override fun onLogoClick() {
-        val url = event.event.backgroundImage//event.event.binds?.organization?.logo?.uri
+        val url = /*event.event.backgroundImage*/event?.event?.binds?.organization?.logo?.uri
         if (url != null) viewState.showLogoImage(url)
     }
 
     override fun onRefreshRequest() {
-        compositeDisposable += eventRepository.getEventInfo(eventId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(onSuccess = ::setEventInfoData)
-        /*compositeDisposable += eventRepository.getEventDetails(eventId)
+        /*compositeDisposable += eventRepository.getEventInfo(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(onSuccess = ::setEventInfoData)*/
+        compositeDisposable += eventRepository.getEventDetails(eventId)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple(onSuccess = ::setEventInfoData)
     }
 
     override fun onShowFilterClick(format: Int) {
@@ -228,7 +228,7 @@ class AboutEventPresenter
     }
 
     override fun onChangeFavoriteClick() {
-        val request = if (event.event.isFavorite == true) eventRepository.removeFromFavorite(eventId)
+        /*val request = if (event.event.isFavorite == true) eventRepository.removeFromFavorite(eventId)
         else eventRepository.addToFavorite(eventId)
 
         compositeDisposable += request.performOnBackgroundOutOnMain()
@@ -238,13 +238,13 @@ class AboutEventPresenter
                     val isSubscribed = !(event.isFavorite ?: false)
                     event.isFavorite = isSubscribed
                     viewState.changeEventSubscription(isSubscribed)
-                }
-        /*if (event.event.binds?.userFavorite != null) {
-            compositeDisposable += eventRepository.deleteFromFavorite(event.event.binds?.userFavorite?.id.toString())
+                }*/
+        if (event?.event?.binds?.userFavorite != null) {
+            compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
-                        event.event.binds?.userFavorite = null
+                        event?.event?.binds?.userFavorite = null
                         viewState.changeEventSubscription(false)
                     }
         } else {
@@ -252,10 +252,10 @@ class AboutEventPresenter
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
-                        event.event.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                         viewState.changeEventSubscription(true)
                     }
-        }*/
+        }
     }
 
     override fun onWriteToOrganizationClick() {
@@ -263,20 +263,7 @@ class AboutEventPresenter
     }
 
     override fun onWriteToOrganizationMessage(message: String) {
-        compositeDisposable += eventRepository.sendMessageToOrganization(eventId, message)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onComplete = {
-                            viewState.apply {
-                                hideWriteToOrganizationForm()
-                                showWriteToOrganizationComplete()
-                            }
-                        },
-                        onError = {
-                            viewState.showWriteToOrganizationError()
-                        })
-        /*compositeDisposable += eventRepository.mailToEvent(message, eventId, false, false)
+        /*compositeDisposable += eventRepository.sendMessageToOrganization(eventId, message)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -289,6 +276,19 @@ class AboutEventPresenter
                         onError = {
                             viewState.showWriteToOrganizationError()
                         })*/
+        compositeDisposable += eventRepository.mailToEvent(message, eventId, false, false)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onComplete = {
+                            viewState.apply {
+                                hideWriteToOrganizationForm()
+                                showWriteToOrganizationComplete()
+                            }
+                        },
+                        onError = {
+                            viewState.showWriteToOrganizationError()
+                        })
     }
 
     override fun onOrganizationClick(organization: String) {
@@ -306,11 +306,11 @@ class AboutEventPresenter
     }
 
     override fun onActionWriteToOrganization() {
-        val emails = event.event.email
+        val emails = event?.event?.email
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: /*EventPhoneModel*/EmailAffiliation) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/) {
         viewState.showWriteToOrganization(email)
     }
 }
