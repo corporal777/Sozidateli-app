@@ -1,19 +1,34 @@
 package com.example.ui.views
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import com.example.R
 import com.example.databinding.DialogAddPhoneEmailBinding
+import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils
+import com.example.util.Utils.timerFormatter
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import kotlinx.android.synthetic.main.fragment_finish_register.*
+import performOnBackgroundOutOnMain
+import java.util.concurrent.TimeUnit
 
 class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
 
     private var onSelect: (result: PhoneEmailResult) -> Unit = {}
     private var onSendCode: () -> Unit = {}
+    private val timerCompositeDisposable = CompositeDisposable()
+    private val timerMessage by lazy {
+        activity.resources.getString(R.string.auth_register_confirm_email_timer_two)
+    }
 
     var binding : DialogAddPhoneEmailBinding = DataBindingUtil.inflate(
             activity.layoutInflater,
@@ -31,8 +46,15 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
             isProgressVisible(true)
             onSelect.invoke(PhoneEmailResult(type, binding.etLogin.text.toString()))
         }
-        binding.tvCode.setOnClickListener {
-            onSendCode()
+        binding.tvCode.apply {
+            setTextColor(ColorStateList(
+                    arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
+                    intArrayOf(ContextCompat.getColor(activity, R.color.colorAccent), ContextCompat.getColor(activity, R.color.action_button_disabled_text_color))
+            ))
+            setOnClickListener {
+                onSendCode()
+                startTimer()
+            }
         }
         binding.btnPositive.isEnabled = false
         binding.etLogin.doAfterTextChanged {
@@ -71,6 +93,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
                 binding.tvCode.isVisible = false
             }
             RegisterDataType.CODE -> {
+                startTimer()
                 binding.tvTitle.text = activity.resources.getString(R.string.code_dialog_title)
                 binding.tvMessage.text = activity.resources.getString(R.string.code_dialog_text, phone)
                 binding.etLogin.setHint(R.string.enter_code_btn_text)
@@ -105,6 +128,37 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
     fun setSendCodeCallback(block: () -> Unit): AddPhoneEmailDialog {
         onSendCode = block
         return this
+    }
+
+    private fun startTimer() {
+        timerCompositeDisposable.clear()
+        setCanResend(false)
+        setTimeLeft(FinishRegisterPresenter.TIMER_SECONDS_COUNT)
+
+        timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val timeLeft = FinishRegisterPresenter.TIMER_SECONDS_COUNT - (it.toInt() + 1)
+                    if (timeLeft < 0) {
+                        timerCompositeDisposable.clear()
+                        setCanResend(true)
+                    } else {
+                        setTimeLeft(timeLeft)
+                    }
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    fun setTimeLeft(seconds: Int) {
+        //val quantity = activity.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        val quantity = timerFormatter(seconds, activity)
+        binding.tvTimer.text = String.format(timerMessage, quantity)
+    }
+
+    fun setCanResend(canResend: Boolean) {
+        binding.tvCode.isEnabled = canResend
+        binding.tvTimer.isVisible = !canResend
     }
 
     companion object {

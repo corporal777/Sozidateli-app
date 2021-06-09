@@ -5,6 +5,7 @@ import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
+import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter.Companion.TIMER_SECONDS_COUNT
 import com.example.ui.base.BasePresenter
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -91,8 +92,5 @@ class EmailConfirmPresenter
 
     override fun onCloseClick() {
         viewState.navigateUp()
-    }
-    companion object {
-        private const val TIMER_SECONDS_COUNT = 30
     }
 }

@@ -15,6 +15,7 @@ import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
 import com.example.util.Utils.newPhoneValidator
+import com.example.util.Utils.validatePhoneBeforeSend
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
@@ -69,7 +70,8 @@ class LoginPresenter
     }
 
     override fun onClickLogin(login: String, password: String) {
-        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, login), LoginModel("common", password)))
+        val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
+        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

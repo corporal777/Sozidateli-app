@@ -72,8 +72,8 @@
     <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
     <string name="auth_input_middle_name_hint">Укажите Ваше отчество</string>
     <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
-    <string name="auth_input_email_or_phone_hint">Мобильный телефон или эл. адрес</string>
-    <string name="auth_input_email_again_hint">Ввведите эл. адрес повторно</string>
+    <string name="auth_input_email_or_phone_hint">Мобильный телефон или e-mail</string>
+    <string name="auth_input_email_again_hint">Введите e-mail повторно</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
     <string name="auth_agree_user_agreement">Согласен с пользовательским соглашением</string>
@@ -101,6 +101,14 @@
         <item quantity="few">%d секунды</item>
         <item quantity="many">%d секунд</item>
         <item quantity="other">%d секунд</item>
+    </plurals>
+    <plurals name="minutes_timer">
+        <item quantity="zero">%d минут</item>
+        <item quantity="one">%d минута</item>
+        <item quantity="two">%d минуты</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минуты</item>
+        <item quantity="other">%d минуты</item>
     </plurals>
     <string name="auth_login_registration_confirm">Пользователь не найден. Зарегистрировать нового пользователя?</string>
 
@@ -737,7 +745,7 @@
     <string name="password_letters">- Строчные буквы</string>
     <string name="password_numbers">- Цифры</string>
     <string name="password_to_small">- Больше символов</string>
-    <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальный символы (!%&lt;&gt; и тд), кирилица. Пожалуйста, используйте только латиницу и цифры.</string>
+    <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальный символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
     <string name="add_phone_dialog_text">Чтобы пользоваться всеми возможностями сайта, пожалуйста, введите ваш актуальный номер телефона.</string>
     <string name="add_email_dialog_title">Добавьте Ваш эл. фдрес</string>

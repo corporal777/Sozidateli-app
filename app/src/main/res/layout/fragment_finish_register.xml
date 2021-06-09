@@ -271,7 +271,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/llAgree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -308,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/auth_title_text"
                     tools:text="@string/auth_agree_user_agreement" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/tvAgreeError"

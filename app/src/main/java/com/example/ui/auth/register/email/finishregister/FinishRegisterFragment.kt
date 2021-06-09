@@ -7,12 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.text.clearSpans
-import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
@@ -26,20 +23,17 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog.Companion.CODE_SIZE
 import com.example.util.ClickableSpan
+import com.example.util.Utils.timerFormatter
 import com.example.util.initSwitch
-import kotlinx.android.synthetic.main.fragment_email_confirm.*
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnResend
-import kotlinx.android.synthetic.main.fragment_finish_register.cbAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.etEmail
 import kotlinx.android.synthetic.main.fragment_finish_register.etFirstName
 import kotlinx.android.synthetic.main.fragment_finish_register.etLastName
 import kotlinx.android.synthetic.main.fragment_finish_register.etMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.flAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
 import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.tvAgree
 import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
 import onTextChanged
@@ -88,15 +82,15 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ivClose.setOnClickListener { presenter.onClickClose() }
-        cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
-        cbAgree.isChecked = true
+        //cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
+        //cbAgree.isChecked = true
         if (BuildConfig.NEW_PROFILE_EDIT) {
             tilMiddleName.visibility = View.VISIBLE
-            llAgree.visibility = View.GONE
+            //llAgree.visibility = View.GONE
             //phone_layout.visibility = View.VISIBLE
         } else {
             tilMiddleName.visibility = View.GONE
-            llAgree.visibility = View.VISIBLE
+            //llAgree.visibility = View.VISIBLE
             //phone_layout.visibility = View.GONE
         }
         //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
@@ -119,7 +113,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
 
-        tvAgree.apply {
+        /*tvAgree.apply {
             text = agreementText
             movementMethod = LinkMovementMethod.getInstance()
         }
@@ -128,7 +122,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             cbAgree.apply {
                 isChecked = !isChecked
             }
-        }
+        }*/
         btnResend.apply {
             setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
@@ -192,7 +186,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun onDestroyView() {
-        tvAgree.text.toSpannable().clearSpans()
+        //tvAgree.text.toSpannable().clearSpans()
         super.onDestroyView()
     }
 
@@ -228,7 +222,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         }
         //etMobilePhone.setText(phone)
         //etMobilePhone.setPhone(phone?: "")
-        cbAgree.isChecked = isAgree
+        //cbAgree.isChecked = isAgree
         updatePhoneConfirmationStatus(phoneVerified)
     }
 
@@ -272,7 +266,8 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun setTimeLeft(seconds: Int) {
-        val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        //val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        val quantity = timerFormatter(seconds, requireContext())
         tvTimer.text = String.format(timerMessage, quantity)
     }
 

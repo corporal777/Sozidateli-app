@@ -51,6 +51,7 @@ import com.example.ui.splash.SplashFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.ApiErrorDialog
 import com.example.ui.views.FillProfileDialog
+import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -290,47 +291,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showDialogRecoverPassword(/*email: String,*/ code: String) {
-        val view = LayoutInflater.from(this).inflate(R.layout.dialog_password_recovery, null, false)
-        val alert = AlertDialog.Builder(this)
-                .setTitle(R.string.recovery_set_password_title)
-                .setView(view)
-                .create()
-
-        var password = ""
-        //var passwordConfirm = ""
-
-        view.password.setPasswordValidCallback {
-            password = it.password?: ""
-            view.btnSave.isEnabled = it.isValid
-        }
-        /*val validatePassword = {
-            val isPasswordValid = AuthValidateUtil.isValidPassword(password)
-            val isPasswordsMatch = password == passwordConfirm
-            view.tvPasswordHintLength.apply {
-                if (isPasswordValid) highlightCorrect()
-                else highlightError()
-            }
-            view.btnSave.isEnabled = isPasswordValid && isPasswordsMatch
-        }*/
-
-        view.btnSave.isEnabled = false
-
-        /*view.etPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-            password = charSequence.toString()
-            validatePassword()
-        })
-
-        view.etConfirmPassword.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-            passwordConfirm = charSequence.toString()
-            validatePassword()
-        })*/
-
-        view.btnSave.setOnClickListener {
-            alert.dismiss()
-            presenter.onSetPassword(/*email,*/ code, password)
-        }
-
-        alert.show()
+        NewPasswordDialog(this)
+                .setSelectCallback {
+                    presenter.onSetPassword(/*email,*/ code, it)
+                }
     }
 
     override fun showDialogChangeEmailSuccess() {

@@ -125,11 +125,13 @@ class RegisterEmailNewPresenter
         if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
             loginType = "phone"
             Utils.newPhoneValidator(context, email)
+            viewState.changeFieldType(loginType, false)
         } else {
             loginType = "email"
             AuthValidateUtil.isValidEmail(email)
+            viewState.changeFieldType(loginType, AuthValidateUtil.isValidEmail(email))
         }
-        viewState.changeFieldType(loginType)
+        //viewState.changeFieldType(loginType)
         performDataChange()
     }
 

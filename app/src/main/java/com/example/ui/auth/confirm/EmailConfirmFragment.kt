@@ -15,6 +15,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.FinishRegisterDialog
+import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_email_confirm.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -68,7 +69,8 @@ class EmailConfirmFragment : BaseFragment(), EmailConfirmContract.View {
     }
 
     override fun setTimeLeft(seconds: Int) {
-        val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        //val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+        val quantity = Utils.timerFormatter(seconds, requireContext())
         tvTimer.text = String.format(timerMessage, quantity)
     }
 

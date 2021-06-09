@@ -1,11 +1,13 @@
 package com.example.util
 
 import android.content.Context
+import com.example.R
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.ceil
 
 
 object Utils {
@@ -71,4 +73,10 @@ object Utils {
             sb.setCharAt(1, '7')
         return sb.toString()
     }
+
+    fun timerFormatter(time: Int, context: Context) : String =
+        if (time > 59) {
+            val minute = ceil(time.toDouble() / 60).toInt()
+            context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
+        } else context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
 }

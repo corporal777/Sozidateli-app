@@ -66,7 +66,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
         tvLogout.setOnClickListener { presenter.onLogoutClick() }
         tvSettings.setOnClickListener { presenter.onSettingsClick() }
-        tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
+        //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
     }
 
     override fun setUser(user: UserDetail) {

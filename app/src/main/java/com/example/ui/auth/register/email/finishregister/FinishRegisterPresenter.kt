@@ -53,7 +53,7 @@ class FinishRegisterPresenter
     private var email: String? = null
     private var middleName: String? = null
     var phone: String? = null
-    private var isAgree: Boolean = false
+    private var isAgree: Boolean = true
     private var code: String = ""
     private var noAgreeChecked = false
     private var noMiddleNameChecked = false
@@ -262,6 +262,6 @@ class FinishRegisterPresenter
     }
 
     companion object {
-        private const val TIMER_SECONDS_COUNT = 30
+        const val TIMER_SECONDS_COUNT = 180
     }
 }

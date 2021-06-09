@@ -120,8 +120,8 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
         //tvPhoneConfirmed.isVisible = confirmed
     }
 
-    override fun changeFieldType(type: String) {
-        tilEmailAgain.isVisible = type == "email"
+    override fun changeFieldType(type: String, isValid: Boolean) {
+        tilEmailAgain.isVisible = type == "email" && isValid
     }
 
     override fun showPhoneConfirm(phone: String) {

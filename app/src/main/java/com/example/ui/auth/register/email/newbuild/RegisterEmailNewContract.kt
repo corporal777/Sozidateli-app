@@ -73,7 +73,7 @@ interface RegisterEmailNewContract {
         fun enableMiddleNameInput(enable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeFieldType(type: String)
+        fun changeFieldType(type: String, isValid: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {

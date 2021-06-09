@@ -14,6 +14,7 @@ import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog
+import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
@@ -43,7 +44,6 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
         etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
             presenter.onChangeEmailText(charSequence.toString(), requireContext())
         })
-
         ibClose.setOnClickListener { presenter.onCloseClick() }
     }
 
@@ -96,23 +96,10 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
     }
 
     private fun setPassword(code: String) {
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_password_recovery, null, false)
-        val alert = AlertDialog.Builder(requireContext())
-                .setTitle(R.string.recovery_set_password_title)
-                .setView(view)
-                .create()
-        var password = ""
-        view.password.setPasswordValidCallback {
-            password = it.password?: ""
-            view.btnSave.isEnabled = it.isValid
-        }
-        view.btnSave.isEnabled = false
-        view.btnSave.setOnClickListener {
-            alert.dismiss()
-            presenter.onSetPassword(/*email,*/ code, password)
-        }
-
-        alert.show()
+        NewPasswordDialog(requireActivity())
+                .setSelectCallback {
+                    presenter.onSetPassword(/*email,*/ code, it)
+                }
     }
 
     override fun showWrongEmailError() {

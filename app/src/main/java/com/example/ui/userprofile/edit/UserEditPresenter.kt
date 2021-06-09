@@ -69,17 +69,17 @@ class UserEditPresenter
                                     .subscribe({ add ->
                                         if (add.data?.isNotEmpty() == true)
                                             user.address?.shortAddres = add.data[0].region
-                                        if (BuildConfig.NEW_PROFILE_EDIT) {
+                                        //if (BuildConfig.NEW_PROFILE_EDIT) {
                                             setPersonalDataNew(user)
-                                        } else {
+                                        /*} else {
                                             setPersonalData(user)
-                                        }
+                                        }*/
                                     }, {
-                                        if (BuildConfig.NEW_PROFILE_EDIT) {
+                                        //if (BuildConfig.NEW_PROFILE_EDIT) {
                                             setPersonalDataNew(user)
-                                        } else {
+                                        /*} else {
                                             setPersonalData(user)
-                                        }
+                                        }*/
                                     })
                             /*if (BuildConfig.NEW_PROFILE_EDIT) {
                                 setPersonalDataNew(user)
