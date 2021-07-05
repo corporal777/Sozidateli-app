@@ -4,12 +4,15 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
+import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.loadBitmap
@@ -30,7 +33,8 @@ class UserPresenter
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
-        private val haChat: HAChat
+        private val haChat: HAChat,
+        private val eventRepository: EventRepository
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
     lateinit var userId: String
@@ -48,25 +52,25 @@ class UserPresenter
         compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
+                    /*if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
                         viewState.apply {
                             profileUserData.user.chat?.isBannedByYou = it.exclude
                             viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                         }
-                    }
+                    }*/
                 }, { it.printStackTrace() })
     }
 
     private fun loadUserData(withLoading: Boolean) {
         val getUser = if (isCurrentUser()) {
-            userRepository.getUserFull()
-                    .flatMapObservable { appData.userChangeSubject }
+            userRepository.getUserShortNew()
+                    .flatMapObservable { appData.userNewChangeSubject }
                     .map { it.value!! }
         } else {
-            userRepository.getUserById(userId).toObservable()
+            userRepository.getUserByIdNew(userId).toObservable()
         }
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { user -> user.user_avatar.loadAvatar().map { user to it } }
+                .performOnBackgroundOutOnMain()
+                .flatMapMaybe { user -> user.image?.uri.loadAvatar().map { user to it } }
                 .observeOn(Schedulers.io())
 
         compositeDisposable += commonRepository.getInterests()
@@ -94,12 +98,12 @@ class UserPresenter
                                 isCurrentUser()
                         )
                     }
-                    compositeDisposable += userRepository.searchAddress(profileUserData.userData.user.user_short_address?: "")
+                    compositeDisposable += userRepository.searchAddress(profileUserData.userData.user.address?.getShortAddress()?: "")
                             .performOnBackgroundOutOnMain()
                             .subscribe({ add ->
                                 viewState.apply {
                                     if (add.data?.isNotEmpty() == true)
-                                        profileUserData.userData.user.user_short_address = add.data[0].region
+                                        profileUserData.userData.user.address?.shortAddres = add.data[0].region
                                     setUser(profileUserData)
                                     if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                                 }
@@ -112,56 +116,72 @@ class UserPresenter
                 }, { it.printStackTrace() })
     }
 
-    private fun groupUserInterests(user: User, interests: List<Interest>): MutableMap<Interest, MutableList<Interest>>? {
-        return user.interests?.let { userInterests ->
-            val groups = mutableMapOf<Interest, MutableList<Interest>>()
-            userInterests.forEach {
-                val key = interests.find { interest -> interest.id == it.parent }
-                if (key != null) {
-                    val list = groups.getOrPut(key) { mutableListOf() }
-                    list.add(it)
+    private fun getAdditionalData() {
+        compositeDisposable += userRepository.getEducationLevel()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
+
+        compositeDisposable += userRepository.getSpeciality()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
+
+        compositeDisposable += userRepository.getAcademicDegrees()
+                .performOnBackgroundOutOnMain()
+                .subscribe({}, { it.printStackTrace() })
+    }
+
+    private fun groupUserInterests(user: /*User*/UserDetail, interests: List<InterestNew>): MutableMap<InterestNew, MutableList<InterestNew>>? {
+        val groups = mutableMapOf<InterestNew, MutableList<InterestNew>>()
+        val headers = interests.filter { it.parent == 0 }
+        headers.forEach {
+            val parent = interests.filter { parent -> parent.parent == it.id }
+            parent.let { it1 ->
+                user.interests?.forEach { usIn ->
+                    val isUserInterest = it1.find { it2 -> it2.id == usIn }
+                    if (isUserInterest != null)
+                        groups.getOrPut(it) { mutableListOf() }.add(isUserInterest)
                 }
             }
-            return@let groups
         }
+        return groups
     }
 
     override fun onWriteMessageClick() {
         val user = profileUserData.user
-        compositeDisposable += chatRepository.startChat(user.user_id.toString())
+        compositeDisposable += chatRepository.startChat(user.id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.openChat(user.fullName, user.user_avatar, it.chat_id.toString())
+                    viewState.openChat(user.fullName, user.image?.uri, it.chat_id.toString())
                 }, { it.printStackTrace() })
     }
 
-    override fun onOrganizationClick(organization: Organization) {
+    override fun onOrganizationClick(organization: /*Organization*/OrganizationNew) {
         viewState.showOrganization(organization)
     }
 
-    override fun onFileClick(file: RecommendationFile) {
-        file.url?.let { viewState.downloadFile(it) }
+    override fun onFileClick(file: /*RecommendationFile*/FileModel) {
+        file.uri?.let { viewState.downloadFile(it) }
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += userRepository.addToFavorite(userId)
+        compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, userId.toInt())))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    profileUserData.user.is_in_favorite = true
+                .subscribeSimple {
+                    profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }, { it.printStackTrace() })
+                }
     }
 
     override fun onUnsubscribeClick() {
-        compositeDisposable += userRepository.removeFromFavorite(userId)
+        compositeDisposable += eventRepository.deleteFromFavorite(profileUserData.user.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({
-                    profileUserData.user.is_in_favorite = false
+                .subscribeSimple {
+                    profileUserData.user.binds?.userFavorite = null
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }, { it.printStackTrace() })
+                }
     }
 
     override fun onUnblockClick() {
@@ -170,8 +190,8 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    profileUserData.user.chat?.isBannedByYou = false
-                    profileUserData.user.user_banned = false
+                   // profileUserData.user.chat?.isBannedByYou = false
+                    //profileUserData.user.user_banned = false
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
     }
@@ -186,8 +206,8 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    profileUserData.user.chat?.isBannedByYou = true
-                    profileUserData.user.user_banned = true
+                    //profileUserData.user.chat?.isBannedByYou = true
+                   // profileUserData.user.user_banned = true
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                 }, { it.printStackTrace() })
     }

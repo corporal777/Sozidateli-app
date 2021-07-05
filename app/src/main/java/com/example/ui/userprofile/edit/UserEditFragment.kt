@@ -245,17 +245,23 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                         mainInfoFiles = files
                         isUpdateInfo = false
                         presenter.onSaveAdditionalFilesClick(data)
-                    }, { presenter.onDeleteFilesClick(it) }
-            )
+                    }, { showEditWarning(presenter.getBaseUserState(),
+                        presenter.getMaxUserState(), false, (user.binds?.recommendationFile?.size?:0) <= 1) {
+                    presenter.onDeleteFilesClick(it)
+                }
+            })
 
             adapter.update(listOf(dataItem, files))
 
             onSaveClick = {
                 recyclerView.requestFocus()
                 if (dataItem.checkDataValid()) {
-                    val dataToSave = dataItem.getDataToSave() as MutableMap
-                    val file = files.getCurrentFilesToSave()
-                    presenter.updateFiles(file.toMutableList(), dataToSave)
+                    showEditWarning(presenter.getBaseUserState(),
+                            presenter.getMaxUserState(), dataItem.checkBaseFieldsValid(), dataItem.checkMaxFieldsValid()) {
+                        val dataToSave = dataItem.getDataToSave() as MutableMap
+                        val file = files.getCurrentFilesToSave()
+                        presenter.updateFiles(file.toMutableList(), dataToSave)
+                    }
                 }
             }
         }
@@ -282,7 +288,10 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         onSaveClick = {
             recyclerView.requestFocus()
             if (item.checkDataValid()) {
-                presenter.onSaveContactsClick(item.getDataToSave())
+                showEditWarning(presenter.getBaseUserState(),
+                        presenter.getMaxUserState(), item.checkBaseFieldsValid(), item.checkMaxFieldsValid()) {
+                    presenter.onSaveContactsClick(item.getDataToSave())
+                }
             }
         }
     }
@@ -336,7 +345,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setEducationData(user: UserDetail) {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
+        //if (BuildConfig.NEW_PROFILE_EDIT) {
             val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
                 null else user.binds?.academicDegree
             val dataItem = ProfileDataEducationEditGroupNew(
@@ -348,18 +357,22 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     user.speciality ?: emptyList(),
                     user.binds?.education ?: emptyList(),
                     academicDegree ?: emptyList()
-            )
+            ) {}
             adapter.update(listOf(dataItem))
 
             onSaveClick = {
                 if (dataItem.checkDataValid()) {
-                    presenter.onSaveEducationClick(
-                            dataItem.getEducationLevelToSave(),
-                            dataItem.getEducationsToSave(),
-                            dataItem.getDegreeToSave())
+                    val education = dataItem.getEducationsToSave()
+                    showEditWarning(presenter.getBaseUserState(),
+                            presenter.getMaxUserState(), false, education?.isEmpty()?: false) {
+                        presenter.onSaveEducationClick(
+                                dataItem.getEducationLevelToSave(),
+                                education,
+                                dataItem.getDegreeToSave())
+                    }
                 }
             }
-        } else {
+        /*} else {
             val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
                 null else user.binds?.academicDegree
             val dataItem = ProfileDataEducationEditGroup(
@@ -384,7 +397,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                             dataItem.getDegreeToSave())
                 }
             }
-        }
+        }*/
     }
 
     override fun setWorkData(user: UserDetail) {
@@ -393,11 +406,14 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 requireContext(),
                 user.birthday,
                 work,
-        ) { /*presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it))*/ }
+        { /*presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it))*/ }, {})
         adapter.update(listOf(dataItem))
         onSaveClick = {
             if (dataItem.checkDataValid()) {
-                presenter.onSaveWorkClick(dataItem.getDataToSave())
+                showEditWarning(presenter.getBaseUserState(),
+                        presenter.getMaxUserState(), false, false) {
+                    presenter.onSaveWorkClick(dataItem.getDataToSave())
+                }
             }
         }
     }
@@ -429,7 +445,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             }
         })
 
-        onSaveClick = { presenter.onSaveInterestsClick(userInterests) }
+        onSaveClick = {
+            showEditWarning(presenter.getBaseUserState(),
+                    presenter.getMaxUserState(), false, userInterests.isEmpty()) {
+                presenter.onSaveInterestsClick(userInterests)
+            }
+        }
     }
 
     override fun setAdditionalNotesData(user: UserDetail) {

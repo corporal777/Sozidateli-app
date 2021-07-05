@@ -5,16 +5,17 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.DaDataItem
+import com.example.data.models.NewUserAddress
 import com.example.ui.base.BaseContract
 
 class DaDataAutoCompleteTextViewContract {
 
     interface View : MvpView {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setSuggested(list: List<DaDataItem>)
+        fun setSuggested(list: List<NewUserAddress>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun performOnItemSelected(item: DaDataItem)
+        fun performOnItemSelected(item: NewUserAddress)
     }
 
     interface Presenter : BaseContract.Presenter {

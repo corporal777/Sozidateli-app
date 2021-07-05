@@ -1,6 +1,7 @@
 package com.example.ui.event.favorite.subevent
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.EventActivityModel
 import com.example.data.models.SubEvent
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseToDate
@@ -18,7 +19,7 @@ class FavoriteSubeventPresenter @Inject constructor(
 ) : BasePresenter<FavoriteSubeventContract.View>(), FavoriteSubeventContract.Presenter {
 
     lateinit var event: String
-    lateinit var actions: List<SubEvent>
+    lateinit var actions: List</*SubEvent*/EventActivityModel>
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -43,19 +44,19 @@ class FavoriteSubeventPresenter @Inject constructor(
                 )
     }
 
-    private fun groupData(actions: List<SubEvent>): Map<Long?, List<SubEvent>> {
-        return actions.filter { it.isInFavorites }.groupBy {
-            it.start.parseToDate(defaultServerDateTimeFormatter)?.time?.startOfDay()
+    private fun groupData(actions: List</*SubEvent*/EventActivityModel>): Map<Long?, List</*SubEvent*/EventActivityModel>> {
+        return actions.filter { /*it.isInFavorites*/it.event == 0 }.groupBy {
+            it.holdingDate?.from?.parseToDate(defaultServerDateTimeFormatter)?.time?.startOfDay()
         }
     }
 
-    private fun setData(data: Map<Long?, List<SubEvent>>) {
+    private fun setData(data: Map<Long?, List</*SubEvent*/EventActivityModel>>) {
         viewState.setData(data)
     }
 
-    override fun onChangeFavoriteRequest(subevent: SubEvent) {
+    override fun onChangeFavoriteRequest(subevent: /*SubEvent*/EventActivityModel) {
         val id = subevent.id
-        val request = if (!subevent.isInFavorites) eventRepository.subscribeToSubevent(event, id)
+        /*val request = if (!subevent.isInFavorites) eventRepository.subscribeToSubevent(event, id)
         else eventRepository.unsubscribeFromSubEvent(event, id)
 
         compositeDisposable += request.performOnBackgroundOutOnMain()
@@ -63,12 +64,12 @@ class FavoriteSubeventPresenter @Inject constructor(
                 .subscribeSimple {
                     subevent.isInFavorites = !subevent.isInFavorites
                     setData(groupData(actions))
-                }
+                }*/
     }
 
-    override fun onSubEventClick(subEvent: SubEvent) {
+    override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
         checkInternetAndRun {
-            viewState.showSubEvent(event, subEvent.id)
+            viewState.showSubEvent(event, subEvent.id.toString())
         }
     }
 

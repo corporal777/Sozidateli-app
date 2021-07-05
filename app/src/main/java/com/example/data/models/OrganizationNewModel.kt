@@ -70,15 +70,20 @@ data class OrganizationLeaderModel(
 data class OrganizationBindsModel(
         val rights: OrganizationRightsModel? = null,
         val leader: List<OrganizationLeaderModel>? = null,
-        val member: List<OrganizationMemberModel>? = null,
+        var member: List<OrganizationMemberModel>? = null,
+        var membersSize: Int? = 0,
         val user: List<UserDetail>? = null,
         @SerializedName("userFavorite")
-        var userFavorite: EventUserFavorite? = null
+        var userFavorite: EventUserFavorite? = null,
+        var events: List<EventNew>? = null,
+        var eventsSize: Int? = 0
 ): Parcelable
 
 @Parcelize
 data class OrganizationMemberBindsModel(
-    val user: UserDetail? = null
+    val user: UserDetail? = null,
+    @SerializedName("userFavorite")
+    var userFavorite: EventUserFavorite? = null
 ): Parcelable
 
 @Parcelize
@@ -90,6 +95,7 @@ data class OrganizationMemberModel(
         val invitedBy: Int? = null,
         val organization: Int? = null,
         val user: Int? = null,
+        var isCurrentUser: Boolean? = false,
         val position: OrganizationMemberPositionModel? = null,
         val nko: OrganizationMemberNkoModel? = null,
         @SerializedName("canCreateEvent")

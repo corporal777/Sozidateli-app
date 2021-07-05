@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Interest
-import com.example.data.models.Organization
-import com.example.data.models.ProfileUserData
-import com.example.data.models.UserEditDataType
+import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.showChangePasswordDialog
@@ -32,6 +29,8 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -57,7 +56,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         userId = args.userId
     }
 
-    private val onOrganizationClickListener: (Organization) -> Unit = {
+    private val onOrganizationClickListener: (/*Organization*/OrganizationNew) -> Unit = {
         presenter.onOrganizationClick(it)
     }
 
@@ -120,30 +119,30 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         swipeToRefresh.isRefreshing = false
     }
 
-    private fun initEditableProfileItem(user: User, avatar: Bitmap?): Item {
+    private fun initEditableProfileItem(user: /*User*/UserDetail, avatar: Bitmap?): Item {
         return ProfileDataUserEditableItem(
                 HEADER_ITEM_ID,
-                user.user_avatar,
+                user.image?.uri,
                 avatar,
                 user.fullName,
-                user.user_id,
+                user.id,
                 { presenter.onEditMainDataClick() },
                 { imageView ->
-                    val url = user.user_avatar ?: return@ProfileDataUserEditableItem
+                    val url = user.image?.uri ?: return@ProfileDataUserEditableItem
                     onAvatarClick(imageView, url)
                 }
         )
     }
 
-    private fun initProfileItem(user: User, avatar: Bitmap?): ProfileDataUserItem {
+    private fun initProfileItem(user: /*User*/UserDetail, avatar: Bitmap?): ProfileDataUserItem {
         return ProfileDataUserItem(
                 HEADER_ITEM_ID,
-                user.user_avatar,
+                user.image?.uri,
                 avatar,
                 user.fullName,
-                user.user_id,
+                user.id,
                 user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
-                user.is_in_favorite,
+                user.binds?.userFavorite != null,
                 {
                     presenter.apply {
                         when (it) {
@@ -158,7 +157,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                     presenter.onWriteMessageClick()
                 },
                 { imageView ->
-                    val url = user.user_avatar ?: return@ProfileDataUserItem
+                    val url = user.image?.uri ?: return@ProfileDataUserItem
                     onAvatarClick(imageView, url)
                 }
         )
@@ -178,7 +177,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         )
     }
 
-    private fun initPersonalDataItem(user: User, editable: Boolean): Group? {
+    private fun initPersonalDataItem(user: /*User*/UserDetail, editable: Boolean): Group? {
         return ProfileExpandableTitleGroup(
                 getString(R.string.profile_title_general_info),
                 onExpandChange = onItemExpandChange
@@ -188,89 +187,90 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         }
     }
 
-    private fun initProfileDataPersonalItem(user: User, editable: Boolean): ProfileDataPersonalItem {
-        val organizations: List<Organization>? = if (!editable) user.organisations else null
-        val email = user.user_email
-        val workPhone = user.user_phone_work
-        val mobilePhone = user.user_phone
-        val gender = user.user_gender
-        val birthday = user.user_birthday?.formatToDefaultDate()
-        val city = user.user_short_address ?: user.user_address
-        val socialNetworks = user.social_links
+    private fun initProfileDataPersonalItem(user: /*User*/UserDetail, editable: Boolean): ProfileDataPersonalItem {
+        val organizations: List</*Organization*/OrganizationNew>? = if (!editable) user.binds?.organization else null
+        val email = user.email?.value
+        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value
+        val mobilePhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
+        val gender = user.gender
+        val birthday = user.birthday?.value?.formatToDefaultDate()
+        val city = user.address?.shortAddres ?: user.address?.city
+        val socialNetworks = user.socialLinks?.value
 
         return ProfileDataPersonalItem(
                 organizations,
                 email,
                 workPhone,
                 mobilePhone,
-                editable && user.user_phone_confirmed,
+                editable && user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false,
                 gender,
                 birthday,
                 city,
-                socialNetworks?.map { it.value },
-                user.user_phone_work_additional,
+                socialNetworks,
+                user.phone?.firstOrNull { it.type == PHONE_WORK }?.value,
                 onOrganizationClickListener)
     }
 
-    private fun initEducationDataItem(user: User, editable: Boolean): Group? {
-        val educationLevel = user.user_education
-        val academicDegrees = user.academic_degree ?: emptyList()
-        val education = user.education ?: emptyList()
+    private fun initEducationDataItem(user: /*User*/UserDetail, editable: Boolean): Group? {
+        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel }?.name
+        val academicDegrees = user.binds?.academicDegree ?: emptyList()
+        val education = user.binds?.education ?: emptyList()
         return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_title_education),
                     onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    /*if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees))
+                    if (!educationLevel.isNullOrEmpty()) setHeader(ProfileDataEducationLevelItem(educationLevel, academicDegrees,
+                            user.academicDegrees?: emptyList(), user.speciality?: emptyList()))
                     addAll(education.map { ProfileDataEducationItem(it) })
-                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditEducationClick() })*/
+                    if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditEducationClick() })
                 })
             }
         } else null
     }
 
-    private fun initWorkExperience(user: User, editable: Boolean): Group? {
-        val work = user.work ?: emptyList()
+    private fun initWorkExperience(user: /*User*/UserDetail, editable: Boolean): Group? {
+        val work = user.binds?.workExperience?.models ?: emptyList()
         return if (editable || work.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_work_experience),
                     onExpandChange = onItemExpandChange
             ).apply {
-                /*add(Section().apply {
+                add(Section().apply {
                     if (work.isNullOrEmpty()) add(ProfileNoWorkExperienceItem(resources.getString(R.string.no_experience)))
                     addAll(work.mapIndexed { index, socialRoles ->
                         ProfileDataWorkExperienceItem(socialRoles, index == 0) })
                     if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditWorkClick() })
-                })*/
+                })
             }
         } else null
     }
 
-    private fun initInterests(interests: Map<Interest, List<Interest>>?, editable: Boolean): Group? {
+    private fun initInterests(interests: Map</*Interest*/InterestNew, List</*Interest*/InterestNew>>?, editable: Boolean): Group? {
         val nonNullInterests = interests ?: emptyMap()
         return if (editable || nonNullInterests.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_interests),
                     onExpandChange = onItemExpandChange
             ).apply {
-                /*add(Section().apply {
+                add(Section().apply {
                     addAll(nonNullInterests.map {
                         val parent = it.key
                         val childList = it.value
-                        ProfileExpandableSubtitleGroup(parent.value, onExpandChange = onItemExpandChange).apply {
+                        ProfileExpandableSubtitleGroup(parent.name?: "", onExpandChange = onItemExpandChange).apply {
                             addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
                         }
                     })
                     if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditInterestsClick() })
-                })*/
+                })
             }
         } else null
     }
 
-    private fun initAdditionalInformation(user: User, editable: Boolean): Group? {
-        val notes = user.user_notes
-        val files = user.attached_recomendation_files ?: emptyList()
+    private fun initAdditionalInformation(user: /*User*/UserDetail, editable: Boolean): Group? {
+        val notes = user.notes
+        val files = user.binds?.recommendationFile ?: emptyList()
 
         val subgroups = mutableListOf<Group>()
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
@@ -282,7 +282,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             if (files.isNotEmpty()) {
                 addAll(files.map { file ->
                     ProfileDataFileItem(
-                            (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file"
+                            (/*if (file.desc.isNullOrBlank())*/ file.name /*else file.desc*/) ?: "file"
                     ) { presenter.onFileClick(file) }
                 })
             }
@@ -335,8 +335,8 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
         findNavController().navigate(UserFragmentDirections.userToStatus())
     }
 
-    override fun showOrganization(organization: Organization) {
-        findNavController().navigate(UserFragmentDirections.userToOrganization(organization.id))
+    override fun showOrganization(organization: /*Organization*/OrganizationNew) {
+        findNavController().navigate(UserFragmentDirections.userToOrganization(organization.id.toString()))
     }
 
     override fun downloadFile(file: String) {

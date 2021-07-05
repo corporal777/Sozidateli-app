@@ -9,15 +9,15 @@ import java.lang.reflect.Type
 data class EventFile(
         val path: Uri,
         var name: String,
-        val extension: String?
+        val mimeType: String?
 ) {
     class Deserializer : JsonDeserializer<EventFile> {
         override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): EventFile {
             val obj = json.asJsonObject
             return EventFile(
-                    Uri.parse(obj["url"].asString),
+                    Uri.parse(obj["uri"].asString),
                     obj["name"].asString,
-                    obj["ext"].asString
+                    obj["mimeType"].asString
             )
         }
     }

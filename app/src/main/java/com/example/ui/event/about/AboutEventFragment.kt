@@ -148,7 +148,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun setEventData(
             eventData: EventNew?,
-            userRegistration: Event.RegistrationStatus?,
+            userRegistration: Event.Status?,
             pages: List<PageModel>?,
             partners: List<PartnerModel>?,
             showContacts: Boolean,
@@ -162,7 +162,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     ) {
         val aboutItem = EventDataAboutItem(
                 -(eventData?.id?.toLong()?: 0),
-                "eventData.binds?.organization?.name",
+                eventData?.binds?.organization?.legalInformation?.name?.full,
                 eventData?.name,
                 null,
                 eventData?.holdingDate?.from.formatToEventDatesIntervalNew(eventData?.holdingDate?.to),
@@ -210,20 +210,20 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventData?.binds?.organization?.logo?.uri,
                         EventFormat(name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom?: "" else eventData?.format?.name?: ""),
                         null,
-                        !eventData?.binds?.rights?.registration!!,
+                        /*!eventData?.binds?.rights?.registration!!*/(eventData?.status?.value?: "") != Event.Status.REGISTRATION,
                         eventClickListener,
                         aboutItem,
-                        eventData?.userAgreement?.name,
+                        eventData?.userAgreement?.name?: eventData?.userAgreement?.uri,
                         false
                 ),
                 Section().apply {
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 
-                    val hasRating = (eventData.status?.value/*eventData?.status*/ == Event.Status.FINISHED ||
-                            eventData.status?.value/*eventData?.status*/ == Event.Status.IN_ARCHIVE) &&
-                            //eventData.ratingStartAt != null &&
-                            userRegistration == Event.RegistrationStatus.APPROVED
+                    val hasRating = (eventData?.status?.value/*eventData?.status*/ == Event.Status.FINISHED ||
+                            eventData?.status?.value/*eventData?.status*/ == Event.Status.IN_ARCHIVE) &&
+                            eventData.binds?.form?.firstOrNull { it.type == EventFormModel.Type.RATING } != null &&
+                            userRegistration == Event.Status.APPROVED
 
                     val hasPages = pages?.isNotEmpty()
                     val hasAgreement = userAgreement.isNullOrEmpty().not()
@@ -266,7 +266,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun setActionButton(event: EventNew/*EventData*/?, userRegistration: Event.RegistrationStatus?) {
+    override fun setActionButton(event: EventNew/*EventData*/?, userRegistration: Event.Status?) {
         var textRes: Int? = null
         var clickAction: (() -> Unit)? = null
         var visibility = true
@@ -275,13 +275,13 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             event?.status?.value/*event?.status*/ == Event.Status.FINISHED -> {
                 visibility = false
             }
-            !event?.binds?.rights?.registration!!/*!(event?.canRegister?: false)*/ -> {
+            (event?.status?.value?: "") != Event.Status.REGISTRATION/*event?.binds?.rights?.registration!!*//*!(event?.canRegister?: false)*/ -> {
                 when (userRegistration) {
-                    Event.RegistrationStatus.APPROVED -> {
+                    Event.Status.APPROVED -> {
                         textRes = R.string.event_action_show_event
                         clickAction = { presenter.onSelectEventClick() }
                     }
-                    Event.RegistrationStatus.PENDING -> {
+                    Event.Status.AWAITING, Event.Status.PENDING -> {
                         textRes = R.string.event_action_cancel_request
                         clickAction = { presenter.onActionCancel() }
                     }
@@ -292,15 +292,15 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             }
             else -> {
                 when (userRegistration) {
-                    Event.RegistrationStatus.APPROVED -> {
+                    Event.Status.APPROVED -> {
                         textRes = R.string.event_action_show_event
                         clickAction = { presenter.onSelectEventClick() }
                     }
-                    Event.RegistrationStatus.PENDING -> {
+                    Event.Status.AWAITING, Event.Status.PENDING -> {
                         textRes = R.string.event_action_cancel_request
                         clickAction = { presenter.onActionCancel() }
                     }
-                    Event.RegistrationStatus.DECLINED -> {
+                    Event.Status.DECLINED -> {
                         visibility = event?.email.isNullOrEmpty().not()
                         textRes = R.string.event_action_write_to_organisation
                         clickAction = { presenter.onActionWriteToOrganization() }
@@ -308,8 +308,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     else -> {
                         textRes = R.string.event_action_participate
                         clickAction = {
-                            val agreement = /*event?.userAgreement*/event.userAgreement?.name
-                            if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || agreement.isNullOrEmpty()) {
+                            val agreement = event?.userAgreement?.name?: event?.userAgreement?.uri
+                            if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ agreement.isNullOrEmpty()) {
                                 presenter.onGoToEventClick()
                             } else {
                                 showAgreementRegisterDialog(agreement)
@@ -446,12 +446,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     override fun showRegistrationFieldsRequest(fields: List<String>) {
         EventRegistrationProfileFieldsDialog(requireContext(), fields) {
             presenter.onShowEditProfileClick()
-        }
-                .show()
+        }.show()
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun hideWriteToOrganizationForm() {

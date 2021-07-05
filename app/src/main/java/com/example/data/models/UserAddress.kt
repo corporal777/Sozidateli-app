@@ -36,21 +36,21 @@ data class UserAddress(
                 user.user_address_flat
         )
 
-        fun fromDaDataItem(item: DaDataItem): UserAddress = UserAddress(
-                item.unrestricted_value,
-                item.data.postal_code,
-                item.data.country,
-                item.data.federal_district,
-                item.data.region_with_type,
-                item.data.area_with_type,
-                item.data.city_with_type,
-                item.data.city_district_with_type,
-                item.data.settlement_with_type,
-                item.data.street_with_type,
-                item.data.house,
-                item.data.flat,
-                item.data.geo_lat,
-                item.data.geo_lon
+        fun fromDaDataItem(item: NewUserAddress): UserAddress = UserAddress(
+                item.shortAddres,
+                item.index,
+                item.country,
+                item.federal,
+                item.region,
+                item.area,
+                item.city,
+                item.fullValue,
+                item.settlement,
+                item.street,
+                item.house,
+                item.flat,
+                item.lat,
+                item.lon
         )
     }
 }

@@ -1,7 +1,11 @@
 package com.example.ui.search.event
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBody.Companion.CALENDAR_EVENT
+import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
 import com.example.data.models.Event.Companion.FILTER_ADDRESS
 import com.example.data.models.Event.Companion.FILTER_CATEGORY
@@ -35,7 +39,8 @@ class SearchEventPresenter
         private val eventData: UserEventData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
-        private val commonRepository: CommonRepository
+        private val commonRepository: CommonRepository,
+        private val appData: AppData
 ) : SearchPresenter<SearchEventContract.View, EventNew/*Event*/, SearchFilter.EventNew/*Event*/>(), SearchEventContract.Presenter {
 
     /*override val pagination = PaginationDataSourceFactory { limit, offset ->
@@ -45,7 +50,7 @@ class SearchEventPresenter
         val data = mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
-            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")
             if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, "%"+filter.dateStart+"%")
@@ -150,13 +155,15 @@ class SearchEventPresenter
     }
 
     override fun onActionShowEvent(event: String) {
-        /*compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
+        /*compositeDisposable += eventRepository.setDefaultEvent(event)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.selectEvent() }*/
-        compositeDisposable += eventRepository.setDefaultEvent(event)
+
+        compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(CALENDAR_EVENT, event.toInt())))
                 .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()

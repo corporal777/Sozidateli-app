@@ -39,7 +39,11 @@ class RecoveryPasswordPresenter
 
     override fun onRecoveryClick(context: Context) {
         if (isDataValid(context)) {
-            compositeDisposable += authRepository.sendRecoveryEmail(loginType, email)
+           val res =  when (loginType) {
+                "email" -> email
+                else -> Utils.validatePhoneBeforeSend(email)
+            }
+            compositeDisposable += authRepository.sendRecoveryEmail(loginType, res)
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)

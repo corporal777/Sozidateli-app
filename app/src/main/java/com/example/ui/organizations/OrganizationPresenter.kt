@@ -34,6 +34,7 @@ class OrganizationPresenter
     lateinit var organizationId: String
     lateinit var organization: OrganizationNew
     private var scroll = 0
+    private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -82,30 +83,85 @@ class OrganizationPresenter
                     if (withLoadingPlaceholder) it.withLoadingDialog(viewState)
                     else it
                 }
-                .subscribe({
-                    val organizationData = it.data
-                    val uid = appData.getId()
-                    organizationData.binds?.member?.forEach { member ->
-                        //member.user?.isCurrentUser = member.user == uid
-                    }
-                    organization = organizationData
-                    viewState.setOrganization(
-                            it.logo,
-                            it.background,
-                            organizationData
-                            /*organizationData.organization,
-                            organizationData.events,
-                            organizationData.members*/
-                    )
-                    viewState.setSubscribed(organizationData.binds?.userFavorite != null)
+                .subscribe({ org ->
+                    org.data.binds?.membersSize = org.data.binds?.member?.size
+                    compositeDisposable += organizationRepository.getOrganizationMembersWithoutPagination(
+                            mutableMapOf<String, Any>().apply {
+                                put(OrganizationMember.MEMBERS_LIMIT, 3)
+                                put(OrganizationMember.MEMBERS_OFFSET, 0)
+                                put(OrganizationMember.MEMBERS_BINDS, "user,userFavorite")
+                                put(OrganizationMember.MEMBERS_ORGANIZATION, organizationId)
+                            }).performOnBackgroundOutOnMain()
+                            .subscribe({
+                                it.forEach { member ->
+                                    member.binds?.user?.binds = UserBinds(userFavorite = member.binds?.userFavorite)
+                                }
+                                org.data.binds?.member = it
+
+                                compositeDisposable += eventRepository.getEventsListWithoutPagination(
+                                        mutableMapOf<String, Any>().apply {
+                                            put(EventNew.EVENT_LIMIT, 3)
+                                            put(EventNew.EVENT_OFFSET, 0)
+                                            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+                                            put(EventNew.EVENT_ORGANIZATION, organizationId)
+                                        }
+                                ).performOnBackgroundOutOnMain()
+                                        .subscribe({ event ->
+                                            org.data.binds?.events = event.data
+                                            org.data.binds?.eventsSize = event.totalCount
+                                            setOrganizationData(org)
+                                        }, {
+                                            setOrganizationData(org)
+                                            it.printStackTrace()
+                                        })
+                            }, {
+                                setOrganizationData(org)
+                                it.printStackTrace()
+                            })
                 }, {
                     it.printStackTrace()
                 })
     }
 
+    private fun getEvents() {
+        compositeDisposable += eventRepository.getEventsListWithoutPagination(
+                mutableMapOf<String, Any>().apply {
+                    put(EventNew.EVENT_LIMIT, 3)
+                    put(EventNew.EVENT_OFFSET, 0)
+                    put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+                    put(EventNew.EVENT_ORGANIZATION, organizationId)
+                }
+        ).performOnBackgroundOutOnMain()
+                .subscribe({
+
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    private fun setOrganizationData(it: OrganizationDataAndImages) {
+        val organizationData = it.data
+        val uid = appData.getId()
+        organizationData.binds?.member?.forEach { member ->
+            member.isCurrentUser = member.user == uid
+        }
+        organization = organizationData
+        viewState.setOrganization(
+                it.logo,
+                it.background,
+                organizationData
+                /*organizationData.organization,
+                organizationData.events,
+                organizationData.members*/
+        )
+        viewState.setSubscribed(organizationData.binds?.userFavorite != null)
+    }
+
     override fun attachView(view: OrganizationContract.View?) {
         super.attachView(view)
         viewState.changeScrollY(scroll)
+        if (firstLaunch) firstLaunch = false
+        else loadData(true)
     }
 
     override fun onShowMoreEventsClick() {
@@ -132,14 +188,6 @@ class OrganizationPresenter
                     organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.setSubscribed(true)
                 }
-        /*compositeDisposable += organizationRepository.subscribe(organizationId)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.setSubscribed(true)
-                }, {
-                    it.printStackTrace()
-                })*/
     }
 
     override fun onUnsubscribeClick() {
@@ -150,35 +198,35 @@ class OrganizationPresenter
                     organization.binds?.userFavorite = null
                     viewState.setSubscribed(false)
                 }
-        /*compositeDisposable += organizationRepository.unsubscribe(organizationId)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.setSubscribed(false)
-                }, {
-                    it.printStackTrace()
-                })*/
     }
 
     override fun onShowMoreUsersClick() {
         viewState.showUsers(organizationId)
     }
 
-    override fun onUserClick(user: UserDetail/*User*/) {
-        viewState.showUser(user.id.toString()/*user.user_id.toString()*/)
+    override fun onUserClick(user: UserDetail?/*User*/) {
+        viewState.showUser(user?.id.toString()/*user.user_id.toString()*/)
     }
 
-    override fun onUserActionCLick(user: UserDetail/*User*/) {
-        val id = /*user.user_id.toString()*/user.id.toString()
-        /*val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
-        else userRepository.addToFavorite(id)
-        compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    user.is_in_favorite = !user.is_in_favorite
-                    viewState.updateUser(user)
-                }*/
+    override fun onUserActionCLick(user: UserDetail?/*User*/) {
+        val isSubscribed = user?.binds?.userFavorite != null
+        if (isSubscribed) {
+            compositeDisposable += eventRepository.deleteFromFavorite(user?.binds?.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        user?.binds?.userFavorite = null
+                        viewState.updateUser(user)
+                    }
+        } else {
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user?.id)))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.updateUser(user)
+                    }
+        }
     }
 
     override fun onActionRegister(event: String) {
@@ -201,13 +249,13 @@ class OrganizationPresenter
                             checkRegistrationFields(event, emptyList())
                         },
                         onSuccess = {
-                            checkRegistrationFields(event, it)
+                            checkRegistrationFields(event, it.fields?: emptyList())
                         }
                 )
     }
 
     private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {
-        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        val filtered = fields.filter { it.filled == false }.mapNotNull { it.name }
         //val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
             viewState.showEventRequest(event)

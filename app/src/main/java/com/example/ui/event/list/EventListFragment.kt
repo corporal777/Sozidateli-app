@@ -94,12 +94,12 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     it.userAgreement*/
                     it.id.toString(),
                     it.status?.value,
-                    if (it.binds?.userRegister?.isNotEmpty() == true) it.binds?.userRegister?.get(0)?.status?.value else null,
+                    /*if (it.binds?.userRegister?.isNotEmpty() == true) it.binds?.userRegister?.get(0)?.status?.value else null*/it?.binds?.currentUserRegistration?.status?.value,
                     it.binds?.organization?.backgroundColor?.value,
                     it.binds?.organization?.logo?.uri,
                     EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
                     it.binds?.organization?.email,
-                    it.binds?.rights?.registration != false,
+                    /*it.binds?.rights?.registration != false*/(it?.status?.value?: "") != Event.Status.REGISTRATION,
                     onEventClickListener,
                     createEventDataListItem(event = it),
                     it.userAgreement?.uri
@@ -190,7 +190,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun layout() = R.layout.layout_list

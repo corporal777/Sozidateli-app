@@ -69,12 +69,17 @@ class AppData(
         }
 
     var interests: List<Interest>? = null
+    var interestsNew: List<InterestNew>? = null
 
     private var user: User? = null
     private var newUser: UserDetail? = null
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
+
+    var hasBaseState = false
+    var hasMaxState = false
+    var defaultEvent: Int? = null
 
     val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val userNewChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
@@ -119,6 +124,13 @@ class AppData(
             }
         }
         userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun checkUserState(data: List<UserProfileFields>?) {
+        val base = data?.filter { it.requiredFor?.contains("basic") == true }
+        val max = data?.filter { it.requiredFor?.contains("maximum") == true }
+        hasBaseState = (base?.filter { it.filled == false }?.size?: 0) == 0
+        hasMaxState = (max?.filter { it.filled == false }?.size?: 0) == 0
     }
 
     fun setUserShortNew(user: UserDetail) {

@@ -11,6 +11,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.CompletableSubject
 import java.util.*
@@ -47,11 +48,14 @@ class UserEventData(
     private fun loadInternal(eventId: String): Completable {
         val event = eventRepository.getEventDetails(eventId)
         val formats = eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
-        return Maybe.zip(event, formats, BiFunction<EventInfo, List<NewEventFormat>, UserEvent> { event, formats ->
+        val eventActivities = eventRepository.getEventActivities(eventId.toInt())
+        return Maybe.zip(event, formats, eventActivities, Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
             event.event.format?.name = formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
+            val activityDates = activities.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
+            val dates = activityDates.map { EventDate(it.key?: "", it.value.size) }
             UserEvent(event.event.id.toString(),
-                    event, EventActivity(event.event.binds?.activity?: arrayListOf(), arrayListOf(),
-                            arrayListOf(), arrayListOf()), System.currentTimeMillis()) })
+                    event, EventActivity(activities, dates,
+                           event.event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name?: "") }?: emptyList(), arrayListOf()), System.currentTimeMillis()) })
                 .doOnSuccess { userEventDao.insert(it) }
                 .onErrorResumeNext(loadEventCache(eventId).toMaybe())
                 .doOnSuccess {
@@ -62,6 +66,26 @@ class UserEventData(
                     dataLoadingDate = it.updatedAt
                 }
                 .ignoreElement()
+
+        /*return Maybe.zip(event, formats, BiFunction<EventInfo, List<NewEventFormat>, UserEvent> { event, formats ->
+            event.event.format?.name = formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
+            val activityDates = event.event.binds?.activity?.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
+            val dates = activityDates?.map { EventDate(it.key?: "", it.value.size) }
+            UserEvent(event.event.id.toString(),
+                    event, EventActivity(event.event.binds?.activity?: arrayListOf(), dates?: arrayListOf(),
+                           event.event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name?: "") }?: emptyList(), arrayListOf()), System.currentTimeMillis()) })
+                .doOnSuccess { userEventDao.insert(it) }
+                .onErrorResumeNext(loadEventCache(eventId).toMaybe())
+                .doOnSuccess {
+                    val dateFormat = defaultServerDateFormatter
+                    days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
+                    userEvent = it
+                    isDataFromLocalStorage = it.isDataFromLocalStorage
+                    dataLoadingDate = it.updatedAt
+                }
+                .ignoreElement()*/
+
+
         /*val eventInfo = eventRepository.getEventInfo(eventId)
         val eventActivity = eventRepository.getEventActivity(eventId)
         return Maybe.zip(eventInfo, eventActivity, BiFunction<EventInfo, EventActivity, UserEvent> { info, activity ->

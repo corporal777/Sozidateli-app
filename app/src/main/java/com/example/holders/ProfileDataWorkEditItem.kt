@@ -26,7 +26,8 @@ class ProfileDataWorkEditItem(
         organization: String?,
         position: String?,
         birthday: String?,
-        private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit
+        private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit,
+        private val isDataValid: (isValid: Boolean) -> Unit
 ) : Item() {
 
     var isDeleteVisible = true
@@ -59,6 +60,7 @@ class ProfileDataWorkEditItem(
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
+                validateEnableButton()
                 profileDateFormat(year, month, day)
             }
 
@@ -68,6 +70,7 @@ class ProfileDataWorkEditItem(
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
+                validateEnableButton()
                 profileDateFormat(year, month, day)
             }
 
@@ -77,14 +80,17 @@ class ProfileDataWorkEditItem(
                 mFinish = null
                 etFinish.text = null
                 setFinishEnabled(this, !it)
+                validateEnableButton()
             }
             etProject.initInput(mOrganization) {
                 tilProject.error = null
                 mOrganization = it.toString()
+                validateEnableButton()
             }
             etPosition.initInput(mPosition) {
                 tilPosition.error = null
                 mPosition = it.toString()
+                validateEnableButton()
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }
@@ -149,6 +155,10 @@ class ProfileDataWorkEditItem(
             etFinish.isEnabled = enabled
             tilFinish.isEnabled = enabled
         }
+    }
+
+    private fun validateEnableButton() {
+        isDataValid(isDataValid())
     }
 
     private fun isStartValid() = mStart != null

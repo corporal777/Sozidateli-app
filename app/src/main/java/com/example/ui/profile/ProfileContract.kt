@@ -47,6 +47,9 @@ interface ProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setUserState(hasBase: Boolean, hasMax: Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

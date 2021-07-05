@@ -19,7 +19,7 @@ interface AboutEventContract {
                 showContacts: Boolean,
                 userAgreement: String?*/
                 eventData: EventNew?,
-                userRegistration: Event.RegistrationStatus?,
+                userRegistration: Event.Status?,
                 pages: List<PageModel>?,
                 partners: List<PartnerModel>?,
                 showContacts: Boolean,
@@ -29,7 +29,7 @@ interface AboutEventContract {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
                 event: EventNew?,
-                userRegistration: Event.RegistrationStatus?
+                userRegistration: Event.Status?
                 /*event: EventData,
                 userRegistration: Event.RegistrationStatus?*/
         )

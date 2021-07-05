@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.SubEvent
 import com.example.holders.DayHeaderItem
 import com.example.holders.NoDataItem
@@ -32,28 +33,28 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, 
 
     @ProvidePresenter
     fun providePresenter(): FavoriteSubeventPresenter = presenterProvider.get().apply {
-        FavoriteSubeventFragmentArgs.fromBundle(arguments!!).let {
+        FavoriteSubeventFragmentArgs.fromBundle(requireArguments()).let {
             event = it.event
-            actions = it.actions.asList()
+            //actions = it.actions.asList()
         }
     }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(subEvent: SubEvent) {
+        override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
 
-        override fun onAddToScheduleClick(subEvent: SubEvent) {
+        override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
             // do nothing
         }
 
-        override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
+        override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
             // do nothing
         }
 
-        override fun onChangeFavoriteClick(subEvent: SubEvent) {
+        override fun onChangeFavoriteClick(subEvent: /*SubEvent*/EventActivityModel) {
             presenter.onChangeFavoriteRequest(subEvent)
         }
     }
@@ -69,7 +70,7 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, 
         }
     }
 
-    override fun setData(data: Map<Long?, List<SubEvent>>) {
+    override fun setData(data: Map<Long?, List</*SubEvent*/EventActivityModel>>) {
         val groups = mutableListOf<Group>()
         data.forEach { entry ->
             val date = entry.key

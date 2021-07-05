@@ -102,4 +102,6 @@
     <dimen name="stories_progress_bar_height">2dp</dimen>
     <dimen name="stories_progress_corners_radius">2.5dp</dimen>
     <dimen name="lines_space">-5dp</dimen>
+    <dimen name="viewpager_next_item_visible">26dp</dimen>
+    <dimen name="viewpager_current_item_horizontal_margin">42dp</dimen>
 </resources>

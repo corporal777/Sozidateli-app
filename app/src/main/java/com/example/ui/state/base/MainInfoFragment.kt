@@ -1,0 +1,137 @@
+package com.example.ui.state.base
+
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.findNavController
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.R
+import com.example.data.models.UserDetail
+import com.example.extensions.findItemBy
+import com.example.extensions.showChangeEmailCompleteDialog
+import com.example.extensions.showChangeEmailDialog
+import com.example.holders.MainInfoEditItem
+import com.example.holders.MaxStateMainInfoEditItem
+import com.example.ui.base.BaseFragment
+import com.example.ui.state.UserState
+import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.suggestFieldView.DaDataUtil
+import com.example.util.PHONE_PERSONAL
+import com.example.util.Utils.maxStateScreen
+import com.example.util.firstLetterToUppercase
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.fragment_register_email.*
+import kotlinx.android.synthetic.main.fragment_user_edit.*
+import javax.inject.Inject
+import javax.inject.Provider
+
+class MainInfoFragment: BaseFragment(), MainInfoContract.View {
+
+    //private var canUpdateData = true
+    override fun layout(): Int = R.layout.fragment_main_info
+
+    @InjectPresenter
+    lateinit var presenter: MainInfoPresenter
+
+    @Inject
+    lateinit var presenterProvider: Provider<MainInfoPresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): MainInfoPresenter = presenterProvider.get().apply {
+        type = MainInfoFragmentArgs.fromBundle(requireArguments()).type
+        screen = MainInfoFragmentArgs.fromBundle(requireArguments()).screen
+    }
+
+    private var onSaveClick: (() -> Unit)? = null
+
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                hideKeyboard()
+                navigateUp()
+            }
+        })
+        ivClose.setOnClickListener { presenter.onClickClose() }
+        recyclerView.apply {
+            adapter = this@MainInfoFragment.adapter
+        }
+
+        btnSave.setOnClickListener { onSaveClick?.invoke() }
+    }
+
+    override fun setPersonalData(user: UserDetail) {
+        val dataItem = /*if (canUpdateData)*/ MainInfoEditItem(
+                1,
+                requireContext(),
+                user.name,
+                user.lastName,
+                user.middleName?.value,
+                user.gender?.firstLetterToUppercase(),
+                user.birthday?.value,
+                DaDataUtil.formatSavedLocation(requireContext(), user.address),
+                user.phone,
+                user.birthday?.isVisible?: false, !(user.state?.nameEdited?: true),
+                user.email, { isEnable ->
+                    btnSave.isEnabled = isEnable
+                }, { presenter.onConfirmPhoneClick(it) })
+        //else adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
+        //if (!canUpdateData) dataItem?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)
+
+        adapter.update(listOf(dataItem))
+
+        onSaveClick = {
+            recyclerView.requestFocus()
+            val dataToSave = dataItem?.getDataToSave() as MutableMap
+            if (dataItem.showConfirmEmail()) showChangeEmailComplete(dataItem.getEmail())
+            presenter.updateFiles(dataToSave)
+        }
+        //canUpdateData = false
+    }
+
+    override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
+
+    override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
+
+    override fun goToNext() {
+        when (presenter.type) {
+            UserState.MAX -> {
+                when (maxStateScreen(presenter.getUserData())) {
+                    MaxStateScreenType.BASE ->
+                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateMainInfoFragment().setScreen(presenter.screen))
+                    MaxStateScreenType.INTERESTS ->
+                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+                    MaxStateScreenType.WORK ->
+                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+                    MaxStateScreenType.EDUCATION ->
+                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+                }
+            }
+            UserState.BASE -> {
+                BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
+                        .setSelectCallback {
+                            when (presenter.screen) {
+                                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+                            }
+                        }
+            }
+        }
+    }
+
+    override fun showPhoneConfirm(phone: String) {
+        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(phone.replace(" ", "").replace("-", "")))
+    }
+
+    override fun showUpdateError(message: String?) {
+        val title = getString(R.string.profile_edit_request_error)
+        Toast.makeText(requireContext(), message?.let { "$title: $it" }
+                ?: title, Toast.LENGTH_SHORT).show()
+    }
+}

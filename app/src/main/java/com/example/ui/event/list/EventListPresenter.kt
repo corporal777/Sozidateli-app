@@ -2,6 +2,8 @@ package com.example.ui.event.list
 
 import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
 import com.example.di.Connectivity
 import com.example.extensions.buildList
@@ -126,13 +128,13 @@ abstract class EventListPresenter<V : EventListContract.View>(
                             checkRegistrationFields(event, emptyList())
                         },
                         onSuccess = {
-                            checkRegistrationFields(event, it)
+                            checkRegistrationFields(event, it.fields?: emptyList())
                         }
                 )
     }
 
     private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {
-        val filtered = fields.filter { it.value == false }.mapNotNull { it.name }
+        val filtered = fields.filter { it.filled == false }.mapNotNull { it.name }
         //val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
             viewState.showEventRequest(event)
@@ -163,7 +165,15 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionShowEvent(event: String) {
-        compositeDisposable += eventRepository.setDefaultEvent(event)
+        /*compositeDisposable += eventRepository.setDefaultEvent(event)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(event))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.selectEvent() }*/
+
+        compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, event.toInt())))
                 .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))
                 .withCheckInternetConnectivity()

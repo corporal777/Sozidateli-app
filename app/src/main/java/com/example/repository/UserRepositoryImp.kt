@@ -15,6 +15,7 @@ import durdinapps.rxfirebase2.RxHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -31,15 +32,39 @@ class UserRepositoryImp
         private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUserShortNew(): Maybe<UserDetail> = newApi.getUserShort(appData.getId(),
-            arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights")).map { it }.doOnSuccess {
-        appData.setAllUserInfo(it)
-    }
+    override fun getUserShortData(): Maybe<UserDetail> =
+        newApi.getUserShort(appData.getId(),
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights")).map { it }.doOnSuccess {
+            appData.setAllUserInfo(it)
+        }
 
-    override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
+    override fun getUserShortNew(): Maybe<UserDetail> =
+        Maybe.zip(getUserShortData(), checkUserProfile(), BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
+            return@BiFunction user
+        })
+
+    override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
+        newApi.checkUserProfile(appData.getId().toString()).doOnSuccess { state ->
+            appData.checkUserState(state.fields)
+        }
+
+    override fun getUserByIdNew(id: String): Maybe<UserDetail> = newApi.getUserShort(id.toInt(),
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "userFavorite")).map { it }
+
+    override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
+            newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
+                appData.checkUserState(state.fields)
+            }
+
+    override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
             newApi.updateProfile(id, map).doOnSuccess {
                 appData.setUserShortNew(it)
             }
+
+    override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
+            Single.zip(updateUserProfile(id, map), checkUserProfileSingle(), BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
+                return@BiFunction user
+            })
 
     override fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail> =
             newApi.confirmEmailCode(id, body).doOnSuccess {
@@ -47,9 +72,9 @@ class UserRepositoryImp
                 appData.saveId(it.id)
             }
 
-    override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
+    /*override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
         appData.setUserShort(it)
-    }
+    }*/
 
     override fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable =
             newApi.confirmPhoneCode(id, body)
@@ -66,7 +91,7 @@ class UserRepositoryImp
 
     override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
-    override fun getLastNotification() = call(api.getLastNotification())
+    //override fun getLastNotification() = call(api.getLastNotification())
 
     override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>> {
         return callPagination(api.getUserNotifications(limit, offset))
@@ -125,14 +150,14 @@ class UserRepositoryImp
         return newApi.deleteImage(appData.getId())
     }
 
-    override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
+    /*override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
         return call(api.uploadDocument(
                 file.let {
                     val imageFile = File(it)
                     val body = imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
                     MultipartBody.Part.createFormData("file[0]", imageFile.name, body)
                 }))
-    }
+    }*/
 
     override fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel> {
         return newApi.uploadRecommendedFile(body)
@@ -146,13 +171,13 @@ class UserRepositoryImp
         return newApi.deleteRecommendedFile(fileId)
     }
 
-    override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
+    /*override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
         return usersList(limit, offset, mapOf(FIELD_USER_IS_IN_FAVORITE to true))
     }
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
         return call(api.changeEmailConfirm(email, code))
-    }
+    }*/
 
     override fun getUserById(id: String): Maybe<User> {
         return call(api.getUserById(id))
@@ -162,13 +187,13 @@ class UserRepositoryImp
 
     override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
 
-    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+    /*override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.chatSearch(searchMap, limit, offset))
     }
 
     override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>> {
         return callPagination(api.getUsersList(limit, offset, filter))
-    }
+    }*/
 
     override fun checkPassword(password: String): Completable {
         return call(api.checkPassword(password))
@@ -289,5 +314,33 @@ class UserRepositoryImp
 
     override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())
+    }
+
+    override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+        return newApi.getUsers(map)
+                .map {
+                    PaginationResponse(
+                            it.totalCount,
+                            it.data?: arrayListOf()
+                    )
+                }
+    }
+
+    override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+        return newApi.getUsersFavoritesList(map)
+                .map {
+                    it.data.forEach { org ->
+                        org.entity?.model?.binds = UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
+                    }
+                    PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                }
+    }
+
+    override fun unblockUser(id: Int): Completable {
+        TODO("Not yet implemented")
+    }
+
+    override fun blockUser(id: Int): Completable {
+        TODO("Not yet implemented")
     }
 }

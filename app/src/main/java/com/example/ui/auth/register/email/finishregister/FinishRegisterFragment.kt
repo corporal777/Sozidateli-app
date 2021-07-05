@@ -34,7 +34,6 @@ import kotlinx.android.synthetic.main.fragment_finish_register.etMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
 import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.tvAgreeError
 import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
 import onTextChanged
 import javax.inject.Inject
@@ -44,6 +43,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     private var isNoMiddleName = false
     private var loginType = "email"
+    private var nameEditable: Boolean? = false
 
     private val timerMessage by lazy {
         getString(R.string.auth_register_confirm_email_timer_two)
@@ -72,6 +72,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             isNoMiddleName = FinishRegisterFragmentArgs.fromBundle(it).isNoMiddleName
             loginType = if (email.isEmpty()) "phone" else "email"
             presenter.loginType = loginType
+            nameEditable = FinishRegisterFragmentArgs.fromBundle(it).nameEdited
             if (loginType == "email") {
                 (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                 presenter.getData()
@@ -81,15 +82,18 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (loginType == "email") {
+            ibRegister.apply { isEnabled = true }
+        }
         ivClose.setOnClickListener { presenter.onClickClose() }
         //cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
         //cbAgree.isChecked = true
         if (BuildConfig.NEW_PROFILE_EDIT) {
-            tilMiddleName.visibility = View.VISIBLE
+            //tilMiddleName.visibility = View.VISIBLE
             //llAgree.visibility = View.GONE
             //phone_layout.visibility = View.VISIBLE
         } else {
-            tilMiddleName.visibility = View.GONE
+            //tilMiddleName.visibility = View.GONE
             //llAgree.visibility = View.VISIBLE
             //phone_layout.visibility = View.GONE
         }
@@ -212,7 +216,9 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             }
         }
         etFirstName.setText(firstName)
+        etFirstName.isEnabled = !(nameEditable?: false)
         etLastName.setText(lastName)
+        etLastName.isEnabled = !(nameEditable?: false)
         if (middleName == "-") {
             etMiddleName.isEnabled = false
             scNoMiddleName.isChecked = true
@@ -220,6 +226,8 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             etMiddleName.setText(middleName)
             scNoMiddleName.isChecked = false
         }
+        etMiddleName.isEnabled = !(nameEditable?: false)
+        scNoMiddleName.isEnabled = !(nameEditable?: false)
         //etMobilePhone.setText(phone)
         //etMobilePhone.setPhone(phone?: "")
         //cbAgree.isChecked = isAgree
@@ -231,7 +239,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     }
 
     override fun showAgreementError(show: Boolean) {
-        tvAgreeError.isInvisible = !show
+        //tvAgreeError.isInvisible = !show
     }
 
     override fun onAttach(context: Context) {
@@ -273,7 +281,7 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     override fun setCanResend(canResend: Boolean) {
         btnResend.isEnabled = canResend
-        tvTimer.isInvisible = canResend
+        tvTimer.isVisible = !canResend
     }
 
     override fun showWrongPhoneError(show: Boolean) {

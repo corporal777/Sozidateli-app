@@ -3,9 +3,7 @@ package com.example.ui.user
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Organization
-import com.example.data.models.ProfileUserData
-import com.example.data.models.UserEditDataType
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.ui.base.BaseContract
 import com.example.ui.views.UserSubscribeButton
@@ -28,7 +26,7 @@ interface UserContract {
         fun downloadFile(file: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showOrganization(organization: Organization)
+        fun showOrganization(organization: /*Organization*/OrganizationNew)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBlockConfirmation()
@@ -57,8 +55,8 @@ interface UserContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onWriteMessageClick()
-        fun onOrganizationClick(organization: Organization)
-        fun onFileClick(file: RecommendationFile)
+        fun onOrganizationClick(organization: /*Organization*/OrganizationNew)
+        fun onFileClick(file: /*RecommendationFile*/FileModel)
         fun onStatusClick()
 
         fun onSubscribeClick()

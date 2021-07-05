@@ -22,9 +22,13 @@ class ProfileDataEducationEditGroupNew(
         private val availableDegrees: List<EducationLevel>,
         private val availableSciences: List<EducationLevel>,
         education: List<EducationModel>,
-        academicDegrees: List<AcademicDegreeModel>
+        academicDegrees: List<AcademicDegreeModel>,
+        private val enableNextButton:(enable: Boolean) -> Unit
 ) : NestedGroup() {
 
+    var isEducationLevelValid = false
+    var isDegreeValid = true
+    var isEducationValid = false
     var validatorSize = 4
     var hasAcademicDegree = false
     var data: MutableList<ProfileDataAcademicDegreeEditItem> = mutableListOf()
@@ -55,6 +59,8 @@ class ProfileDataEducationEditGroupNew(
             saveDegree()
             degrees.clear()
         }
+        isEducationLevelValid = true
+        validateEnableButton()
     })
 
     private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
@@ -86,6 +92,8 @@ class ProfileDataEducationEditGroupNew(
             if (checkDataValid()) {
                 add(createEducationItem(null))
                 isDeleteVisible()
+                isEducationValid = false
+                validateEnableButton()
             }
         }.apply {
             hasDivider = false
@@ -147,6 +155,10 @@ class ProfileDataEducationEditGroupNew(
         }
     }
 
+    private fun validateEnableButton() {
+        enableNextButton(isDegreeValid && isEducationValid && isEducationLevelValid)
+    }
+
     private fun createAcademicDegreeEditItem(id: Int?, degree: EducationLevel?, specialisation: String?): ProfileDataAcademicDegreeEditItem {
         return ProfileDataAcademicDegreeEditItem(id, degree?.name, specialisation, availableDegrees, availableSciences) {
             degrees.remove(it)
@@ -156,17 +168,22 @@ class ProfileDataEducationEditGroupNew(
     }
 
     private fun createEducationItem(socialRoles: EducationModel?): ProfileDataEducationEditItem {
+        isEducationValid = false
+        validateEnableButton()
         return ProfileDataEducationEditItem(
                 socialRoles?.id,
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
                 socialRoles?.speciality,
-                birthday
-        ) {
+                birthday,
+        {
             educations.remove(it)
             isDeleteVisible()
-        }
+        }, {
+            isEducationValid = it
+            validateEnableButton()
+        })
     }
 
     private fun isDeleteVisible() {

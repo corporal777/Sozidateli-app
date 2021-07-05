@@ -34,7 +34,7 @@ interface RegisterEmailNewContract {
         fun showEmailConfirmation(email: String, password: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean)
+        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)

@@ -34,9 +34,9 @@ class RegisterEventPassportItem(
             etSerial.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.serial)
+                setText(passport.series)
                 serialTextWatcher = onTextChanged {
-                    passport.serial = it?.toString()
+                    passport.series = it?.toString()
                     onDataChange()
                 }
             }
@@ -44,9 +44,9 @@ class RegisterEventPassportItem(
             etNumber.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.num)
+                setText(passport.number)
                 numberTextWatcher = onTextChanged {
-                    passport.num = it?.toString()
+                    passport.number = it?.toString()
                     onDataChange()
                 }
             }
@@ -54,14 +54,14 @@ class RegisterEventPassportItem(
             etAgency.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.org)
+                setText(passport.issuedBy)
                 agencyTextWatcher = onTextChanged {
-                    passport.org = it?.toString()
+                    passport.issuedBy = it?.toString()
                     onDataChange()
                 }
             }
 
-            val date = passport.date?.let { defaultServerDateFormatter.parse(it) }
+            val date = passport.issuedDate?.let { defaultServerDateFormatter.parse(it) }
             tilDate.apply {
                 isEnabled = editable
                 initAsDatePicker(date, maxDate = Date()) { year, month, day ->
@@ -74,7 +74,7 @@ class RegisterEventPassportItem(
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(date?.let { defaultDateFormatter.format(it) })
                 dateTextWatcher = onTextChanged {
-                    passport.date = it?.toString()?.formatToDefaultServerDate()
+                    passport.issuedDate = it?.toString()?.formatToDefaultServerDate()
                     onDataChange()
                 }
             }
@@ -82,9 +82,9 @@ class RegisterEventPassportItem(
             etCode.apply {
                 isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
-                setText(passport.kod)
+                setText(passport.issuedDepartment)
                 codeTextWatcher = onTextChanged {
-                    passport.kod = it?.toString()
+                    passport.issuedDepartment = it?.toString()
                     onDataChange()
                 }
             }

@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_education.etStart
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.scFinish
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.tilFinish
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.tilStart
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import java.util.*
 
 class ProfileDataEducationEditItem(
@@ -28,7 +27,8 @@ class ProfileDataEducationEditItem(
         organization: String?,
         speciality: String?,
         birthday: FieldDetails?,
-        private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit
+        private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit,
+        private val isDataValid: (isValid: Boolean) -> Unit
 ) : Item() {
 
     var isDeleteVisible = true
@@ -58,6 +58,7 @@ class ProfileDataEducationEditItem(
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
+                validateEnableButton()
                 profileDateFormat(year, month, day)
             }
 
@@ -67,6 +68,7 @@ class ProfileDataEducationEditItem(
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
+                validateEnableButton()
                 profileDateFormat(year, month, day)
             }
 
@@ -77,6 +79,7 @@ class ProfileDataEducationEditItem(
                     mFinish = null
                     etFinish.text = null
                     setFinishEnabled(this, !it)
+                    validateEnableButton()
                 }
                 isDateCheckboxWasSet = true
             }
@@ -84,10 +87,12 @@ class ProfileDataEducationEditItem(
             etInstitution.initInput(mInstitution) {
                 tilInstitution.error = null
                 mInstitution = it.toString()
+                validateEnableButton()
             }
             etSpeciality.initInput(mSpeciality) {
                 tilSpeciality.error = null
                 mSpeciality = it.toString()
+                validateEnableButton()
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
@@ -133,6 +138,10 @@ class ProfileDataEducationEditItem(
                 }
             }
         }
+    }
+
+    private fun validateEnableButton() {
+        isDataValid(isDataValid())
     }
 
     private fun setFinishEnabled(viewHolder: GroupieViewHolder, enabled: Boolean) {

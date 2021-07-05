@@ -65,4 +65,23 @@ sealed class SearchFilter : Serializable {
             const val AGE_MAX = 80
         }
     }
+
+    data class UserNew(
+            var name: String? = null,
+            var address: String? = null,
+            var email: String? = null,
+            var phone: String? = null,
+            var theme: Int? = null,
+            var spec: Int? = null,
+            var ageFrom: Int? = null,
+            var ageTo: Int? = null,
+            var favorites: Boolean? = null
+    ) : SearchFilter() {
+        var interests: Map<InterestNew, List<InterestNew>>? = null
+
+        companion object {
+            const val AGE_MIN = 14
+            const val AGE_MAX = 80
+        }
+    }
 }

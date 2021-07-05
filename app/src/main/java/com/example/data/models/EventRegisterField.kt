@@ -34,7 +34,7 @@ data class EventRegisterField(
         @SerializedName("checkbox")
         CHECKBOX,
 
-        @SerializedName("selectbox")
+        @SerializedName("list")
         SELECT_BOX,
 
         @SerializedName("radiobox")
@@ -53,6 +53,9 @@ data class EventRegisterField(
         PASSPORT,
 
         @SerializedName("group")
-        GROUP
+        GROUP,
+
+        @SerializedName("checkboxes")
+        CHECKBOXES
     }
 }

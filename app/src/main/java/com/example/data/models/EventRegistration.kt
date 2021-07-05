@@ -23,7 +23,7 @@ data class EventRegistration(
         val registrationFinish: String?,
         val status: Event.RegistrationStatus?,
         @SerializedName("user_registration")
-        val userRegistration: Event.RegistrationStatus,
+        val userRegistration: Event./*RegistrationStatus*/Status,
         @SerializedName("registration_name")
         val registrationName: String?,
         @SerializedName("registration_headline")

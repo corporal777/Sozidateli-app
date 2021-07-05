@@ -37,7 +37,7 @@ class EventStatusItem(
         itemId: Long,
         private val eventId: String,
         private val status: Event.Status?,
-        private val userRegistration: Event.RegistrationStatus?,
+        private val userRegistration: Event.Status?,
         private val backgroundColor: String?,
         private val logo: String?,
         private val format: EventFormat?,
@@ -90,15 +90,15 @@ class EventStatusItem(
             val textBackground: Int
             val textRes: Int
             when (userRegistration) {
-                Event.RegistrationStatus.APPROVED -> {
+                Event.Status.APPROVED -> {
                     textBackground = R.color.event_status_approved_background
                     textRes = R.string.event_status_approved
                 }
-                Event.RegistrationStatus.PENDING -> {
+                Event.Status.PENDING -> {
                     textBackground = R.color.event_status_wait_confirmation_background
                     textRes = R.string.event_status_wait_confirmation
                 }
-                Event.RegistrationStatus.DECLINED -> {
+                Event.Status.DECLINED -> {
                     textBackground = R.color.event_status_declined_background
                     textRes = R.string.event_status_decline
                 }
@@ -128,24 +128,24 @@ class EventStatusItem(
                 visibility = false
             }
             conferenceRegistrationClosed &&
-                    (userRegistration != Event.RegistrationStatus.APPROVED ||
-                            userRegistration != Event.RegistrationStatus.PENDING) -> {
+                    (userRegistration != Event.Status.APPROVED ||
+                            userRegistration != Event.Status.PENDING) -> {
                 textBackground = R.drawable.background_event_action_disabled
                 textRes = R.string.about_event_registration_closed
             }
             else -> when (userRegistration) {
-                Event.RegistrationStatus.APPROVED -> {
+                Event.Status.APPROVED -> {
                     textBackground = R.drawable.background_event_action_approved
                     textRes = R.string.event_action_show_event
                     clickAction = { onEventClickListener.onActionShowEvent(eventId) }
                     textColor = Color.WHITE
                 }
-                Event.RegistrationStatus.PENDING -> {
+                Event.Status.PENDING -> {
                     textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_cancel_request
                     clickAction = { onEventClickListener.onActionCancel(eventId) }
                 }
-                Event.RegistrationStatus.DECLINED -> {
+                Event.Status.DECLINED -> {
                     if (BuildConfig.NEW_PROFILE_EDIT) {
                         visibility = organizationEmails.isNullOrEmpty().not()
                         textBackground = R.drawable.background_event_action
@@ -159,7 +159,7 @@ class EventStatusItem(
                     textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_participate
                     clickAction = {
-                        if (!BuildConfig.REGISTER_AGREEMENT_ENABLED || userAgreement.isNullOrEmpty()) {
+                        if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ userAgreement.isNullOrEmpty()) {
                             onEventClickListener.onActionRegister(eventId)
                         } else {
                             showAgreementRegisterDialog(btnAction.context, userAgreement)

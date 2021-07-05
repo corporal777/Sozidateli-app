@@ -64,6 +64,9 @@ data class Event(
         @SerializedName("awaiting")
         AWAITING,
 
+        @SerializedName("pending")
+        PENDING,
+
         @SerializedName("approved")
         APPROVED,
 

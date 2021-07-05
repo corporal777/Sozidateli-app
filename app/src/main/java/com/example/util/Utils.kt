@@ -2,6 +2,8 @@ package com.example.util
 
 import android.content.Context
 import com.example.R
+import com.example.data.models.UserDetail
+import com.example.ui.state.max.MaxStateScreenType
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import java.text.DateFormat
 import java.text.ParseException
@@ -79,4 +81,12 @@ object Utils {
             val minute = ceil(time.toDouble() / 60).toInt()
             context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
         } else context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
+
+    fun maxStateScreen(user: UserDetail): MaxStateScreenType =
+        if (user.binds?.recommendationFile.isNullOrEmpty() || user.notes.isNullOrEmpty() ||
+                (user.site?.value?.isNullOrEmpty() == true) || (user.socialLinks?.value?.isNullOrEmpty() == true) ||
+                user.phone?.firstOrNull { it.type == PHONE_WORK }?.value.isNullOrEmpty()) MaxStateScreenType.BASE
+        else if (user.interests.isNullOrEmpty()) MaxStateScreenType.INTERESTS
+        else if (user.binds?.workExperience?.models?.isNullOrEmpty() == true) MaxStateScreenType.WORK
+        else MaxStateScreenType.EDUCATION
 }

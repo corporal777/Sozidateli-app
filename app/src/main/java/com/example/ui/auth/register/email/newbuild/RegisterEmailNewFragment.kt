@@ -184,10 +184,10 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
         ibRegister.apply { isEnabled = isEnable }
     }
 
-    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean) {
+    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean) {
         findNavController().navigate(R.id.register_email_finish_fragment, bundleOf("code" to code,
                 "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName,
-                "isConfirmed" to userPhoneConfirmed, "isNoMiddleName" to isNoMiddleName), NavOptions.Builder()
+                "isConfirmed" to userPhoneConfirmed, "isNoMiddleName" to isNoMiddleName, "nameEditable" to nameEditable), NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build())
         //findNavController().navigate(RegisterEmailNewFragmentDirections.registerToFinishRegister(code, name, lastName, email, phone, middleName))

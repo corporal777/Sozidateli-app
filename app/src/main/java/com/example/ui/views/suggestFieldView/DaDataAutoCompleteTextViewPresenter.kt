@@ -3,6 +3,7 @@ package com.example.ui.views.suggestFieldView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.models.DaDataItem
+import com.example.data.models.NewUserAddress
 import com.example.repository.DaDataRepository
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -22,7 +23,7 @@ class DaDataAutoCompleteTextViewPresenter @Inject constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
-    private var items: List<DaDataItem> = emptyList()
+    private var items: List<NewUserAddress> = emptyList()
 
     override fun onQueryChange(query: String) {
         compositeDisposable.clear()
@@ -30,8 +31,8 @@ class DaDataAutoCompleteTextViewPresenter @Inject constructor(
                 .flatMap { daDataRepository.suggestCity(query, 10) }
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    items = it.suggestions
-                    viewState.setSuggested(it.suggestions)
+                    items = it.data?: emptyList()
+                    viewState.setSuggested(it.data?: emptyList())
                 }, {
                     it.printStackTrace()
                 })
@@ -39,10 +40,10 @@ class DaDataAutoCompleteTextViewPresenter @Inject constructor(
 
     override fun onItemSelected(position: Int) {
         val item = items.getOrNull(position) ?: return
-        compositeDisposable += daDataRepository.suggestCity(item.value, 1)
+        compositeDisposable += daDataRepository.suggestCity(item.fullValue?: "", 1)
                 .performOnBackgroundOutOnMain()
                 .subscribe({
-                    val firstItem = it.suggestions.firstOrNull() ?: item
+                    val firstItem = it.data?.firstOrNull() ?: item
                     viewState.performOnItemSelected(firstItem)
                 }, {
                     it.printStackTrace()

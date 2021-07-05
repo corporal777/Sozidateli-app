@@ -108,9 +108,9 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         user ?: return
 
         val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
-        tvPhoneMobile.isVisible = phone != null
-        tvPhoneMobileTitle.isVisible = phone != null
-        btnPhoneEdit.isVisible = phone != null
+        //tvPhoneMobile.isVisible = phone != null
+        //tvPhoneMobileTitle.isVisible = phone != null
+        //btnPhoneEdit.isVisible = phone != null
         tvPhoneMobile.text = phone
 
         tvEmail.text = user.email?.value

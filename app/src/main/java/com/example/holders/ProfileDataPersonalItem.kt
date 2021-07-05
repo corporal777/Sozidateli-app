@@ -8,6 +8,8 @@ import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
+import com.example.data.models.OrganizationModel
+import com.example.data.models.OrganizationNew
 import com.example.extensions.parsePhone
 import com.example.util.ClickableSpan
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -17,7 +19,7 @@ import removeUrlUnderline
 import setTextDataOrHide
 
 class ProfileDataPersonalItem(
-        private val organizations: List<Organization>?,
+        private val organizations: List</*Organization*/OrganizationNew>?,
         private val email: String?,
         private val workPhone: String?,
         private val mobilePhone: String?,
@@ -27,7 +29,7 @@ class ProfileDataPersonalItem(
         private val city: String?,
         private val socialNetworks: List<String>?,
         private val user_phone_work_additional: String?,
-        private val onOrganizationClick: (Organization) -> Unit
+        private val onOrganizationClick: (/*Organization*/OrganizationNew) -> Unit
 ) : Item() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -36,7 +38,7 @@ class ProfileDataPersonalItem(
 
             val organizationStringBuilder = SpannableStringBuilder()
             groupOrganization.setTextDataOrHide(tvOrganization, organizations?.joinTo(organizationStringBuilder, "\n") {
-                it.name.toSpannable().apply {
+                (it.legalInformation?.name?.short?: "").toSpannable().apply {
                     set(0, this.length, ClickableSpan {
                         onOrganizationClick(it)
                     })

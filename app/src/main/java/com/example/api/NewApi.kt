@@ -6,6 +6,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 @JvmSuppressWildcards
@@ -100,6 +101,9 @@ interface NewApi {
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
+    @GET("v1/event")
+    fun getEventsListWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
+
     //+
     @GET("v1/organization")
     fun searchOrganizations(@QueryMap map: Map<String, Any>): Maybe<OrganizationNewModel>
@@ -113,8 +117,11 @@ interface NewApi {
     fun getEventFormatsList(@QueryMap map: Map<String, Any>): Maybe<EventFormatsModel>
 
     //+
-    @GET("v1/user/{id}/get-profile-fullness")
-    fun checkUserProfile(@Path("id") organizationId : String): Single<List<UserProfileFields>>
+    @GET("v1/user/{id}/profile-state")
+    fun checkUserProfile(@Path("id") organizationId : String): Maybe<UserProfileFieldsModel>
+
+    @GET("v1/user/{id}/profile-state")
+    fun checkUserProfileSingle(@Path("id") organizationId : String): Single<UserProfileFieldsModel>
 
     //+
     @GET("v1/event/{id}")
@@ -171,6 +178,48 @@ interface NewApi {
     @GET("v1/user-favorites")
     fun getEventFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<EventFavoriteModel>>>
 
+    @GET("v1/user-favorites")
+    fun getUsersFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UsersFavoriteModel>>>
+
     @GET("v1/organization-member")
     fun getOrganizationMembers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationNewMemberModel>>>
+
+    @GET("v1/organization-member")
+    fun getOrganizationMembersWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationMemberModel>>>
+
+    @GET("v1/user")
+    fun getUsers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UserDetail?>?>>
+
+    @PATCH("v1/user/{id}/unblock")
+    fun unblockUser(@Path("id") id : Int): Completable
+
+    @PATCH("v1/user/{id}/block")
+    fun blockUser(@Path("id") id : Int): Completable
+
+    @GET("v1/event-form")
+    fun getEventForm(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel>>>
+
+    @GET("v1/event-form-result")
+    fun getEventFormResult(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
+
+    @POST("v1/event-form-result")
+    fun eventRegister(@Body body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
+
+    @POST("v1/event-user-registration/{id}/register")
+    fun registerToEvent(@Path("id") id : Int, @Body body: RegisterToEventBody): Completable
+
+    @PATCH("v1/event-user-registration/{id}/cancel")
+    fun cancelRegisterToEvent(@Path("id") id : Int): Completable
+
+    @POST("v1/user-calendar")
+    fun addEventToCalendar(@Body body: EventCalendarBody): Completable
+
+    @DELETE("v1/user-calendar/{user}/all")
+    fun deleteAllCalendarEvents(@Path("user") id : Int, @Query("entityType") entityType: String): Completable
+
+    @GET("v1/user-calendar")
+    fun getUserCalendarEvent(@Query("user") userId: Int, @Query("entityType") entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
+
+    @GET("v1/event-activity")
+    fun getEventActivities(@Query("event") eventId: Int, @Query("binds") binds: String): Maybe<ApiNewResponse<List<EventActivityModel>>>
 }

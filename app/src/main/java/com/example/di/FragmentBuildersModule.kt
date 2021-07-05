@@ -50,6 +50,12 @@ import com.example.ui.search.qr.QrScannerFragment
 import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.splash.SplashFragment
+import com.example.ui.state.UserStateFragment
+import com.example.ui.state.base.MainInfoFragment
+import com.example.ui.state.max.interests.BaseStateInterestsFragment
+import com.example.ui.state.max.MaxStateMainInfoFragment
+import com.example.ui.state.max.education.MaxStateEducationFragment
+import com.example.ui.state.max.work.MaxStateWorkFragment
 import com.example.ui.status.StatusFragment
 import com.example.ui.status.tabs.StatusPagesFragment
 import com.example.ui.stories.StoriesFragment
@@ -286,4 +292,22 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEditDegreeFragment(): EditDegreeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserStateFragment(): UserStateFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMainInfoFragment(): MainInfoFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeBaseStateInterestsFragment(): BaseStateInterestsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStateMainInfoFragment(): MaxStateMainInfoFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStateWorkFragment(): MaxStateWorkFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStateEducationFragment(): MaxStateEducationFragment
 }

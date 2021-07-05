@@ -5,6 +5,7 @@ import android.view.View
 import android.view.View.GONE
 import androidx.navigation.fragment.findNavController
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.Tag
@@ -36,19 +37,19 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(subEvent: SubEvent) {
+        override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
 
-        override fun onAddToScheduleClick(subEvent: SubEvent) {
+        override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
             presenter.onAddToScheduleClick(subEvent)
         }
 
-        override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
+        override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
             presenter.onRemoveFromScheduleClick(subEvent)
         }
 
-        override fun onChangeFavoriteClick(subEvent: SubEvent) {
+        override fun onChangeFavoriteClick(subEvent: /*SubEvent*/EventActivityModel) {
             // do nothing
         }
     }
@@ -92,14 +93,14 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         calendarItem?.scrollToDay(day)
     }
 
-    override fun setSubEvents(subEvents: List<SubEvent>, selectedTags: List<Tag>) {
+    override fun setSubEvents(subEvents: List</*SubEvent*/EventActivityModel>, selectedTags: List<Tag>) {
         eventsSection.update(subEvents.map { subEvent ->
             SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener)
         })
     }
 
-    override fun updateSubevent(subEvent: SubEvent) {
-        val idLong = subEvent.id.toLong()
+    override fun updateSubevent(subEvent: /*SubEvent*/EventActivityModel) {
+        val idLong = subEvent.id?.toLong()
         eventsSection.findItemBy<SubEventItem> { it -> it.id == idLong }?.notifyChanged()
     }
 

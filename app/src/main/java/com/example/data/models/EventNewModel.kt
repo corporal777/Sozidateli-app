@@ -10,6 +10,12 @@ data class EventNewModel(
         val totalCount: Int? = null
 )
 
+data class EventNewModelWithoutPagination(
+        val data: List<EventNew>? = null,
+        @SerializedName("totalCount")
+        val totalCount: Int? = null
+)
+
 @Parcelize
 data class EventNew(
         val id: Int? = null,
@@ -63,6 +69,16 @@ data class EventNew(
                 const val EVENT_STATUS = "status"
                 const val EVENT_HIDDEN = "stateIsHidden"
         }
+}
+
+fun EventNew.createMapInfo(): MapInfo? {
+        val lat = address?.lat?.takeIf { it in -90.0..90.0 }
+        val lon = address?.lon?.takeIf { it in -180.0..180.0 }
+        val title = address?.description?.title
+        val description = address?.description?.description
+
+        return if (lat == null || lon == null) null
+        else MapInfo(lat, lon, title, description)
 }
 
 @Parcelize
@@ -120,7 +136,13 @@ data class EventBindsModel(
         var userFavorite: EventUserFavorite? = null,
         val tag: List<EventTagModel>? = null,
         val auditorium: List<EventAuditoriumModel>? = null,
-        val form: List<EventFormModel>? = null
+        val form: List<EventFormModel>? = null,
+        @SerializedName("current-user-registration")
+        val currentUserRegistration: CurrentUserRegistrationModel? = null,
+        @SerializedName("userFavoriteActivities")
+        val userFavoriteActivities: List<String>? = null/*,
+        @SerializedName("destination-scheme")
+        val destinationScheme: Any? = null*/
 ): Parcelable {
 
         fun getFirstActionStartDate(): String? {
@@ -130,6 +152,20 @@ data class EventBindsModel(
                         activity.first().holdingDate?.from
         }
 }
+
+@Parcelize
+data class CurrentUserRegistrationModel(
+        val id: Int? = null,
+        val event: Int? = null,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
+        val user: Int? = null,
+        val status: EventsStatusModel? = null,
+        @SerializedName("wasPresent")
+        val wasPresent: String? = null
+): Parcelable
+
+
 
 @Parcelize
 data class EventFormModel(
@@ -148,6 +184,10 @@ data class EventFormModel(
                 @SerializedName("rating")
                 RATING
         }
+
+        companion object {
+                const val FORM_EVENT_ID = "event"
+        }
 }
 
 @Parcelize
@@ -156,9 +196,9 @@ data class EventRegisterFields(
         val name: String? = null,
         val description: String? = null,
         @SerializedName("isRequired")
-        val isRequired: Boolean? = null,
+        val isRequired: Boolean,
         val sort: Int? = null,
-        val type: Type? = null,
+        val type: EventRegisterField.Type? = null,
         val parameters: FieldsParameters? = null
 ): Parcelable {
         enum class Type {
@@ -196,7 +236,13 @@ data class EventRegisterFields(
                 PASSPORT,
 
                 @SerializedName("separator")
-                SEPARATOR
+                SEPARATOR,
+
+                @SerializedName("selectbox")
+                SELECT_BOX,
+
+                @SerializedName("radiobox")
+                RADIO_BOX
         }
 }
 
@@ -209,7 +255,7 @@ data class FieldsParameters(
 
 @Parcelize
 data class EventTagModel(
-        val id: Int? = null,
+        val id: Int,
         val event: Int? = null,
         val name: String? = null,
         @SerializedName("isSeparator")
@@ -296,10 +342,33 @@ data class EventActivityModel(
         val title: String? = null,
         val description: String? = null,
         @SerializedName("holdingDate")
-        val holdingDate: DateModel? = null/*,
-        val auditorium: Any? = null,
-        val member: List<Any>? = null,
-        val tag: List<Any>? = null*/
+        val holdingDate: DateModel? = null,
+        val tag: List<Int>? = null,
+        //val auditorium: Any? = null,
+        val member: List<EventActivityMember>? = null,
+        val binds: EventActivityBinds? = null
+): Parcelable
+
+@Parcelize
+data class EventActivityBinds(
+        val event: EventNew? = null,
+        val tag: List<Tags>? = null,
+        val member: List<MemberModel>? = null
+): Parcelable
+
+@Parcelize
+data class Tags(
+        val id: Int? = null,
+        val event: Int? = null,
+        val name: String? = null,
+        @SerializedName("isSeparator")
+        val isSeparator: Boolean? = false
+): Parcelable
+
+@Parcelize
+data class EventActivityMember(
+        val id: Int,
+        val description: String? = null
 ): Parcelable
 
 @Parcelize

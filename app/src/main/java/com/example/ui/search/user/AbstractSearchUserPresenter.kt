@@ -1,11 +1,18 @@
 package com.example.ui.search.user
 
 import com.example.data.AppData
-import com.example.data.models.Interest
-import com.example.data.models.SearchFilter
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.models.*
+import com.example.data.models.UserDetail.Companion.USER_ADDRESS_STREET
+import com.example.data.models.UserDetail.Companion.USER_BINDS
+import com.example.data.models.UserDetail.Companion.USER_LIMIT
+import com.example.data.models.UserDetail.Companion.USER_OFFSET
+import com.example.data.models.UserDetail.Companion.USER_SEARCH
 import com.example.data.models.user.User
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
+import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
@@ -18,19 +25,34 @@ import java.util.concurrent.TimeUnit
 abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> constructor(
         private val appData: AppData,
         private val userRepository: UserRepository,
-        private val commonRepository: CommonRepository
-) : SearchPresenter<V, User, SearchFilter.User>(), SearchUserContract.Presenter {
+        private val commonRepository: CommonRepository,
+        private val eventRepository: EventRepository
+) : SearchPresenter<V, UserDetail, SearchFilter.UserNew>(), SearchUserContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        userRepository.usersList(limit, offset, buildFilter())
+        val data = mutableMapOf<String, Any>().apply {
+            put(USER_LIMIT, limit)
+            put(USER_OFFSET, offset)
+            put(USER_BINDS, "userFavorite")
+            val address = filter.address
+            if (!address.isNullOrEmpty()) put(USER_ADDRESS_STREET, address)
+            val interest = filter.spec ?: filter.theme
+            if (interest != null) put(FILTER_INTEREST, interest)
+            if (searchText.isNotEmpty()) put(USER_SEARCH, "%$searchText%")
+        }
+        userRepository.getUsers(data).doOnSuccess {
+            val uid = appData.getId()
+            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
+        }
+        /*userRepository.usersList(limit, offset, buildFilter())
                 .doOnSuccess {
                     val uid = appData.getUser().user_id
                     it.data.forEach { user -> user?.isCurrentUser = user?.user_id == uid }
-                }
+                }*/
     }
 
     private var isInterestsLoaded = false
-    private var interests: Map<Interest, List<Interest>>? = null
+    private var interests: Map<InterestNew/*Interest*/, List<InterestNew/*Interest*/>>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -67,13 +89,13 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
         }
     }
 
-    override fun onUserClick(user: User) {
+    override fun onUserClick(user: UserDetail) {
         viewState.showUser(user)
     }
 
-    override fun onUserActionCLick(user: User) {
-        val id = user.user_id.toString()
-        val request = if (user.is_in_favorite) userRepository.removeFromFavorite(id)
+    override fun onUserActionCLick(user: UserDetail) {
+        /*val id = user.id.toString()
+        val request = if (user.binds?.userFavorite != null) userRepository.removeFromFavorite(id)
         else userRepository.addToFavorite(id)
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
@@ -81,7 +103,25 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
                 .subscribeSimple {
                     user.is_in_favorite = !user.is_in_favorite
                     viewState.updateUser(user)
-                }
+                }*/
+        val isSubscribed = user.binds?.userFavorite != null
+        if (isSubscribed) {
+            compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        user.binds?.userFavorite = null
+                        viewState.updateUser(user)
+                    }
+        } else {
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.updateUser(user)
+                    }
+        }
     }
 
     protected open fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
@@ -116,8 +156,8 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
         }
     }
 
-    override fun createFilter() = SearchFilter.User()
-    override fun copyFilter(filter: SearchFilter.User) = filter.copy()
+    override fun createFilter() = SearchFilter.UserNew()
+    override fun copyFilter(filter: SearchFilter.UserNew) = filter.copy()
 
     companion object {
         private const val FILTER_CONTENT = "content"
@@ -126,7 +166,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
         private const val FILTER_EMAIL = "user_email"
         private const val FILTER_PHONE = "user_phone"
         private const val FILTER_FAVORITES = "is_in_favorite"
-        private const val FILTER_INTEREST = "interest"
+        private const val FILTER_INTEREST = "interests"
         private const val FILTER_AGE = "user_age"
 
         private const val SEARCH_AGE_MIN = 14

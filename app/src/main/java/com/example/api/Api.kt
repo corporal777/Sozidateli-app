@@ -62,20 +62,20 @@ interface Api {
     @POST("/v1/user/register/confirm/get")
     fun registerData(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<UserResp>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/update/change_email_confirm")
     fun changeEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
-    /*@FormUrlEncoded
+    @FormUrlEncoded
     @POST("/v1/user/register_resend")
     fun registerEmailResend(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/auth/social/resend_confirm")
-    fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>*/
+    fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @GET("/v1/user/info/short")
-    fun getUserShort(): Maybe<ApiResponse<UserShort>>
+    fun getUserShort(): Maybe<ApiResponse<UserShort>>*/
 
     @GET("/v1/user/info")
     fun getUserFull(): Maybe<ApiResponse<User>>
@@ -95,12 +95,12 @@ interface Api {
     @GET("/v1/users/{id}")
     fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/users")
     fun getUsersList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<User>>>
 
     @GET("/v1/user/notifications/last")
-    fun getLastNotification(): Single<ApiResponse<List<Notification>>>
+    fun getLastNotification(): Single<ApiResponse<List<Notification>>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/notifications")
@@ -162,9 +162,9 @@ interface Api {
     @GET("/v1/user/chat/count/invites")
     fun getChatInvitesCount(): Single<ApiResponse<ChatInvitesCount>>
 
-    @Multipart
+    /*@Multipart
     @POST("/v1/user/update/recomend_file")
-    fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
+    fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>*/
 
     @Multipart
     @POST("/v1/user/update/avatar")

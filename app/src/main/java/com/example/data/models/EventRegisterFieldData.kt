@@ -1,7 +1,7 @@
 package com.example.data.models
 
 sealed class EventRegisterFieldData<T>(
-        val field: EventRegisterField,
+        val field: /*EventRegisterField*/EventRegisterField,
         var value: T?
 ) {
 

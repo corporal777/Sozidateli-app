@@ -45,6 +45,10 @@ class OrganizationRepositoryImp
                 }
     }
 
+    override fun getOrganizationMembersWithoutPagination(map: Map<String, Any>): Maybe<List<OrganizationMemberModel>> =
+        newApi.getOrganizationMembersWithoutPagination(map)
+                .map { it.data }
+
     override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
         return newApi.searchOrganizations(map)
                 .map {

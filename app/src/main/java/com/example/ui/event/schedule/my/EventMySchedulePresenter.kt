@@ -2,6 +2,7 @@ package com.example.ui.event.schedule.my
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
+import com.example.data.models.EventActivityModel
 import com.example.data.models.SubEvent
 import com.example.events.OnDayChangeFromCompleteSchedule
 import com.example.events.OnDayChangeFromMySchedule
@@ -25,11 +26,11 @@ class EventMySchedulePresenter
         EventBus.getDefault().register(this)
     }
 
-    override fun filterSubEvent(subEvent: SubEvent): Boolean = subEvent.isInCalendar
+    override fun filterSubEvent(subEvent: /*SubEvent*/EventActivityModel): Boolean = /*subEvent.isInCalendar*/true
 
     override fun mustFilterTags() = false
 
-    override fun processChangeEventInCalendarStatusRequest(subEvent: SubEvent, request: Completable) {
+    override fun processChangeEventInCalendarStatusRequest(subEvent: /*SubEvent*/EventActivityModel, request: Completable) {
         super.processChangeEventInCalendarStatusRequest(subEvent, request.doFinally {
             val millis = currentDay?.millis ?: return@doFinally
             EventBus.getDefault().post(OnDayChangeFromMySchedule(millis))

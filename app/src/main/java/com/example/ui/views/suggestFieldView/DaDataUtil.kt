@@ -13,22 +13,22 @@ object DaDataUtil {
 
     fun getLocationJson(context: Context) = JSONObject(getJsonFromAssets(context, "Locations.json"))
 
-    fun formatLocations(context: Context, data: List<DaDataItem>): List<DaDataItem> {
+    fun formatLocations(context: Context, data: List<NewUserAddress>): List<NewUserAddress> {
         val jObject = getLocationJson(context)
         data.forEach {
-            it.unrestricted_value = formatParam(it.unrestricted_value, jObject)?: ""
-            it.value = formatParam(it.value, jObject)?: ""
-            it.data.postal_code = formatParam(it.data.postal_code, jObject)
-            it.data.country = formatParam(it.data.country, jObject)
-            it.data.federal_district = formatParam(it.data.federal_district, jObject)
-            it.data.region_with_type = formatParam(it.data.region_with_type, jObject)
-            it.data.area_with_type = formatParam(it.data.area_with_type, jObject)
-            it.data.city_with_type = formatParam(it.data.city_with_type, jObject)
-            it.data.city_district_with_type = formatParam(it.data.city_district_with_type, jObject)
-            it.data.settlement_with_type = formatParam(it.data.settlement_with_type, jObject)
-            it.data.street_with_type = formatParam(it.data.street_with_type, jObject)
-            it.data.house = formatParam(it.data.house, jObject)
-            it.data.flat = formatParam(it.data.flat, jObject)
+            it.lat = it.lat
+            it.fullValue = formatParam(it.fullValue, jObject)?: ""
+            it.index = formatParam(it.index, jObject)
+            it.country = formatParam(it.country, jObject)
+            it.federal = formatParam(it.federal, jObject)
+            it.region = formatParam(it.region, jObject)
+            it.area = formatParam(it.area, jObject)
+            it.city = formatParam(it.city, jObject)
+            it.lon = it.lon
+            it.settlement = formatParam(it.settlement, jObject)
+            it.street = formatParam(it.street, jObject)
+            it.house = formatParam(it.house, jObject)
+            it.flat = formatParam(it.flat, jObject)
         }
         return data
     }

@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.DaDataItem
+import com.example.data.models.NewUserAddress
 import com.example.util.SimpleTextWatcher
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,11 +54,11 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
         addTextChangedListener(simpleTextWatcher)
     }
 
-    override fun setSuggested(list: List<DaDataItem>) {
+    override fun setSuggested(list: List<NewUserAddress>) {
         adapter.apply {
             DaDataUtil.formatLocations(context, list)
             clear()
-            addAll(list.map { it.value })
+            addAll(list.map { it.fullValue })
             notifyDataSetChanged()
         }
     }
@@ -68,7 +69,7 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
         addTextChangedListener(simpleTextWatcher)
     }
 
-    override fun performOnItemSelected(item: DaDataItem) {
+    override fun performOnItemSelected(item: NewUserAddress) {
         onDataSelectedListener?.invoke(item)
     }
 
@@ -87,4 +88,4 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
     }
 }
 
-typealias OnDataSelectedListener = (data: DaDataItem) -> Unit
+typealias OnDataSelectedListener = (data: NewUserAddress) -> Unit

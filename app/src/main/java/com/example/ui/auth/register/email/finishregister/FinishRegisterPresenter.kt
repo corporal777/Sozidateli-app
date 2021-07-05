@@ -1,11 +1,9 @@
 package com.example.ui.auth.register.email.finishregister
 
-import android.content.Context
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.*
-import com.example.data.models.ApiError
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail.Companion.USER_EMAIL
@@ -16,17 +14,10 @@ import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.auth.confirm.EmailConfirmPresenter
-import com.example.ui.auth.login.LoginPresenter
-import com.example.ui.auth.register.email.RegisterEmailContract
-import com.example.ui.auth.register.email.newbuild.RegisterEmailNewContract
 import com.example.ui.snAuth.SnAuthManager
-import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
-import com.example.util.USER_DATA_EMPTY
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -36,7 +27,6 @@ import withCheckInternetConnectivity
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import io.reactivex.functions.Predicate
 
 @InjectViewState
 class FinishRegisterPresenter
@@ -117,9 +107,9 @@ class FinishRegisterPresenter
     }
 
     override fun onClickAgree(isAgree: Boolean) {
-        this.isAgree = isAgree
-        viewState.showAgreementError(false)
-        viewState.enableRegisterBtn(isAgree)
+        //this.isAgree = isAgree
+        //viewState.showAgreementError(false)
+        viewState.enableRegisterBtn(true)
     }
 
     override fun getData() {
@@ -133,7 +123,7 @@ class FinishRegisterPresenter
 
                         },
                         onComplete = {
-                            compositeDisposable += userRepository.getUserShortNew()
+                            compositeDisposable += userRepository.getUserShortData()
                                     .performOnBackgroundOutOnMain()
                                     .subscribe({
                                         firstName = it.name
@@ -165,6 +155,7 @@ class FinishRegisterPresenter
 
     override fun onChangeCodeText(code: String) {
         this.phoneCode = code
+        if (code.length == 6) viewState.enableRegisterBtn(true) else viewState.enableRegisterBtn(false)
     }
 
     override fun authVk() {
@@ -219,7 +210,7 @@ class FinishRegisterPresenter
                 compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone?: "", phoneCode?: ""))
                         .performOnBackgroundOutOnMain()
                         .subscribe({
-                            userRepository.updateProfile(appData.getId(), mapOf(/*USER_EMAIL to FieldDetails(value = email, isVisible = true), */USER_NAME to firstName,
+                            userRepository.updateUserProfile(appData.getId(), mapOf(/*USER_EMAIL to FieldDetails(value = email, isVisible = true), */USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
                                     USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))))
                                     .performOnBackgroundOutOnMain()
@@ -234,7 +225,7 @@ class FinishRegisterPresenter
                 userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email?: ""))
                         .performOnBackgroundOutOnMain()
                         .subscribe({
-                            userRepository.updateProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                            userRepository.updateUserProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked)/*,
                                     USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))*/))
                                     .performOnBackgroundOutOnMain()

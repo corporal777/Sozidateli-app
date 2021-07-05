@@ -97,6 +97,20 @@ open class BasePresenter<V : BaseContract.View>
 
                             }
                         }
+                        403 -> {
+                            try {
+                                val error = Gson().fromJson(
+                                        it.response()?.errorBody()?.string(),
+                                        NewError::class.java
+                                )
+                                when (error.message) {
+                                    "your profile level is to low, basic required" -> viewState.showStateErrorMessage()
+                                    else -> onReceiveError(it)
+                                }
+                            } catch (e: Exception) {
+
+                            }
+                        }
                     }
                 }
             }
@@ -104,6 +118,7 @@ open class BasePresenter<V : BaseContract.View>
     }
     data class Errors(val errors: List<ErrorModel>)
     data class ErrorModel(val code: String? = null, val field: String? = null, val message: String? = null)
+    data class NewError(val code: String? = null, val type: String? = null, val profileLevelRequired: String? = null, val message: String? = null)
 
     fun Completable.subscribeSimple(
             onError: ((Throwable) -> Unit)? = null,

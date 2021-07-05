@@ -25,6 +25,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
 
     private var onSelect: (result: PhoneEmailResult) -> Unit = {}
     private var onSendCode: () -> Unit = {}
+    private var onNegativeClick: () -> Unit = {}
     private val timerCompositeDisposable = CompositeDisposable()
     private val timerMessage by lazy {
         activity.resources.getString(R.string.auth_register_confirm_email_timer_two)
@@ -71,6 +72,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
             }
         }
         binding.btnNegative.setOnClickListener {
+            onNegativeClick()
             alertDialog.dismiss()
         }
         setData(null)
@@ -127,6 +129,11 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
 
     fun setSendCodeCallback(block: () -> Unit): AddPhoneEmailDialog {
         onSendCode = block
+        return this
+    }
+
+    fun setNegativeClickCallback(block: () -> Unit): AddPhoneEmailDialog {
+        onNegativeClick = block
         return this
     }
 

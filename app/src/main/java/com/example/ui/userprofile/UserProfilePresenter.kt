@@ -17,14 +17,14 @@ import javax.inject.Inject
 
 @InjectViewState
 class UserProfilePresenter @Inject constructor(
-        appData: AppData,
+        val appData: AppData,
         private val userRepository: UserRepository,
         private val takePhoto: RxTakePhoto
 ) : BaseUserProfilePresenter<UserProfileContract.View>(appData), UserProfileContract.Presenter {
 
     override fun onEditAvatarClick() {
         val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
-        viewState.showTakePictureChooser(avatar != null)
+        viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -46,6 +46,9 @@ class UserProfilePresenter @Inject constructor(
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onSuccess = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
                             updateUserInternal {
                                 image = it
                             }
@@ -59,6 +62,9 @@ class UserProfilePresenter @Inject constructor(
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
                         onComplete = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
                             updateUserInternal {
                                 image = null
                             }

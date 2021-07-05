@@ -243,6 +243,9 @@ class UserEditPresenter
                 })
     }
 
+    fun getBaseUserState() = appData.hasBaseState
+    fun getMaxUserState() = appData.hasMaxState
+
     override fun onSaveInterestsClick(data: List<InterestNew>) {
         viewState.showLoadingDialog()
         updateUserNew(userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id }))) {

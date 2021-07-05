@@ -11,7 +11,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 class EventGroup(
         eventId: String,
         status: Event.Status?,
-        userRegistration: Event.RegistrationStatus?,
+        userRegistration: Event.Status?,
         backgroundColor: String?,
         logo: String?,
         format: EventFormat?,

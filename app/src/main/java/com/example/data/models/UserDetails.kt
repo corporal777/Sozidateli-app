@@ -1,6 +1,7 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.USER_DATA_EMPTY
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -25,7 +26,7 @@ data class UserDetail(
         var birthday: FieldDetails? = null,
         var image: ImageModel? = null,
         var gender: String? = null,
-        val address: NewUserAddress? = null,
+        var address: NewUserAddress? = null,
         val state: UserState? = null,
         var interests: List<Int>? = null,
         var notes: String? = null,
@@ -38,7 +39,7 @@ data class UserDetail(
         @SerializedName("academicDegrees")
         var academicDegrees: List<EducationLevel>? = null,
         @SerializedName("isCurrentUser")
-        var isCurrentUser: Boolean? = false
+        var isCurrentUser: Boolean = false
 ): Parcelable {
 
         val fullName: String
@@ -53,6 +54,15 @@ data class UserDetail(
 
         fun getMiddleName(): String? {
                 return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
+        }
+
+        fun getUserSubscribeAction(): UserSubscribeButton.Action? {
+                return when {
+                        isCurrentUser -> null
+                        //user_banned || chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
+                        binds?.userFavorite != null -> UserSubscribeButton.Action.UNFAVORITE
+                        else -> UserSubscribeButton.Action.FAVORITE
+                }
         }
 
         companion object {
@@ -71,6 +81,11 @@ data class UserDetail(
                 const val USER_INTERESTS = "interests"
                 const val USER_EDUCATION_LEVEL = "educationLevel"
                 const val USER_ADDRESS = "address"
+                const val USER_LIMIT = "limit"
+                const val USER_OFFSET = "offset"
+                const val USER_BINDS = "binds"
+                const val USER_ADDRESS_STREET = "addressStreet"
+                const val USER_SEARCH = "search"
         }
 }
 
@@ -84,9 +99,11 @@ data class UserBinds(
         var workExperience: WorkExperienceModel? = null,
         @SerializedName("recommendation-file")
         var recommendationFile: List<FileModel>? = null,
-        val organization: List<OrganizationModel>? = null,
+        val organization: List<OrganizationNew>? = null,
         @SerializedName("userOrganizationRights")
-        val userOrganizationRights: List<UserOrganizationRights>? = null
+        val userOrganizationRights: List<UserOrganizationRights>? = null,
+        @SerializedName("userFavorite")
+        var userFavorite: EventUserFavorite? = null
 ): Parcelable
 
 @Parcelize
@@ -216,23 +233,23 @@ data class BooleanModel(
 
 @Parcelize
 data class NewUserAddress(
-        val index: String? = null,
-        val country: String? = null,
-        val federal: String? = null,
-        val region: String? = null,
-        val area: String? = null,
-        val city: String? = null,
-        val settlement: String? = null,
-        val street: String? = null,
-        val house: String? = null,
-        val flat: String? = null,
-        val lon: Double? = null,
-        val lat: Double? = null,
+        var index: String? = null,
+        var country: String? = null,
+        var federal: String? = null,
+        var region: String? = null,
+        var area: String? = null,
+        var city: String? = null,
+        var settlement: String? = null,
+        var street: String? = null,
+        var house: String? = null,
+        var flat: String? = null,
+        var lon: Double? = null,
+        var lat: Double? = null,
         @SerializedName("fiasId")
-        val fiasId: String? = null,
+        var fiasId: String? = null,
         @SerializedName("fullValue")
-        val fullValue: String? = null,
-        val description: AddressDescription? = null,
+        var fullValue: String? = null,
+        var description: AddressDescription? = null,
         var shortAddres: String? = null
 ): Parcelable {
 
@@ -242,7 +259,12 @@ data class NewUserAddress(
                 else
                         if (!region.isNullOrEmpty())
                                 city?: ""
-                        else "$region, $city"
+                        else {
+                                if (region.isNullOrEmpty() && city.isNullOrEmpty()) ""
+                                else if (!region.isNullOrEmpty() && city.isNullOrEmpty()) region?: ""
+                                else if (region.isNullOrEmpty() && !city.isNullOrEmpty()) city?: ""
+                                else "$region, $city"
+                        }
         }
 }
 

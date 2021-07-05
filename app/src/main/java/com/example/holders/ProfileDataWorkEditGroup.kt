@@ -18,7 +18,8 @@ class ProfileDataWorkEditGroup(
         context: Context,
         private val birthday: FieldDetails?,
         work: WorkExperienceModel?,
-        private val exeption: (workCheckB: Boolean) -> Unit
+        private val exeption: (workCheckB: Boolean) -> Unit,
+        private val enableNextButton:(enable: Boolean) -> Unit
 ) : NestedGroup() {
 
     private var hasWork = work?.absent?: false
@@ -38,8 +39,10 @@ class ProfileDataWorkEditGroup(
         hasDivider = false
         compactMargin = true
     }
+    private var isWorksValid = false
 
     init {
+        isWorksValid = work?.models?.firstOrNull { it.description == null } == null
         add(noWork)
         work?.models?.map { createWorkItem(it) }.let {
             if (it?.isEmpty() == true) {
@@ -59,6 +62,7 @@ class ProfileDataWorkEditGroup(
     private fun setHasWork() {
         noWork.hasWork(false)
         noWork.notifyChanged()
+        validateEnableButton(hasWork)
     }
 
     private fun isWorkEditable(it: Boolean) {
@@ -67,6 +71,7 @@ class ProfileDataWorkEditGroup(
             notifyItemChanged(works.size + 1)
             isDeleteVisible(it)
             hasWork = !it
+            validateEnableButton(hasWork)
         } catch (e: IllegalStateException) {
             exeption(!hasWork)
         }
@@ -118,20 +123,29 @@ class ProfileDataWorkEditGroup(
 
 
     private fun createWorkItem(socialRoles: WorkExperience?): ProfileDataWorkEditItem {
+        validateEnableButton(hasWork)
         return ProfileDataWorkEditItem(
                 socialRoles?.id,
                 socialRoles?.begin,
                 socialRoles?.end,
                 socialRoles?.organization,
                 socialRoles?.position,
-                birthday?.value
-        ) { item ->
+                birthday?.value,
+        { item ->
             val position = getItemCountBeforeGroup(item) + 1
             remove(item)
             works.remove(item)
             isDeleteVisible(!hasWork)
             notifyItemRemoved(position)
-        }
+        }, {
+            isWorksValid = it
+            validateEnableButton(hasWork)
+        })
+    }
+
+    private fun validateEnableButton(hasWork: Boolean) {
+        if (!hasWork) enableNextButton(true)
+        else enableNextButton(isWorksValid)
     }
 
     fun checkDataValid(): Boolean {

@@ -83,7 +83,7 @@ class EventRatingPresenter
                                 is EventRegisterFieldData.File -> fieldData.value?.let {
                                     val path = it.path
                                     if (path.scheme?.startsWith("http") != true) {
-                                        val name = "${it.name}.${it.extension}"
+                                        val name = "${it.name}.${it.mimeType}"
                                         contentResolver.openInputStream(path)?.buffered()?.use { stream -> stream.readBytes() }?.let { bytes ->
                                             val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                             addFormDataPart("file[$key]", name, body)

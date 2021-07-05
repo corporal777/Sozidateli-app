@@ -2,6 +2,8 @@ package com.example.ui.eventTabs
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.models.Place
 import com.example.data.models.createMapInfo
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
@@ -96,7 +98,8 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        compositeDisposable += userRepository.getUserShortNew().ignoreElement().onErrorComplete()
+        compositeDisposable += eventRepository.deleteAllCalendarEvents(EventCalendarBody.CALENDAR_EVENT)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -108,6 +111,7 @@ class EventTabsPresenter
                         onNoInternetConnectionException = {
                             viewState.showNoConnectionMessage(true)
                         })
+
         /*compositeDisposable += eventRepository.setDefaultEvent("0")
                 .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
                 .withCheckInternetConnectivity()
@@ -133,10 +137,10 @@ class EventTabsPresenter
                 is TabSelectCommand.AboutEvent -> showAboutTab(userEvent.eventId)
                 is TabSelectCommand.Map -> {
                     val eventInfo = userEvent.eventInfo
-                    /*showMapTab(eventInfo.event.name?: "",
+                    showMapTab(eventInfo.event.name?: "",
                             eventInfo.event.createMapInfo(),
-                            eventInfo.places.toTypedArray()
-                    )*/
+                            /*eventInfo.places.toTypedArray()*/arrayOf()
+                    )
                 }
             }
             setBackClickHandlerEnabled(tabSelectStack.size > 1)

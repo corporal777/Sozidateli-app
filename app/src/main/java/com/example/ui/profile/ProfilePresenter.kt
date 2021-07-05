@@ -39,6 +39,7 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
+        viewState.setUserState(appData.hasBaseState, appData.hasMaxState)
         try {
             viewState.setUser(appData.getUserNew())
         } catch (e: Exception) {
@@ -49,6 +50,8 @@ class ProfilePresenter
                     }, { it.printStackTrace() })
         }
     }
+
+    fun getUserData() = appData.getUserNew()
 
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
 

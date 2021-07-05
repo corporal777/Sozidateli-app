@@ -78,6 +78,7 @@ data class User(
         var notification_total: Int = -1,
         var notification_unread: Int = -1,
         var is_in_favorite: Boolean = false,
+        var favorite_id: Long? = null,
         var is_has_chat: Boolean = false,
         var academic_degree: List<AcademicDegree>? = null,
         val available_degrees: List<String>? = null,

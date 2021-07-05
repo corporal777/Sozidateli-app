@@ -36,7 +36,7 @@ interface OrganizationContract {
         fun showUser(id: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateUser(user: User)
+        fun updateUser(user: /*User*/UserDetail?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
@@ -69,8 +69,8 @@ interface OrganizationContract {
         fun onGoToEventClick(event: Event)
 
         fun onShowMoreUsersClick()
-        fun onUserClick(user: UserDetail/*User*/)
-        fun onUserActionCLick(user: UserDetail/*User*/)
+        fun onUserClick(user: UserDetail?/*User*/)
+        fun onUserActionCLick(user: UserDetail?/*User*/)
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

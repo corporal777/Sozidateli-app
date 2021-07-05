@@ -30,7 +30,6 @@ class OrganizationsPresenter
     lateinit var filter: OrganizationsFilter
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        //organizationRepository.getOrganizations(limit, offset, getFilterData())
         when (filter) {
             OrganizationsFilter.FAVORITES, OrganizationsFilter.FAVORITES_NO_TITLE -> {
                 organizationRepository.getFavoriteOrganization(

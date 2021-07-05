@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -48,14 +49,23 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setData(data: List<User?>) {
+    override fun setData(data: List<UserDetail?>) {
         if (data.isEmpty()) {
             adapter.update(listOf(NoDataItem(/*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
                     getString(R.string.user_favorites_empty_list_description))))
         } else {
             adapter.update(data.map {
-                /*if (it == null)*/ PlaceholderItem(PlaceholderItem.Type.USER)
-                /*else UserItem(
+                if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+                else UserItem(
+                        it.id,
+                        it.fullName,
+                        it.address?.city,
+                        it.image?.uri,
+                        { presenter.onUserClick(it) },
+                        it.getUserSubscribeAction(),
+                        { presenter.onUserRemoveFromFavoritesClick(it) })
+
+                    /*UserItem(
                         it.user_id,
                         it.fullName,
                         it.user_city,
@@ -70,8 +80,8 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showUser(user: User) {
-        findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.user_id.toString()))
+    override fun showUser(user: UserDetail) {
+        findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
     override fun layout() = R.layout.layout_list

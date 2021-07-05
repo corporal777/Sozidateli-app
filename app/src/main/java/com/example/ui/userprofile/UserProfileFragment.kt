@@ -11,6 +11,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.WarningDialog
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.item_profile_data_current_user.btnEdit
@@ -59,12 +60,16 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
         }
     }
 
-    override fun showTakePictureChooser(canRemove: Boolean) {
+    override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.photo_alert_title)
                 .apply {
                     if (canRemove) {
-                        setNeutralButton(R.string.photo_alert_remove) { _, _ -> presenter.onRemovePhotoClick() }
+                        setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+                            showEditWarning(isBase, isMax, false,true) {
+                                presenter.onRemovePhotoClick()
+                            }
+                        }
                     }
                 }
                 .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }

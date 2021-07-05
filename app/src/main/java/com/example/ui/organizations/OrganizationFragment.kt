@@ -43,6 +43,7 @@ import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_organization.*
@@ -127,7 +128,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         tvOrganizationImageName.apply {
             text = /*organization.name*/organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
             clipToOutline = true
-            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value?: "#000000")
+            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(if (organization.backgroundColor?.value.isNullOrEmpty()) "#000000" else organization.backgroundColor?.value)
                     ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)/*ColorStateList.valueOf(organization.backgroundColor.parseColor()
                     ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)*/))
         }
@@ -185,7 +186,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             text = /*organization.descriptionFull*/organization.description
         }
 
-        tvPeoples.text = getString(R.string.organization_peoples).format(/*organization.totalMembers*/organization.binds?.user?.size)
+        tvPeoples.text = getString(R.string.organization_peoples).format(/*organization.totalMembers*/organization.binds?.membersSize)
         rvPeoples.adapter = usersAdapter.apply {
             /*update(users.mapNotNull {
                 val user = it.user ?: return@mapNotNull null
@@ -198,57 +199,79 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                         user.getUserSubscribeAction(),
                         { presenter.onUserActionCLick(user) })
             })*/
-            organization.binds?.user?.mapNotNull {
-                val user = it ?: return@mapNotNull null
+            organization.binds?.member?.mapNotNull {
                 UserItem(
-                        user.id,
-                        user.fullName,
-                        user.address?.city,
-                        user.image?.uri,
-                        { presenter.onUserClick(user) },
-                        null,//user.getUserSubscribeAction(),
-                        { presenter.onUserActionCLick(user) })
+                        it.user?: 0,
+                        it.binds?.user?.fullName?: "",
+                        it.binds?.user?.address?.city,
+                        it.binds?.user?.image?.uri,
+                        { presenter.onUserClick(it.binds?.user) },
+                        it.binds?.user?.getUserSubscribeAction(),
+                        { presenter.onUserActionCLick(it.binds?.user) })
             }?.let { update(it) }
         }
         btnPeoples.apply {
-            isVisible = true//organization.totalMembers > users.size
+            isVisible = (organization.binds?.membersSize?:0) > 3
             setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
-        tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
-        /*tvEvents.text = getString(R.string.organization_events).format(organization.totalEvents)
+        //tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
+        tvEvents.text = getString(R.string.organization_events).format(organization.binds?.eventsSize)
         rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
-                update(events.map {
-                    EventGroup(
-                            it.id,
-                            it.status,
-                            it.userRegistration,
-                            it.backgroundColor,
-                            it.backgroundImage,
-                            it.takeFormat(),
-                            it.organization?.emails,
-                            !it.canRegister,
-                            onEventClickListener,
-                            EventDataListItem(
-                                    -it.id.toLong(),
-                                    it.name,
-                                    it.shortAddress ?: it.addressCity,
-                                    it.conferenceStart,
-                                    it.conferenceFirstActivityStart
-                            ),
-                            it.userAgreement
-                    )
-                })
+                organization.binds?.events?.map(::createItem)?.let { update(it) }
             }
         }
         btnEvents.apply {
-            isVisible = organization.totalEvents > events.size
+            isVisible = (organization.binds?.eventsSize?:0) > 3
             setOnClickListener { presenter.onShowMoreEventsClick() }
-        }*/
+        }
 
         llContent.isVisible = true
         swipeToRefresh.isRefreshing = false
+    }
+
+    private fun createItem(itemData: EventNew?): Group {
+       return EventGroup(
+                /*itemData.id,
+                itemData.status,
+                itemData.userRegistration,
+                itemData.backgroundColor,
+                itemData.backgroundImage,
+                itemData.takeFormat(),
+                itemData.organization?.emails,
+                !itemData.canRegister,
+                onEventClickListener,
+                EventDataListItem(
+                        -itemData.id.toLong(),
+                        itemData.name,
+                        itemData.shortAddress ?: itemData.addressCity,
+                        itemData.conferenceStart,
+                        itemData.conferenceFirstActivityStart
+                ).apply {
+                    showStartTime = false
+                },
+                itemData.userAgreement*/
+                itemData?.id.toString(),
+                itemData?.status?.value,
+                /*if (itemData?.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/itemData?.binds?.currentUserRegistration?.status?.value,
+                itemData?.binds?.organization?.backgroundColor?.value,
+                itemData?.binds?.organization?.logo?.uri,
+                EventFormat(name = if (itemData?.format?.name.isNullOrEmpty()) itemData?.format?.custom?: "" else itemData?.format?.name?: ""),
+                itemData?.binds?.organization?.email,
+                /*!itemData?.binds?.rights?.registration!!*/(itemData?.status?.value?: "") != Event.Status.REGISTRATION,
+                onEventClickListener,
+                EventDataListItem(
+                        -(itemData?.id?.toLong()?: 0),
+                        itemData?.name,
+                        itemData?.address?.getShortAddress(),
+                        itemData?.holdingDate?.from,
+                        itemData?.binds?.getFirstActionStartDate()
+                ).apply {
+                    showStartTime = false
+                },
+                itemData?.userAgreement?.name?: itemData?.userAgreement?.uri
+        )
     }
 
     private fun setOnImageClickListener(imageView: ImageView, url: String?) {
@@ -273,10 +296,10 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         }
     }
 
-    override fun updateUser(user: User) {
-        val idLong = user.user_id.toLong()
+    override fun updateUser(user: /*User*/UserDetail?) {
+        val idLong = user?.id?.toLong()
         val item = usersAdapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
-        item.notifyChanged(user.getUserSubscribeAction())
+        item.notifyChanged(user?.getUserSubscribeAction())
     }
 
     override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
@@ -350,7 +373,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
     }
 
     override fun layout() = R.layout.fragment_organization

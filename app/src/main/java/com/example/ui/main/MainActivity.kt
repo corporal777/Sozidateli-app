@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -47,11 +48,10 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.profile.ProfileFragmentDirections
 import com.example.ui.splash.SplashFragment
 import com.example.ui.stories.StoriesFragment
-import com.example.ui.views.ApiErrorDialog
-import com.example.ui.views.FillProfileDialog
-import com.example.ui.views.NewPasswordDialog
+import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -227,7 +227,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }
                 } else if (changeEmail != null && authCode != null) {
                     if (lastPath == REGISTER_CONFIRM) {
-                        showFinishRegister("", "", "", "", email?: "", authCode, false, false)
+                        showFinishRegister("", "", "", "", email?: "", authCode, false, false, true)
                         //presenter.onHandleAuthLink(email?: "", authCode?: "")
                     } else {
                         //if (lastPath == PATH_CONFIRM_EMAIL)
@@ -330,10 +330,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
-    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean) =
+    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean) =
             findNavController().navigate(R.id.register_email_finish_fragment, bundleOf("code" to code,
             "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName,
-            "isConfirmed" to userPhoneConfirmed, "isNoMiddleName" to isNoMiddleName), NavOptions.Builder()
+            "isConfirmed" to userPhoneConfirmed, "isNoMiddleName" to isNoMiddleName, "nameEditable" to nameEditable), NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
             .build())
 
@@ -516,12 +516,23 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 .setSelectCallback {  }
     }
 
+    override fun showStateErrorMessage() {
+        ChangeStateDialog(this, StateType.ERROR)
+                .setSendCodeCallback {
+                    findNavController().navigate(R.id.userStateFragment)
+                }
+    }
+
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
 
     fun setIgnoreTokenListener(isIgnore: Boolean) {
         presenter.ignoreTokenListener(isIgnore)
+    }
+
+    fun startEditPhoneListener(value: Boolean) {
+        presenter.isEditingPhone = value
     }
 
     override fun getLoadingView(): View = flLoading

@@ -3,12 +3,14 @@ package com.example.ui.userprofile.phoneconfirm
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
+import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.PhoneCodeBody
 import com.example.data.models.ApiError
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.asOptional
 import com.example.data.models.user.User
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_OTHER
@@ -30,7 +32,8 @@ import javax.inject.Inject
 class PhoneConfirmPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val authRepository: AuthRepository
 ) : BasePresenter<PhoneConfirmContract.View>(), PhoneConfirmContract.Presenter {
 
     companion object {
@@ -67,7 +70,17 @@ class PhoneConfirmPresenter
             setTimeLeft(null)
         }
 
-        smsCompositeDisposable += userRepository.updateProfile(appData.getId(),
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone.phoneToServer()?: "")
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    startTimer()
+                }, {
+                    it.printStackTrace()
+                    viewState.showSendSmsError()
+                    viewState.setCanResend(true)
+                })
+        /*smsCompositeDisposable += userRepository.updateProfile(appData.getId(),
                 mapOf(UserDetail.USER_PHONE to arrayListOf(FieldDetails(value = phone.phoneToServer(), type = PHONE_PERSONAL, isVisible = true, isConfirmed = false))))
                 .doOnSuccess {
                     val user = appData.getUserNew().apply {
@@ -89,7 +102,7 @@ class PhoneConfirmPresenter
                         onComplete = {
                             startTimer()
                         }
-                )
+                )*/
     }
 
     private fun startTimer() {
@@ -118,7 +131,24 @@ class PhoneConfirmPresenter
     }
 
     override fun onCodeSendClick(code: String) {
-        compositeDisposable += userRepository.confirmPhoneCode(appData.getId(), PhoneCodeBody(phone, code))
+        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    val user = appData.getUserNew()
+                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed = true
+                    appData.userNewChangeSubject.onNext(user.asOptional())
+                    appData.userPhoneConfirmedSubject.onNext(true)
+                    viewState.onPhoneConfirmationComplete()
+                }, {
+                    if (it is ApiError && it.errors.contains(WRONG_CODE_MESSAGE)) {
+                        viewState.showWrongCodeError()
+                    } else {
+                        it.printStackTrace()
+                        viewState.showRequestErrorMessage()
+                    }
+                })
+        /*compositeDisposable += userRepository.confirmPhoneCode(appData.getId(), PhoneCodeBody(phone, code))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeBy(
@@ -137,6 +167,6 @@ class PhoneConfirmPresenter
                             appData.userPhoneConfirmedSubject.onNext(true)
                             viewState.onPhoneConfirmationComplete()
                         }
-                )
+                )*/
     }
 }

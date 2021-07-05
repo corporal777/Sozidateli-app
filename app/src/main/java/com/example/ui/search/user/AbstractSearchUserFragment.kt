@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.SearchFilter
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
@@ -15,32 +16,31 @@ import com.xwray.groupie.Group
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onTextChanged
 
-abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : SearchFragment<P, User, SearchFilter.User>(), SearchUserContract.View {
+abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : SearchFragment<P, UserDetail, SearchFilter.UserNew>(), SearchUserContract.View {
 
-    override fun createItem(itemData: User?): Group {
-        return /*if (itemData == null)*/ PlaceholderItem(PlaceholderItem.Type.USER)
-        /*else UserItem(
-                itemData.user_id,
+    override fun createItem(itemData: UserDetail?): Group {
+        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
+        else UserItem(
+                itemData.id,
                 itemData.fullName,
-                itemData.user_city,
-                itemData.user_avatar,
+                itemData.address?.city,
+                itemData.image?.uri,
                 { presenter.onUserClick(itemData) },
                 itemData.getUserSubscribeAction(),
-                { presenter.onUserActionCLick(itemData) }
-        )*/
+                { presenter.onUserActionCLick(itemData) })
     }
 
-    override fun updateUser(user: User) {
-        val idLong = user.user_id.toLong()
+    override fun updateUser(user: UserDetail) {
+        val idLong = user.id.toLong()
         val item = adapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
         item.notifyChanged(user.getUserSubscribeAction())
     }
 
-    override fun showUser(user: User) {
-        findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.user_id.toString()))
+    override fun showUser(user: UserDetail) {
+        findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
-    override fun createFilterView(filter: SearchFilter.User): View {
+    override fun createFilterView(filter: SearchFilter.UserNew): View {
         return layoutInflater.inflate(R.layout.layout_filter_user, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
@@ -52,10 +52,10 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 tilTheme.isVisible = false
                 tilSpec.isVisible = false
             } else {
-                /*initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
+                initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
                     filter.theme = theme
                     filter.spec = spec
-                }*/
+                }
                 tilTheme.isVisible = true
                 tilSpec.isVisible = true
             }

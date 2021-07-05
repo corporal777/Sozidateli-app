@@ -5,6 +5,8 @@ import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -70,9 +72,9 @@ class EventRepositoryImp
         return call(api.getEventInfo(eventId))
     }
 
-    override fun setDefaultEvent(eventId: String): Completable {
+    /*override fun setDefaultEvent(eventId: String): Completable {
         return call(api.setDefaultEvent(eventId))
-    }
+    }*/
 
     override fun addEventToCalendar(eventId: String, subEventId: String): Completable {
         return call(api.addSubEventToCalendar(eventId, subEventId))
@@ -146,6 +148,11 @@ class EventRepositoryImp
         )
     }
 
+    /*override fun loadEventRegistrationDataNew(eventId: String): Single<EventRegisterData> {
+        val loadFields = getEventRegisterField(eventId)
+        val loadRegister = getEventRegister(eventId)
+    }*/
+
     override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
         return Single.just(EventRatingData(EventData("","", null,null,null,null,
                 "",null,null,null,null,null,
@@ -200,7 +207,7 @@ class EventRepositoryImp
                 )
                 EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
                         field,
-                        null/*findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())*/
+                        findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())
                 )
                 EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
                         field,
@@ -259,6 +266,18 @@ class EventRepositoryImp
                         PaginationResponse(it.totalCount, it.data?: arrayListOf())
                     }
 
+    override fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination> =
+            newApi.getEventsListWithoutPagination(map)
+                    .map {
+                        val eventFormats = appData.getEventFormats()
+                        if (!eventFormats.isNullOrEmpty()) {
+                            it.data?.forEach { ev ->
+                                ev?.format?.name = eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                            }
+                        }
+                        it
+                    }
+
     override fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>> {
         val eventFormats = appData.getEventFormats()
         return if (eventFormats.isNullOrEmpty())
@@ -271,7 +290,7 @@ class EventRepositoryImp
     }
 
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
-        newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium")
+        newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium,current-user-registration,destination-scheme")
                 .map {
                     val eventFormats = appData.getEventFormats()
                     if (!eventFormats.isNullOrEmpty()) {
@@ -280,6 +299,9 @@ class EventRepositoryImp
                     EventInfo(it, it.binds?.partner?: arrayListOf(), it.binds?.page?: arrayListOf(),
                             if (it.binds?.userRegister?.isNotEmpty() == true) it.binds?.userRegister?.get(0) else null, it.state?.rating?.askDelay, it.binds?.form)
                 }
+
+    override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
+            newApi.getEventDetails(eventId, "rights,current-user-registration")
 
     override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =
             newApi.mailToEvent(message, event, isPush, isInApp)
@@ -305,7 +327,7 @@ class EventRepositoryImp
     override fun deleteFromFavorite(id: String): Completable =
             newApi.deleteFromFavorite(id)
 
-    override fun checkUserProfile(): Single<List<UserProfileFields>> =
+    override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
             newApi.checkUserProfile(appData.getId().toString())
 
     override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
@@ -317,4 +339,44 @@ class EventRepositoryImp
                     PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
                 }
     }
+
+    override fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel/*EventRegisterField*/>>> =
+            newApi.getEventForm(map)/*.map {
+                val result = mutableListOf<EventRegisterField>()
+                it.data[0].fields?.forEach { field ->
+                    result.add(EventRegisterField(field.id.toString(), field.name, field.sort?: 0,
+                    field.type?: EventRegisterField.Type.STRING, field.isRequired,
+                    field.description, null, null, null, null))
+                }
+                ApiNewResponse(result.toList() , it.totalCount)
+            }*/
+
+    override fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>> =
+            newApi.getEventFormResult(map)
+
+    override fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>> =
+            newApi.eventRegister(body)
+
+    override fun registerToEvent(eventId: Int): Completable =
+            newApi.registerToEvent(eventId, RegisterToEventBody(appData.getId()))
+
+    override fun cancelRegisterToEvent(eventId: Int): Completable =
+            newApi.cancelRegisterToEvent(eventId)
+
+    override fun addEventToCalendar(body: EventCalendarBody): Completable =
+            newApi.addEventToCalendar(body).doOnComplete {
+                appData.defaultEvent = body.entity.id
+            }
+
+    override fun deleteAllCalendarEvents(entityType: String): Completable =
+            newApi.deleteAllCalendarEvents(appData.getId(), entityType).doOnComplete {
+                appData.defaultEvent = null
+            }
+
+    override fun getUserCalendarEvent(entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>> =
+            newApi.getUserCalendarEvent(appData.getId(), entityType)
+
+    override fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>> =
+            newApi.getEventActivities(eventId, "event,member,tag,auditorium,userFavorite")
+                    .doOnSuccess { it }.map { it.data }
 }

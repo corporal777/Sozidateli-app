@@ -14,8 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.R
-import com.example.ui.views.ApiErrorDialog
-import com.example.ui.views.FillProfileDialog
+import com.example.ui.views.*
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
@@ -102,6 +101,13 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         }
     }
 
+    override fun showStateErrorMessage() {
+        ChangeStateDialog(requireActivity(), StateType.ERROR)
+                .setSendCodeCallback {
+                    findNavController().navigate(R.id.userStateFragment)
+                }
+    }
+
     override fun showPhoneErrorMessage() {
         context?.let {
             ApiErrorDialog(it, getString(R.string.phone_exist_error_title),
@@ -157,5 +163,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     private fun allPermissionsGranted(permissionsToRequest: Array<String>) = permissionsToRequest.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    protected fun <T> showEditWarning(isBase: Boolean, isMax: Boolean, isEmptyBaseFields: Boolean, isEmptyMaxFields: Boolean, data: () -> T?) {
+        if ((isBase && isEmptyBaseFields) || (isMax && isEmptyMaxFields)) {
+            WarningDialog(requireActivity(), resources.getString(R.string.warning_dialog_text))
+                    .setSelectCallback {
+                        if (it) data.invoke()
+                    }
+        } else data.invoke()
     }
 }

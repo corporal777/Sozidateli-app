@@ -84,8 +84,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
             bottomNavigation.apply {
                 val itemLocation = menu.findItem(R.id.event_location)
-                //TODO need to fix
-                //itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address.isNullOrBlank()
+                itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address?.fullValue.isNullOrBlank()
                 setOnNavigationItemSelectedListener(null)
                 selectedItemId = tabId
                 setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)

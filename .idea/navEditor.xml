@@ -446,6 +446,32 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="baseStateInterestsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="9" />
+                            <option name="y" value="1623" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_baseStateInterestsFragment_to_maxStateMainInfoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_baseStateInterestsFragment_to_maxStateWorkFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="chat_fragment">
                     <value>
                       <LayoutPositions>
@@ -660,8 +686,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="37" />
+                            <option name="y" value="-93" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -737,6 +763,82 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="mainInfoFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-1040" />
+                            <option name="y" value="625" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_mainInfoFragment_to_baseStateInterestsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_mainInfoFragment_to_maxStateMainInfoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_mainInfoFragment_to_password_confirm_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="maxStateEducationFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-120" />
+                            <option name="y" value="2650" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="maxStateMainInfoFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-9" />
+                            <option name="y" value="2040" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_maxStateMainInfoFragment_to_baseStateInterestsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="maxStateWorkFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-160" />
+                            <option name="y" value="2290" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -943,8 +1045,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-185" />
+                            <option name="y" value="-59" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -987,7 +1089,22 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_profile_fragment_to_mainInfoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_profile_fragment_to_maxStateMainInfoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_profile_fragment_to_notifications_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_profile_fragment_to_userStateFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -1193,6 +1310,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_register_email_new_fragment_to_authorization_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="email_register_to_email_confirm">
                               <value>
                                 <LayoutPositions />
@@ -1358,6 +1480,32 @@
                               </value>
                             </entry>
                             <entry key="invite_register_to_mail">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="userStateFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-459" />
+                            <option name="y" value="1126" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_userStateFragment_to_mainInfoFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_userStateFragment_to_maxStateMainInfoFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

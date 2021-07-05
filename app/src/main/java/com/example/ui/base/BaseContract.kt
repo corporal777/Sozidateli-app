@@ -40,6 +40,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showNotificationErrorMessage()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showStateErrorMessage()
     }
 
     interface LoadingView {

@@ -1,6 +1,7 @@
 package com.example.ui.event.schedule
 
 import com.example.data.UserEventData
+import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.Tag
@@ -85,36 +86,34 @@ constructor(
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
         val subEvents = userEvent.activity.activities.let {
-            //TODO need to fix
-            /*it.filter { event ->
-                val date = defaultServerDateTimeFormatter.parse(event.start)
+            it.filter { event ->
+                val date = defaultServerDateTimeFormatter.parse(event.holdingDate?.from)
                 filterSubEvent(event)
                         && filterTags(event, selectedTags)
                         && date.time > day.millis.startOfDay() && date.time < day.millis.endOfDay()
-            }*/
+            }
         }
 
         viewState.apply {
-            //TODO need to fix
-            /*setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
+            setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
             if (subEvents.isEmpty()) {
                 showEmptyDayPlaceholder()
                 hideCurrentDay()
             } else {
                 currentDay?.let { day -> showCurrentDay(day) }
                 hidePlaceholder()
-            }*/
+            }
         }
     }
 
-    private fun filterTags(event: SubEvent, selectedTags: List<Tag>): Boolean {
+    private fun filterTags(event: /*SubEvent*/EventActivityModel, selectedTags: List<Tag>): Boolean {
         if (!mustFilterTags() || selectedTags.isEmpty()) return true
         return selectedTags.any { tag ->
-            event.tags?.any { eventTag -> eventTag.id == tag.id } ?: false
+            event.tag?.any { eventTag -> eventTag.toString() == tag.id } ?: false
         }
-                || selectedTags.any { tag ->
+                /*|| selectedTags.any { tag ->
             event.groups?.any { eventTag -> eventTag.id == tag.id } ?: false
-        }
+        }*/
     }
 
     private fun daySubEventsError() {
@@ -139,7 +138,7 @@ constructor(
         if (date.calendar().isSameDay(currentDayDate.calendar())) invalidateDay()
     }
 
-    protected open fun processChangeEventInCalendarStatusRequest(subEvent: SubEvent, request: Completable) {
+    protected open fun processChangeEventInCalendarStatusRequest(subEvent: /*SubEvent*/EventActivityModel, request: Completable) {
         compositeDisposable += request
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
@@ -147,25 +146,25 @@ constructor(
                 .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
-    override fun onSubEventClick(subEvent: SubEvent) {
+    override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
         checkInternetAndRun {
-            viewState.showSubEvent(userEvent.eventId, subEvent.id)
+            viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
         }
     }
 
-    override fun onAddToScheduleClick(subEvent: SubEvent) {
+    override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
-                eventRepository.addEventToCalendar(userEvent.eventId, subEvent.id)
-                        .andThen(Completable.fromAction { subEvent.isInCalendar = true })
+                eventRepository.addEventToCalendar(userEvent.eventId, subEvent.id.toString())
+                        .andThen(Completable.fromAction { /*subEvent.isInCalendar =*/ true })
         )
     }
 
-    override fun onRemoveFromScheduleClick(subEvent: SubEvent) {
+    override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
-                eventRepository.removeEventFromCalendar(userEvent.eventId, subEvent.id)
-                        .andThen(Completable.fromAction { subEvent.apply { isInCalendar = false } })
+                eventRepository.removeEventFromCalendar(userEvent.eventId, subEvent.id.toString())
+                        .andThen(Completable.fromAction { subEvent.apply { /*isInCalendar =*/ false } })
         )
     }
 
@@ -178,6 +177,6 @@ constructor(
         userEventData.removeOnDataUpdateListener(this)
     }
 
-    abstract fun filterSubEvent(subEvent: SubEvent): Boolean
+    abstract fun filterSubEvent(subEvent: /*SubEvent*/EventActivityModel): Boolean
     abstract fun mustFilterTags(): Boolean
 }

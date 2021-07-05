@@ -1,6 +1,8 @@
 package com.example.repository
 
 import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
@@ -23,7 +25,7 @@ interface EventRepository {
     fun getEventRating(eventId: String): Single<EventInfo>
     fun getEventActivity(eventId: String): Maybe<EventActivity>
     fun getEventInfo(eventId: String): Maybe<EventInfo>
-    fun setDefaultEvent(eventId: String): Completable
+    //fun setDefaultEvent(eventId: String): Completable
     fun addEventToCalendar(eventId: String, subEventId: String): Completable
     fun removeEventFromCalendar(eventId: String, subEventId: String): Completable
     fun getPartnerListByEvent(eventId: String): Single<List<Partner>>
@@ -49,14 +51,27 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getEventDetails(eventId: String): Maybe<EventInfo>
+    fun getEventDetailForRegister(eventId: String): Maybe<EventNew>
     fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable
     fun getPageDetails(pageId: String): Single<PageModel>
     fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>
     fun getPartnerDetails(partnerId : String): Single<PartnerModel>
     fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel>
     fun deleteFromFavorite(id : String): Completable
-    fun checkUserProfile(): Single<List<UserProfileFields>>
+    fun checkUserProfile(): Maybe<UserProfileFieldsModel>
     fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+
+    //fun loadEventRegistrationDataNew(eventId: String): Single<EventRegisterData>
+    fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel/*EventRegisterField*/>>>
+    fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
+    fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
+    fun registerToEvent(eventId : Int): Completable
+    fun cancelRegisterToEvent(eventId : Int): Completable
+    fun addEventToCalendar(body: EventCalendarBody): Completable
+    fun deleteAllCalendarEvents(entityType: String): Completable
+    fun getUserCalendarEvent( entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
+    fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>>
 }

@@ -17,9 +17,11 @@ import retrofit2.http.*
 
 interface UserRepository {
     fun getUserShortNew(): Maybe<UserDetail>
-    fun getUserShort(): Maybe<UserShort>
+    fun getUserShortData(): Maybe<UserDetail>
+    fun getUserByIdNew(id: String): Maybe<UserDetail>
+    //fun getUserShort(): Maybe<UserShort>
     fun getUserFull(): Maybe<User>
-    fun getLastNotification(): Single<List<Notification>>
+    //fun getLastNotification(): Single<List<Notification>>
     fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
     fun getNotification(id: Int): Maybe<RemoteNotification>
     fun markNotificationsAsRead(ids: List<Int>): Completable
@@ -30,18 +32,18 @@ interface UserRepository {
     fun notificationsUnregister(token: String): Completable
     fun updateUser(data: Map<String, Any?>): Single<User>
     fun uploadAvatar(photo: Bitmap?): Single<User>
-    fun uploadRecommendationFile(file: String, mimeType: String): Single<User>
-    fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
+    //fun uploadRecommendationFile(file: String, mimeType: String): Single<User>
+    //fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
-    fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
+    //fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
     fun getUserById(id: String): Maybe<User>
 
     fun addToFavorite(uid: String): Completable
     fun removeFromFavorite(uid: String): Completable
 
-    fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
-    fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>>
+    //fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
+    //fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>>
     fun checkPassword(password: String): Completable
     fun checkPasswordNew(password: String): Completable
     fun sendStatusPhoneConfirmSms(password: String): Completable
@@ -52,6 +54,7 @@ interface UserRepository {
 
     fun deleteProfile(id: Int): Completable
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
+    fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
     fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
     fun sendPhoneCode(id: Int, phone: String): Completable
@@ -79,4 +82,10 @@ interface UserRepository {
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotifications(map: Map<String, Any>): Maybe<PaginationResponse<NotificationModel>>
+    fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun unblockUser(id : Int): Completable
+    fun blockUser(id : Int): Completable
+    fun checkUserProfile(): Maybe<UserProfileFieldsModel>
+    fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
 }

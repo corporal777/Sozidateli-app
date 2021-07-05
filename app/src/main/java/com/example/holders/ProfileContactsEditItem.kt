@@ -281,6 +281,27 @@ class ProfileContactsEditItem(
         viewHolder.llSites.addView(parent)
     }
 
+    fun checkBaseFieldsValid(): Boolean {
+        var isValid = false
+        if (mobilePhone?.value != mMobilePhone
+                && !mMobilePhone.isNullOrEmpty()
+                && !mMobilePhone.isValidPhoneNumber(context)
+        ) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberSecondError
+            }
+            isValid = true
+        }
+        return isValid
+    }
+
+    fun checkMaxFieldsValid(): Boolean {
+        var isValid = false
+        if (!mNoNetworks && mSocialNetworks[0].value.isNullOrEmpty()) isValid = true
+        if (!mNoSite && mSite[0].value.isNullOrEmpty()) isValid = true
+        return isValid
+    }
+
     fun checkDataValid(): Boolean {
         var isValid = true
 

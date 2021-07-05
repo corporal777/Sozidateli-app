@@ -39,6 +39,7 @@ class EventFavoriteItem(
             }
 
             btnSubevents.apply {
+                isVisible = event.binds?.userFavoriteActivities != null
                 //isVisible = event.activities?.any { it.isInFavorites } ?: false
                 setOnClickListener(onEventSubeventsClick)
             }

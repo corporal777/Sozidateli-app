@@ -109,12 +109,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew/*Event
                 itemData.userAgreement*/
                 itemData.id.toString(),
                 itemData.status?.value,
-                if (itemData.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null,
+                /*if (itemData.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/itemData?.binds?.currentUserRegistration?.status?.value,
                 itemData.binds?.organization?.backgroundColor?.value,
                 itemData.binds?.organization?.logo?.uri,
                 EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
                 itemData.binds?.organization?.email,
-                !itemData.binds?.rights?.registration!!,
+                /*!itemData.binds?.rights?.registration!!*/(itemData?.status?.value?: "") != Event.Status.REGISTRATION,
                 onEventClickListener,
                 EventDataListItem(
                         -(itemData.id?.toLong()?: 0),
@@ -125,7 +125,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew/*Event
                 ).apply {
                     showStartTime = false
                 },
-                itemData.userAgreement?.name
+                itemData.userAgreement?.name?: itemData.userAgreement?.uri
         )
     }
 

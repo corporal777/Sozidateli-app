@@ -24,7 +24,17 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
+import kotlinx.android.synthetic.main.item_edit_main_info.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etBirthday
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etCity
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etMiddleName
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.scNoMiddleName
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilBirthday
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilMiddleName
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilName
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilSurname
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tvGender
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
 import java.util.*
@@ -184,6 +194,23 @@ class ProfileDataPersonalEditNewItem(
             }
         }
 
+        return isValid
+    }
+
+    fun checkMaxFieldsValid(): Boolean {
+        var isValid = false
+        if (mNotes.isNullOrEmpty()) isValid = true
+        return isValid
+    }
+
+    fun checkBaseFieldsValid(): Boolean {
+        var isValid = false
+        if (mSurname.isNullOrEmpty()) isValid = true
+        if (mName.isNullOrEmpty()) isValid = true
+        if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) isValid = true
+        if (mGender.isNullOrEmpty()) isValid = true
+        if (mBirthday.isNullOrEmpty()) isValid = true
+        if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) isValid = true
         return isValid
     }
 

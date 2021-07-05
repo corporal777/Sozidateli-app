@@ -85,7 +85,6 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:enabled="false"
                     android:hint="@string/auth_input_first_name_hint"
                     android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
@@ -107,7 +106,6 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:enabled="false"
                     android:hint="@string/auth_input_last_name_hint"
                     android:inputType="textCapWords" />
             </com.example.ui.views.CustomTextInputLayout>
@@ -120,7 +118,6 @@
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:visibility="gone"
                 app:endIconMode="custom"
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null">
@@ -237,7 +234,6 @@
                     android:id="@+id/tvTimer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:gravity="start"
                     android:lineSpacingExtra="2dp"
@@ -256,7 +252,7 @@
                     android:id="@+id/btnResend"
                     fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     android:background="?attr/selectableItemBackground"
                     android:paddingEnd="16dp"
@@ -308,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/auth_title_text"
                     tools:text="@string/auth_agree_user_agreement" />
-            </LinearLayout>-->
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvAgreeError"
@@ -319,7 +315,7 @@
                 android:gravity="center"
                 android:text="@string/auth_error_agreement"
                 android:textColor="@color/attention_action"
-                android:visibility="invisible" />
+                android:visibility="invisible" />-->
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_confirm_phone.*
 import onTextChanged
 import javax.inject.Inject
@@ -45,7 +46,10 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
         btnResend.setOnClickListener { presenter.onResendClick() }
         btnSave.setOnClickListener {
             val code = etCode.text?.toString()
-            if (!code.isNullOrEmpty()) presenter.onCodeSendClick(code)
+            if (!code.isNullOrEmpty()) {
+                (requireActivity() as MainActivity).startEditPhoneListener(true)
+                presenter.onCodeSendClick(code)
+            } else (requireActivity() as MainActivity).startEditPhoneListener(true)
         }
         etCode.onTextChanged { tilCode.error = null }
     }
@@ -73,6 +77,7 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
 
     override fun showWrongCodeError() {
         tilCode.error = getString(R.string.phone_confirm_wrong_code)
+        (requireActivity() as MainActivity).startEditPhoneListener(false)
     }
 
     override fun onPhoneConfirmationComplete() {

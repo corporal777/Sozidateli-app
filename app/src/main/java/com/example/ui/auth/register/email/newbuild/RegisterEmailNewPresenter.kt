@@ -230,13 +230,19 @@ class RegisterEmailNewPresenter
             //passwordConfirm: String?,
             isAgree: Boolean
     ): Boolean {
-        return !firstName.isNullOrBlank()
-                && !lastName.isNullOrBlank()
+        val firstNameValid = !firstName.isNullOrBlank()
+        val lastNameValid = !lastName.isNullOrBlank()
+        val passwordValid = password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
+        val emailValid = if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(context, email?: "")
+        val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
+        return firstNameValid
+                && lastNameValid
                 //&& email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
-                && password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
+                && passwordValid
                 && isPasswordValid//&& password == passwordConfirm
                 && isAgree
-                && if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(context, email?: "")
+                && emailValid
+                && middleNameValid
     }
 
     private fun register(
@@ -290,7 +296,8 @@ class RegisterEmailNewPresenter
                                         viewState.showFinishRegister(firstName,
                                                 lastName, middleName,
                                                 phoneNumber?.get(0)?.value, em?.value?: "", "code",
-                                                false, middleName == USER_DATA_EMPTY)
+                                                false, middleName == USER_DATA_EMPTY,
+                                                true)
 
                                     }, { it.printStackTrace() })
                         }

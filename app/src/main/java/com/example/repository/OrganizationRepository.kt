@@ -19,4 +19,5 @@ interface OrganizationRepository {
     fun getOrganizationDetails(organizationId : String): Single<OrganizationNew>
     fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>>
     fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNewMemberModel>>
+    fun getOrganizationMembersWithoutPagination(map: Map<String, Any>): Maybe<List<OrganizationMemberModel>>
 }

@@ -9,6 +9,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventsCalendarListBody
 import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.ChatMessageAdditionalData
@@ -40,6 +41,7 @@ import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.ChatConnectionStatus
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.NewMessage
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.lang.Exception
 import java.util.*
@@ -110,6 +112,7 @@ class MainPresenter
                 }
     }
 
+    var isEditingPhone = false
     private fun loadUser() {
         /*if (isAuthRequired) viewState.showLoadingDialog()
         val loadUser = userRepository.getUserShort()
@@ -157,15 +160,18 @@ class MainPresenter
                 .andThen(Maybe.defer { checkUserEvent() })
                 .performOnBackgroundOutOnMain()
                 .subscribe({ isMustShowEvent ->
-                    viewState.apply {
-                        hideLoadingDialog()
-                        if (isMustShowEvent) showEvent()
-                        else showRecommendations()
-                        checkIntent()
-                        showNextInapp()
-                    }
+                    if (!isEditingPhone) {
+                        viewState.apply {
+                            hideLoadingDialog()
+                            if (isMustShowEvent) showEvent()
+                            else showRecommendations()
+                            checkIntent()
+                            showNextInapp()
+                        }
 
-                    initInternetConnectionCheck()
+                        initInternetConnectionCheck()
+                    }
+                    isEditingPhone = false
 //                    AuthBackground.clear()
                 }, {
                     it.printStackTrace()
@@ -226,16 +232,16 @@ class MainPresenter
     }
 
     private fun checkUserEvent(): Maybe<Boolean> {
+        return appData.defaultEvent?.let { event ->
+            userEventData.load(event.toString())
+                    .andThen(Maybe.just(true))
+                    .onErrorReturn { false }
+        } ?: Maybe.just(false)
         /*return appData.getUser().default_event?.let { event ->
             userEventData.load(event.id)
                     .andThen(Maybe.just(true))
                     .onErrorReturn { false }
         } ?: Maybe.just(false)*/
-        return /*appData.getUser().default_event?.let { event ->
-            userEventData.load(event.id)
-                    .andThen(Maybe.just(true))
-                    .onErrorReturn { false }
-        } ?:*/ Maybe.just(false)
     }
 
     private fun checkUserLocation(): Completable {
@@ -265,13 +271,14 @@ class MainPresenter
                     userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
                 .onErrorComplete()*/
-        return userRepository.getEventCalendar(EventsCalendarListBody())
+
+        return eventRepository.getUserCalendarEvent(EventCalendarBody.CALENDAR_EVENT)
                 .flatMapObservable { Observable.fromIterable(it.data) }
                 .filter { calendar ->
                     val now = System.currentTimeMillis() / 1000
-                    //calendar.time.any { time -> time.end > now && time.start <= now }
-                    serverDateToMilliseconds(calendar.holdingDate?.to?: "", DATE_FORMAT_SERVER_TIMESTAMP) > now &&
-                            serverDateToMilliseconds(calendar.holdingDate?.from?: "", DATE_FORMAT_SERVER_TIMESTAMP) <= now
+                    appData.defaultEvent = calendar.entity?.id
+                    serverDateToMilliseconds(calendar.date?.to?: "", DATE_FORMAT_SERVER_TIMESTAMP) > now &&
+                            serverDateToMilliseconds(calendar.date?.from?: "", DATE_FORMAT_SERVER_TIMESTAMP) <= now
                 }
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -289,7 +296,7 @@ class MainPresenter
                     val location = it.second
                     val ids = calendar.map { calendarItem -> calendarItem.id }
                     val atEvents = calendar.map { calendarItem ->
-                        checkUserLocationInEventArea(location, calendarItem.address?.lat?: 0.0, calendarItem.address?.lon?: 0.0)
+                        checkUserLocationInEventArea(location, /*calendarItem.address?.lat?:*/ 0.0, /*calendarItem.address?.lon?:*/ 0.0)
                     }
                     userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
                 }
@@ -408,7 +415,8 @@ class MainPresenter
                                 viewState.showFinishRegister(it.name?: "",
                                         it.lastName?: "", it.middleName?.value,
                                         it.phone?.get(0)?.value, it.email?.value?: "", code,
-                                        it.phone?.get(0)?.isConfirmed ?: false, it.middleName?.value == USER_DATA_EMPTY)
+                                        it.phone?.get(0)?.isConfirmed ?: false, it.middleName?.value == USER_DATA_EMPTY,
+                                        it.state?.nameEdited?: true)
                             }, { viewState.showLogin() })
                     /*try {
                         appData.getUserNew().apply {
@@ -446,13 +454,15 @@ class MainPresenter
     }
 
     override fun onHandleChangeEmailConfirm(code: String, email: String) {
-        if (isAuthRequired) return
+        //if (isAuthRequired) return
         userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
+                    userRepository.getUserShortData() .performOnBackgroundOutOnMain().subscribe()
                     viewState.showDialogChangeEmailSuccess()
                 }, {
+                    userRepository.getUserShortData() .performOnBackgroundOutOnMain().subscribe()
                     viewState.showDialogChangeEmailError()
                 })
                 .call(compositeDisposable)

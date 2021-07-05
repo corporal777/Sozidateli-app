@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
@@ -101,19 +102,19 @@ class SearchChatFragment : AbstractSearchUserFragment<SearchChatPresenter>(), Se
         btnFilter.setOnClickListener { searchInterface.showFilterCallback?.invoke() }
     }
 
-    override fun setData(data: List<User?>) {
+    override fun setData(data: List<UserDetail?>) {
         super.setData(data)
         favoritesSection.clear()
         chatsSection.clear()
         anotherSection.clear()
     }
 
-    override fun createItem(itemData: User?): Group {
+    override fun createItem(itemData: UserDetail?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
-        else UserItem(itemData.user_id, itemData.fullName, null, itemData.user_avatar, { presenter.onUserClick(itemData) })
+        else UserItem(itemData.id, itemData.fullName, null, itemData.image?.uri, { presenter.onUserClick(itemData) })
     }
 
-    override fun setItems(favorites: List<User>, chats: List<User>, another: List<User>) {
+    override fun setItems(favorites: List<UserDetail>, chats: List<UserDetail>, another: List<UserDetail>) {
         if (favorites.isEmpty() && chats.isEmpty() && another.isEmpty()){
             adapter.update(listOf(NoDataItem(getString(R.string.schedule_my_empty_day_placeholder_title), getString(R.string.search_no_data_description))))
         } else {

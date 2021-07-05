@@ -39,6 +39,7 @@ class FavoriteEventsPresenter
                     put(EventFavoriteModel.EVENT_FAVORITE_TYPE, EventFavoriteModel.EVENT_TYPE)
                     put(EventFavoriteModel.EVENT_FAVORITE_LOAD_MODEL, true)
                     put(EventFavoriteModel.EVENT_FAVORITE_USER, appData.getId())
+                    put(EventFavoriteModel.EVENT_FAVORITE_BINDS, "userFavoriteActivities")
                 }
         )
         //TODO Finish this screen

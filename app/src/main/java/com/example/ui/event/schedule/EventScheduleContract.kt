@@ -3,6 +3,7 @@ package com.example.ui.event.schedule
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
 import com.example.data.models.Tag
@@ -25,7 +26,7 @@ interface EventScheduleContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: List<SubEvent>, selectedTags: List<Tag>)
+        fun setSubEvents(subEvents: List</*SubEvent*/EventActivityModel>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
@@ -55,7 +56,7 @@ interface EventScheduleContract {
         fun showAllTags()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubevent(subEvent: SubEvent)
+        fun updateSubevent(subEvent: /*SubEvent*/EventActivityModel)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -63,9 +64,9 @@ interface EventScheduleContract {
         fun onTagSelectedListChange()
         fun onDayChanged(date: Long)
 
-        fun onSubEventClick(subEvent: SubEvent)
-        fun onAddToScheduleClick(subEvent: SubEvent)
-        fun onRemoveFromScheduleClick(subEvent: SubEvent)
+        fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel)
+        fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
 
         fun onShowAllTagsClick()
     }

@@ -190,11 +190,11 @@ class ProfileDataEducationEditGroup(
                 socialRoles?.end,
                 socialRoles?.organization,
                 socialRoles?.speciality,
-                birthday
-        ) {
+                birthday,
+        {
             educations.remove(it)
             isDeleteVisible()
-        }
+        }, {})
     }
 
     private fun isDeleteVisible() {

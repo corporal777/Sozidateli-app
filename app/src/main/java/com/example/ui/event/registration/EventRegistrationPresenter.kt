@@ -6,19 +6,24 @@ import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.R
+import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.models.ApiError
-import com.example.data.models.EventFile
-import com.example.data.models.EventPassport
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
+import com.example.data.models.*
+import com.example.data.models.EventFormModel.Companion.FORM_EVENT_ID
+import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_FORM_ID
+import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_USER_ID
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
 import fileName
+import fromJson
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -39,7 +44,8 @@ class EventRegistrationPresenter
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
         private val rxPermissions: RxPermissions,
-        private val contentResolver: ContentResolver
+        private val contentResolver: ContentResolver,
+        private val appData: AppData
 ) : BasePresenter<EventRegistrationContract.View>(), EventRegistrationContract.Presenter {
 
     lateinit var eventId: String
@@ -49,12 +55,83 @@ class EventRegistrationPresenter
     private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
     private var takeFileMaybe: MaybeSubject<Uri>? = null
+    private var formId: Int? = null
+    private var approvingMode: String? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.enableActionButton(true)
 
-        compositeDisposable += eventRepository.loadEventRegistrationData(eventId)
+        compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { event ->
+                    approvingMode = event.state?.registration?.approvingMode
+                    val eventData = EventRegistration(id = event.id.toString(), organization = null,
+                    code = "", organizationId = event.binds?.organization?.id?.toString(),
+                    name = event.name?: "", description = event.description?: "", logo = null,
+                    conferenceStart = event.holdingDate?.from, conferenceFinish = event.holdingDate?.to, registrationStart = null,
+                    registrationFinish = null, status = null, userAgreement = event.userAgreement?.uri, registrationName = null,
+                    userRegistration = event.status?.value?: Event.Status.FINISHED, registrationHeadline = null, registrationSubtitle = null,
+                    isRequireModerate = null, moderateRegistration = null, conferenceFirstActivityStart = null,
+                    conferenceRegistrationFinishDate = event.requestsApply?.dateLimit)
+
+                    if (event.state?.registration?.formEnabled == true) {
+                        compositeDisposable += eventRepository.getEventForm(
+                                mutableMapOf<String, Any>().apply {
+                                    put(FORM_EVENT_ID, eventId)
+                                }).withCheckInternetConnectivity()
+                                .performOnBackgroundOutOnMain()
+                                .withLoadingDialog(viewState)
+                                .subscribeSimple { fields ->
+                                    if (fields.data.isNotEmpty()) {
+                                        val form = fields.data.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
+                                        val fieldsList = mapFields(form?.fields)
+                                        formId = form?.id
+
+                                        compositeDisposable += eventRepository.getEventFormResult(
+                                                mutableMapOf<String, Any>().apply {
+                                                    put(EVENT_FORM_RESULT_FORM_ID, formId ?: 0)
+                                                    put(EVENT_FORM_RESULT_USER_ID, appData.getId())
+                                                }
+                                        ).withCheckInternetConnectivity()
+                                                .performOnBackgroundOutOnMain()
+                                                .withLoadingDialog(viewState)
+                                                .subscribeSimple { fieldsResult ->
+                                                    val fieldsResultList = mapFieldsResult(fieldsResult.data.firstOrNull { it.form == formId }?.fields, fieldsList)
+
+                                                    val fieldsDataApi = createFieldsData(fieldsList, /*registration.fields*/fieldsResultList)
+
+                                                    val result = EventRegisterData(eventData, null, null,
+                                                            listOf(EventGroup("", "")),
+                                                            fieldsDataApi ?: emptyList())
+
+                                                    viewState.apply {
+                                                        val hasForm = result.groups.isNotEmpty() || result.fieldsData.isNotEmpty()
+                                                        hasGroup = result.groupField != null
+                                                        selectedGroup = result.selectedGroup
+                                                        fieldsData = result.fieldsData
+                                                        invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
+                                                        setFields(result.event, result.groupField, result.selectedGroup, result.groups, result.fieldsData, hasForm)
+
+                                                        if (hasForm) {
+                                                            checkDataValid()
+                                                        } else {
+                                                            val agreement = result.event.userAgreement
+                                                            if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ agreement.isNullOrEmpty()) {
+                                                                viewState.showEventRegisterConfirmation()
+                                                            } else {
+                                                                viewState.showAgreementRegisterDialog(agreement)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                    }
+                                }
+                    } else registerToEvent()
+                }
+        /*compositeDisposable += eventRepository.loadEventRegistrationData(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -78,7 +155,90 @@ class EventRegistrationPresenter
                             }
                         }
                     }
+                }*/
+    }
+
+    private fun registerToEvent() {
+        compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.showSuccessRegister(approvingMode)
                 }
+    }
+
+    private fun mapFields(it: List<EventRegisterFields>?): List<EventRegisterField> {
+        val result = mutableListOf<EventRegisterField>()
+        it?.forEach { field ->
+            result.add(EventRegisterField(field.id.toString(), field.name, field.sort?: 0,
+                    field.type?: EventRegisterField.Type.STRING, field.isRequired,
+                    field.description, field.parameters?.options, null, null, null))
+        }
+        return result
+    }
+
+    private fun mapFieldsResult(it: List<EventFormResultFieldsModel>?, fields: List<EventRegisterField>?): List<EventRegisterResponseField> {
+        val result = mutableListOf<EventRegisterResponseField>()
+        it?.forEach { field ->
+            val type = fields?.firstOrNull { it.id == field.id.toString() }
+            result.add(EventRegisterResponseField(field.id?.toString()?: "", type?.type?: EventRegisterField.Type.STRING, field.value))
+        }
+        return result
+    }
+
+    private fun createFieldsData(
+            fields: List<EventRegisterField>?,
+            responseField: List<EventRegisterResponseField?>?
+    ): List<EventRegisterFieldData<*>>? {
+        return fields?.mapNotNull { field ->
+            when (field.type) {
+                EventRegisterField.Type.STRING,
+                EventRegisterField.Type.TEXT_AREA,
+                EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.DATE,
+                EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.CHECKBOXES,
+                EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<Set<String>>()
+                )
+                EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<String>()
+                )
+                EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson(EventFile.Deserializer())
+                )
+                EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<Boolean>()
+                )
+                EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(
+                        field,
+                        findRegistrationDataValue(field, responseField).fromJson<EventPassport>()
+                )
+                else -> null
+            }
+        }
+    }
+
+    private fun findRegistrationDataValue(
+            field: EventRegisterField,
+            fields: List<EventRegisterResponseField?>?
+    ): JsonElement? {
+        return fields?.find { field.id == it?.id }?.value
     }
 
     override fun onDataChange(field: EventRegisterFieldData<*>) {
@@ -100,40 +260,65 @@ class EventRegistrationPresenter
                             addFormDataPart("category_id", group)
                             added = true
                         }
-
-                        fieldsData.forEach { fieldData ->
+                        addFormDataPart("form", formId.toString())
+                        fieldsData.forEachIndexed { index, fieldData ->
+                            //val key = fieldData.field.id
+                            val position = index
                             val key = fieldData.field.id
-                            val value = fieldData.value ?: return@forEach
-
+                            val value = fieldData.value ?: return@forEachIndexed
+                            //addFormDataPart("fields[$position][id]", key)
                             when (fieldData) {
                                 is EventRegisterFieldData.File -> fieldData.value?.let {
                                     val path = it.path
                                     if (path.scheme?.startsWith("http") != true) {
-                                        val name = "${it.name}.${it.extension}"
+                                        addFormDataPart("fields[$position][id]", key)
+                                        val name = "${it.name}.${it.mimeType}"
                                         contentResolver.openInputStream(path)?.buffered()?.use { stream -> stream.readBytes() }?.let { bytes ->
                                             val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
-                                            addFormDataPart("file[$key]", name, body)
+                                            addFormDataPart("fields[$position][value][file]", name, body)
                                             added = true
                                         }
                                     }
                                 }
                                 else -> {
-                                    if (value is Iterable<*>) value.forEachIndexed { index, any ->
+                                    if (value is Iterable<*>) {
+                                        if (value.count() > 0) addFormDataPart("fields[$position][id]", key)
+                                        value.forEachIndexed { index, any ->
                                         if (any != null) {
-                                            addFormDataPart("field[$key][$index]", any.toString())
+                                            addFormDataPart("fields[$position][value][]", any.toString())
                                             added = true
                                         }
+                                        }
                                     } else {
-                                        val data = when (value) {
+                                        when (value) {
+                                            is EventPassport ->
+                                                if (value.isDataComplete()) {
+                                                    addFormDataPart("fields[$position][id]", key)
+                                                    addFormDataPart("fields[$position][value][series]", value.series?: "")
+                                                    addFormDataPart("fields[$position][value][number]", value.number?: "")
+                                                    addFormDataPart("fields[$position][value][issuedBy]", value.issuedBy?: "")
+                                                    addFormDataPart("fields[$position][value][issuedDepartment]", value.issuedDepartment?: "")
+                                                    addFormDataPart("fields[$position][value][issuedDate]", value.issuedDate?: "")
+                                                    added = true
+                                                }
+                                                else null
+                                            else -> {
+                                                val data = value.toString()
+                                                addFormDataPart("fields[$position][id]", key)
+                                                addFormDataPart("fields[$position][value]", data)
+                                                added = true
+                                            }
+                                        }
+                                        /*val data = when (value) {
                                             is EventPassport ->
                                                 if (value.isDataComplete()) GsonBuilder().serializeNulls().create().toJson(value)
                                                 else null
                                             else -> value.toString()
                                         }
                                         if (data != null) {
-                                            addFormDataPart("field[$key]", data)
+                                            addFormDataPart("fields[$position][value]", data)
                                             added = true
-                                        }
+                                        }*/
                                     }
                                 }
                             }
@@ -145,7 +330,7 @@ class EventRegistrationPresenter
                     }
                     .build()
         }
-                .flatMap { eventRepository.eventRegister(eventId, it) }
+                .flatMap { /*eventRepository.eventRegister(eventId, it)*/eventRepository.eventRegisterNew(it) }
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -157,7 +342,8 @@ class EventRegistrationPresenter
                             onReceiveError(it)
                         },
                         onSuccess = {
-                            viewState.showSuccessRegister(it.event.moderateRegistration)
+                            registerToEvent()
+                            //viewState.showSuccessRegister(approvingMode)
                         })
     }
 
@@ -170,7 +356,15 @@ class EventRegistrationPresenter
     }
 
     override fun onSuccessGoToEvent() {
-        compositeDisposable += eventRepository.setDefaultEvent(eventId)
+        /*compositeDisposable += eventRepository.setDefaultEvent(eventId)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(eventId))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.showEvent() }*/
+
+        compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, eventId.toInt())))
                 .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(eventId))
                 .withCheckInternetConnectivity()

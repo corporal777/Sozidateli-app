@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,9 +19,11 @@ import com.example.data.models.UserDetail
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.FinishRegisterDialog
-import com.example.ui.views.RegisterDataType
+import com.example.ui.state.UserState
+import com.example.ui.state.UserStateFragmentDirections
+import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.views.*
+import com.example.util.Utils
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
@@ -67,6 +70,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvLogout.setOnClickListener { presenter.onLogoutClick() }
         tvSettings.setOnClickListener { presenter.onSettingsClick() }
         //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
+        //showUserStateDialog()
     }
 
     override fun setUser(user: UserDetail) {
@@ -85,14 +89,37 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
                         presenter.sendEmail(it.value)
                     }
                 }
-            }
+            }.setNegativeClickCallback { showUserStateDialog() }
+        }
+    }
+
+    override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
+        btnBaseState.isVisible = !hasBase
+        btnMaxState.isVisible = !hasMax
+        state_title.isInvisible = hasBase && hasMax
+        btnBaseState.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.BASE).setScreen(1))
+        }
+        btnMaxState.setOnClickListener {
+            if (hasBase) {
+                when (Utils.maxStateScreen(presenter.getUserData())) {
+                    MaxStateScreenType.BASE ->
+                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateMainInfoFragment().setScreen(1))
+                    MaxStateScreenType.INTERESTS ->
+                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBaseStateInterestsFragment().setScreen(1))
+                    MaxStateScreenType.WORK ->
+                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateWorkFragment().setScreen(1))
+                    MaxStateScreenType.EDUCATION ->
+                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateEducationFragment().setScreen(1))
+                }
+            } else findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.MAX).setScreen(1))
         }
     }
 
     override fun emailSuccess() {
         dialog.hideDialog()
         FinishRegisterDialog(requireContext())
-                .setSelectCallback {  }
+                .setSelectCallback { showUserStateDialog() }
     }
 
     override fun phoneSuccess(phone: String) {
@@ -105,6 +132,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
                         presenter.confirmCode(phone, it.value)
                     }
         }
+        dialog.setNegativeClickCallback { showUserStateDialog() }
         dialog.setSendCodeCallback {
             presenter.sendPhone(phone)
         }
@@ -118,14 +146,22 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         Toast.makeText(requireContext(), "Code confirmed", Toast.LENGTH_SHORT).show()
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
         dialog.hideDialog()
+        showUserStateDialog()
     }
 
     override fun showProfile(uid: String) {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
+        //if (BuildConfig.NEW_PROFILE_EDIT) {
             findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
-        } else {
+        /*} else {
             findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
-        }
+        }*/
+    }
+
+    private fun showUserStateDialog() {
+        ChangeStateDialog(requireActivity(), StateType.SUCCESS)
+                .setSendCodeCallback {
+                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+                }
     }
 
     override fun showFavorites() {
