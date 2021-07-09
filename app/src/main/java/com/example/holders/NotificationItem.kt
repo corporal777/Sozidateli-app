@@ -15,7 +15,6 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
 import com.example.ui.event.about.AboutEventFragment
-import com.example.ui.notification.NotificationFragmentDirections
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -49,9 +48,9 @@ abstract class NotificationItem(
                         "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                         .setOnLinkClickListener { _, url ->
-                            val eventMass = url.split("event")
-                            val eventId = eventMass.last().replace("/", "")
-                            openEventListener(eventId)
+                            /*val eventMass = url.split("event")
+                            val eventId = eventMass.last().replace("/", "")*/
+                            openEventListener(/*eventId*/notification.eventId.toString())
                             true
                         }
                 removeUrlUnderline()

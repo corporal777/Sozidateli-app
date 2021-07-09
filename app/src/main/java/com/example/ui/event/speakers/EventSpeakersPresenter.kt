@@ -2,6 +2,9 @@ package com.example.ui.event.speakers
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.models.EventUserFavorite
 import com.example.data.models.MemberModel
 import com.example.data.models.Speaker
 import com.example.extensions.buildList
@@ -27,23 +30,13 @@ class EventSpeakersPresenter
 
     val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getSpeakers(
     mapOf(MemberModel.MEMBER_EVENT to eventId, MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
-    MemberModel.MEMBER_LIMIT to limit, MemberModel.MEMBER_OFFSET to offset)) }
+    MemberModel.MEMBER_LIMIT to limit, MemberModel.MEMBER_OFFSET to offset, MemberModel.MEMBER_BINDS to /*"user,userFavorite"*/"user")) }
             .buildList()
-    /*val pagination = PaginationDataSourceFactory { limit, offset -> eventRepository.getEventSpeakers(eventId, limit, offset) }
-            .buildList()*/
 
     private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        /*compositeDisposable += Observable.create(pagination)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    val uid = appData.getUser().user_id
-                    it.forEach { speaker -> speaker.user.isCurrentUser = speaker.user.user_id == uid }
-                    viewState.apply { setData(it) }
-                }*/
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -60,21 +53,30 @@ class EventSpeakersPresenter
         else pagination.invalidate()
     }
 
-    override fun onSpeakerClick(speaker: MemberModel/*Speaker*/) = viewState.showSpeaker(speaker)
+    override fun onSpeakerClick(speaker: MemberModel) = viewState.showSpeaker(speaker)
 
-    override fun onSpeakerFavoriteChangeClick(speaker: MemberModel/*Speaker*/) {
-        val id = speaker.binds?.user?.id.toString()/*speaker.user.user_id.toString()*/
-        /*val request = if (!speaker.user.is_in_favorite) userRepository.addToFavorite(id)
-        else userRepository.removeFromFavorite(id)
-
-        compositeDisposable += request.performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    viewState.showRequestErrorMessage()
-                }) {
-                    speaker.user.is_in_favorite = !speaker.user.is_in_favorite
-                    viewState.updateSpeaker(speaker)
-                }*/
+    override fun onSpeakerFavoriteChangeClick(speaker: MemberModel) {
+        val id = speaker.user.toString()/*speaker.user.user_id.toString()*/
+        if (speaker.binds?.user?.binds?.userFavorite == null)
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, id.toInt())))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        speaker.binds?.user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.updateSpeaker(speaker)
+                    }
+        else
+            compositeDisposable += eventRepository.deleteFromFavorite(speaker.binds.user.binds?.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        speaker.binds.user.binds?.userFavorite = null
+                        viewState.updateSpeaker(speaker)
+                    }
     }
 
     override fun onItemTake(position: Int) {

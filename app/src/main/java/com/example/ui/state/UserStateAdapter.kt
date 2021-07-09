@@ -1,5 +1,6 @@
 package com.example.ui.state
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -32,6 +33,7 @@ class UserStateAdapter(val onGetStateClick:(type: UserState) -> Unit): ListAdapt
             1 -> {
                 val holderMax = holder as ViewHolder<FragmentMaxStateBinding>
                 holderMax.binding.btnGetState.isVisible = !getItem(position).isDone
+                holderMax.binding.tvPercentage.setTypeface(null, Typeface.BOLD)
                 holderMax.binding.btnGetState.setOnClickListener {
                     onGetStateClick(UserState.MAX)
                 }
@@ -40,6 +42,7 @@ class UserStateAdapter(val onGetStateClick:(type: UserState) -> Unit): ListAdapt
             2 -> {
                 val holderBase = holder as ViewHolder<FragmentBaseStateBinding>
                 holderBase.binding.btnGetState.isVisible = !getItem(position).isDone
+                holderBase.binding.tvPercentage.setTypeface(null, Typeface.BOLD)
                 holderBase.binding.btnGetState.setOnClickListener {
                     onGetStateClick(UserState.BASE)
                 }

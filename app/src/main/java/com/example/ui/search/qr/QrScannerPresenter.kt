@@ -3,6 +3,7 @@ package com.example.ui.search.qr
 import android.Manifest
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.EventNew
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -36,11 +37,14 @@ class QrScannerPresenter
         val parsedCode = codee ?: uri.lastPathSegment
         if (parsedCode == null) viewState.showEventNotFoundError()
         else {
-            compositeDisposable += eventRepository.getEventByCode(parsedCode)
+            compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+                    EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme",
+                    EventNew.EVENT_CODE to parsedCode))
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribe({
-                        viewState.showEvent(it.event)
+                        if (it.data.isNotEmpty())
+                            viewState.showEvent(it.data[0]?.id.toString())
                     }, {
                         viewState.showEventNotFoundError()
                         it.printStackTrace()

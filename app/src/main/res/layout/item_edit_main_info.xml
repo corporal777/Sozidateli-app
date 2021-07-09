@@ -124,7 +124,7 @@
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:hint="@string/profile_gender"
+                android:hint="@string/gender_not_selected"
                 android:paddingStart="@dimen/background_input_padding"
                 android:paddingEnd="@dimen/background_input_padding" />
         </com.example.ui.views.CustomTextInputLayout>

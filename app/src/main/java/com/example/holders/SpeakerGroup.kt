@@ -17,7 +17,7 @@ open class SpeakerGroup(
             speaker.binds?.user?.address?.city,
             speaker.binds?.user?.image?.uri,
             { onSpeakerClick(speaker) },
-            null,//speaker.user.getUserSubscribeAction(),
+            speaker.binds?.user?.getUserSubscribeAction(),
             { onFavoriteChangeClick(speaker) }
     ).apply {
         registerGroupDataObserver(this@SpeakerGroup)
@@ -37,7 +37,7 @@ open class SpeakerGroup(
     private val descriptionItem: SpeakerDescriptionItem?
 
     init {
-        val description = "speaker.description"
+        val description = speaker.role
         descriptionItem = if (!description.isNullOrBlank()) SpeakerDescriptionItem(-(speaker.user?.toLong()?:0)/*-speaker.uid.toLong()*/, description)
         else null
     }

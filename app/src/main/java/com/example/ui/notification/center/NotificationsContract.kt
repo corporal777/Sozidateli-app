@@ -31,9 +31,9 @@ interface NotificationsContract {
 
         fun onNotificationReadMoreClick(id: Int)
         fun onNotificationReadClick(id: Int)
-        fun onNotificationAcceptClick(id: Int)
-        fun onNotificationCancelClick(id: Int)
-        fun onNotificationChangeDecisionClick(id: Int)
+        fun onNotificationAcceptClick(notification: Notification)
+        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationChangeDecisionClick(notification: Notification)
         fun onNotificationRateClick(eventId: String)
     }
 }

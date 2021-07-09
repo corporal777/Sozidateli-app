@@ -264,10 +264,28 @@ class UserPresenter
         val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
         if (avatar != null) {
             if (data.size == 1) {
-                updateUser(userRepository.uploadAvatar(avatar), onComplete)
+                //updateUser(userRepository.changeUserImage(avatar), onComplete)
+                compositeDisposable += userRepository.changeUserImage(avatar)
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribe({
+                            viewState.navigateUp()
+                        }, {
+                            it.printStackTrace()
+                            viewState.showUpdateError(it.message)
+                        })
             } else {
-                updateUser(userRepository.uploadAvatar(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)
+                compositeDisposable += userRepository.changeUserImage(avatar)
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribe({
+                            viewState.navigateUp()
+                        }, {
+                            it.printStackTrace()
+                            viewState.showUpdateError(it.message)
+                        })
+                /*updateUser(userRepository.changeUserImage(avatar)
+                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)*/
             }
         } else {
             updateUser(userRepository.updateUser(data), onComplete)

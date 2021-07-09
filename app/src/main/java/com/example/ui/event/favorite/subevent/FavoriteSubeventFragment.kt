@@ -35,26 +35,26 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, 
     fun providePresenter(): FavoriteSubeventPresenter = presenterProvider.get().apply {
         FavoriteSubeventFragmentArgs.fromBundle(requireArguments()).let {
             event = it.event
-            //actions = it.actions.asList()
+            actions = it.actions.asList()
         }
     }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
+        override fun onSubEventClick(subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
 
-        override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) {
             // do nothing
         }
 
-        override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
             // do nothing
         }
 
-        override fun onChangeFavoriteClick(subEvent: /*SubEvent*/EventActivityModel) {
+        override fun onChangeFavoriteClick(subEvent: EventActivityModel) {
             presenter.onChangeFavoriteRequest(subEvent)
         }
     }
@@ -70,7 +70,7 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, 
         }
     }
 
-    override fun setData(data: Map<Long?, List</*SubEvent*/EventActivityModel>>) {
+    override fun setData(data: Map<Long?, List<EventActivityModel>>) {
         val groups = mutableListOf<Group>()
         data.forEach { entry ->
             val date = entry.key

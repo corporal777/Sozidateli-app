@@ -12,9 +12,8 @@ import com.example.data.bodies.EmailCodeBody
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventsCalendarListBody
 import com.example.data.bodies.RecoverPasswordBody
-import com.example.data.models.ChatMessageAdditionalData
+import com.example.data.models.*
 import com.example.data.models.Notification
-import com.example.data.models.RemoteNotification
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -76,7 +75,7 @@ class MainPresenter
     }
 
     private var isAuthRequired = false
-    private var inappList: Deque<RemoteNotification>? = null
+    private var inappList: Deque</*RemoteNotification*/NotificationModel>? = null
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true
@@ -383,14 +382,25 @@ class MainPresenter
 
     override fun onHandleEvent(event: String) {
         if (isAuthRequired) return
-        compositeDisposable += eventRepository.getEventByCode(event)
+        compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme",
+                EventNew.EVENT_CODE to event))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    if (it.data.isNotEmpty())
+                        viewState.showEvent(it.data[0]?.id.toString())
+                }, {
+                    it.printStackTrace()
+                })
+        /*compositeDisposable += eventRepository.getEventByCode(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.showEvent(it.event.id)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
         //viewState.showEvent(event)
     }
 
@@ -495,7 +505,7 @@ class MainPresenter
     }
 
     private fun showNotification(notificationId: Int) {
-        compositeDisposable += userRepository.getNotification(notificationId)
+        compositeDisposable += userRepository.getNotificationDetail(notificationId.toString(), true)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }

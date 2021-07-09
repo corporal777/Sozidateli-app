@@ -412,6 +412,7 @@
     <string name="profile_upload_document">Загрузить документ</string>
     <string name="profile_save_required_error">Вы не заполнили или заполнили не верно поле "%s"</string>
     <string name="profile_gender">Пол</string>
+    <string name="gender_not_selected">Пол не указан</string>
     <string name="profile_gender_male">Мужской</string>
     <string name="profile_gender_female">Женский</string>
     <string name="profile_gender_not_selected">Не выбрано</string>

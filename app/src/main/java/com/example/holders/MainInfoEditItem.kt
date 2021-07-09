@@ -82,9 +82,14 @@ class MainInfoEditItem(
                 mMiddleName = it.toString()
                 checkDataValid()
             }
-            etEmail.apply {
-                setText(email?.value)
+            tilEmail.initEmailInput(email?.value) {
+                checkDataValid()
             }
+
+            /*etEmail.apply {
+                setText(email?.value)
+                checkDataValid()
+            }*/
 
             scNoMiddleName.apply {
                 isEnabled = canEditName
@@ -190,20 +195,29 @@ class MainInfoEditItem(
         }
     }
 
+    private fun TextInputLayout.initEmailInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
+        editText?.setText(text)
+        error = null
+        isEnabled = true
+        editText?.isEnabled = true
+        editText?.onTextChanged {
+            if (it?.isNotEmpty() == true) error = null
+            onTextChanged(it)
+        }
+        setEndIconDrawable(0)
+    }
+
     fun checkDataValid(): Boolean {
         var isValid = true
         if (::viewHolder.isInitialized) {
             viewHolder.apply {
                 if (mSurname.isNullOrEmpty()) {
-                    //tilSurname.error = emptyInputError
                     isValid = false
                 }
                 if (mName.isNullOrEmpty()) {
-                    //tilName.error = emptyInputError
                     isValid = false
                 }
                 if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
-                    //tilMiddleName.error = emptyInputError
                     isValid = false
                 }
                 if (mGender.isNullOrEmpty()) {
@@ -218,7 +232,7 @@ class MainInfoEditItem(
                 if (mMobilePhone.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (etEmail.text.isNullOrEmpty()) {
+                if (!AuthValidateUtil.isValidEmail(etEmail.text.toString())) {
                     isValid = false
                 }
             }
@@ -268,7 +282,8 @@ class MainInfoEditItem(
     private fun setGender(): String {
         return when (gender) {
             GENDER_MALE -> genderMale
-            else -> genderFemale
+            GENDER_FEMALE -> genderFemale
+            else -> ""
         }
     }
 

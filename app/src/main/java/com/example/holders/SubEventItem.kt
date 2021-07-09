@@ -33,18 +33,17 @@ open class SubEventItem(
             when (mode) {
                 Mode.SCHEDULE -> {
                     btnAction.apply {
-                        //TODO need to finish
-                        /*text = (if (subEvent.isInCalendar) context.getString(R.string.sub_event_remove_from_schedule)
+                        text = (if (subEvent.binds?.userCalendar != null) context.getString(R.string.sub_event_remove_from_schedule)
                         else context.getString(R.string.sub_event_add_to_schedule))
 
-                        isEnabled = subEvent.isInCalendar || subEvent.canAddToCalendar
+                        //isEnabled = subEvent.isInCalendar || subEvent.canAddToCalendar
 
                         setOnClickListener {
                             clickListener?.apply {
-                                if (subEvent.isInCalendar) onRemoveFromScheduleClick(subEvent)
+                                if (subEvent.binds?.userCalendar != null) onRemoveFromScheduleClick(subEvent)
                                 else onAddToScheduleClick(subEvent)
                             }
-                        }*/
+                        }
                         isInvisible = false
                     }
 
@@ -53,8 +52,7 @@ open class SubEventItem(
                 Mode.FAVORITE -> {
                     btnSubscribe.apply {
                         btnAction.isInvisible = false
-                        //TODO need to finish
-                        //setAction(if (subEvent.isInFavorites) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+                        setAction(if (subEvent.binds?.userFavorite != null) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
                         setOnClickListener { clickListener?.onChangeFavoriteClick(subEvent) }
                     }
 
@@ -75,10 +73,8 @@ open class SubEventItem(
                 }
 
                 removeAllViews()
-                //val categories = subEvent.groups ?: emptyList()
                 val tags = subEvent.binds?.tag ?: emptyList()
-                //categories.forEach { addView(createChip(it)) }
-                tags.forEach { addView(createChip(it)) }
+                tags.forEach { if (subEvent.tag?.contains(it.id) == true) addView(createChip(it))  }
             }
         }
     }

@@ -68,6 +68,7 @@ data class EventNew(
                 const val EVENT_CATEGORY = "topicCategory"
                 const val EVENT_STATUS = "status"
                 const val EVENT_HIDDEN = "stateIsHidden"
+                const val EVENT_CODE = "code"
         }
 }
 
@@ -140,7 +141,7 @@ data class EventBindsModel(
         @SerializedName("current-user-registration")
         val currentUserRegistration: CurrentUserRegistrationModel? = null,
         @SerializedName("userFavoriteActivities")
-        val userFavoriteActivities: List<String>? = null/*,
+        val userFavoriteActivities: List<EventActivityModel>? = null/*,
         @SerializedName("destination-scheme")
         val destinationScheme: Any? = null*/
 ): Parcelable {
@@ -295,6 +296,7 @@ data class MemberModel(
                 const val MEMBER_LIMIT = "limit"
                 const val MEMBER_OFFSET = "offset"
                 const val MEMBER_ROLE_SPEAKER = "speaker"
+                const val MEMBER_BINDS = "binds"
         }
 }
 
@@ -303,7 +305,7 @@ data class MemberBindsModel(
        val event: EventNew? = null,
        val user: UserDetail? = null,
        @SerializedName("userFavorite")
-       var userFavorite: List<EventUserFavorite>? = null
+       var userFavorite: /*List<*/EventUserFavorite/*>*/? = null
 ): Parcelable
 
 @Parcelize
@@ -344,7 +346,7 @@ data class EventActivityModel(
         @SerializedName("holdingDate")
         val holdingDate: DateModel? = null,
         val tag: List<Int>? = null,
-        //val auditorium: Any? = null,
+        val auditorium: Int? = null,
         val member: List<EventActivityMember>? = null,
         val binds: EventActivityBinds? = null
 ): Parcelable
@@ -353,7 +355,12 @@ data class EventActivityModel(
 data class EventActivityBinds(
         val event: EventNew? = null,
         val tag: List<Tags>? = null,
-        val member: List<MemberModel>? = null
+        val member: List<MemberModel>? = null,
+        @SerializedName("userCalendar")
+        var userCalendar: EventCalendarItem? = null,
+        @SerializedName("userFavorite")
+        var userFavorite: /*List<*/EventUserFavorite/*>*/? = null,
+        var auditorium: EventAuditoriumModel? = null
 ): Parcelable
 
 @Parcelize

@@ -8,7 +8,7 @@ import com.example.ui.base.BaseContract
 interface EnterCodeContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEvent(event: Event)
+        fun showEvent(eventId: /*Event*/String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEventNotFoundError()

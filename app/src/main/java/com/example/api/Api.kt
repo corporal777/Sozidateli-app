@@ -23,9 +23,9 @@ interface Api {
             @Field("user_pwd") password: String? = null
     ): Single<ApiResponse<AuthSNResponse>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/auth/{sn}/set_email")
-    fun setEmailSocialNetwork(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
+    fun setEmailSocialNetwork(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/auth/social/confirm_email")
@@ -48,7 +48,7 @@ interface Api {
             @Field("user_last_name") lastName: String,
             @Field("user_middle_name") middleName: String?,
             @Field("user_phone") phone: String?
-    ): Single<ApiResponse<AuthResponse>>*/
+    ): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/register/confirm")
@@ -62,7 +62,7 @@ interface Api {
     @POST("/v1/user/register/confirm/get")
     fun registerData(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<UserResp>>
 
-    /*@FormUrlEncoded
+    @FormUrlEncoded
     @POST("/v1/user/update/change_email_confirm")
     fun changeEmailConfirm(@Field("user_email") email: String, @Field("confirm_code") code: String): Single<ApiResponse<AuthResponse>>
 
@@ -75,14 +75,14 @@ interface Api {
     fun registerSnResend(@Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>
 
     @GET("/v1/user/info/short")
-    fun getUserShort(): Maybe<ApiResponse<UserShort>>*/
+    fun getUserShort(): Maybe<ApiResponse<UserShort>>
 
     @GET("/v1/user/info")
     fun getUserFull(): Maybe<ApiResponse<User>>
 
     @FormUrlEncoded
     @POST("/v1/user/check_pwd")
-    fun checkPassword(@Field("user_password") password: String): Completable
+    fun checkPassword(@Field("user_password") password: String): Completable*/
 
     @FormUrlEncoded
     @POST("/v1/user/phone/sms")
@@ -100,7 +100,7 @@ interface Api {
     fun getUsersList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<User>>>
 
     @GET("/v1/user/notifications/last")
-    fun getLastNotification(): Single<ApiResponse<List<Notification>>>*/
+    fun getLastNotification(): Single<ApiResponse<List<Notification>>>
 
     @FormUrlEncoded
     @POST("/v1/user/notifications")
@@ -111,7 +111,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/mark_as_read")
-    fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<UnreadCountResponse>>
+    fun markNotificationsAsRead(@Field("id[]") ids: List<Int>): Maybe<ApiResponse<UnreadCountResponse>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/notifications/register")
@@ -181,7 +181,7 @@ interface Api {
     @POST("/v1/user/geo")
     fun setUserAtEvent(@Field("event[]") events: List<Int>, @Field("at_event[]") atEvent: List<Boolean>, @Field("lat") lat: Double, @Field("lon") lon: Double): Completable
 
-    @POST("v1/user/deactivate")
+    /*@POST("v1/user/deactivate")
     fun deleteProfile(): Completable
 
     @FormUrlEncoded
@@ -194,24 +194,24 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/users/search")
-    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
+    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>*/
 
     @GET("/v1/user/chat/{chat}")
     fun getChat(@Path("chat") chatId: String): Single<ApiResponse<UserChat>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/recovery_password")
     fun sendEmailRecovery(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/recovery_password/check")
-    fun checkRecoveryCode(@Field("user_email") email: String, @Field("confirm_code") confirm: String): Single<ApiResponse<AuthResponse>>
+    fun checkRecoveryCode(@Field("user_email") email: String, @Field("confirm_code") confirm: String): Single<ApiResponse<AuthResponse>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/recovery_password/set_pwd")
     fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
 
-    @POST("/v1/users/{id}/favorite")
+    /*@POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
 
     @POST("/v1/users/{id}/unfavorite")
@@ -241,21 +241,21 @@ interface Api {
     fun eventRegister(@Path("eventId") eventId: String, @Body body: RequestBody): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/register/check")
-    fun eventRegisterCheck(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterCheckFields>>
+    fun eventRegisterCheck(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterCheckFields>>*/
 
     @POST("/v1/events/{eventId}/register/cancel")
     fun eventRegisterCancel(@Path("eventId") eventId: String): Completable
 
-    @GET("/v1/events/{eventId}/register")
+    /*@GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/rating/fields")
-    fun getEventRatingForm(@Path("eventId") eventId: String): Single<ApiResponse<List<EventRegisterField>>>
+    fun getEventRatingForm(@Path("eventId") eventId: String): Single<ApiResponse<List<EventRegisterField>>>*/
 
     @POST("/v1/events/{eventId}/rating/set")
     fun setEventRating(@Path("eventId") eventId: String, @Body body: RequestBody): Completable
 
-    @GET("/v1/events/{eventId}/rating/get")
+    /*@GET("/v1/events/{eventId}/rating/get")
     fun getEventRating(@Path("eventId") eventId: String): Single<ApiResponse<EventInfo>>
 
     @GET("/v1/events/{eventId}")
@@ -268,13 +268,13 @@ interface Api {
     fun getSubEvent(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Single<ApiResponse<SubeventInfo>>
 
     @POST("v1/user/set_default_event/{eventId}")
-    fun setDefaultEvent(@Path("eventId") eventId: String): Completable
+    fun setDefaultEvent(@Path("eventId") eventId: String): Completable*/
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity/{subEventId}/contacts")
     fun getSubEventUsers(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
-    @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
+    /*@POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
     fun addSubEventToCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Completable
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
@@ -320,13 +320,13 @@ interface Api {
     fun unsubscribeFromSubEvent(@Path("event") event: String, @Path("activity") activity: String): Completable
 
     @POST("/v1/common/interests")
-    fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
+    fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>*/
 
     @GET("/v1/common/page_agreement")
     fun getUserAgreement(): Maybe<ApiResponse<Agreement>>
 
-    @POST("/v1/common/formats")
-    fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>
+    /*@POST("/v1/common/formats")
+    fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>*/
 
     @POST("/v1/address")
     fun getAddress(@Body body: AddressBody): Maybe<ApiResponse<List<AddressResponse>>>

@@ -26,7 +26,7 @@ class SubeventUserListFragment : BaseFragment(), SubeventUserListContract.View {
 
     @ProvidePresenter
     fun providePresenter(): SubeventUserListPresenter = presenterProvider.get().apply {
-        val args = SubeventUserListFragmentArgs.fromBundle(arguments!!)
+        val args = SubeventUserListFragmentArgs.fromBundle(requireArguments())
         event = args.eventId
         subevent = args.subeventId
     }

@@ -4,7 +4,11 @@ import android.app.NotificationManager
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.ApproveBody
+import com.example.data.bodies.CancelBody
+import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
+import com.example.data.models.NotificationModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -29,7 +33,7 @@ class NotificationPresenter
         super.onFirstViewAttach()
         viewState.setData(notification)
         if (!notification.wasRead && notification.type != Notification.Type.RATE) {
-            compositeDisposable += userRepository.markNotificationsAsRead(listOf(notification.id))
+            compositeDisposable += userRepository.markAsRead(notification.id.toString())
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
@@ -62,8 +66,14 @@ class NotificationPresenter
                 .withLoadingDialog(viewState)
                 .subscribe({
                     val fields = it.filter { f -> f.filled == false }
-                    if (fields.isEmpty())
-                        updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
+                    if (fields.isEmpty()) {
+                        //updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
+                        when (notification.notificationMainType) {
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.id)
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.id)
+                            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.id)
+                        }
+                    }
                     else {
                         val errors = mutableListOf<String>()
                         fields.forEach { f -> errors.add("-" + f.title) }
@@ -71,11 +81,44 @@ class NotificationPresenter
                     }
                 }, { it.printStackTrace() })
 
-        //updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
+    }
+
+    private fun approveOrgMember(id: Int) {
+        updateNotificationInvite(userRepository.approveOrgMember(id.toString(), ApproveBody(appData.getId())), id)
+    }
+
+    private fun approvePgrf(id: Int) {
+        updateNotificationInvite(userRepository.approvePgrf(id.toString()), id)
+    }
+
+    private fun approveAssistance(id: Int) {
+        updateNotificationInvite(userRepository.approveAssistance(id.toString()), id)
     }
 
     override fun onNotificationCancelClick() {
-        updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
+        //updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
+        when (notification.notificationMainType) {
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
+        }
+    }
+
+    private fun declineOrgMember(id: Int) {
+        updateNotificationInvite(userRepository.declineOrgMember(id.toString(), DeclineBody(appData.getId())), id)
+    }
+
+    private fun declinePgrf(id: Int) {
+        updateNotificationInvite(userRepository.declinePgrf(id.toString()), id)
+    }
+
+    private fun declineAssistance(id: Int) {
+        updateNotificationInvite(userRepository.declineAssistance(id.toString()), id)
+    }
+
+    private fun cancelEvMember(id: Int) {
+        updateNotificationInvite(userRepository.cancelEvMember(id.toString(), CancelBody(appData.getId())), id)
     }
 
     override fun onNotificationChangeDecisionClick() {

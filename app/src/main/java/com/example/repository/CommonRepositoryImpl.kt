@@ -21,13 +21,6 @@ class CommonRepositoryImpl
 
     override fun getInterests(): Maybe<List</*Interest*/InterestNew>> {
         val cachedInterests = appData.interestsNew
-        /*return if (cachedInterests.isNullOrEmpty()) call(api.getInterestsList())
-                .map { interests ->
-                    val capitalizedInterests = interests.map { Interest(it.id, it.parent, it.value.capitalize()) }
-                    appData.interests = capitalizedInterests
-                    capitalizedInterests
-                }
-        else Maybe.just(cachedInterests)*/
         return if (cachedInterests.isNullOrEmpty()) newApi.getInterestsList(200, null)
                 .map {interests ->
                     val capitalizedInterests = interests.data
@@ -40,7 +33,7 @@ class CommonRepositoryImpl
         return call(api.getUserAgreement())
     }
 
-    override fun getEventFormats(): Maybe<List<EventFormat>> {
+    /*override fun getEventFormats(): Maybe<List<EventFormat>> {
         return call(api.getEventFormats())
-    }
+    }*/
 }

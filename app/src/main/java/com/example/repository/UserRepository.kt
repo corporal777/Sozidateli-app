@@ -20,18 +20,18 @@ interface UserRepository {
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserByIdNew(id: String): Maybe<UserDetail>
     //fun getUserShort(): Maybe<UserShort>
-    fun getUserFull(): Maybe<User>
+    //fun getUserFull(): Maybe<User>
     //fun getLastNotification(): Single<List<Notification>>
-    fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
-    fun getNotification(id: Int): Maybe<RemoteNotification>
-    fun markNotificationsAsRead(ids: List<Int>): Completable
+    //fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
+    //fun getNotification(id: Int): Maybe<RemoteNotification>
+    //fun markNotificationsAsRead(ids: List<Int>): Completable
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
     fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
     fun updateUser(data: Map<String, Any?>): Single<User>
-    fun uploadAvatar(photo: Bitmap?): Single<User>
+    //fun uploadAvatar(photo: Bitmap?): Single<User>
     //fun uploadRecommendationFile(file: String, mimeType: String): Single<User>
     //fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
@@ -39,12 +39,12 @@ interface UserRepository {
 
     fun getUserById(id: String): Maybe<User>
 
-    fun addToFavorite(uid: String): Completable
-    fun removeFromFavorite(uid: String): Completable
+    //fun addToFavorite(uid: String): Completable
+    //fun removeFromFavorite(uid: String): Completable
 
     //fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>>
     //fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>>
-    fun checkPassword(password: String): Completable
+    //fun checkPassword(password: String): Completable
     fun checkPasswordNew(password: String): Completable
     fun sendStatusPhoneConfirmSms(password: String): Completable
     fun sendStatusPhoneConfirmCode(code: String): Completable
@@ -81,11 +81,20 @@ interface UserRepository {
     fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
-    fun getNotifications(map: Map<String, Any>): Maybe<PaginationResponse<NotificationModel>>
+    fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun unblockUser(id : Int): Completable
     fun blockUser(id : Int): Completable
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
+    fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
+    fun markAsRead(notificationId: String): Completable
+    fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable
+    fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable
+    fun approvePgrf(pgrfId: String): Completable
+    fun declinePgrf(pgrfId: String): Completable
+    fun approveAssistance(assistanceId: String): Completable
+    fun declineAssistance(assistanceId: String): Completable
+    fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
 }

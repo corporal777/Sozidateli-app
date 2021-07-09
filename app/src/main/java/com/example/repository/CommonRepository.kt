@@ -9,5 +9,5 @@ interface CommonRepository {
 
     fun getAgreement(): Maybe<Agreement>
 
-    fun getEventFormats(): Maybe<List<EventFormat/*NewEventFormat*/>>
+    //fun getEventFormats(): Maybe<List<EventFormat/*NewEventFormat*/>>
 }

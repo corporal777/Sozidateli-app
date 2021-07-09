@@ -73,9 +73,9 @@ class AuthRepositoryImp
         )
     }
 
-    override fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable {
+    /*override fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable {
         return callAuthCompletable(api.setEmailSocialNetwork(snType, email, token))
-    }
+    }*/
 
     override fun confirmEmailSocialNetwork(id: String, code: String): Completable {
         return callAuthCompletable(api.confirmEmailSocialNetwork(id, code))
@@ -91,14 +91,14 @@ class AuthRepositoryImp
         }.ignoreElement()
     }
 
-    override fun registerData(email: String, code: String): Single<UserResp> {
+    /*override fun registerData(email: String, code: String): Single<UserResp> {
         return call(api.registerData(email, code))
     }
 
     override fun registerConfirm(email: String, code: String, name: String,lastName: String,
                                  middleName: String?, phone: String?, newEmail: String?, password: String?): Completable {
         return callAuthCompletable(api.registerEmailConfirm(email, code, name, lastName, middleName, phone, newEmail, password))
-    }
+    }*/
 
     override fun registerEmailResend(email: String): Completable {
         return newApi.registerEmailResend(appData.getId(), email)
@@ -114,23 +114,23 @@ class AuthRepositoryImp
 
     /*override fun registerSnResend(email: String, token: String): Completable {
         return callAuthCompletable(api.registerSnResend(email, token))
-    }*/
+    }
 
     override fun sendRecoveryEmail(email: String): Completable {
         return callAuthCompletable(api.sendEmailRecovery(email))
-    }
+    }*/
 
     override fun sendRecoveryEmail(type: String, email: String): Completable {
         return newApi.sendEmailRecovery(type, email)
     }
 
-    override fun checkRecoveryCode(email: String, code: String): Completable {
+    /*override fun checkRecoveryCode(email: String, code: String): Completable {
         return callAuthCompletable(api.checkRecoveryCode(email, code))
     }
 
     override fun setPassword(email: String, code: String, password: String): Completable {
         return callAuthCompletable(api.setPassword(email, code, password))
-    }
+    }*/
 
     override fun checkRegisterStatus(snType: String?, snId: String?, email: String?): Single<RegisterStatus> {
         return call(api.registerStatus(email, snType, snId))

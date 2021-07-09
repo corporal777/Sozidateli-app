@@ -22,23 +22,16 @@ class PagePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getPage(dataEventId, dataPageId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    viewState.setContent(it.picture, it.menu, it.title, it.content, it.files)
-                }
-        /*compositeDisposable += eventRepository.getPageDetails(/*dataEventId, */dataPageId)
+        compositeDisposable += eventRepository.getPageDetails(dataPageId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     viewState.setContent(/*it.picture*/"", it.name?: "", it.title, it.content, it.files)
-                }*/
+                }
     }
 
-    override fun onDocumentClick(document: /*FileModel*/Document) {
-        document.file?.let { viewState.openLinkInBrowser(/*it.uri?: ""*/it) }
+    override fun onDocumentClick(document: FileModel) {
+        document.let { viewState.openLinkInBrowser(it.uri?: "") }
     }
 }

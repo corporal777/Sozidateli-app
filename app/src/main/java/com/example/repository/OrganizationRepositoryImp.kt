@@ -18,7 +18,7 @@ class OrganizationRepositoryImp
 ) : ApiRepository(appData), OrganizationRepository {
 
 
-    override fun subscribe(orgId: String): Completable {
+    /*override fun subscribe(orgId: String): Completable {
         return call(api.organizationSubscribe(orgId))
     }
 
@@ -36,7 +36,7 @@ class OrganizationRepositoryImp
 
     override fun getMembers(limit: Int, offset: Int, orgId: String): Maybe<PaginationResponse<OrganizationMember>> {
         return callPagination(api.organizationMembers(orgId, limit, offset))
-    }
+    }*/
 
     override fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNewMemberModel>> {
         return newApi.getOrganizationMembers(map)

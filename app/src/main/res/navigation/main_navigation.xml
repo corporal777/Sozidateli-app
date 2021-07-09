@@ -992,7 +992,7 @@
 
         <argument
             android:name="actions"
-            app:argType="com.example.data.models.SubEvent[]" />
+            app:argType="com.example.data.models.EventActivityModel[]" />
 
         <action
             android:id="@+id/favorite_subevents_fragment_to_subevent_fragment"

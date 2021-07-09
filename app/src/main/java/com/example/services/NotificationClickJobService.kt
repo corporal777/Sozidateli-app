@@ -33,7 +33,7 @@ class NotificationClickJobService : JobService() {
         val notificationId = extras.getInt(FIELD_NOTIFICATION_ID)
 
         compositeDisposable += when (action) {
-            ACTION_MARK_AS_READ -> userRepository.markNotificationsAsRead(listOf(notificationId))
+            ACTION_MARK_AS_READ -> userRepository.markAsRead(notificationId.toString())
             ACTION_ACCEPT -> userRepository.notificationsInviteAccept(notificationId)
             ACTION_DECLINE -> userRepository.notificationsInviteDecline(notificationId)
             else -> return false

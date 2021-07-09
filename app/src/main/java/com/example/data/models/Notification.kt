@@ -19,8 +19,9 @@ data class Notification(
         @SerializedName("event_activity_id")
         val eventActivityId: Int?,
         val eventInfo: NotificationEventInfo?,
-        val event: Event?,
-        val project_name: String?
+        val event: /*Event*/NotificationEntityModelModel?,
+        val project_name: String?,
+        val notificationMainType: String
         ) : Parcelable {
 
     enum class Type {
@@ -32,8 +33,37 @@ data class Notification(
     }
 
     companion object {
-        fun fromRemoteNotification(remoteNotification: RemoteNotification): Notification {
+        fun fromRemoteNotification(remoteNotification: /*RemoteNotification*/NotificationModel): Notification {
             return Notification(
+                    remoteNotification.id?: 0,
+                    remoteNotification.entity?.type?:"",
+                    remoteNotification.message,
+                    remoteNotification.createdDate?: "",
+                    when (remoteNotification.entity?.type) {
+                        NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR, NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE,
+                        NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER, NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> Type.ACCEPTABLE
+                        else -> Type.SIMPLE
+                    },
+                    remoteNotification.acknowledged,
+                    when (remoteNotification.entity?.model?.status?.value) {
+                        "approved" -> AcceptState.ACCEPTED
+                        "declined" -> AcceptState.CANCELED
+                        "cancelled" -> AcceptState.DISABLED
+                        else -> AcceptState.NONE
+                    },
+                    "",
+                    if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT)
+                        remoteNotification.entity.model?.id
+                    else if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT_ACTIVITY)
+                        remoteNotification.entity.model?.event else 0,
+                    if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT_ACTIVITY)
+                        remoteNotification.entity.model?.event else 0,
+                    if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT)
+                        NotificationEventInfo(remoteNotification.entity.model?.name, "") else null,
+                    remoteNotification.entity?.model, /*remoteNotification.project_name*/"",
+                    remoteNotification.entity?.type?: NotificationModel.NOTIFICATION_TYPE_EVENT
+            )
+            /*return Notification(
                     remoteNotification.id,
                     remoteNotification.type,
                     remoteNotification.text,
@@ -57,7 +87,7 @@ data class Notification(
                     remoteNotification.event_activity_id,
                     if (remoteNotification.event == null) null else NotificationEventInfo(remoteNotification.event.name, remoteNotification.event.link),
                     remoteNotification.event, remoteNotification.project_name
-            )
+            )*/
         }
     }
 }

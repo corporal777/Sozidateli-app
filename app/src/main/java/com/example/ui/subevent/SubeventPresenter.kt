@@ -2,8 +2,9 @@ package com.example.ui.subevent
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Speaker
-import com.example.data.models.SubeventInfo
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -28,7 +29,7 @@ class SubeventPresenter @Inject constructor(
         super.attachView(view)
         val eventId = event
         val subeventId = subevent
-        compositeDisposable += eventRepository.getSubevent(eventId, subeventId)
+        compositeDisposable += eventRepository.getEventActivityDetail(subeventId)
                 .let {
                     if (firstLoading) it.withLoadingDialog(viewState)
                     else it
@@ -38,43 +39,61 @@ class SubeventPresenter @Inject constructor(
                     if (firstLoading) viewState.setData(it)
                     firstLoading = false
 
-                    val uid = appData.getUser().user_id
-                    it.speakers.forEach { speaker -> speaker.user.isCurrentUser = speaker.user.user_id == uid }
-                    viewState.setSpeakers(it.speakers)
+                    val uid = appData.getId()
+                    it.binds?.member?.forEach { speaker -> speaker.binds?.user?.isCurrentUser = speaker.user == uid }
+                    viewState.setSpeakers(it.binds?.member?: emptyList())
                 }
     }
 
-    override fun onSpeakerClick(speaker: Speaker) {
+    override fun onSpeakerClick(speaker: MemberModel) {
         viewState.showSpeakerProfile(speaker)
     }
 
-    override fun onSpeakerChangeSubscriptionClick(speaker: Speaker) {
-        val id = speaker.user.user_id.toString()
-        val request = if (!speaker.user.is_in_favorite) userRepository.addToFavorite(id)
-        else userRepository.removeFromFavorite(id)
-
-        compositeDisposable += request.performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    viewState.showRequestErrorMessage()
-                }) {
-                    speaker.user.is_in_favorite = !speaker.user.is_in_favorite
-                    viewState.updateSpeaker(speaker)
-                }
+    override fun onSpeakerChangeSubscriptionClick(speaker: MemberModel) {
+        val id = speaker.user.toString()
+        if (speaker.binds?.user?.binds?.userFavorite == null)
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, id.toInt())))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        speaker.binds?.user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.updateSpeaker(speaker)
+                    }
+        else
+            compositeDisposable += eventRepository.deleteFromFavorite(speaker.binds.user.binds?.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        speaker.binds.user.binds?.userFavorite = null
+                        viewState.updateSpeaker(speaker)
+                    }
     }
 
-    override fun onSubeventChangeSubscriptionClick(subevent: SubeventInfo) {
+    override fun onSubeventChangeSubscriptionClick(subevent: EventActivityModel) {
         val id = subevent.id.toString()
-        val request = if (!subevent.isInFavorites) eventRepository.subscribeToSubevent(event, id)
-        else eventRepository.unsubscribeFromSubEvent(event, id)
-
-        compositeDisposable += request.performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    viewState.showRequestErrorMessage()
-                }) {
-                    subevent.isInFavorites = !subevent.isInFavorites
-                    viewState.setData(subevent)
-                }
+        if (subevent.binds?.userFavorite == null)
+            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SUB_EVENT, id.toInt())))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        subevent.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.setData(subevent)
+                    }
+        else
+            compositeDisposable += eventRepository.deleteFromFavorite(subevent.binds.userFavorite?.id.toString())
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple({
+                        viewState.showRequestErrorMessage()
+                    }) {
+                        subevent.binds.userFavorite = null
+                        viewState.setData(subevent)
+                    }
     }
 }

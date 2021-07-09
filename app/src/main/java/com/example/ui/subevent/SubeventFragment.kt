@@ -7,6 +7,8 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.EventActivityModel
+import com.example.data.models.MemberModel
 import com.example.data.models.Speaker
 import com.example.data.models.SubeventInfo
 import com.example.holders.ListSectionNameItem
@@ -62,26 +64,26 @@ class SubeventFragment : BaseFragment(), SubeventContract.View, ToolbarFragment 
         }
     }
 
-    override fun setData(subEvent: SubeventInfo) {
+    override fun setData(subEvent: EventActivityModel) {
         infoSection.update(listOf(SubeventInfoItem(subEvent) { presenter.onSubeventChangeSubscriptionClick(subEvent) }))
     }
 
-    override fun setSpeakers(speakers: List<Speaker>) {
-        /*speakersSection.update(speakers.map { speaker ->
+    override fun setSpeakers(speakers: List<MemberModel>) {
+        speakersSection.update(speakers.map { speaker ->
             SpeakerGroup(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
-        })*/
+        })
     }
 
-    override fun showSpeakerProfile(speaker: Speaker) {
-        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.uid).build().toBundle())
+    override fun showSpeakerProfile(speaker: MemberModel) {
+        findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.user.toString()).build().toBundle())
     }
 
-    override fun updateSpeaker(speaker: Speaker) {
-        val idLong = speaker.uid.toLong()
+    override fun updateSpeaker(speaker: MemberModel) {
+        val idLong = speaker.user?.toLong()
         for (i in 0 until speakersSection.itemCount) {
             val item = speakersSection.getItem(i)
             if (item.id == idLong && item is UserItem) {
-                item.notifyChanged(speaker.user.getUserSubscribeAction())
+                item.notifyChanged(speaker.binds?.user?.getUserSubscribeAction())
                 break
             }
         }

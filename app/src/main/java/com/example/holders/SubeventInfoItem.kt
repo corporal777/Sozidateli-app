@@ -3,6 +3,7 @@ package com.example.holders
 import android.text.util.Linkify
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.SubeventInfo
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToInterval
@@ -14,14 +15,14 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
 
 open class SubeventInfoItem(
-        private val subevent: SubeventInfo,
+        private val subevent: EventActivityModel,
         private val onFavoriteClickListener: () -> Unit
-) : Item(subevent.id.toLong()) {
+) : Item(subevent.id?.toLong()?:0) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            val time = subevent.start
-                    .formatToInterval(subevent.finish, defaultServerDateTimeFormatter, true)
+            val time = subevent.holdingDate?.from
+                    .formatToInterval(subevent.holdingDate?.to, defaultServerDateTimeFormatter, true)
                     ?.let {
                         StringBuilder(it)
                                 .append(" ")
@@ -43,13 +44,13 @@ open class SubeventInfoItem(
             }
 
             tvLocation.apply {
-                val locations = subevent.auditoriums.joinToString("\n") { it.name }
+                val locations = subevent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
                 text = locations
-                isVisible = locations.isNotEmpty()
+                isVisible = locations?.isNotEmpty() == true
             }
 
             btnSubscribe.apply {
-                setAction(this, subevent.isInFavorites)
+                setAction(this, subevent.binds?.userFavorite != null)
                 setOnClickListener(onFavoriteClickListener)
             }
         }

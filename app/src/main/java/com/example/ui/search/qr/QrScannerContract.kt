@@ -19,7 +19,7 @@ interface QrScannerContract {
         fun showAppSettings()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEvent(event: Event)
+        fun showEvent(eventId: /*Event*/String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEnterCode()

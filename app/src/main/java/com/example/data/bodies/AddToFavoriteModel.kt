@@ -13,5 +13,6 @@ data class AddToFavoriteEntityModel(
         const val FAVORITE_ORGANIZATION = "organization"
         const val FAVORITE_EVENT = "event"
         const val FAVORITE_SPEAKER = "speaker"
+        const val FAVORITE_SUB_EVENT = "eventActivity"
     }
 }

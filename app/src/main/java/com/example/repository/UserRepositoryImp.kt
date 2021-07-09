@@ -89,9 +89,9 @@ class UserRepositoryImp
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
             newApi.searchAddress(query, 20)
 
-    override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
+    /*override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
 
-    //override fun getLastNotification() = call(api.getLastNotification())
+    override fun getLastNotification() = call(api.getLastNotification())
 
     override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>> {
         return callPagination(api.getUserNotifications(limit, offset))
@@ -106,7 +106,7 @@ class UserRepositoryImp
             appData.notificationsCount = it.unreadCount
             ids.forEach { id -> appData.notificationReadSubject.onNext(id to Notification.AcceptState.NONE) }
         }.ignoreElement()
-    }
+    }*/
 
     override fun getFcmToken(): Maybe<InstanceIdResult> {
         return Maybe.create { emitter ->
@@ -138,9 +138,9 @@ class UserRepositoryImp
 
     override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data))
 
-    override fun uploadAvatar(photo: Bitmap?): Single<User> {
+    /*override fun uploadAvatar(photo: Bitmap?): Single<User> {
         return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
-    }
+    }*/
 
     override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
         return newApi.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
@@ -183,21 +183,21 @@ class UserRepositoryImp
         return call(api.getUserById(id))
     }
 
-    override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
+    /*override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
 
     override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
 
-    /*override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
+    override fun searchUser(searchMap: Map<String, Any>, limit: Int, offset: Int): Maybe<PaginationResponse<User>> {
         return callPagination(api.chatSearch(searchMap, limit, offset))
     }
 
     override fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>> {
         return callPagination(api.getUsersList(limit, offset, filter))
-    }*/
+    }
 
     override fun checkPassword(password: String): Completable {
         return call(api.checkPassword(password))
-    }
+    }*/
 
     override fun checkPasswordNew(password: String): Completable {
         return newApi.checkPassword(appData.getId(), password)
@@ -302,12 +302,14 @@ class UserRepositoryImp
         })
     }
 
-    override fun getNotifications(map: Map<String, Any>): Maybe<PaginationResponse<NotificationModel>> {
+    override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>> {
         return newApi.getNotifications(map)
                 .map {
                     PaginationResponse(
                             it.totalCount,
-                            it.data
+                            it.data.map {
+                                Notification.fromRemoteNotification(it)
+                            }
                     )
                 }
     }
@@ -335,6 +337,33 @@ class UserRepositoryImp
                     PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
                 }
     }
+
+    override fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel> =
+            newApi.getNotificationDetail(notificationId, loadModel)
+
+    override fun markAsRead(notificationId: String): Completable =
+            newApi.markAsRead(notificationId)
+
+    override fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable =
+            newApi.approveOrgMember(orgMemberId, body)
+
+    override fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable =
+            newApi.declineOrgMember(orgMemberId, body)
+
+    override fun approvePgrf(pgrfId: String): Completable =
+            newApi.approvePgrf(pgrfId)
+
+    override fun declinePgrf(pgrfId: String): Completable =
+            newApi.declinePgrf(pgrfId)
+
+    override fun approveAssistance(assistanceId: String): Completable =
+            newApi.approveAssistance(assistanceId)
+
+    override fun declineAssistance(assistanceId: String): Completable =
+            newApi.declineAssistance(assistanceId)
+
+    override fun cancelEvMember(evMemberId: String, body: CancelBody): Completable =
+            newApi.cancelEvMember(evMemberId, body)
 
     override fun unblockUser(id: Int): Completable {
         TODO("Not yet implemented")

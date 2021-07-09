@@ -22,15 +22,15 @@ class AcceptNotificationItem(
         super.bind(viewHolder, position)
         viewHolder.apply {
             btnAccept.apply {
-                setOnClickListener { acceptClickListener(notification.id, true) }
+                setOnClickListener { acceptClickListener(notification, true) }
             }
 
             btnCancel.apply {
-                setOnClickListener { acceptClickListener(notification.id, false) }
+                setOnClickListener { acceptClickListener(notification, false) }
             }
 
             btnChangeDecision.apply {
-                setOnClickListener { changeDecisionClickListener(notification.id) }
+                setOnClickListener { changeDecisionClickListener(notification) }
             }
 
             tvAcceptState.apply {
@@ -81,5 +81,5 @@ class AcceptNotificationItem(
     override fun getLayout() = R.layout.item_notification_accept
 }
 
-typealias OnNotificationAcceptClickListener = (id: Int, isAccept: Boolean) -> Unit
-typealias OnNotificationChangeDecisionClickListener = (id: Int) -> Unit
+typealias OnNotificationAcceptClickListener = (notification: Notification, isAccept: Boolean) -> Unit
+typealias OnNotificationChangeDecisionClickListener = (notification: Notification) -> Unit

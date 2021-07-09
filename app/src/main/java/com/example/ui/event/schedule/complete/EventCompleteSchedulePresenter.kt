@@ -1,6 +1,7 @@
 package com.example.ui.event.schedule.complete
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.SubEvent
@@ -18,8 +19,9 @@ import javax.inject.Inject
 class EventCompleteSchedulePresenter
 @Inject constructor(
         eventRepository: EventRepository,
-        userEventData: UserEventData
-) : EventSchedulePresenter(eventRepository, userEventData) {
+        userEventData: UserEventData,
+        appData: AppData
+) : EventSchedulePresenter(eventRepository, userEventData, appData) {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

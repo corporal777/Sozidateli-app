@@ -9,15 +9,15 @@ import com.example.ui.base.BaseContract
 interface FavoriteSubeventContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(data: Map<Long?, List</*SubEvent*/EventActivityModel>>)
+        fun setData(data: Map<Long?, List<EventActivityModel>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onChangeFavoriteRequest(subevent: /*SubEvent*/EventActivityModel)
-        fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel)
+        fun onChangeFavoriteRequest(subevent: EventActivityModel)
+        fun onSubEventClick(subEvent: EventActivityModel)
         fun onRefreshRequest()
     }
 }

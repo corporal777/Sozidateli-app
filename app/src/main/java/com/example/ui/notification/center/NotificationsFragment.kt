@@ -44,10 +44,10 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     private val readClickListener: OnNotificationReadClickListener = { presenter.onNotificationReadClick(it) }
 
-    private val acceptClickListener: OnNotificationAcceptClickListener = { id, isAccept ->
+    private val acceptClickListener: OnNotificationAcceptClickListener = { notification, isAccept ->
         presenter.apply {
-            if (isAccept) onNotificationAcceptClick(id)
-            else onNotificationCancelClick(id)
+            if (isAccept) onNotificationAcceptClick(notification)
+            else onNotificationCancelClick(notification)
         }
     }
 

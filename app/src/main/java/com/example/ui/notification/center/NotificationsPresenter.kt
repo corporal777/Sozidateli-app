@@ -3,6 +3,9 @@ package com.example.ui.notification.center
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.ApproveBody
+import com.example.data.bodies.CancelBody
+import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.extensions.buildList
@@ -33,17 +36,10 @@ class NotificationsPresenter
     private var blockInvalidation = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        /*userRepository.getNotifications(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
-                NotificationModel.NOTIFICATION_OFFSET to offset)).map { response ->
-            PaginationResponse(response.totalCount, response.data.map {
-                Notification.fromRemoteNotification(it)
-            })
-        }*/
-        userRepository.getNotifications(limit, offset).map { response ->
-            PaginationResponse(response.totalCount, response.data.map {
-                Notification.fromRemoteNotification(it)
-            })
-        }
+        userRepository.getNotificationsList(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
+                NotificationModel.NOTIFICATION_OFFSET to offset,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_LOAD_MODEL to true))
     }
             .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList(enablePlaceholders = true)
@@ -94,19 +90,58 @@ class NotificationsPresenter
         pagination.invalidate()
     }
 
-    override fun onNotificationAcceptClick(id: Int) {
-        updateNotification(userRepository.notificationsInviteAccept(id), id)
+    override fun onNotificationAcceptClick(notification: Notification) {
+        //updateNotification(userRepository.notificationsInviteAccept(notification.id), notification.id)
+        when (notification.notificationMainType) {
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.id)
+        }
     }
 
-    override fun onNotificationCancelClick(id: Int) {
-        updateNotification(userRepository.notificationsInviteDecline(id), id)
+    private fun approveOrgMember(id: Int) {
+        updateNotification(userRepository.approveOrgMember(id.toString(), ApproveBody(appData.getId())), id)
     }
 
-    override fun onNotificationChangeDecisionClick(id: Int) {
-        notifications.find { it?.id == id }?.apply {
+    private fun approvePgrf(id: Int) {
+        updateNotification(userRepository.approvePgrf(id.toString()), id)
+    }
+
+    private fun approveAssistance(id: Int) {
+        updateNotification(userRepository.approveAssistance(id.toString()), id)
+    }
+
+    override fun onNotificationCancelClick(notification: Notification) {
+        //updateNotification(userRepository.notificationsInviteDecline(notification.id), notification.id)
+        when (notification.notificationMainType) {
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
+        }
+    }
+
+    private fun declineOrgMember(id: Int) {
+        updateNotification(userRepository.declineOrgMember(id.toString(), DeclineBody(appData.getId())), id)
+    }
+
+    private fun declinePgrf(id: Int) {
+        updateNotification(userRepository.declinePgrf(id.toString()), id)
+    }
+
+    private fun declineAssistance(id: Int) {
+        updateNotification(userRepository.declineAssistance(id.toString()), id)
+    }
+
+    private fun cancelEvMember(id: Int) {
+        updateNotification(userRepository.cancelEvMember(id.toString(), CancelBody(appData.getId())), id)
+    }
+
+    override fun onNotificationChangeDecisionClick(notification: Notification) {
+        notifications.find { it?.id == notification.id }?.apply {
             acceptState = Notification.AcceptState.NONE
         }
-        viewState.onNotificationNeedUpdate(id)
+        viewState.onNotificationNeedUpdate(notification.id)
     }
 
     override fun onNotificationReadMoreClick(id: Int) {
@@ -116,7 +151,7 @@ class NotificationsPresenter
     }
 
     override fun onNotificationReadClick(id: Int) {
-        updateNotification(userRepository.markNotificationsAsRead(listOf(id)), id)
+        updateNotification(userRepository.markAsRead(id.toString()), id)
     }
 
     override fun onNotificationRateClick(eventId: String) {
@@ -133,6 +168,7 @@ class NotificationsPresenter
                     onReceiveError(it)
                 }, onComplete = {
                     blockInvalidation = false
+                    pagination.invalidate()
                     notificationManager.cancel(notificationId)
                 })
     }

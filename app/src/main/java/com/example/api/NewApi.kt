@@ -1,5 +1,6 @@
 package com.example.api
 
+import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
 import io.reactivex.Completable
@@ -214,12 +215,48 @@ interface NewApi {
     @POST("v1/user-calendar")
     fun addEventToCalendar(@Body body: EventCalendarBody): Completable
 
+    @POST("v1/user-calendar")
+    fun addEventToCalendarWithResult(@Body body: EventCalendarBody): Single<EventCalendarItem>
+
     @DELETE("v1/user-calendar/{user}/all")
     fun deleteAllCalendarEvents(@Path("user") id : Int, @Query("entityType") entityType: String): Completable
+
+    @DELETE("v1/user-calendar/{id}")
+    fun deleteCalendarEvent(@Path("id") id: String): Completable
 
     @GET("v1/user-calendar")
     fun getUserCalendarEvent(@Query("user") userId: Int, @Query("entityType") entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
 
     @GET("v1/event-activity")
     fun getEventActivities(@Query("event") eventId: Int, @Query("binds") binds: String): Maybe<ApiNewResponse<List<EventActivityModel>>>
+
+    @GET("v1/event-activity/{id}")
+    fun getEventActivity(@Path("id") activityId: String, @Query("binds") binds: String): Single<EventActivityModel>
+
+    @GET("v1/user-notification/{id}")
+    fun getNotificationDetail(@Path("id") notificationId: String, @Query("loadModel") loadModel: Boolean): Single<NotificationModel>
+
+    @PATCH("v1/user-notification/{id}/acknowledge")
+    fun markAsRead(@Path("id") notificationId: String): Completable
+
+    @PATCH("v1/organization-member/{id}/approve")
+    fun approveOrgMember(@Path("id") orgMemberId: String, @Body body: ApproveBody): Completable
+
+    @PATCH("v1/organization-member/{id}/decline")
+    fun declineOrgMember(@Path("id") orgMemberId: String, @Body body: DeclineBody): Completable
+
+    @PATCH("v1/user-external-invite/pgrf/{id}/accept")
+    fun approvePgrf(@Path("id") pgrfId: String): Completable
+
+    @PATCH("v1/user-external-invite/pgrf/{id}/decline")
+    fun declinePgrf(@Path("id") pgrfId: String): Completable
+
+    @PATCH("v1/user-external-invite/assistance/{id}/accept")
+    fun approveAssistance(@Path("id") assistanceId: String): Completable
+
+    @PATCH("v1/user-external-invite/assistance/{id}/decline")
+    fun declineAssistance(@Path("id") assistanceId: String): Completable
+
+    @PATCH("v1/event-member/{id}/cancel")
+    fun cancelEvMember(@Path("id") evMemberId: String, @Body body: CancelBody): Completable
 }

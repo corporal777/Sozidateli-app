@@ -1,6 +1,7 @@
 package com.example.ui.event.schedule.my
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.SubEvent
@@ -18,15 +19,16 @@ import javax.inject.Inject
 class EventMySchedulePresenter
 @Inject constructor(
         eventRepository: EventRepository,
-        userEventData: UserEventData
-) : EventSchedulePresenter(eventRepository, userEventData) {
+        userEventData: UserEventData,
+        appData: AppData
+) : EventSchedulePresenter(eventRepository, userEventData, appData) {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
     }
 
-    override fun filterSubEvent(subEvent: /*SubEvent*/EventActivityModel): Boolean = /*subEvent.isInCalendar*/true
+    override fun filterSubEvent(subEvent: /*SubEvent*/EventActivityModel): Boolean = subEvent.binds?.userCalendar != null
 
     override fun mustFilterTags() = false
 

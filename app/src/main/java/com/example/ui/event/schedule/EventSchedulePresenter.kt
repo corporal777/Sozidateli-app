@@ -1,6 +1,9 @@
 package com.example.ui.event.schedule
 
+import com.example.data.AppData
 import com.example.data.UserEventData
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.SubEvent
@@ -18,7 +21,8 @@ import java.util.*
 abstract class EventSchedulePresenter
 constructor(
         private val eventRepository: EventRepository,
-        private val userEventData: UserEventData
+        private val userEventData: UserEventData,
+        private val appData: AppData
 ) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter, UserEventData.OnDataUpdateListener {
 
     private val userEvent = userEventData.userEvent!!
@@ -111,9 +115,6 @@ constructor(
         return selectedTags.any { tag ->
             event.tag?.any { eventTag -> eventTag.toString() == tag.id } ?: false
         }
-                /*|| selectedTags.any { tag ->
-            event.groups?.any { eventTag -> eventTag.id == tag.id } ?: false
-        }*/
     }
 
     private fun daySubEventsError() {
@@ -155,16 +156,17 @@ constructor(
     override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
-                eventRepository.addEventToCalendar(userEvent.eventId, subEvent.id.toString())
-                        .andThen(Completable.fromAction { /*subEvent.isInCalendar =*/ true })
+                eventRepository.addEventToCalendarWithResult(EventCalendarBody(appData.getId(),
+                        EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id?: 0)))
+                        .flatMapCompletable { subEv -> Completable.fromAction { subEvent.binds?.userCalendar = subEv } }
         )
     }
 
     override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
-                eventRepository.removeEventFromCalendar(userEvent.eventId, subEvent.id.toString())
-                        .andThen(Completable.fromAction { subEvent.apply { /*isInCalendar =*/ false } })
+                eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
+                        .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
         )
     }
 

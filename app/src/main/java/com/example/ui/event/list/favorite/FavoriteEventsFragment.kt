@@ -1,14 +1,11 @@
 package com.example.ui.event.list.favorite
 
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Event
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
-import com.example.data.models.SubEvent
 import com.example.extensions.findItemBy
 import com.example.holders.EventFavoriteItem
 import com.example.holders.NoDataItem
@@ -50,8 +47,8 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     }
 
     override fun showSubEvents(event: String, subEvents: List</*SubEvent*/EventActivityModel>) {
-        //val args = FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
-        findNavController().navigate(R.id.favorite_subevents_fragment, /*args*/bundleOf())
+        val args = FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
+        findNavController().navigate(R.id.favorite_subevents_fragment, args/*bundleOf()*/)
     }
 
     override fun showEmptyListPlaceholder() {

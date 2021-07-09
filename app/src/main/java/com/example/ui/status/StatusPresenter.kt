@@ -54,7 +54,7 @@ class StatusPresenter
     }
 
     override fun onPasswordInputComplete(password: String, action: Int) {
-        compositeDisposable += userRepository.checkPassword(password)
+        compositeDisposable += userRepository.checkPasswordNew(password)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -94,7 +94,7 @@ class StatusPresenter
 
     override fun onCodeInputComplete(phone: String, code: String, saveFlag: Int) {
         compositeDisposable += userRepository.sendStatusPhoneConfirmCode(code)
-                .andThen(userRepository.getUserFull())
+                .andThen(userRepository.getUserShortData())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
@@ -124,7 +124,7 @@ class StatusPresenter
 
     override fun onPhoneRemoveAccept() {
         compositeDisposable += userRepository.updateUser(mapOf(FIELD_USER_STATUS_PHONE to ""))
-                .flatMapMaybe { userRepository.getUserFull() }
+                .flatMapMaybe { userRepository.getUserShortData() }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

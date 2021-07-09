@@ -22,16 +22,16 @@ class SubeventUserListPresenter @Inject constructor(
     lateinit var event: String
     lateinit var subevent: String
 
-    private val pagination = PaginationDataSourceFactory { limit, offset ->
+    /*private val pagination = PaginationDataSourceFactory { limit, offset ->
         val eventId = event
         val subeventId = subevent
         eventRepository.getSubeventUsers(eventId, subeventId, limit, offset)
-    }.map { UserItem(it.user_id, it.fullName, null, it.user_avatar, { onUserClick(it) }) }
+    }.map { UserItem(it.user_id, it.fullName, null, it.user_avatar, { onUserClick(it) }) }*/
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        compositeDisposable += pagination.build()
+        /*compositeDisposable += pagination.build()
                 .withLoadingDialog(viewState)
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple {
@@ -39,7 +39,7 @@ class SubeventUserListPresenter @Inject constructor(
                         if (it.isEmpty()) showEmptyListPlaceholder()
                         else viewState.setUsers(it)
                     }
-                }
+                }*/
     }
 
     override fun onUserClick(user: User) {
