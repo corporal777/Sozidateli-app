@@ -45,7 +45,8 @@ class EventStatusItem(
         private val conferenceRegistrationClosed: Boolean,
         private val onEventClickListener: OnEventClickListener,
         private val userAgreement: String?,
-        private val canShowActionButton: Boolean = true
+        private val canShowActionButton: Boolean = true,
+        private val registrationId: String? = null
 ) : Item(itemId) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -143,7 +144,7 @@ class EventStatusItem(
                 Event.Status.PENDING -> {
                     textBackground = R.drawable.background_event_action
                     textRes = R.string.event_action_cancel_request
-                    clickAction = { onEventClickListener.onActionCancel(eventId) }
+                    clickAction = { onEventClickListener.onActionCancel(eventId, registrationId) }
                 }
                 Event.Status.DECLINED -> {
                     if (BuildConfig.NEW_PROFILE_EDIT) {
@@ -257,7 +258,7 @@ class EventStatusItem(
     interface OnEventClickListener {
         fun onActionRegister(event: String)
         fun onActionShowEvent(event: String)
-        fun onActionCancel(event: String)
+        fun onActionCancel(event: String, registrationId: String?)
         fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
         fun onShowEventClick(view: View, event: String)
         fun onShowFilterClick(format: Int)

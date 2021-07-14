@@ -75,7 +75,7 @@ class MainInfoPresenter
             return
         }
 
-        updateUser(userRepository.updateProfile(appData.getId(), data), onComplete)
+        updateUser(userRepository.updateUserProfile(appData.getId(), data), onComplete)
     }
 
     private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
@@ -93,7 +93,14 @@ class MainInfoPresenter
                         address = it.address
                     }
                     if (onComplete(it))
-                        viewState.goToNext()
+                        compositeDisposable += userRepository.checkUserProfileSingle()
+                                .performOnBackgroundOutOnMain()
+                                .subscribe({
+                                    viewState.goToNext()
+                                },{
+                                    viewState.goToNext()
+                                })
+                        //viewState.goToNext()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

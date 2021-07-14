@@ -1,5 +1,5 @@
 package com.example.data.models
 
 enum class MyEventsFilter {
-    NONE, ACCEPTED, PENDING, DECLINED
+    NONE, APPROVED, ACCEPTED, PENDING, DECLINED
 }

@@ -17,7 +17,7 @@ import okhttp3.internal.notifyAll
 class ProfileDataWorkEditGroup(
         context: Context,
         private val birthday: FieldDetails?,
-        work: WorkExperienceModel?,
+        private val work: WorkExperienceModel?,
         private val exeption: (workCheckB: Boolean) -> Unit,
         private val enableNextButton:(enable: Boolean) -> Unit
 ) : NestedGroup() {
@@ -42,7 +42,7 @@ class ProfileDataWorkEditGroup(
     private var isWorksValid = false
 
     init {
-        isWorksValid = work?.models?.firstOrNull { it.description == null } == null
+        isWorksValid = work?.models?.firstOrNull { it.description == null } != null
         add(noWork)
         work?.models?.map { createWorkItem(it) }.let {
             if (it?.isEmpty() == true) {

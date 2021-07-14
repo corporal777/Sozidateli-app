@@ -274,7 +274,7 @@ class MaxStateMainInfoEditItem(
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
 
-            val workPhoneUpdate = if (mNoWorkPhone) ""
+            val workPhoneUpdate = if (mNoWorkPhone) null
             else mWorkPhone.phoneToServer()
             put(UserDetail.USER_PHONE, arrayListOf(
                     FieldDetails(value = mobilePhone?.value,

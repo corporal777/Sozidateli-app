@@ -17,7 +17,10 @@ import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.ui.base.BaseFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.base.MainInfoFragmentArgs
+import com.example.ui.state.max.MaxStateMainInfoFragmentDirections
+import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.BaseStateDialog
+import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -104,20 +107,20 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
     }
 
     override fun goToNext() {
-        findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
-        /*when (presenter.type) {
-            UserState.MAX ->
-                findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateMainInfoFragment().setScreen(presenter.screen))
-            UserState.BASE -> {
-                BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
-                        .setSelectCallback {
-                            when (presenter.screen) {
-                                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                            }
+        //findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+        when (Utils.maxStateScreen(presenter.getUserData())) {
+            MaxStateScreenType.EDUCATION ->
+                findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+            MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+                    .setSelectCallback {
+                        when (presenter.screen) {
+                            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
                         }
-            }
-        }*/
+                    }
+            else ->
+                findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+        }
     }
 
     override fun showUpdateError(message: String?) {

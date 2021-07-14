@@ -66,7 +66,7 @@ class MaxStateMainInfoPresenter
                     gender = it.gender
                     notes = it.notes
                 }
-                false
+                true
             }
         } else {
             val files = data
@@ -99,7 +99,7 @@ class MaxStateMainInfoPresenter
                                     socialLinks = it.socialLinks
                                     phone = it.phone
                                 }
-                                false
+                                true
                             }
                         }
                     }, {
@@ -108,6 +108,8 @@ class MaxStateMainInfoPresenter
                     })
         }
     }
+
+    fun getUserData() = appData.getUserNew()
 
     private fun onEditSaveNew(data: MutableMap<String, Any?>, onComplete: (UserDetail) -> Boolean) {
         if (data.isEmpty()) {

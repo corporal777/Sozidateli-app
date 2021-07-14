@@ -88,7 +88,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             // do nothing
         }
 
-        override fun onActionCancel(event: String) {
+        override fun onActionCancel(event: String, registrationId: String?) {
             // do nothing
         }
 

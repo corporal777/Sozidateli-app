@@ -18,7 +18,7 @@ import javax.inject.Inject
 @InjectViewState
 class MyEventsPresenter
 @Inject constructor(
-        appData: AppData,
+        val appData: AppData,
         eventData: UserEventData,
         private val eventRepository: EventRepository,
         userRepository: UserRepository,
@@ -27,17 +27,20 @@ class MyEventsPresenter
 
     lateinit var filter: MyEventsFilter
 
-    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getEventList(limit, offset, getFilterData())
-    }*/
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        //TODO Finish this screen
-        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset, EventNew.EVENT_BINDS to "rights"))
+        return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset,
+                EventNew.EVENT_BINDS to "rights", EventNew.EVENT_USER_ID to appData.getId(),
+                EventNew.EVENT_USER_STATUS to when (filter) {
+            MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED
+            MyEventsFilter.PENDING -> EventNew.FILTER_REGISTRATION_PENDING
+            MyEventsFilter.DECLINED -> EventNew.FILTER_REGISTRATION_DECLINED
+            MyEventsFilter.NONE -> EventNew.FILTER_REGISTRATION_ANY_REGISTERED
+        }))
     }
 
     override fun onFirstViewAttach() {
         when (filter) {
-            MyEventsFilter.ACCEPTED -> viewState.setAcceptedHeader()
+            MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> viewState.setAcceptedHeader()
             MyEventsFilter.PENDING -> viewState.setPendingHeader()
             MyEventsFilter.DECLINED -> viewState.setDeclinedHeader()
             MyEventsFilter.NONE -> viewState.setNoFilterHeader()
@@ -51,12 +54,11 @@ class MyEventsPresenter
 
     private fun getFilterData(): Map<String, Any> {
         return mapOf(
-                Event.FILTER_REGISTRATION to when (filter) {
-                    MyEventsFilter.ACCEPTED -> Event.FILTER_REGISTRATION_APPROVED
-                    MyEventsFilter.PENDING -> Event.FILTER_REGISTRATION_PENDING
-                    MyEventsFilter.DECLINED -> Event.FILTER_REGISTRATION_DECLINED
-                    MyEventsFilter.NONE -> Event.FILTER_REGISTRATION_ANY_REGISTERED
-                },
-                "show_hidden" to true)
+                EventNew.EVENT_USER_STATUS to when (filter) {
+                    MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED
+                    MyEventsFilter.PENDING -> EventNew.FILTER_REGISTRATION_PENDING
+                    MyEventsFilter.DECLINED -> EventNew.FILTER_REGISTRATION_DECLINED
+                    MyEventsFilter.NONE -> EventNew.FILTER_REGISTRATION_ANY_REGISTERED
+                })
     }
 }

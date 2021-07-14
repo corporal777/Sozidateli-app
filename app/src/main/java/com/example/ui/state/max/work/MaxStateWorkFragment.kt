@@ -11,6 +11,10 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.holders.ProfileDataWorkEditGroup
 import com.example.ui.base.BaseFragment
+import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.state.max.interests.BaseStateInterestsFragmentDirections
+import com.example.ui.views.BaseStateDialog
+import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -76,7 +80,18 @@ class MaxStateWorkFragment: BaseFragment(), MaxStateWorkContract.View {
     }
 
     override fun goToNext() {
-        findNavController().navigate(MaxStateWorkFragmentDirections.actionMaxStateWorkFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+        //findNavController().navigate(MaxStateWorkFragmentDirections.actionMaxStateWorkFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+        when (Utils.maxStateScreen(presenter.getUserData())) {
+            MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+                    .setSelectCallback {
+                        when (presenter.screen) {
+                            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+                        }
+                    }
+            else ->
+                findNavController().navigate(MaxStateWorkFragmentDirections.actionMaxStateWorkFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+        }
     }
 
     override fun showUpdateError(message: String?) {

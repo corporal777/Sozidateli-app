@@ -241,12 +241,12 @@ interface Api {
     fun eventRegister(@Path("eventId") eventId: String, @Body body: RequestBody): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/register/check")
-    fun eventRegisterCheck(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterCheckFields>>*/
+    fun eventRegisterCheck(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterCheckFields>>
 
     @POST("/v1/events/{eventId}/register/cancel")
     fun eventRegisterCancel(@Path("eventId") eventId: String): Completable
 
-    /*@GET("/v1/events/{eventId}/register")
+    @GET("/v1/events/{eventId}/register")
     fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/rating/fields")

@@ -147,13 +147,20 @@ abstract class EventListPresenter<V : EventListContract.View>(
         viewState.showEditProfile(appData.getUser().user_id.toString())
     }
 
-    override fun onActionCancel(event: String) {
-        compositeDisposable += eventRepository.eventRegisterCancel(event)
+    override fun onActionCancel(event: String, registrationId: String?) {
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt()?: 0)
+                .andThen(eventRepository.getEventDetails(event))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     paginationList.invalidate()
                 }
+        /*compositeDisposable += eventRepository.eventRegisterCancel(event)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    paginationList.invalidate()
+                }*/
     }
 
     override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {

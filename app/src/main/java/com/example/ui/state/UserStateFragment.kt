@@ -37,7 +37,7 @@ class UserStateFragment: BaseFragment(), UserStateContract.View {
         val adapter = UserStateAdapter {
             when (it) {
                 UserState.BASE ->
-                    findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment().setType(it))
+                    findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment().setType(it).setScreen(2))
                 UserState.MAX -> {
                     val base = states.firstOrNull { st -> st.state == UserState.BASE }
                     if (base?.isDone == true)

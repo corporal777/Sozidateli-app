@@ -79,6 +79,8 @@ class BaseStateInterestsPresenter
         }
     }
 
+    fun getUserData() = appData.getUserNew()
+
     private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
         compositeDisposable += request
                 .performOnBackgroundOutOnMain()
@@ -88,7 +90,14 @@ class BaseStateInterestsPresenter
                         phone = it.phone
                     }
                     if (onComplete(it))
-                        viewState.goToNext()
+                        compositeDisposable += userRepository.checkUserProfileSingle()
+                                .performOnBackgroundOutOnMain()
+                                .subscribe({
+                                    viewState.goToNext()
+                                },{
+                                    viewState.goToNext()
+                                })
+                        //viewState.goToNext()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

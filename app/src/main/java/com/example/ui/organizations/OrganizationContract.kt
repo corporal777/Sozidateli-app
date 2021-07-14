@@ -79,7 +79,7 @@ interface OrganizationContract {
         fun onRefreshRequest()
 
         fun onActionRegister(event: String)
-        fun onActionCancel(event: String)
+        fun onActionCancel(event: String, registrationId: String?)
         fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
         fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)

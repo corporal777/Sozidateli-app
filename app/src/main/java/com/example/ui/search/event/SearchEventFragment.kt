@@ -42,7 +42,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew/*Event
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
@@ -88,33 +88,14 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew/*Event
     override fun createItem(itemData: EventNew/*Event*/?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
         else EventGroup(
-                /*itemData.id,
-                itemData.status,
-                itemData.userRegistration,
-                itemData.backgroundColor,
-                itemData.backgroundImage,
-                itemData.takeFormat(),
-                itemData.organization?.emails,
-                !itemData.canRegister,
-                onEventClickListener,
-                EventDataListItem(
-                        -itemData.id.toLong(),
-                        itemData.name,
-                        itemData.shortAddress ?: itemData.addressCity,
-                        itemData.conferenceStart,
-                        itemData.conferenceFirstActivityStart
-                ).apply {
-                    showStartTime = false
-                },
-                itemData.userAgreement*/
                 itemData.id.toString(),
                 itemData.status?.value,
-                /*if (itemData.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/itemData?.binds?.currentUserRegistration?.status?.value,
+                itemData.binds?.currentUserRegistration?.status?.value,
                 itemData.binds?.organization?.backgroundColor?.value,
                 itemData.binds?.organization?.logo?.uri,
                 EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
                 itemData.binds?.organization?.email,
-                /*!itemData.binds?.rights?.registration!!*/(itemData?.status?.value?: "") != Event.Status.REGISTRATION,
+                (itemData.status?.value?: "") != Event.Status.REGISTRATION,
                 onEventClickListener,
                 EventDataListItem(
                         -(itemData.id?.toLong()?: 0),

@@ -82,11 +82,20 @@ object Utils {
             context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
         } else context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
 
-    fun maxStateScreen(user: UserDetail): MaxStateScreenType =
-        if (user.binds?.recommendationFile.isNullOrEmpty() || user.notes.isNullOrEmpty() ||
-                (user.site?.value?.isNullOrEmpty() == true) || (user.socialLinks?.value?.isNullOrEmpty() == true) ||
-                user.phone?.firstOrNull { it.type == PHONE_WORK }?.value.isNullOrEmpty()) MaxStateScreenType.BASE
+    fun maxStateScreen(user: UserDetail): MaxStateScreenType {
+        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
+        val isWorkPhone = if (workPhone?.absent == true) false else workPhone?.value.isNullOrEmpty()
+        val sites = user.site
+        val isSite = if (sites?.absent == true) false else sites?.value?.isNullOrEmpty()
+        val links = user.socialLinks
+        val isLinks = if (links?.absent == true) false else links?.value?.isNullOrEmpty()
+        val works = user.binds?.workExperience
+        val isWork = if (works?.absent == true) false else works?.models?.isNullOrEmpty()
+        return if (user.binds?.recommendationFile.isNullOrEmpty() || user.notes.isNullOrEmpty() ||
+                (isSite == true) || (isLinks == true) || isWorkPhone) MaxStateScreenType.BASE
         else if (user.interests.isNullOrEmpty()) MaxStateScreenType.INTERESTS
-        else if (user.binds?.workExperience?.models?.isNullOrEmpty() == true) MaxStateScreenType.WORK
-        else MaxStateScreenType.EDUCATION
+        else if (isWork == true) MaxStateScreenType.WORK
+        else if (user.binds?.education.isNullOrEmpty()) MaxStateScreenType.EDUCATION
+        else MaxStateScreenType.DONE
+    }
 }

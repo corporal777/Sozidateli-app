@@ -192,7 +192,7 @@ class ProfileDataEducationEditGroupNew(
             it.isDeleteVisible = isDeleteD
             notifyChanged()
         }
-        val isDeleteE = educations.itemCount > 1
+        val isDeleteE = educations.itemCount > 2
         educations.forEachGroups<ProfileDataEducationEditItem> {
             it.isDeleteVisible = isDeleteE
             notifyChanged()

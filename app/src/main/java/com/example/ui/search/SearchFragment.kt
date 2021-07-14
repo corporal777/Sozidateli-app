@@ -1,6 +1,7 @@
 package com.example.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
@@ -73,7 +74,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         if (data.isEmpty()) {
             adapter.update(listOf(NoDataItem(getString(R.string.search_no_data_text), getString(R.string.search_no_data_description))))
         } else {
+            Log.e("SearchEventsList", "start")
             adapter.update(data.map(::createItem))
+            Log.e("SearchEventsList", "finish")
         }
         swipeToRefresh.isRefreshing = false
     }

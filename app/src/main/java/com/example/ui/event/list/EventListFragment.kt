@@ -3,6 +3,7 @@ package com.example.ui.event.list
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +25,7 @@ import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.Group
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list.*
@@ -50,7 +52,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
@@ -78,33 +80,24 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun setData(events: List<EventNew/*Event*/?>) {
+        Log.e("EventsList", "start")
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroup(
-                    /*it.id,
-                    it.status,
-                    it.userRegistration,
-                    it.backgroundColor,
-                    it.backgroundImage,
-                    it.takeFormat(),
-                    it.email,
-                    !it.canRegister,
-                    onEventClickListener,
-                    createEventDataListItem(event = it),
-                    it.userAgreement*/
                     it.id.toString(),
                     it.status?.value,
-                    /*if (it.binds?.userRegister?.isNotEmpty() == true) it.binds?.userRegister?.get(0)?.status?.value else null*/it?.binds?.currentUserRegistration?.status?.value,
+                    it.binds?.currentUserRegistration?.status?.value,
                     it.binds?.organization?.backgroundColor?.value,
                     it.binds?.organization?.logo?.uri,
                     EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
                     it.binds?.organization?.email,
-                    /*it.binds?.rights?.registration != false*/(it?.status?.value?: "") != Event.Status.REGISTRATION,
+                    (it.status?.value?: "") != Event.Status.REGISTRATION,
                     onEventClickListener,
                     createEventDataListItem(event = it),
                     it.userAgreement?.uri
             )
         })
+        Log.e("EventsList", "finish")
         //TODO finished screen
         swipeToRefresh.isRefreshing = false
     }
@@ -116,11 +109,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                 event.address?.getShortAddress(),
                 event.holdingDate?.from,
                 event.binds?.getFirstActionStartDate()
-                /*-event.id.toLong(),
-                event.name,
-                event.shortAddress ?: event.addressCity,
-                event.conferenceStart,
-                event.conferenceFirstActivityStart*/
         )
     }
 

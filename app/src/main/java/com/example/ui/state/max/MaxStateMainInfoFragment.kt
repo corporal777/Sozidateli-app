@@ -26,6 +26,8 @@ import com.example.holders.ProfileDataAdditionalFilesEditNewGroup
 import com.example.holders.ProfileDataFileEditItem
 import com.example.holders.ProfileDataFileItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.state.UserStateFragmentDirections
+import com.example.ui.views.BaseStateDialog
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.*
@@ -159,8 +161,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                 }
             }
         } else {
-            findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen)
-                    /*MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen)*/)
+            findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
         }
         buttonNextEnabled(isFilesValid)
         canUpdateFields = false
@@ -248,8 +249,21 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
     }
 
     override fun goToNext() {
-        findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen)
-                /*MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen)*/)
+        when (Utils.maxStateScreen(presenter.getUserData())) {
+            MaxStateScreenType.WORK ->
+                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+            MaxStateScreenType.EDUCATION ->
+                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+            MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+                    .setSelectCallback {
+                        when (presenter.screen) {
+                            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+                        }
+                    }
+            else ->
+                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+        }
     }
 
     override fun showUpdateError(message: String?) {

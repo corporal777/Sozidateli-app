@@ -1096,6 +1096,9 @@
         <action
             android:id="@+id/action_baseStateInterestsFragment_to_maxStateWorkFragment"
             app:destination="@id/maxStateWorkFragment" />
+        <action
+            android:id="@+id/action_baseStateInterestsFragment_to_maxStateEducationFragment"
+            app:destination="@id/maxStateEducationFragment" />
     </fragment>
     <fragment
         android:id="@+id/maxStateMainInfoFragment"
@@ -1108,6 +1111,12 @@
         <action
             android:id="@+id/action_maxStateMainInfoFragment_to_baseStateInterestsFragment"
             app:destination="@id/baseStateInterestsFragment" />
+        <action
+            android:id="@+id/action_maxStateMainInfoFragment_to_maxStateWorkFragment"
+            app:destination="@id/maxStateWorkFragment" />
+        <action
+            android:id="@+id/action_maxStateMainInfoFragment_to_maxStateEducationFragment"
+            app:destination="@id/maxStateEducationFragment" />
     </fragment>
     <fragment
         android:id="@+id/maxStateWorkFragment"

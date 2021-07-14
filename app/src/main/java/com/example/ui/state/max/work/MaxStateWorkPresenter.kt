@@ -38,12 +38,21 @@ class MaxStateWorkPresenter
         viewState.navigateUp()
     }
 
+    fun getUserData() = appData.getUserNew()
+
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {
         compositeDisposable += userRepository.updateWorkExperience(data)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    viewState.goToNext()
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                viewState.goToNext()
+                            },{
+                                viewState.goToNext()
+                            })
+                    //viewState.goToNext()
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

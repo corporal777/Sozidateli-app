@@ -69,6 +69,13 @@ data class EventNew(
                 const val EVENT_STATUS = "status"
                 const val EVENT_HIDDEN = "stateIsHidden"
                 const val EVENT_CODE = "code"
+                const val EVENT_USER_ID = "userRegistration.user"
+                const val EVENT_USER_STATUS = "userRegistration.status"
+
+                const val FILTER_REGISTRATION_PENDING = "pending"
+                const val FILTER_REGISTRATION_APPROVED = "approved"
+                const val FILTER_REGISTRATION_DECLINED = "declined"
+                const val FILTER_REGISTRATION_ANY_REGISTERED = "pending,approved,declined"
         }
 }
 

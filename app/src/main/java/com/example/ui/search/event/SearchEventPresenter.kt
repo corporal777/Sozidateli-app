@@ -137,13 +137,20 @@ class SearchEventPresenter
 
     override fun onActionRegister(event: String) = viewState.showEventRequest(event)
 
-    override fun onActionCancel(event: String) {
-        compositeDisposable += eventRepository.eventRegisterCancel(event)
+    override fun onActionCancel(event: String, registrationId: String?) {
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt()?: 0)
+                .andThen(eventRepository.getEventDetails(event))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     pagination.invalidate()
                 }
+        /*compositeDisposable += eventRepository.eventRegisterCancel(event)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    pagination.invalidate()
+                }*/
     }
 
     override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {

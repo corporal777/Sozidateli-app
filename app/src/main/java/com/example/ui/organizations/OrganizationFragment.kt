@@ -74,7 +74,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String) = presenter.onActionCancel(event)
+        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)

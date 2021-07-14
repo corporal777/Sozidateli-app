@@ -18,7 +18,7 @@ interface EventRepository {
     //fun getEventRegisterField(eventId: String): Single<EventRegisterForm>
     //fun eventRegister(eventId: String, body: RequestBody): Single<EventRegisterResponse>
     //fun eventRegisterCheck(eventId: String): Single<List<EventRegisterCheckField>>
-    fun eventRegisterCancel(eventId: String): Completable
+    //fun eventRegisterCancel(eventId: String): Completable
     //fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     //fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>>
     fun setEventRating(eventId: String, body: RequestBody): Completable

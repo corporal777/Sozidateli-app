@@ -344,7 +344,7 @@ class ProfileContactsEditItem(
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
-            val workPhoneUpdate = if (mNoWorkPhone) ""
+            val workPhoneUpdate = if (mNoWorkPhone) null
             else mWorkPhone.phoneToServer()
             put(UserDetail.USER_PHONE, arrayListOf(
                     FieldDetails(value = mMobilePhone.phoneToServer(),
