@@ -56,8 +56,6 @@ import com.example.ui.state.max.interests.BaseStateInterestsFragment
 import com.example.ui.state.max.MaxStateMainInfoFragment
 import com.example.ui.state.max.education.MaxStateEducationFragment
 import com.example.ui.state.max.work.MaxStateWorkFragment
-import com.example.ui.status.StatusFragment
-import com.example.ui.status.tabs.StatusPagesFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubeventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
@@ -244,12 +242,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEmailConfirmFragment(): EmailConfirmFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeStatusPagesFragment(): StatusPagesFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeStatusFragment(): StatusFragment
 
     @ContributesAndroidInjector
     abstract fun contributePageFragment(): PageFragment

@@ -50,6 +50,7 @@ class SearchEventPresenter
         val data = mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
+            put(EventNew.EVENT_SORT_TYPE, "desc")
             put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")

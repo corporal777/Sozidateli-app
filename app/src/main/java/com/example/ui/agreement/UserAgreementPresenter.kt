@@ -17,13 +17,13 @@ class UserAgreementPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += commonRepository.getAgreement()
+        /*compositeDisposable += commonRepository.getAgreement()
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     viewState.setTitle(it.title)
                     viewState.setContent(it.text)
-                }
+                }*/
     }
 }

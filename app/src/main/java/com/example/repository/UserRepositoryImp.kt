@@ -177,13 +177,13 @@ class UserRepositoryImp
 
     override fun changeEmailConfirm(email: String, code: String): Single<AuthResponse> {
         return call(api.changeEmailConfirm(email, code))
-    }*/
+    }
 
     override fun getUserById(id: String): Maybe<User> {
         return call(api.getUserById(id))
     }
 
-    /*override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
+    override fun addToFavorite(uid: String): Completable = call(api.userAddToFavorite(uid))
 
     override fun removeFromFavorite(uid: String): Completable = call(api.userRemoveFromFavorite(uid))
 
@@ -203,13 +203,13 @@ class UserRepositoryImp
         return newApi.checkPassword(appData.getId(), password)
     }
 
-    override fun sendStatusPhoneConfirmSms(password: String): Completable {
+    /*override fun sendStatusPhoneConfirmSms(password: String): Completable {
         return call(api.sendStatusPhoneConfirmSms(password))
     }
 
     override fun sendStatusPhoneConfirmCode(code: String): Completable {
         return call(api.sendStatusPhoneConfirmCode(code))
-    }
+    }*/
 
     override fun userEventCalendar(): Maybe<List<UserEventCalendar>> {
         return call(api.eventCalendar())
@@ -220,7 +220,7 @@ class UserRepositoryImp
     }
 
     override fun deleteProfile(id: Int): Completable {
-        return /*call(api.deleteProfile())*/newApi.deleteProfile(id)
+        return newApi.deleteProfile(id)
     }
 
     override fun deleteProfile(): Completable {

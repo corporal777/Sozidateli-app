@@ -7,7 +7,7 @@ interface CommonRepository {
 
     fun getInterests(): Maybe<List</*Interest*/InterestNew>>
 
-    fun getAgreement(): Maybe<Agreement>
+    //fun getAgreement(): Maybe<Agreement>
 
     //fun getEventFormats(): Maybe<List<EventFormat/*NewEventFormat*/>>
 }

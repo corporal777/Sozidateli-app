@@ -37,7 +37,7 @@ interface UserRepository {
 
     //fun changeEmailConfirm(email: String, code: String): Single<AuthResponse>
 
-    fun getUserById(id: String): Maybe<User>
+    //fun getUserById(id: String): Maybe<User>
 
     //fun addToFavorite(uid: String): Completable
     //fun removeFromFavorite(uid: String): Completable
@@ -46,8 +46,8 @@ interface UserRepository {
     //fun usersList(limit: Int, offset: Int, filter: Map<String, Any>): Maybe<PaginationResponse<User?>>
     //fun checkPassword(password: String): Completable
     fun checkPasswordNew(password: String): Completable
-    fun sendStatusPhoneConfirmSms(password: String): Completable
-    fun sendStatusPhoneConfirmCode(code: String): Completable
+    //fun sendStatusPhoneConfirmSms(password: String): Completable
+    //fun sendStatusPhoneConfirmCode(code: String): Completable
 
     fun userEventCalendar(): Maybe<List<UserEventCalendar>>
     fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable

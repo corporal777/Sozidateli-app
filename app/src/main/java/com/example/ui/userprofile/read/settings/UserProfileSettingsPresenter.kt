@@ -5,14 +5,11 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.PasswordBody
-import com.example.data.bodies.RegisterBody
 import com.example.data.models.*
 import com.example.data.models.UserDetail.Companion.USER_EMAIL
 import com.example.data.models.UserDetail.Companion.USER_STATE
-import com.example.data.models.user.User
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.status.StatusPresenter
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign

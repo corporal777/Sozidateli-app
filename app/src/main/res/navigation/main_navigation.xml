@@ -670,9 +670,6 @@
             app:destination="@id/chat_fragment"
             app:launchSingleTop="true" />
         <action
-            android:id="@+id/user_to_status"
-            app:destination="@id/user_status_fragment" />
-        <action
             android:id="@+id/user_to_edit"
             app:destination="@id/user_edit_fragment" />
         <action
@@ -811,11 +808,6 @@
             app:argType="com.example.data.models.user.RecommendationFile" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/user_status_fragment"
-        android:name="com.example.ui.status.tabs.StatusPagesFragment"
-        tools:layout="@layout/fragment_status_pages" />
 
     <fragment
         android:id="@+id/search_tabs_fragment"

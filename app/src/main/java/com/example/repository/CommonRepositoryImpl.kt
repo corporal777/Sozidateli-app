@@ -29,11 +29,11 @@ class CommonRepositoryImpl
                 } else Maybe.just(cachedInterests)
     }
 
-    override fun getAgreement(): Maybe<Agreement> {
+    /*override fun getAgreement(): Maybe<Agreement> {
         return call(api.getUserAgreement())
     }
 
-    /*override fun getEventFormats(): Maybe<List<EventFormat>> {
+    override fun getEventFormats(): Maybe<List<EventFormat>> {
         return call(api.getEventFormats())
     }*/
 }

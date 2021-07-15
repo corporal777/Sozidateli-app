@@ -37,6 +37,7 @@ class OrganizationEventsPresenter
         return eventRepository.getEventsList(mapOf(
                 EventNew.EVENT_LIMIT to limit,
                 EventNew.EVENT_OFFSET to offset,
+                EventNew.EVENT_SORT_TYPE to "desc",
                 EventNew.EVENT_ORGANIZATION to organizationId))
     }
 }

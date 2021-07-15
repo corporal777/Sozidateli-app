@@ -595,8 +595,8 @@ class MainPresenter
             newMessage.message.additionalData?.fromJson<ChatMessageAdditionalData>()
                     ?: throw NullPointerException("Additional data is null")
         }
-                .onErrorResumeNext(userRepository.getUserById(newMessage.message.senderKey).map {
-                    ChatMessageAdditionalData(it.user_id, it.user_name, it.user_last_name, it.user_middle_name, it.user_avatar)
+                .onErrorResumeNext(userRepository.getUserByIdNew(newMessage.message.senderKey).map {
+                    ChatMessageAdditionalData(it.id, it.name, it.lastName, it.middleName?.value, it.image?.uri)
                 })
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple { messageData ->

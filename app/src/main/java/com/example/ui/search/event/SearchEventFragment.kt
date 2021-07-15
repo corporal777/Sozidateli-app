@@ -92,7 +92,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew/*Event
                 itemData.status?.value,
                 itemData.binds?.currentUserRegistration?.status?.value,
                 itemData.binds?.organization?.backgroundColor?.value,
-                itemData.binds?.organization?.logo?.uri,
+                itemData.image?.uri,
                 EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
                 itemData.binds?.organization?.email,
                 (itemData.status?.value?: "") != Event.Status.REGISTRATION,

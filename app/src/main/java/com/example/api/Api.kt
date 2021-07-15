@@ -2,7 +2,6 @@ package com.example.api
 
 import com.example.data.models.*
 import com.example.data.models.user.User
-import com.example.data.models.user.UserResp
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -82,7 +81,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/check_pwd")
-    fun checkPassword(@Field("user_password") password: String): Completable*/
+    fun checkPassword(@Field("user_password") password: String): Completable
 
     @FormUrlEncoded
     @POST("/v1/user/phone/sms")
@@ -95,7 +94,7 @@ interface Api {
     @GET("/v1/users/{id}")
     fun getUserById(@Path("id") id: String): Maybe<ApiResponse<User>>
 
-    /*@FormUrlEncoded
+    @FormUrlEncoded
     @POST("/v1/users")
     fun getUsersList(@Field("limit") limit: Int, @Field("start") offset: Int, @FieldMap filter: Map<String, @JvmSuppressWildcards Any>?): Maybe<ApiResponse<List<User>>>
 
@@ -164,11 +163,11 @@ interface Api {
 
     /*@Multipart
     @POST("/v1/user/update/recomend_file")
-    fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>*/
+    fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
 
     @Multipart
     @POST("/v1/user/update/avatar")
-    fun uploadAvatar(@Part image: MultipartBody.Part?): Single<ApiResponse<User>>
+    fun uploadAvatar(@Part image: MultipartBody.Part?): Single<ApiResponse<User>>*/
 
     @Headers("Content-Type: application/json")
     @POST("/v1/user/update")
@@ -268,13 +267,13 @@ interface Api {
     fun getSubEvent(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Single<ApiResponse<SubeventInfo>>
 
     @POST("v1/user/set_default_event/{eventId}")
-    fun setDefaultEvent(@Path("eventId") eventId: String): Completable*/
+    fun setDefaultEvent(@Path("eventId") eventId: String): Completable
 
     @FormUrlEncoded
     @POST("/v1/events/{eventId}/activity/{subEventId}/contacts")
     fun getSubEventUsers(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
-    /*@POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
+    @POST("/v1/events/{eventId}/activity/{subEventId}/add2calendar")
     fun addSubEventToCalendar(@Path("eventId") eventId: String, @Path("subEventId") subEventId: String): Completable
 
     @POST("/v1/events/{eventId}/activity/{subEventId}/remove4calendar")
@@ -320,12 +319,12 @@ interface Api {
     fun unsubscribeFromSubEvent(@Path("event") event: String, @Path("activity") activity: String): Completable
 
     @POST("/v1/common/interests")
-    fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>*/
+    fun getInterestsList(): Maybe<ApiResponse<List<Interest>>>
 
     @GET("/v1/common/page_agreement")
     fun getUserAgreement(): Maybe<ApiResponse<Agreement>>
 
-    /*@POST("/v1/common/formats")
+    @POST("/v1/common/formats")
     fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>*/
 
     @POST("/v1/address")

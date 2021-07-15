@@ -332,7 +332,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     override fun showStatus() {
-        findNavController().navigate(UserFragmentDirections.userToStatus())
+
     }
 
     override fun showOrganization(organization: /*Organization*/OrganizationNew) {

@@ -10,6 +10,7 @@ import com.example.data.models.EventNew.Companion.EVENT_BINDS
 import com.example.data.models.EventNew.Companion.EVENT_HIDDEN
 import com.example.data.models.EventNew.Companion.EVENT_LIMIT
 import com.example.data.models.EventNew.Companion.EVENT_OFFSET
+import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.models.EventNewModel
 import com.example.di.Connectivity
@@ -36,7 +37,7 @@ class RecommendationsPresenter
         return eventRepository.getEventRecommendations(limit, offset)
     }*/
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset,
+        return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset, EVENT_SORT_TYPE to "desc",
                 EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme"/*,
                 EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false))
     }

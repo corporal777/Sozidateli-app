@@ -207,7 +207,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         if (eventData?.status?.value == Event.Status.FINISHED) Event.Status.FINISHED else null,
                         userRegistration,
                         eventData?.binds?.organization?.backgroundColor?.value,
-                        eventData?.binds?.organization?.logo?.uri,
+                        eventData?.image?.uri,
                         EventFormat(name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom?: "" else eventData?.format?.name?: ""),
                         null,
                         /*!eventData?.binds?.rights?.registration!!*/(eventData?.status?.value?: "") != Event.Status.REGISTRATION,
@@ -220,10 +220,15 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 
-                    val hasRating = (eventData?.status?.value/*eventData?.status*/ == Event.Status.FINISHED ||
-                            eventData?.status?.value/*eventData?.status*/ == Event.Status.IN_ARCHIVE) &&
+                    val rating = eventData?.binds?.userFormResult?.sumBy { it.result?.ratingMark?: 0 }
+                    val hasRating = eventData?.status?.value == Event.Status.FINISHED &&
+                            (eventData?.state?.rating?.formEnabled == true) &&
+                            eventData?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED &&
+                            (rating?: 0) > 0
+                    /*val hasRating = (eventData?.status?.value == Event.Status.FINISHED ||
+                            eventData?.status?.value == Event.Status.IN_ARCHIVE) &&
                             eventData.binds?.form?.firstOrNull { it.type == EventFormModel.Type.RATING } != null &&
-                            userRegistration == Event.Status.APPROVED
+                            userRegistration == Event.Status.APPROVED*/
 
                     val hasPages = pages?.isNotEmpty()
                     val hasAgreement = userAgreement.isNullOrEmpty().not()

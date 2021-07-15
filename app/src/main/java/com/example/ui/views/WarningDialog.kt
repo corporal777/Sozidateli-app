@@ -22,6 +22,7 @@ class WarningDialog(val activity: Activity, val text: String) {
 
     init {
         builder.setView(binding.root)
+        binding.tvPasswordDescription.text = text
         binding.btnPositive.setOnClickListener {
             onSelect(true)
             alertDialog.dismiss()

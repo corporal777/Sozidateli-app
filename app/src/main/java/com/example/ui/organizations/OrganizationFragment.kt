@@ -4,12 +4,10 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
@@ -25,9 +23,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
-import com.example.data.models.user.User
 import com.example.extensions.findItemBy
-import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
@@ -42,15 +38,12 @@ import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.UserSubscribeButton
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_organization.*
 import kotlinx.android.synthetic.main.fragment_organization.btnAction
 import kotlinx.android.synthetic.main.fragment_organization.llContent
-import kotlinx.android.synthetic.main.fragment_status.scrollContainer
-import parseColor
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
@@ -256,7 +249,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                 itemData?.status?.value,
                 /*if (itemData?.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/itemData?.binds?.currentUserRegistration?.status?.value,
                 itemData?.binds?.organization?.backgroundColor?.value,
-                itemData?.binds?.organization?.logo?.uri,
+                itemData?.image?.uri,
                 EventFormat(name = if (itemData?.format?.name.isNullOrEmpty()) itemData?.format?.custom?: "" else itemData?.format?.name?: ""),
                 itemData?.binds?.organization?.email,
                 /*!itemData?.binds?.rights?.registration!!*/(itemData?.status?.value?: "") != Event.Status.REGISTRATION,

@@ -147,6 +147,8 @@ data class EventBindsModel(
         val form: List<EventFormModel>? = null,
         @SerializedName("current-user-registration")
         val currentUserRegistration: CurrentUserRegistrationModel? = null,
+        @SerializedName("user-form-result")
+        val userFormResult: List<UserFormResultModel>? = null,
         @SerializedName("userFavoriteActivities")
         val userFavoriteActivities: List<EventActivityModel>? = null/*,
         @SerializedName("destination-scheme")
@@ -173,7 +175,12 @@ data class CurrentUserRegistrationModel(
         val wasPresent: String? = null
 ): Parcelable
 
-
+@Parcelize
+data class UserFormResultModel(
+        @SerializedName("formType")
+        val formType: EventFormModel? = null,
+        val result: EventFormResultModel? = null
+): Parcelable
 
 @Parcelize
 data class EventFormModel(
@@ -181,6 +188,7 @@ data class EventFormModel(
         val event: Int? = null,
         val title: String? = null,
         val subtitle: String? = null,
+        val draft: EventFormDraftModel? = null,
         val type: Type? = null,
         val files: List<FileModel>? = null,
         val fields: List<EventRegisterFields>? = null
@@ -197,6 +205,12 @@ data class EventFormModel(
                 const val FORM_EVENT_ID = "event"
         }
 }
+
+@Parcelize
+data class EventFormDraftModel(
+        val value: Boolean = false,
+        val parent: String? = null
+): Parcelable
 
 @Parcelize
 data class EventRegisterFields(
@@ -431,7 +445,7 @@ data class EventRatingModel(
         @SerializedName("isAvailable")
         val isAvailable: Boolean? = null,
         @SerializedName("formEnabled")
-        val formEnabled: Boolean? = null,
+        val formEnabled: Boolean? = false,
         @SerializedName("askDelay")
         val askDelay: Int? = null,
         @SerializedName("approvingMode")

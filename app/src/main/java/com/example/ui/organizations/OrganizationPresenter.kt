@@ -101,6 +101,7 @@ class OrganizationPresenter
                                 compositeDisposable += eventRepository.getEventsListWithoutPagination(
                                         mutableMapOf<String, Any>().apply {
                                             put(EventNew.EVENT_LIMIT, 3)
+                                            put(EventNew.EVENT_SORT_TYPE, "desc")
                                             put(EventNew.EVENT_OFFSET, 0)
                                             put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
                                             put(EventNew.EVENT_ORGANIZATION, organizationId)
@@ -128,6 +129,7 @@ class OrganizationPresenter
                 mutableMapOf<String, Any>().apply {
                     put(EventNew.EVENT_LIMIT, 3)
                     put(EventNew.EVENT_OFFSET, 0)
+                    put(EventNew.EVENT_SORT_TYPE, "desc")
                     put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
                     put(EventNew.EVENT_ORGANIZATION, organizationId)
                 }
