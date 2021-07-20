@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.FileModel
+import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
@@ -116,8 +118,22 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                     user.socialLinks,
                     user.site,
                     user.notes,
+                    user.image,
                     { showWhyUserShouldAddDataToNotesField() },{ isOtherInfoValid = it
                 buttonNextEnabled(it)
+            }, {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.photo_alert_title)
+                        .apply {
+                            if (it) {
+                                setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+                                    presenter.onRemovePhotoClick()
+                                }
+                            }
+                        }
+                        .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+                        .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+                        .show()
             }) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
 
             if (!filesAddedBefore) {
@@ -161,10 +177,16 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                 }
             }
         } else {
-            findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+            if (!presenter.isUpdatePhoto)
+                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+            presenter.isUpdatePhoto = false
         }
         buttonNextEnabled(isFilesValid)
         canUpdateFields = false
+    }
+
+    override fun photoUpdated(photo: ImageModel) {
+        adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }?.setImage(photo)
     }
 
     private fun buttonNextEnabled(enabled: Boolean) {
@@ -179,6 +201,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
         if (user.site?.value?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
         if (user.notes.isNullOrEmpty()) isGoToNex = false
+        if (user.image.uri.isNullOrEmpty()) isGoToNex = false
         return isGoToNex
     }
 
@@ -253,7 +276,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
             MaxStateScreenType.WORK ->
                 findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
             MaxStateScreenType.EDUCATION ->
-                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+                findNavController().navigate(R.id.maxStateEducationFragment, bundleOf("screen" to presenter.screen))
             MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
                     .setSelectCallback {
                         when (presenter.screen) {

@@ -4,15 +4,17 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
-import com.example.data.models.FieldDetails
-import com.example.data.models.FileModel
-import com.example.data.models.UserDetail
-import com.example.data.models.asOptional
+import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
+import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.rxtakephoto.ResultRotation
+import com.example.util.rxtakephoto.RxTakePhoto
+import com.isseiaoki.simplecropview.CropImageView
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -29,12 +31,14 @@ import javax.inject.Inject
 class MaxStateMainInfoPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val takePhoto: RxTakePhoto
 ): BasePresenter<MaxStateMainInfoContract.View>(), MaxStateMainInfoContract.Presenter {
 
     var screen: Int = 1
     private var isFileEdit = false
     private val compositeFilesDisposable = CompositeDisposable()
+    var isUpdatePhoto = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -316,6 +320,57 @@ class MaxStateMainInfoPresenter
                     viewState.showUpdateError(it.message)
                 })
     }
+
+    override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
+    override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
+
+    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
+        isUpdatePhoto = true
+        compositeDisposable += takePhotoRequest
+                .firstOrError()
+                .flatMap {
+                    takePhoto.crop(
+                            resultRotation = it,
+                            outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
+                            outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
+                            cropMode = CropImageView.CropMode.SQUARE
+                    )
+                }
+                .flatMap { userRepository.changeUserImage(it) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onSuccess = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
+                            updateUserInternal {
+                                image = it
+                            }
+                            viewState.photoUpdated(it)
+                        }
+                )
+    }
+
+    override fun onRemovePhotoClick() {
+        isUpdatePhoto = true
+        compositeDisposable += userRepository.deleteImage()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onComplete = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
+                            updateUserInternal {
+                                image = ImageModel(null, null, null, null, null, null)
+                            }
+                            viewState.photoUpdated(ImageModel(null, null, null, null, null, null))
+                        }
+                )
+    }
+
+    private fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)
 
     private fun fileRequestBody(file: File, fieldName: String, mimeType: String): MultipartBody.Part?{
         val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)

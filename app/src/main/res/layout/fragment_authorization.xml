@@ -76,8 +76,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textAllCaps="false"
                 android:background="@drawable/background_corners"
                 android:minHeight="@dimen/auth_button_min_height"
+                android:textSize="16sp"
                 android:text="@string/auth_action_register"
                 android:textColor="@android:color/white"
                 android:theme="@style/ViewBackgroundAccent" />

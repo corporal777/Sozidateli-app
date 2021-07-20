@@ -1,5 +1,6 @@
 package com.example.ui.search.event
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
@@ -41,12 +42,10 @@ class SearchEventPresenter
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
         private val appData: AppData
-) : SearchPresenter<SearchEventContract.View, EventNew/*Event*/, SearchFilter.EventNew/*Event*/>(), SearchEventContract.Presenter {
+) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(), SearchEventContract.Presenter {
 
-    /*override val pagination = PaginationDataSourceFactory { limit, offset ->
-        eventRepository.getEventList(limit, offset, buildFilter())
-    }*/
     override val pagination = PaginationDataSourceFactory { limit, offset ->
+        Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
         val data = mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
@@ -63,28 +62,11 @@ class SearchEventPresenter
     }
 
     private var isCommonDataLoaded = false
-    private var interests: Map<InterestNew/*Interest*/, List<InterestNew/*Interest*/>>? = null
-    private var formats: List<NewEventFormat/*EventFormat*/>? = null
+    private var interests: Map<InterestNew, List<InterestNew>>? = null
+    private var formats: List<NewEventFormat>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        /*val loadInterests = commonRepository.getInterests()
-                .map { interests ->
-                    interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
-                }
-        compositeDisposable += Maybe.zip(loadInterests, commonRepository.getEventFormats(), BiFunction<Map<InterestNew/*Interest*/, List<InterestNew/*Interest*/>>, List<NewEventFormat/*EventFormat*/>, Unit> { interests, formats ->
-            this.interests = interests
-            this.formats = formats
-        })
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onError = {
-                            isCommonDataLoaded = true
-                            onReceiveError(it)
-                        },
-                        onSuccess = {
-                            isCommonDataLoaded = true
-                        })*/
         val loadInterests = userRepository.getInterestsList(null)
                 .map { interests ->
                     interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
@@ -128,7 +110,7 @@ class SearchEventPresenter
         super.onResume(searchInterface)
         searchInterface.apply {
             val initWithFilter = this.initWithFilter
-            if (initWithFilter != null && initWithFilter is SearchFilter.EventNew/*Event*/) {
+            if (initWithFilter != null && initWithFilter is SearchFilter.EventNew) {
                 tmpFilter = initWithFilter
                 filter = initWithFilter
                 this.initWithFilter = null
@@ -146,31 +128,17 @@ class SearchEventPresenter
                 .subscribeSimple {
                     pagination.invalidate()
                 }
-        /*compositeDisposable += eventRepository.eventRegisterCancel(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    pagination.invalidate()
-                }*/
     }
 
-    override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
+    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
         viewState.showWriteToOrganization(email)
     }
 
     override fun onActionShowEvent(event: String) {
-        /*compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }*/
-
         compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(CALENDAR_EVENT, event.toInt())))
                 .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))
@@ -227,6 +195,6 @@ class SearchEventPresenter
         if (format != null) put(FILTER_FORMAT, format)*/
     }
 
-    override fun createFilter() = SearchFilter.EventNew/*Event*/()
-    override fun copyFilter(filter: SearchFilter.EventNew/*Event*/) = filter.copy()
+    override fun createFilter() = SearchFilter.EventNew()
+    override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
 }

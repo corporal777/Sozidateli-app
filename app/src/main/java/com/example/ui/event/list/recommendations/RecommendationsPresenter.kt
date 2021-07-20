@@ -33,10 +33,8 @@ class RecommendationsPresenter
         @Connectivity connectivity: Observable<Boolean>
 ) : EventListPresenter<RecommendationsContract.View>(appData, eventData, eventRepository, userRepository, connectivity), RecommendationsContract.Presenter {
 
-    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getEventRecommendations(limit, offset)
-    }*/
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
+        Log.e("EventsList", "limit: $limit ,offset: $offset")
         return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset, EVENT_SORT_TYPE to "desc",
                 EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme"/*,
                 EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false))

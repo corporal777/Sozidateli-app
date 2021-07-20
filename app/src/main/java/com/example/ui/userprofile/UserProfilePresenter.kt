@@ -2,6 +2,7 @@ package com.example.ui.userprofile
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.ImageModel
 import com.example.data.models.user.User
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
@@ -66,7 +67,7 @@ class UserProfilePresenter @Inject constructor(
                                     .performOnBackgroundOutOnMain()
                                     .subscribeSimple(onSuccess = {})
                             updateUserInternal {
-                                image = null
+                                image = ImageModel(null, null, null, null, null, null)
                             }
                         }
                 )

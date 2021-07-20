@@ -16,7 +16,6 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -34,35 +33,13 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private var scrollPosition = 0
     private var scrollOffset = 0
 
-    private val pagination: PaginationDataSourceFactory<EventNew/*Event*/?> = PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<EventNew/*Event*/?>
+    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<EventNew?>
 
     private var isFirstAttach = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        /*viewState.setData(List(20) { null })
-        paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException)
-                hasNoConnectionError = true
-        }
-                .buildList(enablePlaceholders = true)
-
-        compositeDisposable += Observable.create(paginationList)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    if (it.isEmpty()) viewState.showEmptyListPlaceholder()
-                    else viewState.setData(it)
-                }
-
-        compositeDisposable += connectivity
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    if (hasNoConnectionError && it) {
-                        hasNoConnectionError = false
-                        paginationList.invalidate()
-                    }
-                }*/
         viewState.setData(List(20) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
@@ -85,7 +62,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
                                             it.forEach { event ->
                                                 event?.format?.name = formats?.firstOrNull { f -> f.id == event?.format?.value }?.name
                                             }
-                                            viewState.setData(it)
+                                            viewState.setData(it.filterNotNull())
                                         }
                                 )
                     }
@@ -109,17 +86,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionRegister(event: String) {
-        /*compositeDisposable += eventRepository.eventRegisterCheck(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            checkRegistrationFields(event, emptyList())
-                        },
-                        onSuccess = {
-                            checkRegistrationFields(event, it)
-                        }
-                )*/
         compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -133,7 +99,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 )
     }
 
-    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {
+    private fun checkRegistrationFields(event: String, fields: List<UserProfileFields>) {
         val filtered = fields.filter { it.filled == false }.mapNotNull { it.name }
         //val filtered = fields.mapNotNull { it.title }
         if (filtered.isEmpty()) {
@@ -155,31 +121,17 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 .subscribeSimple {
                     paginationList.invalidate()
                 }
-        /*compositeDisposable += eventRepository.eventRegisterCancel(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    paginationList.invalidate()
-                }*/
     }
 
-    override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
+    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
         if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
     }
 
-    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/) {
+    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
         viewState.showWriteToOrganization(email)
     }
 
     override fun onActionShowEvent(event: String) {
-        /*compositeDisposable += eventRepository.setDefaultEvent(event)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }*/
-
         compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, event.toInt())))
                 .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
                 .andThen(eventData.load(event))

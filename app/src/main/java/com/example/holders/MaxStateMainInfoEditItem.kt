@@ -13,14 +13,14 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
 import com.example.util.*
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnAddInfo
+import kotlinx.android.synthetic.main.item_max_state_main_info.btnEdit
 import kotlinx.android.synthetic.main.item_max_state_main_info.etNotes
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import onTextChanged
-import setOnClickListener
 
 class MaxStateMainInfoEditItem(
         id: Long,
@@ -30,8 +30,10 @@ class MaxStateMainInfoEditItem(
         private val socialNetworks: FieldListDetails?,
         private val site: FieldListDetails?,
         private val notes: String?,
+        private val image: ImageModel,
         private val addInfoClick:() -> Unit,
-        private val enableNextButton:(enable: Boolean) -> Unit
+        private val enableNextButton:(enable: Boolean) -> Unit,
+        private val onImageClick: (canRemove: Boolean) -> Unit
 ) : Item(id) {
 
     private lateinit var viewHolder: GroupieViewHolder
@@ -52,6 +54,8 @@ class MaxStateMainInfoEditItem(
     private var mNoSite = site?.absent?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
     private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
+    private var mImage = image
+    private val isImageVisible = (image.uri == null) || (image.uri == "")
 
     private var mSocialNetworks = (socialNetworks?.value?.map { UserDataSocialLink(value = it) } ?: emptyList())
             .map { it.copy() }
@@ -150,6 +154,26 @@ class MaxStateMainInfoEditItem(
                     addInfoClick()
                 }
             }
+            layPhoto.isVisible = isImageVisible
+            if (isImageVisible) {
+                setAvatar()
+                btnEdit.setOnClickListener {
+                    onImageClick(mImage.uri != null)
+                }
+            }
+        }
+    }
+
+    private fun setAvatar() {
+        this.viewHolder.ivAvatar.apply {
+            val avatarUrl = mImage.uri?.takeIf { it.isNotBlank() }
+            clipToOutline = true
+            transitionName = avatarUrl
+            Picasso.get()
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.avatar_placeholder_rectangle)
+                    .error(R.drawable.avatar_placeholder_rectangle)
+                    .into(this)
         }
     }
 
@@ -267,6 +291,7 @@ class MaxStateMainInfoEditItem(
         if (!mNoNetworks && mSocialNetworks[0].value.isNullOrEmpty()) isValid = false
         if (!mNoSite && mSite[0].value.isNullOrEmpty()) isValid = false
         if (mNotes.isNullOrEmpty()) isValid = false
+        if (mImage.uri.isNullOrEmpty()) isValid = false
         enableNextButton(isValid)
         return isValid
     }
@@ -295,6 +320,12 @@ class MaxStateMainInfoEditItem(
             }
             if (notes != mNotes) put(UserDetail.USER_NOTES, mNotes)
         }
+    }
+
+    fun setImage(image: ImageModel) {
+        mImage = image
+        checkDataValid()
+        setAvatar()
     }
 
     override fun getLayout(): Int = R.layout.item_max_state_main_info

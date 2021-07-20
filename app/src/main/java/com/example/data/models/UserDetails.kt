@@ -24,7 +24,7 @@ data class UserDetail(
         @SerializedName("socialLinks")
         var socialLinks: FieldListDetails? = null,
         var birthday: FieldDetails? = null,
-        var image: ImageModel? = null,
+        var image: ImageModel,
         var gender: String? = null,
         var address: NewUserAddress? = null,
         val state: UserState? = null,

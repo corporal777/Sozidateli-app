@@ -105,6 +105,7 @@ open class BasePresenter<V : BaseContract.View>
                                 )
                                 when (error.message) {
                                     "your profile level is to low, basic required" -> viewState.showStateErrorMessage()
+                                    "your profile level is to low, maximum required" -> viewState.showStateErrorMessage()
                                     else -> onReceiveError(it)
                                 }
                             } catch (e: Exception) {

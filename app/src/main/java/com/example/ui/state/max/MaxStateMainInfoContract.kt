@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.FileModel
+import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
 
@@ -39,6 +40,9 @@ interface MaxStateMainInfoContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun saveOnClick(saveOnClick: Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun photoUpdated(photo: ImageModel)
     }
     interface Presenter : BaseContract.Presenter {
         fun onClickClose()
@@ -54,5 +58,9 @@ interface MaxStateMainInfoContract {
         fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>)
         fun onDeleteFilesClick(data: FileModel)
         fun onSaveFileClick(data: MutableMap<String, Any?>)
+
+        fun onTakePhotoFromGalleryClick()
+        fun onTakePhotoFromCameraClick()
+        fun onRemovePhotoClick()
     }
 }

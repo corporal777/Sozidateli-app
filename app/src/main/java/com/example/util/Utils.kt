@@ -92,7 +92,7 @@ object Utils {
         val works = user.binds?.workExperience
         val isWork = if (works?.absent == true) false else works?.models?.isNullOrEmpty()
         return if (user.binds?.recommendationFile.isNullOrEmpty() || user.notes.isNullOrEmpty() ||
-                (isSite == true) || (isLinks == true) || isWorkPhone) MaxStateScreenType.BASE
+                (isSite == true) || (isLinks == true) || isWorkPhone || user.image?.uri.isNullOrEmpty()) MaxStateScreenType.BASE
         else if (user.interests.isNullOrEmpty()) MaxStateScreenType.INTERESTS
         else if (isWork == true) MaxStateScreenType.WORK
         else if (user.binds?.education.isNullOrEmpty()) MaxStateScreenType.EDUCATION

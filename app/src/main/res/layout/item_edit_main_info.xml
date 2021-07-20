@@ -8,6 +8,12 @@
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_last_name"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilSurname"
             style="@style/Profile.Edit.InputLayout"
@@ -29,6 +35,12 @@
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="0dp">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_name"/>
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilName"
             style="@style/Profile.Edit.InputLayout"
@@ -49,6 +61,12 @@
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
         android:layout_marginTop="0dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_middle_name"/>
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilMiddleName"
@@ -206,6 +224,12 @@
     <LinearLayout
         android:id="@+id/layEmail"
         style="@style/Profile.Edit.InputContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_email_title"/>
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilEmail"

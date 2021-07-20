@@ -53,7 +53,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
             presenter.onShowEventClick(event)
@@ -79,8 +79,9 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setData(events: List<EventNew/*Event*/?>) {
+    override fun setData(events: List<EventNew?>) {
         Log.e("EventsList", "start")
+        Log.e("EventsList", "size: "+ events.size)
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroup(
@@ -98,11 +99,10 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             )
         })
         Log.e("EventsList", "finish")
-        //TODO finished screen
         swipeToRefresh.isRefreshing = false
     }
 
-    protected open fun createEventDataListItem(event: EventNew/*Event*/): EventDataListItem {
+    protected open fun createEventDataListItem(event: EventNew): EventDataListItem {
         return EventDataListItem(
                 -event.id?.toLong()!!,
                 event.name,
@@ -117,7 +117,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
+    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
         val emailsList = emails.map {
             it.getAffiliationString(underlinedEmail = true)
         }
@@ -134,10 +134,10 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                 .show()
     }
 
-    override fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/) {
+    override fun showWriteToOrganization(email: EventPhoneModel) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value/*email.email*/))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         }
