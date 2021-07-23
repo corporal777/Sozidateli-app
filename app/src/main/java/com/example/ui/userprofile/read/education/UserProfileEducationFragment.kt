@@ -46,7 +46,7 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: UserDetail?) {
+    override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
         val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel }?.name

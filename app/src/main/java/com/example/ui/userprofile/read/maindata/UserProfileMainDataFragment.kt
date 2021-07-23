@@ -21,10 +21,7 @@ import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.suggestFieldView.DaDataUtil
-import com.example.util.ClickableSpan
-import com.example.util.GENDER_MALE
-import com.example.util.USER_DATA_EMPTY
-import com.example.util.firstLetterToUppercase
+import com.example.util.*
 import kotlinx.android.synthetic.main.fragment_user_profile_main_data.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
@@ -52,7 +49,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: UserDetail?) {
+    override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
         tvId.text = getString(R.string.profile_uid, user.id)
         val jObject = DaDataUtil.getLocationJson(requireContext())
@@ -68,6 +65,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
         tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
 
         tvGender.text = setGender(user)
+        tvStatus.text = state
 
         tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject) ?: DaDataUtil.formatParam(user.address?.country, jObject)
 
@@ -103,7 +101,8 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
     private fun setGender(user: UserDetail): String {
         return when (user.gender) {
             GENDER_MALE -> requireContext().getString(R.string.profile_gender_male)
-            else -> requireContext().getString(R.string.profile_gender_female)
+            GENDER_FEMALE -> requireContext().getString(R.string.profile_gender_female)
+            else -> ""
         }
     }
 }

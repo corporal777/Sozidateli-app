@@ -32,7 +32,7 @@ interface UserEditContract {
         fun setPersonalData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPersonalDataNew(user: UserDetail)
+        fun setPersonalDataNew(user: UserDetail, state: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContactsData(user: UserDetail)

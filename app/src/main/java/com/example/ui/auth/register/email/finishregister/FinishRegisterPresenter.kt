@@ -39,9 +39,12 @@ class FinishRegisterPresenter
 ) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager), FinishRegisterContract.Presenter {
 
     private var firstName: String? = null
+    private var defFirstName: String? = null
     private var lastName: String? = null
+    private var defLastName: String? = null
     private var email: String? = null
     private var middleName: String? = null
+    private var defMiddleName: String? = null
     var phone: String? = null
     private var isAgree: Boolean = true
     private var code: String = ""
@@ -127,8 +130,11 @@ class FinishRegisterPresenter
                                     .performOnBackgroundOutOnMain()
                                     .subscribe({
                                         firstName = it.name
+                                        defFirstName = it.name
                                         lastName = it.lastName
+                                        defLastName = it.lastName
                                         middleName = it.getMiddleName()
+                                        defMiddleName = if (middleName.isNullOrEmpty()) "" else middleName
                                         viewState.setData(
                                                 it.email?.value, it.name, it.middleName?.value,
                                                 it.lastName, it.phone?.get(0)?.value, isAgree, false
@@ -205,14 +211,23 @@ class FinishRegisterPresenter
     }
 
     override fun onHandleAuthLink() {
+
         when (loginType) {
             "phone" -> {
                 compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone?: "", phoneCode?: ""))
                         .performOnBackgroundOutOnMain()
                         .subscribe({
-                            userRepository.updateUserProfile(appData.getId(), mapOf(/*USER_EMAIL to FieldDetails(value = email, isVisible = true), */USER_NAME to firstName,
+                            userRepository.updateUserProfile(appData.getId(),
+                                    mutableMapOf<String, Any>().apply {
+                                        put(USER_PHONE, arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))
+                                        if (defFirstName != firstName) put(USER_NAME, firstName?: "")
+                                        if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
+                                        if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
+                                    }
+                                    /*mapOf(USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))))
+                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
+                            )
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)
                                     .subscribe({ viewState.openHome() }, { })
@@ -225,9 +240,17 @@ class FinishRegisterPresenter
                 userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email?: ""))
                         .performOnBackgroundOutOnMain()
                         .subscribe({
-                            userRepository.updateUserProfile(appData.getId(), mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
-                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked)/*,
-                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true))*/))
+
+                            userRepository.updateUserProfile(appData.getId(),
+                                    mutableMapOf<String, Any>().apply {
+                                        put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
+                                        if (defFirstName != firstName) put(USER_NAME, firstName?: "")
+                                        if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
+                                        if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
+                                    }
+                                   /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
+                            )
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)
                                     .subscribe({ viewState.openHome() }, { })
@@ -253,6 +276,6 @@ class FinishRegisterPresenter
     }
 
     companion object {
-        const val TIMER_SECONDS_COUNT = 180
+        const val TIMER_SECONDS_COUNT = 60
     }
 }

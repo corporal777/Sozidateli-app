@@ -748,7 +748,7 @@
     <string name="password_to_small">- Больше символов</string>
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальные символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
-    <string name="add_phone_dialog_text">Чтобы пользоваться всеми возможностями сайта, пожалуйста, введите ваш актуальный номер телефона.</string>
+    <string name="add_phone_dialog_text">Для доступа ко всем возможностям портала укажите Ваш телефон.</string>
     <string name="add_email_dialog_title">Добавьте Ваш e-mail</string>
     <string name="add_email_dialog_text">Для получения важной информации и доступа ко всем возможностям портала укажите Ваш e-mail</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>

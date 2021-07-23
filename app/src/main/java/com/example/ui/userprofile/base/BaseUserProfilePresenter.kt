@@ -34,7 +34,7 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
     }
 
     protected open fun onUserUpdated(user: UserDetail?) {
-        viewState.onUserUpdated(user)
+        viewState.onUserUpdated(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
     }
 
     protected fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)

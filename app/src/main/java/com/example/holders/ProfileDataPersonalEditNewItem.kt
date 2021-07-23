@@ -45,11 +45,14 @@ class ProfileDataPersonalEditNewItem(
         private val name: String?,
         private val surname: String?,
         private val middleName: String?,
+        private val noMiddleName: Boolean,
         private val gender: String?,
         private val birthday: String?,
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val notes: String?,
+        private val canEditName: Boolean,
+        private val state: String,
         private val fragmentManager: FragmentManager,
         private val addInfoClick:() -> Unit
 ) : Item(id) {
@@ -68,9 +71,9 @@ class ProfileDataPersonalEditNewItem(
     private var mAddress = address
     private var mNotes = notes
 
-    private var mNoMiddleNameChecked = middleName == USER_DATA_EMPTY
+    private var mNoMiddleNameChecked = noMiddleName//middleName == USER_DATA_EMPTY
 
-    private val isCanChangeName = middleName.isNullOrEmpty()
+    private val isCanChangeName = !canEditName//middleName.isNullOrEmpty()
 
     private lateinit var viewHolder: GroupieViewHolder
 
@@ -96,7 +99,7 @@ class ProfileDataPersonalEditNewItem(
                     }
                 }
             }
-
+            tvState.setText(state)
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
             tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },
@@ -216,32 +219,17 @@ class ProfileDataPersonalEditNewItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (name != mName) put(UserDetail.USER_NAME, mName)
-            if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
-            val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
-            if (this@ProfileDataPersonalEditNewItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
+            if (isCanChangeName) {
+                if (name != mName) put(UserDetail.USER_NAME, mName)
+                if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
+                val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
+                if (this@ProfileDataPersonalEditNewItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
+            }
             if (gender != mGender) put(UserDetail.USER_GENDER, getGender())
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
             if (address != mAddress) put(UserDetail.USER_ADDRESS, mAddress)
-            //if (showBirthday != mShowBirthday) put(User.FIELD_USER_BIRTHDAY_SHOW, mShowBirthday)
-            /*if (address != mAddress) {
-                put(User.FIELD_USER_ADDRESS, mAddress.address ?: "")
-                put(User.FIELD_USER_ADDRESS_INDEX, mAddress.index ?: "")
-                put(User.FIELD_USER_ADDRESS_COUNTRY, mAddress.country ?: "")
-                put(User.FIELD_USER_ADDRESS_FEDERAL, mAddress.federal ?: "")
-                put(User.FIELD_USER_ADDRESS_REGION, mAddress.region ?: "")
-                put(User.FIELD_USER_ADDRESS_AREA, mAddress.area ?: "")
-                put(User.FIELD_USER_ADDRESS_CITY, mAddress.city ?: "")
-                put(User.FIELD_USER_ADDRESS_CITY_GPS_LAT, mAddress.lat)
-                put(User.FIELD_USER_ADDRESS_CITY_GPS_LON, mAddress.lon)
-                put(User.FIELD_USER_ADDRESS_DISTRICT, mAddress.district ?: "")
-                put(User.FIELD_USER_ADDRESS_SETTLEMENT, mAddress.settlement ?: "")
-                put(User.FIELD_USER_ADDRESS_STREET, mAddress.street ?: "")
-                put(User.FIELD_USER_ADDRESS_HOUSE, mAddress.house ?: "")
-                put(User.FIELD_USER_ADDRESS_FLAT, mAddress.flat ?: "")
-            }*/
             if (notes != mNotes) put(UserDetail.USER_NOTES, mNotes)
 
         }
@@ -258,7 +246,8 @@ class ProfileDataPersonalEditNewItem(
     private fun setGender(): String {
         return when (gender) {
             GENDER_MALE -> genderMale
-            else -> genderFemale
+            GENDER_FEMALE -> genderFemale
+            else -> ""
         }
     }
 }

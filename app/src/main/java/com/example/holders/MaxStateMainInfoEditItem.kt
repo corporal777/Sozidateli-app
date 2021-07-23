@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
 import com.example.util.*
+import com.example.util.Utils.validatePhoneBeforeSend
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -300,7 +301,7 @@ class MaxStateMainInfoEditItem(
         return mutableMapOf<String, Any?>().apply {
 
             val workPhoneUpdate = if (mNoWorkPhone) null
-            else mWorkPhone.phoneToServer()
+            else validatePhoneBeforeSend(mWorkPhone.phoneToServer()?: "")
             put(UserDetail.USER_PHONE, arrayListOf(
                     FieldDetails(value = mobilePhone?.value,
                             type = PHONE_PERSONAL, isConfirmed = mobilePhone?.isConfirmed, isVisible = mobilePhone?.isVisible, absent = false),

@@ -213,7 +213,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }*/
     }
 
-    override fun setPersonalDataNew(user: UserDetail) {
+    override fun setPersonalDataNew(user: UserDetail, state: String) {
         if (isUpdateInfo) {
             val dataItem = ProfileDataPersonalEditNewItem(
                     1,
@@ -221,11 +221,14 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     user.name,
                     user.lastName,
                     user.middleName?.value,
+                    user.middleName?.absent?: true,
                     user.gender?.firstLetterToUppercase(),
                     user.birthday?.value,
                     user.birthday?.isVisible?: false,
                     DaDataUtil.formatSavedLocation(requireContext(), user.address),
                     user.notes,
+                    user.state?.nameEdited?: false,
+                    state,
                     childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
 
             val files = ProfileDataAdditionalFilesEditNewGroup(

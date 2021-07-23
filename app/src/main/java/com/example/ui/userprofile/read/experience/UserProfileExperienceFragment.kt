@@ -45,7 +45,7 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
 
-    override fun onUserUpdated(user: UserDetail?) {
+    override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
         val work = user.binds?.workExperience?.models ?: emptyList()

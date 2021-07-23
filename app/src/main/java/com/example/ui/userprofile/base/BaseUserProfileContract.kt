@@ -10,7 +10,7 @@ interface BaseUserProfileContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndStrategy::class)
-        fun onUserUpdated(user: UserDetail?)
+        fun onUserUpdated(user: UserDetail?, state: String)
     }
 
     interface Presenter : BaseContract.Presenter

@@ -44,7 +44,7 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
         btnExperience.setOnClickListener(presenter::onExperienceClick)
     }
 
-    override fun onUserUpdated(user: UserDetail?) {
+    override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
         ivAvatar.apply {
             val avatarUrl = user.image?.uri?.takeIf { it.isNotBlank() }

@@ -70,13 +70,13 @@ class UserEditPresenter
                                         if (add.data?.isNotEmpty() == true)
                                             user.address?.shortAddres = add.data[0].region
                                         //if (BuildConfig.NEW_PROFILE_EDIT) {
-                                            setPersonalDataNew(user)
+                                            setPersonalDataNew(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
                                         /*} else {
                                             setPersonalData(user)
                                         }*/
                                     }, {
                                         //if (BuildConfig.NEW_PROFILE_EDIT) {
-                                            setPersonalDataNew(user)
+                                            setPersonalDataNew(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
                                         /*} else {
                                             setPersonalData(user)
                                         }*/

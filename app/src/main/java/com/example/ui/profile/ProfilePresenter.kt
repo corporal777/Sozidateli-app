@@ -5,6 +5,7 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
+import com.example.data.models.FieldDetails
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -124,6 +125,9 @@ class ProfilePresenter
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.hideDialogProgress()
+                    appData.updateUserNew {
+                        this.email = FieldDetails(email, null, true, false, false, null)
+                    }
                     viewState.emailSuccess()
                 }, {
                     viewState.hideDialogProgress()

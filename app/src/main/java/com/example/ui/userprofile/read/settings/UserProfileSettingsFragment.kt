@@ -97,7 +97,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         dialog.hideDialog()
     }
 
-    override fun onUserUpdated(user: UserDetail?) {
+    override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
         val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())

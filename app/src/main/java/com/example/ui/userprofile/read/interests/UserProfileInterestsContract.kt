@@ -13,7 +13,7 @@ import com.example.ui.userprofile.base.BaseUserProfileContract
 interface UserProfileInterestsContract {
     interface View : BaseUserProfileContract.View {
 
-        override fun onUserUpdated(user: UserDetail?) = Unit
+        override fun onUserUpdated(user: UserDetail?, state: String) = Unit
 
         @StateStrategyType(AddToEndStrategy::class)
         fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>)

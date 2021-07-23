@@ -469,10 +469,22 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    userRepository.getUserShortData() .performOnBackgroundOutOnMain().subscribe()
+                    userRepository.getUserShortData()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                appData.updateUserNew {
+                                    this.email = it.email
+                                }
+                            },{})
                     viewState.showDialogChangeEmailSuccess()
                 }, {
-                    userRepository.getUserShortData() .performOnBackgroundOutOnMain().subscribe()
+                    userRepository.getUserShortData()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                appData.updateUserNew {
+                                    this.email = it.email
+                                }
+                            },{})
                     viewState.showDialogChangeEmailError()
                 })
                 .call(compositeDisposable)

@@ -178,7 +178,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
             }
         } else {
             if (!presenter.isUpdatePhoto)
-                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+                findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen))
             presenter.isUpdatePhoto = false
         }
         buttonNextEnabled(isFilesValid)
@@ -285,7 +285,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                         }
                     }
             else ->
-                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+                findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen))
         }
     }
 
