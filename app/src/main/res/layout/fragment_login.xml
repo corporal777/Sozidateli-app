@@ -117,6 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:visibility="gone"
             android:background="?attr/selectableItemBackground"
             android:minHeight="24dp"
             android:text="@string/auth_forgot_password"

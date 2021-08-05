@@ -799,4 +799,5 @@
     <string name="warning_dialog_text">Вы хотите удалить важную информацию. Это приведет к понижению статуса и ограничению Ваших возможностей на портале.</string>
     <string name="edit_status_description">Для совершения данного действия Вам необходимо повысить статус.</string>
     <string name="profile_photo">Фотография профиля</string>
+    <string name="auth_action_registered">Я уже зарегистрирован</string>
 </resources>

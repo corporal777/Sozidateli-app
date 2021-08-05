@@ -68,6 +68,8 @@ import javax.inject.Provider
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
+    private var ignoreDeeplink = false
+
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
@@ -225,7 +227,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     if (userId != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
-                } else if (changeEmail != null && authCode != null) {
+                } else if (changeEmail != null && authCode != null && lastPath != PGRF) {
                     if (lastPath == REGISTER_CONFIRM) {
                         showFinishRegister("", "", "", "", email?: "", authCode, false, false, true)
                         //presenter.onHandleAuthLink(email?: "", authCode?: "")
@@ -243,7 +245,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
                     presenter.onInviteRegister(json["email"].toString(), authCode?: "", if (json["name"].toString() != "null") json["name"].toString() else "",
-                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "", if (json["middleName"].toString() != "null") json["middleName"].toString() else "")
+                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "", if (json["middleName"].toString() != "null") json["middleName"].toString() else "", 0)
+                } else if (lastPath == PGRF) {
+                    val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
+                    val text = String(base, StandardCharsets.UTF_8)
+                    val json = JSONObject(text)
+                    val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
+                    if (!ignoreDeeplink)
+                        presenter.onInviteRegister(json["email"].toString(), authCode
+                                ?: "", if (json["name"].toString() != "null") json["name"].toString() else "",
+                                if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
+                                if (json["middleName"].toString() != "null") json["middleName"].toString() else "", invite?.toInt()
+                                ?: 0)
+                    ignoreDeeplink = false
                 }
             }
         } else {
@@ -275,9 +289,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String) {
+    fun setIgnoreDeeplink(isIgnore: Boolean) {
+        ignoreDeeplink = isIgnore
+    }
+
+    override fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int) {
         findNavController().navigate(R.id.to_invite_register, bundleOf("code" to code,
-                "email" to email, "name" to name, "lastName" to lastName, "middleName" to middleName), NavOptions.Builder()
+                "email" to email, "name" to name, "lastName" to lastName, "middleName" to middleName, "invite" to invite), NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build())
     }

@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -14,6 +16,9 @@ import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.auth.register.email.finishregister.FinishRegisterFragmentDirections
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
+import kotlinx.android.synthetic.main.fragment_finish_register.*
+import kotlinx.android.synthetic.main.fragment_finish_register.ibCancel
+import kotlinx.android.synthetic.main.fragment_invite_register.*
 import kotlinx.android.synthetic.main.fragment_invite_register.etEmail
 import kotlinx.android.synthetic.main.fragment_invite_register.etFirstName
 import kotlinx.android.synthetic.main.fragment_invite_register.etLastName
@@ -25,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_invite_register.tilEmail
 import kotlinx.android.synthetic.main.fragment_invite_register.tilFirstName
 import kotlinx.android.synthetic.main.fragment_invite_register.tilLastName
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
+import kotlinx.android.synthetic.main.fragment_register_email_new.password
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -46,7 +52,8 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
             presenter.onSaveEmailText(InviteRegisterFragmentArgs.fromBundle(it).email,
                     InviteRegisterFragmentArgs.fromBundle(it).name,
                     InviteRegisterFragmentArgs.fromBundle(it).lastName,
-                    InviteRegisterFragmentArgs.fromBundle(it).middleName)
+                    InviteRegisterFragmentArgs.fromBundle(it).middleName,
+                    InviteRegisterFragmentArgs.fromBundle(it).invite)
             presenter.onSaveCode(InviteRegisterFragmentArgs.fromBundle(it).code)
             (requireActivity() as MainActivity).setIgnoreTokenListener(true)
             presenter.getData()
@@ -100,6 +107,18 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
                     etPasswordConfirm.text?.toString(),*/
             )
         }
+        ibCancel.setOnClickListener {
+            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+            presenter.logout()
+        }
+
+        ibRegistered.setOnClickListener {
+            findNavController().navigate(InviteRegisterFragmentDirections.actionToInviteRegisterToLoginFragment().setIsRegistered(true).setInviteId(presenter.invite?: 0))
+            /*findNavController().navigate(R.id.login_fragment, bundleOf("isRegistered" to true, "inviteId" to presenter.invite),
+                    NavOptions.Builder()
+                            .setPopUpTo(R.id.main_navigation, true)
+                            .build())*/
+        }
 
         /*etMobilePhone.apply {
             getPhoneCallback {
@@ -122,6 +141,13 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
 
     override fun unblockTokenListener() {
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
+    }
+
+    override fun logedout() {
+        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
+        findNavController().navigate(R.id.register_email_new_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build())
     }
 
     override fun openHome() {

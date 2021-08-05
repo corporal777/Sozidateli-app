@@ -62,6 +62,15 @@
         <action
             android:id="@+id/login_to_recovery_action"
             app:destination="@id/recovery_password_fragment" />
+        <argument
+            android:name="isRegistered"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+        <argument
+            android:name="inviteId"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment
@@ -145,6 +154,14 @@
             android:name="middleName"
             app:argType="string"
             app:nullable="false" />
+        <argument
+            android:name="invite"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_to_invite_register_to_login_fragment"
+            app:destination="@id/login_fragment"
+            app:popUpTo="@id/main_navigation"/>
 
     </fragment>
 

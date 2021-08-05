@@ -36,6 +36,7 @@ class InviteRegisterPresenter
     private var lastName: String? = null
     private var middleName: String? = null
     private var email: String? = null
+    var invite: Int? = null
     private var newEmail: String? = null
     private var code: String = ""
     private var password: String? = null
@@ -65,12 +66,13 @@ class InviteRegisterPresenter
                 )
     }
 
-    override fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String) {
+    override fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String, invite: Int) {
         this.email = email
         this.newEmail = email
         this.firstName = name
         this.lastName = lastName
         this.middleName = middleName
+        this.invite = invite
         viewState.showEmailError(false)
         performDataChange()
     }
@@ -91,6 +93,12 @@ class InviteRegisterPresenter
         this.lastName = lastName
         viewState.showLastNameError(false)
         performDataChange()
+    }
+
+    override fun logout() {
+        appData.isSubscribedToPush = false
+        appData.logout()
+        viewState.logedout()
     }
 
     override fun onChangePhoneText(phone: String) {

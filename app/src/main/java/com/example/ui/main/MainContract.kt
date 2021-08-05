@@ -71,7 +71,7 @@ interface MainContract {
         fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String)
+        fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -99,6 +99,6 @@ interface MainContract {
         fun onRequestHideErrorMessage()
 
         fun onStoriesComplete()
-        fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String)
+        fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
     }
 }

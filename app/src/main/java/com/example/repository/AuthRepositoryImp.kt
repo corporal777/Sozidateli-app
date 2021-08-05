@@ -4,10 +4,7 @@ import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
-import com.example.data.bodies.AuthBody
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.RecoverPasswordBody
-import com.example.data.bodies.RegisterBody
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.UserResp
@@ -84,6 +81,9 @@ class AuthRepositoryImp
     override fun authEmailOrPhone(login: AuthBody): Completable {
         return callNewAuthCompletable(newApi.authEmailOrPhone(login))
     }
+
+    override fun authEmailOrPhoneWithResult(login: AuthBody): Single<NewAuthResponse> =
+            newApi.authEmailOrPhone(login)
 
     override fun register(body: RegisterBody): Completable {
         return newApi.registerEmail(body).doOnSuccess {
@@ -211,8 +211,7 @@ class AuthRepositoryImp
             if (token != null) {
                 appData.login(token)
             }
-        })
-                .ignoreElement()
+        }).ignoreElement()
     }
 
     override fun checkRecoveryCodeNew(type: String, code: String): Completable {
@@ -222,4 +221,10 @@ class AuthRepositoryImp
     override fun recoverPasswordNew(body: RecoverPasswordBody): Completable {
         return callNewAuthCompletable(newApi.recoverPassword(body))
     }
+
+    override fun rebaseInvite(id: Int, body: RebaseInviteBody): Completable =
+            newApi.rebaseInvite(id, body).doOnComplete {
+                appData.login(body.token)
+                appData.saveId(body.user)
+            }.doOnComplete { appData.token = body.token }
 }

@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
+import com.example.data.bodies.RebaseInviteBody
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
@@ -69,9 +70,9 @@ class LoginPresenter
         viewState.showRecoveryPassword(email)
     }
 
-    override fun onClickLogin(login: String, password: String) {
+    override fun onClickLogin(login: String, password: String, invite: Int) {
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
+        compositeDisposable += authRepository.authEmailOrPhoneWithResult(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -86,7 +87,15 @@ class LoginPresenter
                                 onReceiveError(it)
                             }
                         },
-                        onComplete = {
+                        onSuccess = {
+                            if (invite != -1)
+                                compositeDisposable += authRepository.rebaseInvite(invite, RebaseInviteBody(it.id?: 0, it.token?: ""))
+                                        .withCheckInternetConnectivity()
+                                        .performOnBackgroundOutOnMain()
+                                        .subscribeSimple(
+                                                onError = {},
+                                                onComplete = {}
+                                        )
                             // do nothing
                         }
                 )

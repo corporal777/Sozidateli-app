@@ -59,6 +59,9 @@ interface InviteRegisterContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun blockTokenListener()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun logedout()
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -78,7 +81,7 @@ interface InviteRegisterContract {
         fun onNoMiddleNameChecked(checked: Boolean)
         fun onAgreeChecked(checked: Boolean)
 
-        fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String)
+        fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String, invite: Int)
         fun onChangeEmailText(email: String)
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)
@@ -88,5 +91,6 @@ interface InviteRegisterContract {
         fun onChangePhoneText(phone: String)
         fun onPhoneConfirmClick()
         fun getData()
+        fun logout()
     }
 }

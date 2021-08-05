@@ -314,5 +314,45 @@
             app:layout_constraintBottom_toTopOf="@+id/ibCancel"
             app:layout_goneMarginBottom="24dp" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/ibCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_button_cancel"
+            android:minHeight="@dimen/auth_button_min_height"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/event_calendar_add_to_schedule_text_disabled"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ibRegistered"
+            app:layout_constraintTop_toBottomOf="@+id/ibRegister"
+            app:layout_goneMarginBottom="24dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/ibRegistered"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_button_registered"
+            android:minHeight="@dimen/auth_button_min_height"
+            android:text="@string/auth_action_registered"
+            android:textAllCaps="false"
+            android:textColor="@color/action_button_enabled_background_color"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ibRegister"
+            app:layout_goneMarginBottom="24dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

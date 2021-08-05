@@ -39,7 +39,7 @@ interface LoginContract {
         fun onClickBack()
         fun onChangeLoginText(login: String, context: Context)
         fun onChangePasswordText(password: String, context: Context)
-        fun onClickLogin(login: String, password: String)
+        fun onClickLogin(login: String, password: String, invite: Int)
         fun onClickRecoverPassword()
     }
 }

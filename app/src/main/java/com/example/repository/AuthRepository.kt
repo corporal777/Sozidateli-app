@@ -1,9 +1,6 @@
 package com.example.repository
 
-import com.example.data.bodies.AuthBody
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.RecoverPasswordBody
-import com.example.data.bodies.RegisterBody
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.UserResp
@@ -21,6 +18,7 @@ interface AuthRepository {
     fun confirmEmailSocialNetwork(id: String, code: String): Completable
 
     fun authEmailOrPhone(login: AuthBody): Completable
+    fun authEmailOrPhoneWithResult(login: AuthBody):Single<NewAuthResponse>
     fun register(body: RegisterBody): Completable
     /*fun registerConfirm(email: String, code: String, name: String,lastName: String,
                         middleName: String?, phone: String?, newEmail: String? = null, password: String? = null): Completable*/
@@ -41,4 +39,5 @@ interface AuthRepository {
     //fun registerData(email: String, code: String): Single<UserResp>
     fun checkRecoveryCodeNew(type: String, code: String): Completable
     fun recoverPasswordNew(body: RecoverPasswordBody): Completable
+    fun rebaseInvite(id: Int, body: RebaseInviteBody): Completable
 }

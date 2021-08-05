@@ -404,8 +404,8 @@ class MainPresenter
         //viewState.showEvent(event)
     }
 
-    override fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String) {
-        viewState.showInviteRegister(email, code, name, lastName, middleName)
+    override fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int) {
+        viewState.showInviteRegister(email, code, name, lastName, middleName, invite)
     }
 
     override fun onHandleAuthLink(emaill: String, code: String) {

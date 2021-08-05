@@ -259,4 +259,7 @@ interface NewApi {
 
     @PATCH("v1/event-member/{id}/cancel")
     fun cancelEvMember(@Path("id") evMemberId: String, @Body body: CancelBody): Completable
+
+    @PATCH("v1/user-external-invite/pgrf/{id}/rebase")
+    fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody): Completable
 }

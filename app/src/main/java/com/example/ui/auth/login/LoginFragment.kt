@@ -1,24 +1,27 @@
 package com.example.ui.auth.login
 
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
-import com.example.ui.auth.authorization.AuthorizationFragmentDirections
-import com.example.ui.auth.register.email.finishregister.FinishRegisterFragmentDirections
 import com.example.ui.base.BaseFragment
+import com.example.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class LoginFragment : BaseFragment(), LoginContract.View {
+
+    private var isRegister = false
+    private var invite: Int? = null
 
     @InjectPresenter
     lateinit var presenter: LoginPresenter
@@ -27,10 +30,18 @@ class LoginFragment : BaseFragment(), LoginContract.View {
     lateinit var presenterProvider: Provider<LoginPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): LoginPresenter = presenterProvider.get()
+    fun providePresenter(): LoginPresenter = presenterProvider.get().apply {
+        args.apply {
+            isRegister = isRegistered
+            invite = inviteId
+        }
+    }
+
+    private val args: LoginFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btnForgotPassword.isVisible = !isRegister
         etLogin.apply {
             /*addTextChangedListener(PhoneNumberFormattingTextWatcher())
             onTextChanged { it?.toString()?.let { text -> presenter.onChangeLoginText(text) } }*/
@@ -40,8 +51,9 @@ class LoginFragment : BaseFragment(), LoginContract.View {
 
         btnForgotPassword.setOnClickListener { presenter.onClickRecoverPassword() }
         ibLogin.setOnClickListener {
+            if (invite != -1) (requireActivity() as MainActivity).setIgnoreDeeplink(true)
             presenter.onClickLogin(etLogin.text?.toString() ?: "", etPassword.text?.toString()
-                    ?: "")
+                    ?: "", invite?: -1)
         }
         ibVk.setOnClickListener { presenter.authVk() }
         ibFacebook.setOnClickListener { presenter.authFb() }
