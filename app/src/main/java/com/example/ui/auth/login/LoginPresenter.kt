@@ -72,33 +72,55 @@ class LoginPresenter
 
     override fun onClickLogin(login: String, password: String, invite: Int) {
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-        compositeDisposable += authRepository.authEmailOrPhoneWithResult(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            val hasApiError = (it as? ApiError)
-                                    ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+        if (invite != -1) {
+            compositeDisposable += authRepository.authEmailOrPhoneWithResult(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
+                    .withCheckInternetConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple(
+                            onError = {
+                                val hasApiError = (it as? ApiError)
+                                        ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
 
-                            if (hasApiError == true) {
-                                viewState.showWrongPasswordError()
-                            } else {
-                                onReceiveError(it)
-                            }
-                        },
-                        onSuccess = {
-                            if (invite != -1)
-                                compositeDisposable += authRepository.rebaseInvite(invite, RebaseInviteBody(it.id?: 0, it.token?: ""))
+                                if (hasApiError == true) {
+                                    viewState.showWrongPasswordError()
+                                } else {
+                                    onReceiveError(it)
+                                }
+                            },
+                            onSuccess = {
+                                compositeDisposable += authRepository.rebaseInvite(invite, RebaseInviteBody(it.id
+                                        ?: 0, it.token ?: ""))
                                         .withCheckInternetConnectivity()
                                         .performOnBackgroundOutOnMain()
                                         .subscribeSimple(
                                                 onError = {},
                                                 onComplete = {}
                                         )
-                            // do nothing
-                        }
-                )
+                                // do nothing
+                            }
+                    )
+        } else {
+            compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
+                    .withCheckInternetConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple(
+                            onError = {
+                                val hasApiError = (it as? ApiError)
+                                        ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+
+                                if (hasApiError == true) {
+                                    viewState.showWrongPasswordError()
+                                } else {
+                                    onReceiveError(it)
+                                }
+                            },
+                            onComplete = {
+                                // do nothing
+                            }
+                    )
+        }
     }
 
     private fun performDataChange(context: Context) {

@@ -18,9 +18,10 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_sub_event.*
 
 open class SubEventItem(
-        private val subEvent: /*SubEvent*/EventActivityModel,
+        private val subEvent: EventActivityModel,
         private val mode: Mode,
-        clickListener: OnSubEventClickListener
+        clickListener: OnSubEventClickListener,
+        private val canDoActions: Boolean = true
 ) : Item(subEvent.id?.toLong()?: 0) {
 
     private val clickListener by weak(clickListener)
@@ -44,7 +45,7 @@ open class SubEventItem(
                                 else onAddToScheduleClick(subEvent)
                             }
                         }
-                        isInvisible = false
+                        isInvisible = !canDoActions
                     }
 
                     btnSubscribe.isInvisible = true
@@ -60,7 +61,11 @@ open class SubEventItem(
                 }
             }
 
-            root.setOnClickListener { clickListener?.onSubEventClick(subEvent) }
+            root.setOnClickListener {
+                if (canDoActions) {
+                    clickListener?.onSubEventClick(subEvent)
+                }
+            }
 
             tagGroup.apply {
                 val createChip: (Tags) -> CompoundButton = {
@@ -93,9 +98,9 @@ open class SubEventItem(
     }
 
     interface OnSubEventClickListener {
-        fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel)
-        fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
-        fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
-        fun onChangeFavoriteClick(subEvent: /*SubEvent*/EventActivityModel)
+        fun onSubEventClick(subEvent: EventActivityModel)
+        fun onAddToScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
+        fun onChangeFavoriteClick(subEvent: EventActivityModel)
     }
 }

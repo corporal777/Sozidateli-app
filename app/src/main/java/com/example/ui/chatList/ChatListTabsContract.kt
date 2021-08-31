@@ -15,6 +15,9 @@ interface ChatListTabsContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setInvitesCount(count: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun showNeedMoreState()
     }
 
     interface Presenter : BaseContract.Presenter {

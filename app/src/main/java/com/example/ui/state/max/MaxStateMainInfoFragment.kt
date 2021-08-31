@@ -136,7 +136,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                         .show()
             }) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
 
-            if (!filesAddedBefore) {
+            /*if (!filesAddedBefore) {
                 isFilesValid = user.binds?.recommendationFile?.isNotEmpty()?: false
                 val files = ProfileDataAdditionalFilesEditNewGroup(
                         2,
@@ -167,7 +167,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                         presenter.updateFiles(file.toMutableList(), dataToSave)
                     }
                 }
-            } else {
+            } else {*/
                 isFilesValid = true
                 adapter.update(listOf(dataItem))
                 onSaveClick = {
@@ -175,7 +175,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                     val dataToSave = dataItem?.getDataToSave() as MutableMap
                     presenter.updateFiles(dataToSave)
                 }
-            }
+            //}
         } else {
             if (!presenter.isUpdatePhoto)
                 findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen))
@@ -201,7 +201,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
         if (user.site?.value?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
         if (user.notes.isNullOrEmpty()) isGoToNex = false
-        if (user.image.uri.isNullOrEmpty()) isGoToNex = false
+        //if (user.image.uri.isNullOrEmpty()) isGoToNex = false
         return isGoToNex
     }
 

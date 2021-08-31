@@ -476,6 +476,15 @@ class MainPresenter
                                     this.email = it.email
                                 }
                             },{})
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                if (appData.hasMaxState && appData.hasBaseState) {
+                                    viewState.showDialogHasMaxState()
+                                } else if (!appData.hasMaxState && appData.hasBaseState) {
+                                    viewState.showDialogHasBaseState()
+                                }
+                            },{})
                     viewState.showDialogChangeEmailSuccess()
                 }, {
                     userRepository.getUserShortData()
@@ -521,6 +530,24 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
+    }
+
+    override fun openPgrfFromInvite(inviteId: String) {
+        compositeDisposable += userRepository.getNotificationsList(mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 5,
+                NotificationModel.NOTIFICATION_OFFSET to 0,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_LOAD_MODEL to true,
+                NotificationModel.NOTIFICATION_SORT to "desc",
+                NotificationModel.NOTIFICATION_ENTITY_TYPE to "invitePgfr",
+                NotificationModel.NOTIFICATION_EVENT_ID to inviteId
+        ))
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    if (!it.data.isNullOrEmpty()) {
+                        viewState.showNotification(it.data[0])
+                    }
+                }
     }
 
     override fun onSetPassword(/*email: String, */code: String, password: String) {

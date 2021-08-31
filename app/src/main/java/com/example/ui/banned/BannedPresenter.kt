@@ -1,6 +1,10 @@
 package com.example.ui.banned
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.models.BannedUsersModel.Companion.BANNED_BINDS
+import com.example.data.models.BannedUsersModel.Companion.BANNED_LIMIT
+import com.example.data.models.BannedUsersModel.Companion.BANNED_OFFSET
+import com.example.data.models.BannedUsersModel.Companion.BANNED_SORT_TYPE
 import com.example.data.models.UserChat
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
@@ -22,7 +26,13 @@ class BannedPresenter
     private var firstLaunch = true
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.loadBannedList(limit, offset)
+        chatRepository.bannedList(mapOf(
+                BANNED_SORT_TYPE to "desc",
+                BANNED_LIMIT to limit,
+                BANNED_OFFSET to offset,
+                BANNED_BINDS to "user"
+        ))
+        //chatRepository.loadBannedList(limit, offset)
     }.buildList()
 
     override fun onFirstViewAttach() {
@@ -44,7 +54,7 @@ class BannedPresenter
     }
 
     override fun onUserClick(userChat: UserChat) {
-        viewState.openUserInfo(userChat.user.user_id.toString())
+        viewState.openUserInfo(userChat.user.id.toString())
     }
 
     override fun onUnblockLick(userChat: UserChat) {

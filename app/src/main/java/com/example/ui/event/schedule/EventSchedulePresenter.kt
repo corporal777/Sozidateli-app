@@ -147,13 +147,13 @@ constructor(
                 .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
-    override fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel) {
+    override fun onSubEventClick(subEvent: EventActivityModel) {
         checkInternetAndRun {
             viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
         }
     }
 
-    override fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
+    override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
                 eventRepository.addEventToCalendarWithResult(EventCalendarBody(appData.getId(),
@@ -162,7 +162,7 @@ constructor(
         )
     }
 
-    override fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel) {
+    override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
                 subEvent,
                 eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
@@ -179,6 +179,6 @@ constructor(
         userEventData.removeOnDataUpdateListener(this)
     }
 
-    abstract fun filterSubEvent(subEvent: /*SubEvent*/EventActivityModel): Boolean
+    abstract fun filterSubEvent(subEvent: EventActivityModel): Boolean
     abstract fun mustFilterTags(): Boolean
 }

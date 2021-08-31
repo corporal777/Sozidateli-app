@@ -134,6 +134,7 @@
 
     <string name="about_event_contacts">Контакты мероприятия</string>
     <string name="about_event_speakers">Спикеры мероприятия</string>
+    <string name="about_event_activities">События мероприятия</string>
     <string name="about_event_rate">Оценить мероприятие</string>
     <string name="about_event_agreement">Пользовательское соглашение</string>
     <string name="about_event_agreement_open_error">Не удалось открыть пользовательское соглашение</string>
@@ -698,7 +699,7 @@
     <string name="user_profile_delete_confirm_message">Вы действительно хотите удалить Ваш профиль?</string>
     <string name="user_profile_delete_confirm_approve">Да</string>
     <string name="user_profile_delete_confirm_decline">Нет</string>
-    <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в “Создателях”</string>
+    <string name="email_exist_error_title">Упс… Данный e-mail уже зарегистрирован в «Созидателях»</string>
     <string name="email_exist_error_text">Если это Ваш e-mail, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
     <string name="phone_exist_error_title">Упс… Данный номер телефона уже зарегистрирован в “Создателях”</string>
     <string name="phone_exist_error_text">Если это Ваш номер телефона, пожалуйста, воспользуйтесь функцией восстановления пароля</string>
@@ -759,10 +760,13 @@
     <string name="change_status_description">Повысьте статус профиля до Базового или Максимального и расширьте свои возможности на портале «Созидатели».</string>
     <string name="change_status_button">Подробнее о статусах</string>
     <string name="state">Статус</string>
+    <string name="base_state_text">Статус: Базовый</string>
+    <string name="max_state_text">Статус: Максимальный</string>
     <string name="base_state">Хочу базовый</string>
     <string name="max_state">Хочу максимальный</string>
-    <string name="base">БАЗОВЫЙ</string>
-    <string name="max">МАКСИМАЛЬНЫЙ</string>
+    <string name="about_states">О статусах</string>
+    <string name="base">Базовый</string>
+    <string name="max">Максимальный</string>
     <string name="base_first">Искать единомышленников</string>
     <string name="base_second">Первым узнавать о мероприятиях, проводимых в регионах России для сотрудников, волонтеров некоммерческих организаций и активных граждан</string>
     <string name="base_third">Знакомиться с организациями для сотрудничества, обмена опытом и участия в их работе в качестве волонтера</string>
@@ -779,7 +783,7 @@
     <string name="base_fill_fifth">Мобильный телефон</string>
     <string name="max_firth">Возможности статуса «Базовый»</string>
     <string name="max_second">Заявить о себе</string>
-    <string name="max_third">Возможность быть частью команды проекта, подаваемого на президентский грант</string>
+    <string name="max_third">Возможность быть частью команды проекта, подаваемого на грант</string>
     <string name="max_fourth">Возможность зарегистрировать аккаунт своей организации на портале Созидатели</string>
     <string name="max_fifth">Получить приглашение выступить спикером или экспертом мероприятия</string>
     <string name="max_six">Получать приоритетную техническую поддержку</string>
@@ -800,4 +804,7 @@
     <string name="edit_status_description">Для совершения данного действия Вам необходимо повысить статус.</string>
     <string name="profile_photo">Фотография профиля</string>
     <string name="auth_action_registered">Я уже зарегистрирован</string>
+    <string name="states">Статусы</string>
+    <string name="program">Программа</string>
+    <string name="all_activities">Все события</string>
 </resources>

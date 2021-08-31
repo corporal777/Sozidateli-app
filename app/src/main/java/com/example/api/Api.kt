@@ -126,7 +126,7 @@ interface Api {
     @POST("/v1/user/notifications/{id}/answer/decline")
     fun notificationsInviteDecline(@Path("id") id: Int): Maybe<ApiResponse<UnreadCountResponse>>
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("/v1/user/chat/list")
     fun chatList(@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<ChatListResponse>>
 
@@ -136,14 +136,14 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/list")
-    fun chatListBans(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_banned") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>
+    fun chatListBans(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_banned") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>*/
 
     @FormUrlEncoded
     @POST("/v1/user/chat/search")
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
-    @POST("/v1/user/chat/start/{user}")
-    fun chatStart(@Path("user") userId: String): Single<ApiResponse<ChatStartResponse>>
+    /*@POST("/v1/user/chat/start/{user}")
+    fun chatStart(@Path("user") userId: String): Single<ApiResponse<ChatStartResponse>>*/
 
     @Multipart
     @POST("/v1/user/chat/{chat}/upload")
@@ -325,11 +325,11 @@ interface Api {
     fun getUserAgreement(): Maybe<ApiResponse<Agreement>>
 
     @POST("/v1/common/formats")
-    fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>*/
+    fun getEventFormats(): Maybe<ApiResponse<List<EventFormat>>>
 
     @POST("/v1/address")
     fun getAddress(@Body body: AddressBody): Maybe<ApiResponse<List<AddressResponse>>>
 
     @GET("/v/user/profile-check")
-    fun getNotFilledFields(): Maybe<ApiResponse<List<NotFilledFields>>>
+    fun getNotFilledFields(): Maybe<ApiResponse<List<NotFilledFields>>>*/
 }

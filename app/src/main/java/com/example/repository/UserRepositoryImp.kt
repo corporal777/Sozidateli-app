@@ -34,7 +34,7 @@ class UserRepositoryImp
 
     override fun getUserShortData(): Maybe<UserDetail> =
         newApi.getUserShort(appData.getId(),
-                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights")).map { it }.doOnSuccess {
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "external-invite-pgrf")).map { it }.doOnSuccess {
             appData.setAllUserInfo(it)
         }
 
@@ -49,7 +49,7 @@ class UserRepositoryImp
         }
 
     override fun getUserByIdNew(id: String): Maybe<UserDetail> = newApi.getUserShort(id.toInt(),
-                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "userFavorite")).map { it }
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "userFavorite"/*, "chat-room-with-me"*/)).map { it }
 
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
             newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
@@ -82,9 +82,9 @@ class UserRepositoryImp
     override fun sendPhoneCode(id: Int, phone: String): Completable =
             newApi.sendPhoneCode(id, phone)
 
-    override fun getAddress(body: AddressBody): Maybe<List<AddressResponse>> =  call(api.getAddress(body)).doOnSuccess {
+    /*override fun getAddress(body: AddressBody): Maybe<List<AddressResponse>> =  call(api.getAddress(body)).doOnSuccess {
 
-    }
+    }*/
 
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
             newApi.searchAddress(query, 20)
@@ -314,9 +314,9 @@ class UserRepositoryImp
                 }
     }
 
-    override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
+    /*override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())
-    }
+    }*/
 
     override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return newApi.getUsers(map)

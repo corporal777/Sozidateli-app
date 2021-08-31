@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/selected_tabs_background" />
+            <corners android:radius="7dp" />
+        </shape>
+    </item>
+</layer-list>

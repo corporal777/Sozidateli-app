@@ -8,11 +8,10 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -22,9 +21,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -37,20 +36,20 @@ import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.profile.ProfileFragmentDirections
 import com.example.ui.splash.SplashFragment
 import com.example.ui.stories.StoriesFragment
+import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
@@ -69,6 +68,7 @@ import javax.inject.Provider
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private var ignoreDeeplink = false
+    var invite = -1
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -134,6 +134,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
+    private val backClick = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val fr = navHostFragment.childFragmentManager.fragments[0]
+            val navContr = findNavController(R.id.navHostFragment)
+            if (fr is TagsFragment) {
+                fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
+                navContr.navigateUp()
+            } else if (fr is AllActivitiesFragment) {
+                fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
+                navContr.navigateUp()
+            } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
+                finish()
+            } else navContr.navigateUp()
+        }
+    }
+
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private lateinit var inappBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -149,6 +165,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             setCustomView(ToolbarContentView(this@MainActivity), ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
         }
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
+        onBackPressedDispatcher.addCallback(this, backClick)
         subscribeOnNotificationChanel()
         inappBehavior = ScrollingChildBehavior.from(inappContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -323,6 +340,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 //        showDialog(getString(R.string.email_change_confirm_error))
     }
 
+    override fun showDialogHasMaxState() {
+        BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
+                        .setSelectCallback {}
+    }
+
+    override fun showDialogHasBaseState() {
+        BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
+                .setSelectCallback {}
+    }
+
     override fun showChat(chatId: String, userName: String) {
         findNavController().navigate(R.id.chat_fragment, bundleOf(
                 FIELD_LABEL to userName,
@@ -356,10 +383,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build())
 
     override fun showRecommendations() {
-        if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment)
+        if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment) {
             findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
                     .setPopUpTo(R.id.main_navigation, true)
                     .build())
+            if (invite != -1) {
+                presenter.openPgrfFromInvite(invite.toString())
+                invite = -1
+            }
+        }
     }
 
     override fun showEvent() = findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()

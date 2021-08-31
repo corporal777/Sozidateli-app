@@ -6,6 +6,7 @@ import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
@@ -148,12 +149,18 @@ class UserPresenter
 
     override fun onWriteMessageClick() {
         val user = profileUserData.user
-        compositeDisposable += chatRepository.startChat(user.id.toString())
+        compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.openChat(user.fullName, user.image?.uri, it.id.toString())
+                }, { it.printStackTrace() })
+        /*compositeDisposable += chatRepository.startChat(user.id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.openChat(user.fullName, user.image?.uri, it.chat_id.toString())
-                }, { it.printStackTrace() })
+                }, { it.printStackTrace() })*/
     }
 
     override fun onOrganizationClick(organization: /*Organization*/OrganizationNew) {
@@ -185,7 +192,15 @@ class UserPresenter
     }
 
     override fun onUnblockClick() {
-        compositeDisposable += chatRepository.startChat(userId)
+        compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
+                //.flatMapCompletable { chatRepository.deleteBan(it.chat_id.toString()) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
+
+        /*compositeDisposable += chatRepository.startChat(userId)
                 .flatMapCompletable { chatRepository.chatUnban(it.chat_id.toString()) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -193,7 +208,7 @@ class UserPresenter
                    // profileUserData.user.chat?.isBannedByYou = false
                     //profileUserData.user.user_banned = false
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }, { it.printStackTrace() })
+                }, { it.printStackTrace() })*/
     }
 
     override fun onBlockClick() {
@@ -201,7 +216,15 @@ class UserPresenter
     }
 
     override fun onBlockConfirm() {
-        compositeDisposable += chatRepository.startChat(userId)
+        compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
+                //.flatMapCompletable { chatRepository.chatBann(CreateChatBody(userId.toInt())) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
+
+        /*compositeDisposable += chatRepository.startChat(userId)
                 .flatMapCompletable { chatRepository.chatBan(it.chat_id.toString()) }
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -209,7 +232,7 @@ class UserPresenter
                     //profileUserData.user.chat?.isBannedByYou = true
                    // profileUserData.user.user_banned = true
                     viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }, { it.printStackTrace() })
+                }, { it.printStackTrace() })*/
     }
 
     override fun onEditMainDataClick() {

@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.FieldDetails
+import com.example.data.models.ImageModel
 import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
 import com.example.extensions.defaultDateFormatter
@@ -13,6 +14,7 @@ import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
@@ -44,14 +46,17 @@ class MainInfoEditItem(
         private val showBirthday: Boolean,
         private val canEditName: Boolean,
         private val email: FieldDetails?,
+        private val image: ImageModel,
         private val isEnableNext: (isEnable: Boolean) -> Unit,
-        private val confirmPhoneClick: (String) -> Unit
+        private val confirmPhoneClick: (String) -> Unit,
+        private val onImageClick: (canRemove: Boolean) -> Unit
 ) : Item(id) {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
     private val genderFemale = context.getString(R.string.profile_gender_female)
     private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
 
+    private var mImage = image
     private var mName = name
     private var mSurname = surname
     private var mMiddleName = middleName
@@ -82,9 +87,9 @@ class MainInfoEditItem(
                 mMiddleName = it.toString()
                 checkDataValid()
             }
-            tilEmail.initEmailInput(email?.value) {
+            /*tilEmail.initEmailInput(email?.value) {
                 checkDataValid()
-            }
+            }*/
 
             /*etEmail.apply {
                 setText(email?.value)
@@ -137,7 +142,14 @@ class MainInfoEditItem(
             }
 
             etCity.apply {
-                setTextWithoutSearch(mAddress.address)
+                val city = if (mAddress.city != null) {
+                    mAddress.city
+                } else if (mAddress.district != null) {
+                    mAddress.district
+                } else {
+                    mAddress.address
+                }
+                setTextWithoutSearch(city)
                 onDataSelectedListener = {
                     mAddress = UserAddress.fromDaDataItem(it)
                     checkDataValid()
@@ -147,7 +159,7 @@ class MainInfoEditItem(
             tvGender.apply {
                 keyListener = null
                 setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, mutableListOf(genderMale, genderFemale)))
-                mGender = setGender()
+                mGender = setGender(context)
                 initInput(mGender) {
                     mGender = it.toString()
                     checkDataValid()
@@ -166,6 +178,10 @@ class MainInfoEditItem(
                         }
                     }
                 }
+            }
+            setAvatar()
+            btnEdit.setOnClickListener {
+                onImageClick(mImage.uri != null)
             }
             updatePhoneConfirmationStatus(this)
         }
@@ -207,6 +223,19 @@ class MainInfoEditItem(
         setEndIconDrawable(0)
     }
 
+    private fun setAvatar() {
+        this.viewHolder.ivAvatar.apply {
+            val avatarUrl = mImage.uri?.takeIf { it.isNotBlank() }
+            clipToOutline = true
+            transitionName = avatarUrl
+            Picasso.get()
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.avatar_placeholder_rectangle)
+                    .error(R.drawable.avatar_placeholder_rectangle)
+                    .into(this)
+        }
+    }
+
     fun checkDataValid(): Boolean {
         var isValid = true
         if (::viewHolder.isInitialized) {
@@ -232,18 +261,19 @@ class MainInfoEditItem(
                 if (mMobilePhone.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (!AuthValidateUtil.isValidEmail(etEmail.text.toString())) {
+                if (mImage.uri.isNullOrEmpty()) isValid = false
+                /*if (!AuthValidateUtil.isValidEmail(etEmail.text.toString())) {
                     isValid = false
-                }
+                }*/
             }
         }
         isEnableNext(isValid)
         return isValid
     }
 
-    fun showConfirmEmail(): Boolean = email?.value != viewHolder.etEmail.text.toString()
+    /*fun showConfirmEmail(): Boolean = email?.value != viewHolder.etEmail.text.toString()
 
-    fun getEmail(): String = viewHolder.etEmail.text.toString()
+    fun getEmail(): String = viewHolder.etEmail.text.toString()*/
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
@@ -257,7 +287,7 @@ class MainInfoEditItem(
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
-            if (email?.value != viewHolder.etEmail.text.toString()) put(UserDetail.USER_EMAIL, FieldDetails(value = viewHolder.etEmail.text.toString(), isConfirmed = false))
+            //if (email?.value != viewHolder.etEmail.text.toString()) put(UserDetail.USER_EMAIL, FieldDetails(value = viewHolder.etEmail.text.toString(), isConfirmed = false))
             if (address != mAddress) put(UserDetail.USER_ADDRESS, mAddress)
             if (phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value != mMobilePhone) {
                 val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
@@ -274,15 +304,15 @@ class MainInfoEditItem(
     private fun getGender(): String? {
         return when (mGender) {
             genderMale -> GENDER_MALE
-            genderFemale -> GENDER_FEMALE
+            genderFemale-> GENDER_FEMALE
             else -> null
         }
     }
 
-    private fun setGender(): String {
-        return when (gender) {
-            GENDER_MALE -> genderMale
-            GENDER_FEMALE -> genderFemale
+    private fun setGender(context: Context): String {
+        return when (mGender) {
+            GENDER_MALE, context.getString(R.string.profile_gender_male) -> genderMale
+            GENDER_FEMALE, context.getString(R.string.profile_gender_female)  -> genderFemale
             else -> ""
         }
     }
@@ -291,5 +321,12 @@ class MainInfoEditItem(
         mIsPhoneConfirmed = isValid
         notifyChanged()
     }
+
+    fun setImage(image: ImageModel) {
+        mImage = image
+        checkDataValid()
+        setAvatar()
+    }
+
     override fun getLayout(): Int = R.layout.item_edit_main_info
 }

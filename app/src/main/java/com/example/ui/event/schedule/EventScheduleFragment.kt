@@ -3,12 +3,10 @@ package com.example.ui.event.schedule
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
-import com.example.data.models.SubEvent
-import com.example.data.models.Tag
+import com.example.data.models.*
 import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragment

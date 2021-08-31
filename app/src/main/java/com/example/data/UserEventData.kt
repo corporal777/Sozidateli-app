@@ -66,41 +66,24 @@ class UserEventData(
                     dataLoadingDate = it.updatedAt
                 }
                 .ignoreElement()
+    }
 
-        /*return Maybe.zip(event, formats, BiFunction<EventInfo, List<NewEventFormat>, UserEvent> { event, formats ->
+    fun loadEventData(eventId: String): Maybe<UserEvent> {
+        val event = eventRepository.getEventDetails(eventId)
+        val formats = eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
+        val eventActivities = eventRepository.getEventActivities(eventId.toInt())
+        return Maybe.zip(event, formats, eventActivities, Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
             event.event.format?.name = formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
-            val activityDates = event.event.binds?.activity?.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
-            val dates = activityDates?.map { EventDate(it.key?: "", it.value.size) }
+            val activityDates = activities.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
+            val dates = activityDates.map { EventDate(it.key ?: "", it.value.size) }
             UserEvent(event.event.id.toString(),
-                    event, EventActivity(event.event.binds?.activity?: arrayListOf(), dates?: arrayListOf(),
-                           event.event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name?: "") }?: emptyList(), arrayListOf()), System.currentTimeMillis()) })
-                .doOnSuccess { userEventDao.insert(it) }
-                .onErrorResumeNext(loadEventCache(eventId).toMaybe())
-                .doOnSuccess {
-                    val dateFormat = defaultServerDateFormatter
-                    days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
-                    userEvent = it
-                    isDataFromLocalStorage = it.isDataFromLocalStorage
-                    dataLoadingDate = it.updatedAt
-                }
-                .ignoreElement()*/
-
-
-        /*val eventInfo = eventRepository.getEventInfo(eventId)
-        val eventActivity = eventRepository.getEventActivity(eventId)
-        return Maybe.zip(eventInfo, eventActivity, BiFunction<EventInfo, EventActivity, UserEvent> { info, activity ->
-            UserEvent(eventId, info, activity, System.currentTimeMillis())
+                    event, EventActivity(activities, dates,
+                    event.event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name ?: "") }
+                            ?: emptyList(), arrayListOf()), System.currentTimeMillis())
         })
                 .doOnSuccess { userEventDao.insert(it) }
                 .onErrorResumeNext(loadEventCache(eventId).toMaybe())
-                .doOnSuccess {
-                    val dateFormat = defaultServerDateFormatter
-                    days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
-                    userEvent = it
-                    isDataFromLocalStorage = it.isDataFromLocalStorage
-                    dataLoadingDate = it.updatedAt
-                }
-                .ignoreElement()*/
+                .doOnSuccess { it }
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {
@@ -108,30 +91,9 @@ class UserEventData(
                 .doOnSuccess { it.isDataFromLocalStorage = true }
     }
 
-    private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
+    fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
         if (dates.isEmpty()) return emptyList()
         val sortedDates = dates.sorted()
-//        val firsDate = sortedDates.first().calendar()
-//        val lastDate = sortedDates.last().calendar()
-//        val inDatesCalendar = Calendar.getInstance()
-//
-//        val datesInRange = mutableListOf<EventScheduleCalendarDay>()
-//        while (firsDate.before(lastDate) || firsDate.isSameDay(lastDate)) {
-//            val dateInDates = sortedDates.find { firsDate.isSameDay(inDatesCalendar.apply { timeInMillis = it }) }
-//
-//            val eventDay = EventScheduleCalendarDay(
-//                    firsDate.timeInMillis,
-//                    firsDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-//                            ?: "",
-//                    firsDate.get(Calendar.DAY_OF_MONTH),
-//                    dateInDates != null
-//            )
-//
-//            datesInRange.add(eventDay)
-//            firsDate.add(Calendar.DATE, 1)
-//        }
-//
-//        return datesInRange
 
         return sortedDates.map {
             val cal = it.calendar()

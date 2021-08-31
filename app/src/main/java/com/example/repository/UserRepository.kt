@@ -67,7 +67,7 @@ interface UserRepository {
     fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel>
     fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
     fun deleteRecommendedFile(fileId : Int): Completable
-    fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
+    //fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
     fun deleteProfile(): Completable
     fun checkIfPasswordValid(password: String): Completable
 
@@ -79,7 +79,7 @@ interface UserRepository {
     fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel>
     fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
     fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
-    fun getNotFilledFields(): Maybe<List<NotFilledFields>>
+    //fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>

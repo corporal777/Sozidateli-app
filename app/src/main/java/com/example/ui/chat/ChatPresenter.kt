@@ -76,7 +76,7 @@ class ChatPresenter
                 .flatMapCompletable {
                     haChat.joinToRoom(chatId)
                             .andThen(
-                                    if (!it.isEventChat) haChat.addUsersToRoom(chatId, listOf(it.user.user_id.toString()))
+                                    if (!it.isEventChat) haChat.addUsersToRoom(chatId, listOf(it.user.id.toString()))
                                     else Completable.complete()
                             )
                 }
@@ -127,7 +127,7 @@ class ChatPresenter
                             }
                         }
 
-                        val avatarFromChat = it.user.user_avatar
+                        val avatarFromChat = it.user.image.uri/*user_avatar*/
                         if (userAvatar != avatarFromChat && avatarFromChat != null) {
                             userAvatar = avatarFromChat
                             setUserAvatar(avatarFromChat)
@@ -369,7 +369,7 @@ class ChatPresenter
 
     override fun onUserClick() {
         if (chat?.isEventChat != true) {
-            chat?.user?.user_id?.let { viewState.showUser(it) }
+            chat?.user?.id?.let { viewState.showUser(it) }
         } else {
             chat?.eventId?.let { viewState.showEvent(it) }
         }

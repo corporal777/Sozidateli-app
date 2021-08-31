@@ -26,7 +26,7 @@ import javax.inject.Inject
 @InjectViewState
 class RecommendationsPresenter
 @Inject constructor(
-        appData: AppData,
+        val appData: AppData,
         eventData: UserEventData,
         private val eventRepository: EventRepository,
         userRepository: UserRepository,
@@ -46,7 +46,13 @@ class RecommendationsPresenter
 
     override fun onMyEventsClick() = viewState.showMyEvents()
 
-    override fun onMenuChatClick() = viewState.showChat()
+    override fun onMenuChatClick() {
+        if (!appData.hasBaseState && !appData.hasMaxState) {
+            viewState.showNeedMoreState()
+        } else {
+            viewState.showChat()
+        }
+    }
 
     override fun onMenuAccountClick() = viewState.showAccount()
 

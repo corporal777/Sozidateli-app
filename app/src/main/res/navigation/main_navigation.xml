@@ -619,6 +619,7 @@
         <action
             android:id="@+id/notification_to_organization_fragment"
             app:destination="@id/organization_fragment" />
+
     </fragment>
 
     <fragment
@@ -880,6 +881,9 @@
         <argument
             android:name="screenType"
             app:argType="integer"/>
+        <action
+            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
+            app:destination="@id/activitiesFragment" />
     </fragment>
 
     <fragment
@@ -990,7 +994,13 @@
 
     <fragment
         android:id="@+id/event_tags_fragment"
-        android:name="com.example.ui.tags.TagsFragment" />
+        android:name="com.example.ui.tags.TagsFragment" >
+        <argument
+            android:name="tags"
+            app:argType="com.example.data.models.NewTags[]"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 
     <fragment
         android:id="@+id/favorite_subevents_fragment"
@@ -1152,5 +1162,29 @@
             app:argType="integer"
             android:defaultValue="1" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/activitiesFragment"
+        android:name="com.example.ui.event.activities.ActivitiesFragment"
+        android:label="ActivitiesFragment"
+        tools:layout="@layout/fragment_activitys">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_activitiesFragment_to_allActivitiesFragment"
+            app:destination="@id/allActivitiesFragment" />
+        <action
+            android:id="@+id/action_activitiesFragment_to_event_tags_fragment"
+            app:destination="@id/event_tags_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allActivitiesFragment"
+        android:name="com.example.ui.event.allactivities.AllActivitiesFragment"
+        android:label="AllActivitiesFragment"
+        tools:layout="@layout/fragment_activitys">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
     </fragment>
 </navigation>

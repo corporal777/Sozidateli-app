@@ -95,8 +95,12 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
         btnBaseState.isVisible = !hasBase
+        spacer.isVisible = !hasBase
         btnMaxState.isVisible = !hasMax
-        state_title.isInvisible = hasBase && hasMax
+        //state_title.isInvisible = hasBase && hasMax
+        state_title.text = if (!hasBase && !hasMax) getString(R.string.state)
+        else if (hasBase && !hasMax) getString(R.string.base_state_text)
+        else getString(R.string.max_state_text)
         btnBaseState.setOnClickListener {
             findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.BASE).setScreen(1))
         }
@@ -113,6 +117,9 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
                         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateEducationFragment().setScreen(1))
                 }
             } else findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.MAX).setScreen(1))
+        }
+        btnAboutStates.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
         }
     }
 

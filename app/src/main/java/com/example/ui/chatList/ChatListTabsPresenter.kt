@@ -23,6 +23,9 @@ class ChatListTabsPresenter
         compositeDisposable += appData.chatMessageCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
+        if (!appData.hasBaseState && !appData.hasMaxState) {
+            viewState.showNeedMoreState()
+        }
     }
 
     override fun attachView(view: ChatListTabsContract.View?) {

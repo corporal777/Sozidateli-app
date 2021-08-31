@@ -16,6 +16,8 @@ import com.example.holders.RecommendationsHeaderItem
 import com.example.holders.ScreenLabelItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
+import com.example.ui.views.ChangeStateDialog
+import com.example.ui.views.StateType
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.notifications.NotificationsView
@@ -86,6 +88,17 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
         findNavController().navigate(RecommendationsFragmentDirections.recommendationsFragmentToNotificationsFragment())
     }
 
+    var wasShow = false
+    override fun showNeedMoreState() {
+        if (!wasShow) {
+            ChangeStateDialog(requireActivity(), StateType.ERROR)
+                    .setSendCodeCallback {
+                        findNavController().navigate(R.id.userStateFragment)
+                        wasShow = true
+                    }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
         toolbarContentActionBar.apply {
@@ -94,7 +107,10 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
                 it.setOnClickListener { presenter.onMenuAccountClick() }
             })
             addRightView(ChatView(requireContext()).also {
-                it.setOnClickListener { presenter.onMenuChatClick() }
+                it.setOnClickListener {
+                    wasShow = false
+                    presenter.onMenuChatClick()
+                }
             })
             addRightView(NotificationsView(requireContext()).also {
                 it.setOnClickListener { presenter.onMenuNotificationsClick() }

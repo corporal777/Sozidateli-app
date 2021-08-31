@@ -19,7 +19,6 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnAddInfo
-import kotlinx.android.synthetic.main.item_max_state_main_info.btnEdit
 import kotlinx.android.synthetic.main.item_max_state_main_info.etNotes
 import onTextChanged
 
@@ -155,17 +154,17 @@ class MaxStateMainInfoEditItem(
                     addInfoClick()
                 }
             }
-            layPhoto.isVisible = isImageVisible
+            /*layPhoto.isVisible = isImageVisible
             if (isImageVisible) {
                 setAvatar()
                 btnEdit.setOnClickListener {
                     onImageClick(mImage.uri != null)
                 }
-            }
+            }*/
         }
     }
 
-    private fun setAvatar() {
+    /*private fun setAvatar() {
         this.viewHolder.ivAvatar.apply {
             val avatarUrl = mImage.uri?.takeIf { it.isNotBlank() }
             clipToOutline = true
@@ -176,7 +175,7 @@ class MaxStateMainInfoEditItem(
                     .error(R.drawable.avatar_placeholder_rectangle)
                     .into(this)
         }
-    }
+    }*/
 
     private fun checkPhone() {
         viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
@@ -292,7 +291,7 @@ class MaxStateMainInfoEditItem(
         if (!mNoNetworks && mSocialNetworks[0].value.isNullOrEmpty()) isValid = false
         if (!mNoSite && mSite[0].value.isNullOrEmpty()) isValid = false
         if (mNotes.isNullOrEmpty()) isValid = false
-        if (mImage.uri.isNullOrEmpty()) isValid = false
+        //if (mImage.uri.isNullOrEmpty()) isValid = false
         enableNextButton(isValid)
         return isValid
     }
@@ -326,7 +325,7 @@ class MaxStateMainInfoEditItem(
     fun setImage(image: ImageModel) {
         mImage = image
         checkDataValid()
-        setAvatar()
+        //setAvatar()
     }
 
     override fun getLayout(): Int = R.layout.item_max_state_main_info

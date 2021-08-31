@@ -28,7 +28,7 @@ class UserChatItem(
         onBind?.invoke(this)
         viewHolder.apply {
             ivAvatar.apply {
-                setCircleImage(userChat.user.user_avatar, R.drawable.avatar_placeholder)
+                setCircleImage(userChat.user.image.uri/*.user_avatar*/, R.drawable.avatar_placeholder)
             }
 
             updateBadge(viewHolder.tvBadge)
@@ -40,7 +40,7 @@ class UserChatItem(
                     Message.Type.IMAGE -> context.getString(R.string.chat_photo_message_text)
                     Message.Type.SERVICE -> {
                         if (userChat.lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
-                            if (userChat.lastMessageSender == userChat.user.user_id) context.getString(R.string.chat_accepted)
+                            if (userChat.lastMessageSender == userChat.user.id) context.getString(R.string.chat_accepted)
                             else context.getString(R.string.chat_accept_by_me)
                         } else ""
                     }

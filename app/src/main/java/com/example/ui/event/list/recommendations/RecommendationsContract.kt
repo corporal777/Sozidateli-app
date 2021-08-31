@@ -1,5 +1,6 @@
 package com.example.ui.event.list.recommendations
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.event.list.EventListContract
@@ -23,6 +24,9 @@ interface RecommendationsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNotifications()
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun showNeedMoreState()
     }
 
     interface Presenter : EventListContract.Presenter {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -12,6 +13,8 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
+import com.example.ui.views.ChangeStateDialog
+import com.example.ui.views.StateType
 import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -81,6 +84,13 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
 
     override fun setChatsCount(count: Int) {
         tvChatsBadge.isVisible = count > 0
+    }
+
+    override fun showNeedMoreState() {
+        ChangeStateDialog(requireActivity(), StateType.ERROR)
+                .setSendCodeCallback {
+                    findNavController().navigate(R.id.userStateFragment)
+                }
     }
 
     override fun layout() = R.layout.fragment_chat_list_tabs

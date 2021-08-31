@@ -18,6 +18,8 @@ import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.activities.ActivitiesFragment
+import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
@@ -302,4 +304,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMaxStateEducationFragment(): MaxStateEducationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeActivitiesFragment(): ActivitiesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAllActivitiesFragment(): AllActivitiesFragment
 }

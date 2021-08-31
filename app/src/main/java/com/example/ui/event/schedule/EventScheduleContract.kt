@@ -26,7 +26,7 @@ interface EventScheduleContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: List</*SubEvent*/EventActivityModel>, selectedTags: List<Tag>)
+        fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
@@ -56,7 +56,7 @@ interface EventScheduleContract {
         fun showAllTags()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubevent(subEvent: /*SubEvent*/EventActivityModel)
+        fun updateSubevent(subEvent: EventActivityModel)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -64,9 +64,9 @@ interface EventScheduleContract {
         fun onTagSelectedListChange()
         fun onDayChanged(date: Long)
 
-        fun onSubEventClick(subEvent: /*SubEvent*/EventActivityModel)
-        fun onAddToScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
-        fun onRemoveFromScheduleClick(subEvent: /*SubEvent*/EventActivityModel)
+        fun onSubEventClick(subEvent: EventActivityModel)
+        fun onAddToScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
 
         fun onShowAllTagsClick()
     }

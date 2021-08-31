@@ -26,7 +26,10 @@ data class NotificationModel (
                 const val NOTIFICATION_TYPE_EVENT = "event"
                 const val NOTIFICATION_TYPE_EVENT_ACTIVITY = "eventActivity"
                 const val NOTIFICATION_TYPE_EVENT_MEMBER = "eventMember"
-        }
+                const val NOTIFICATION_SORT = "sortType"
+                const val NOTIFICATION_ENTITY_TYPE = "entityType"
+                const val NOTIFICATION_EVENT_ID = "entityId"
+         }
 }
 
 data class NotificationEntityModel(
@@ -35,7 +38,7 @@ data class NotificationEntityModel(
     val model: NotificationEntityModelModel? = null
 )
 
-@Parcelize
+
 data class NotificationEntityModelModel(
         val id: Int? = null,
         @SerializedName("createdDate")
@@ -48,7 +51,14 @@ data class NotificationEntityModelModel(
         val description: String? = null,
         @SerializedName("holdingDate")
         val holdingDate: DateModel? = null,
-        val status: NotificationStatusModel/*Event.Status*/? = null
+        val status: /*NotificationStatusModel*/Any? = null,
+        val project: ProjectObject? = null,
+        val state: Any? = null
+)
+@Parcelize
+data class ProjectObject(
+        val name: String? = null,
+        val id: String? = null
 ): Parcelable
 
 @Parcelize

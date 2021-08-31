@@ -103,7 +103,27 @@ data class UserBinds(
         @SerializedName("userOrganizationRights")
         val userOrganizationRights: List<UserOrganizationRights>? = null,
         @SerializedName("userFavorite")
-        var userFavorite: EventUserFavorite? = null
+        var userFavorite: EventUserFavorite? = null,
+        @SerializedName("external-invite-pgrf")
+        var externalInvitePgrf: List<ExternalInvitePgrfModel>? = null
+): Parcelable
+
+@Parcelize
+data class ExternalInvitePgrfModel(
+        val id: Int,
+        val user: Int,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
+        val role: String? = null,
+        @SerializedName("isChief")
+        val isChief: Boolean,
+        @SerializedName("isAssistant")
+        val isAssistant: Boolean,
+        val project: ProjectObject? = null,
+        val organization: ProjectObject? = null,
+        val competition: ProjectObject? = null,
+        val state: String? = null,
+        val callback: String? = null
 ): Parcelable
 
 @Parcelize

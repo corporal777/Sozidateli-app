@@ -4,6 +4,8 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
+import com.example.data.models.FieldDetails
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -15,7 +17,8 @@ import javax.inject.Inject
 class MaxStateEducationPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val authRepository: AuthRepository
 ): BasePresenter<MaxStateEducationContract.View>(), MaxStateEducationContract.Presenter {
 
     var screen: Int = 1
@@ -55,6 +58,21 @@ class MaxStateEducationPresenter
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)
+                })
+    }
+
+    fun getEmail() = appData.getUserNew().email
+
+    override fun sendEmail(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.updateUserNew {
+                        this.email = FieldDetails(email, null, true, false, false, null)
+                    }
+                    viewState.showChangeEmailComplete(email)
+                }, {
+                    it.printStackTrace()
                 })
     }
 }

@@ -34,6 +34,7 @@ class LoginFragment : BaseFragment(), LoginContract.View {
         args.apply {
             isRegister = isRegistered
             invite = inviteId
+            (requireActivity() as MainActivity).invite = inviteId
         }
     }
 

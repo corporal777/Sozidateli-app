@@ -77,4 +77,5 @@ interface EventRepository {
     fun getUserCalendarEvent( entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
     fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>>
     fun getEventActivityDetail(activityId: String): Single<EventActivityModel>
+    fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>>
 }

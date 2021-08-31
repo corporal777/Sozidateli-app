@@ -1,5 +1,6 @@
 package com.example.ui.eventTabs
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
@@ -104,6 +105,9 @@ class EventTabsPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
+                        onError = {
+                            Log.ERROR
+                        },
                         onComplete = {
                             eventData.clear()
                             viewState.showEventList()

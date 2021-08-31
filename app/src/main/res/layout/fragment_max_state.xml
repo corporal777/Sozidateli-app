@@ -12,28 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnBaseState"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/badge_attention_low"
-                android:minHeight="38dp"
-                android:paddingStart="20dp"
-                android:textColor="@android:color/white"
-                android:paddingEnd="20dp"
-                android:text="@string/max"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
             <LinearLayout
                 android:id="@+id/tv_first"
                 android:layout_width="match_parent"
@@ -43,7 +21,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnBaseState">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -254,7 +232,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/tv_fill_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -285,7 +263,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/tv_fill_third"
@@ -296,7 +274,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fill_second">
+                app:layout_constraintTop_toBottomOf="@+id/tv_fill_first">
 
                 <ImageView
                     android:layout_width="28dp"

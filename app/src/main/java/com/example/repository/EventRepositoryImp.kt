@@ -390,4 +390,7 @@ class EventRepositoryImp
 
     override fun getEventActivityDetail(activityId: String): Single<EventActivityModel> =
             newApi.getEventActivity(activityId, "event,member,auditorium,tag,userCalendar,member.user.userFavorite,member.user,userFavorite")
+
+    override fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>> =
+        newApi.getTags(map).map { it.data }
 }

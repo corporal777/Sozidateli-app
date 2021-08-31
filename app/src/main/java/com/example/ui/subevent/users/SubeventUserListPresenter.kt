@@ -1,6 +1,7 @@
 package com.example.ui.subevent.users
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.bodies.CreateChatBody
 import com.example.data.models.user.User
 import com.example.extensions.build
 import com.example.holders.UserItem
@@ -43,11 +44,16 @@ class SubeventUserListPresenter @Inject constructor(
     }
 
     override fun onUserClick(user: User) {
-        compositeDisposable += chatRepository.startChat(user.user_id.toString())
+        compositeDisposable += chatRepository.createChat(CreateChatBody(user.user_id))
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ viewState.openChat(user.fullName, user.user_avatar, it.id.toString()) }, {})
+
+        /*compositeDisposable += chatRepository.startChat(user.user_id.toString())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
                     viewState.openChat(user.fullName, user.user_avatar, it.chat_id.toString())
-                }, { it.printStackTrace() })
+                }, { it.printStackTrace() })*/
     }
 }

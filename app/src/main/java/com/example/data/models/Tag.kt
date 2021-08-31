@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
 sealed class Tag(
@@ -31,3 +33,6 @@ sealed class Tag(
         return result
     }
 }
+
+@Parcelize
+data class NewTags(val id: String, val name: String, val isSelected: Boolean): Parcelable

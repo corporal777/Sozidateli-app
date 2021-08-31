@@ -218,4 +218,7 @@
     <color name="profile_edit_button_text_disabled">#FFFFFF</color>
     <color name="profile_edit_button_text_enabled">#000000</color>
     <color name="dialog_buttons">#007AFF</color>
+    <color name="tabs_background">#1F767680</color>
+    <color name="selected_tabs_background">#74B12A</color>
+    <color name="divider_color">#E6E4EA</color>
 </resources>

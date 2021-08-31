@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/layPhoto"
         style="@style/Profile.Edit.InputContainer">
 
@@ -51,7 +51,7 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/layWorkPhone"

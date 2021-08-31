@@ -61,22 +61,22 @@ class NotificationPresenter
     }
 
     override fun onNotificationAcceptClick() {
-        compositeDisposable += userRepository.getNotFilledFields()
+        compositeDisposable += userRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({
-                    val fields = it.filter { f -> f.filled == false }
-                    if (fields.isEmpty()) {
+                    val fields = it.fields?.filter { f -> f.filled == false }
+                    if (fields?.isEmpty() == true) {
                         //updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
                         when (notification.notificationMainType) {
-                            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.id)
-                            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.id)
-                            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.id)
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.entity?.id?:0)
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.entity?.id?:0)
+                            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.entity?.id?:0)
                         }
                     }
                     else {
                         val errors = mutableListOf<String>()
-                        fields.forEach { f -> errors.add("-" + f.title) }
+                        fields?.forEach { f -> errors.add("-" + f.name) }
                         viewState.showErrorDialog(errors, notification.project_name?: "")
                     }
                 }, { it.printStackTrace() })

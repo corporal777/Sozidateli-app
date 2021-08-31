@@ -104,12 +104,12 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentFragmentManager.setFragmentResultListener(FILE_EDIT_CODE, this,
-                FragmentResultListener { requestKey, result ->
+                { requestKey, result ->
                     val file = result.getParcelable<RecommendationFile>(FILE_PATH)
                     presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
                 })
         parentFragmentManager.setFragmentResultListener(DEGREE_EDIT_CODE, this,
-                FragmentResultListener { requestKey, result ->
+                { requestKey, result ->
                     val degreesLevel = result.getString(DEGREES_LEVEL)
                     val sciencesLevel = result.getString(SCIENCES_LEVEL)
                     val position = result.getInt(ITEM_POSITION)

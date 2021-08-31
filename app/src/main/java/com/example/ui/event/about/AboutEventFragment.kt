@@ -217,6 +217,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         false
                 ),
                 Section().apply {
+                    //TODO add checking field hide for activities
+                    if (!eventData?.binds?.activity.isNullOrEmpty()) add(EventPageItem(-90, getString(R.string.about_event_activities)) {
+                        findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToActivitiesFragment(eventData?.id?:0))
+                    })
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
                     add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
 

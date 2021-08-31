@@ -2,22 +2,23 @@ package com.example.ui.state
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.MarginPageTransformer
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.state.base.MainInfoFragmentDirections
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.util.Utils
-import kotlinx.android.synthetic.main.fragment_register_email.ivClose
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_user_state.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment: BaseFragment(), UserStateContract.View {
+class UserStateFragment: BaseFragment(), UserStateContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -30,10 +31,16 @@ class UserStateFragment: BaseFragment(), UserStateContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ivClose.setOnClickListener { presenter.onClickClose() }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                presenter.onClickClose()
+            }
+        })
+        //ivClose.setOnClickListener { presenter.onClickClose() }
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {
+        val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
             when (it) {
                 UserState.BASE ->
@@ -56,14 +63,27 @@ class UserStateFragment: BaseFragment(), UserStateContract.View {
             }
         }
         adapter.submitList(states)
-        viewPager.clipToPadding = false
+        /*viewPager.clipToPadding = false
         viewPager.setPadding(50, 0, 50, 0)
         viewPager.setPageTransformer(MarginPageTransformer(20))
         viewPager.offscreenPageLimit = 3
-        viewPager.clipChildren = false
+        viewPager.clipChildren = false*/
         viewPager.adapter = adapter
+        TabLayoutMediator(tabs, viewPager) { tab, position ->
+            tab.text = tabsList[position]
+        }.attach()
+        for (tabIndex in 0 until tabs.tabCount) {
+            val tabTextView =
+                    ((tabs.getChildAt(0) as LinearLayout).getChildAt(tabIndex) as LinearLayout).getChildAt(
+                            1
+                    ) as TextView
+            tabTextView.isAllCaps = false
+        }
     }
 
     override fun layout(): Int = R.layout.fragment_user_state
+
+    override val title: CharSequence?
+        get() = getString(R.string.states)
 
 }

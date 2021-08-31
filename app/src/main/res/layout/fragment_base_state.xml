@@ -12,27 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnBaseState"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/action_button_change_screen_background"
-                android:minHeight="38dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/base"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
             <LinearLayout
                 android:id="@+id/tv_first"
                 android:layout_width="match_parent"
@@ -42,7 +21,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnBaseState">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -312,7 +291,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/tv_fill_second"
+                android:id="@+id/tv_fill_secondd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -321,6 +300,39 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_first">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/orange_circle"
+                    app:srcCompat="@drawable/ic_add_sn"
+                    android:layout_marginStart="10dp"
+                    android:padding="7dp"
+                    android:layout_marginTop="2dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="@string/max_fill_second"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tv_fill_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="25dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_fill_secondd">
 
                 <ImageView
                     android:layout_width="28dp"

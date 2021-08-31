@@ -3,11 +3,18 @@ package com.example.ui.state.base
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.FieldDetails
+import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
 import com.example.util.AuthValidateUtil
+import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.rxtakephoto.ResultRotation
+import com.example.util.rxtakephoto.RxTakePhoto
+import com.isseiaoki.simplecropview.CropImageView
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -18,11 +25,15 @@ import javax.inject.Inject
 class MainInfoPresenter
 @Inject constructor(
         private val appData: AppData,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val authRepository: AuthRepository,
+        private val takePhoto: RxTakePhoto
 ): BasePresenter<MainInfoContract.View>(), MainInfoContract.Presenter {
 
     lateinit var type: UserState
     var screen: Int = 1
+    var isUpdatePhoto = false
+    var isImageUpdating = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -36,9 +47,11 @@ class MainInfoPresenter
                                 .subscribe({ add ->
                                     if (add.data?.isNotEmpty() == true)
                                         user.address?.shortAddres = add.data[0].region
-                                    setPersonalData(user)
+                                    if (!isImageUpdating) setPersonalData(user)
+                                    isImageUpdating = false
                                 }, {
-                                    setPersonalData(user)
+                                    if (!isImageUpdating) setPersonalData(user)
+                                    isImageUpdating = false
                                 })
                     }
                 }, {
@@ -107,6 +120,21 @@ class MainInfoPresenter
                 })
     }
 
+    override fun sendEmail(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.updateUserNew {
+                        this.email = FieldDetails(email, null, true, false, false, null)
+                    }
+                    viewState.showChangeEmailComplete(email)
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    fun getEmail() = appData.getUserNew().email
+
     override fun onChangeEmailClick() {
         viewState.showChangeEmail()
     }
@@ -126,4 +154,57 @@ class MainInfoPresenter
     override fun onConfirmPhoneClick(phone: String) {
         viewState.showPhoneConfirm(phone)
     }
+
+    override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
+    override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
+
+    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
+        isUpdatePhoto = true
+        isImageUpdating = true
+        compositeDisposable += takePhotoRequest
+                .firstOrError()
+                .flatMap {
+                    takePhoto.crop(
+                            resultRotation = it,
+                            outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
+                            outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
+                            cropMode = CropImageView.CropMode.SQUARE
+                    )
+                }
+                .flatMap { userRepository.changeUserImage(it) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onSuccess = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
+                            updateUserInternal {
+                                image = it
+                            }
+                            viewState.photoUpdated(it)
+                        }
+                )
+    }
+
+    override fun onRemovePhotoClick() {
+        isUpdatePhoto = true
+        isImageUpdating = true
+        compositeDisposable += userRepository.deleteImage()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onComplete = {
+                            compositeDisposable += userRepository.checkUserProfileSingle()
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(onSuccess = {})
+                            updateUserInternal {
+                                image = ImageModel(null, null, null, null, null, null)
+                            }
+                            viewState.photoUpdated(ImageModel(null, null, null, null, null, null))
+                        }
+                )
+    }
+
+    private fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)
 }

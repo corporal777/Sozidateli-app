@@ -47,6 +47,12 @@ interface MainContract {
         fun showDialogChangeEmailSuccess()
 
         @StateStrategyType(SkipStrategy::class)
+        fun showDialogHasMaxState()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showDialogHasBaseState()
+
+        @StateStrategyType(SkipStrategy::class)
         fun showDialogChangeEmailError()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -100,5 +106,6 @@ interface MainContract {
 
         fun onStoriesComplete()
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
+        fun openPgrfFromInvite(inviteId: String)
     }
 }

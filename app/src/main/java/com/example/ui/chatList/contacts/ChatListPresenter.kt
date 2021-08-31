@@ -5,7 +5,13 @@ import android.util.SparseIntArray
 import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.CreateChatBody
 import com.example.data.models.ChatListDataItem
+import com.example.data.models.ChatModel.Companion.CHAT_BINDS
+import com.example.data.models.ChatModel.Companion.CHAT_INVITED_USER_STATUS
+import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
+import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
+import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
@@ -23,6 +29,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
+import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.RoomUnreadMessageCount
 import javax.inject.Inject
 
@@ -35,11 +42,24 @@ class ChatListPresenter
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.loadChatList(limit, offset).map { response ->
+        chatRepository.getChats(
+                mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
+                        CHAT_BINDS to "users,event", CHAT_INVITED_USER_STATUS to "accepted")
+        ).map { response ->
+            val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.get(0)!!,
+            it.createdDate?: "", it.binds?.lastUnreadMessage?.message, it.binds?.lastUnreadMessage?.createdDate,
+            if (it.binds?.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                    it.binds?.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds?.lastUnreadMessage?.id.toString(),
+            false, false, false, false, false, false,
+                    it.binds?.event?.id.toString(), 0)) }
+                    //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
+            PaginationResponse(response.totalCount, items)
+        }
+        /*chatRepository.loadChatList(limit, offset).map { response ->
             val items = response.response.chats.map { ChatListDataItem.Chat(it) }
                     .plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.response_detail?.total, items)
-        }
+        }*/
     }
             .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList(enablePlaceholders = true)
@@ -110,9 +130,12 @@ class ChatListPresenter
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
 
     override fun onUserClick(uid: Int, userName: String) {
-        compositeDisposable += chatRepository.startChat(uid.toString())
+        compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
                 .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.openChat(it.chat_id, userName) }, {})
+                .subscribe({ viewState.openChat(it.id, userName) }, {})
+        /*compositeDisposable += chatRepository.startChat(uid.toString())
+                .performOnBackgroundOutOnMain()
+                .subscribe({ viewState.openChat(it.chat_id, userName) }, {})*/
     }
 
     override fun onFabAddChatClick() = viewState.openSearch()

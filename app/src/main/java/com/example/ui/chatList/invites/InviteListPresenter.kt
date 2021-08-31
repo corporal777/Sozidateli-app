@@ -3,6 +3,7 @@ package com.example.ui.chatList.invites
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
+import com.example.data.models.ChatModel
 import com.example.data.models.UserChat
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
@@ -15,6 +16,7 @@ import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
+import ru.houseofapps.chat.models.Message
 import javax.inject.Inject
 
 @InjectViewState
@@ -25,10 +27,23 @@ class InviteListPresenter
 ) : BasePresenter<InviteListContract.View>(), InviteListContract.Presenter {
 
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.loadInvitesList(limit, offset).map { response ->
+        chatRepository.getChats(
+                mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to limit, ChatModel.CHAT_OFFSET to offset,
+                        ChatModel.CHAT_BINDS to "users,event", ChatModel.CHAT_INVITED_USER_STATUS to "pending")
+        ).map { response ->
+            val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.get(0)!!,
+                    it.createdDate?: "", it.binds?.lastUnreadMessage?.message, it.binds?.lastUnreadMessage?.createdDate,
+                    if (it.binds?.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                    it.binds?.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds?.lastUnreadMessage?.id.toString(),
+                    false, false, false, false, false, false,
+                    it.binds?.event?.id.toString(), 0)) }
+                    //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
+            PaginationResponse(response.totalCount, items)
+        }
+        /*chatRepository.loadInvitesList(limit, offset).map { response ->
             response.totalCount?.let { appData.chatRequestsCount = it }
             PaginationResponse(response.totalCount, response.data.map { ChatListDataItem.Invite(it) })
-        }
+        }*/
     }.buildList()
 
     private var firstLaunch = true

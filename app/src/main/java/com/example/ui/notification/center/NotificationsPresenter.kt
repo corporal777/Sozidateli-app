@@ -39,7 +39,8 @@ class NotificationsPresenter
         userRepository.getNotificationsList(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
                 NotificationModel.NOTIFICATION_OFFSET to offset,
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_LOAD_MODEL to true))
+                NotificationModel.NOTIFICATION_LOAD_MODEL to true,
+                NotificationModel.NOTIFICATION_SORT to "desc"))
     }
             .applyErrorHandler { viewState.showRequestErrorMessage() }
             .buildList(enablePlaceholders = true)

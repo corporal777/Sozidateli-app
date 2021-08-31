@@ -362,6 +362,15 @@
                             <option name="y" value="97" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_about_event_fragment_to_activitiesFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -377,6 +386,27 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="activitiesFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="371" />
+                            <option name="y" value="-562" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_activitiesFragment_to_allActivitiesFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="agreement_fragment">
                     <value>
                       <LayoutPositions>
@@ -384,6 +414,18 @@
                           <Point>
                             <option name="x" value="12" />
                             <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="allActivitiesFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="670" />
+                            <option name="y" value="-574" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -667,8 +709,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="422" />
+                            <option name="y" value="-988" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -1523,6 +1565,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_to_invite_register_to_login_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="email_register_to_phone_confirm_fragment">
                               <value>
                                 <LayoutPositions />

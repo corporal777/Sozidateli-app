@@ -5,6 +5,7 @@ import android.widget.Button
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -25,7 +26,13 @@ class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
     lateinit var presenterProvider: Provider<TagsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): TagsPresenter = presenterProvider.get()
+    fun providePresenter(): TagsPresenter = presenterProvider.get().apply {
+        eventId = TagsFragmentArgs.fromBundle(requireArguments()).tags?.map {
+            val t = Tag.EventTag(it.id, it.name)
+            t.isSelected = it.isSelected
+            t
+        }
+    }
 
     override fun setData(tags: List<Tag>) {
         tags.forEach { tag ->
@@ -59,4 +66,6 @@ class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
     }
 
     override fun layout() = R.layout.fragment_tags
+
+    fun getTags() = presenter.tags?.map { NewTags(it.id, it.name, it.isSelected) }
 }

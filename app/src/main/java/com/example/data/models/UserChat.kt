@@ -7,7 +7,7 @@ import ru.houseofapps.chat.models.Message
 data class UserChat(
         val id: Int,
         @SerializedName("user_recepient")
-        var user: User,
+        var user: /*User*/UserDetail,
         val created: String,
         @SerializedName("last_message")
         val lastMessage: String?,

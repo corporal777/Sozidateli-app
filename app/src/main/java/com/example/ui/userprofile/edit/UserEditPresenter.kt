@@ -502,7 +502,7 @@ class UserEditPresenter
             return
         }
 
-        updateUserNew(userRepository.updateProfile(appData.getId(), data), onComplete)
+        updateUserNew(userRepository.updateUserProfile(appData.getId(), data), onComplete)
     }
 
     private fun updateUserNew(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
@@ -516,8 +516,19 @@ class UserEditPresenter
                         it.user_status?.let { status -> user_status = status }
                         it.user_status_detail?.let { details -> user_status_detail = details }*/
                     }
-                    if (onComplete(it))
-                        viewState.navigateUp()
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({ state ->
+                                if (onComplete(it))
+                                    viewState.navigateUp()
+                            }, { error ->
+                                error.printStackTrace()
+                                if (onComplete(it))
+                                    viewState.navigateUp()
+                            })
+
+                    /*if (onComplete(it))
+                        viewState.navigateUp()*/
                 }, {
                     it.printStackTrace()
                     viewState.showUpdateError(it.message)

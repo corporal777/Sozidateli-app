@@ -9,10 +9,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.ProfileDataEducationEditGroupNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.state.max.work.MaxStateWorkFragmentArgs
+import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.RegisterDataType
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -23,6 +26,7 @@ import javax.inject.Provider
 class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View {
 
     override fun layout(): Int = R.layout.fragment_max_state_education
+    private lateinit var dialog: AddPhoneEmailDialog
 
     @InjectPresenter
     lateinit var presenter: MaxStateEducationPresenter
@@ -87,13 +91,37 @@ class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View 
     }
 
     override fun goToNext() {
+        if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
+            maxActionWithSuccess()
+        } else {
+            dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
+                    .setSelectCallback {
+                        presenter.sendEmail(it.value)
+                    }.setNegativeClickCallback { maxActions() }
+        }
+    }
+
+    private fun maxActionWithSuccess() {
         BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
                 .setSelectCallback {
+                    maxActions()
+                }
+    }
+
+    private fun maxActions() {
+        /*BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+                .setSelectCallback {*/
                     when (presenter.screen) {
                         1 -> findNavController().popBackStack(R.id.profile_fragment, false)
                         2 -> findNavController().popBackStack(R.id.userStateFragment, false)
                     }
-                }
+                //}
+    }
+
+    override fun showChangeEmailComplete(email: String) {
+        dialog.hideDialog()
+        showChangeEmailCompleteDialog(email)
+        maxActions()
     }
 
     override fun showUpdateError(message: String?) {

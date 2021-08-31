@@ -51,7 +51,11 @@ class SearchOrganizationPresenter
     }
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
-        viewState.showOrganization(organization)
+        if (!appData.hasMaxState && !appData.hasBaseState) {
+            viewState.showStateErrorMessage()
+        } else {
+            viewState.showOrganization(organization)
+        }
     }
 
     override fun onOrganizationSubscriptionClick(organization: OrganizationNew/*Organization*/) {

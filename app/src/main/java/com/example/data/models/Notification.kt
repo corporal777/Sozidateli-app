@@ -19,9 +19,10 @@ data class Notification(
         @SerializedName("event_activity_id")
         val eventActivityId: Int?,
         val eventInfo: NotificationEventInfo?,
-        val event: /*Event*/NotificationEntityModelModel?,
+        val event: /*Event*/NotificationEntityModell?,
         val project_name: String?,
-        val notificationMainType: String
+        val notificationMainType: String,
+        val entity: NotificationEntity?
         ) : Parcelable {
 
     enum class Type {
@@ -34,6 +35,11 @@ data class Notification(
 
     companion object {
         fun fromRemoteNotification(remoteNotification: /*RemoteNotification*/NotificationModel): Notification {
+            val state = when (remoteNotification.entity?.type) {
+                "invitePgfr" -> (remoteNotification.entity.model?.state as String)
+                "organizationMember" -> (remoteNotification.entity.model?.status as String)
+                else -> null
+            }
             return Notification(
                     remoteNotification.id?: 0,
                     remoteNotification.entity?.type?:"",
@@ -45,8 +51,8 @@ data class Notification(
                         else -> Type.SIMPLE
                     },
                     remoteNotification.acknowledged,
-                    when (remoteNotification.entity?.model?.status?.value) {
-                        "approved" -> AcceptState.ACCEPTED
+                    when (state) {
+                        "confirmed", "approved" -> AcceptState.ACCEPTED
                         "declined" -> AcceptState.CANCELED
                         "cancelled" -> AcceptState.DISABLED
                         else -> AcceptState.NONE
@@ -60,8 +66,18 @@ data class Notification(
                         remoteNotification.entity.model?.event else 0,
                     if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT)
                         NotificationEventInfo(remoteNotification.entity.model?.name, "") else null,
-                    remoteNotification.entity?.model, /*remoteNotification.project_name*/"",
-                    remoteNotification.entity?.type?: NotificationModel.NOTIFICATION_TYPE_EVENT
+                    NotificationEntityModell(remoteNotification.entity?.model?.id, remoteNotification.entity?.model?.createdDate,
+                            remoteNotification.entity?.model?.name, remoteNotification.entity?.model?.createdBy,
+                            remoteNotification.entity?.model?.event, remoteNotification.entity?.model?.title,
+                            remoteNotification.entity?.model?.description, remoteNotification.entity?.model?.holdingDate,
+                            if (remoteNotification.entity?.type == "organizationMember") remoteNotification.entity.model?.status as String
+                            else null
+                            /*remoteNotification.entity?.model?.status*/,
+                            state)
+                    /*remoteNotification.entity?.model*/,
+                    remoteNotification.entity?.model?.project?.name,
+                    remoteNotification.entity?.type?: NotificationModel.NOTIFICATION_TYPE_EVENT,
+                    NotificationEntity(remoteNotification.entity?.type, remoteNotification.entity?.id)
             )
             /*return Notification(
                     remoteNotification.id,
@@ -91,6 +107,29 @@ data class Notification(
         }
     }
 }
+
+@Parcelize
+data class NotificationEntityModell(
+        val id: Int? = null,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
+        val name: String? = null,
+        @SerializedName("createdBy")
+        val createdBy: Int? = null,
+        val event: Int? = null,
+        val title: String? = null,
+        val description: String? = null,
+        @SerializedName("holdingDate")
+        val holdingDate: DateModel? = null,
+        val status: String? = null,
+        val state: String? = null
+): Parcelable
+
+@Parcelize
+data class NotificationEntity(
+        val type: String?,
+        val id: Int?
+): Parcelable
 
 @Parcelize
 data class NotificationEventInfo(

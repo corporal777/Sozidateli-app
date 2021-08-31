@@ -262,4 +262,22 @@ interface NewApi {
 
     @PATCH("v1/user-external-invite/pgrf/{id}/rebase")
     fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody): Completable
+
+    @GET("v1/chat-room")
+    fun getChats(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
+
+    @GET("v1/event-tag")
+    fun getTags(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<EventTagModel>>>
+
+    @POST("v1/chat-room")
+    fun createChat(@Body body: CreateChatBody): Single<CreatedChatModel>
+
+    @GET("v1/chat-ban")
+    fun bannedList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<BannedUsersModel>>>
+
+    @POST("v1/chat-ban")
+    fun chatBan(@Body body: CreateChatBody): Single<BannedUsersModel>
+
+    @DELETE("v1/chat-ban/{id}")
+    fun deleteBan(@Path("id") id: Int): Completable
 }

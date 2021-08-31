@@ -1,9 +1,11 @@
 package com.example.ui.state.base
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.FileModel
+import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
 
@@ -26,6 +28,9 @@ interface MainInfoContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneConfirm(phone: String)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun photoUpdated(photo: ImageModel)
     }
     interface Presenter : BaseContract.Presenter {
         fun onClickClose()
@@ -33,5 +38,10 @@ interface MainInfoContract {
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String)
         fun onConfirmPhoneClick(phone: String)
+        fun sendEmail(email: String)
+
+        fun onTakePhotoFromGalleryClick()
+        fun onTakePhotoFromCameraClick()
+        fun onRemovePhotoClick()
     }
 }

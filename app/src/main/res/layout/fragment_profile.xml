@@ -34,9 +34,9 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_avatar"
+                app:layout_constraintBottom_toTopOf="@+id/state_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/state_title"
                 tools:src="@drawable/avatar_placeholder" />
 
             <TextView
@@ -87,50 +87,82 @@
                 app:layout_constraintStart_toStartOf="@+id/ivAvatar"
                 app:layout_constraintTop_toBottomOf="@+id/ivAvatar" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnBaseState"
-                fontPath="fonts/Roboto-Medium.ttf"
+            <LinearLayout
+                android:id="@+id/states_lay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/action_button_change_screen_background"
-                android:minHeight="38dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/base_state"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnMaxState"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
                 app:layout_constraintStart_toStartOf="@+id/state_title"
-                app:layout_constraintTop_toBottomOf="@+id/state_title"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/state_title">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnBaseState"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_corners_large"
+                    android:backgroundTint="@color/action_button_change_screen_background"
+                    android:minHeight="38dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="@string/base_state"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
+                    app:layout_constraintStart_toStartOf="@+id/state_title"
+                    app:layout_constraintTop_toBottomOf="@+id/state_title" />
+
+                <Space
+                    android:id="@+id/spacer"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    app:layout_constraintStart_toEndOf="@+id/btnBaseState"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnBaseState"
+                    app:layout_constraintTop_toTopOf="@+id/btnBaseState" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnMaxState"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="7dp"
+                    android:background="@drawable/background_corners_large"
+                    android:backgroundTint="@color/badge_attention_low"
+                    android:minHeight="38dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="@string/max_state"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
+                    app:layout_constraintStart_toEndOf="@+id/spacer"
+                    app:layout_constraintTop_toBottomOf="@+id/state_title" />
+
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnMaxState"
+                android:id="@+id/btnAboutStates"
                 fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/badge_attention_low"
+                android:backgroundTint="@color/stories_progress_primary"
                 android:minHeight="38dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:layout_marginStart="7dp"
-                android:text="@string/max_state"
+                android:text="@string/about_states"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/btnBaseState"
-                app:layout_constraintTop_toBottomOf="@+id/state_title"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="@+id/state_title"
+                app:layout_constraintTop_toBottomOf="@+id/states_lay" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

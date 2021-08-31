@@ -98,7 +98,11 @@ class OrganizationsPresenter
     }
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
-        viewState.showOrganization(organization)
+        if (!appData.hasMaxState && !appData.hasBaseState) {
+            viewState.showStateErrorMessage()
+        } else {
+            viewState.showOrganization(organization)
+        }
     }
 
     override fun onRemoveFromFavoriteClick(organization: OrganizationNew/*Organization*/) {

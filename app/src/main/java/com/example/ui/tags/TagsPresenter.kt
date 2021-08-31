@@ -11,13 +11,19 @@ class TagsPresenter @Inject constructor(
         userEventData: UserEventData
 ) : BasePresenter<TagsContract.View>(), TagsContract.Presenter {
 
-    private val userEvent = userEventData.userEvent!!
-    private val tags = userEvent.activity.let { it.groups.plus(it.tags) }
+    private val userEvent = userEventData.userEvent
+    var tags = userEvent?.activity.let { it?.groups?.plus(it.tags) }
+    var eventId: List<Tag.EventTag>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            setData(tags)
+            if (eventId == null) {
+                setData(tags ?: emptyList())
+            } else {
+                tags = eventId
+                setData(tags ?: emptyList())
+            }
         }
     }
 
@@ -26,7 +32,7 @@ class TagsPresenter @Inject constructor(
     }
 
     override fun onClearClick() {
-        tags.forEach { it.isSelected = false }
+        tags?.forEach { it.isSelected = false }
         viewState.uselectAllTags()
     }
 }
