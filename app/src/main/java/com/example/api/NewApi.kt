@@ -266,6 +266,9 @@ interface NewApi {
     @GET("v1/chat-room")
     fun getChats(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
 
+    @GET("v1/chat-room/{id}")
+    fun getChatById(@Path("id") chatId: String, @QueryMap map: Map<String, Any>): Single<ChatModel>
+
     @GET("v1/event-tag")
     fun getTags(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<EventTagModel>>>
 

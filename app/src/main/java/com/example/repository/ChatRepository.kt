@@ -39,6 +39,8 @@ interface ChatRepository {
     //New API
     fun getChats(map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
 
+    fun getChatById(chatId: String, map: Map<String, Any>): Single<ChatModel>
+
     fun createChat(body: CreateChatBody): Single<CreatedChatModel>
 
     fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse</*BannedUsersModel*/UserChat>>
