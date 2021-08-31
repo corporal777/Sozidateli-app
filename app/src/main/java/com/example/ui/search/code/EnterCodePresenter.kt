@@ -17,7 +17,7 @@ class EnterCodePresenter
 
     override fun onSearchClick(code: String) {
         compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme",
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
                 EventNew.EVENT_CODE to code))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

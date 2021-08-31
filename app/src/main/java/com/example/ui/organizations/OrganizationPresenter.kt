@@ -103,7 +103,7 @@ class OrganizationPresenter
                                             put(EventNew.EVENT_LIMIT, 3)
                                             put(EventNew.EVENT_SORT_TYPE, "desc")
                                             put(EventNew.EVENT_OFFSET, 0)
-                                            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+                                            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,getEventsListWithoutPagination")
                                             put(EventNew.EVENT_ORGANIZATION, organizationId)
                                         }
                                 ).performOnBackgroundOutOnMain()
@@ -130,7 +130,7 @@ class OrganizationPresenter
                     put(EventNew.EVENT_LIMIT, 3)
                     put(EventNew.EVENT_OFFSET, 0)
                     put(EventNew.EVENT_SORT_TYPE, "desc")
-                    put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
+                    put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,getEventsListWithoutPagination")
                     put(EventNew.EVENT_ORGANIZATION, organizationId)
                 }
         ).performOnBackgroundOutOnMain()

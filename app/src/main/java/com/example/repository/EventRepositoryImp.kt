@@ -290,7 +290,7 @@ class EventRepositoryImp
     }
 
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
-        newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium,current-user-registration,destination-scheme")
+        newApi.getEventDetails(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState")
                 .map {
                     val eventFormats = appData.getEventFormats()
                     if (!eventFormats.isNullOrEmpty()) {

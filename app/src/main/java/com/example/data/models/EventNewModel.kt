@@ -149,6 +149,8 @@ data class EventBindsModel(
         val currentUserRegistration: CurrentUserRegistrationModel? = null,
         @SerializedName("user-form-result")
         val userFormResult: List<UserFormResultModel>? = null,
+        @SerializedName("eventRegistrationState")
+        val eventRegistrationState: EventRegistrationStateModel? = null,
         @SerializedName("userFavoriteActivities")
         val userFavoriteActivities: List<EventActivityModel>? = null/*,
         @SerializedName("destination-scheme")
@@ -162,6 +164,28 @@ data class EventBindsModel(
                         activity.first().holdingDate?.from
         }
 }
+
+@Parcelize
+data class EventRegistrationStateModel(
+        @SerializedName("availableActions")
+        val availableActions: List<String>? = null,
+        val prohibitions: ProhibitionsModel? = null
+): Parcelable
+
+@Parcelize
+data class ProhibitionsModel(
+        @SerializedName("profileLevelToLow")
+        val profileLevelToLow: ProfileLevelToLowModel? = null,
+        @SerializedName("registrationClosed")
+        val registrationClosed: Boolean
+): Parcelable
+
+@Parcelize
+data class ProfileLevelToLowModel(
+        val value: Boolean,
+        @SerializedName("requiredLevel")
+        val requiredLevel: String? = null
+): Parcelable
 
 @Parcelize
 data class CurrentUserRegistrationModel(

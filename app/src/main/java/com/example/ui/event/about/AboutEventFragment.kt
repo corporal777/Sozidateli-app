@@ -281,10 +281,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         var visibility = true
 
         when {
-            event?.status?.value/*event?.status*/ == Event.Status.FINISHED -> {
+            event?.status?.value == Event.Status.FINISHED -> {
                 visibility = false
             }
-            (event?.status?.value?: "") != Event.Status.REGISTRATION/*event?.binds?.rights?.registration!!*//*!(event?.canRegister?: false)*/ -> {
+            (event?.status?.value?: "") != Event.Status.REGISTRATION -> {
                 when (userRegistration) {
                     Event.Status.APPROVED -> {
                         textRes = R.string.event_action_show_event
