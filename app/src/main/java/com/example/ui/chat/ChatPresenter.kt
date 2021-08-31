@@ -1,12 +1,15 @@
 package com.example.ui.chat
 
+import android.util.Log
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.ChatMessage
 import com.example.data.models.ChatMessageAdditionalData
+import com.example.data.models.ChatModel
 import com.example.data.models.UserChat
+import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
@@ -43,7 +46,8 @@ class ChatPresenter
 @Inject constructor(
         private val chatHelper: ChatHelper,
         private val chatRepository: ChatRepository,
-        private val haChat: HAChat,
+        //private val haChat: HAChat,
+        private val socket: SocketIOManager,
         private val appData: AppData,
         private val takePhoto: RxTakePhoto
 ) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
@@ -75,24 +79,26 @@ class ChatPresenter
 
         compositeDisposable += getChat()
                 .flatMapCompletable {
-                    haChat.joinToRoom(chatId)
+                    socket.connectToSocket()
+                    /*haChat.joinToRoom(chatId)
                             .andThen(
                                     if (!it.isEventChat) haChat.addUsersToRoom(chatId, listOf(it.user.id.toString()))
                                     else Completable.complete()
-                            )
+                            )*/
                 }
-                .andThen(haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT))
+                .andThen(/*haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)*/socket.subscribeToChatUpdate(chatId))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    val lastUnreadIndex = findLastUnreadMessageIndex(it)
+                    Log.ERROR
+                    /*val lastUnreadIndex = findLastUnreadMessageIndex(it)
                     val chatMessages = createChatMessages(it)
                             .addDates()
                             .addUnreadMessagesItem(lastUnreadIndex)
                     viewState.updateMessages(chatMessages)
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
-                    isMessagesInitialLoad = true
+                    isMessagesInitialLoad = true*/
                 }
     }
 
@@ -104,13 +110,54 @@ class ChatPresenter
         }
 
 //        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_ACCEPT))
-        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_INVITE))
+        //compositeDisposable += processEvent(haChat.subscribeTo(ACTION_INVITE))
 //        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
 //        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
-        compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
+        //compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
     }
 
-    private fun getChat() = chatRepository.getChat(chatId)
+    private fun getChat() = chatRepository.getChatById(chatId, mapOf(ChatModel.CHAT_BINDS to "users,event"))
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap {
+                Completable.fromAction {
+                    this.chat = UserChat(it.id, it.binds?.users?.get(0)!!,
+                            it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
+                            if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                            it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
+                            false, false, false, false, false, false,
+                            it.binds.event?.id.toString(), 0)
+                    viewState.apply {
+                        /*when {
+                            it.isEventChat -> viewState.hideKeyboard()
+                            it.isBannedByYou -> disableMessaging { showYouBanUser() }
+                            it.isBannedByRecipient -> disableMessaging { showYouBanned() }
+                            it.isInInvites -> disableMessaging { showChatConfirm(it.user.fullName) }
+                            it.isWaitForAcceptInvites -> disableMessaging { showWaitForInviteAccept() }
+                            else -> {
+                                showChatInput(false)
+                                focusOnInput(false)
+                            }
+                        }*/
+
+                        val avatarFromChat = it.binds.users[0].image.uri
+                        if (userAvatar != avatarFromChat && avatarFromChat != null) {
+                            userAvatar = avatarFromChat
+                            setUserAvatar(avatarFromChat)
+                        }
+
+                        val name = it.binds.users[0].fullName
+                        if (userName != name) {
+                            userName = name
+                            setTitle(name)
+                        }
+
+                        isChatHasMessages = it.binds.lastUnreadMessage != null
+                    }
+                }
+                        .andThen(Single.just(it))
+            }
+            .observeOn(Schedulers.io())
+    /*chatRepository.getChat(chatId)
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap {
                 Completable.fromAction {
@@ -145,7 +192,7 @@ class ChatPresenter
                 }
                         .andThen(Single.just(it))
             }
-            .observeOn(Schedulers.io())
+            .observeOn(Schedulers.io())*/
 
     private fun disableMessaging(action: () -> Unit) {
         action()
@@ -273,7 +320,8 @@ class ChatPresenter
         val reloadChat = !isChatHasMessages
         if (reloadChat) viewState.showLoadingDialog()
 
-        compositeDisposable += haChat.sendMessage(chatId, type, message, additionalData = createMessageAdditionalData())
+        //TODO fix this
+        /*compositeDisposable += haChat.sendMessage(chatId, type, message, additionalData = createMessageAdditionalData())
                 .flatMapCompletable {
                     if (reloadChat) getChat().ignoreElement()
                     else Completable.complete()
@@ -288,19 +336,22 @@ class ChatPresenter
                         onComplete = {
                             if (reloadChat) viewState.hideLoadingDialog()
                         }
-                )
+                )*/
     }
 
     override fun onLoadPreviousMessagesRequest() {
-        haChat.loadPreviousMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+        //TODO fix this
+        //haChat.loadPreviousMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
     override fun onLoadNextMessagesRequest() {
-        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+        //TODO fix this
+        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
     override fun onChatMessageOnScreen(message: Message) {
-        haChat.readMessage(chatId, message)
+        //TODO fix this
+        //haChat.readMessage(chatId, message)
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -365,7 +416,8 @@ class ChatPresenter
 
     @Subscribe
     fun onSocketConnect(event: OnSocketConnectEvent) {
-        haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
+        //TODO fix this
+        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
     }
 
     override fun onUserClick() {
@@ -378,7 +430,9 @@ class ChatPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        haChat.leaveRoom(chatId)
+        //haChat.leaveRoom(chatId)
+        socket.stopListenChatUpdate(chatId)
+        //socket.disconnectFromSocket()
         EventBus.getDefault().unregister(this)
     }
 

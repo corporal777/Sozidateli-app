@@ -74,6 +74,9 @@ class ChatRepositoryImpl
     override fun getChats(map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>> =
             newApi.getChats(map)
 
+    override fun getChatById(chatId: String, map: Map<String, Any>): Single<ChatModel> =
+            newApi.getChatById(chatId, map)
+
     override fun createChat(body: CreateChatBody): Single<CreatedChatModel> =
             newApi.createChat(body)
 

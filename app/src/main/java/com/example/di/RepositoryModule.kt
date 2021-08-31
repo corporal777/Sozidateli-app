@@ -1,5 +1,7 @@
 package com.example.di
 
+import com.example.data.socket.SocketIOManager
+import com.example.data.socket.SocketIOManagerImpl
 import com.example.repository.*
 import dagger.Module
 import dagger.Provides
@@ -27,4 +29,7 @@ class RepositoryModule {
 
     @Provides
     fun commonRepository(repository: CommonRepositoryImpl): CommonRepository = repository
+
+    @Provides
+    fun socketRepository(repository: SocketIOManagerImpl): SocketIOManager = repository
 }
