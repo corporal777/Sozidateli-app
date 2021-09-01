@@ -39,6 +39,7 @@ class SocketIOManagerImpl
         Flowable.fromPublisher {
             mSocket?.emit("joinRoom", chatId)
             Log.i("ChatSocket", "Started listening")
+            it.onNext(emptyList())
             mSocket?.on("new-message") { data ->
                 Log.i("ChatSocket", "Data: " + data.toString())
                 //it.onNext(data)

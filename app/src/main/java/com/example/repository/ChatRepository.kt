@@ -8,9 +8,6 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.Path
-import retrofit2.http.QueryMap
 
 interface ChatRepository {
 
@@ -24,17 +21,15 @@ interface ChatRepository {
 
     fun uploadImage(chatId: String, bitmap: Bitmap): Single<ApiResponseUpload<UploadImage>>
 
-    fun getChat(chatId: String): Single<UserChat>
+    //fun getChat(chatId: String): Single<UserChat>
 
-    fun searchUser(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
+    //fun searchUser(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>
 
-    fun chatAccept(chatId: String): Completable
+    //fun chatAccept(chatId: String): Completable
 
-    fun chatBan(chatId: String): Completable
+    //fun chatBan(chatId: String): Completable
 
-    fun chatUnban(chatId: String): Completable
-
-    fun getChatInvitesCount(): Single<ChatInvitesCount>
+    //fun chatUnban(chatId: String): Completable
 
     //New API
     fun getChats(map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
@@ -43,9 +38,13 @@ interface ChatRepository {
 
     fun createChat(body: CreateChatBody): Single<CreatedChatModel>
 
-    fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse</*BannedUsersModel*/UserChat>>
+    fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse<UserChat>>
 
     fun chatBann(body: CreateChatBody): Single<BannedUsersModel>
 
     fun deleteBan(id: Int): Completable
+
+    fun acceptChat(id: Int): Completable
+
+    fun getChatInvitesCount(): Single<ChatInvitesCount>
 }

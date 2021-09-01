@@ -16,6 +16,18 @@ data class ChatModel(
         val binds: ChatBinds? = null
 ) {
 
+        fun isEventChat(): Boolean =
+                type == "event"
+
+        fun isWaitForAcceptInvites(): Boolean =
+                invitedUser?.status == "pending"
+
+        fun isInInvites(myId: Int): Boolean =
+                invitedUser?.id == myId && invitedUser?.status == "pending"
+
+        fun isBannedByYou(myId: Int) : Boolean =
+                binds?.bans?.firstOrNull { it.createdBy == myId } != null
+
         companion object {
                 const val CHAT_SORT = "sortType"
                 const val CHAT_LIMIT = "limit"

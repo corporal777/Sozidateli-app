@@ -266,6 +266,9 @@ interface NewApi {
     @GET("v1/chat-room")
     fun getChats(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>>
 
+    @GET("v1/chat-room")
+    fun getChatsCount(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<ChatModel>>>
+
     @GET("v1/chat-room/{id}")
     fun getChatById(@Path("id") chatId: String, @QueryMap map: Map<String, Any>): Single<ChatModel>
 
@@ -283,4 +286,7 @@ interface NewApi {
 
     @DELETE("v1/chat-ban/{id}")
     fun deleteBan(@Path("id") id: Int): Completable
+
+    @PATCH("v1/chat-room/{id}/accept")
+    fun acceptChat(@Path("id") id: Int): Completable
 }

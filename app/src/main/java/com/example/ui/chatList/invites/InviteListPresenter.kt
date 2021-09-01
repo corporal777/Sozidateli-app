@@ -29,14 +29,14 @@ class InviteListPresenter
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
                 mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to limit, ChatModel.CHAT_OFFSET to offset,
-                        ChatModel.CHAT_BINDS to "users,event", ChatModel.CHAT_INVITED_USER_STATUS to "pending")
+                        ChatModel.CHAT_BINDS to "users,event,bans", ChatModel.CHAT_INVITED_USER_STATUS to "pending")
         ).map { response ->
-            val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.get(0)!!,
-                    it.createdDate?: "", it.binds?.lastUnreadMessage?.message, it.binds?.lastUnreadMessage?.createdDate,
-                    if (it.binds?.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
-                    it.binds?.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds?.lastUnreadMessage?.id.toString(),
-                    false, false, false, false, false, false,
-                    it.binds?.event?.id.toString(), 0)) }
+            val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
+                    it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
+                    if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                    it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
+                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
+                    it.binds.event?.id.toString(), 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }

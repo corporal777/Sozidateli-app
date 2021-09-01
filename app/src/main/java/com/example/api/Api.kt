@@ -136,20 +136,20 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/user/chat/list")
-    fun chatListBans(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_banned") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>*/
+    fun chatListBans(@Field("limit") limit: Int, @Field("start") offset: Int, @Field("view_banned") showInvites: Int = 1): Maybe<ApiResponse<List<UserChat>>>
 
     @FormUrlEncoded
     @POST("/v1/user/chat/search")
     fun chatSearch(@FieldMap searchMap: Map<String, @JvmSuppressWildcards Any>, @Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
-    /*@POST("/v1/user/chat/start/{user}")
+    @POST("/v1/user/chat/start/{user}")
     fun chatStart(@Path("user") userId: String): Single<ApiResponse<ChatStartResponse>>*/
 
     @Multipart
     @POST("/v1/user/chat/{chat}/upload")
     fun uploadChatImage(@Path("chat") chatId: String, @Part image: MultipartBody.Part): Single<ApiResponseUpload<UploadImage>>
 
-    @POST("/v1/user/chat/{chat}/accept")
+    /*@POST("/v1/user/chat/{chat}/accept")
     fun chatAccept(@Path("chat") chatId: String): Completable
 
     @POST("/v1/user/chat/{chat}/bann/on")
@@ -161,7 +161,7 @@ interface Api {
     @GET("/v1/user/chat/count/invites")
     fun getChatInvitesCount(): Single<ApiResponse<ChatInvitesCount>>
 
-    /*@Multipart
+    @Multipart
     @POST("/v1/user/update/recomend_file")
     fun uploadDocument(@Part image: MultipartBody.Part): Single<ApiResponse<User>>
 
@@ -193,24 +193,24 @@ interface Api {
 
     @FormUrlEncoded
     @POST("/v1/users/search")
-    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>*/
+    fun userSearch(@Field("user_fio") name: String, /*@Field("user_email") email: String,*/@Field("limit") limit: Int, @Field("start") offset: Int): Maybe<ApiResponse<List<User>>>
 
     @GET("/v1/user/chat/{chat}")
     fun getChat(@Path("chat") chatId: String): Single<ApiResponse<UserChat>>
 
-    /*@FormUrlEncoded
+    @FormUrlEncoded
     @POST("/v1/user/recovery_password")
     fun sendEmailRecovery(@Field("user_email") email: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/recovery_password/check")
-    fun checkRecoveryCode(@Field("user_email") email: String, @Field("confirm_code") confirm: String): Single<ApiResponse<AuthResponse>>*/
+    fun checkRecoveryCode(@Field("user_email") email: String, @Field("confirm_code") confirm: String): Single<ApiResponse<AuthResponse>>
 
     @FormUrlEncoded
     @POST("/v1/user/recovery_password/set_pwd")
     fun setPassword(@Field("user_email") email: String, @Field("confirm_code") confirm: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>
 
-    /*@POST("/v1/users/{id}/favorite")
+    @POST("/v1/users/{id}/favorite")
     fun userAddToFavorite(@Path("id") uid: String): Completable
 
     @POST("/v1/users/{id}/unfavorite")

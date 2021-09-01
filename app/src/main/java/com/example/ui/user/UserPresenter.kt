@@ -153,18 +153,15 @@ class UserPresenter
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribe({
+                    .subscribeSimple {
                         viewState.openChat(user.fullName, user.image.uri, it.id.toString())
-                    }, { it.printStackTrace() })
+                    }
+                    /*.subscribe({
+                        viewState.openChat(user.fullName, user.image.uri, it.id.toString())
+                    }, { it.printStackTrace() })*/
         } else {
             viewState.openChat(user.fullName, user.image.uri, profileUserData.user.binds?.chatRoomWithMe?.id.toString())
         }
-        /*compositeDisposable += chatRepository.startChat(user.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.openChat(user.fullName, user.image?.uri, it.chat_id.toString())
-                }, { it.printStackTrace() })*/
     }
 
     override fun onOrganizationClick(organization: /*Organization*/OrganizationNew) {

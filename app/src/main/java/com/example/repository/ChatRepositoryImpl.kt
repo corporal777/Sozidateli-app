@@ -47,7 +47,7 @@ class ChatRepositoryImpl
         )
     }
 
-    override fun getChat(chatId: String): Single<UserChat> {
+    /*override fun getChat(chatId: String): Single<UserChat> {
         return call(api.getChat(chatId))
     }
 
@@ -65,11 +65,7 @@ class ChatRepositoryImpl
 
     override fun chatUnban(chatId: String): Completable {
         return call(api.chatUnban(chatId))
-    }
-
-    override fun getChatInvitesCount(): Single<ChatInvitesCount> {
-        return call(api.getChatInvitesCount())
-    }
+    }*/
 
     override fun getChats(map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>> =
             newApi.getChats(map)
@@ -80,18 +76,18 @@ class ChatRepositoryImpl
     override fun createChat(body: CreateChatBody): Single<CreatedChatModel> =
             newApi.createChat(body)
 
-    override fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse</*BannedUsersModel*/UserChat>> =
+    override fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse<UserChat>> =
             newApi.bannedList(map).map {
                 val result = mutableListOf<UserChat>()
                 it.data.forEach { chat ->
                     result.add(UserChat(chat.id, chat.binds?.user!!,
-                            chat.createdDate?: "", chat.binds?.lastUnreadMessage?.message, chat.binds?.lastUnreadMessage?.createdDate,
-                            if (chat.binds?.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
-                            chat.binds?.lastUnreadMessage?.acknowledge?.get(0)?.user, null, chat.binds?.lastUnreadMessage?.id.toString(),
+                            chat.createdDate?: "", chat.binds.lastUnreadMessage?.message, chat.binds.lastUnreadMessage?.createdDate,
+                            if (chat.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                            chat.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, chat.binds.lastUnreadMessage?.id.toString(),
                             false, false, false, false, false, false,
-                            chat.binds?.event?.id.toString(), 0))
+                            chat.binds.event?.id.toString(), 0))
                 }
-                PaginationResponse(it.totalCount, /*it.data*/result)
+                PaginationResponse(it.totalCount, result)
             }
 
     override fun chatBann(body: CreateChatBody): Single<BannedUsersModel> =
@@ -99,4 +95,14 @@ class ChatRepositoryImpl
 
     override fun deleteBan(id: Int): Completable =
             newApi.deleteBan(id)
+
+    override fun acceptChat(id: Int): Completable =
+            newApi.acceptChat(id)
+
+    override fun getChatInvitesCount(): Single<ChatInvitesCount> =
+            newApi.getChatsCount(mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to 1, ChatModel.CHAT_OFFSET to 0,
+                    ChatModel.CHAT_INVITED_USER_STATUS to "pending")).map {
+                ChatInvitesCount(it.totalCount?: 0)
+            }
+
 }

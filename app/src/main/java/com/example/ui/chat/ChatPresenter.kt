@@ -116,28 +116,28 @@ class ChatPresenter
         //compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
     }
 
-    private fun getChat() = chatRepository.getChatById(chatId, mapOf(ChatModel.CHAT_BINDS to "users,event"))
+    private fun getChat() = chatRepository.getChatById(chatId, mapOf(ChatModel.CHAT_BINDS to "users,event,bans,last-unread-message"))
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap {
                 Completable.fromAction {
-                    this.chat = UserChat(it.id, it.binds?.users?.get(0)!!,
+                    this.chat = UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
                             it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
                             if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
                             it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
-                            false, false, false, false, false, false,
+                            false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
                             it.binds.event?.id.toString(), 0)
                     viewState.apply {
-                        /*when {
-                            it.isEventChat -> viewState.hideKeyboard()
-                            it.isBannedByYou -> disableMessaging { showYouBanUser() }
-                            it.isBannedByRecipient -> disableMessaging { showYouBanned() }
-                            it.isInInvites -> disableMessaging { showChatConfirm(it.user.fullName) }
-                            it.isWaitForAcceptInvites -> disableMessaging { showWaitForInviteAccept() }
+                        when {
+                            it.isEventChat() -> viewState.hideKeyboard()
+                            it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
+                            //it.isBannedByRecipient -> disableMessaging { showYouBanned() }
+                            it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds.users.first { us -> us.id != appData.getId() }.fullName) }
+                            it.isWaitForAcceptInvites() -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
                                 showChatInput(false)
                                 focusOnInput(false)
                             }
-                        }*/
+                        }
 
                         val avatarFromChat = it.binds.users[0].image.uri
                         if (userAvatar != avatarFromChat && avatarFromChat != null) {
@@ -386,7 +386,7 @@ class ChatPresenter
     }
 
     override fun onAcceptChatClick() {
-        compositeDisposable += chatRepository.chatAccept(chatId)
+        compositeDisposable += chatRepository.acceptChat(chatId.toInt())
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ viewState.showChatInput(true) }, {})
@@ -397,10 +397,12 @@ class ChatPresenter
     }
 
     override fun onBlockChatConfirm() {
-        compositeDisposable += chatRepository.chatBan(chatId)
+        compositeDisposable += chatRepository.chatBann(CreateChatBody(chatId.toInt()))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ viewState.navigateUp() }, {})
+                .subscribe({
+                    viewState.navigateUp()
+                }, { it.printStackTrace() })
     }
 
     override fun onInputShowAnimationFinish() {
