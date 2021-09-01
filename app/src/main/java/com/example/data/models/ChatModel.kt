@@ -1,6 +1,8 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class ChatModel(
         val id: Int,
@@ -40,6 +42,7 @@ data class ChatBinds(
         //val rights
 )
 
+@Parcelize
 data class MessageModel(
         val id: Int,
         val chat: Int? = null,
@@ -50,12 +53,13 @@ data class MessageModel(
         val message: String? = null,
         val file: FileModel? = null,
         val acknowledge: List<MessageAcknowledgeModel>? = null
-)
+): Parcelable
 
+@Parcelize
 data class MessageAcknowledgeModel(
         val user: Int,
         val state: Boolean
-)
+): Parcelable
 
 data class ChatBanModel(
         val id: Int? = null,

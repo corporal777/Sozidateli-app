@@ -3,6 +3,7 @@ package com.example.ui.chat
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.CreateChatBody
 import com.example.data.models.ChatMessage
 import com.example.data.models.ChatMessageAdditionalData
 import com.example.data.models.UserChat

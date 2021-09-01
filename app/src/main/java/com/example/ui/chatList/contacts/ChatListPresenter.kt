@@ -133,6 +133,8 @@ class ChatListPresenter
         compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.openChat(it.id, userName) }, {})
+
+        //TODO finish this
         /*compositeDisposable += chatRepository.startChat(uid.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.openChat(it.chat_id, userName) }, {})*/

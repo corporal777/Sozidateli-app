@@ -1,7 +1,10 @@
 package com.example.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class BannedUsersModel(
         val id: Int,
         @SerializedName("createdDate")
@@ -10,7 +13,7 @@ data class BannedUsersModel(
         val createdBy: Int? = null,
         val user: Int? = null,
         val binds: BannedUsersBindsModel? = null
-) {
+): Parcelable {
         companion object {
                 const val BANNED_SORT_TYPE = "sortType"
                 const val BANNED_LIMIT = "limit"
@@ -19,9 +22,10 @@ data class BannedUsersModel(
         }
 }
 
+@Parcelize
 data class BannedUsersBindsModel(
         val user: UserDetail? = null,
         val event: EventNew? = null,
         @SerializedName("last-unread-message")
         val lastUnreadMessage: MessageModel? = null
-)
+): Parcelable

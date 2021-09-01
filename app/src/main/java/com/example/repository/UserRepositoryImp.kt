@@ -34,7 +34,8 @@ class UserRepositoryImp
 
     override fun getUserShortData(): Maybe<UserDetail> =
         newApi.getUserShort(appData.getId(),
-                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "external-invite-pgrf")).map { it }.doOnSuccess {
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "external-invite-pgrf",
+                "chat-room-with-me", "is-user-in-ban")).map { it }.doOnSuccess {
             appData.setAllUserInfo(it)
         }
 
@@ -49,7 +50,8 @@ class UserRepositoryImp
         }
 
     override fun getUserByIdNew(id: String): Maybe<UserDetail> = newApi.getUserShort(id.toInt(),
-                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "userFavorite"/*, "chat-room-with-me"*/)).map { it }
+                arrayListOf("rights", "education", "academic-degree", "work-experience", "recommendation-file", "organization", "userOrganizationRights", "userFavorite",
+                        "chat-room-with-me", "is-user-in-ban")).map { it }
 
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
             newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->

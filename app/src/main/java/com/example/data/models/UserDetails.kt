@@ -59,6 +59,7 @@ data class UserDetail(
         fun getUserSubscribeAction(): UserSubscribeButton.Action? {
                 return when {
                         isCurrentUser -> null
+                        binds?.isUserInBan != null -> UserSubscribeButton.Action.UNBLOCK
                         //user_banned || chat?.isBannedByYou == true -> UserSubscribeButton.Action.UNBLOCK
                         binds?.userFavorite != null -> UserSubscribeButton.Action.UNFAVORITE
                         else -> UserSubscribeButton.Action.FAVORITE
@@ -105,7 +106,29 @@ data class UserBinds(
         @SerializedName("userFavorite")
         var userFavorite: EventUserFavorite? = null,
         @SerializedName("external-invite-pgrf")
-        var externalInvitePgrf: List<ExternalInvitePgrfModel>? = null
+        var externalInvitePgrf: List<ExternalInvitePgrfModel>? = null,
+        @SerializedName("chat-room-with-me")
+        var chatRoomWithMe: ChatRoomWithMeModel? = null,
+        @SerializedName("is-user-in-ban")
+        var isUserInBan: BannedUsersModel? = null
+): Parcelable
+
+@Parcelize
+data class ChatRoomWithMeModel(
+        val id: Int,
+        @SerializedName("createdDate")
+        val createdDate: String? = null,
+        @SerializedName("createdBy")
+        val createdBy: Int? = null,
+        val type: String? = null,
+        @SerializedName("invitedUser")
+        val invitedUser: InvitedUserModel? = null
+): Parcelable
+
+@Parcelize
+data class InvitedUserModel(
+        val id: Int,
+        val status: String? = null
 ): Parcelable
 
 @Parcelize

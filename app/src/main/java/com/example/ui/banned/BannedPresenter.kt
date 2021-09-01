@@ -32,7 +32,6 @@ class BannedPresenter
                 BANNED_OFFSET to offset,
                 BANNED_BINDS to "user"
         ))
-        //chatRepository.loadBannedList(limit, offset)
     }.buildList()
 
     override fun onFirstViewAttach() {
@@ -58,7 +57,7 @@ class BannedPresenter
     }
 
     override fun onUnblockLick(userChat: UserChat) {
-        compositeDisposable += chatRepository.chatUnban(userChat.id.toString())
+        compositeDisposable += chatRepository.deleteBan(userChat.id)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({ pagination.invalidate() }, { it.printStackTrace() })
