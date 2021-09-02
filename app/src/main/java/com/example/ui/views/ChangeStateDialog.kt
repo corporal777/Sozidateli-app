@@ -9,7 +9,7 @@ import com.example.databinding.DialogChangeStateBinding
 
 class ChangeStateDialog(val activity: Activity, val type: StateType) {
 
-    private var onChangeState: () -> Unit = {}
+    private var onChangeState: (isAccept: Boolean) -> Unit = {}
 
     var binding : DialogChangeStateBinding = DataBindingUtil.inflate(
             activity.layoutInflater,
@@ -34,17 +34,18 @@ class ChangeStateDialog(val activity: Activity, val type: StateType) {
             }
         }
         binding.btnPositive.setOnClickListener {
-            onChangeState()
+            onChangeState(true)
             alertDialog.dismiss()
         }
         binding.btnNegative.setOnClickListener {
+            onChangeState(false)
             alertDialog.dismiss()
         }
         alertDialog = builder.create()
         alertDialog.show()
     }
 
-    fun setSendCodeCallback(block: () -> Unit): ChangeStateDialog {
+    fun setSendCodeCallback(block: (isAccept: Boolean) -> Unit): ChangeStateDialog {
         onChangeState = block
         return this
     }

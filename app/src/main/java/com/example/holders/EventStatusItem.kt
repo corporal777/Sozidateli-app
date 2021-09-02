@@ -19,10 +19,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
-import com.example.data.models.EventFormat
-import com.example.data.models.EventPhoneModel
+import com.example.data.models.*
 import com.example.util.ClickableSpan
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -46,6 +43,7 @@ class EventStatusItem(
         private val onEventClickListener: OnEventClickListener,
         private val userAgreement: String?,
         private val canShowActionButton: Boolean = true,
+        private val eventRegistrationState: EventRegistrationStateModel? = null,
         private val registrationId: String? = null
 ) : Item(itemId) {
 
@@ -122,7 +120,64 @@ class EventStatusItem(
         var clickAction: (() -> Unit)? = null
         var visibility = true
 
-        when {
+        if (eventRegistrationState != null) {
+            val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
+                arrayListOf("") else eventRegistrationState?.availableActions
+            when {
+                eventRegistrationState?.prohibitions?.registrationClosed == false -> {
+                    when (actions?.get(0)) {
+                        "register" -> {
+                            textBackground = R.drawable.background_event_action
+                            textRes = R.string.event_action_participate
+                            clickAction = {
+                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                    if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ userAgreement.isNullOrEmpty()) {
+                                        onEventClickListener.onActionRegister(eventId)
+                                    } else {
+                                        showAgreementRegisterDialog(btnAction.context, userAgreement)
+                                    }
+                                }
+                            }
+                        }
+                        "withdraw" -> {
+                            textBackground = R.drawable.background_event_action
+                            textRes = R.string.event_action_cancel_request
+                            clickAction = {
+                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                    onEventClickListener.onActionCancel(eventId, registrationId)
+                                }
+                            }
+                        }
+                        "view" -> {
+                            textBackground = R.drawable.background_event_action_approved
+                            textRes = R.string.event_action_show_event
+                            clickAction = {
+                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                    onEventClickListener.onActionShowEvent(eventId)
+                                }
+                            }
+                            textColor = Color.WHITE
+                        }
+                    }
+                }
+                else -> {
+                    if (actions?.get(0) ?: "" == "view") {
+                        textBackground = R.drawable.background_event_action_approved
+                        textRes = R.string.event_action_show_event
+                        clickAction = {
+                            eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                onEventClickListener.onActionShowEvent(eventId)
+                            }
+                        }
+                        textColor = Color.WHITE
+                    } else {
+                        textBackground = R.drawable.background_event_action_disabled
+                        textRes = R.string.about_event_registration_closed
+                    }
+                }
+            }
+        }
+        /*when {
             !canShowActionButton ||
                     status == null ||
                     status == Event.Status.FINISHED -> {
@@ -168,7 +223,7 @@ class EventStatusItem(
                     }
                 }
             }
-        }
+        }*/
 
         btnAction.apply {
             text = textRes?.let { context.getString(it) }
@@ -183,6 +238,14 @@ class EventStatusItem(
             }
 
             isVisible = visibility
+        }
+    }
+
+    private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
+        if (this == false) {
+            hasLevel()
+        } else {
+            onEventClickListener.onShowUpdateState()
         }
     }
 
@@ -262,5 +325,6 @@ class EventStatusItem(
         fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
         fun onShowEventClick(view: View, event: String)
         fun onShowFilterClick(format: Int)
+        fun onShowUpdateState()
     }
 }

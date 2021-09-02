@@ -232,7 +232,11 @@ class AboutEventPresenter
     }
 
     override fun onWriteToOrganizationClick() {
-        viewState.showWriteToOrganizationForm()
+        if (!appData.hasBaseState && !appData.hasMaxState) {
+            viewState.showStateErrorMessage()
+        } else {
+            viewState.showWriteToOrganizationForm()
+        }
     }
 
     override fun onWriteToOrganizationMessage(message: String) {

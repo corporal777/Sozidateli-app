@@ -103,6 +103,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         override fun onShowFilterClick(format: Int) {
 
         }
+
+        override fun onShowUpdateState() = showStateErrorMessage()
     }
 
     private var aboutItem: EventDataAboutItem? = null
@@ -214,6 +216,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         eventClickListener,
                         aboutItem,
                         eventData?.userAgreement?.name?: eventData?.userAgreement?.uri,
+                        null,
                         false
                 ),
                 Section().apply {
@@ -280,7 +283,57 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         var clickAction: (() -> Unit)? = null
         var visibility = true
 
+        val actions = if (event?.binds?.eventRegistrationState?.availableActions.isNullOrEmpty())
+            arrayListOf("") else event?.binds?.eventRegistrationState?.availableActions
         when {
+            event?.binds?.eventRegistrationState?.prohibitions?.registrationClosed == false -> {
+                when (actions?.get(0)) {
+                    "register" -> {
+                        textRes = R.string.event_action_participate
+                        clickAction = {
+                            event.binds?.eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                val agreement = event.userAgreement?.name ?: event.userAgreement?.uri
+                                if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ agreement.isNullOrEmpty()) {
+                                    presenter.onGoToEventClick()
+                                } else {
+                                    showAgreementRegisterDialog(agreement)
+                                }
+                            }
+                        }
+                    }
+                    "withdraw" -> {
+                        textRes = R.string.event_action_cancel_request
+                        clickAction = {
+                            event.binds?.eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                presenter.onActionCancel()
+                            }
+                        }
+                    }
+                    "view" -> {
+                        textRes = R.string.event_action_show_event
+                        clickAction = {
+                            event.binds?.eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                presenter.onSelectEventClick()
+                            }
+                        }
+                    }
+                }
+            }
+            else -> {
+                if (actions?.get(0) ?: "" == "view") {
+                    textRes = R.string.event_action_show_event
+                    clickAction = {
+                        event?.binds?.eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                            presenter.onSelectEventClick()
+                        }
+                    }
+                } else {
+                    textRes = R.string.about_event_registration_closed
+                }
+            }
+        }
+
+        /*when {
             event?.status?.value == Event.Status.FINISHED -> {
                 visibility = false
             }
@@ -327,7 +380,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     }
                 }
             }
-        }
+        }*/
 
         when (screenType) {
             ABOUT_FROM_EVENT -> flRegister.isVisible = false
@@ -347,6 +400,14 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         }
 
         recyclerView.updatePadding(bottom = if (flRegister.isVisible) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
+    }
+
+    private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
+        if (this == false) {
+            hasLevel()
+        } else {
+            showStateErrorMessage()
+        }
     }
 
     private fun showAgreementRegisterDialog(url: String) {

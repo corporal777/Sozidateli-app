@@ -569,7 +569,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showStateErrorMessage() {
         ChangeStateDialog(this, StateType.ERROR)
                 .setSendCodeCallback {
-                    findNavController().navigate(R.id.userStateFragment)
+                    if (it) {
+                        findNavController().navigate(R.id.userStateFragment)
+                    }
                 }
     }
 

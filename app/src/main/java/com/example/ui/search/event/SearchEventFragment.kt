@@ -46,6 +46,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
+        override fun onShowUpdateState() = showStateErrorMessage()
     }
 
     override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
@@ -106,7 +107,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 ).apply {
                     showStartTime = false
                 },
-                itemData.userAgreement?.name?: itemData.userAgreement?.uri
+                itemData.userAgreement?.name?: itemData.userAgreement?.uri,
+                itemData.binds?.eventRegistrationState
         )
     }
 

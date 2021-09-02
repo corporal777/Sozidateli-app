@@ -60,6 +60,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         }
 
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
+        override fun onShowUpdateState() = showStateErrorMessage()
     }
 
     private var eventToShowView: View? = null
@@ -95,7 +96,8 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     (it.status?.value?: "") != Event.Status.REGISTRATION,
                     onEventClickListener,
                     createEventDataListItem(event = it),
-                    it.userAgreement?.uri
+                    it.userAgreement?.uri,
+                    it.binds?.eventRegistrationState
             )
         })
         Log.e("EventsList", "finish")

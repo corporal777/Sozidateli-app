@@ -62,9 +62,7 @@ open class SubEventItem(
             }
 
             root.setOnClickListener {
-                if (canDoActions) {
-                    clickListener?.onSubEventClick(subEvent)
-                }
+                clickListener?.onSubEventClick(subEvent)
             }
 
             tagGroup.apply {

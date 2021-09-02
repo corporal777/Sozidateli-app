@@ -89,7 +89,9 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     override fun showNeedMoreState() {
         ChangeStateDialog(requireActivity(), StateType.ERROR)
                 .setSendCodeCallback {
-                    findNavController().navigate(R.id.userStateFragment)
+                    if (it) {
+                        findNavController().navigate(R.id.userStateFragment)
+                    }
                 }
     }
 

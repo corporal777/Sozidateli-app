@@ -71,6 +71,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
+        override fun onShowUpdateState() = showStateErrorMessage()
     }
 
     private val usersAdapter = GroupAdapter<GroupieViewHolder>()
@@ -263,7 +264,8 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                 ).apply {
                     showStartTime = false
                 },
-                itemData?.userAgreement?.name?: itemData?.userAgreement?.uri
+                itemData?.userAgreement?.name?: itemData?.userAgreement?.uri,
+               itemData?.binds?.eventRegistrationState
         )
     }
 

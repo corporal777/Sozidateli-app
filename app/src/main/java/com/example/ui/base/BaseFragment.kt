@@ -104,7 +104,9 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     override fun showStateErrorMessage() {
         ChangeStateDialog(requireActivity(), StateType.ERROR)
                 .setSendCodeCallback {
-                    findNavController().navigate(R.id.userStateFragment)
+                    if (it) {
+                        findNavController().navigate(R.id.userStateFragment)
+                    }
                 }
     }
 

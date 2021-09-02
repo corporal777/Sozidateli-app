@@ -134,7 +134,7 @@
 
     <string name="about_event_contacts">Контакты мероприятия</string>
     <string name="about_event_speakers">Спикеры мероприятия</string>
-    <string name="about_event_activities">События мероприятия</string>
+    <string name="about_event_activities">Программа мероприятия</string>
     <string name="about_event_rate">Оценить мероприятие</string>
     <string name="about_event_agreement">Пользовательское соглашение</string>
     <string name="about_event_agreement_open_error">Не удалось открыть пользовательское соглашение</string>

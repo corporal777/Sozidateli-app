@@ -3,6 +3,7 @@ package com.example.holders
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
 import com.example.data.models.EventPhoneModel
+import com.example.data.models.EventRegistrationStateModel
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -19,7 +20,8 @@ class EventGroup(
         eventClickListener: EventStatusItem.OnEventClickListener,
         private val dataItem: Item,
         userAgreement: String?,
-        canShowActionButton: Boolean = true
+        eventRegistrationState: EventRegistrationStateModel?,
+        canShowActionButton: Boolean = true,
 ) : NestedGroup() {
 
     private val eventStatusItem = EventStatusItem(
@@ -34,7 +36,8 @@ class EventGroup(
             conferenceRegistrationClosed,
             eventClickListener,
             userAgreement,
-            canShowActionButton
+            canShowActionButton,
+            eventRegistrationState
     )
 
     init {

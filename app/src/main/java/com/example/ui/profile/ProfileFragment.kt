@@ -167,7 +167,9 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     private fun showUserStateDialog() {
         ChangeStateDialog(requireActivity(), StateType.SUCCESS)
                 .setSendCodeCallback {
-                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+                    if (it) {
+                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+                    }
                 }
     }
 

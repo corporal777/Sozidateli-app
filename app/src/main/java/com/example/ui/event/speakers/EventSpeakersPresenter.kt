@@ -53,7 +53,12 @@ class EventSpeakersPresenter
         else pagination.invalidate()
     }
 
-    override fun onSpeakerClick(speaker: MemberModel) = viewState.showSpeaker(speaker)
+    override fun onSpeakerClick(speaker: MemberModel) =
+            if (!appData.hasBaseState && !appData.hasMaxState) {
+                 viewState.showStateErrorMessage()
+            } else {
+                viewState.showSpeaker(speaker)
+            }
 
     override fun onSpeakerFavoriteChangeClick(speaker: MemberModel) {
         val id = speaker.user.toString()/*speaker.user.user_id.toString()*/
@@ -61,22 +66,30 @@ class EventSpeakersPresenter
             compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, id.toInt())))
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribeSimple({
+                    .subscribeSimple {
+                        speaker.binds?.user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.updateSpeaker(speaker)
+                    }
+                    /*.subscribeSimple({
                         viewState.showRequestErrorMessage()
                     }) {
                         speaker.binds?.user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                         viewState.updateSpeaker(speaker)
-                    }
+                    }*/
         else
             compositeDisposable += eventRepository.deleteFromFavorite(speaker.binds.user.binds?.userFavorite?.id.toString())
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
-                    .subscribeSimple({
+                    .subscribeSimple {
+                        speaker.binds.user.binds?.userFavorite = null
+                        viewState.updateSpeaker(speaker)
+                    }
+                    /*.subscribeSimple({
                         viewState.showRequestErrorMessage()
                     }) {
                         speaker.binds.user.binds?.userFavorite = null
                         viewState.updateSpeaker(speaker)
-                    }
+                    }*/
     }
 
     override fun onItemTake(position: Int) {

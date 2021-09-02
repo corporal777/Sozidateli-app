@@ -90,7 +90,11 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
     }
 
     override fun onUserClick(user: UserDetail) {
-        viewState.showUser(user)
+        if (!appData.hasBaseState && !appData.hasMaxState) {
+            viewState.showStateErrorMessage()
+        } else {
+            viewState.showUser(user)
+        }
     }
 
     override fun onUserActionCLick(user: UserDetail) {
