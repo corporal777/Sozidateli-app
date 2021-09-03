@@ -137,7 +137,7 @@ class PhoneConfirmPresenter
                 .subscribe({
                     val user = appData.getUserNew()
                     user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed = true
-                    appData.userNewChangeSubject.onNext(user.asOptional())
+                    //appData.userNewChangeSubject.onNext(user.asOptional())
                     appData.userPhoneConfirmedSubject.onNext(true)
                     viewState.onPhoneConfirmationComplete()
                 }, {

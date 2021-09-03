@@ -796,9 +796,7 @@
     <string name="max_fill_six">Социальные сети</string>
     <string name="max_fill_seventh">Интересы</string>
     <string name="get_state">Получить статус</string>
-    <string name="up_state_to_base">Повысь статус до базового</string>
     <string name="you_got_base_state">Ура! Вы получили Базовый \nстатус</string>
-    <string name="up_state_to_max">Повысь статус до максимального</string>
     <string name="you_got_max_state">Ура! Вы получили Максимальный статус. Теперь Вам доступны все возможности портала</string>
     <string name="warning_dialog_text">Вы хотите удалить важную информацию. Это приведет к понижению статуса и ограничению Ваших возможностей на портале.</string>
     <string name="edit_status_description">Для совершения данного действия Вам необходимо повысить статус.</string>

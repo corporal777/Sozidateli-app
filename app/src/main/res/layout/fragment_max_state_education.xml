@@ -25,7 +25,7 @@
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/up_state_to_max"
+        android:text="@string/profile_title_education"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:gravity="center"
@@ -33,18 +33,6 @@
         app:layout_constraintEnd_toStartOf="@+id/ivClose"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ivClose" />
-
-    <TextView
-        android:id="@+id/tv_interests"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:text="@string/profile_title_education"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -57,7 +45,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnSave"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_interests"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
         tools:itemCount="1"
         tools:listitem="@layout/item_edit_main_info" />
 

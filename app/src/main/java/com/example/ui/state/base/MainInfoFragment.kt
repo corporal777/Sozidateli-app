@@ -76,7 +76,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
     }
 
     override fun setPersonalData(user: UserDetail) {
-        val dataItem = /*if (canUpdateData) {*/
+        val dataItem = if (canUpdateData) {
             MainInfoEditItem(
                     1,
                     requireContext(),
@@ -105,8 +105,13 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                                 .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
                                 .show()
                     })
-        /*} else { adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true } }
-        if (!canUpdateData) dataItem?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)*/
+        } else {
+            adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)
+            canUpdateData = true
+            adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
+        }
+
+        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)
 
         adapter.update(listOf(dataItem))
 
@@ -116,7 +121,6 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
             //if (dataItem.showConfirmEmail()) showChangeEmailComplete(dataItem.getEmail())
             presenter.updateFiles(dataToSave)
         }
-        //canUpdateData = false
     }
 
     override fun photoUpdated(photo: ImageModel) {
@@ -185,6 +189,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
     }
 
     override fun showPhoneConfirm(phone: String) {
+        canUpdateData = false
         findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(phone.replace(" ", "").replace("-", "")))
     }
 
