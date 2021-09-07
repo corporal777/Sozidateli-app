@@ -289,4 +289,10 @@ interface NewApi {
 
     @PATCH("v1/chat-room/{id}/accept")
     fun acceptChat(@Path("id") id: Int): Completable
+
+    @DELETE("v1/user/{id}/email/confirm/reject")
+    fun deleteConfirmEmail(@Path("id") id: Int, @Query("email") email: String): Completable
+
+    @GET("v1/user/check-if-user-exist")
+    fun checkEmailPhone(@Query("email") email: String?, @Query("phone") phone: String?): Completable
 }

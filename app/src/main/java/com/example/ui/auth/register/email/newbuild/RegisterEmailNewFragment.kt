@@ -15,6 +15,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.ConfirmPhoneDialog
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import kotlinx.android.synthetic.main.fragment_register_email_new.etEmail
 import kotlinx.android.synthetic.main.fragment_register_email_new.etFirstName
@@ -91,6 +92,30 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
             }
             addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }*/
+    }
+
+    override fun showEmailNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text), getString(R.string.confirm_phone_positive),
+                getString(R.string.confirm_phone_positive_password))
+                .setSelectCallback {
+                    if (!it) {
+                        presenter.register(email, firstName, lastName, password, middleName, phone)
+                    } else {
+                        findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
+                    }
+                }
+    }
+
+    override fun showPhoneNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text), getString(R.string.confirm_phone_positive),
+                getString(R.string.confirm_phone_positive_password))
+                .setSelectCallback {
+                    if (!it) {
+                        presenter.register(email, firstName, lastName, password, middleName, phone)
+                    } else {
+                        findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
+                    }
+                }
     }
 
     override fun setData(

@@ -97,4 +97,5 @@ interface UserRepository {
     fun approveAssistance(assistanceId: String): Completable
     fun declineAssistance(assistanceId: String): Completable
     fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
+    fun checkEmailPhone(email: String?, phone: String?): Completable
 }

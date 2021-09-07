@@ -251,6 +251,12 @@
         <action
             android:id="@+id/action_register_email_new_fragment_to_authorization_fragment"
             app:destination="@id/authorization_fragment" />
+        <action
+            android:id="@+id/action_register_email_new_fragment_to_recovery_password_fragment"
+            app:destination="@id/recovery_password_fragment" />
+        <!--app:popUpTo="@id/authorization_fragment"
+            app:popUpToInclusive="true"-->
+
     </fragment>
 
     <fragment

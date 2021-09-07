@@ -74,6 +74,22 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeFieldType(type: String, isValid: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailNotUnique( email: String,
+                                firstName: String,
+                                lastName: String,
+                                password: String,
+                                middleName: String?,
+                                phone: String?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique( email: String,
+                                firstName: String,
+                                lastName: String,
+                                password: String,
+                                middleName: String?,
+                                phone: String?)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
@@ -99,5 +115,21 @@ interface RegisterEmailNewContract {
         fun onChangePhoneText(phone: String, context: Context)
         fun onPhoneConfirmClick()
         fun onClickAgree(isAgree: Boolean)
+        fun checkPhoneEmailIsUnique(
+                email: String,
+                firstName: String,
+                lastName: String,
+                password: String,
+                middleName: String?,
+                phone: String?
+        )
+        fun register(
+                email: String,
+                firstName: String,
+                lastName: String,
+                password: String,
+                middleName: String?,
+                phone: String?
+        )
     }
 }

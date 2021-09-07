@@ -33,13 +33,16 @@ import com.example.extensions.showChangeEmailDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.profile.ProfileFragmentDirections
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.ITEM_POSITION
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
+import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.InfoDialog
+import com.example.ui.views.WaitForAcceptDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.*
@@ -278,10 +281,11 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 requireContext(),
                 userPhone,
                 workPhone,
-                user.socialLinks,
-                user.site,
+                user.contactInformation.socialLinks,
+                user.contactInformation.site,
                 user.email,
                 user.email?.isVisible?: false,
+                user.contactInformation.emails?: emptyList(),
                 presenter::onChangeEmailClick,
                 presenter::onConfirmPhoneClick
         )
@@ -333,12 +337,31 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         }?.updateFiles(files ?: emptyList())
     }
 
-    override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
+    override fun showChangeEmail() {
+        WaitForAcceptDialog(requireActivity(), getString(R.string.change_email_title), getString(R.string.change_email_text),
+                getString(R.string.change_email_positive_button), getString(R.string.change_email_negative_button))
+                .setSendCodeCallback {
+                    if (it) {
+                        findNavController().navigate(R.id.user_profile_settings_fragment)
+                    }
+                }
+        //showChangeEmailDialog(presenter::onChangeEmailConfirm)
+    }
 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showPhoneConfirm(phone: String) {
         findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone))
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text),
+                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+                .setSelectCallback {
+                    if (it) {
+                        showPhoneConfirm(phone)
+                    }
+                }
     }
 
     override fun showUpdateError(message: String?) {

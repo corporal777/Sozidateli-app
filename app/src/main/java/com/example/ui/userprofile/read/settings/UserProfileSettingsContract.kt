@@ -46,6 +46,15 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNewChangeEmail(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailNotUnique(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique(phone: String)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -55,7 +64,12 @@ interface UserProfileSettingsContract {
         fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
 
         fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String)
+        fun onChangeEmailConfirm(email: String, isFirst: Boolean)
+        fun onDeleteEmail()
+        fun onDeleteConfirmEmail(email: String)
+        fun registerEmailResend(email: String)
+        fun checkEmailIsUnique(email: String, isFirst: Boolean)
+        fun checkPhoneIsUnique(phone: String)
 
         fun onChangePrivacyClick()
         fun onChangePrivacyConfirm(hidden: Boolean)

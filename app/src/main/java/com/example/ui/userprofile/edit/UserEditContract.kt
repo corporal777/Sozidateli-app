@@ -108,6 +108,9 @@ interface UserEditContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun saveOnClick(saveOnClick: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique(phone: String)
     }
 
     interface Presenter : BaseContract.Presenter {

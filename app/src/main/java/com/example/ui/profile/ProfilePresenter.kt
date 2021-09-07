@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.lang.Exception
 import javax.inject.Inject
@@ -133,6 +134,24 @@ class ProfilePresenter
                     viewState.hideDialogProgress()
                     it.printStackTrace()
                 })
+    }
+
+    override fun checkEmailIsUnique(email: String) {
+        compositeDisposable += userRepository.checkEmailPhone(email, null)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ sendEmail(email) },
+                        { viewState.showEmailNotUnique(email) })
+    }
+
+    override fun checkPhoneIsUnique(phone: String) {
+        compositeDisposable += userRepository.checkEmailPhone(null, phone)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ sendPhone(phone) },
+                        { viewState.showPhoneNotUnique(phone) })
     }
 
     override fun sendPhone(phone: String) {

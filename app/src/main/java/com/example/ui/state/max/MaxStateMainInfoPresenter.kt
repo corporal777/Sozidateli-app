@@ -99,8 +99,8 @@ class MaxStateMainInfoPresenter
                                     birthday = it.birthday
                                     gender = it.gender
                                     notes = it.notes
-                                    site = it.site
-                                    socialLinks = it.socialLinks
+                                    contactInformation.site = it.contactInformation.site
+                                    contactInformation.socialLinks = it.contactInformation.socialLinks
                                     phone = it.phone
                                 }
                                 true
@@ -128,7 +128,7 @@ class MaxStateMainInfoPresenter
         viewState.showChangeEmail()
     }
 
-    override fun onChangeEmailConfirm(email: String) {
+    override fun onChangeEmailConfirm(email: String, isFirst: Boolean) {
         if (AuthValidateUtil.isValidEmail(email)) {
             updateUserNew(userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email)))) {
                 it.email?.value = email
@@ -182,8 +182,8 @@ class MaxStateMainInfoPresenter
                 gender = it.gender
                 notes = it.notes
                 address = it.address
-                site = it.site
-                socialLinks = it.socialLinks
+                contactInformation.site = it.contactInformation.site
+                contactInformation.socialLinks = it.contactInformation.socialLinks
                 phone = it.phone
             }
             true

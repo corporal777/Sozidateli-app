@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -14,10 +15,7 @@ import com.example.extensions.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.BottomDialog
-import com.example.ui.views.RegisterDataType
-import com.example.ui.views.SetPasswordDialog
+import com.example.ui.views.*
 import com.example.util.PHONE_PERSONAL
 import kotlinx.android.synthetic.main.fragment_user_profile_settings.*
 import setOnClickListener
@@ -106,14 +104,51 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         //btnPhoneEdit.isVisible = phone != null
         tvPhoneMobile.text = phone
 
-        tvEmail.text = user.email?.value
+        tvEmail.text = user.email?.onConfirmation ?: user.email?.value
         scPrivacy.isChecked = user.state?.isHidden?: false
-
+        ivInfo.isVisible = !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
+        ivInfo.setOnClickListener {
+            WaitForAcceptDialog(requireActivity(), getString(R.string.wait_for_accept_title), getString(R.string.wait_for_accept_text),
+            getString(R.string.wait_for_accept_positive_button), getString(R.string.content_description_delete))
+                    .setSendCodeCallback {
+                        if (it) {
+                            presenter.registerEmailResend(user.email?.onConfirmation?: user.email?.value?: "")
+                        } else {
+                            if (user.email?.value == null) {
+                                presenter.onDeleteEmail()
+                            } else {
+                                presenter.onDeleteConfirmEmail(user.email?.onConfirmation?: "")
+                            }
+                        }
+                    }
+        }
     }
 
-    override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
+    override fun showChangeEmail() = showChangeEmailDialog(presenter::checkEmailIsUnique)
+
+    override fun showNewChangeEmail(email: String) = showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
+
+    override fun showEmailNotUnique(email: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text),
+                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+                .setSelectCallback {
+                    if (it) {
+                        presenter.registerEmailResend(email)
+                    }
+                }
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text),
+                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+                .setSelectCallback {
+                    if (it) {
+                        presenter.sendPhone(phone)
+                    }
+                }
+    }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)

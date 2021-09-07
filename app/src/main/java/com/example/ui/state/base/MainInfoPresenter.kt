@@ -139,7 +139,7 @@ class MainInfoPresenter
         viewState.showChangeEmail()
     }
 
-    override fun onChangeEmailConfirm(email: String) {
+    override fun onChangeEmailConfirm(email: String, isFirst: Boolean) {
         if (AuthValidateUtil.isValidEmail(email)) {
             updateUser(userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email)))) {
                 it.email?.value = email

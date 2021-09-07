@@ -13,10 +13,7 @@ import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.AuthValidateUtil
-import com.example.util.IMAGE_MAX_SIZE_AVATAR
-import com.example.util.PHONE_PERSONAL
-import com.example.util.loadBitmap
+import com.example.util.*
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.google.gson.Gson
@@ -31,6 +28,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import java.io.File
 import javax.inject.Inject
@@ -200,9 +198,9 @@ class UserEditPresenter
         onEditSaveNew(data) {
             appData.userNewChangeSubject.onNext(appData.getUserNew().apply {
                 phone = it.phone
-                socialLinks = it.socialLinks
+                contactInformation.socialLinks = it.contactInformation.socialLinks
                 email = it.email
-                site = it.site
+                contactInformation.site = it.contactInformation.site
             }.asOptional())
             true
         }
@@ -386,7 +384,13 @@ class UserEditPresenter
     }
 
     override fun onConfirmPhoneClick(phone: String) {
-        viewState.showPhoneConfirm(phone)
+        compositeDisposable += userRepository.checkEmailPhone(null, phone.phoneToServer()?: "")
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ viewState.showPhoneConfirm(phone) },
+                        { viewState.showPhoneNotUnique(phone) })
+        //viewState.showPhoneConfirm(phone)
     }
 
     override fun onAddFileClick() {

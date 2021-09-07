@@ -9,6 +9,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AuthRepository {
 
@@ -40,4 +41,5 @@ interface AuthRepository {
     fun checkRecoveryCodeNew(type: String, code: String): Completable
     fun recoverPasswordNew(body: RecoverPasswordBody): Completable
     fun rebaseInvite(id: Int, body: RebaseInviteBody): Completable
+    fun deleteConfirmEmail(email: String): Completable
 }

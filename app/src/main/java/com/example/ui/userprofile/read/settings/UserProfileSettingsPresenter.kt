@@ -12,9 +12,11 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.util.AuthValidateUtil
+import com.example.util.phoneToServer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -50,22 +52,97 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
     override fun onChangeEmailClick() {
-        viewState.showChangeEmail()
+        val email = appData.getUserNew().email
+        if (email?.value == null) {
+            viewState.showChangeEmail()
+        } else {
+            viewState.showNewChangeEmail(email.value?: "")
+        }
     }
 
-    override fun onChangeEmailConfirm(email: String) {
+    override fun registerEmailResend(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.showChangeEmailComplete(email)
+                }
+    }
+
+    override fun onDeleteConfirmEmail(email: String) {
+        compositeDisposable += authRepository.deleteConfirmEmail(email)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    appData.updateUserNew {
+                        this.email?.onConfirmation = null
+                    }
+                }
+    }
+
+    override fun onDeleteEmail() {
+        compositeDisposable += authRepository.registerEmailResend("")
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    appData.updateUserNew {
+                        this.email?.value = null
+                        this.email?.isConfirmed = null
+                        this.email?.onConfirmation = null
+                    }
+                    viewState.showChangeEmail()
+                }
+        /*updateUser(mapOf(USER_EMAIL to FieldDetails(value = null, isConfirmed = null))) {
+            it.email?.value = null
+            it.email?.isConfirmed = null
+            viewState.showChangeEmail()
+        }*/
+    }
+
+
+    override fun checkEmailIsUnique(email: String, isFirst: Boolean) {
+        compositeDisposable += userRepository.checkEmailPhone(email, null)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ onChangeEmailConfirm(email, isFirst) },
+                        { viewState.showEmailNotUnique(email) })
+    }
+
+    override fun onChangeEmailConfirm(email: String, isFirst: Boolean) {
         if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(mapOf(USER_EMAIL to FieldDetails(value = email))) {
-                it.email?.value = email
-                viewState.showChangeEmailComplete(email)
-            }
+            compositeDisposable += authRepository.registerEmailResend(email)
+                    .withCheckInternetConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        appData.updateUserNew {
+                            if (isFirst) {
+                                this.email?.value = email
+                            }
+                            this.email?.onConfirmation = email
+                        }
+                        viewState.showChangeEmailComplete(email)
+                    }
         } else {
             viewState.showUpdateError()
         }
     }
 
+    override fun checkPhoneIsUnique(phone: String) {
+        compositeDisposable += userRepository.checkEmailPhone(null, phone)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ sendPhone(phone) },
+                        { viewState.showPhoneNotUnique(phone) })
+    }
+
     override fun sendPhone(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone.phoneToServer()?: "")
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.hideDialogProgress()

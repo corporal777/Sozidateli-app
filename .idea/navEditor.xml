@@ -402,6 +402,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_activitiesFragment_to_event_tags_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -1395,8 +1400,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-506" />
-                            <option name="y" value="379" />
+                            <option name="x" value="1834" />
+                            <option name="y" value="-461" />
                           </Point>
                         </option>
                         <option name="myPositions">

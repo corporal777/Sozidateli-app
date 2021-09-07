@@ -115,10 +115,11 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                     requireContext(),
                     userPhone,
                     workPhone,
-                    user.socialLinks,
-                    user.site,
+                    user.contactInformation.socialLinks,
+                    user.contactInformation.site,
                     user.notes,
                     user.image,
+                    user.contactInformation.emails?: emptyList(),
                     { showWhyUserShouldAddDataToNotesField() },{ isOtherInfoValid = it
                 buttonNextEnabled(it)
             }, {
@@ -197,8 +198,8 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
         var isGoToNex = true
         if (user.binds?.recommendationFile?.isEmpty() == true) isGoToNex = false
         if (user.phone?.firstOrNull { it.type == PHONE_WORK }?.value == null) isGoToNex = false
-        if (user.socialLinks?.value?.isEmpty() == true) isGoToNex = false
-        if (user.site?.value?.isEmpty() == true) isGoToNex = false
+        if (user.contactInformation.socialLinks?.values?.isEmpty() == true) isGoToNex = false
+        if (user.contactInformation.site?.values?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
         if (user.notes.isNullOrEmpty()) isGoToNex = false
         //if (user.image.uri.isNullOrEmpty()) isGoToNex = false

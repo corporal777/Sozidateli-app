@@ -50,6 +50,12 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUserState(hasBase: Boolean, hasMax: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailNotUnique(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique(phone: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -65,5 +71,7 @@ interface ProfileContract {
         fun sendEmail(email: String)
         fun sendPhone(phone: String)
         fun confirmCode(phone: String, code: String)
+        fun checkEmailIsUnique(email: String)
+        fun checkPhoneIsUnique(phone: String)
     }
 }

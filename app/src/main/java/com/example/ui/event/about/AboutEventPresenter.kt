@@ -149,7 +149,9 @@ class AboutEventPresenter
     }
 
     override fun onGoToEventClick() {
-        compositeDisposable += eventRepository.checkUserProfile()
+        if (event?.event?.binds?.currentUserRegistration == null)
+            viewState.showEventRequest(eventId)
+        /*compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -159,7 +161,7 @@ class AboutEventPresenter
                         onSuccess = {
                             checkRegistrationFields(it.fields?: emptyList())
                         }
-                )
+                )*/
     }
 
     private fun checkRegistrationFields(fields: List<UserProfileFields/*EventRegisterCheckField*/>) {

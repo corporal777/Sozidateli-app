@@ -227,4 +227,7 @@ class AuthRepositoryImp
                 appData.login(body.token)
                 appData.saveId(body.user)
             }.doOnComplete { appData.token = body.token }
+
+    override fun deleteConfirmEmail(email: String): Completable =
+            newApi.deleteConfirmEmail(appData.getId(), email)
 }

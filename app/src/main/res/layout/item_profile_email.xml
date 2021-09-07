@@ -1,0 +1,45 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="8dp">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etEm"
+        style="@style/Profile.Edit.Input.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:paddingEnd="43dp"
+        android:background="@drawable/background_input_normal"
+        android:hint="@string/email"
+        android:imeOptions="actionSearch"
+        android:inputType="textWebEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnDeleteEmail"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="13dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/content_description_delete"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@+id/etEm"
+        app:layout_constraintEnd_toEndOf="@+id/etEm"
+        app:layout_constraintTop_toTopOf="@+id/etEm" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scShowEmail"
+        style="@style/Profile.Edit.Switch"
+        android:text="@string/profile_show_in_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etEm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

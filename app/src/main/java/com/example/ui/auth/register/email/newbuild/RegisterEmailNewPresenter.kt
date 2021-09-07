@@ -97,7 +97,7 @@ class RegisterEmailNewPresenter
             isAgree: Boolean
     ) {
         if (isDataValid(firstName, lastName, email, password, /*passwordConfirm,*/ isAgree)) {
-            register(
+            checkPhoneEmailIsUnique(
                     email!!,
                     firstName!!,
                     lastName!!,
@@ -105,6 +105,14 @@ class RegisterEmailNewPresenter
                     if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
                     phone
             )
+            /*register(
+                    email!!,
+                    firstName!!,
+                    lastName!!,
+                    password!!,
+                    if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
+                    phone
+            )*/
         } else {
             viewState.apply {
                 showEmailError(email.isNullOrEmpty())
@@ -115,6 +123,27 @@ class RegisterEmailNewPresenter
                 if (loginType == "email")
                     showEmailAgainError(email != emailAgain)
                 showAgreementError(!isAgree)
+            }
+        }
+    }
+
+    override fun checkPhoneEmailIsUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
+        when (loginType) {
+            "email" -> {
+                compositeDisposable += userRepository.checkEmailPhone(email, null)
+                        .withCheckInternetConnectivity()
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribe({ register(email, firstName, lastName, password, middleName, phone) },
+                                { viewState.showEmailNotUnique(email, firstName, lastName, password, middleName, phone) })
+            }
+            "phone" -> {
+                compositeDisposable += userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
+                        .withCheckInternetConnectivity()
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribe({ register(email, firstName, lastName, password, middleName, phone) },
+                                { viewState.showPhoneNotUnique(email, firstName, lastName, password, middleName, phone) })
             }
         }
     }
@@ -245,7 +274,7 @@ class RegisterEmailNewPresenter
                 && middleNameValid
     }
 
-    private fun register(
+    override fun register(
             email: String,
             firstName: String,
             lastName: String,

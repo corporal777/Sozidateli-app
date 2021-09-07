@@ -367,6 +367,9 @@ class UserRepositoryImp
     override fun cancelEvMember(evMemberId: String, body: CancelBody): Completable =
             newApi.cancelEvMember(evMemberId, body)
 
+    override fun checkEmailPhone(email: String?, phone: String?): Completable =
+            newApi.checkEmailPhone(email, phone)
+
     override fun unblockUser(id: Int): Completable {
         TODO("Not yet implemented")
     }

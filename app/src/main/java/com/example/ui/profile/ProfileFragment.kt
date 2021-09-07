@@ -83,10 +83,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
             .setSelectCallback {
                 when (it.type) {
                     RegisterDataType.PHONE -> {
-                        presenter.sendPhone(it.value)
+                        presenter.checkPhoneIsUnique(it.value)
                     }
                     RegisterDataType.EMAIL -> {
-                        presenter.sendEmail(it.value)
+                        presenter.checkEmailIsUnique(it.value)
                     }
                 }
             }.setNegativeClickCallback { showUserStateDialog() }
@@ -121,6 +121,26 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         btnAboutStates.setOnClickListener {
             findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
         }
+    }
+
+    override fun showEmailNotUnique(email: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text),
+                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+                .setSelectCallback {
+                    if (it) {
+                        presenter.sendEmail(email)
+                    }
+                }
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text),
+                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+                .setSelectCallback {
+                    if (it) {
+                        presenter.sendPhone(phone)
+                    }
+                }
     }
 
     override fun emailSuccess() {

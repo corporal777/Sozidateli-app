@@ -20,9 +20,11 @@ data class UserDetail(
         val modifiedDate: String? = null,
         var email: FieldDetails? = null,
         var phone: List<FieldDetails>? = null,
-        var site: FieldListDetails? = null,
+        @SerializedName("contactInformation")
+        var contactInformation: ContactInformationModel,
+        /*var site: FieldListDetails? = null,
         @SerializedName("socialLinks")
-        var socialLinks: FieldListDetails? = null,
+        var socialLinks: FieldListDetails? = null,*/
         var birthday: FieldDetails? = null,
         var image: ImageModel,
         var gender: String? = null,
@@ -87,8 +89,32 @@ data class UserDetail(
                 const val USER_BINDS = "binds"
                 const val USER_ADDRESS_STREET = "addressStreet"
                 const val USER_SEARCH = "search"
+                const val USER_CONTACT_INFORMATION = "contactInformation"
         }
 }
+
+@Parcelize
+data class ContactInformationModel(
+        var site: LinksModel? = null,
+        @SerializedName("socialLinks")
+        var socialLinks: LinksModel? = null,
+        var emails: List<EmailsModel>? = null
+): Parcelable
+
+@Parcelize
+data class EmailsModel(
+        @SerializedName("value")
+        val value: String? = null,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean
+): Parcelable
+
+@Parcelize
+data class LinksModel(
+        @SerializedName("values")
+        val values: List<String>? = null,
+        val absent: Boolean? = null
+): Parcelable
 
 @Parcelize
 data class UserBinds(
@@ -345,7 +371,9 @@ data class FieldDetails(
         @SerializedName("isConfirmed")
         var isConfirmed: Boolean? = false,
         val absent: Boolean? = false,
-        val title: String? = null
+        val title: String? = null,
+        @SerializedName("onConfirmation")
+        var onConfirmation: String? = null
 ): Parcelable
 
 @Parcelize

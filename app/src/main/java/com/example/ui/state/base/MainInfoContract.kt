@@ -36,7 +36,7 @@ interface MainInfoContract {
         fun onClickClose()
         fun updateFiles(data: MutableMap<String, Any?>)
         fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String)
+        fun onChangeEmailConfirm(email: String, isFirst: Boolean)
         fun onConfirmPhoneClick(phone: String)
         fun sendEmail(email: String)
 

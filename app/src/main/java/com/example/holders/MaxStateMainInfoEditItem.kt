@@ -27,10 +27,11 @@ class MaxStateMainInfoEditItem(
         private val context: Context,
         private val mobilePhone: FieldDetails?,
         private val workPhone: FieldDetails?,
-        private val socialNetworks: FieldListDetails?,
-        private val site: FieldListDetails?,
+        private val socialNetworks: LinksModel?,
+        private val site: LinksModel?,
         private val notes: String?,
         private val image: ImageModel,
+        private val emails: List<EmailsModel>,
         private val addInfoClick:() -> Unit,
         private val enableNextButton:(enable: Boolean) -> Unit,
         private val onImageClick: (canRemove: Boolean) -> Unit
@@ -43,28 +44,28 @@ class MaxStateMainInfoEditItem(
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
     private val isWorkPhoneVisible = workPhone?.value.isNullOrEmpty()
-    private var mSite = (site?.value?.map { UserDataSite(value = it) } ?: emptyList())
+    private var mSite = (site?.values?.map { UserDataSite(value = it) } ?: emptyList())
             .map { it.copy() }
             .let {
                 if (it.isEmpty()) it.plus(UserDataSite(value = ""))
                 else it
             }
             .toMutableList()
-    private val isSitesVisible = site?.value?.isEmpty() == true
+    private val isSitesVisible = site?.values?.isEmpty() == true
     private var mNoSite = site?.absent?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
     private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
     private var mImage = image
     private val isImageVisible = (image.uri == null) || (image.uri == "")
 
-    private var mSocialNetworks = (socialNetworks?.value?.map { UserDataSocialLink(value = it) } ?: emptyList())
+    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it) } ?: emptyList())
             .map { it.copy() }
             .let {
                 if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
                 else it
             }
             .toMutableList()
-    private val isNetworkVisible = socialNetworks?.value?.isEmpty() == true
+    private val isNetworkVisible = socialNetworks?.values?.isEmpty() == true
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
@@ -309,15 +310,38 @@ class MaxStateMainInfoEditItem(
 
             val siteUpdate = if (mNoSite) arrayListOf()
             else mSite
-            if (mNoSite != site?.absent || site.value?.toHashSet() != siteUpdate.toHashSet()) {
-                put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
+            var isUpdateSites = false
+            if (mNoSite != site?.absent || site.values?.toHashSet() != siteUpdate.toHashSet()) {
+                isUpdateSites = true
+                //put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
             }
 
             val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks
-            if (mNoNetworks != socialNetworks?.absent || socialNetworks.value?.toHashSet() != networkUpdate.toHashSet()) {
-                put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
+            var isUpdateLinks = false
+            if (mNoNetworks != socialNetworks?.absent || socialNetworks.values?.toHashSet() != networkUpdate.toHashSet()) {
+                isUpdateLinks = true
+                //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
+
+            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
+                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks), emails = emails))
+
+            /*when {
+                isUpdateSites && isUpdateLinks -> {
+                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
+                            socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks), emails = emails))
+                }
+                !isUpdateSites && isUpdateLinks -> {
+                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks),
+                    emails = emails))
+                }
+                isUpdateSites && !isUpdateLinks -> {
+                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
+                    emails = emails))
+                }
+            }*/
+
             if (notes != mNotes) put(UserDetail.USER_NOTES, mNotes)
         }
     }

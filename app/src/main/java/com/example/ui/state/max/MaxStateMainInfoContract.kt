@@ -49,7 +49,7 @@ interface MaxStateMainInfoContract {
         fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
         fun updateFiles(data: MutableMap<String, Any?>)
         fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String)
+        fun onChangeEmailConfirm(email: String, isFirst: Boolean)
 
         fun onFilePicked(path: String, mimeType: String)
         fun onAddFileClick()
