@@ -5,6 +5,7 @@ import com.example.data.AppData
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.socket.client.IO
+import io.socket.client.Manager
 import io.socket.client.Socket
 import java.net.URISyntaxException
 import javax.inject.Inject
@@ -20,9 +21,11 @@ class SocketIOManagerImpl
 
     private fun connect() {
         try {
-            val options = IO.Options()
-            options.query = "token=Token "+appData.token
-            mSocket = IO.socket("https://alfa-socket-data-provider.sozidateli.ru/", options)
+            /*val options = IO.Options()
+            options.query = "token=Token "+appData.token*/
+            mSocket = IO.socket("https://alfa-socket-data-provider.sozidateli.ru/", IO.Options().apply {
+                query = "token=Token "+appData.token
+            })
             Log.i("ChatSocket", "Connected to socket")
         } catch (e: URISyntaxException) {
             Log.i("ChatSocket", "Not connected to socket")
@@ -31,6 +34,18 @@ class SocketIOManagerImpl
 
     override fun connectToSocket(): Completable =
         Completable.fromAction {
+            mSocket?.on(Socket.EVENT_CONNECT_ERROR) {
+                Log.i("ChatSocket", "Error event: " + it.contentToString())
+            }
+            mSocket?.on(Socket.EVENT_CONNECT) {
+                Log.i("ChatSocket", "Connect event: " + it.contentToString())
+            }
+            mSocket?.on(Socket.EVENT_DISCONNECT) {
+                Log.i("ChatSocket", "Disconnect event: " + it.contentToString())
+            }
+            mSocket?.on(Manager.EVENT_TRANSPORT) {
+                Log.i("ChatSocket", "Transport event: " + it.contentToString())
+            }
             mSocket?.connect()
             Log.i("ChatSocket", "Connected")
         }
@@ -38,7 +53,7 @@ class SocketIOManagerImpl
     override fun subscribeToChatUpdate(chatId: String): Flowable<List<String>> =
         Flowable.fromPublisher {
             mSocket?.emit("joinRoom", chatId)
-            Log.i("ChatSocket", "Started listening")
+            Log.i("ChatSocket", "Started listening: $chatId")
             mSocket?.on("joinRoom") { data ->
                 Log.i("ChatSocket", "joinRoom Data: " + data.toString())
                 //it.onNext(data)
@@ -53,7 +68,7 @@ class SocketIOManagerImpl
     override fun stopListenChatUpdate(chatId: String) {
         mSocket?.emit("leaveRoom", chatId)
         Log.i("ChatSocket", "Stopped listening")
-        //mSocket?.off("leaveRoom")
+        mSocket?.off("leaveRoom")
     }
 
     override fun disconnectFromSocket() {

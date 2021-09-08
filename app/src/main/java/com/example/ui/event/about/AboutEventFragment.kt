@@ -240,11 +240,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     val hasPages = pages?.isNotEmpty()
                     val hasAgreement = userAgreement.isNullOrEmpty().not()
 
-                    if (BuildConfig.NEW_PROFILE_EDIT) {
+                    //if (BuildConfig.NEW_PROFILE_EDIT) {
                         add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
                             hasBottomPadding = !hasRating && !hasAgreement && hasPages == true
                         })
-                    }
+                    //}
 
                     if (hasRating) {
                         add(EventPageItem(-100, getString(R.string.about_event_rate), presenter::onRateClick).apply {
