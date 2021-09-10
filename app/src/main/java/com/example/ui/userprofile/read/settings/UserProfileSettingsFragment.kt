@@ -47,7 +47,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
             dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
                     .setSelectCallback {
                         if (it.type == RegisterDataType.CHANGE_PHONE)
-                            presenter.sendPhone(it.value)
+                            presenter.checkPhoneIsUnique(it.value)
                     }
         }
         btnPasswordEdit.setOnClickListener(presenter::onChangePasswordClick)
@@ -146,6 +146,8 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
                 .setSelectCallback {
                     if (it) {
                         presenter.sendPhone(phone)
+                    } else {
+                        dialog.isProgressVisible(false)
                     }
                 }
     }

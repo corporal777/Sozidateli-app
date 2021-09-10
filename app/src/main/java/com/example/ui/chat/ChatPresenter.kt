@@ -30,6 +30,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MultipartBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
@@ -139,13 +140,13 @@ class ChatPresenter
                             }
                         }
 
-                        val avatarFromChat = it.binds.users[0].image.uri
+                        val avatarFromChat = it.binds.users.first { us -> us.id != appData.getId() }.image.uri
                         if (userAvatar != avatarFromChat && avatarFromChat != null) {
                             userAvatar = avatarFromChat
                             setUserAvatar(avatarFromChat)
                         }
 
-                        val name = it.binds.users[0].fullName
+                        val name = it.binds.users.first { us -> us.id != appData.getId() }.fullName
                         if (userName != name) {
                             userName = name
                             setTitle(name)
@@ -321,6 +322,31 @@ class ChatPresenter
         if (reloadChat) viewState.showLoadingDialog()
 
         //TODO fix this
+        compositeDisposable += Single.fromCallable {
+            MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .apply {
+                        addFormDataPart("chat", chatId)
+                        addFormDataPart("message", message)
+                    }.build()
+        }.flatMap { chatRepository.sendChatMessage(it) }
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple(
+                        onError = {
+                            if (reloadChat) viewState.hideLoadingDialog()
+                            onReceiveError(it)
+                        },
+                        onSuccess = {
+                            if (reloadChat) viewState.hideLoadingDialog()
+                        }
+                )
+        /*compositeDisposable += chatRepository.sendChatMessage()
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+
+                }*/
         /*compositeDisposable += haChat.sendMessage(chatId, type, message, additionalData = createMessageAdditionalData())
                 .flatMapCompletable {
                     if (reloadChat) getChat().ignoreElement()
@@ -434,7 +460,7 @@ class ChatPresenter
         super.onDestroy()
         //haChat.leaveRoom(chatId)
         socket.stopListenChatUpdate(chatId)
-        //socket.disconnectFromSocket()
+        socket.disconnectFromSocket()
         EventBus.getDefault().unregister(this)
     }
 

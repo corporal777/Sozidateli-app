@@ -76,7 +76,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNewEmail"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/new_login"
+            android:hint="@string/new_email"
             android:inputType="textEmailAddress" />
     </com.example.ui.views.CustomTextInputLayout>
 

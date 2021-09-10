@@ -47,6 +47,8 @@ fun Fragment.showNewChangeEmailDialog(currentEmail: String, onConfirm: (email: S
     val etNew = view.findViewById<EditText>(R.id.etNewEmail)
     etCurrent.doAfterTextChanged { tilCurrent.error = null }
     etNew.doAfterTextChanged { tilNew.error = null }
+    etCurrent.setText(currentEmail)
+    tilCurrent.isEnabled = false
     AlertDialog.Builder(requireContext())
             .setTitle(R.string.profile_email_change)
             .setView(view)

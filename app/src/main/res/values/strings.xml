@@ -814,6 +814,7 @@
     <string name="change_email_negative_button">Позже</string>
     <string name="current_login">Текущий логин</string>
     <string name="new_login">Новый логин</string>
+    <string name="new_email">Введи новый email</string>
     <string name="current_login_invalid">Введите правильный текущий логин</string>
     <string name="new_login_invalid">Введите правильный новый логин</string>
     <string name="profile_email_add">Добавить email</string>

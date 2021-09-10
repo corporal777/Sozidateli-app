@@ -15,8 +15,7 @@
         android:paddingEnd="43dp"
         android:background="@drawable/background_input_normal"
         android:hint="@string/email"
-        android:imeOptions="actionSearch"
-        android:inputType="textWebEditText"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -12,6 +12,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.RequestBody
 import ru.houseofapps.chat.models.Message
 import toBodyPart
 import javax.inject.Inject
@@ -105,4 +106,6 @@ class ChatRepositoryImpl
                 ChatInvitesCount(it.totalCount?: 0)
             }
 
+    override fun sendChatMessage(body: RequestBody): Single<MessageModel> =
+            newApi.sendChatMessage(body)
 }

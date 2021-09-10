@@ -2,67 +2,108 @@ package com.example.data.socket
 
 import android.util.Log
 import com.example.data.AppData
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.subjects.PublishSubject
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
+import io.socket.engineio.client.transports.Polling
+import java.net.URI
 import java.net.URISyntaxException
 import javax.inject.Inject
 
 class SocketIOManagerImpl
 @Inject constructor(val appData: AppData): SocketIOManager {
 
+    private val ERROR_TOKEN_MISS = "No authorization token was found"
+    private val ERROR_TOKEN_INVALID = "Invalid token"
     private var mSocket: Socket? = null
+
+    /*private var connectionStatusSubject = PublishSubject.create<ChatConnectionStatus>()
+    private var connectionStatus = ChatConnectionStatus.DISCONNECTED
+        set(value) {
+            field = value
+            connectionStatusSubject.onNext(value)
+        }*/
+
+
+    ////
+    /*val client = HttpClient() {
+        install() {
+
+        }
+    }*/
+    ////
 
     init {
         connect()
     }
 
     private fun connect() {
-        try {
-            /*val options = IO.Options()
-            options.query = "token=Token "+appData.token*/
-            mSocket = IO.socket("https://alfa-socket-data-provider.sozidateli.ru/", IO.Options().apply {
+        /*try {
+            mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
                 query = "token=Token "+appData.token
+                //transports = arrayOf(Polling.NAME/*, WebSocket.NAME*/)
             })
             Log.i("ChatSocket", "Connected to socket")
         } catch (e: URISyntaxException) {
             Log.i("ChatSocket", "Not connected to socket")
-        }
+        }*/
     }
 
     override fun connectToSocket(): Completable =
         Completable.fromAction {
-            mSocket?.on(Socket.EVENT_CONNECT_ERROR) {
-                Log.i("ChatSocket", "Error event: " + it.contentToString())
+            /*client.webSocket(urlString = "https://alfa-socket-data-provider.sozidateli.ru/", {
+
+            }, {
+
+            })*/
+
+
+            mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
+                query = "token=Token "+appData.token
+                //transports = arrayOf(Polling.NAME/*, WebSocket.NAME*/)
+            }).apply {
+                on(Socket.EVENT_CONNECT_ERROR) {
+                    //connectionStatus = ChatConnectionStatus.ERROR
+                    Log.i("ChatSocket", "Error event: " + it.contentToString())
+                }
+                on(Socket.EVENT_CONNECT) {
+                    //connectionStatus = ChatConnectionStatus.CONNECTED
+                    Log.i("ChatSocket", "Connect event: " + it.contentToString())
+                }
+                on(Socket.EVENT_DISCONNECT) {
+                    //connectionStatus = ChatConnectionStatus.DISCONNECTED
+                    Log.i("ChatSocket", "Disconnect event: " + it.contentToString())
+                }
+                on(Manager.EVENT_CLOSE) {
+                    Log.i("ChatSocket", "Close event: " + it.contentToString())
+                }
+                on(Manager.EVENT_ERROR) {
+                    val error = it[0]?.toString()
+                    if (error == ERROR_TOKEN_MISS || error == ERROR_TOKEN_INVALID) {
+                        disconnect()
+                        //connectionStatus = ChatConnectionStatus.ERROR
+                        Log.i("ChatSocket", "Close event: " + it.contentToString())
+                    }
+                }
+                Log.i("ChatSocket", "Connected")
+                connect()
             }
-            mSocket?.on(Socket.EVENT_CONNECT) {
-                Log.i("ChatSocket", "Connect event: " + it.contentToString())
-            }
-            mSocket?.on(Socket.EVENT_DISCONNECT) {
-                Log.i("ChatSocket", "Disconnect event: " + it.contentToString())
-            }
-            mSocket?.on(Manager.EVENT_TRANSPORT) {
-                Log.i("ChatSocket", "Transport event: " + it.contentToString())
-            }
-            mSocket?.connect()
-            Log.i("ChatSocket", "Connected")
         }
 
     override fun subscribeToChatUpdate(chatId: String): Flowable<List<String>> =
         Flowable.fromPublisher {
             mSocket?.emit("joinRoom", chatId)
             Log.i("ChatSocket", "Started listening: $chatId")
-            mSocket?.on("joinRoom") { data ->
-                Log.i("ChatSocket", "joinRoom Data: " + data.toString())
-                //it.onNext(data)
-            }
             it.onNext(emptyList())
             mSocket?.on("new-message") { data ->
                 Log.i("ChatSocket", "Data: " + data.toString())
                 //it.onNext(data)
             }
+            //mSocket?.connect()
         }
 
     override fun stopListenChatUpdate(chatId: String) {
@@ -75,4 +116,13 @@ class SocketIOManagerImpl
         mSocket?.disconnect()
         Log.i("ChatSocket", "Disconnected")
     }
+
+    /*private fun emit(event: String, vararg data: Any): Completable {
+        val socket = this.mSocket ?: return Completable.error(NoAuthException())
+        if (!isConnected()) return Completable.error(NoConnectionException())
+
+        return Completable.create(AckCompletable { socket.emit(event, data, it) })
+    }
+
+    private fun isConnected() = connectionStatus == ChatConnectionStatus.CONNECTED*/
 }

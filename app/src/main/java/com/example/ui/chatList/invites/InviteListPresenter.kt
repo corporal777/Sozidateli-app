@@ -29,7 +29,7 @@ class InviteListPresenter
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
                 mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to limit, ChatModel.CHAT_OFFSET to offset,
-                        ChatModel.CHAT_BINDS to "users,event,bans", ChatModel.CHAT_INVITED_USER_STATUS to "pending")
+                        ChatModel.CHAT_BINDS to "users,event,bans,last-unread-message", ChatModel.CHAT_INVITED_USER_STATUS to "pending")
         ).map { response ->
             val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
                     it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,

@@ -8,6 +8,8 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import okhttp3.RequestBody
+import retrofit2.http.Body
 
 interface ChatRepository {
 
@@ -47,4 +49,6 @@ interface ChatRepository {
     fun acceptChat(id: Int): Completable
 
     fun getChatInvitesCount(): Single<ChatInvitesCount>
+
+    fun sendChatMessage(body: RequestBody): Single<MessageModel>
 }

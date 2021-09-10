@@ -295,4 +295,7 @@ interface NewApi {
 
     @GET("v1/user/check-if-user-exist")
     fun checkEmailPhone(@Query("email") email: String?, @Query("phone") phone: String?): Completable
+
+    @POST("v1/chat-message")
+    fun sendChatMessage(@Body body: RequestBody): Single<MessageModel>
 }

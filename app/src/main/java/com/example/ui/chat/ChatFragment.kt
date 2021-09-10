@@ -33,7 +33,6 @@ import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_EVENT
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
