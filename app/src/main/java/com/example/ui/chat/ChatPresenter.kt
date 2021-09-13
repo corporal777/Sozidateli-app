@@ -101,7 +101,8 @@ class ChatPresenter
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
                     prepareListOfMessages(it)
-                    compositeDisposable += Completable.fromAction { socket.connectToSocket() }
+                    compositeDisposable += Single.just(1)
+                            .flatMapCompletable { socket.connectToSocket() }
                             .andThen(socket.subscribeToChatUpdate(chatId))
                             .performOnBackgroundOutOnMain()
                             .subscribeSimple {

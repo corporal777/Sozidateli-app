@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.user.User
@@ -55,7 +56,7 @@ interface EventRepository {
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getEventDetails(eventId: String): Maybe<EventInfo>
     fun getEventDetailForRegister(eventId: String): Maybe<EventNew>
-    fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable
+    fun mailToEvent(body: MessageToEventBody): Completable
     fun getPageDetails(pageId: String): Single<PageModel>
     fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>
     fun getPartnerDetails(partnerId : String): Single<PartnerModel>

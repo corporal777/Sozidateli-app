@@ -186,7 +186,7 @@ class ProfileContactsEditItem(
             }
 
             btnEmail.apply {
-                text = email?.onConfirmation?: email?.value
+                text = email?.value
                 setOnClickListener(changeEmailClick)
             }
 

@@ -304,4 +304,7 @@ interface NewApi {
 
     @PATCH("v1/chat-message/{id}/acknowledge")
     fun markMessageAsRead(@Path("id") id: Int): Completable
+
+    @POST("v1/event-user-message")
+    fun messageToEvent(@Body body: MessageToEventBody): Completable
 }

@@ -6,6 +6,7 @@ import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.user.User
@@ -303,8 +304,8 @@ class EventRepositoryImp
     override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
             newApi.getEventDetails(eventId, "rights,current-user-registration")
 
-    override fun mailToEvent(message: String, event: String, isPush: Boolean, isInApp: Boolean): Completable =
-            newApi.mailToEvent(message, event, isPush, isInApp)
+    override fun mailToEvent(body: MessageToEventBody): Completable =
+            newApi.messageToEvent(body)
 
     override fun getPageDetails(pageId: String): Single<PageModel> =
             newApi.getPageDetails(pageId)

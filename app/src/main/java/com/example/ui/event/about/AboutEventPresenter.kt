@@ -3,10 +3,7 @@ package com.example.ui.event.about
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.EventCalendarBodyEntity
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -242,7 +239,7 @@ class AboutEventPresenter
     }
 
     override fun onWriteToOrganizationMessage(message: String) {
-        compositeDisposable += eventRepository.mailToEvent(message, eventId, false, false)
+        compositeDisposable += eventRepository.mailToEvent(MessageToEventBody(message, appData.getId(), eventId.toInt()))
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
