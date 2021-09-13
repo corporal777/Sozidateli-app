@@ -88,7 +88,7 @@ interface ChatContract {
         fun onTakePhotoFromCameraRequest()
         fun onTakePhotoFromGalleryRequest()
         fun onLoadPreviousMessagesRequest()
-        fun onLoadNextMessagesRequest()
+        fun onLoadNextMessagesRequest(messageId: Int)
 
         fun onAcceptChatClick()
         fun onBlockChatClick()

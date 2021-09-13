@@ -2,14 +2,13 @@ package com.example.data.socket
 
 import android.util.Log
 import com.example.data.AppData
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
-import io.socket.engineio.client.transports.Polling
+import ru.houseofapps.chat.models.ChatConnectionStatus
 import java.net.URI
 import java.net.URISyntaxException
 import javax.inject.Inject
@@ -21,28 +20,19 @@ class SocketIOManagerImpl
     private val ERROR_TOKEN_INVALID = "Invalid token"
     private var mSocket: Socket? = null
 
-    /*private var connectionStatusSubject = PublishSubject.create<ChatConnectionStatus>()
+    private var connectionStatusSubject = PublishSubject.create<ChatConnectionStatus>()
     private var connectionStatus = ChatConnectionStatus.DISCONNECTED
         set(value) {
             field = value
             connectionStatusSubject.onNext(value)
-        }*/
-
-
-    ////
-    /*val client = HttpClient() {
-        install() {
-
         }
-    }*/
-    ////
 
     init {
         connect()
     }
 
     private fun connect() {
-        /*try {
+        try {
             mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
                 query = "token=Token "+appData.token
                 //transports = arrayOf(Polling.NAME/*, WebSocket.NAME*/)
@@ -50,18 +40,11 @@ class SocketIOManagerImpl
             Log.i("ChatSocket", "Connected to socket")
         } catch (e: URISyntaxException) {
             Log.i("ChatSocket", "Not connected to socket")
-        }*/
+        }
     }
 
     override fun connectToSocket(): Completable =
         Completable.fromAction {
-            /*client.webSocket(urlString = "https://alfa-socket-data-provider.sozidateli.ru/", {
-
-            }, {
-
-            })*/
-
-
             mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
                 query = "token=Token "+appData.token
                 //transports = arrayOf(Polling.NAME/*, WebSocket.NAME*/)
@@ -116,13 +99,4 @@ class SocketIOManagerImpl
         mSocket?.disconnect()
         Log.i("ChatSocket", "Disconnected")
     }
-
-    /*private fun emit(event: String, vararg data: Any): Completable {
-        val socket = this.mSocket ?: return Completable.error(NoAuthException())
-        if (!isConnected()) return Completable.error(NoConnectionException())
-
-        return Completable.create(AckCompletable { socket.emit(event, data, it) })
-    }
-
-    private fun isConnected() = connectionStatus == ChatConnectionStatus.CONNECTED*/
 }

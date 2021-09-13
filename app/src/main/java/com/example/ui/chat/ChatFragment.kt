@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ImageSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -126,7 +127,12 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
             addOnScrollListener(PaginationScrollListener(10,
                     { presenter.onLoadPreviousMessagesRequest() },
-                    { presenter.onLoadNextMessagesRequest() }
+                    {
+                        if (adapter?.itemCount != 0) {
+                            presenter.onLoadNextMessagesRequest((chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) as ChatMessageItem).message.message._id.toInt())
+                        }
+                        //presenter.onLoadNextMessagesRequest()
+                    }
             ))
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)

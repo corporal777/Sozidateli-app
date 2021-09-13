@@ -108,4 +108,10 @@ class ChatRepositoryImpl
 
     override fun sendChatMessage(body: RequestBody): Single<MessageModel> =
             newApi.sendChatMessage(body)
+
+    override fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>> =
+            newApi.getChatMessages(map)
+
+    override fun markMessageAsRead(id: Int): Completable =
+            newApi.markMessageAsRead(id)
 }

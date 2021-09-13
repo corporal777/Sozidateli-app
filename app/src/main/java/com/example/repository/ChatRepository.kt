@@ -10,6 +10,8 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.Path
+import retrofit2.http.QueryMap
 
 interface ChatRepository {
 
@@ -51,4 +53,8 @@ interface ChatRepository {
     fun getChatInvitesCount(): Single<ChatInvitesCount>
 
     fun sendChatMessage(body: RequestBody): Single<MessageModel>
+
+    fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>>
+
+    fun markMessageAsRead(id: Int): Completable
 }

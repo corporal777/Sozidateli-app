@@ -1,23 +1,28 @@
 package com.example.ui.chat
 
+import android.R.attr.bitmap
+import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
-import com.example.data.models.ChatMessage
-import com.example.data.models.ChatMessageAdditionalData
-import com.example.data.models.ChatModel
-import com.example.data.models.UserChat
+import com.example.data.models.*
 import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.isSameDay
+import com.example.extensions.parseToLong
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.ACTION_INVITE
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
+import com.example.util.FileUtils.getMimeType
 import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
@@ -30,17 +35,22 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.Message
 import withCheckInternetConnectivity
 import withLoadingDialog
+import java.io.*
 import java.util.*
 import javax.inject.Inject
+
 
 @InjectViewState
 class ChatPresenter
@@ -50,12 +60,16 @@ class ChatPresenter
         //private val haChat: HAChat,
         private val socket: SocketIOManager,
         private val appData: AppData,
-        private val takePhoto: RxTakePhoto
+        private val takePhoto: RxTakePhoto,
+        private val contentResolver: ContentResolver,
+        private val context: Context
 ) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
 
     lateinit var chatId: String
     var userAvatar: String? = null
     var userName: String? = null
+    var allMessages: MutableList<Message> = mutableListOf()
+    var messagesSize = 0
 
     private var chat: UserChat? = null
 
@@ -79,6 +93,23 @@ class ChatPresenter
         subscribeToChatEvents()
 
         compositeDisposable += getChat()
+                .flatMap {
+                    chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc", MessageModel.MESSAGES_CHAT to chatId,
+                            MessageModel.MESSAGES_LIMIT to 20))
+                }.withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    prepareListOfMessages(it)
+                    compositeDisposable += Completable.fromAction { socket.connectToSocket() }
+                            .andThen(socket.subscribeToChatUpdate(chatId))
+                            .performOnBackgroundOutOnMain()
+                            .subscribeSimple {
+                                Log.ERROR
+                            }
+                }
+
+        /*compositeDisposable += getChat()
                 .flatMapCompletable {
                     socket.connectToSocket()
                     /*haChat.joinToRoom(chatId)
@@ -100,7 +131,25 @@ class ChatPresenter
                     viewState.updateMessages(chatMessages)
                     scrollOnChatMessagesUpdate(lastUnreadIndex)
                     isMessagesInitialLoad = true*/
-                }
+                }*/
+    }
+
+    private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
+        messagesSize = it.totalCount?: 0
+        val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.Type.IMAGE else Message.Type.TEXT,
+                m.chat.toString(), if (m.file != null) m.file.uri ?: "" else m.message
+                ?: "", m.createdBy.toString(),
+                m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
+                m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
+        allMessages.addAll(result)
+        filterByDate()
+        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages)
+        val chatMessages = createChatMessages(allMessages)
+                .addDates()
+                .addUnreadMessagesItem(lastUnreadIndex)
+        viewState.updateMessages(chatMessages)
+        scrollOnChatMessagesUpdate(lastUnreadIndex)
+        isMessagesInitialLoad = true
     }
 
     private fun subscribeToChatEvents() {
@@ -122,7 +171,8 @@ class ChatPresenter
             .flatMap {
                 Completable.fromAction {
                     this.chat = UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
-                            it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
+                            it.createdDate
+                                    ?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
                             if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
                             it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
                             false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
@@ -202,7 +252,7 @@ class ChatPresenter
     }
 
     private fun createChatMessages(messages: List<Message>): List<ChatMessage> {
-        val userId = appData.getUser().user_id.toString()
+        val userId = appData.getUserNew().id.toString()
         return messages.mapNotNull {
             when (it.type) {
                 Message.Type.SERVICE -> {
@@ -220,7 +270,7 @@ class ChatPresenter
     private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
         return if (isCanShowUnreadMessagesItem) {
             if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
-                val userId = appData.getUser().user_id.toString()
+                val userId = appData.getUserNew().id.toString()
                 lastUnreadMessageId = messages.findLast { message ->
                     message.type != Message.Type.SERVICE
                             && !message.isUserMessage(userId)
@@ -370,14 +420,35 @@ class ChatPresenter
         //haChat.loadPreviousMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
     }
 
-    override fun onLoadNextMessagesRequest() {
+    override fun onLoadNextMessagesRequest(messageId: Int) {
         //TODO fix this
         //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+        if (allMessages.size < messagesSize) {
+            compositeDisposable += chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc",
+                    MessageModel.MESSAGES_START_FROM to messageId, MessageModel.MESSAGES_CHAT to chatId,
+                    MessageModel.MESSAGES_LIMIT to 20))
+                    .performOnBackgroundOutOnMain()
+                    .subscribeSimple {
+                        prepareListOfMessages(it)
+                    }
+        }
+    }
+
+    private fun filterByDate() {
+        allMessages.sortByDescending { it.createdAt }
     }
 
     override fun onChatMessageOnScreen(message: Message) {
-        //TODO fix this
         //haChat.readMessage(chatId, message)
+        if (!message.wasRead) {
+            compositeDisposable += chatRepository.markMessageAsRead(message._id.toInt())
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+
+                    }, {
+
+                    })
+        }
     }
 
     override fun onChatScrollChange(isBottomPosition: Boolean) {
@@ -392,8 +463,73 @@ class ChatPresenter
     override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
     override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage())
 
+    private fun buildImageBodyPart(fileName: String, bitmap: Bitmap):  MultipartBody.Part {
+        val leftImageFile = convertBitmapToFile(fileName, bitmap)
+        val reqFile = RequestBody.create("image/*".toMediaTypeOrNull(), leftImageFile)
+        return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+    }
+    private fun convertBitmapToFile(fileName: String, bitmap: Bitmap): File {
+        //create a file to write bitmap data
+        val file = File(context.cacheDir, fileName)
+        file.createNewFile()
+
+        //Convert bitmap to byte array
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos)
+        val bitMapData = bos.toByteArray()
+
+        //write the bytes in file
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        try {
+            fos?.write(bitMapData)
+            fos?.flush()
+            fos?.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return file
+    }
+
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
         compositeDisposable += takePhotoRequest
+                .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_CHAT, outputMaxHeight = IMAGE_MAX_SIZE_CHAT, cropMode = CropImageView.CropMode.FREE) }
+                .subscribe({
+                    val reloadChat = !isChatHasMessages
+                    if (reloadChat) viewState.showLoadingDialog()
+
+                    compositeDisposable += Single.fromCallable {
+                        MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+                                .apply {
+                                    addFormDataPart("chat", chatId)
+                                    val leftImageFile = convertBitmapToFile("temp_file.png", it)
+
+                                    val reqFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), leftImageFile)
+                                    addFormDataPart("file", "temp_file.png", reqFile)
+                                }.build()
+                    }.flatMap {
+                        chatRepository.sendChatMessage(it)
+                    }
+                            .performOnBackgroundOutOnMain()
+                            .withLoadingDialog(viewState)
+                            .subscribeSimple(
+                                    onError = {
+                                        if (reloadChat) viewState.hideLoadingDialog()
+                                        onReceiveError(it)
+                                    },
+                                    onSuccess = {
+                                        if (reloadChat) viewState.hideLoadingDialog()
+                                    }
+                            )
+                },{
+
+                })
+        /*compositeDisposable += takePhotoRequest
                 .flatMapSingle { takePhoto.crop(resultRotation = it, outputMaxWidth = IMAGE_MAX_SIZE_CHAT, outputMaxHeight = IMAGE_MAX_SIZE_CHAT, cropMode = CropImageView.CropMode.FREE) }
                 .flatMapSingle { chatRepository.uploadImage(chatId, it) }
                 .map {
@@ -408,7 +544,7 @@ class ChatPresenter
                     sendMessage(it, Message.Type.IMAGE)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     override fun onAcceptChatClick() {

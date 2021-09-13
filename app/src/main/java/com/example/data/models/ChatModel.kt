@@ -65,7 +65,15 @@ data class MessageModel(
         val message: String? = null,
         val file: FileModel? = null,
         val acknowledge: List<MessageAcknowledgeModel>? = null
-): Parcelable
+): Parcelable {
+        companion object {
+                const val MESSAGES_SORT_TYPE = "sortType"
+                const val MESSAGES_LIMIT = "limit"
+                const val MESSAGES_OFFSET = "offset"
+                const val MESSAGES_CHAT = "chat"
+                const val MESSAGES_START_FROM = "startFrom"
+        }
+}
 
 @Parcelize
 data class MessageAcknowledgeModel(

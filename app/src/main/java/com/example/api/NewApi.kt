@@ -298,4 +298,10 @@ interface NewApi {
 
     @POST("v1/chat-message")
     fun sendChatMessage(@Body body: RequestBody): Single<MessageModel>
+
+    @GET("v1/chat-message")
+    fun getChatMessages(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>>
+
+    @PATCH("v1/chat-message/{id}/acknowledge")
+    fun markMessageAsRead(@Path("id") id: Int): Completable
 }

@@ -66,6 +66,10 @@ fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
     return parseToDate(parser)?.let { formatter.format(it) }
 }
 
+fun String.parseToLong(parser: DateFormat): Long? {
+    return parseToDate(parser)?.let { it.time }
+}
+
 fun String?.parseAndFormatOrDefault(parser: DateFormat, formatter: DateFormat, default: String?): String? {
     val date = this ?: return default
     val parsed = with(parser) {
