@@ -64,7 +64,7 @@ data class MessageModel(
         val createdBy: Int? = null,
         val message: String? = null,
         val file: FileModel? = null,
-        val acknowledge: List<MessageAcknowledgeModel>? = null
+        var acknowledge: List<MessageAcknowledgeModel>? = null
 ): Parcelable {
         companion object {
                 const val MESSAGES_SORT_TYPE = "sortType"

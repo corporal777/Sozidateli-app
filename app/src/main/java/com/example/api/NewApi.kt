@@ -228,7 +228,8 @@ interface NewApi {
     fun getUserCalendarEvent(@Query("user") userId: Int, @Query("entityType") entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
 
     @GET("v1/event-activity")
-    fun getEventActivities(@Query("event") eventId: Int, @Query("binds") binds: String): Maybe<ApiNewResponse<List<EventActivityModel>>>
+    fun getEventActivities(@Query("event") eventId: Int, @Query("binds") binds: String,
+                           @Query("sortField") sortField: String?, @Query("sortType") sortType: String?): Maybe<ApiNewResponse<List<EventActivityModel>>>
 
     @GET("v1/event-activity/{id}")
     fun getEventActivity(@Path("id") activityId: String, @Query("binds") binds: String): Single<EventActivityModel>

@@ -386,7 +386,7 @@ class EventRepositoryImp
             newApi.getUserCalendarEvent(appData.getId(), entityType)
 
     override fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>> =
-            newApi.getEventActivities(eventId, "event,member,tag,auditorium,userCalendar,member.user.userFavorite,userFavorite")
+            newApi.getEventActivities(eventId, "event,member,tag,auditorium,userCalendar,member.user.userFavorite,userFavorite", "holdingDate.from", "asc")
                     .doOnSuccess { it }.map { it.data }
 
     override fun getEventActivityDetail(activityId: String): Single<EventActivityModel> =
