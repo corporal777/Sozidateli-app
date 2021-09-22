@@ -14,6 +14,8 @@ import com.example.data.bodies.EventsCalendarListBody
 import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.*
 import com.example.data.models.Notification
+import com.example.data.socket.SocketConnectionState
+import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -61,7 +63,8 @@ class MainPresenter
         private val rxPermissions: RxPermissions,
         private val notificationManager: NotificationManager,
         private val connectivityProvider: ConnectivityProvider,
-        private val eventRepository: EventRepository
+        private val eventRepository: EventRepository,
+        private val socket: SocketIOManager
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
 
     private var isRegister = false
@@ -559,6 +562,23 @@ class MainPresenter
 
 
     private fun connectToSocket(userId: Int) {
+        chatCompositeDisposable += socket.connect()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    val connected = it == SocketConnectionState.CONNECTED
+                    chatHelper.isConnectingToSocket = connected
+                    if (connected) {
+                        EventBus.getDefault().post(OnSocketConnectEvent())
+
+                        /*if (chatCompositeDisposable.size() == 1) {
+                            subscribeChatNewMessage()
+                            subscribeChatUnreadCount()
+                            subscribeChatRequestsCount()
+                        }*/
+                    }
+                }, {
+                    it.printStackTrace()
+                })
         /*chatCompositeDisposable += haChat.connect(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -647,7 +667,8 @@ class MainPresenter
     }
 
     private fun unsubscribeChat() {
-        haChat.disconnect()
+        socket.disconnectFromSocket()
+        //haChat.disconnect()
         chatCompositeDisposable.clear()
     }
 

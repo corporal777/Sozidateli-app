@@ -1,5 +1,5 @@
 package com.example.data.socket
 
 enum class SocketConnectionState {
-    CONNECTING, CONNECTED, DISCONNECT
+    CONNECTING, CONNECTED, DISCONNECT, ERROR
 }

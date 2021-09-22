@@ -115,13 +115,21 @@ class ChatPresenter
     }
 
     private fun subscribeToSocket() {
-        compositeDisposable += socket.subscribeToChatUpdate(chatId)
+        compositeDisposable += socket.connectToChat(chatId)
+                .andThen(socket.subscribeToChatUpdate())
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple { socketData ->
                     if (!hasPrevious) {
                         prepareListOfMessages(socketData)
                     }
                 }
+        /*compositeDisposable += socket.subscribeToChatUpdate(chatId)
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple { socketData ->
+                    if (!hasPrevious) {
+                        prepareListOfMessages(socketData)
+                    }
+                }*/
     }
 
     private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
@@ -623,8 +631,9 @@ class ChatPresenter
     override fun onDestroy() {
         super.onDestroy()
         //haChat.leaveRoom(chatId)
-        socket.stopListenChatUpdate(chatId)
-        socket.disconnectFromSocket()
+        socket.disconnectFromChat(chatId)
+        socket.stopListenChatUpdate()
+        //socket.disconnectFromSocket()
         EventBus.getDefault().unregister(this)
     }
 
