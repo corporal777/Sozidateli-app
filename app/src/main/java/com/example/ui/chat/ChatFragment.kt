@@ -126,10 +126,20 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
             itemAnimator = null
 
             addOnScrollListener(PaginationScrollListener(10,
-                    { presenter.onLoadPreviousMessagesRequest() },
                     {
                         if (adapter?.itemCount != 0) {
-                            presenter.onLoadNextMessagesRequest((chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) as ChatMessageItem).message.message._id.toInt())
+                            val id = if (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) is ChatUnreadLabelItem) {
+                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 3) as ChatMessageItem).message.message._id.toInt()
+                            } else {
+                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) as ChatMessageItem).message.message._id.toInt()
+                            }
+                            presenter.onLoadNextMessagesRequest(id)
+                        }
+                        //presenter.onLoadPreviousMessagesRequest()
+                    },
+                    {
+                        if (adapter?.itemCount != 0) {
+                            presenter.onLoadPreviousMessagesRequest((chatAdapter.getItem(0) as ChatMessageItem).message.message._id.toInt())
                         }
                         //presenter.onLoadNextMessagesRequest()
                     }

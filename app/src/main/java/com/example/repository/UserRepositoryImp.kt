@@ -330,6 +330,11 @@ class UserRepositoryImp
                 }
     }
 
+    override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>> {
+        return newApi.getUsers(map)
+                .map { it.data }
+    }
+
     override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return newApi.getUsersFavoritesList(map)
                 .map {
@@ -337,6 +342,16 @@ class UserRepositoryImp
                         org.entity?.model?.binds = UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
                     }
                     PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                }
+    }
+
+    override fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>> {
+        return newApi.getUsersFavoritesList(map)
+                .map {
+                    it.data.forEach { org ->
+                        org.entity?.model?.binds = UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
+                    }
+                    it.data.map { org -> org.entity?.model }
                 }
     }
 

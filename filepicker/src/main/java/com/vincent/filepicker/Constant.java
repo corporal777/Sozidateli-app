@@ -26,4 +26,9 @@ public class Constant {
 
     public static final int REQUEST_CODE_PICK_FILE = 0x400;
     public static final String RESULT_PICK_FILE = "ResultPickFILE";
+    public static final String ERROR_TOKEN_MISS = "No authorization token was found";
+    public static final String ERROR_TOKEN_INVALID = "Invalid token";
+    public static final String JOIN_TO_ROOM = "joinRoom";
+    public static final String LEAVE_ROOM = "leaveRoom";
+    public static final String NEW_MESSAGE = "new-message";
 }

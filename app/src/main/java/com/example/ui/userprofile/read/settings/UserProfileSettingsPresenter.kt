@@ -66,6 +66,9 @@ class UserProfileSettingsPresenter @Inject constructor(
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
+                    appData.updateUserNew {
+                        this.email?.onConfirmation = email
+                    }
                     viewState.showChangeEmailComplete(email)
                 }
     }

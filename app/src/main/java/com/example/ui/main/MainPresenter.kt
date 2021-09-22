@@ -154,7 +154,7 @@ class MainPresenter
         compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
                 .andThen(Completable.defer { checkInternetConnected() })
                 //.andThen(subscribeToNotifications())
-                //.doOnComplete { connectToSocket(appData.getId()) }
+                .doOnComplete { connectToSocket(appData.getId()) }
                 //.andThen(Completable.defer { checkShowGreetings() })
                 .andThen(Maybe.defer { checkUserEvent() })
                 .performOnBackgroundOutOnMain()
@@ -559,7 +559,7 @@ class MainPresenter
 
 
     private fun connectToSocket(userId: Int) {
-        chatCompositeDisposable += haChat.connect(userId.toString())
+        /*chatCompositeDisposable += haChat.connect(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val connected = it == ChatConnectionStatus.CONNECTED
@@ -575,7 +575,7 @@ class MainPresenter
                     }
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     private fun subscribeToNotifications(): Completable {

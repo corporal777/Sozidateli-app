@@ -50,7 +50,9 @@ data class ChatBinds(
         val event: EventNew? = null,
         @SerializedName("last-unread-message")
         val lastUnreadMessage: MessageModel? = null,
-        val bans: List<ChatBanModel>? = null
+        val bans: List<ChatBanModel>? = null,
+        @SerializedName("last-message")
+        val lastMessage: MessageModel? = null
         //val rights
 )
 
@@ -72,6 +74,9 @@ data class MessageModel(
                 const val MESSAGES_OFFSET = "offset"
                 const val MESSAGES_CHAT = "chat"
                 const val MESSAGES_START_FROM = "startFrom"
+                const val MESSAGES_ENDS_BY = "endsBy"
+                const val MESSAGES_ACKNOWLEDGED_STATE = "acknowledgedState"
+                const val MESSAGES_ACKNOWLEDGED_BY = "acknowledgedBy"
         }
 }
 

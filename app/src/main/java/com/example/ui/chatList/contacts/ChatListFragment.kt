@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
@@ -66,7 +67,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setChatsData(chats: List<UserChat?>, favorites: List<User>) {
+    override fun setChatsData(chats: List<UserChat?>, favorites: List</*User*/UserDetail>) {
         if (chats.isEmpty()) {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
@@ -87,8 +88,8 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         }
 
         favoritesSection.update(favorites.map {
-            UserItem(it.user_id, it.fullName, null, it.user_avatar, {
-                presenter.onUserClick(it.user_id, it.fullName)
+            UserItem(it.id, it.fullName, null, it.image.uri, {
+                presenter.onUserClick(it.id, it.fullName, it.binds?.chatRoomWithMe)
             })
         })
         swipeToRefresh.isRefreshing = false

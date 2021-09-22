@@ -1,12 +1,8 @@
 package com.example.ui.chat
 
-import android.R.attr.bitmap
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -22,7 +18,6 @@ import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
-import com.example.util.FileUtils.getMimeType
 import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
@@ -35,11 +30,9 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
@@ -68,7 +61,7 @@ class ChatPresenter
     lateinit var chatId: String
     var userAvatar: String? = null
     var userName: String? = null
-    var allMessages: MutableList<Message> = mutableListOf()
+    private var allMessages: /*MutableList*/MutableSet<Message> = /*mutableListOf()*/mutableSetOf()
     var messagesSize = 0
 
     private var chat: UserChat? = null
@@ -94,45 +87,41 @@ class ChatPresenter
 
         compositeDisposable += getChat()
                 .flatMap {
-                    chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc", MessageModel.MESSAGES_CHAT to chatId,
-                            MessageModel.MESSAGES_LIMIT to 20))
+                    chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_CHAT to chatId, MessageModel.MESSAGES_ACKNOWLEDGED_BY to appData.getId(),
+                            MessageModel.MESSAGES_LIMIT to 1, MessageModel.MESSAGES_ACKNOWLEDGED_STATE to 0))
                 }.withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    prepareListOfMessages(it)
-                    compositeDisposable += Single.just(1)
-                            .flatMapCompletable { socket.connectToSocket() }
-                            .andThen(socket.subscribeToChatUpdate(chatId))
-                            .performOnBackgroundOutOnMain()
-                            .subscribeSimple {
-                                Log.ERROR
-                            }
+                    if (it.totalCount == 0) {
+                        getAllMessages()
+                    } else {
+                        prepareListOfMessages(it)
+                        subscribeToSocket()
+                    }
                 }
+    }
 
-        /*compositeDisposable += getChat()
-                .flatMapCompletable {
-                    socket.connectToSocket()
-                    /*haChat.joinToRoom(chatId)
-                            .andThen(
-                                    if (!it.isEventChat) haChat.addUsersToRoom(chatId, listOf(it.user.id.toString()))
-                                    else Completable.complete()
-                            )*/
-                }
-                .andThen(/*haChat.subscribeToChatMessageUpdates(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)*/socket.subscribeToChatUpdate(chatId))
+    private fun getAllMessages() {
+        compositeDisposable += chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc",
+                MessageModel.MESSAGES_CHAT to chatId, MessageModel.MESSAGES_LIMIT to 40))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
-                    Log.ERROR
-                    /*val lastUnreadIndex = findLastUnreadMessageIndex(it)
-                    val chatMessages = createChatMessages(it)
-                            .addDates()
-                            .addUnreadMessagesItem(lastUnreadIndex)
-                    viewState.updateMessages(chatMessages)
-                    scrollOnChatMessagesUpdate(lastUnreadIndex)
-                    isMessagesInitialLoad = true*/
-                }*/
+                    prepareListOfMessages(it)
+                    subscribeToSocket()
+                }
+    }
+
+    private fun subscribeToSocket() {
+        compositeDisposable += socket.subscribeToChatUpdate(chatId)
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple { socketData ->
+                    if (!hasPrevious) {
+                        prepareListOfMessages(socketData)
+                    }
+                }
     }
 
     private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
@@ -144,8 +133,8 @@ class ChatPresenter
                 m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
         allMessages.addAll(result)
         filterByDate()
-        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages)
-        val chatMessages = createChatMessages(allMessages)
+        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
+        val chatMessages = createChatMessages(allMessages.toMutableList())
                 .addDates()
                 .addUnreadMessagesItem(lastUnreadIndex)
         viewState.updateMessages(chatMessages)
@@ -416,27 +405,64 @@ class ChatPresenter
                 )*/
     }
 
-    override fun onLoadPreviousMessagesRequest() {
+    private var hasPrevious = true
+    private var isCallingPrevious = false
+    override fun onLoadPreviousMessagesRequest(messageId: Int?) {
         //TODO fix this
         //haChat.loadPreviousMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
-    }
-
-    override fun onLoadNextMessagesRequest(messageId: Int) {
-        //TODO fix this
-        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
-        if (allMessages.size < messagesSize) {
-            compositeDisposable += chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc",
+        //if (/*allMessages.size < messagesSize*/messageId != 0) {
+        if (hasPrevious && !isCallingPrevious) {
+            isCallingPrevious = true
+            compositeDisposable += chatRepository.getChatMessages(
+                    mutableMapOf<String, Any>().apply {
+                        put(MessageModel.MESSAGES_SORT_TYPE, "desc")
+                        if (messageId != null) put(MessageModel.MESSAGES_START_FROM, messageId)
+                        put(MessageModel.MESSAGES_CHAT, chatId)
+                        put(MessageModel.MESSAGES_LIMIT, 40)
+                    }
+                    /*mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc",
                     MessageModel.MESSAGES_START_FROM to messageId, MessageModel.MESSAGES_CHAT to chatId,
-                    MessageModel.MESSAGES_LIMIT to 20))
+                    MessageModel.MESSAGES_LIMIT to 20)*/
+            )
                     .performOnBackgroundOutOnMain()
                     .subscribeSimple {
+                        hasPrevious = it.totalCount != 0
+                        isCallingPrevious = false
                         prepareListOfMessages(it)
                     }
         }
+        //}
+    }
+
+    private var hasNext = true
+    private var isCallingNext = false
+    override fun onLoadNextMessagesRequest(messageId: Int?) {
+        //TODO fix this
+        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT)
+        //if (/*allMessages.size < messagesSize*/messageId != 0) {
+        if (hasNext && !isCallingNext) {
+            isCallingNext = true
+            compositeDisposable += chatRepository.getChatMessages(
+                    mutableMapOf<String, Any>().apply {
+                        put(MessageModel.MESSAGES_SORT_TYPE, "desc")
+                        if (messageId != null) put(MessageModel.MESSAGES_ENDS_BY, messageId)
+                        put(MessageModel.MESSAGES_CHAT, chatId)
+                        put(MessageModel.MESSAGES_LIMIT, 40)
+                    }
+            )
+                    .performOnBackgroundOutOnMain()
+                    .subscribeSimple {
+                        hasNext = it.totalCount != 0
+                        isCallingNext = false
+                        prepareListOfMessages(it)
+                    }
+        }
+        //}
     }
 
     private fun filterByDate() {
-        allMessages.sortByDescending { it.createdAt }
+        allMessages.sortedByDescending { it.createdAt }
+        //allMessages.sortByDescending { it.createdAt }
     }
 
     override fun onChatMessageOnScreen(message: Message) {
@@ -469,6 +495,7 @@ class ChatPresenter
         val reqFile = RequestBody.create("image/*".toMediaTypeOrNull(), leftImageFile)
         return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
     }
+
     private fun convertBitmapToFile(fileName: String, bitmap: Bitmap): File {
         //create a file to write bitmap data
         val file = File(context.cacheDir, fileName)

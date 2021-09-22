@@ -6,18 +6,19 @@ import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
-import com.example.data.models.ChatListDataItem
+import com.example.data.models.*
 import com.example.data.models.ChatModel.Companion.CHAT_BINDS
 import com.example.data.models.ChatModel.Companion.CHAT_INVITED_USER_STATUS
 import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
 import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
-import com.example.data.models.UserChat
 import com.example.data.models.user.User
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.search.user.AbstractSearchUserPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.applyErrorHandler
@@ -31,6 +32,7 @@ import performOnBackgroundOutOnMain
 import ru.houseofapps.chat.HAChat
 import ru.houseofapps.chat.models.Message
 import ru.houseofapps.chat.models.RoomUnreadMessageCount
+import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -38,18 +40,19 @@ class ChatListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
         private val haChat: HAChat,
-        private val appData: AppData
+        private val appData: AppData,
+        private val userRepository: UserRepository
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
                 mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
-                        CHAT_BINDS to "users,event,bans,last-unread-message", CHAT_INVITED_USER_STATUS to "accepted")
+                        CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, CHAT_INVITED_USER_STATUS to "accepted")
         ).map { response ->
             val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
-            it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
-            if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
-                    it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
+            it.createdDate?: "", it.binds.lastMessage?.message, it.binds.lastMessage?.createdDate,
+            if (it.binds.lastMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                    it.binds.lastMessage?.acknowledge?.get(0)?.user, null, it.binds.lastMessage?.id.toString(),
                     false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
                     it.binds.event?.id.toString(), 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
@@ -112,7 +115,7 @@ class ChatListPresenter
 
     private fun dispatchChatsListUpdate(data: List<ChatListDataItem?>) {
         val chats = mutableListOf<UserChat?>()
-        val favorites = mutableListOf<User>()
+        val favorites = mutableListOf</*User*/UserDetail>()
 
         data.forEach {
             when (it) {
@@ -124,15 +127,60 @@ class ChatListPresenter
             }
         }
 
-        viewState.setChatsData(chats, favorites)
+        compositeDisposable += userRepository.getUsersWithoutPagination(
+                mutableMapOf<String, Any>().apply {
+                    put(UserDetail.USER_LIMIT, 50)
+                    put(UserDetail.USER_BINDS, "userFavorite,chat-room-with-me")
+                }
+        ).performOnBackgroundOutOnMain()
+                .subscribeSimple(
+                        onSuccess = {
+                            it.filter { userDetail -> userDetail?.binds?.userFavorite != null }.forEach { user ->
+                                if (user != null) favorites.add(user)
+                            }
+                            viewState.setChatsData(chats, favorites)
+                        },
+                        onError = {
+                            viewState.setChatsData(chats, favorites)
+                        }
+                )
+        /*compositeDisposable += userRepository.getUsersFavoritesWithoutPagination(
+                mutableMapOf<String, Any>().apply {
+                    put(UsersFavoriteModel.USERS_FAVORITE_LIMIT, 100)
+                    put(UsersFavoriteModel.USERS_FAVORITE_TYPE, UsersFavoriteModel.USERS_TYPE)
+                    put(UsersFavoriteModel.USERS_FAVORITE_LOAD_MODEL, true)
+                    put(UsersFavoriteModel.USERS_FAVORITE_USER, appData.getId())
+                }
+        ).performOnBackgroundOutOnMain()
+                .subscribeSimple(
+                        onSuccess = {
+                            it.forEach { user ->
+                                if (user != null) favorites.add(user)
+                            }
+                            viewState.setChatsData(chats, favorites)
+                        },
+                        onError = {
+                            viewState.setChatsData(chats, favorites)
+                        }
+                )*/
+
+
+        //viewState.setChatsData(chats, favorites)
     }
 
     override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
 
-    override fun onUserClick(uid: Int, userName: String) {
-        compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.openChat(it.id, userName) }, {})
+    override fun onUserClick(uid: Int, userName: String, chatRoomWithMe: ChatRoomWithMeModel?) {
+        if (chatRoomWithMe == null) {
+            compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribeSimple {
+                        viewState.openChat(it.id, userName)
+                    }
+        } else {
+            viewState.openChat(chatRoomWithMe.id, userName)
+        }
 
         //TODO finish this
         /*compositeDisposable += chatRepository.startChat(uid.toString())

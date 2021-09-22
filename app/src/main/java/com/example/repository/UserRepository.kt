@@ -83,7 +83,9 @@ interface UserRepository {
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
     fun unblockUser(id : Int): Completable
     fun blockUser(id : Int): Completable
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
