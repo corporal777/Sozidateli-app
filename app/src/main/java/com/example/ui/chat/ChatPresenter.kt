@@ -3,6 +3,7 @@ package com.example.ui.chat
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -140,19 +141,32 @@ class ChatPresenter
                 ?: "", m.createdBy.toString(),
                 m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
                 m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
-        allMessages.addAll(result)
-        if (canScroll < 2) {
-            canScroll += 1
-            isMessagesInitialLoad = false
+        /*val newList = mutableSetOf<Message>()
+        result.forEach {
+            newList.add(it)
         }
-        filterByDate()
-        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
-        val chatMessages = createChatMessages(allMessages.toMutableList())
-                .addDates()
-                .addUnreadMessagesItem(lastUnreadIndex)
-        viewState.updateMessages(chatMessages)
-        scrollOnChatMessagesUpdate(lastUnreadIndex)
-        isMessagesInitialLoad = true
+        allMessages.forEach {
+            newList.add(it)
+        }
+        allMessages = newList*/
+        try {
+            allMessages.addAll(result)
+            if (canScroll < 2) {
+                canScroll += 1
+                isMessagesInitialLoad = false
+            }
+            filterByDate()
+            val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
+            val chatMessages = createChatMessages(allMessages.toMutableList())
+                    .addDates()
+                    .addUnreadMessagesItem(lastUnreadIndex)
+            viewState.updateMessages(chatMessages)
+            scrollOnChatMessagesUpdate(lastUnreadIndex)
+            isMessagesInitialLoad = true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("Messages error", e.message.toString())
+        }
     }
 
     private fun subscribeToChatEvents() {

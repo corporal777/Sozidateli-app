@@ -158,7 +158,7 @@ class MainPresenter
                 .andThen(Completable.defer { checkInternetConnected() })
                 //.andThen(subscribeToNotifications())
                 .doOnComplete { connectToSocket(appData.getId()) }
-                //.andThen(Completable.defer { checkShowGreetings() })
+                .andThen(Completable.defer { checkShowGreetings() })
                 .andThen(Maybe.defer { checkUserEvent() })
                 .performOnBackgroundOutOnMain()
                 .subscribe({ isMustShowEvent ->
@@ -570,11 +570,11 @@ class MainPresenter
                     if (connected) {
                         EventBus.getDefault().post(OnSocketConnectEvent())
 
-                        /*if (chatCompositeDisposable.size() == 1) {
-                            subscribeChatNewMessage()
-                            subscribeChatUnreadCount()
+                        if (chatCompositeDisposable.size() == 1) {
+                            //subscribeChatNewMessage()
+                            //subscribeChatUnreadCount()
                             subscribeChatRequestsCount()
-                        }*/
+                        }
                     }
                 }, {
                     it.printStackTrace()
@@ -631,10 +631,10 @@ class MainPresenter
         compositeDisposable += Flowable.create<Int>({ emitter ->
             val disposables = CompositeDisposable()
             disposables += chatRepository.getChatInvitesCount().subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
-            disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
+            /*disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
             disposables += haChat.subscribeToExcludeFlagChange()
                     .flatMapSingle { chatRepository.getChatInvitesCount() }
-                    .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+                    .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })*/
             emitter.setDisposable(disposables)
         }, BackpressureStrategy.LATEST)
                 .performOnBackgroundOutOnMain()

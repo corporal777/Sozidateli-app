@@ -18,6 +18,8 @@ import io.socket.engineio.client.transports.Polling
 import io.socket.engineio.client.transports.WebSocket
 import io.socket.parseqs.ParseQS
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import timber.log.Timber
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.concurrent.TimeUnit
@@ -158,12 +160,19 @@ class SocketIOManagerImpl
         })
         val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(null, trustAllCerts, null)
+        val logInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Timber.tag("Socket_DATA").d(message)
+            }
+        })
+        logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(1, TimeUnit.MINUTES)
                 .writeTimeout(1, TimeUnit.MINUTES)
                 .hostnameVerifier(myHostnameVerifier)
                 .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+                .addInterceptor(logInterceptor)
                 .build()
     }
 }
