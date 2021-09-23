@@ -132,6 +132,7 @@ class ChatPresenter
                 }*/
     }
 
+    private var canScroll = 0
     private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
         messagesSize = it.totalCount?: 0
         val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.Type.IMAGE else Message.Type.TEXT,
@@ -140,6 +141,10 @@ class ChatPresenter
                 m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
                 m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
         allMessages.addAll(result)
+        if (canScroll < 2) {
+            canScroll += 1
+            isMessagesInitialLoad = false
+        }
         filterByDate()
         val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
         val chatMessages = createChatMessages(allMessages.toMutableList())
@@ -469,7 +474,8 @@ class ChatPresenter
     }
 
     private fun filterByDate() {
-        allMessages.sortedByDescending { it.createdAt }
+        val sorted = allMessages.sortedByDescending { it.createdAt}
+        allMessages = sorted.toMutableSet()
         //allMessages.sortByDescending { it.createdAt }
     }
 
