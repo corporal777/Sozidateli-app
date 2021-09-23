@@ -15,6 +15,7 @@ import io.socket.client.Manager
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.Polling
+import io.socket.engineio.client.transports.WebSocket
 import io.socket.parseqs.ParseQS
 import okhttp3.OkHttpClient
 import java.net.URI
@@ -47,12 +48,15 @@ class SocketIOManagerImpl
         try {
             mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
                 query = ParseQS.encode(hashMapOf("token" to "Token ${appData.token}"))
-                transports = arrayOf(Polling.NAME)
+                transports = arrayOf(WebSocket.NAME, Polling.NAME)
                 callFactory = okHttpClient
                 webSocketFactory = okHttpClient
             }).apply {
-                on(Socket.EVENT_CONNECTING) {
+                /*on(Socket.EVENT_CONNECTING) {
                     connectionStatus = SocketConnectionState.CONNECTING
+                }*/
+                on(Manager.EVENT_OPEN) {
+                    Log.i("ChatSocket", "Open event: " + it.contentToString())
                 }
                 on(Socket.EVENT_CONNECT_ERROR) {
                     Log.i("ChatSocket", "Error event: " + it.contentToString())
