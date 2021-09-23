@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ChatListDataItem
 import com.example.data.models.ChatModel
+import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
@@ -16,7 +17,6 @@ import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.models.Message
 import javax.inject.Inject
 
 @InjectViewState
@@ -33,7 +33,7 @@ class InviteListPresenter
         ).map { response ->
             val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
                     it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
-                    if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                    if (it.binds.lastUnreadMessage?.file == null) MessageType.TEXT else MessageType.IMAGE,
                     it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
                     false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
                     it.binds.event?.id.toString(), 0)) }

@@ -6,9 +6,9 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
+import com.example.data.models.Message
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
-import ru.houseofapps.chat.models.Message
 
 interface ChatContract {
     interface View : BaseContract.View {

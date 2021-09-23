@@ -25,7 +25,6 @@ import dagger.android.support.AndroidSupportInjectionModule
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
-import ru.houseofapps.chat.HAChat
 import javax.inject.Singleton
 
 @Module(includes = [RepositoryModule::class, AndroidSupportInjectionModule::class, RetrofitModule::class, DataDataRetrofitModule::class])
@@ -53,10 +52,6 @@ class AppModule {
     @Provides
     @Singleton
     fun provideChatData(context: Context, notificationUtil: NotificationUtil): ChatHelper = ChatHelper(context, notificationUtil)
-
-    @Provides
-    @Singleton
-    fun provideHAChat(context: Context): HAChat = HAChat.getInstance(context)
 
     @Provides
     @Singleton

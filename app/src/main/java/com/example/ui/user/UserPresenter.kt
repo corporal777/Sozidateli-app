@@ -23,7 +23,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -34,7 +33,6 @@ class UserPresenter
         private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
-        private val haChat: HAChat,
         private val eventRepository: EventRepository
 ) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
@@ -50,7 +48,7 @@ class UserPresenter
             else setNoTitle()
         }
 
-        compositeDisposable += haChat.subscribeToExcludeFlagChange()
+        /*compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     /*if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
@@ -59,7 +57,7 @@ class UserPresenter
                             viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
                         }
                     }*/
-                }, { it.printStackTrace() })
+                }, { it.printStackTrace() })*/
     }
 
     private fun loadUserData(withLoading: Boolean) {

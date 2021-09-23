@@ -13,6 +13,7 @@ import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
 import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.user.User
+import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
@@ -29,9 +30,6 @@ import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
-import ru.houseofapps.chat.models.Message
-import ru.houseofapps.chat.models.RoomUnreadMessageCount
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -39,9 +37,9 @@ import javax.inject.Inject
 class ChatListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
-        private val haChat: HAChat,
         private val appData: AppData,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val socket: SocketIOManager
 ) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
@@ -51,7 +49,7 @@ class ChatListPresenter
         ).map { response ->
             val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
             it.createdDate?: "", it.binds.lastMessage?.message, it.binds.lastMessage?.createdDate,
-            if (it.binds.lastMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+            if (it.binds.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                     it.binds.lastMessage?.acknowledge?.get(0)?.user, null, it.binds.lastMessage?.id.toString(),
                     false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
                     it.binds.event?.id.toString(), 0)) }
@@ -70,8 +68,8 @@ class ChatListPresenter
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()
     private val chatUnreadMessageConsumer = Consumer<RoomUnreadMessageCount> {
-        it.room.toIntOrNull()?.also { room -> chatUnreadMessageCounters[room] = it.count }
-        viewState.setChatUnreadMessageCount(it.room, it.count)
+        it.chatId.toIntOrNull()?.also { room -> chatUnreadMessageCounters[room] = it.count }
+        viewState.setChatUnreadMessageCount(it.chatId, it.count)
     }
 
     private var firstLaunch = true
@@ -90,10 +88,10 @@ class ChatListPresenter
                     if (lastCount != null && lastCount < it) chatsPagination.invalidate()
                     lastChatUnreadCount = it
                 }, {})
-
-        compositeDisposable += haChat.subscribeToUnreadMessageCount()
+        //TODO need to finish
+        /*compositeDisposable += haChat.subscribeToUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
-                .subscribe(chatUnreadMessageConsumer, Consumer {})
+                .subscribe(chatUnreadMessageConsumer, Consumer {})*/
 
         compositeDisposable += Observable.create(chatsPagination)
                 .subscribe({
@@ -202,7 +200,7 @@ class ChatListPresenter
             oldSubscription.dispose()
         }
 
-        val subscription = haChat.getUnreadMessageCount(chatId.toString())
+        val subscription = socket.subscribeToTotalMessagesCount(chatId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe(chatUnreadMessageConsumer, Consumer {
                     chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))

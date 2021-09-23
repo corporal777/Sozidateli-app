@@ -2,7 +2,6 @@ package com.example.data.models
 
 import com.example.data.models.user.User
 import com.google.gson.annotations.SerializedName
-import ru.houseofapps.chat.models.Message
 
 data class UserChat(
         val id: Int,
@@ -14,7 +13,7 @@ data class UserChat(
         @SerializedName("last_message_datetime")
         val lastMessageDate: String?,
         @SerializedName("last_message_type")
-        val lastMessageType: Message.Type?,
+        val lastMessageType: Message.MessageType?,
         @SerializedName("last_message_user_id")
         val lastMessageSender: Int?,
         @SerializedName("user_sender")

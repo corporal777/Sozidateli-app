@@ -30,6 +30,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.arellomobile.mvp.presenter.ProvidePresenterTag
 import com.example.R
 import com.example.data.models.ChatMessage
+import com.example.data.models.Message.MessageType
 import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
@@ -49,7 +50,6 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
-import ru.houseofapps.chat.models.Message
 import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
@@ -265,7 +265,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
             when (it) {
                 is ChatMessage.Personal -> {
                     val item = when (it.message.type) {
-                        Message.Type.IMAGE -> ChatMessageImageItem(it, imageClickListener)
+                        MessageType.IMAGE -> ChatMessageImageItem(it, imageClickListener)
                         else -> ChatMessageTextItem(it)
                     }
 

@@ -6,13 +6,13 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.models.FieldDetails
+import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
 import withCheckInternetConnectivity
 import withLoadingDialog
 import java.lang.Exception
@@ -22,8 +22,8 @@ import javax.inject.Inject
 class ProfilePresenter
 @Inject constructor(
         private val userRepository: UserRepository,
-        private val haChat: HAChat,
         private val appData: AppData,
+        private val socket: SocketIOManager,
         private val notificationManager: NotificationManager,
         private val authRepository: AuthRepository
 ) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
@@ -77,7 +77,7 @@ class ProfilePresenter
         compositeDisposable += userRepository.logout(appData.getId())
                 .doOnComplete {
                     appData.isSubscribedToPush = false
-                    haChat.disconnect()
+                    socket.disconnectFromSocket()
                     appData.logout()
                     notificationManager.cancelAll()
                 }

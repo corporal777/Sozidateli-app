@@ -5,13 +5,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
 import com.example.extensions.*
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_chat.*
-import ru.houseofapps.chat.models.Message
 import setCircleImage
 import java.util.*
 
@@ -37,8 +37,8 @@ class UserChatItem(
 
             tvLastMessage.apply {
                 text = when (userChat.lastMessageType) {
-                    Message.Type.IMAGE -> context.getString(R.string.chat_photo_message_text)
-                    Message.Type.SERVICE -> {
+                    MessageType.IMAGE -> context.getString(R.string.chat_photo_message_text)
+                    MessageType.SERVICE -> {
                         if (userChat.lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
                             if (userChat.lastMessageSender == userChat.user.id) context.getString(R.string.chat_accepted)
                             else context.getString(R.string.chat_accept_by_me)

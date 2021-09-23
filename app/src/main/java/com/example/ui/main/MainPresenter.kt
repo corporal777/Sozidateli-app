@@ -38,10 +38,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
-import ru.houseofapps.chat.models.ChatConnectionStatus
-import ru.houseofapps.chat.models.Message
-import ru.houseofapps.chat.models.NewMessage
 import withCheckInternetConnectivity
 import withLoadingDialog
 import java.lang.Exception
@@ -56,7 +52,6 @@ class MainPresenter
         private val chatHelper: ChatHelper,
         private val authRepository: AuthRepository,
         private val userRepository: UserRepository,
-        private val haChat: HAChat,
         private val appData: AppData,
         private val chatRepository: ChatRepository,
         private val locationProviderClient: FusedLocationProviderClient,
@@ -607,24 +602,24 @@ class MainPresenter
     }
 
     private fun subscribeChatUnreadCount() {
-        chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
+        /*chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     appData.chatUnreadMessageCount = it
                 }, {
                     it.printStackTrace()
                     appData.chatUnreadMessageCount = 0
-                })
+                })*/
     }
 
     private fun subscribeChatNewMessage() {
-        chatCompositeDisposable += haChat.subscribeToNewMessage()
+        /*chatCompositeDisposable += haChat.subscribeToNewMessage()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     processNewChatMessage(it)
                 }, {
                     it.printStackTrace()
-                })
+                })*/
     }
 
     private fun subscribeChatRequestsCount() {
@@ -641,7 +636,7 @@ class MainPresenter
                 .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
     }
 
-    private fun processNewChatMessage(newMessage: NewMessage) {
+    /*private fun processNewChatMessage(newMessage: NewMessage) {
         val chatId = newMessage.room
         val messageId = newMessage.message._id
         val message = when (newMessage.message.type) {
@@ -664,7 +659,7 @@ class MainPresenter
                     val title = "$newMessageTitleText $senderName"
                     chatHelper.showNotificationIfCan(chatId, messageId, title, message, title, messageData.avatar)
                 }
-    }
+    }*/
 
     private fun unsubscribeChat() {
         socket.disconnectFromSocket()

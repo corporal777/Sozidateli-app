@@ -13,7 +13,6 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
-import ru.houseofapps.chat.models.Message
 import toBodyPart
 import javax.inject.Inject
 
@@ -83,7 +82,7 @@ class ChatRepositoryImpl
                 it.data.forEach { chat ->
                     result.add(UserChat(chat.id, chat.binds?.user!!,
                             chat.createdDate?: "", chat.binds.lastUnreadMessage?.message, chat.binds.lastUnreadMessage?.createdDate,
-                            if (chat.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                            if (chat.binds.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                             chat.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, chat.binds.lastUnreadMessage?.id.toString(),
                             false, false, false, false, false, false,
                             chat.binds.event?.id.toString(), 0))

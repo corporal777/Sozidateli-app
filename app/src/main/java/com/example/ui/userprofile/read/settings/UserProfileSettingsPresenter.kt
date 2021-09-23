@@ -8,6 +8,7 @@ import com.example.data.bodies.PasswordBody
 import com.example.data.models.*
 import com.example.data.models.UserDetail.Companion.USER_EMAIL
 import com.example.data.models.UserDetail.Companion.USER_STATE
+import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
@@ -15,7 +16,6 @@ import com.example.util.AuthValidateUtil
 import com.example.util.phoneToServer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.HAChat
 import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class UserProfileSettingsPresenter @Inject constructor(
         private val appData: AppData,
         private val userRepository: UserRepository,
-        private val haChat: HAChat,
+        private val socket: SocketIOManager,
         private val notificationManager: NotificationManager,
         private val authRepository: AuthRepository
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData), UserProfileSettingsContract.Presenter {
@@ -203,7 +203,7 @@ class UserProfileSettingsPresenter @Inject constructor(
                 .subscribeSimple(
                         onComplete = {
                             appData.isSubscribedToPush = false
-                            haChat.disconnect()
+                            socket.disconnectFromSocket()
                             appData.logout()
                             notificationManager.cancelAll()
                         }

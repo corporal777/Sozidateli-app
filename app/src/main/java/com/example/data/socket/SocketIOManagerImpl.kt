@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.ApiNewResponse
 import com.example.data.models.MessageModel
+import com.example.data.models.RoomUnreadMessageCount
 import com.google.gson.Gson
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
@@ -131,6 +132,22 @@ class SocketIOManagerImpl
                     res.onNext(result)
                 }
             }*/
+
+    override fun subscribeToTotalMessagesCount(chatId: String): Flowable<RoomUnreadMessageCount> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    emitter.onNext(RoomUnreadMessageCount(chatId, args[0].toString().toInt()))
+                }
+
+                mSocket?.on("unread-total-message-count", listener)
+                Log.i("ChatSocket", "Started listening unread-total-message-count event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening unread-total-message-count")
+                    mSocket?.off("unread-total-message-count", listener)
+                }
+            }, BackpressureStrategy.LATEST)
 
     override fun stopListenChatUpdate() {
         Log.i("ChatSocket", "Stopped listening")

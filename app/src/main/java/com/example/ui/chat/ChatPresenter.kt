@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
 import performOnBackgroundOutOnMain
-import ru.houseofapps.chat.models.Message
 import withCheckInternetConnectivity
 import withLoadingDialog
 import java.io.*
@@ -136,7 +135,7 @@ class ChatPresenter
     private var canScroll = 0
     private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
         messagesSize = it.totalCount?: 0
-        val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.Type.IMAGE else Message.Type.TEXT,
+        val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.MessageType.IMAGE else Message.MessageType.TEXT,
                 m.chat.toString(), if (m.file != null) m.file.uri ?: "" else m.message
                 ?: "", m.createdBy.toString(),
                 m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
@@ -190,7 +189,7 @@ class ChatPresenter
                     this.chat = UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
                             it.createdDate
                                     ?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
-                            if (it.binds.lastUnreadMessage?.file == null) Message.Type.TEXT else Message.Type.IMAGE,
+                            if (it.binds.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                             it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
                             false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
                             it.binds.event?.id.toString(), 0)
@@ -272,7 +271,7 @@ class ChatPresenter
         val userId = appData.getUserNew().id.toString()
         return messages.mapNotNull {
             when (it.type) {
-                Message.Type.SERVICE -> {
+                Message.MessageType.SERVICE -> {
                     if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
                         ChatMessage.Accept(it)
                     } else {
@@ -289,7 +288,7 @@ class ChatPresenter
             if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
                 val userId = appData.getUserNew().id.toString()
                 lastUnreadMessageId = messages.findLast { message ->
-                    message.type != Message.Type.SERVICE
+                    message.type != Message.MessageType.SERVICE
                             && !message.isUserMessage(userId)
                             && !message.wasRead
                 }?._id
@@ -369,14 +368,14 @@ class ChatPresenter
     }
 
     override fun onSendTextMessageClick(message: String) {
-        sendMessage(message, Message.Type.TEXT)
+        sendMessage(message, Message.MessageType.TEXT)
     }
 
     override fun onImageClick(url: String, imageView: ImageView) {
         viewState.openImageFullScreen(url, imageView)
     }
 
-    private fun sendMessage(message: String, type: Message.Type) {
+    private fun sendMessage(message: String, type: Message.MessageType) {
         if (isCanShowUnreadMessagesItem) {
             isCanShowUnreadMessagesItem = false
             newMessagesMessage?.let {
