@@ -5,6 +5,7 @@ import com.example.data.socket.SocketIOManagerImpl
 import com.example.repository.*
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
@@ -31,5 +32,6 @@ class RepositoryModule {
     fun commonRepository(repository: CommonRepositoryImpl): CommonRepository = repository
 
     @Provides
+    @Singleton
     fun socketRepository(repository: SocketIOManagerImpl): SocketIOManager = repository
 }

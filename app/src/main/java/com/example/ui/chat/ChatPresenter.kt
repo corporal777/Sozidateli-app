@@ -93,6 +93,7 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
+                    //banListener()
                     if (it.totalCount == 0) {
                         getAllMessages()
                     } else {
@@ -102,6 +103,15 @@ class ChatPresenter
                 }
     }
 
+    /*private fun banListener() {
+        compositeDisposable += socket.subscribeToBannedList(chatId)
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    Log.ERROR
+                }
+    }*/
+
     private fun getAllMessages() {
         compositeDisposable += chatRepository.getChatMessages(mapOf(MessageModel.MESSAGES_SORT_TYPE to "desc",
                 MessageModel.MESSAGES_CHAT to chatId, MessageModel.MESSAGES_LIMIT to 40))
@@ -109,6 +119,9 @@ class ChatPresenter
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple {
+                    if (it.data.isNullOrEmpty()) {
+                        hasPrevious = false
+                    }
                     prepareListOfMessages(it)
                     subscribeToSocket()
                 }
@@ -140,32 +153,19 @@ class ChatPresenter
                 ?: "", m.createdBy.toString(),
                 m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
                 m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
-        /*val newList = mutableSetOf<Message>()
-        result.forEach {
-            newList.add(it)
+        allMessages.addAll(result)
+        if (canScroll < 2) {
+            canScroll += 1
+            isMessagesInitialLoad = false
         }
-        allMessages.forEach {
-            newList.add(it)
-        }
-        allMessages = newList*/
-        try {
-            allMessages.addAll(result)
-            if (canScroll < 2) {
-                canScroll += 1
-                isMessagesInitialLoad = false
-            }
-            filterByDate()
-            val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
-            val chatMessages = createChatMessages(allMessages.toMutableList())
-                    .addDates()
-                    .addUnreadMessagesItem(lastUnreadIndex)
-            viewState.updateMessages(chatMessages)
-            scrollOnChatMessagesUpdate(lastUnreadIndex)
-            isMessagesInitialLoad = true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("Messages error", e.message.toString())
-        }
+        filterByDate()
+        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
+        val chatMessages = createChatMessages(allMessages.toMutableList())
+                .addDates()
+                .addUnreadMessagesItem(lastUnreadIndex)
+        viewState.updateMessages(chatMessages)
+        scrollOnChatMessagesUpdate(lastUnreadIndex)
+        isMessagesInitialLoad = true
     }
 
     private fun subscribeToChatEvents() {
@@ -175,10 +175,12 @@ class ChatPresenter
                     .subscribe({}, {})
         }
 
+        compositeDisposable += processEvent(socket.subscribeToBannedList(chatId))
+        compositeDisposable += processEvent(socket.subscribeToInviteChange(chatId))
 //        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_ACCEPT))
         //compositeDisposable += processEvent(haChat.subscribeTo(ACTION_INVITE))
-//        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
-//        compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
+        //compositeDisposable += processEvent(haChat.subscribeTo(ACTION_BAN))
+        //compositeDisposable += processEvent(haChat.subscribeTo(ACTION_UNBAN))
         //compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
     }
 
@@ -191,13 +193,13 @@ class ChatPresenter
                                     ?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
                             if (it.binds.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                             it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
-                            false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
+                            false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
                             it.binds.event?.id.toString(), 0)
                     viewState.apply {
                         when {
                             it.isEventChat() -> viewState.hideKeyboard()
                             it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
-                            //it.isBannedByRecipient -> disableMessaging { showYouBanned() }
+                            it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
                             it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds.users.first { us -> us.id != appData.getId() }.fullName) }
                             it.isWaitForAcceptInvites() -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
@@ -493,7 +495,6 @@ class ChatPresenter
     }
 
     override fun onChatMessageOnScreen(message: Message) {
-        //haChat.readMessage(chatId, message)
         if (!message.wasRead) {
             compositeDisposable += chatRepository.markMessageAsRead(message._id.toInt())
                     .performOnBackgroundOutOnMain()
@@ -649,7 +650,6 @@ class ChatPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        //haChat.leaveRoom(chatId)
         socket.disconnectFromChat(chatId)
         socket.stopListenChatUpdate()
         //socket.disconnectFromSocket()

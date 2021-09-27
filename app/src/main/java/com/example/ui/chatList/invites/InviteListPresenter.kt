@@ -35,7 +35,7 @@ class InviteListPresenter
                     it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
                     if (it.binds.lastUnreadMessage?.file == null) MessageType.TEXT else MessageType.IMAGE,
                     it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
-                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
+                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
                     it.binds.event?.id.toString(), 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)

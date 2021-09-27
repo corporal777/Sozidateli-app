@@ -47,12 +47,13 @@ class ChatListPresenter
                 mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
                         CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, CHAT_INVITED_USER_STATUS to "accepted")
         ).map { response ->
+            appData.chatUnreadMessageCount = response.unreadMessagesTotalCount?: 0
             val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
             it.createdDate?: "", it.binds.lastMessage?.message, it.binds.lastMessage?.createdDate,
             if (it.binds.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                     it.binds.lastMessage?.acknowledge?.get(0)?.user, null, it.binds.lastMessage?.id.toString(),
-                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), false, it.isBannedByYou(appData.getId()), it.isEventChat(),
-                    it.binds.event?.id.toString(), 0)) }
+                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
+                    it.binds.event?.id.toString(), it.unreadMessagesCount?: 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }
@@ -68,8 +69,8 @@ class ChatListPresenter
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()
     private val chatUnreadMessageConsumer = Consumer<RoomUnreadMessageCount> {
-        it.chatId.toIntOrNull()?.also { room -> chatUnreadMessageCounters[room] = it.count }
-        viewState.setChatUnreadMessageCount(it.chatId, it.count)
+        it.room.toIntOrNull()?.also { room -> chatUnreadMessageCounters[room] = it.count }
+        viewState.setChatUnreadMessageCount(it.room, it.count)
     }
 
     private var firstLaunch = true
@@ -88,10 +89,10 @@ class ChatListPresenter
                     if (lastCount != null && lastCount < it) chatsPagination.invalidate()
                     lastChatUnreadCount = it
                 }, {})
-        //TODO need to finish
-        /*compositeDisposable += haChat.subscribeToUnreadMessageCount()
+
+        compositeDisposable += socket.subscribeToMessagesCount()
                 .performOnBackgroundOutOnMain()
-                .subscribe(chatUnreadMessageConsumer, Consumer {})*/
+                .subscribe(chatUnreadMessageConsumer, Consumer {})
 
         compositeDisposable += Observable.create(chatsPagination)
                 .subscribe({
@@ -200,7 +201,7 @@ class ChatListPresenter
             oldSubscription.dispose()
         }
 
-        val subscription = socket.subscribeToTotalMessagesCount(chatId.toString())
+        val subscription = socket.subscribeToMessagesCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe(chatUnreadMessageConsumer, Consumer {
                     chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))

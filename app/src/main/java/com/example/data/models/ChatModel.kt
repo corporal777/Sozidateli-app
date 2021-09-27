@@ -11,6 +11,8 @@ data class ChatModel(
         @SerializedName("createdBy")
         val createdBy: Int? = null,
         val type: String? = null,
+        @SerializedName("unreadMessagesCount")
+        val unreadMessagesCount: Int? = null,
         @SerializedName("invitedUser")
         val invitedUser: ChatInvitedUserModel? = null,
         val binds: ChatBinds? = null
@@ -27,6 +29,9 @@ data class ChatModel(
 
         fun isBannedByYou(myId: Int) : Boolean =
                 binds?.bans?.firstOrNull { it.createdBy == myId } != null
+
+        fun isBannedByRecipient(myId: Int) : Boolean =
+                binds?.bans?.firstOrNull { it.user == myId } != null
 
         companion object {
                 const val CHAT_SORT = "sortType"
@@ -93,7 +98,8 @@ data class ChatBanModel(
         @SerializedName("createdBy")
         val createdBy: Int? = null,
         val user: Int? = null,
-        val binds: ChatBanBindsModel? = null
+        val binds: ChatBanBindsModel? = null,
+        val chat: Int? = null
 )
 
 data class ChatBanBindsModel(

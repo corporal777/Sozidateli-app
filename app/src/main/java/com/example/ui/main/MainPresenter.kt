@@ -567,7 +567,7 @@ class MainPresenter
 
                         if (chatCompositeDisposable.size() == 1) {
                             //subscribeChatNewMessage()
-                            //subscribeChatUnreadCount()
+                            subscribeChatUnreadCount()
                             subscribeChatRequestsCount()
                         }
                     }
@@ -602,6 +602,14 @@ class MainPresenter
     }
 
     private fun subscribeChatUnreadCount() {
+        chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.chatUnreadMessageCount = it
+                }, {
+                    it.printStackTrace()
+                    appData.chatUnreadMessageCount = 0
+                })
         /*chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -663,7 +671,6 @@ class MainPresenter
 
     private fun unsubscribeChat() {
         socket.disconnectFromSocket()
-        //haChat.disconnect()
         chatCompositeDisposable.clear()
     }
 

@@ -2,9 +2,7 @@ package com.example.data.socket
 
 import android.util.Log
 import com.example.data.AppData
-import com.example.data.models.ApiNewResponse
-import com.example.data.models.MessageModel
-import com.example.data.models.RoomUnreadMessageCount
+import com.example.data.models.*
 import com.google.gson.Gson
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
@@ -20,6 +18,7 @@ import io.socket.engineio.client.transports.WebSocket
 import io.socket.parseqs.ParseQS
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
 import timber.log.Timber
 import java.net.URI
 import java.net.URISyntaxException
@@ -121,23 +120,12 @@ class SocketIOManagerImpl
                     mSocket?.off("new-message", listener)
                 }
             }, BackpressureStrategy.LATEST)
-        /*Flowable.fromPublisher { res ->
-                mSocket?.emit("joinRoom", chatId)
-                Log.i("ChatSocket", "Started listening: $chatId")
 
-                mSocket?.on("new-message") { data ->
-                    Log.i("ChatSocket", "Data: " + data.toString())
-                    val lastMessage = Gson().fromJson(data[0].toString(), MessageModel::class.java)
-                    val result = ApiNewResponse(listOf(lastMessage), 1)
-                    res.onNext(result)
-                }
-            }*/
-
-    override fun subscribeToTotalMessagesCount(chatId: String): Flowable<RoomUnreadMessageCount> =
+    override fun subscribeToTotalMessagesCount(): Flowable<Int> =
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->
                     Log.i("ChatSocket", "Data: " + args.toString())
-                    emitter.onNext(RoomUnreadMessageCount(chatId, args[0].toString().toInt()))
+                    emitter.onNext(args[0].toString().toInt())
                 }
 
                 mSocket?.on("unread-total-message-count", listener)
@@ -146,6 +134,58 @@ class SocketIOManagerImpl
                 emitter.setCancellable {
                     Log.i("ChatSocket", "Stopped listening unread-total-message-count")
                     mSocket?.off("unread-total-message-count", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
+    override fun subscribeToMessagesCount(): Flowable<RoomUnreadMessageCount> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    emitter.onNext(Gson().fromJson(args[0].toString(), RoomUnreadMessageCount::class.java))
+                }
+
+                mSocket?.on("unread-room-message-count", listener)
+                Log.i("ChatSocket", "Started listening unread-room-message-count event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening unread-room-message-count")
+                    mSocket?.off("unread-room-message-count", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
+    override fun subscribeToInviteChange(chatId: String): Flowable<String> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    val invite = Gson().fromJson(args[0].toString(), ChatModel::class.java)
+                    emitter.onNext(invite.id.toString())
+                }
+
+                mSocket?.on("invite-users", listener)
+                Log.i("ChatSocket", "Started listening invite-users event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening invite-users")
+                    mSocket?.off("invite-users", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
+    override fun subscribeToBannedList(chatId: String): Flowable<String> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    if (args[0].toString() != "[]") {
+                        val ban = Gson().fromJson((args[0] as JSONArray).get(0).toString(), ChatBanModel::class.java)
+                        emitter.onNext(ban.chat.toString())
+                    }
+                }
+
+                mSocket?.on("users-banned-list", listener)
+                Log.i("ChatSocket", "Started listening users-banned-list event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening users-banned-list")
+                    mSocket?.off("users-banned-list", listener)
                 }
             }, BackpressureStrategy.LATEST)
 

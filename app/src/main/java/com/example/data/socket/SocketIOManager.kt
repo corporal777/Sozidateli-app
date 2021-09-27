@@ -15,5 +15,8 @@ interface SocketIOManager {
     fun disconnectFromSocket()
     fun connect(): Flowable<SocketConnectionState>
     fun isConnected(): Single<Boolean>
-    fun subscribeToTotalMessagesCount(chatId: String): Flowable<RoomUnreadMessageCount>
+    fun subscribeToTotalMessagesCount(): Flowable<Int>
+    fun subscribeToMessagesCount(): Flowable<RoomUnreadMessageCount>
+    fun subscribeToBannedList(chatId: String): Flowable<String>
+    fun subscribeToInviteChange(chatId: String): Flowable<String>
 }
