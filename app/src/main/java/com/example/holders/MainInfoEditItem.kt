@@ -39,6 +39,7 @@ class MainInfoEditItem(
         private val name: String?,
         private val surname: String?,
         private val middleName: String?,
+        private val noMiddleName: Boolean,
         private val gender: String?,
         private val birthday: String?,
         private val address: UserAddress,
@@ -68,7 +69,9 @@ class MainInfoEditItem(
     private var mShowBirthday = showBirthday
     private var mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false
 
-    private var mNoMiddleNameChecked = !canEditName/*middleName == USER_DATA_EMPTY*/
+    private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
+
+    private val isCanChangeName = !canEditName//middleName.isNullOrEmpty()
 
     private lateinit var viewHolder: GroupieViewHolder
 
@@ -97,18 +100,19 @@ class MainInfoEditItem(
             }*/
 
             scNoMiddleName.apply {
-                isEnabled = canEditName
-                if (canEditName) {
+                isChecked = mNoMiddleNameChecked
+                isEnabled = isCanChangeName
+                if (isCanChangeName) {
                     setOnCheckedChangeListener { _, isChecked ->
                         mNoMiddleNameChecked = isChecked
                         etMiddleName.apply {
+                            if (isChecked) etMiddleName.setText("")
                             tilMiddleName.isEnabled = !isChecked
                             if (!isEnabled) tilMiddleName.error = null
                         }
                         checkDataValid()
                     }
                 }
-                isChecked = mNoMiddleNameChecked
             }
 
             tilMobilePhone.apply { error = null }
@@ -169,7 +173,7 @@ class MainInfoEditItem(
             btnPhoneConfirm.apply {
                 setOnClickListener {
                     val phone = etMobilePhone.text.toString()
-                    if (phone.isValidPhoneNumber(context)) {
+                    if (/*phone.isValidPhoneNumber(context)*/Utils.newPhoneValidator(context, phone.replace(" ", "").replace("-", ""))) {
                         confirmPhoneClick(phone)
                     } else {
                         tilMobilePhone.apply {
@@ -199,7 +203,7 @@ class MainInfoEditItem(
         editText?.setText(text)
         error = null
         isEnabled = true
-        if (canEditName) {
+        if (isCanChangeName) {
             editText?.isEnabled = true
             editText?.onTextChanged {
                 if (it?.isNotEmpty() == true) error = null
@@ -258,7 +262,7 @@ class MainInfoEditItem(
                 if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (mMobilePhone.isNullOrEmpty()) {
+                if (mMobilePhone.isNullOrEmpty() || !mIsPhoneConfirmed) {
                     isValid = false
                 }
                 if (mImage.uri.isNullOrEmpty()) isValid = false
@@ -277,7 +281,7 @@ class MainInfoEditItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (canEditName) {
+            if (isCanChangeName) {
                 if (name != mName) put(UserDetail.USER_NAME, mName)
                 if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
                 val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
@@ -293,7 +297,7 @@ class MainInfoEditItem(
                 val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
                 val work = phone?.firstOrNull { it.type == PHONE_WORK }
                 put(UserDetail.USER_PHONE, arrayListOf(
-                        FieldDetails(value = mMobilePhone.phoneToServer(),
+                        FieldDetails(value = Utils.validatePhoneBeforeSend(mMobilePhone.phoneToServer()?: ""),
                                 type = PHONE_PERSONAL, isConfirmed = personal?.isConfirmed, isVisible = personal?.isVisible, absent = false),
                         FieldDetails(value = work?.value, type = PHONE_WORK, isVisible = work?.isVisible, absent = work?.absent)
                 ))

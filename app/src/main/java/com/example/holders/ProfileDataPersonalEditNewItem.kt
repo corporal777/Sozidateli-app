@@ -93,6 +93,7 @@ class ProfileDataPersonalEditNewItem(
                     setOnCheckedChangeListener { _, isChecked ->
                         mNoMiddleNameChecked = isChecked
                         etMiddleName.apply {
+                            if (isChecked) etMiddleName.setText("")
                             tilMiddleName.isEnabled = !isChecked
                             if (!isEnabled) tilMiddleName.error = null
                         }

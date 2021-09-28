@@ -28,6 +28,7 @@ import com.example.ui.views.FinishRegisterDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.PHONE_PERSONAL
+import com.example.util.Utils
 import com.example.util.Utils.maxStateScreen
 import com.example.util.firstLetterToUppercase
 import com.xwray.groupie.GroupAdapter
@@ -83,11 +84,12 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                     user.name,
                     user.lastName,
                     user.middleName?.value,
+                    user.middleName?.absent?: true,
                     user.gender?.firstLetterToUppercase(),
                     user.birthday?.value,
                     DaDataUtil.formatSavedLocation(requireContext(), user.address),
                     user.phone,
-                    user.birthday?.isVisible ?: false, !(user.state?.nameEdited ?: true),
+                    user.birthday?.isVisible ?: false, user.state?.nameEdited ?: false,
                     user.email, user.image, { isEnable ->
                 btnSave.isEnabled = isEnable
             }, { presenter.onConfirmPhoneClick(it) },
@@ -190,7 +192,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
 
     override fun showPhoneConfirm(phone: String) {
         canUpdateData = false
-        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(phone.replace(" ", "").replace("-", "")))
+        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(Utils.validatePhoneBeforeSend(phone.replace(" ", "").replace("-", ""))/*phone.replace(" ", "").replace("-", "")*/))
     }
 
     override fun showUpdateError(message: String?) {
