@@ -19,4 +19,6 @@ interface SocketIOManager {
     fun subscribeToMessagesCount(): Flowable<RoomUnreadMessageCount>
     fun subscribeToBannedList(chatId: String): Flowable<String>
     fun subscribeToInviteChange(chatId: String): Flowable<String>
+    fun subscribeToInvitesCount(): Flowable<Int>
+    fun connectToUpdates(): Completable
 }

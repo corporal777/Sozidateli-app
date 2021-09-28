@@ -86,7 +86,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionRegister(event: String) {
-        compositeDisposable += eventRepository.checkUserProfile()
+        viewState.showEventRequest(event)
+        /*compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -96,7 +97,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
                         onSuccess = {
                             checkRegistrationFields(event, it.fields?: emptyList())
                         }
-                )
+                )*/
     }
 
     private fun checkRegistrationFields(event: String, fields: List<UserProfileFields>) {

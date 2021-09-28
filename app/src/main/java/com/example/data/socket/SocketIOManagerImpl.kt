@@ -98,6 +98,12 @@ class SocketIOManagerImpl
                 Log.i("ChatSocket", "Started listening: $chatId")
             }
 
+    override fun connectToUpdates(): Completable =
+            Completable.fromAction {
+                mSocket?.emit("refresh")
+                Log.i("ChatSocket", "Started refresh")
+            }
+
     override fun disconnectFromChat(chatId: String): Completable =
         Completable.fromAction {
             mSocket?.emit("leaveRoom", chatId)
@@ -118,6 +124,22 @@ class SocketIOManagerImpl
                 emitter.setCancellable {
                     Log.i("ChatSocket", "Stopped listening new-message")
                     mSocket?.off("new-message", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
+    override fun subscribeToInvitesCount(): Flowable<Int> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    emitter.onNext(args[0].toString().toInt())
+                }
+
+                mSocket?.on("user-count-of-invites", listener)
+                Log.i("ChatSocket", "Started listening user-count-of-invites event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening user-count-of-invites")
+                    mSocket?.off("user-count-of-invites", listener)
                 }
             }, BackpressureStrategy.LATEST)
 

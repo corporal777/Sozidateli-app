@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class ChatRepositoryImpl
 @Inject constructor(
-        appData: AppData,
+        private val appData: AppData,
         private val api: Api,
         private val newApi: NewApi
 ) : ApiRepository(appData), ChatRepository {
@@ -101,7 +101,7 @@ class ChatRepositoryImpl
 
     override fun getChatInvitesCount(): Single<ChatInvitesCount> =
             newApi.getChatsCount(mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to 1, ChatModel.CHAT_OFFSET to 0,
-                    ChatModel.CHAT_INVITED_USER_STATUS to "pending")).map {
+                    ChatModel.CHAT_INVITED_USER_STATUS to "pending", ChatModel.CHAT_INVITED_USER to appData.getId())).map {
                 ChatInvitesCount(it.totalCount?: 0)
             }
 

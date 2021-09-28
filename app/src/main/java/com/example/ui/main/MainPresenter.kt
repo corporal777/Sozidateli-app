@@ -569,6 +569,7 @@ class MainPresenter
                             //subscribeChatNewMessage()
                             subscribeChatUnreadCount()
                             subscribeChatRequestsCount()
+                            emitValueUpdates()
                         }
                     }
                 }, {
@@ -630,10 +631,17 @@ class MainPresenter
                 })*/
     }
 
+    private fun emitValueUpdates() {
+        compositeDisposable += socket.connectToUpdates()
+                .performOnBackgroundOutOnMain()
+                .subscribe()
+    }
+
     private fun subscribeChatRequestsCount() {
         compositeDisposable += Flowable.create<Int>({ emitter ->
             val disposables = CompositeDisposable()
             disposables += chatRepository.getChatInvitesCount().subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+            disposables += socket.subscribeToInvitesCount().subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
             /*disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
             disposables += haChat.subscribeToExcludeFlagChange()
                     .flatMapSingle { chatRepository.getChatInvitesCount() }

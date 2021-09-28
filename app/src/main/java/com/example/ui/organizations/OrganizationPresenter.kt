@@ -232,18 +232,8 @@ class OrganizationPresenter
     }
 
     override fun onActionRegister(event: String) {
-        /*compositeDisposable += eventRepository.eventRegisterCheck(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            checkRegistrationFields(event, emptyList())
-                        },
-                        onSuccess = {
-                            checkRegistrationFields(event, it)
-                        }
-                )*/
-        compositeDisposable += eventRepository.checkUserProfile()
+        viewState.showEventRequest(event)
+        /*compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribeSimple(
@@ -253,7 +243,7 @@ class OrganizationPresenter
                         onSuccess = {
                             checkRegistrationFields(event, it.fields?: emptyList())
                         }
-                )
+                )*/
     }
 
     private fun checkRegistrationFields(event: String, fields: List<UserProfileFields/*EventRegisterCheckField*/>) {

@@ -23,6 +23,7 @@ class ChangeStateDialog(val activity: Activity, val type: StateType) {
 
     init {
         builder.setView(binding.root)
+        builder.setCancelable(false)
         when(type) {
             StateType.SUCCESS -> {
                 binding.tvTitle.isVisible = true
