@@ -8,24 +8,33 @@ data class ChatModel(
         val id: Int,
         @SerializedName("createdDate")
         val createdDate: String? = null,
-        @SerializedName("createdBy")
-        val createdBy: Int? = null,
+        /*@SerializedName("createdBy")
+        val createdBy: Int? = null,*/
         val type: String? = null,
         @SerializedName("unreadMessagesCount")
         val unreadMessagesCount: Int? = null,
-        @SerializedName("invitedUser")
-        val invitedUser: ChatInvitedUserModel? = null,
+        /*@SerializedName("invitedUser")
+        val invitedUser: ChatInvitedUserModel? = null,*/
+        val users: List<UsersModel>? = null,
         val binds: ChatBinds? = null
 ) {
 
         fun isEventChat(): Boolean =
                 type == "event"
 
-        fun isWaitForAcceptInvites(): Boolean =
-                invitedUser?.status == "pending"
+        fun isWaitForAcceptInvites(myId: Int): Boolean {
+                val me = users?.firstOrNull { it.user == myId }
+                val opponent = users?.firstOrNull { it.user != myId }
+                return me?.status == "accepted" && opponent?.status == "pending"
+                //return invitedUser?.status == "pending"
+        }
 
-        fun isInInvites(myId: Int): Boolean =
-                invitedUser?.id == myId && invitedUser?.status == "pending"
+        fun isInInvites(myId: Int): Boolean {
+                val me = users?.firstOrNull { it.user == myId }
+                val opponent = users?.firstOrNull { it.user != myId }
+                return opponent?.status == "accepted" && me?.status == "pending"
+               //return invitedUser?.id == myId && invitedUser?.status == "pending"
+        }
 
         fun isBannedByYou(myId: Int) : Boolean =
                 binds?.bans?.firstOrNull { it.createdBy == myId } != null
@@ -42,8 +51,16 @@ data class ChatModel(
                 const val CHAT_TYPE = "type"
                 const val CHAT_INVITED_USER = "invitedUser"
                 const val CHAT_INVITED_USER_STATUS = "invitedUserStatus"
+                const val CHAT_USER_STATUS = "userStatus"
+                const val CHAT_USER = "user"
         }
 }
+
+@Parcelize
+data class UsersModel(
+        val user: Int? = null,
+        val status: String? = null
+): Parcelable
 
 data class ChatInvitedUserModel(
         val id: Int? = null,

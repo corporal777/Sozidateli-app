@@ -12,6 +12,8 @@ import com.example.data.models.ChatModel.Companion.CHAT_INVITED_USER_STATUS
 import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
 import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
+import com.example.data.models.ChatModel.Companion.CHAT_USER
+import com.example.data.models.ChatModel.Companion.CHAT_USER_STATUS
 import com.example.data.models.user.User
 import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
@@ -45,14 +47,15 @@ class ChatListPresenter
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
                 mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
-                        CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, CHAT_INVITED_USER_STATUS to "accepted")
+                        CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, /*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "accepted",
+                        CHAT_USER to appData.getId())
         ).map { response ->
             appData.chatUnreadMessageCount = response.unreadMessagesTotalCount?: 0
             val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
             it.createdDate?: "", it.binds.lastMessage?.message, it.binds.lastMessage?.createdDate,
             if (it.binds.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                     it.binds.lastMessage?.acknowledge?.get(0)?.user, null, it.binds.lastMessage?.id.toString(),
-                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
+                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
                     it.binds.event?.id.toString(), it.unreadMessagesCount?: 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
@@ -119,7 +122,7 @@ class ChatListPresenter
         data.forEach {
             when (it) {
                 is ChatListDataItem.Chat -> chats.add(it.userChat.apply {
-                    unreadMessageCount = chatUnreadMessageCounters[id, 0]
+                    //unreadMessageCount = chatUnreadMessageCounters[id, 0]
                 })
                 is ChatListDataItem.User -> favorites.add(it.user)
                 null -> chats.add(null)

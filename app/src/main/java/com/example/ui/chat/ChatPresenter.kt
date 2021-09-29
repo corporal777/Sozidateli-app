@@ -63,6 +63,7 @@ class ChatPresenter
     var userName: String? = null
     private var allMessages: /*MutableList*/MutableSet<Message> = /*mutableListOf()*/mutableSetOf()
     var messagesSize = 0
+    var isUpdateAfterMessage = false
 
     private var chat: UserChat? = null
 
@@ -193,15 +194,20 @@ class ChatPresenter
                                     ?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
                             if (it.binds.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
                             it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
-                            false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
+                            false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
                             it.binds.event?.id.toString(), 0)
+
+                    val me = it.users?.firstOrNull { us -> us.user == appData.getId() }
+                    val opponent = it.users?.firstOrNull { us -> us.user != appData.getId() }
+                    isUpdateAfterMessage = me?.status == "basic" && opponent?.status == "basic"
+
                     viewState.apply {
                         when {
                             it.isEventChat() -> viewState.hideKeyboard()
                             it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
                             it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
                             it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds.users.first { us -> us.id != appData.getId() }.fullName) }
-                            it.isWaitForAcceptInvites() -> disableMessaging { showWaitForInviteAccept() }
+                            it.isWaitForAcceptInvites(appData.getId()) -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
                                 showChatInput(false)
                                 focusOnInput(false)
@@ -404,9 +410,11 @@ class ChatPresenter
                         onError = {
                             if (reloadChat) viewState.hideLoadingDialog()
                             onReceiveError(it)
+                            updateChatAfterFirstMessage()
                         },
                         onSuccess = {
                             if (reloadChat) viewState.hideLoadingDialog()
+                            updateChatAfterFirstMessage()
                         }
                 )
         /*compositeDisposable += chatRepository.sendChatMessage()
@@ -577,9 +585,11 @@ class ChatPresenter
                                     onError = {
                                         if (reloadChat) viewState.hideLoadingDialog()
                                         onReceiveError(it)
+                                        updateChatAfterFirstMessage()
                                     },
                                     onSuccess = {
                                         if (reloadChat) viewState.hideLoadingDialog()
+                                        updateChatAfterFirstMessage()
                                     }
                             )
                 },{
@@ -601,6 +611,10 @@ class ChatPresenter
                 }, {
                     it.printStackTrace()
                 })*/
+    }
+
+    private fun updateChatAfterFirstMessage() {
+        if (isUpdateAfterMessage) compositeDisposable += getChat().performOnBackgroundOutOnMain().subscribeSimple(onError = null, onSuccess = {})
     }
 
     override fun onAcceptChatClick() {
