@@ -197,8 +197,8 @@ class SocketIOManagerImpl
                 val listener = Emitter.Listener { args ->
                     Log.i("ChatSocket", "Data: " + args.toString())
                     if (args[0].toString() != "[]") {
-                        val ban = Gson().fromJson((args[0] as JSONArray).get(0).toString(), ChatBanModel::class.java)
-                        emitter.onNext(ban.chat.toString())
+                        val chat = Gson().fromJson(args[0].toString(), ChatModel::class.java)
+                        emitter.onNext(chat.id.toString())
                     }
                 }
 
