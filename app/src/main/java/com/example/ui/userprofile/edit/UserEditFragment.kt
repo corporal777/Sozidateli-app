@@ -295,9 +295,13 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
         onSaveClick = {
             recyclerView.requestFocus()
             if (item.checkDataValid()) {
-                showEditWarning(presenter.getBaseUserState(),
-                        presenter.getMaxUserState(), item.checkBaseFieldsValid(), item.checkMaxFieldsValid()) {
-                    presenter.onSaveContactsClick(item.getDataToSave())
+                if (item.isPhoneValidated()) {
+                    showEditWarning(presenter.getBaseUserState(),
+                            presenter.getMaxUserState(), item.checkBaseFieldsValid(), item.checkMaxFieldsValid()) {
+                        presenter.onSaveContactsClick(item.getDataToSave())
+                    }
+                } else {
+                    presenter.onConfirmPhoneClick(item.getPersonalPhone()?: "")
                 }
             }
         }

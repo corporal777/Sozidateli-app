@@ -151,7 +151,7 @@ class MainPresenter
         val loadCalendar = checkUserLocation()
         compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
                 .andThen(Completable.defer { checkInternetConnected() })
-                //.andThen(subscribeToNotifications())
+                .andThen(subscribeToNotifications())
                 .doOnComplete { connectToSocket(appData.getId()) }
                 .andThen(Completable.defer { checkShowGreetings() })
                 .andThen(Maybe.defer { checkUserEvent() })
@@ -595,11 +595,24 @@ class MainPresenter
     }
 
     private fun subscribeToNotifications(): Completable {
-        return userRepository.getFcmToken()
+        return Completable.fromAction {
+            userRepository.getNotificationNotReadedSize(mapOf(NotificationModel.NOTIFICATION_LIMIT to 1,
+                    NotificationModel.NOTIFICATION_USER to appData.getId(),
+                    NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )).performOnBackgroundOutOnMain()
+                    .subscribe({
+                        appData.notificationsCount = it
+                    }, {
+                        it.printStackTrace()
+                        appData.notificationsCount = 0
+                    })
+        }
+
+        /*return userRepository.getFcmToken()
                 .flatMapCompletable { userRepository.notificationsRegister(it.token) }
                 .doOnComplete { appData.isSubscribedToPush = true }
                 .doOnError { appData.isSubscribedToPush = false }
-                .onErrorComplete()
+                .onErrorComplete()*/
     }
 
     private fun subscribeChatUnreadCount() {

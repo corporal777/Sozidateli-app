@@ -316,6 +316,11 @@ class UserRepositoryImp
                 }
     }
 
+    override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
+        return newApi.getNotifications(map)
+                .map { it.totalCount }
+    }
+
     /*override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
         return call(api.getNotFilledFields())
     }*/

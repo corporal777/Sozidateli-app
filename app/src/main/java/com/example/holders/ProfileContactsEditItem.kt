@@ -399,6 +399,9 @@ class ProfileContactsEditItem(
         return true
     }
 
+    fun isPhoneValidated() = mIsPhoneConfirmed
+    fun getPersonalPhone() = mMobilePhone.phoneToServer()
+
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
