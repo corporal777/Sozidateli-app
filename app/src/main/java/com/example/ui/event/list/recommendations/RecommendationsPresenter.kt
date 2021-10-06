@@ -48,7 +48,8 @@ class RecommendationsPresenter
 
     override fun onMenuChatClick() {
         if (!appData.hasBaseState && !appData.hasMaxState) {
-            viewState.showNeedMoreState()
+            viewState.showStateErrorMessage()
+            //viewState.showNeedMoreState()
         } else {
             viewState.showChat()
         }

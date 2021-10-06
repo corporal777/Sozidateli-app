@@ -38,7 +38,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
             if (!address.isNullOrEmpty()) put(USER_ADDRESS_STREET, address)
             val interest = filter.spec ?: filter.theme
             if (interest != null) put(FILTER_INTEREST, interest)
-            if (searchText.isNotEmpty()) put(USER_SEARCH, "%$searchText%")
+            if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
         }
         userRepository.getUsers(data).doOnSuccess {
             val uid = appData.getId()

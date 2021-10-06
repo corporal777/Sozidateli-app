@@ -90,7 +90,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
 
     var wasShow = false
     override fun showNeedMoreState() {
-        if (!wasShow) {
+/*        if (!wasShow) {
             ChangeStateDialog(requireActivity(), StateType.ERROR)
                     .setSendCodeCallback {
                         if (it) {
@@ -98,7 +98,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
                         }
                         wasShow = true
                     }
-        }
+        }*/
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
