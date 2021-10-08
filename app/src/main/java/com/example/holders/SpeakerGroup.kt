@@ -14,7 +14,7 @@ open class SpeakerGroup(
     private val userItem = UserItem(
             speaker.binds?.user?.id?: 0,
             speaker.binds?.user?.fullName?: "",
-            speaker.binds?.user?.address?.city,
+            speaker.description/*binds?.user?.address?.city*/,
             speaker.binds?.user?.image?.uri,
             { onSpeakerClick(speaker) },
             speaker.binds?.user?.getUserSubscribeAction(),
@@ -37,7 +37,7 @@ open class SpeakerGroup(
     private val descriptionItem: SpeakerDescriptionItem?
 
     init {
-        val description = speaker.role
+        val description = speaker.organizationAndPosition/*role*/
         descriptionItem = if (!description.isNullOrBlank()) SpeakerDescriptionItem(-(speaker.user?.toLong()?:0)/*-speaker.uid.toLong()*/, description)
         else null
     }

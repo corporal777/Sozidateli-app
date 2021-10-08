@@ -332,6 +332,9 @@ data class MemberModel(
         val user: Int? = null,
         val role: String? = null,
         val status: String? = null,
+        val description: String? = null,
+        @SerializedName("organizationAndPosition")
+        val organizationAndPosition: String? = null,
         val binds: MemberBindsModel? = null
 ): Parcelable {
 
