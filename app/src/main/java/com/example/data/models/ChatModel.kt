@@ -88,7 +88,8 @@ data class MessageModel(
         val createdBy: Int? = null,
         val message: String? = null,
         val file: FileModel? = null,
-        var acknowledge: List<MessageAcknowledgeModel>? = null
+        var acknowledge: List<MessageAcknowledgeModel>? = null,
+        val sender: MessageSender? = null
 ): Parcelable {
         companion object {
                 const val MESSAGES_SORT_TYPE = "sortType"
@@ -101,6 +102,17 @@ data class MessageModel(
                 const val MESSAGES_ACKNOWLEDGED_BY = "acknowledgedBy"
         }
 }
+
+@Parcelize
+data class MessageSender(
+        val id: Int,
+        val name: String? = null,
+        @SerializedName("lastName")
+        val lastName: String? = null,
+        @SerializedName("middleName")
+        val middleName: String? = null,
+        val avatar: String? = null
+): Parcelable
 
 @Parcelize
 data class MessageAcknowledgeModel(

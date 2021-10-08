@@ -9,6 +9,7 @@ import io.reactivex.Single
 
 interface SocketIOManager {
     fun subscribeToChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>>
+    fun subscribeToEventChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>>
     fun stopListenChatUpdate()
     fun connectToChat(chatId: String): Completable
     fun disconnectFromChat(chatId: String): Completable

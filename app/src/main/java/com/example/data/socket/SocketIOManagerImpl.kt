@@ -109,6 +109,24 @@ class SocketIOManagerImpl
             mSocket?.emit("leaveRoom", chatId)
         }
 
+    override fun subscribeToEventChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    val lastMessage = Gson().fromJson(args[0].toString(), MessageModel::class.java)
+                    val result = ApiNewResponse(listOf(lastMessage), 1)
+                    emitter.onNext(result)
+                }
+
+                mSocket?.on("new-event-message", listener)
+                Log.i("ChatSocket", "Started listening new-event-message event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening new-event-message")
+                    mSocket?.off("new-event-message", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
     override fun subscribeToChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>> =
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->
