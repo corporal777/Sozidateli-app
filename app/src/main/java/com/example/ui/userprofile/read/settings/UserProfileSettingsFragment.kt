@@ -109,7 +109,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         ivInfo.isVisible = !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
         ivInfo.setOnClickListener {
             WaitForAcceptDialog(requireActivity(), getString(R.string.wait_for_accept_title), getString(R.string.wait_for_accept_text),
-            getString(R.string.wait_for_accept_positive_button), getString(R.string.content_description_delete))
+            getString(R.string.wait_for_accept_positive_button), getString(R.string.content_description_delete), true)
                     .setSendCodeCallback {
                         if (it) {
                             presenter.registerEmailResend(user.email?.onConfirmation?: user.email?.value?: "")

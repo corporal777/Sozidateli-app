@@ -11,6 +11,7 @@ import com.example.data.models.ChatModel.Companion.CHAT_BINDS
 import com.example.data.models.ChatModel.Companion.CHAT_INVITED_USER_STATUS
 import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
 import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
+import com.example.data.models.ChatModel.Companion.CHAT_SHOW_EVENTS
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.ChatModel.Companion.CHAT_USER
 import com.example.data.models.ChatModel.Companion.CHAT_USER_STATUS
@@ -48,15 +49,27 @@ class ChatListPresenter
         chatRepository.getChats(
                 mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
                         CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, /*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "accepted",
-                        CHAT_USER to appData.getId())
+                        CHAT_USER to appData.getId(),
+                        CHAT_SHOW_EVENTS to true)
         ).map { response ->
             appData.chatUnreadMessageCount = response.unreadMessagesTotalCount?: 0
-            val items = response.data.map { ChatListDataItem.Chat(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
-            it.createdDate?: "", it.binds.lastMessage?.message, it.binds.lastMessage?.createdDate,
-            if (it.binds.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                    it.binds.lastMessage?.acknowledge?.get(0)?.user, null, it.binds.lastMessage?.id.toString(),
+
+            val items = response.data.map {
+            val user = if (it.isEventChat()) {
+                val img = it.binds?.event?.image
+                UserDetail(it.binds?.event?.id?: 0, it.binds?.event?.name, null, null,
+                null, null, null,null, ContactInformationModel(null, null, null),
+                null, ImageModel(img?.mimeType, img?.size, it.binds?.lastMessage?.event?.url?: img?.uri, img?.name, 1, null), null, null, null, null,null,
+                        null,null,null,null,null,false)
+            } else {
+                it.binds?.users?.first { us -> us.id != appData.getId() }!!
+            }
+            ChatListDataItem.Chat(UserChat(it.id, /*it.binds?.users?.first { us -> us.id != appData.getId() }!!*/user,
+            it.createdDate?: "", it.binds?.lastMessage?.message, it.binds?.lastMessage?.createdDate,
+            if (it.binds?.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
+                    if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastMessage?.acknowledge?.get(0)?.user else 0, null, it.binds?.lastMessage?.id.toString(),
                     false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
-                    it.binds.event?.id.toString(), it.unreadMessagesCount?: 0)) }
+                    it.binds?.event?.id.toString(), it.unreadMessagesCount?: 0)) }
                     //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }

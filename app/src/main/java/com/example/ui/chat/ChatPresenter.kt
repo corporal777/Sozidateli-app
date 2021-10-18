@@ -185,17 +185,26 @@ class ChatPresenter
         //compositeDisposable += processEvent(haChat.subscribeToExcludeFlagChange().map { it.roomKey })
     }
 
-    private fun getChat() = chatRepository.getChatById(chatId, mapOf(ChatModel.CHAT_BINDS to "users,event,bans,last-unread-message"))
+    private fun getChat() = chatRepository.getChatById(chatId, mapOf(ChatModel.CHAT_BINDS to "users,event,bans,last-unread-message,last-message"))
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap {
                 Completable.fromAction {
-                    this.chat = UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
+                    val user = if (it.isEventChat()) {
+                        val img = it.binds?.event?.image
+                        UserDetail(it.binds?.event?.id?: 0, it.binds?.event?.name, null, null,
+                                null, null, null,null, ContactInformationModel(null, null, null),
+                                null, ImageModel(img?.mimeType, img?.size, it.binds?.lastMessage?.event?.url?: img?.uri, img?.name, 1, null), null, null, null, null,null,
+                                null,null,null,null,null,false)
+                    } else {
+                        it.binds?.users?.first { us -> us.id != appData.getId() }!!
+                    }
+                    this.chat = UserChat(it.id, /*it.binds?.users?.first { us -> us.id != appData.getId() }!!*/user,
                             it.createdDate
-                                    ?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
-                            if (it.binds.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                            it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
+                                    ?: "", it.binds?.lastUnreadMessage?.message, it.binds?.lastUnreadMessage?.createdDate,
+                            if (it.binds?.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
+                            if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastUnreadMessage?.acknowledge?.get(0)?.user else 0, null, it.binds?.lastUnreadMessage?.id.toString(),
                             false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
-                            it.binds.event?.id.toString(), 0)
+                            it.binds?.event?.id.toString(), 0)
 
                     val me = it.users?.firstOrNull { us -> us.user == appData.getId() }
                     val opponent = it.users?.firstOrNull { us -> us.user != appData.getId() }
@@ -206,7 +215,7 @@ class ChatPresenter
                             it.isEventChat() -> viewState.hideKeyboard()
                             it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
                             it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
-                            it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds.users.first { us -> us.id != appData.getId() }.fullName) }
+                            it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName) }
                             it.isWaitForAcceptInvites(appData.getId()) -> disableMessaging { showWaitForInviteAccept() }
                             else -> {
                                 showChatInput(false)
@@ -214,19 +223,29 @@ class ChatPresenter
                             }
                         }
 
-                        val avatarFromChat = it.binds.users.first { us -> us.id != appData.getId() }.image.uri
+                        val avatarFromChat =if (it.isEventChat()) {
+                            it.binds?.lastMessage?.event?.url?: it.binds?.event?.image?.uri
+                        } else {
+                            it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
+                        }
+                        //val avatarFromChat = it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
                         if (userAvatar != avatarFromChat && avatarFromChat != null) {
                             userAvatar = avatarFromChat
                             setUserAvatar(avatarFromChat)
                         }
 
-                        val name = it.binds.users.first { us -> us.id != appData.getId() }.fullName
+                        val name = if (it.isEventChat()) {
+                            it.binds?.event?.name?: ""
+                        } else {
+                            it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
+                        }
+                        //val name = it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
                         if (userName != name) {
                             userName = name
                             setTitle(name)
                         }
 
-                        isChatHasMessages = it.binds.lastUnreadMessage != null
+                        isChatHasMessages = it.binds?.lastUnreadMessage != null
                     }
                 }
                         .andThen(Single.just(it))

@@ -512,7 +512,7 @@
     <string name="favorites_events_subevents">Избранные события</string>
 
     <string name="email_change_title">Email изменен</string>
-    <string name="email_change_msg">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо для подтверждения изменения e-mail.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
+    <string name="email_change_msg">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо для подтверждения изменения e-mail. \n\nЕсли Вы не найдете его в папке «Входящие», то загляните в «Спам» или попробуйте отправить письмо повторно.Если и в этом случае письмо не обнаружено, обратитесь в службу поддержки:</string>
 
     <string name="email_change_confirm_success">Email успешно изменен</string>
     <string name="email_change_confirm_error">Ошибка при подтверждении email</string>
@@ -806,10 +806,10 @@
     <string name="program">Программа</string>
     <string name="all_activities">Все события</string>
     <string name="wait_for_accept_title">Ожидает подтверждения</string>
-    <string name="wait_for_accept_text">Для подтверждения перейтите по ссылке из письма, направленного на e-mail</string>
+    <string name="wait_for_accept_text">Для подтверждения перейдите по ссылке из письма, направленного на указанный e-mail</string>
     <string name="wait_for_accept_positive_button">Отправить письмо повторно</string>
     <string name="change_email_title">Смена основной почты</string>
-    <string name="change_email_text">Для смены или подтверждения основной почты, пожалуйста, перейдите в настройки аккаунта</string>
+    <string name="change_email_text">Эта почта является логином, на нее приходят все рассылки и уведомления, связанные с Вашим профилем. Для смены или подтверждения основной почты, пожалуйста, перейдите в настройки аккаунта.</string>
     <string name="change_email_positive_button">Перейти в настройки</string>
     <string name="change_email_negative_button">Позже</string>
     <string name="current_login">Текущий логин</string>
@@ -823,4 +823,6 @@
     <string name="confirm_email_text">Этот e-mail подтвержден другим пользователем. Это Ваша страница?</string>
     <string name="confirm_email_phone_text">Этот номер телефона/e-mail подтвержден другим пользователем. Это Ваша страница?</string>
     <string name="confirm_phone_positive_password">Да, восстановить пароль</string>
+    <string name="profile_edit_public_email_hint">Публичный e-mail</string>
+    <string name="profile_edit_main_email_hint">Основной e-mail</string>
 </resources>

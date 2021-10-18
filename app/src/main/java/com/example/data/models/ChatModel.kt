@@ -53,6 +53,7 @@ data class ChatModel(
                 const val CHAT_INVITED_USER_STATUS = "invitedUserStatus"
                 const val CHAT_USER_STATUS = "userStatus"
                 const val CHAT_USER = "user"
+                const val CHAT_SHOW_EVENTS = "showEventRooms"
         }
 }
 
@@ -89,7 +90,8 @@ data class MessageModel(
         val message: String? = null,
         val file: FileModel? = null,
         var acknowledge: List<MessageAcknowledgeModel>? = null,
-        val sender: MessageSender? = null
+        val sender: MessageSender? = null,
+        val event: MessageEventData? = null
 ): Parcelable {
         companion object {
                 const val MESSAGES_SORT_TYPE = "sortType"
@@ -102,6 +104,12 @@ data class MessageModel(
                 const val MESSAGES_ACKNOWLEDGED_BY = "acknowledgedBy"
         }
 }
+
+@Parcelize
+data class MessageEventData(
+        val name: String,
+        val url: String
+): Parcelable
 
 @Parcelize
 data class MessageSender(

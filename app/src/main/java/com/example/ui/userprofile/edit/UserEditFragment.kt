@@ -224,7 +224,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     user.name,
                     user.lastName,
                     user.middleName?.value,
-                    user.middleName?.absent?: true,
+                    user.middleName?.absent?: false,
                     user.gender?.firstLetterToUppercase(),
                     user.birthday?.value,
                     user.birthday?.isVisible?: false,
@@ -342,8 +342,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showChangeEmail() {
-        WaitForAcceptDialog(requireActivity(), getString(R.string.change_email_title), getString(R.string.change_email_text),
-                getString(R.string.change_email_positive_button), getString(R.string.change_email_negative_button))
+        WaitForAcceptDialog(requireActivity(), null, getString(R.string.change_email_text),
+                getString(R.string.change_email_positive_button), getString(R.string.revoke))
                 .setSendCodeCallback {
                     if (it) {
                         findNavController().navigate(R.id.user_profile_settings_fragment)

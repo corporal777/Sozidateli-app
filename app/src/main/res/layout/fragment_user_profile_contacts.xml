@@ -29,6 +29,40 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvEmailTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvEmail"
+                android:text="@string/profile_edit_main_email_hint" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="email"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="Lyaka.art@gmail.com" />
+
+            <TextView
+                android:id="@+id/tvEmailPublicTitle"
+                style="@style/Profile.User.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/tvEmail"
+                android:text="@string/profile_edit_public_email_hint" />
+
+            <TextView
+                android:id="@+id/tvEmailPublic"
+                style="@style/Profile.User.Data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="email"
+                android:hint="@string/user_profile_files_hint"
+                tools:text="Lyaka.art@gmail.com" />
+
+            <TextView
                 android:id="@+id/tvPhoneMobileTitle"
                 style="@style/Profile.User.Title"
                 android:layout_width="match_parent"
@@ -96,22 +130,6 @@
                 android:hint="@string/user_profile_files_hint"
                 tools:text="https://google.com" />
 
-            <TextView
-                android:id="@+id/tvEmailTitle"
-                style="@style/Profile.User.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@+id/tvEmail"
-                android:text="@string/profile_email" />
-
-            <TextView
-                android:id="@+id/tvEmail"
-                style="@style/Profile.User.Data"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="email"
-                android:hint="@string/user_profile_files_hint"
-                tools:text="Lyaka.art@gmail.com" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
