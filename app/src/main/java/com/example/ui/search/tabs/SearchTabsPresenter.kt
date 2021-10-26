@@ -1,6 +1,7 @@
 package com.example.ui.search.tabs
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.SearchFilter
 import com.example.ui.base.BasePresenter
 import com.example.ui.search.SearchInterface
@@ -8,8 +9,8 @@ import javax.inject.Inject
 
 @InjectViewState
 class SearchTabsPresenter
-@Inject constructor(
-) : BasePresenter<SearchTabsContract.View>(), SearchTabsContract.Presenter {
+@Inject constructor(appData: AppData
+) : BasePresenter<SearchTabsContract.View>(appData), SearchTabsContract.Presenter {
 
     lateinit var searchInterface: SearchInterface
     var filter: SearchFilter? = null

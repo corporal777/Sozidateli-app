@@ -1,9 +1,14 @@
 package com.example.ui.userprofile.read.settings
 
+import android.content.Context
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -17,7 +22,9 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
 import com.example.util.PHONE_PERSONAL
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.fragment_user_profile_settings.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -98,6 +105,14 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
+        tilSurname.initNameInput(user.lastName)
+        tilName.initNameInput(user.name)
+        tilMiddleName.initNameInput(user.getMiddleName())
+        scNoMiddleName.apply {
+            isChecked = user.middleName?.absent?: false
+            isEnabled = false
+        }
+
         val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         //tvPhoneMobile.isVisible = phone != null
         //tvPhoneMobileTitle.isVisible = phone != null
@@ -122,6 +137,33 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
                         }
                     }
         }
+    }
+
+    private fun TextInputLayout.initNameInput(text: String?) {
+        editText?.setText(text)
+        error = null
+        isEnabled = true
+        editText?.isEnabled = false
+        setEndIconDrawable(R.drawable.ic_information)
+        setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
+        setEndIconOnClickListener { showDisabledMainInputInfo(context) }
+    }
+
+    private fun showDisabledMainInputInfo(context: Context) {
+        val supportEmail = context.getString(R.string.support_email)
+        val message = context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail).toSpannable()
+        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+
+        AlertDialog.Builder(context)
+                .setTitle(R.string.profile_edit_name_disabled_title)
+                .setMessage(message)
+                .setPositiveButton(R.string.ok, null)
+                .show()
+                .apply {
+                    findViewById<TextView>(android.R.id.message)?.let {
+                        it.movementMethod = BetterLinkMovementMethod.getInstance()
+                    }
+                }
     }
 
     override fun showChangeEmail() = showChangeEmailDialog(presenter::checkEmailIsUnique)

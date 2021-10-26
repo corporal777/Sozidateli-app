@@ -17,6 +17,7 @@ import com.example.di.Connectivity
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.event.list.EventListPresenter
+import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -48,7 +49,7 @@ class RecommendationsPresenter
 
     override fun onMenuChatClick() {
         if (!appData.hasBaseState && !appData.hasMaxState) {
-            viewState.showStateErrorMessage()
+            viewState.showStateErrorMessage(StateType.BASE, false, null)
             //viewState.showNeedMoreState()
         } else {
             viewState.showChat()

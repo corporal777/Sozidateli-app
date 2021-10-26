@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
 import com.example.data.models.FieldDetails
+import com.example.data.models.ToggleIntModel
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -19,7 +20,7 @@ class MaxStateEducationPresenter
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val authRepository: AuthRepository
-): BasePresenter<MaxStateEducationContract.View>(), MaxStateEducationContract.Presenter {
+): BasePresenter<MaxStateEducationContract.View>(appData), MaxStateEducationContract.Presenter {
 
     var screen: Int = 1
 
@@ -42,7 +43,7 @@ class MaxStateEducationPresenter
         viewState.navigateUp()
     }
 
-    override fun onSaveEducationClick(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
+    override fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
         compositeDisposable += userRepository.updateUserEducationScreen(educationLevel, educationsList, degree)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

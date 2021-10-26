@@ -3,13 +3,14 @@ package com.example.ui.event.location.buildingScheme
 import android.util.SparseIntArray
 import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Place
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class BuildingSchemePresenter
-@Inject constructor() : BasePresenter<BuildingSchemeContract.View>(), BuildingSchemeContract.Presenter {
+@Inject constructor(appData: AppData) : BasePresenter<BuildingSchemeContract.View>(appData), BuildingSchemeContract.Presenter {
 
     lateinit var places: List<Place>
 

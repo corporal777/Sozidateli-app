@@ -5,6 +5,8 @@ import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.UserDetail
+import com.example.ui.views.StateType
 
 interface BaseContract {
     interface View : MvpView, LoadingView {
@@ -42,7 +44,7 @@ interface BaseContract {
         fun showNotificationErrorMessage()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showStateErrorMessage()
+        fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?)
     }
 
     interface LoadingView {

@@ -51,25 +51,23 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
-        tvId.text = getString(R.string.profile_uid, user.id)
         val jObject = DaDataUtil.getLocationJson(requireContext())
-        tvLastName.text = user.lastName
+        /*tvLastName.text = user.lastName
 
         tvName.text = user.name
 
         tvMiddleName.text = user.getMiddleName()
         val isNoMiddleNameChecked = user.middleName?.value == USER_DATA_EMPTY
         tvMiddleNameTitle.isVisible = !isNoMiddleNameChecked
-        tvMiddleName.isVisible = !isNoMiddleNameChecked
+        tvMiddleName.isVisible = !isNoMiddleNameChecked*/
 
         tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
 
         tvGender.text = setGender(user)
-        tvStatus.text = state
 
         tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject) ?: DaDataUtil.formatParam(user.address?.country, jObject)
 
-        tvAdditional.text = user.notes
+        tvAdditional.text = user.notes?.value
 
         var filesText = ""
         user.binds?.recommendationFile?.forEach { file ->
@@ -99,7 +97,7 @@ class UserProfileMainDataFragment : BaseFragment(), UserProfileMainDataContract.
     }
 
     private fun setGender(user: UserDetail): String {
-        return when (user.gender) {
+        return when (user.gender?.value) {
             GENDER_MALE -> requireContext().getString(R.string.profile_gender_male)
             GENDER_FEMALE -> requireContext().getString(R.string.profile_gender_female)
             else -> ""

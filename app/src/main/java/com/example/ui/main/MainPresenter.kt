@@ -60,7 +60,7 @@ class MainPresenter
         private val connectivityProvider: ConnectivityProvider,
         private val eventRepository: EventRepository,
         private val socket: SocketIOManager
-) : BasePresenter<MainContract.View>(), MainContract.Presenter {
+) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
 
     private var isRegister = false
     lateinit var newMessageTitleText: String

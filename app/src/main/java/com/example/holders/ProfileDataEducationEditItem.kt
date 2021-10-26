@@ -27,6 +27,7 @@ class ProfileDataEducationEditItem(
         organization: String?,
         speciality: String?,
         birthday: FieldDetails?,
+        showInProfile: Boolean?,
         private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit,
         private val isDataValid: (isValid: Boolean) -> Unit
 ) : Item() {
@@ -44,6 +45,8 @@ class ProfileDataEducationEditItem(
     var mSpeciality = speciality
         private set
     var isNotFinished = mFinish == null
+        private set
+    var mShowInProfile = showInProfile?: false
         private set
 
     private var isDateCheckboxWasSet = false
@@ -94,7 +97,7 @@ class ProfileDataEducationEditItem(
                 mSpeciality = it.toString()
                 validateEnableButton()
             }
-
+            scEducation.initSwitch(mShowInProfile) { mShowInProfile = it }
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataEducationEditItem) }
 
             if (isDeleteVisible)

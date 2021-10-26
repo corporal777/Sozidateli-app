@@ -17,7 +17,8 @@ data class UserAddress(
         val house: String? = null,
         val flat: String? = null,
         val lat: Double? = null,
-        val lon: Double? = null
+        val lon: Double? = null,
+        var showInProfile: Boolean? = null
 ) {
 
     companion object {
@@ -50,7 +51,8 @@ data class UserAddress(
                 item.house,
                 item.flat,
                 item.lat,
-                item.lon
+                item.lon,
+                item.showInProfile
         )
     }
 }

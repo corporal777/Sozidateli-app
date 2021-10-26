@@ -1,6 +1,7 @@
 package com.example.ui.search.code
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -12,8 +13,9 @@ import javax.inject.Inject
 @InjectViewState
 class EnterCodePresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
-) : BasePresenter<EnterCodeContract.View>(), EnterCodeContract.Presenter {
+        private val eventRepository: EventRepository,
+        appData: AppData
+) : BasePresenter<EnterCodeContract.View>(appData), EnterCodeContract.Presenter {
 
     override fun onSearchClick(code: String) {
         compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,

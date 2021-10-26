@@ -3,6 +3,7 @@ package com.example.ui.auth.recoveryPassword
 import android.content.Context
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.ApiError
 import com.example.repository.AuthRepository
@@ -18,8 +19,9 @@ import javax.inject.Inject
 @InjectViewState
 class RecoveryPasswordPresenter
 @Inject constructor(
-        private val authRepository: AuthRepository
-) : BasePresenter<RecoveryPasswordContract.View>(), RecoveryPasswordContract.Presenter {
+        private val authRepository: AuthRepository,
+        appData: AppData
+) : BasePresenter<RecoveryPasswordContract.View>(appData), RecoveryPasswordContract.Presenter {
 
     companion object {
         private const val USER_NOT_REGISTERED_ERROR = "User is not registered yet"

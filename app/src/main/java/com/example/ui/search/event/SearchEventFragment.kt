@@ -21,6 +21,7 @@ import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
+import com.example.ui.views.StateType
 import com.xwray.groupie.Group
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
@@ -46,7 +47,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
-        override fun onShowUpdateState() = showStateErrorMessage()
+        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
     override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {

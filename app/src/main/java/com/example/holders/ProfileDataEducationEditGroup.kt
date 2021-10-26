@@ -18,7 +18,7 @@ import com.xwray.groupie.Section
 class ProfileDataEducationEditGroup(
         context: Context,
         private val birthday: FieldDetails?,
-        private val educationLevel: Int?,
+        private val educationLevel: ToggleIntModel?,
         private val availableEducations: List<EducationLevel>,
         private val availableDegrees: List<EducationLevel>,
         private val availableSciences: List<EducationLevel>,
@@ -31,8 +31,8 @@ class ProfileDataEducationEditGroup(
     var hasAcademicDegree = false
     var data: MutableList<ProfileDataAcademicDegreeEditNewItem> = mutableListOf()
 
-    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel }?.name, availableEducations,
-            academicDegrees.isNotEmpty(), {
+    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel?.value }?.name, availableEducations,
+            academicDegrees.isNotEmpty(), educationLevel?.showInProfile, {
         if (it) {
             validatorSize = 4
             if (degrees.itemCount == 0) {
@@ -104,9 +104,9 @@ class ProfileDataEducationEditGroup(
         if (academicDegrees.isNotEmpty()) {
             academicDegrees.map {
                 createAcademicDegreeEditItem(availableDegrees.firstOrNull { degree -> degree.id == it.degree }?.name,
-                        availableSciences.firstOrNull { science -> science.id == it.speciality }?.name )
+                        availableSciences.firstOrNull { science -> science.id == it.speciality }?.name)
             }.let {
-                val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel }?.name
+                val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel?.value }?.name
                 if (educationLevel != null && (edLevel == availableEducations.lastOrNull()?.name || edLevel == availableEducations[availableEducations.size - 2].name)) {
                     validatorSize = 4
                     if (it.isEmpty()) {
@@ -174,7 +174,7 @@ class ProfileDataEducationEditGroup(
         })
     }
 
-    fun addDegree(degreesLevel: String?, sciencesLevel: String?, position: Int) {
+    fun addDegree(degreesLevel: String?, sciencesLevel: String?, position: Int, showInProfile: Boolean?) {
         try {
             val item = degrees.getItem(position) as ProfileDataAcademicDegreeEditNewItem
             item.updateData(degreesLevel, sciencesLevel)
@@ -191,6 +191,7 @@ class ProfileDataEducationEditGroup(
                 socialRoles?.organization,
                 socialRoles?.speciality,
                 birthday,
+                socialRoles?.showInProfile,
         {
             educations.remove(it)
             isDeleteVisible()
@@ -266,7 +267,7 @@ class ProfileDataEducationEditGroup(
         val educations = mutableListOf<EducationModel>()
         this.educations.forEachGroups<ProfileDataEducationEditItem> {
             educations.add(EducationModel(id = it.mId, begin = it.mStart,
-                    end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality))
+                    end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality, showInProfile = it.mShowInProfile))
         }
         return educations
     }

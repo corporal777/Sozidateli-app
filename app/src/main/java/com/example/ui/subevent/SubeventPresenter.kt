@@ -18,7 +18,7 @@ class SubeventPresenter @Inject constructor(
         private val appData: AppData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository
-) : BasePresenter<SubeventContract.View>(), SubeventContract.Presenter {
+) : BasePresenter<SubeventContract.View>(appData), SubeventContract.Presenter {
 
     lateinit var event: String
     lateinit var subevent: String

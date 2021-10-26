@@ -225,6 +225,11 @@
                 android:lines="5"
                 tools:text="@tools:sample/lorem/random" />
         </com.example.ui.views.CustomTextInputLayout>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNotes"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 
 </LinearLayout>

@@ -56,7 +56,7 @@ class ChatPresenter
         private val takePhoto: RxTakePhoto,
         private val contentResolver: ContentResolver,
         private val context: Context
-) : BasePresenter<ChatContract.View>(), ChatContract.Presenter {
+) : BasePresenter<ChatContract.View>(appData), ChatContract.Presenter {
 
     lateinit var chatId: String
     var userAvatar: String? = null

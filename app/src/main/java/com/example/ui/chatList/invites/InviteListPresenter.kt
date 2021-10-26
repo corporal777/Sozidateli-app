@@ -24,7 +24,7 @@ class InviteListPresenter
 @Inject constructor(
         private val chatRepository: ChatRepository,
         private val appData: AppData
-) : BasePresenter<InviteListContract.View>(), InviteListContract.Presenter {
+) : BasePresenter<InviteListContract.View>(appData), InviteListContract.Presenter {
 
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(

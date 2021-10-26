@@ -86,14 +86,5 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
         tvChatsBadge.isVisible = count > 0
     }
 
-    override fun showNeedMoreState() {
-        ChangeStateDialog(requireActivity(), StateType.ERROR)
-                .setSendCodeCallback {
-                    if (it) {
-                        findNavController().navigate(R.id.userStateFragment)
-                    }
-                }
-    }
-
     override fun layout() = R.layout.fragment_chat_list_tabs
 }

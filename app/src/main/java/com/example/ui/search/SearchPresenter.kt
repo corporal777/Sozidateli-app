@@ -1,5 +1,6 @@
 package com.example.ui.search
 
+import com.example.data.AppData
 import com.example.data.models.SearchFilter
 import com.example.extensions.buildList
 import com.example.ui.base.BasePresenter
@@ -11,7 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 
-abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter> : BasePresenter<V>(), SearchContract.Presenter<I> {
+abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter>(appData: AppData) : BasePresenter<V>(appData), SearchContract.Presenter<I> {
 
     private lateinit var paginationList: PaginationList<I?>
     private lateinit var searchInterface: SearchInterface

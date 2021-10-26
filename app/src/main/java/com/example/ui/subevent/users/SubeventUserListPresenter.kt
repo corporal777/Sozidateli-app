@@ -1,6 +1,7 @@
 package com.example.ui.subevent.users
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.user.User
 import com.example.extensions.build
@@ -17,8 +18,9 @@ import javax.inject.Inject
 @InjectViewState
 class SubeventUserListPresenter @Inject constructor(
         private val eventRepository: EventRepository,
-        private val chatRepository: ChatRepository
-) : BasePresenter<SubeventUserListContract.View>(), SubeventUserListContract.Presenter {
+        private val chatRepository: ChatRepository,
+        appData: AppData
+) : BasePresenter<SubeventUserListContract.View>(appData), SubeventUserListContract.Presenter {
 
     lateinit var event: String
     lateinit var subevent: String

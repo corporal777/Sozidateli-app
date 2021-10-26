@@ -85,7 +85,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                     user.lastName,
                     user.middleName?.value,
                     user.middleName?.absent?: true,
-                    user.gender?.firstLetterToUppercase(),
+                    user.gender,
                     user.birthday?.value,
                     DaDataUtil.formatSavedLocation(requireContext(), user.address),
                     user.phone,

@@ -46,7 +46,7 @@ class EventRegistrationPresenter
         private val rxPermissions: RxPermissions,
         private val contentResolver: ContentResolver,
         private val appData: AppData
-) : BasePresenter<EventRegistrationContract.View>(), EventRegistrationContract.Presenter {
+) : BasePresenter<EventRegistrationContract.View>(appData), EventRegistrationContract.Presenter {
 
     lateinit var eventId: String
 

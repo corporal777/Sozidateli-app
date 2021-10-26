@@ -11,7 +11,7 @@ import javax.inject.Inject
 class ChatListTabsPresenter
 @Inject constructor(
         private val appData: AppData
-) : BasePresenter<ChatListTabsContract.View>(), ChatListTabsContract.Presenter {
+) : BasePresenter<ChatListTabsContract.View>(appData), ChatListTabsContract.Presenter {
 
     private var selectedTab = TAB_CHATS
 
@@ -23,9 +23,6 @@ class ChatListTabsPresenter
         compositeDisposable += appData.chatMessageCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
-        if (!appData.hasBaseState && !appData.hasMaxState) {
-            viewState.showNeedMoreState()
-        }
     }
 
     override fun attachView(view: ChatListTabsContract.View?) {

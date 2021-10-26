@@ -23,7 +23,7 @@ class FavoriteUsersPresenter
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val eventRepository: EventRepository
-) : BasePresenter<FavoriteUsersContract.View>(), FavoriteUsersContract.Presenter {
+) : BasePresenter<FavoriteUsersContract.View>(appData), FavoriteUsersContract.Presenter {
 
     private var firstLaunch = true
 

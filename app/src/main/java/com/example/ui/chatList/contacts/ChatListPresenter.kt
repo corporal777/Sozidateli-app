@@ -43,7 +43,7 @@ class ChatListPresenter
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val socket: SocketIOManager
-) : BasePresenter<ChatListContract.View>(), ChatListContract.Presenter {
+) : BasePresenter<ChatListContract.View>(appData), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(

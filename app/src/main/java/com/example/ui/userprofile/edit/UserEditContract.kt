@@ -140,7 +140,7 @@ interface UserEditContract {
         fun onSaveMainClick(data: MutableMap<String, Any?>)
         fun onSavePersonalClick(data: MutableMap<String, Any?>)
         fun onSaveContactsClick(data: MutableMap<String, Any?>)
-        fun onSaveEducationClick(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
+        fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
         fun onSaveWorkClick(data: WorkExperienceServerModel)
         fun onSaveInterestsClick(data: List<InterestNew>)
         fun onSaveAdditionalNotesClick(notes: String?)

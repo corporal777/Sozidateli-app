@@ -30,7 +30,7 @@ class InviteRegisterPresenter
         private val phoneNumberUtil: PhoneNumberUtil,
         private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
-) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager), InviteRegisterContract.Presenter {
+) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager, appData), InviteRegisterContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null

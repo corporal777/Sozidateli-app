@@ -39,6 +39,7 @@ import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
+import com.example.ui.views.StateType
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.ClickableSpan
 import com.xwray.groupie.GroupAdapter
@@ -104,7 +105,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
         }
 
-        override fun onShowUpdateState() = showStateErrorMessage()
+        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
     private var aboutItem: EventDataAboutItem? = null
@@ -407,7 +408,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         if (this == false) {
             hasLevel()
         } else {
-            showStateErrorMessage()
+            showStateErrorMessage(StateType.BASE, false, null)
         }
     }
 

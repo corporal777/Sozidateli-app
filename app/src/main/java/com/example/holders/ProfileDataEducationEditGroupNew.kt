@@ -17,7 +17,7 @@ import com.xwray.groupie.Section
 class ProfileDataEducationEditGroupNew(
         context: Context,
         private val birthday: FieldDetails?,
-        private val educationLevel: Int?,
+        private val educationLevel: ToggleIntModel?,
         private val availableEducations: List<EducationLevel>,
         private val availableDegrees: List<EducationLevel>,
         private val availableSciences: List<EducationLevel>,
@@ -33,11 +33,12 @@ class ProfileDataEducationEditGroupNew(
     var hasAcademicDegree = false
     var data: MutableList<ProfileDataAcademicDegreeEditItem> = mutableListOf()
 
-    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel }?.name , availableEducations, academicDegrees.isNotEmpty(), {
+    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel?.value }?.name ,
+            availableEducations, academicDegrees.isNotEmpty(), educationLevel?.showInProfile, {
         if (it) {
             validatorSize = 4
             if (degrees.itemCount == 0) {
-                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null))
+                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
                 isDeleteVisible()
             }
         } else {
@@ -50,7 +51,7 @@ class ProfileDataEducationEditGroupNew(
             isDeleteVisible()
             addDegreeButton.setButtonVisibility(View.VISIBLE)
             if (data.isEmpty() && degrees.itemCount == 0) {
-                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null))
+                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
                 isDeleteVisible()
             }
             returnDegree()
@@ -65,7 +66,7 @@ class ProfileDataEducationEditGroupNew(
 
     private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
         if (degrees.itemCount < DEGREES_MAX_SIZE)
-            degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null))
+            degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
         isDeleteVisible()
     }
 
@@ -104,12 +105,12 @@ class ProfileDataEducationEditGroupNew(
     init {
         if (academicDegrees.isNotEmpty()) {
             academicDegrees.map { createAcademicDegreeEditItem(it.id, availableDegrees.firstOrNull { degree -> degree.id == it.degree } ,
-                    availableSciences.firstOrNull { science -> science.id == it.speciality }?.name ) }.let {
-                val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel }?.name
+                    availableSciences.firstOrNull { science -> science.id == it.speciality }?.name, it.showInProfile) }.let {
+                val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel?.value }?.name
                 if (educationLevel != null && (edLevel == availableEducations.lastOrNull()?.name || edLevel == availableEducations[availableEducations.size - 2].name)) {
                     validatorSize = 4
                     if (it.isEmpty()) {
-                        degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null))
+                        degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
                     } else {
                         degrees.addAll(it)
                     }
@@ -159,10 +160,10 @@ class ProfileDataEducationEditGroupNew(
         enableNextButton(isDegreeValid && isEducationValid && isEducationLevelValid)
     }
 
-    private fun createAcademicDegreeEditItem(id: Int?, degree: EducationLevel?, specialisation: String?): ProfileDataAcademicDegreeEditItem {
-        return ProfileDataAcademicDegreeEditItem(id, degree?.name, specialisation, availableDegrees, availableSciences) {
+    private fun createAcademicDegreeEditItem(id: Int?, degree: EducationLevel?, specialisation: String?, showInProfile: Boolean?): ProfileDataAcademicDegreeEditItem {
+        return ProfileDataAcademicDegreeEditItem(id, degree?.name, specialisation, availableDegrees, availableSciences, showInProfile) {
             degrees.remove(it)
-            if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null))
+            if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
             isDeleteVisible()
         }
     }
@@ -177,6 +178,7 @@ class ProfileDataEducationEditGroupNew(
                 socialRoles?.organization,
                 socialRoles?.speciality,
                 birthday,
+                socialRoles?.showInProfile,
         {
             educations.remove(it)
             isDeleteVisible()
@@ -229,7 +231,8 @@ class ProfileDataEducationEditGroupNew(
             degrees.add(AcademicDegreeModel(
                     id = it.mId,
                     speciality = availableSciences.firstOrNull { degree -> degree.name == it.mSciencesLevel }?.id,
-                    degree = availableDegrees.firstOrNull { degree -> degree.name == it.mDegreesLevel }?.id
+                    degree = availableDegrees.firstOrNull { degree -> degree.name == it.mDegreesLevel }?.id,
+                    showInProfile = it.mShowInProfile
             ))
         }
         return degrees
@@ -239,12 +242,12 @@ class ProfileDataEducationEditGroupNew(
         val educations = mutableListOf<EducationModel>()
         this.educations.forEachGroups<ProfileDataEducationEditItem> {
             educations.add(EducationModel(id = it.mId, begin = it.mStart,
-            end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality))
+            end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality, showInProfile = it.mShowInProfile))
         }
         return educations
     }
 
-    fun getEducationLevelToSave(): Int? = availableEducations.firstOrNull { it.name == educationLevelItem.mEducationLevel }?.id
+    fun getEducationLevelToSave(): ToggleIntModel? = ToggleIntModel(availableEducations.firstOrNull { it.name == educationLevelItem.mEducationLevel }?.id, educationLevelItem.mShowInProfile)
 
     override fun getGroupCount(): Int {
         return 4

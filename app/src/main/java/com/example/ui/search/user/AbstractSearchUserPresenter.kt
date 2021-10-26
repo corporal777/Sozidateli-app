@@ -15,6 +15,7 @@ import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
+import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
@@ -27,7 +28,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
         private val eventRepository: EventRepository
-) : SearchPresenter<V, UserDetail, SearchFilter.UserNew>(), SearchUserContract.Presenter {
+) : SearchPresenter<V, UserDetail, SearchFilter.UserNew>(appData), SearchUserContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         val data = mutableMapOf<String, Any>().apply {
@@ -91,7 +92,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
 
     override fun onUserClick(user: UserDetail) {
         if (!appData.hasBaseState && !appData.hasMaxState) {
-            viewState.showStateErrorMessage()
+            viewState.showStateErrorMessage(StateType.BASE, false, null)
         } else {
             viewState.showUser(user)
         }

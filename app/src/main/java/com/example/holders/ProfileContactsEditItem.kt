@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
@@ -20,6 +21,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import onTextChanged
 import setOnClickListener
 
@@ -47,10 +49,10 @@ class ProfileContactsEditItem(
     private var mIsPhoneConfirmed = mobilePhone?.isConfirmed?: false//isPhoneConfirmed
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
-    private var mSite = (site?.values?.map { UserDataSite(value = it) } ?: emptyList())
+    private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
-                if (it.isEmpty()) it.plus(UserDataSite(value = ""))
+                if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
                 else it
             }
             .toMutableList()
@@ -59,10 +61,10 @@ class ProfileContactsEditItem(
     private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
 
     private var mShowEmail = showEmail
-    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it) } ?: emptyList())
+    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
-                if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
+                if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
                 else it
             }
             .toMutableList()
@@ -134,7 +136,7 @@ class ProfileContactsEditItem(
             btnSocialNetworkAdd.apply {
                 setOnClickListener {
                     if (!mSocialNetworks.lastOrNull()?.value.isNullOrBlank()) {
-                        UserDataSocialLink(value = "").apply {
+                        UserDataSocialLink(value = "", showInProfile = false).apply {
                             mSocialNetworks.add(this)
                             initSocialNetworkInput(viewHolder, this)
                         }
@@ -164,7 +166,7 @@ class ProfileContactsEditItem(
             btnSiteAdd.apply {
                 setOnClickListener {
                     if (!mSite.lastOrNull()?.value.isNullOrBlank()) {
-                        UserDataSite(value = "").apply {
+                        UserDataSite(value = "", showInProfile = false).apply {
                             mSite.add(this)
                             initSiteInput(viewHolder, this)
                         }
@@ -290,12 +292,15 @@ class ProfileContactsEditItem(
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             initInput(csn.value) { csn.value = it?.toString()?: "" }
         }
-
+        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+            isVisible = sn.value.isNotEmpty()
+            initSwitch(csn.showInProfile) { csn.showInProfile = it }
+        }
         parent.findViewById<View>(R.id.btnDelete).apply {
             setOnClickListener {
                 if (mSocialNetworks.remove(csn)) {
                     if (mSocialNetworks.isEmpty()) {
-                        csn = UserDataSocialLink(value = "")
+                        csn = UserDataSocialLink(value = "", showInProfile = false)
                         mSocialNetworks.add(csn)
                         etSn.text?.clear()
                     } else {
@@ -320,6 +325,11 @@ class ProfileContactsEditItem(
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             hint = context.resources.getString(R.string.profile_site)
             initInput(site.value) { site.value = it?.toString()?: ""}
+        }
+
+        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+            isVisible = site.value.isNotEmpty()
+            initSwitch(site.showInProfile) { site.showInProfile = it }
         }
 
         parent.findViewById<View>(R.id.btnDelete).apply {
@@ -430,8 +440,8 @@ class ProfileContactsEditItem(
                 //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
 
-            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
-                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks),
+            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
+                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks),
                     emails = mEmails.map { EmailsModel(value = it.value, showInProfile = it.showInProfile) }))
 
 

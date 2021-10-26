@@ -42,7 +42,7 @@ class SearchEventPresenter
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
         private val appData: AppData
-) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(), SearchEventContract.Presenter {
+) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData), SearchEventContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")

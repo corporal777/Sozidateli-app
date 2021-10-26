@@ -36,7 +36,7 @@ class FinishRegisterPresenter
         private val phoneNumberUtil: PhoneNumberUtil,
         private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
-) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager), FinishRegisterContract.Presenter {
+) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData), FinishRegisterContract.Presenter {
 
     private var firstName: String? = null
     private var defFirstName: String? = null

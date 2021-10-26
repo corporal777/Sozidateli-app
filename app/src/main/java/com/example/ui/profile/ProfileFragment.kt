@@ -2,11 +2,18 @@ package com.example.ui.profile
 
 import android.content.Intent
 import android.content.Intent.*
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -33,7 +40,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
-    override val title: String? = null
+    override val title: String
+        get() = getString(R.string.profile_label)
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -53,14 +61,13 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (screenTittle as TextView).text = getString(R.string.profile_label)
+        //(screenTittle as TextView).text = getString(R.string.profile_label)
 
         ivAvatar.apply {
             clipToOutline = true
         }
 
-        btnEdit.setOnClickListener { presenter.onProfileClick() }
-
+        tvEditProfile.setOnClickListener { presenter.onProfileClick() }
         tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
         tvEvents.setOnClickListener { presenter.onEventsClick() }
         tvBanned.setOnClickListener { presenter.onBannedClick() }
@@ -69,6 +76,9 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
         tvLogout.setOnClickListener { presenter.onLogoutClick() }
         tvSettings.setOnClickListener { presenter.onSettingsClick() }
+        tvStates.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+        }
         //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
         //showUserStateDialog()
     }
@@ -77,6 +87,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         val avatar = user.image?.uri
         Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
         tvName.text = user.fullName
+        tvIdTitle.text = getString(R.string.user_id, user.id.toString())
         if (isShowPopup && !::dialog.isInitialized) {
             dialog = AddPhoneEmailDialog(requireActivity(),
                     if (user.email?.value != null) RegisterDataType.PHONE else RegisterDataType.EMAIL)
@@ -94,33 +105,13 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
-        btnBaseState.isVisible = !hasBase
-        spacer.isVisible = !hasBase
-        btnMaxState.isVisible = !hasMax
-        //state_title.isInvisible = hasBase && hasMax
-        state_title.text = if (!hasBase && !hasMax) getString(R.string.state)
-        else if (hasBase && !hasMax) getString(R.string.base_state_text)
-        else getString(R.string.max_state_text)
-        btnBaseState.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.BASE).setScreen(1))
-        }
-        btnMaxState.setOnClickListener {
-            if (hasBase) {
-                when (Utils.maxStateScreen(presenter.getUserData())) {
-                    MaxStateScreenType.BASE ->
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateMainInfoFragment().setScreen(1))
-                    MaxStateScreenType.INTERESTS ->
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBaseStateInterestsFragment().setScreen(1))
-                    MaxStateScreenType.WORK ->
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateWorkFragment().setScreen(1))
-                    MaxStateScreenType.EDUCATION ->
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMaxStateEducationFragment().setScreen(1))
-                }
-            } else findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToMainInfoFragment().setType(UserState.MAX).setScreen(1))
-        }
-        btnAboutStates.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-        }
+        val text = SpannableString(getString(R.string.state, if (!hasBase && !hasMax) getString(R.string.state_empty)
+        else if (hasBase && !hasMax) getString(R.string.state_base) else getString(R.string.state_max)))
+        text.setSpan(StyleSpan(Typeface.BOLD), 8 , text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(ForegroundColorSpan(if (!hasBase && !hasMax) Color.RED
+        else if (hasBase && !hasMax) ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        else Color.GREEN) , 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        state_title.text = text
     }
 
     override fun showEmailNotUnique(email: String) {
@@ -186,8 +177,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     private fun showUserStateDialog() {
         ChangeStateDialog(requireActivity(), StateType.SUCCESS)
-                .setSendCodeCallback {
-                    if (it) {
+                .setClickCallback {
+                    if (it == ClickType.INFO) {
                         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
                     }
                 }

@@ -1,6 +1,7 @@
 package com.example.ui.event.location
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.MapInfo
 import com.example.data.models.Place
 import com.example.ui.base.BasePresenter
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class EventLocationPresenter
-@Inject constructor() : BasePresenter<EventLocationContract.View>(), EventLocationContract.Presenter {
+@Inject constructor(appData: AppData) : BasePresenter<EventLocationContract.View>(appData), EventLocationContract.Presenter {
 
     var mapInfo: MapInfo? = null
     var places: Array<Place>? = null

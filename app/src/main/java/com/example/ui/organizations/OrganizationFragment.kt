@@ -37,6 +37,7 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
+import com.example.ui.views.StateType
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -71,7 +72,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
         override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
-        override fun onShowUpdateState() = showStateErrorMessage()
+        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
     private val usersAdapter = GroupAdapter<GroupieViewHolder>()
@@ -180,6 +181,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             text = /*organization.descriptionFull*/organization.description
         }
 
+        layout_members.isVisible = organization.binds?.membersSize != 0
         tvPeoples.text = getString(R.string.organization_peoples).format(/*organization.totalMembers*/organization.binds?.membersSize)
         rvPeoples.adapter = usersAdapter.apply {
             /*update(users.mapNotNull {

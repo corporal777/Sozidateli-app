@@ -49,7 +49,7 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
-        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel }?.name
+        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()
         val education = user.binds?.education ?: emptyList()
 

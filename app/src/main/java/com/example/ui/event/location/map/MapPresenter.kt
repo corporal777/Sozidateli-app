@@ -2,6 +2,7 @@ package com.example.ui.event.location.map
 
 import android.Manifest
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.MapInfo
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -14,8 +15,9 @@ import javax.inject.Inject
 @InjectViewState
 class MapPresenter
 @Inject constructor(
-        private val rxPermissions: RxPermissions
-) : BasePresenter<MapContract.View>(), MapContract.Presenter {
+        private val rxPermissions: RxPermissions,
+        appData: AppData
+) : BasePresenter<MapContract.View>(appData), MapContract.Presenter {
 
     lateinit var mapInfo: MapInfo
 

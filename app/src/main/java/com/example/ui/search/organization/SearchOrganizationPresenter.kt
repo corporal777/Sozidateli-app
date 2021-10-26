@@ -18,6 +18,7 @@ import com.example.data.models.SearchFilter
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
+import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -30,7 +31,7 @@ class SearchOrganizationPresenter
         private val appData: AppData,
         private val organizationRepository: OrganizationRepository,
         private val eventRepository: EventRepository
-) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/>(), SearchOrganizationContract.Presenter {
+) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/>(appData), SearchOrganizationContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         //organizationRepository.getOrganizations(limit, offset, buildFilter())
@@ -52,7 +53,7 @@ class SearchOrganizationPresenter
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
         if (!appData.hasMaxState && !appData.hasBaseState) {
-            viewState.showStateErrorMessage()
+            viewState.showStateErrorMessage(StateType.BASE, false, null)
         } else {
             viewState.showOrganization(organization)
         }

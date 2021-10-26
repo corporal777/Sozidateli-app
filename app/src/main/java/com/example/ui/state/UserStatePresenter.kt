@@ -10,7 +10,7 @@ import javax.inject.Inject
 class UserStatePresenter
 @Inject constructor(
         private val appData: AppData
-): BasePresenter<UserStateContract.View>(), UserStateContract.Presenter {
+): BasePresenter<UserStateContract.View>(appData), UserStateContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -25,6 +25,4 @@ class UserStatePresenter
     override fun onClickClose() {
         viewState.navigateUp()
     }
-
-    fun getUserData() = appData.getUserNew()
 }

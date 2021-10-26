@@ -49,6 +49,11 @@
         android:layout_marginTop="5dp"
         android:text="@string/profile_education_academic_degree" />
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scEducation"
+        style="@style/Profile.Edit.Switch"
+        android:text="@string/profile_show_in_profile" />
+
     <View
         style="@style/ViewDivider.Horizontal"
         android:layout_marginTop="16dp" />

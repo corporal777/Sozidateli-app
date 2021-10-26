@@ -4,6 +4,7 @@ import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree_new.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_education_level.*
 
 class ProfileDataAcademicDegreeEditNewItem(
         degreesLevel: String?,

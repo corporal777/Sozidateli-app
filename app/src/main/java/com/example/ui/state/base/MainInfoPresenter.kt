@@ -28,7 +28,7 @@ class MainInfoPresenter
         private val userRepository: UserRepository,
         private val authRepository: AuthRepository,
         private val takePhoto: RxTakePhoto
-): BasePresenter<MainInfoContract.View>(), MainInfoContract.Presenter {
+): BasePresenter<MainInfoContract.View>(appData), MainInfoContract.Presenter {
 
     lateinit var type: UserState
     var screen: Int = 1
@@ -63,8 +63,6 @@ class MainInfoPresenter
     override fun onClickClose() {
         viewState.navigateUp()
     }
-
-    fun getUserData() = appData.getUserNew()
 
     override fun updateFiles(data: MutableMap<String, Any?>) {
         onEditSave(data) {

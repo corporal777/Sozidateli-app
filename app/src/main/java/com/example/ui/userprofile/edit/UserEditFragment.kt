@@ -116,7 +116,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                     val degreesLevel = result.getString(DEGREES_LEVEL)
                     val sciencesLevel = result.getString(SCIENCES_LEVEL)
                     val position = result.getInt(ITEM_POSITION)
-                    (adapter.getGroup(1) as ProfileDataEducationEditGroup).addDegree(degreesLevel, sciencesLevel, position)
+                    (adapter.getGroup(1) as ProfileDataEducationEditGroup).addDegree(degreesLevel, sciencesLevel, position, false)
                 })
     }
 
@@ -221,18 +221,17 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             val dataItem = ProfileDataPersonalEditNewItem(
                     1,
                     requireContext(),
-                    user.name,
+                    /*user.name,
                     user.lastName,
                     user.middleName?.value,
-                    user.middleName?.absent?: false,
-                    user.gender?.firstLetterToUppercase(),
+                    user.middleName?.absent?: false,*/
+                    user.gender,
                     user.birthday?.value,
                     user.birthday?.isVisible?: false,
                     DaDataUtil.formatSavedLocation(requireContext(), user.address),
                     user.notes,
-                    user.state?.nameEdited?: false,
-                    state,
-                    childFragmentManager) { showWhyUserShouldAddDataToNotesField() }
+                    /*user.state?.nameEdited?: false,
+                    childFragmentManager*/) { showWhyUserShouldAddDataToNotesField() }
 
             val files = ProfileDataAdditionalFilesEditNewGroup(
                     2,
@@ -484,7 +483,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun setAdditionalNotesData(user: UserDetail) {
-        val dataItem = ProfileDataNotesEditItem(1L, user.notes)
+        val dataItem = ProfileDataNotesEditItem(1L, user.notes?.value)
         adapter.update(listOf(ProfileDataNotesDescriptionItem(0L) { showWhyUserShouldAddDataToNotesField() }, dataItem))
         onSaveClick = { presenter.onSaveAdditionalNotesClick(dataItem.mNotes) }
     }

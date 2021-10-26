@@ -52,6 +52,11 @@
             android:paddingEnd="14dp" />
     </com.example.ui.views.CustomTextInputLayout>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scEducation"
+        style="@style/Profile.Edit.Switch"
+        android:text="@string/profile_show_in_profile" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRemove"
         style="@style/Profile.Edit.Button"

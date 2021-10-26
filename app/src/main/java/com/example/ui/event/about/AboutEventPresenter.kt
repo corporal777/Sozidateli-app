@@ -8,6 +8,7 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.views.StateType
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -22,7 +23,7 @@ class AboutEventPresenter
         private val eventRepository: EventRepository,
         private val userEventData: UserEventData,
         private val userRepository: UserRepository
-) : BasePresenter<AboutEventContract.View>(), AboutEventContract.Presenter {
+) : BasePresenter<AboutEventContract.View>(appData), AboutEventContract.Presenter {
 
     lateinit var eventId: String
     private var event: EventInfo? = null
@@ -232,7 +233,7 @@ class AboutEventPresenter
 
     override fun onWriteToOrganizationClick() {
         if (!appData.hasBaseState && !appData.hasMaxState) {
-            viewState.showStateErrorMessage()
+            viewState.showStateErrorMessage(StateType.BASE, false, null)
         } else {
             viewState.showWriteToOrganizationForm()
         }

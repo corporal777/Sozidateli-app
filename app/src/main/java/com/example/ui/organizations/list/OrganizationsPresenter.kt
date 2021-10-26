@@ -11,6 +11,7 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
@@ -25,7 +26,7 @@ class OrganizationsPresenter
         private val organizationRepository: OrganizationRepository,
         private val eventRepository: EventRepository,
         @Connectivity private val connectivity: Observable<Boolean>
-) : BasePresenter<OrganizationsContract.View>(), OrganizationsContract.Presenter {
+) : BasePresenter<OrganizationsContract.View>(appData), OrganizationsContract.Presenter {
 
     lateinit var filter: OrganizationsFilter
 
@@ -99,7 +100,7 @@ class OrganizationsPresenter
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
         if (!appData.hasMaxState && !appData.hasBaseState) {
-            viewState.showStateErrorMessage()
+            viewState.showStateErrorMessage(StateType.BASE, false, null)
         } else {
             viewState.showOrganization(organization)
         }

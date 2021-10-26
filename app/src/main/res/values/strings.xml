@@ -759,7 +759,7 @@
     <string name="change_status_title">Повышение статуса</string>
     <string name="change_status_description">Повысьте статус профиля до Базового или Максимального и расширьте свои возможности на портале «Созидатели».</string>
     <string name="change_status_button">Подробнее о статусах</string>
-    <string name="state">Статус</string>
+    <string name="state">Статус: %s</string>
     <string name="base_state_text">Статус: Базовый</string>
     <string name="max_state_text">Статус: Максимальный</string>
     <string name="base_state">Хочу базовый</string>
@@ -825,4 +825,12 @@
     <string name="confirm_phone_positive_password">Да, восстановить пароль</string>
     <string name="profile_edit_public_email_hint">Публичный e-mail</string>
     <string name="profile_edit_main_email_hint">Основной e-mail</string>
+    <string name="state_empty">не присвоен</string>
+    <string name="state_base">базовый</string>
+    <string name="state_max">максимальный</string>
+    <string name="user_id">ID: %s</string>
+    <string name="get_base">Получить «Базовый»</string>
+    <string name="get_max">Получить «Максимальный»</string>
+    <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового. Подробнее о статусах</string>
+    <string name="title_get_max">Для совершения данного действия Вам необходимо повысить статус профиля до максимального. Подробнее о статусах</string>
 </resources>

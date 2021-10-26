@@ -10,6 +10,7 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.EducationLevel
 import com.example.ui.views.ClearDegreeDialog
 import com.example.ui.views.educationlist.EducationPopupWindow
+import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -19,6 +20,7 @@ class ProfileDataEducationLevelEditItem(
         educationLevel: String?,
         private val availableEducations: List<EducationLevel>,
         private val isAcademicDegree: Boolean,
+        private val showInProfile: Boolean?,
         private val onEducationLevelSelected: (isLast: Boolean) -> Unit,
         private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit
 ) : Item() {
@@ -31,6 +33,9 @@ class ProfileDataEducationLevelEditItem(
     var mHasAcademicDegree = isAcademicDegree
         private set
 
+    var mShowInProfile = showInProfile?: false
+        private set
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             setupDropDown(tvEducationLevel, scAcadDegry, availableEducations.map { it.name }, mEducationLevel) {
@@ -41,6 +46,7 @@ class ProfileDataEducationLevelEditItem(
                 mEducationLevel = it
                 checkLastEducationSelected()
             }*/
+            scEducation.initSwitch(mShowInProfile) { mShowInProfile = it }
             scAcadDegry.isChecked = mHasAcademicDegree
             scAcadDegry.setOnCheckedChangeListener { _, b ->
                 mHasAcademicDegree = b

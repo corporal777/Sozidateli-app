@@ -131,6 +131,7 @@ class ProfileDataWorkEditGroup(
                 socialRoles?.organization,
                 socialRoles?.position,
                 birthday?.value,
+                socialRoles?.showInProfile,
         { item ->
             val position = getItemCountBeforeGroup(item) + 1
             remove(item)
@@ -165,7 +166,8 @@ class ProfileDataWorkEditGroup(
         return if (hasWork)
             WorkExperienceServerModel(absent = !hasWork, data = works.map {
                 WorkExperience(id = it.mId, begin = it.mStart, end = it.mFinish,
-                        organization = it.mOrganization, position = it.mPosition, description = "")
+                        organization = it.mOrganization, position = it.mPosition, description = "",
+                showInProfile = it.mShowInProfile)
             })
         else
             WorkExperienceServerModel(absent = !hasWork, data = arrayListOf())

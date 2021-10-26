@@ -3,6 +3,7 @@ package com.example.ui.search.qr
 import android.Manifest
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -16,8 +17,9 @@ import javax.inject.Inject
 class QrScannerPresenter
 @Inject constructor(
         private val eventRepository: EventRepository,
-        private val rxPermissions: RxPermissions
-) : BasePresenter<QrScannerContract.View>(), QrScannerContract.Presenter {
+        private val rxPermissions: RxPermissions,
+        appData: AppData
+) : BasePresenter<QrScannerContract.View>(appData), QrScannerContract.Presenter {
 
     override fun attachView(view: QrScannerContract.View?) {
         super.attachView(view)

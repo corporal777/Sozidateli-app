@@ -23,7 +23,7 @@ constructor(
         private val eventRepository: EventRepository,
         private val userEventData: UserEventData,
         private val appData: AppData
-) : BasePresenter<EventScheduleContract.View>(), EventScheduleContract.Presenter, UserEventData.OnDataUpdateListener {
+) : BasePresenter<EventScheduleContract.View>(appData), EventScheduleContract.Presenter, UserEventData.OnDataUpdateListener {
 
     private val userEvent = userEventData.userEvent!!
 

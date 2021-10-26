@@ -11,7 +11,7 @@ import performOnBackgroundOutOnMain
 
 abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
         private val appData: AppData
-) : BasePresenter<V>(), BaseUserProfileContract.Presenter {
+) : BasePresenter<V>(appData), BaseUserProfileContract.Presenter {
 
     protected val user: UserDetail
         get() = appData.getUserNew()

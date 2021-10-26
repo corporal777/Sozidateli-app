@@ -28,7 +28,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
         @Connectivity private val connectivity: Observable<Boolean>
-) : BasePresenter<V>(), EventListContract.Presenter {
+) : BasePresenter<V>(appData), EventListContract.Presenter {
 
     private var scrollPosition = 0
     private var scrollOffset = 0

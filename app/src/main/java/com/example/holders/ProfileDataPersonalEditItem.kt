@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
@@ -72,7 +73,7 @@ class ProfileDataPersonalEditItem(
     private var mSocialNetworks = (socialNetworks ?: emptyList())
             .map { it.copy() }
             .let {
-                if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
+                if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
                 else it
             }
             .toMutableList()
@@ -167,7 +168,7 @@ class ProfileDataPersonalEditItem(
             btnSocialNetworkAdd.apply {
                 setOnClickListener {
                     if (!mSocialNetworks.lastOrNull()?.value.isNullOrBlank()) {
-                        UserDataSocialLink(value = "").apply {
+                        UserDataSocialLink(value = "", showInProfile = false).apply {
                             mSocialNetworks.add(this)
                             initSocialNetworkInput(viewHolder, this)
                         }
@@ -233,12 +234,16 @@ class ProfileDataPersonalEditItem(
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
             initInput(csn.value) { csn.value = it?.toString() ?: "" }
         }
+        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+            isVisible = sn.value.isNotEmpty()
+            initSwitch(sn.showInProfile) { sn.showInProfile = it }
+        }
 
         parent.findViewById<View>(R.id.btnDelete).apply {
             setOnClickListener {
                 if (mSocialNetworks.remove(csn)) {
                     if (mSocialNetworks.isEmpty()) {
-                        csn = UserDataSocialLink(value = "")
+                        csn = UserDataSocialLink(value = "", showInProfile = false)
                         mSocialNetworks.add(csn)
                         etSn.text?.clear()
                     } else {

@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.passwordconfirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -13,8 +14,9 @@ import javax.inject.Inject
 @InjectViewState
 class PasswordConfirmPresenter
 @Inject constructor(
-        private val userRepository: UserRepository
-) : BasePresenter<PasswordConfirmContract.View>(), PasswordConfirmContract.Presenter {
+        private val userRepository: UserRepository,
+        appData: AppData
+) : BasePresenter<PasswordConfirmContract.View>(appData), PasswordConfirmContract.Presenter {
 
     companion object {
         private const val WRONG_PASSWORD_MESSAGE = "user_password is not match with stored"

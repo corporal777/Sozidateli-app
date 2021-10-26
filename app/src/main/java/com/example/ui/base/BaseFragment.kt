@@ -11,10 +11,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.R
+import com.example.data.models.UserDetail
+import com.example.ui.state.UserState
+import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
+import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
@@ -101,11 +106,34 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         }
     }
 
-    override fun showStateErrorMessage() {
-        ChangeStateDialog(requireActivity(), StateType.ERROR)
-                .setSendCodeCallback {
-                    if (it) {
-                        findNavController().navigate(R.id.userStateFragment)
+    override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
+        ChangeStateDialog(requireActivity(), type)
+                .setClickCallback {
+                    when (it) {
+                        ClickType.INFO -> {
+                            findNavController().navigate(R.id.userStateFragment)
+                        }
+                        ClickType.BASE -> {
+                            findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.BASE, "screen" to 1))
+                        }
+                        ClickType.MAX -> {
+                            if (hasBase) {
+                                if (user != null) {
+                                    when (Utils.maxStateScreen(user)) {
+                                        MaxStateScreenType.BASE ->
+                                            findNavController().navigate(R.id.maxStateMainInfoFragment, bundleOf("screen" to 1))
+                                        MaxStateScreenType.INTERESTS ->
+                                            findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to 1))
+                                        MaxStateScreenType.WORK ->
+                                            findNavController().navigate(R.id.maxStateWorkFragment, bundleOf("screen" to 1))
+                                        MaxStateScreenType.EDUCATION ->
+                                            findNavController().navigate(R.id.maxStateEducationFragment, bundleOf("screen" to 1))
+                                    }
+                                }
+                            } else {
+                                findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.MAX, "screen" to 1))
+                            }
+                        }
                     }
                 }
     }

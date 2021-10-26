@@ -19,7 +19,7 @@ class BaseStateInterestsPresenter
 @Inject constructor(
         private val appData: AppData,
         private val userRepository: UserRepository
-): BasePresenter<BaseStateInterestsContract.View>(), BaseStateInterestsContract.Presenter {
+): BasePresenter<BaseStateInterestsContract.View>(appData), BaseStateInterestsContract.Presenter {
 
     var screen: Int = 1
     private var isInterestsLoaded = false
@@ -78,8 +78,6 @@ class BaseStateInterestsPresenter
             true
         }
     }
-
-    fun getUserData() = appData.getUserNew()
 
     private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
         compositeDisposable += request

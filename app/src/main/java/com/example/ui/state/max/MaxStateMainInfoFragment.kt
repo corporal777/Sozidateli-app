@@ -201,7 +201,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
         if (user.contactInformation.socialLinks?.values?.isEmpty() == true) isGoToNex = false
         if (user.contactInformation.site?.values?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
-        if (user.notes.isNullOrEmpty()) isGoToNex = false
+        if (user.notes?.value.isNullOrEmpty()) isGoToNex = false
         //if (user.image.uri.isNullOrEmpty()) isGoToNex = false
         return isGoToNex
     }

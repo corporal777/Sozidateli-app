@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
+import com.example.data.AppData
 import com.example.data.models.EventFile
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
@@ -33,8 +34,9 @@ class EventRatingPresenter
 @Inject constructor(
         private val eventRepository: EventRepository,
         private val rxPermissions: RxPermissions,
-        private val contentResolver: ContentResolver
-) : BasePresenter<EventRatingContract.View>(), EventRatingContract.Presenter {
+        private val contentResolver: ContentResolver,
+        appData: AppData
+) : BasePresenter<EventRatingContract.View>(appData), EventRatingContract.Presenter {
 
     lateinit var eventId: String
 

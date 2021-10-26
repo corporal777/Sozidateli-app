@@ -34,7 +34,7 @@ class UserPresenter
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
         private val eventRepository: EventRepository
-) : BasePresenter<UserContract.View>(), UserContract.Presenter {
+) : BasePresenter<UserContract.View>(appData), UserContract.Presenter {
 
     lateinit var userId: String
     private lateinit var profileUserData: ProfileUserData

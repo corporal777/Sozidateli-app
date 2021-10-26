@@ -29,7 +29,7 @@ class OrganizationPresenter
         private val userRepository: UserRepository,
         private val eventRepository: EventRepository,
         private val eventData: UserEventData
-) : BasePresenter<OrganizationContract.View>(), OrganizationContract.Presenter {
+) : BasePresenter<OrganizationContract.View>(appData), OrganizationContract.Presenter {
 
     lateinit var organizationId: String
     lateinit var organization: OrganizationNew
@@ -103,7 +103,7 @@ class OrganizationPresenter
                                             put(EventNew.EVENT_LIMIT, 3)
                                             put(EventNew.EVENT_SORT_TYPE, "desc")
                                             put(EventNew.EVENT_OFFSET, 0)
-                                            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,getEventsListWithoutPagination")
+                                            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
                                             put(EventNew.EVENT_ORGANIZATION, organizationId)
                                         }
                                 ).performOnBackgroundOutOnMain()

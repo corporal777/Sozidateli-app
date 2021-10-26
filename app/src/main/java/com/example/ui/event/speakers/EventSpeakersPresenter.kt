@@ -11,6 +11,7 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
@@ -24,7 +25,7 @@ class EventSpeakersPresenter
         private val appData: AppData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository
-) : BasePresenter<EventSpeakersContract.View>(), EventSpeakersContract.Presenter {
+) : BasePresenter<EventSpeakersContract.View>(appData), EventSpeakersContract.Presenter {
 
     lateinit var eventId: String
 
@@ -55,7 +56,7 @@ class EventSpeakersPresenter
 
     override fun onSpeakerClick(speaker: MemberModel) =
             if (!appData.hasBaseState && !appData.hasMaxState) {
-                 viewState.showStateErrorMessage()
+                 viewState.showStateErrorMessage(StateType.BASE, false, null)
             } else {
                 viewState.showSpeaker(speaker)
             }

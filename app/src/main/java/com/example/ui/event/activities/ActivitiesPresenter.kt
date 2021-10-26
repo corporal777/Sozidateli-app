@@ -27,7 +27,7 @@ class ActivitiesPresenter
         private val eventRepository: EventRepository,
         private val userEventData: UserEventData,
         private val appData: AppData,
-) : BasePresenter<ActivitiesContract.View>(), ActivitiesContract.Presenter {
+) : BasePresenter<ActivitiesContract.View>(appData), ActivitiesContract.Presenter {
 
     lateinit var userEvent: UserEvent
 

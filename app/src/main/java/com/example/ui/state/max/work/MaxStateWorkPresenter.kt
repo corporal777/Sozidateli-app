@@ -15,7 +15,7 @@ class MaxStateWorkPresenter
 @Inject constructor(
         private val appData: AppData,
         private val userRepository: UserRepository
-): BasePresenter<MaxStateWorkContract.View>(), MaxStateWorkContract.Presenter {
+): BasePresenter<MaxStateWorkContract.View>(appData), MaxStateWorkContract.Presenter {
 
     var screen: Int = 1
 
@@ -37,8 +37,6 @@ class MaxStateWorkPresenter
     override fun onClickClose() {
         viewState.navigateUp()
     }
-
-    fun getUserData() = appData.getUserNew()
 
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {
         compositeDisposable += userRepository.updateWorkExperience(data)

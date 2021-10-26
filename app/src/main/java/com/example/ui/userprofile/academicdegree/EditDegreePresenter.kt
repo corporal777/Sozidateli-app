@@ -13,7 +13,7 @@ import javax.inject.Inject
 class EditDegreePresenter
 @Inject constructor(
         private val appData: AppData
-) : BasePresenter<EditDegreeContract.View>(), EditDegreeContract.Presenter {
+) : BasePresenter<EditDegreeContract.View>(appData), EditDegreeContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

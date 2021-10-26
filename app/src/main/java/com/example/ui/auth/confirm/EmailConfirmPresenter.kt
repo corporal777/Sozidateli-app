@@ -1,6 +1,7 @@
 package com.example.ui.auth.confirm
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
 import com.example.data.models.SnUser
@@ -21,8 +22,9 @@ import javax.inject.Inject
 @InjectViewState
 class EmailConfirmPresenter
 @Inject constructor(
-        private val authRepository: AuthRepository
-) : BasePresenter<EmailConfirmContract.View>(), EmailConfirmContract.Presenter {
+        private val authRepository: AuthRepository,
+        appData: AppData
+) : BasePresenter<EmailConfirmContract.View>(appData), EmailConfirmContract.Presenter {
 
     var snUser: SnUser? = null
     lateinit var email: String

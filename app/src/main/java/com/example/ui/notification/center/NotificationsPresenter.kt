@@ -29,7 +29,7 @@ class NotificationsPresenter
         private val eventRepository: EventRepository,
         private val appData: AppData,
         private val notificationManager: NotificationManager
-) : BasePresenter<NotificationsContract.View>(), NotificationsContract.Presenter {
+) : BasePresenter<NotificationsContract.View>(appData), NotificationsContract.Presenter {
 
     private var firstLaunch = true
     private var notifications: List<Notification?> = emptyList()

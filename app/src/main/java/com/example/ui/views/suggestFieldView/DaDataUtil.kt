@@ -49,7 +49,7 @@ object DaDataUtil {
         val flat = formatParam(data?.flat, jObject)
         return UserAddress(address = address, index = index, country = country, federal = federal,
                 region = region, area = area, city = city, district = district, settlement = settlement,
-                street = street, house = house, flat = flat)
+                street = street, house = house, flat = flat, showInProfile = data?.showInProfile)
     }
 
     fun formatSavedLocation(context: Context, data: UserAddress): UserAddress {

@@ -1,6 +1,7 @@
 package com.example.ui.agreement
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.repository.CommonRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -12,8 +13,9 @@ import javax.inject.Inject
 @InjectViewState
 class UserAgreementPresenter
 @Inject constructor(
-        private val commonRepository: CommonRepository
-) : BasePresenter<UserAgreementContract.View>(), UserAgreementContract.Presenter {
+        private val commonRepository: CommonRepository,
+        appData: AppData
+) : BasePresenter<UserAgreementContract.View>(appData), UserAgreementContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

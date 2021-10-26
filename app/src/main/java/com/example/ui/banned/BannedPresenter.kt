@@ -1,6 +1,7 @@
 package com.example.ui.banned
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.BannedUsersModel.Companion.BANNED_BINDS
 import com.example.data.models.BannedUsersModel.Companion.BANNED_LIMIT
 import com.example.data.models.BannedUsersModel.Companion.BANNED_OFFSET
@@ -20,8 +21,9 @@ import javax.inject.Inject
 @InjectViewState
 class BannedPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository
-) : BasePresenter<BannedContract.View>(), BannedContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+        private val chatRepository: ChatRepository,
+        appData: AppData
+) : BasePresenter<BannedContract.View>(appData), BannedContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
 
     private var firstLaunch = true
 

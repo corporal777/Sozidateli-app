@@ -52,8 +52,8 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         tvPhoneWork.text = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value?.parsePhone(requireContext())
         tvEmail.text = (user.email?.value?: "")
         tvEmailPublic.text = user.contactInformation.emails?.joinToString("\n") { it.value?: "" }
-        tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") { it }
-        tvSite.text = user.contactInformation.site?.values?.joinToString("\n") { it }
+        tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") { it.value?: "" }
+        tvSite.text = user.contactInformation.site?.values?.joinToString("\n") { it.value?: "" }
     }
 
     override fun showEdit() {

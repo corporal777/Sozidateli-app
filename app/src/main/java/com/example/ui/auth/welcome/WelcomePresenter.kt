@@ -9,7 +9,7 @@ import javax.inject.Inject
 class WelcomePresenter
 @Inject constructor(
         private val appData: AppData
-) : BasePresenter<WelcomeContract.View>(), WelcomeContract.Presenter {
+) : BasePresenter<WelcomeContract.View>(appData), WelcomeContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

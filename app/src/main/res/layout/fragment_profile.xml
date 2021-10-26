@@ -11,13 +11,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include
+        <!--<include
             android:id="@+id/screenTittle"
             layout="@layout/item_screen_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default" />
+            android:layout_marginEnd="@dimen/margin_horizontal_default" />-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_avatar"
-                app:layout_constraintBottom_toTopOf="@+id/state_title"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/avatar_placeholder" />
@@ -56,7 +56,17 @@
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="@tools:sample/full_names" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
+                android:id="@+id/tvIdTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="@string/user_id"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+            <!--<androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnEdit"
                 fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
@@ -75,7 +85,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
                 app:layout_constraintTop_toBottomOf="@+id/tvName"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="1.0" />-->
 
             <TextView
                 android:id="@+id/state_title"
@@ -84,10 +94,10 @@
                 android:layout_marginTop="7dp"
                 android:text="@string/state"
                 android:textSize="17sp"
-                app:layout_constraintStart_toStartOf="@+id/ivAvatar"
-                app:layout_constraintTop_toBottomOf="@+id/ivAvatar" />
+                app:layout_constraintStart_toStartOf="@+id/tvIdTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvIdTitle" />
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/states_lay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,14 +172,28 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/state_title"
-                app:layout_constraintTop_toBottomOf="@+id/states_lay" />
+                app:layout_constraintTop_toBottomOf="@+id/state_title" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/tvSettings"
+            android:id="@+id/tvStates"
             style="@style/Profile.Button"
             android:layout_marginTop="20dp"
+            android:text="@string/about_states" />
+
+        <View style="@style/ViewDivider.Horizontal" />
+
+        <TextView
+            android:id="@+id/tvEditProfile"
+            style="@style/Profile.Button"
+            android:text="@string/profile_edit" />
+
+        <View style="@style/ViewDivider.Horizontal" />
+
+        <TextView
+            android:id="@+id/tvSettings"
+            style="@style/Profile.Button"
             android:text="@string/profile_settings" />
 
         <TextView

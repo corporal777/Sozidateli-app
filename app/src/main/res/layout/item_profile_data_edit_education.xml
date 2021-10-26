@@ -145,6 +145,13 @@
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:text="@string/profile_education_not_finished" />
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scEducation"
+        style="@style/Profile.Edit.Switch"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/profile_show_in_profile" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRemove"
         style="@style/Profile.Edit.Button"

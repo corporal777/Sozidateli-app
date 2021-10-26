@@ -25,7 +25,7 @@ class NotificationPresenter
         private val appData: AppData,
         private val notificationManager: NotificationManager,
         private val eventRepository: EventRepository
-) : BasePresenter<NotificationContract.View>(), NotificationContract.Presenter {
+) : BasePresenter<NotificationContract.View>(appData), NotificationContract.Presenter {
 
     lateinit var notification: Notification
 

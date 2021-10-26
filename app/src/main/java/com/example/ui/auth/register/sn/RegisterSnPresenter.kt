@@ -1,6 +1,7 @@
 package com.example.ui.auth.register.sn
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
@@ -17,8 +18,9 @@ import javax.inject.Inject
 class RegisterSnPresenter
 @Inject constructor(
         private val authRepository: AuthRepository,
-        snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterSnContract.View>(authRepository, snAuthManager), RegisterSnContract.Presenter {
+        snAuthManager: SnAuthManager,
+        appData: AppData
+) : BaseAuthPresenter<RegisterSnContract.View>(authRepository, snAuthManager, appData), RegisterSnContract.Presenter {
 
     lateinit var snUser: SnUser
 

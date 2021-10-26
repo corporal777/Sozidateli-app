@@ -2,6 +2,7 @@ package com.example.ui.eventTabs
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.models.Place
@@ -24,8 +25,9 @@ class EventTabsPresenter
         private val eventData: UserEventData,
         private val eventRepository: EventRepository,
         private val userRepository: UserRepository,
+        appData: AppData,
         @Connectivity private val connectivity: Observable<Boolean>
-) : BasePresenter<EventTabsContract.View>(), EventTabsContract.Presenter {
+) : BasePresenter<EventTabsContract.View>(appData), EventTabsContract.Presenter {
 
     /*private*/ val userEvent = eventData.userEvent!!
     private var isInternetConnected = false

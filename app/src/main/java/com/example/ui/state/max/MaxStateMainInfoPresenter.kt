@@ -33,7 +33,7 @@ class MaxStateMainInfoPresenter
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val takePhoto: RxTakePhoto
-): BasePresenter<MaxStateMainInfoContract.View>(), MaxStateMainInfoContract.Presenter {
+): BasePresenter<MaxStateMainInfoContract.View>(appData), MaxStateMainInfoContract.Presenter {
 
     var screen: Int = 1
     private var isFileEdit = false
@@ -112,8 +112,6 @@ class MaxStateMainInfoPresenter
                     })
         }
     }
-
-    fun getUserData() = appData.getUserNew()
 
     private fun onEditSaveNew(data: MutableMap<String, Any?>, onComplete: (UserDetail) -> Boolean) {
         if (data.isEmpty()) {

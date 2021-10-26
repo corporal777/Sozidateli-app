@@ -34,7 +34,7 @@ class PhoneConfirmPresenter
         private val appData: AppData,
         private val userRepository: UserRepository,
         private val authRepository: AuthRepository
-) : BasePresenter<PhoneConfirmContract.View>(), PhoneConfirmContract.Presenter {
+) : BasePresenter<PhoneConfirmContract.View>(appData), PhoneConfirmContract.Presenter {
 
     companion object {
         private const val TIMER_SECONDS_COUNT = 180

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/Profile.Edit.InputContainer">
+    <!--<LinearLayout style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.TextViewTitle"
@@ -88,38 +88,7 @@
             android:id="@+id/scNoMiddleName"
             style="@style/Profile.Edit.Switch"
             android:text="@string/profile_edit_user_no_middle_name" />
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/Profile.Edit.InputContainer"
-        android:layout_marginTop="20dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.TextViewTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_profile_status"/>
-
-        <com.example.ui.views.CustomTextInputLayout
-            style="@style/Profile.Edit.InputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconDrawable="@drawable/ic_arrow_right"
-            app:endIconMode="dropdown_menu">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tvState"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:enabled="false"
-                android:hint="@string/user_profile_status_name"
-                android:paddingStart="@dimen/background_input_padding"
-                android:paddingEnd="@dimen/background_input_padding" />
-        </com.example.ui.views.CustomTextInputLayout>
-
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"
@@ -181,6 +150,12 @@
                 android:paddingStart="@dimen/background_input_padding"
                 android:paddingEnd="@dimen/background_input_padding" />
         </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scGender"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 
     <LinearLayout style="@style/Profile.Edit.InputContainer">
@@ -206,6 +181,12 @@
                 android:paddingStart="@dimen/background_input_padding"
                 android:paddingEnd="@dimen/background_input_padding" />
         </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scCity"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 
     <LinearLayout
@@ -254,5 +235,10 @@
                 android:lines="5"
                 tools:text="@tools:sample/lorem/random" />
         </com.example.ui.views.CustomTextInputLayout>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNotes"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 </LinearLayout>

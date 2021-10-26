@@ -26,7 +26,7 @@ class ProfilePresenter
         private val socket: SocketIOManager,
         private val notificationManager: NotificationManager,
         private val authRepository: AuthRepository
-) : BasePresenter<ProfileContract.View>(), ProfileContract.Presenter {
+) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -52,8 +52,6 @@ class ProfilePresenter
                     }, { it.printStackTrace() })
         }
     }
-
-    fun getUserData() = appData.getUserNew()
 
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
 

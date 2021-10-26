@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.view.View
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
@@ -23,9 +24,10 @@ class ProfileDataWorkEditItem(
         id: Int?,
         start: String?,
         finish: String?,
-        organization: String?,
-        position: String?,
+        val organization: String?,
+        val position: String?,
         birthday: String?,
+        showInProfile: Boolean?,
         private val onRemoveClickListener: (ProfileDataWorkEditItem) -> Unit,
         private val isDataValid: (isValid: Boolean) -> Unit
 ) : Item() {
@@ -43,6 +45,8 @@ class ProfileDataWorkEditItem(
     var mPosition = position
         private set
     var isNotFinished = mFinish == null
+        private set
+    var mShowInProfile = showInProfile?: false
         private set
 
     private val birthday = birthday?.parseToDate(defaultServerDateFormatter)
@@ -91,6 +95,11 @@ class ProfileDataWorkEditItem(
                 tilPosition.error = null
                 mPosition = it.toString()
                 validateEnableButton()
+            }
+
+            scWork.apply {
+                isVisible = !organization.isNullOrEmpty() || !this@ProfileDataWorkEditItem.position.isNullOrEmpty()
+                initSwitch(mShowInProfile) { mShowInProfile = it }
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataWorkEditItem) }

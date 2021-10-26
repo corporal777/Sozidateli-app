@@ -27,19 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:textAllCaps="true"
-                android:textColor="@color/profile_id_text"
-                android:textSize="17sp"
-                tools:text="ID 100500" />
-
-            <androidx.appcompat.widget.AppCompatTextView
+            <!--<androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,20 +66,7 @@
                 style="@style/Profile.User.Data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/user_profile_middle_name_hint" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Profile.User.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/user_profile_status" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvStatus"
-                style="@style/Profile.User.Data"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/user_profile_status_name" />
+                android:hint="@string/user_profile_middle_name_hint" />-->
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"

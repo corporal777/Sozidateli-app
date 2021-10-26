@@ -21,7 +21,7 @@ import javax.inject.Inject
 class FavoriteSubeventPresenter @Inject constructor(
         private val eventRepository: EventRepository,
         private val appData: AppData
-) : BasePresenter<FavoriteSubeventContract.View>(), FavoriteSubeventContract.Presenter {
+) : BasePresenter<FavoriteSubeventContract.View>(appData), FavoriteSubeventContract.Presenter {
 
     lateinit var event: String
     lateinit var actions: List<EventActivityModel>

@@ -2,6 +2,7 @@ package com.example.ui.partner
 
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Optional
 import com.example.data.models.PartnerModel
 import com.example.repository.EventRepository
@@ -18,8 +19,9 @@ import javax.inject.Inject
 @InjectViewState
 class PartnerPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
-) : BasePresenter<PartnerContract.View>(), PartnerContract.Presenter {
+        private val eventRepository: EventRepository,
+        appData: AppData
+) : BasePresenter<PartnerContract.View>(appData), PartnerContract.Presenter {
 
     lateinit var dataEventId: String
     lateinit var dataPartnerId: String

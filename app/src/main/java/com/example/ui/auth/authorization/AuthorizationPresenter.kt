@@ -1,6 +1,7 @@
 package com.example.ui.auth.authorization
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -11,8 +12,9 @@ import javax.inject.Inject
 class AuthorizationPresenter
 @Inject constructor(
         authRepository: AuthRepository,
-        private val snAuthManager: SnAuthManager
-) : BaseAuthPresenter<AuthorizationContract.View>(authRepository, snAuthManager), AuthorizationContract.Presenter {
+        private val snAuthManager: SnAuthManager,
+        appData: AppData
+) : BaseAuthPresenter<AuthorizationContract.View>(authRepository, snAuthManager, appData), AuthorizationContract.Presenter {
 
     override fun onLoginClick() {
         snAuthManager.removeOnSnAuthListener(snAuthListener)

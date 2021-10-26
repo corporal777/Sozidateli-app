@@ -31,6 +31,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
+import com.example.data.models.UserDetail
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
@@ -48,6 +49,8 @@ import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.splash.SplashFragment
+import com.example.ui.state.UserState
+import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
@@ -566,11 +569,32 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 .setSelectCallback {  }
     }
 
-    override fun showStateErrorMessage() {
-        ChangeStateDialog(this, StateType.ERROR)
-                .setSendCodeCallback {
-                    if (it) {
-                        findNavController().navigate(R.id.userStateFragment)
+    override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
+        ChangeStateDialog(this, type)
+                .setClickCallback {
+                    when (it) {
+                        ClickType.INFO -> {
+                            findNavController().navigate(R.id.userStateFragment)
+                        }
+                        ClickType.BASE -> {
+                            findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.BASE, "screen" to 1))
+                        }
+                        ClickType.MAX -> {
+                            if (presenter.getHasBase()) {
+                                when (Utils.maxStateScreen(presenter.getUserData())) {
+                                    MaxStateScreenType.BASE ->
+                                        findNavController().navigate(R.id.maxStateMainInfoFragment, bundleOf("screen" to 1))
+                                    MaxStateScreenType.INTERESTS ->
+                                        findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to 1))
+                                    MaxStateScreenType.WORK ->
+                                        findNavController().navigate(R.id.maxStateWorkFragment, bundleOf("screen" to 1))
+                                    MaxStateScreenType.EDUCATION ->
+                                        findNavController().navigate(R.id.maxStateEducationFragment, bundleOf("screen" to 1))
+                                }
+                            } else {
+                                findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.MAX, "screen" to 1))
+                            }
+                        }
                     }
                 }
     }

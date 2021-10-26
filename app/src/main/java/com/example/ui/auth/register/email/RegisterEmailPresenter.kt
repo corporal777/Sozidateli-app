@@ -1,6 +1,7 @@
 package com.example.ui.auth.register.email
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
@@ -18,8 +19,9 @@ import javax.inject.Inject
 class RegisterEmailPresenter
 @Inject constructor(
         private val authRepository: AuthRepository,
-        snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager), RegisterEmailContract.Presenter {
+        snAuthManager: SnAuthManager,
+        appData: AppData
+) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager, appData), RegisterEmailContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null

@@ -1,13 +1,14 @@
 package com.example.ui.event.contacts
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.*
 import com.example.ui.base.BasePresenter
 import javax.inject.Inject
 
 @InjectViewState
 class EventContactsPresenter
-@Inject constructor() : BasePresenter<EventContactsContract.View>(), EventContactsContract.Presenter {
+@Inject constructor(appData: AppData) : BasePresenter<EventContactsContract.View>(appData), EventContactsContract.Presenter {
 
     companion object {
         private const val GOOGLE_MAP_SHARE_URL = "https://www.google.com/maps/search/?api=1&query="

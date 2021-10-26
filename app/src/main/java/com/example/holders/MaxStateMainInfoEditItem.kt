@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
@@ -20,6 +21,8 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnAddInfo
 import kotlinx.android.synthetic.main.item_max_state_main_info.etNotes
+import kotlinx.android.synthetic.main.item_max_state_main_info.scNotes
+import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import onTextChanged
 
 class MaxStateMainInfoEditItem(
@@ -29,7 +32,7 @@ class MaxStateMainInfoEditItem(
         private val workPhone: FieldDetails?,
         private val socialNetworks: LinksModel?,
         private val site: LinksModel?,
-        private val notes: String?,
+        private val notes: ToggleStringModel?,
         private val image: ImageModel,
         private val emails: List<EmailsModel>,
         private val addInfoClick:() -> Unit,
@@ -39,15 +42,16 @@ class MaxStateMainInfoEditItem(
 
     private lateinit var viewHolder: GroupieViewHolder
 
-    private var mNotes = notes
-    private val isNoteVisible = notes.isNullOrEmpty()
+    private var mNotes = notes?.value
+    private var mNotesShow = notes?.showInProfile?: true
+    private val isNoteVisible = notes?.value.isNullOrEmpty()
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
     private val isWorkPhoneVisible = workPhone?.value.isNullOrEmpty()
-    private var mSite = (site?.values?.map { UserDataSite(value = it) } ?: emptyList())
+    private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
-                if (it.isEmpty()) it.plus(UserDataSite(value = ""))
+                if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
                 else it
             }
             .toMutableList()
@@ -58,10 +62,10 @@ class MaxStateMainInfoEditItem(
     private var mImage = image
     private val isImageVisible = (image.uri == null) || (image.uri == "")
 
-    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it) } ?: emptyList())
+    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
-                if (it.isEmpty()) it.plus(UserDataSocialLink(value = ""))
+                if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
                 else it
             }
             .toMutableList()
@@ -101,7 +105,7 @@ class MaxStateMainInfoEditItem(
                 btnSocialNetworkAdd.apply {
                     setOnClickListener {
                         if (!mSocialNetworks.lastOrNull()?.value.isNullOrBlank()) {
-                            UserDataSocialLink(value = "").apply {
+                            UserDataSocialLink(value = "", showInProfile = false).apply {
                                 mSocialNetworks.add(this)
                                 initSocialNetworkInput(viewHolder, this)
                             }
@@ -125,7 +129,7 @@ class MaxStateMainInfoEditItem(
                 btnSiteAdd.apply {
                     setOnClickListener {
                         if (!mSite.lastOrNull()?.value.isNullOrBlank()) {
-                            UserDataSite(value = "").apply {
+                            UserDataSite(value = "", showInProfile = false).apply {
                                 mSite.add(this)
                                 initSiteInput(viewHolder, this)
                             }
@@ -151,6 +155,8 @@ class MaxStateMainInfoEditItem(
                         checkDataValid()
                     }
                 }
+                scNotes.isVisible = notes?.value?.isNullOrEmpty() == false
+                scNotes.initSwitch(mNotesShow) { mNotesShow = it }
                 btnAddInfo.setOnClickListener {
                     addInfoClick()
                 }
@@ -234,11 +240,16 @@ class MaxStateMainInfoEditItem(
             }
         }
 
+        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+            isVisible = sn.value.isNotEmpty()
+            initSwitch(sn.showInProfile) { sn.showInProfile = it }
+        }
+
         parent.findViewById<View>(R.id.btnDelete).apply {
             setOnClickListener {
                 if (mSocialNetworks.remove(csn)) {
                     if (mSocialNetworks.isEmpty()) {
-                        csn = UserDataSocialLink(value = "")
+                        csn = UserDataSocialLink(value = "", showInProfile = false)
                         mSocialNetworks.add(csn)
                         etSn.text?.clear()
                     } else {
@@ -266,6 +277,10 @@ class MaxStateMainInfoEditItem(
                 site.value = it?.toString()?: ""
                 checkDataValid()
             }
+        }
+        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+            isVisible = site.value.isNotEmpty()
+            initSwitch(site.showInProfile) { site.showInProfile = it }
         }
 
         parent.findViewById<View>(R.id.btnDelete).apply {
@@ -324,8 +339,8 @@ class MaxStateMainInfoEditItem(
                 //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
 
-            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
-                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks), emails = emails))
+            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
+                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks), emails = emails))
 
             /*when {
                 isUpdateSites && isUpdateLinks -> {
@@ -342,7 +357,7 @@ class MaxStateMainInfoEditItem(
                 }
             }*/
 
-            if (notes != mNotes) put(UserDetail.USER_NOTES, mNotes)
+            if (notes?.value != mNotes || notes?.showInProfile != mNotesShow) put(UserDetail.USER_NOTES, ToggleStringModel(mNotes, mNotesShow))
         }
     }
 

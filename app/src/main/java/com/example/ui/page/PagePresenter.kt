@@ -1,6 +1,7 @@
 package com.example.ui.page
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.Document
 import com.example.data.models.FileModel
 import com.example.repository.EventRepository
@@ -14,8 +15,9 @@ import javax.inject.Inject
 @InjectViewState
 class PagePresenter
 @Inject constructor(
-        private val eventRepository: EventRepository
-) : BasePresenter<PageContract.View>(), PageContract.Presenter {
+        private val eventRepository: EventRepository,
+        appData: AppData
+) : BasePresenter<PageContract.View>(appData), PageContract.Presenter {
 
     lateinit var dataEventId: String
     lateinit var dataPageId: String

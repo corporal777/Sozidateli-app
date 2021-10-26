@@ -1,9 +1,12 @@
 package com.example.ui.base
 
 import com.arellomobile.mvp.MvpPresenter
+import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.exceptions.NoInternetConnectionException
+import com.example.ui.views.StateType
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -15,7 +18,7 @@ import withCheckInternetConnectivity
 import javax.inject.Inject
 
 open class BasePresenter<V : BaseContract.View>
-@Inject constructor()
+@Inject constructor(val appDat: AppData)
     : MvpPresenter<V>(), BaseContract.Presenter {
 
     protected val compositeDisposable = CompositeDisposable()
@@ -51,6 +54,10 @@ open class BasePresenter<V : BaseContract.View>
                 )
     }
 
+    fun getUserData() = appDat.getUserNew()
+
+    fun getHasBase() = appDat.hasBaseState
+
     private fun createOnErrorConsumer(
             onError: ((Throwable) -> Unit)?,
             onNoInternetConnectionException: (() -> Unit)?,
@@ -85,7 +92,7 @@ open class BasePresenter<V : BaseContract.View>
                             try {
                                 val error = Gson().fromJson(
                                         it.response()?.errorBody()?.string(),
-                                        Errors::class.java
+                                        NewErrors::class.java
                                 )
                                 when (error.errors[0].message) {
                                     "User with same email exists" -> viewState.showEmailErrorMessage()
@@ -101,11 +108,11 @@ open class BasePresenter<V : BaseContract.View>
                             try {
                                 val error = Gson().fromJson(
                                         it.response()?.errorBody()?.string(),
-                                        NewError::class.java
+                                        NewErrors::class.java
                                 )
-                                when (error.message) {
-                                    "your profile level is to low, basic required" -> viewState.showStateErrorMessage()
-                                    "your profile level is to low, maximum required" -> viewState.showStateErrorMessage()
+                                when (error.errors[0].message) {
+                                    "your profile level is to low, basic required" -> viewState.showStateErrorMessage(StateType.BASE, getHasBase(), getUserData())
+                                    "your profile level is to low, maximum required" -> viewState.showStateErrorMessage(StateType.MAX, getHasBase(), getUserData())
                                     else -> onReceiveError(it)
                                 }
                             } catch (e: Exception) {
@@ -117,6 +124,8 @@ open class BasePresenter<V : BaseContract.View>
             }
         }
     }
+
+    data class NewErrors(val errors: List<NewError>)
     data class Errors(val errors: List<ErrorModel>)
     data class ErrorModel(val code: String? = null, val field: String? = null, val message: String? = null)
     data class NewError(val code: String? = null, val type: String? = null, val profileLevelRequired: String? = null, val message: String? = null)

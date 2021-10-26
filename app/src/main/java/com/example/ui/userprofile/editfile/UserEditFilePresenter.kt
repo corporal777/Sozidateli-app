@@ -10,7 +10,7 @@ class UserEditFilePresenter
     @Inject constructor(
             private val appData: AppData
     )
-    : BasePresenter<UserEditFileContract.View>(), UserEditFileContract.Presenter {
+    : BasePresenter<UserEditFileContract.View>(appData), UserEditFileContract.Presenter {
 
 
 }

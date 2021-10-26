@@ -23,6 +23,7 @@ import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
+import com.example.ui.views.StateType
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Group
@@ -60,7 +61,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         }
 
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
-        override fun onShowUpdateState() = showStateErrorMessage()
+        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
     private var eventToShowView: View? = null

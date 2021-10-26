@@ -203,7 +203,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
                 workPhone,
                 mobilePhone,
                 editable && user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false,
-                gender,
+                gender?.value,
                 birthday,
                 city,
                 socialNetworks,
@@ -212,7 +212,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
     }
 
     private fun initEducationDataItem(user: /*User*/UserDetail, editable: Boolean): Group? {
-        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel }?.name
+        val educationLevel = user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()
         val education = user.binds?.education ?: emptyList()
         return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
@@ -274,7 +274,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
         val subgroups = mutableListOf<Group>()
         subgroups.add(ProfileExpandableSubtitleGroup(getString(R.string.profile_notes), onExpandChange = onItemExpandChange).apply {
-            add(ProfileDataNotesItem(notes.let { if (it.isNullOrEmpty()) "-" else it }))
+            add(ProfileDataNotesItem(notes?.value.let { if (it.isNullOrEmpty()) "-" else it }))
             if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditAdditionalNotesDataClick() })
         })
 
@@ -289,7 +289,7 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
             if (editable) add(ProfileButtonEditItem(editText, false) { presenter.onEditAdditionalFilesDataClick() })
         })
 
-        return if (editable || !notes.isNullOrEmpty() || files.isNotEmpty()) {
+        return if (editable || !notes?.value.isNullOrEmpty() || files.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                     getString(R.string.profile_additional_data),
                     onExpandChange = onItemExpandChange

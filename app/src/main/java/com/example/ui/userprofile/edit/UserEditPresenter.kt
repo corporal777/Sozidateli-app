@@ -40,7 +40,7 @@ class UserEditPresenter
         private val userRepository: UserRepository,
         private val commonRepository: CommonRepository,
         private val takePhoto: RxTakePhoto
-) : BasePresenter<UserEditContract.View>(), UserEditContract.Presenter {
+) : BasePresenter<UserEditContract.View>(appData), UserEditContract.Presenter {
 
     private val compositeFilesDisposable = CompositeDisposable()
     lateinit var editType: UserEditDataType
@@ -216,7 +216,7 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveEducationClick(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
+    override fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
         compositeDisposable += userRepository.updateUserEducationScreen(educationLevel, educationsList, degree)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

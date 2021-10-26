@@ -6,13 +6,11 @@ import android.widget.AutoCompleteTextView
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.EducationLevel
+import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.btnRemove
-import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 
 class ProfileDataAcademicDegreeEditItem(
         id: Int?,
@@ -20,6 +18,7 @@ class ProfileDataAcademicDegreeEditItem(
         sciencesLevel: String?,
         private val availableDegrees: List<EducationLevel>,
         private val availableSciences: List<EducationLevel>,
+        private val showInProfile: Boolean?,
         private val onRemoveClickListener: (ProfileDataAcademicDegreeEditItem) -> Unit
 ) : Item() {
 
@@ -34,6 +33,9 @@ class ProfileDataAcademicDegreeEditItem(
     var mSciencesLevel = sciencesLevel
         private set
 
+    var mShowInProfile = showInProfile?: false
+        private set
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             setupDropDown(tvDegreesLevel, tilDegreesLevel, availableDegrees, mDegreesLevel) {
@@ -44,6 +46,8 @@ class ProfileDataAcademicDegreeEditItem(
             }
 
             btnRemove.setOnClickListener { onRemoveClickListener(this@ProfileDataAcademicDegreeEditItem) }
+
+            scEducation.initSwitch(mShowInProfile) { mShowInProfile = it }
 
             if (isDeleteVisible)
                 btnRemove.visibility = View.VISIBLE

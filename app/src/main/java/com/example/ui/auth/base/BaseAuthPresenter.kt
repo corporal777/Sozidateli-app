@@ -1,5 +1,6 @@
 package com.example.ui.auth.base
 
+import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
@@ -14,8 +15,9 @@ import performOnBackgroundOutOnMain
 abstract class BaseAuthPresenter<V : BaseAuthContract.View>
 constructor(
         private val authRepository: AuthRepository,
-        private val snAuthManager: SnAuthManager
-) : BasePresenter<V>(), BaseAuthContract.Presenter {
+        private val snAuthManager: SnAuthManager,
+        appData: AppData
+) : BasePresenter<V>(appData), BaseAuthContract.Presenter {
 
     protected val snAuthListener = object : SnAuthManager.OnSnAuthListener {
         override fun onSnAuthComplete(snAuth: SnAuth) {

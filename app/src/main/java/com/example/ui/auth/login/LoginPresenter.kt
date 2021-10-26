@@ -33,7 +33,7 @@ class LoginPresenter
         private val userRepository: UserRepository,
         private val appData: AppData,
         snAuthManager: SnAuthManager
-) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager), LoginContract.Presenter {
+) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager, appData), LoginContract.Presenter {
 
     companion object {
         private const val WRONG_PASSWORD_API_ERROR = "combination email and password not found"

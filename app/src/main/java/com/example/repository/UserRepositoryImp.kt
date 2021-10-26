@@ -295,7 +295,7 @@ class UserRepositoryImp
                         appData.updateUserAcademicDegree(it.data)
                     }
 
-    override fun updateUserEducationScreen(educationLevel: Int?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String> {
+    override fun updateUserEducationScreen(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String> {
         return Single.zip(updateUserEducation(EducationBodyModel(educationsList)),
                 updateUserAcademicDegree(AcademicDegreeBodyModel(degree)),
                 updateProfile(appData.getId(), mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)),

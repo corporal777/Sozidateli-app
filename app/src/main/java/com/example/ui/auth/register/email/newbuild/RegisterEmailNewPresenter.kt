@@ -35,7 +35,7 @@ class RegisterEmailNewPresenter
         private val context: Context,
         private val userRepository: UserRepository,
         snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager), RegisterEmailNewContract.Presenter {
+) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager, appData), RegisterEmailNewContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null

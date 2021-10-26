@@ -27,13 +27,13 @@ data class UserDetail(
         var socialLinks: FieldListDetails? = null,*/
         var birthday: FieldDetails? = null,
         var image: ImageModel,
-        var gender: String? = null,
+        var gender: ToggleStringModel? = null,
         var address: NewUserAddress? = null,
         val state: UserState? = null,
         var interests: List<Int>? = null,
-        var notes: String? = null,
+        var notes: ToggleStringModel? = null,
         @SerializedName("educationLevel")
-        var educationLevel: Int? = null,
+        var educationLevel: ToggleIntModel? = null,
         var binds: UserBinds? = null,
         @SerializedName("educationLevelList")
         var educationLevelList: List<EducationLevel>? = null,
@@ -112,7 +112,7 @@ data class EmailsModel(
 @Parcelize
 data class LinksModel(
         @SerializedName("values")
-        val values: List<String>? = null,
+        val values: List<ToggleStringModel>? = null,
         val absent: Boolean? = null
 ): Parcelable
 
@@ -202,7 +202,9 @@ data class FileModel(
         val mimeType: String? = null,
         val size: Long? = null,
         var name: String? = null,
-        val uri: String? = null
+        val uri: String? = null,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean? = false
 ): Parcelable
 
 @Parcelize
@@ -224,14 +226,18 @@ data class WorkExperience(
         val end: String?,
         val organization: String?,
         val position: String?,
-        val description: String?
+        val description: String?,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean? = null
 ): Parcelable
 
 @Parcelize
 data class AcademicDegreeModel(
         val id: Int? = null,
         val speciality: Int? = null,
-        val degree: Int? = null
+        val degree: Int? = null,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean? = null
 ): Parcelable
 
 @Parcelize
@@ -240,7 +246,9 @@ data class EducationModel(
         val begin: String? = null,
         val end: String? = null,
         val organization: String? = null,
-        val speciality: String? = null
+        val speciality: String? = null,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean? = false
 ): Parcelable
 
 @Parcelize
@@ -319,7 +327,9 @@ data class NewUserAddress(
         @SerializedName("fullValue")
         var fullValue: String? = null,
         var description: AddressDescription? = null,
-        var shortAddres: String? = null
+        var shortAddres: String? = null,
+        @SerializedName("showInProfile")
+        val showInProfile: Boolean? = false
 ): Parcelable {
 
         fun getShortAddress(): String {
@@ -360,6 +370,20 @@ data class ImageModel(
         val name: String? = null,
         val id: Int? = null,
         val user: Int? = null
+): Parcelable
+
+@Parcelize
+data class ToggleIntModel(
+        var value: Int? = null,
+        @SerializedName("showInProfile")
+        var showInProfile: Boolean? = null
+): Parcelable
+
+@Parcelize
+data class ToggleStringModel(
+        var value: String? = null,
+        @SerializedName("showInProfile")
+        var showInProfile: Boolean? = null
 ): Parcelable
 
 @Parcelize

@@ -1,6 +1,7 @@
 package com.example.ui.organizations.members
 
 import com.arellomobile.mvp.InjectViewState
+import com.example.data.AppData
 import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationNewMemberModel
@@ -17,8 +18,9 @@ import javax.inject.Inject
 @InjectViewState
 class OrganizationMembersPresenter
 @Inject constructor(
-        private val organizationRepository: OrganizationRepository
-) : BasePresenter<OrganizationMembersContract.View>(), OrganizationMembersContract.Presenter {
+        private val organizationRepository: OrganizationRepository,
+        appData: AppData
+) : BasePresenter<OrganizationMembersContract.View>(appData), OrganizationMembersContract.Presenter {
 
     lateinit var organizationId: String
 
