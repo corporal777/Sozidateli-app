@@ -107,13 +107,13 @@ class EventRepositoryImp
 
     override fun getEventSpeakers(eventId: String, limit: Int, offset: Int): Maybe<PaginationResponse<Speaker>> {
         return callPagination(api.getEventSpeakers(eventId, limit, offset))
-    }*/
+    }
 
     override fun setEventRating(eventId: String, body: RequestBody): Completable {
         return call(api.setEventRating(eventId, body))
     }
 
-    /*override fun getEventRating(eventId: String): Single<EventInfo> {
+    override fun getEventRating(eventId: String): Single<EventInfo> {
         return call(api.getEventRating(eventId))
     }
 
@@ -154,7 +154,7 @@ class EventRepositoryImp
         val loadRegister = getEventRegister(eventId)
     }*/
 
-    override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
+    /*override fun loadEventRatingData(eventId: String): Single<EventRatingData> {
         return Single.just(EventRatingData(EventData("","", null,null,null,null,
                 "",null,null,null,null,null,
                 null,null,null,null,
@@ -163,7 +163,7 @@ class EventRepositoryImp
                 , arrayListOf(), arrayListOf(),null,null,null
                 ,null,null,null,null,null
                 ,false,false,null), arrayListOf(), null, null))
-        /*return Single.zip(
+        return Single.zip(
                 getEventRating(eventId),
                 getEventRatingForm(eventId),
                 BiFunction<EventInfo, List<EventRegisterField>, EventRatingData> { eventInfo, fields ->
@@ -174,8 +174,8 @@ class EventRepositoryImp
                             ratingValue = eventInfo.ratingValue
                     )
                 }
-        )*/
-    }
+        )
+    }*/
 
     private fun createFieldsData(
             fields: List<EventRegisterField>?,

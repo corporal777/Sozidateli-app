@@ -22,7 +22,7 @@ interface EventRepository {
     //fun eventRegisterCancel(eventId: String): Completable
     //fun getEventRegister(eventId: String): Single<EventRegisterResponse>
     //fun getEventRatingForm(eventId: String): Single<List<EventRegisterField>>
-    fun setEventRating(eventId: String, body: RequestBody): Completable
+    //fun setEventRating(eventId: String, body: RequestBody): Completable
     //fun getEventRating(eventId: String): Single<EventInfo>
     //fun getEventActivity(eventId: String): Maybe<EventActivity>
     //fun getEventInfo(eventId: String): Maybe<EventInfo>
@@ -39,7 +39,7 @@ interface EventRepository {
     //fun getPage(event: String, page: String): Single<Page>
 
     //fun loadEventRegistrationData(eventId: String): Single<EventRegisterData>
-    fun loadEventRatingData(eventId: String): Single<EventRatingData>
+    //fun loadEventRatingData(eventId: String): Single<EventRatingData>
 
     //fun getFavoriteEvents(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>>
     //fun addToFavorite(eventId: String): Completable

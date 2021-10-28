@@ -249,12 +249,12 @@ interface Api {
     fun getEventRegister(@Path("eventId") eventId: String): Single<ApiResponse<EventRegisterResponse>>
 
     @GET("/v1/events/{eventId}/rating/fields")
-    fun getEventRatingForm(@Path("eventId") eventId: String): Single<ApiResponse<List<EventRegisterField>>>*/
+    fun getEventRatingForm(@Path("eventId") eventId: String): Single<ApiResponse<List<EventRegisterField>>>
 
     @POST("/v1/events/{eventId}/rating/set")
     fun setEventRating(@Path("eventId") eventId: String, @Body body: RequestBody): Completable
 
-    /*@GET("/v1/events/{eventId}/rating/get")
+    @GET("/v1/events/{eventId}/rating/get")
     fun getEventRating(@Path("eventId") eventId: String): Single<ApiResponse<EventInfo>>
 
     @GET("/v1/events/{eventId}")

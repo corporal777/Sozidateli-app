@@ -5,16 +5,23 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EventData
-import com.example.data.models.EventFile
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.*
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventRatingContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>, rating: Int)
+        //fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>, rating: Int)
+        fun setFields(
+                event: EventRegistration,
+                groupField: EventRegisterField?,
+                selectedGroup: String?,
+                groups: List<EventGroup>,
+                fieldsData: List<EventRegisterFieldData<*>>,
+                rating: Int,
+                files: List<FileModel>?
+        )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)

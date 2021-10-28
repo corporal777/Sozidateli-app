@@ -9,8 +9,7 @@ import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EventData
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.*
 import com.example.extensions.forEachGroups
 import com.example.extensions.formatToEventDatesInterval
 import com.example.extensions.setRequired
@@ -62,7 +61,69 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
         recyclerView.apply { adapter = this@EventRatingFragment.adapter }
     }
 
-    override fun setFields(
+    override fun setFields(event: EventRegistration, groupField: EventRegisterField?, selectedGroup: String?,
+                           groups: List<EventGroup>, fieldsData: List<EventRegisterFieldData<*>>, rating: Int, files: List<FileModel>?) {
+        val editable = rating <= 0
+        section.apply {
+            setHeader(RegisterEventHeaderItem(
+                    -100L,
+                    event.name,
+                    null,
+                    event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
+                    null,
+                    event.registrationHeadline,
+                    event.registrationSubtitle
+            ))
+
+            if (editable) setFooter(saveButtonItem)
+
+            add(RatingItem(rating, presenter::onRatingChange))
+
+            addAll(fieldsData.map {
+                when (it) {
+                    is EventRegisterFieldData.String ->
+                        RegisterEventStringItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
+                    is EventRegisterFieldData.Date ->
+                        RegisterEventDateItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
+                    is EventRegisterFieldData.SelectBox ->
+                        EventRegistrationSelectBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
+                    is EventRegisterFieldData.RadioBox ->
+                        RegisterEventRadioBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
+                    is EventRegisterFieldData.Checkbox ->
+                        RegisterEventCheckboxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
+                    is EventRegisterFieldData.Boolean ->
+                        RegisterEventBooleanItem(it, editable, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
+                    is EventRegisterFieldData.Passport ->
+                        RegisterEventPassportItem(it, editable, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
+                    is EventRegisterFieldData.File ->
+                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) {
+                            presenter.onAddFileClick(it)
+                        }.createFieldItemFrom(it)
+                }
+            })
+
+            val filesGroup = Section().apply {
+                setHideWhenEmpty(true)
+                setHeader(EventRegistrationTitleItem(getString(R.string.event_rating_documents)))
+            }
+
+            val filess = files?.mapNotNull {
+                val link = it.uri
+                if (link != null) {
+                    EventRegistrationPersonalDataFileItem(link, it.name, personalDataFileClickListener)
+                } else {
+                    null
+                }
+            }
+
+            filess?.let {
+                filesGroup.addAll(it)
+                add(filesGroup)
+            }
+        }
+    }
+
+    /*override fun setFields(
             event: EventData,
             fieldsData: List<EventRegisterFieldData<*>>,
             rating: Int
@@ -125,7 +186,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFra
                 add(filesGroup)
             }
         }
-    }
+    }*/
 
     private fun Group.createFieldItemFrom(
             fieldData: EventRegisterFieldData<*>,

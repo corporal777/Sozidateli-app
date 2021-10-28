@@ -227,6 +227,7 @@ data class EventFormModel(
 
         companion object {
                 const val FORM_EVENT_ID = "event"
+                const val FORM_TYPE = "type"
         }
 }
 

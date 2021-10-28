@@ -233,7 +233,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                     val hasRating = eventData?.status?.value == Event.Status.FINISHED &&
                             (eventData?.state?.rating?.formEnabled == true) &&
                             eventData?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED &&
-                            (rating?: 0) > 0
+                            (rating?: 0) <= 0
                     /*val hasRating = (eventData?.status?.value == Event.Status.FINISHED ||
                             eventData?.status?.value == Event.Status.IN_ARCHIVE) &&
                             eventData.binds?.form?.firstOrNull { it.type == EventFormModel.Type.RATING } != null &&

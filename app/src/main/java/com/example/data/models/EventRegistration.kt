@@ -27,9 +27,9 @@ data class EventRegistration(
         @SerializedName("registration_name")
         val registrationName: String?,
         @SerializedName("registration_headline")
-        val registrationHeadline: String?,
+        var registrationHeadline: String?,
         @SerializedName("registration_subtitle")
-        val registrationSubtitle: String?,
+        var registrationSubtitle: String?,
         @SerializedName("is_require_moderate_requests")
         val isRequireModerate: Boolean?,
         @SerializedName("moderate_registration")
