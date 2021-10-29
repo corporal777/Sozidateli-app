@@ -213,6 +213,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
         //tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
         tvEvents.text = getString(R.string.organization_events).format(organization.binds?.eventsSize)
+        layout_events.isVisible = organization.binds?.eventsSize != 0
         rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 organization.binds?.events?.map(::createItem)?.let { update(it) }

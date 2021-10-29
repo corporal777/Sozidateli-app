@@ -105,6 +105,7 @@ class OrganizationPresenter
                                             put(EventNew.EVENT_OFFSET, 0)
                                             put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result")
                                             put(EventNew.EVENT_ORGANIZATION, organizationId)
+                                            put(EventNew.EVENT_SORT_FIELD, "id")
                                         }
                                 ).performOnBackgroundOutOnMain()
                                         .subscribe({ event ->

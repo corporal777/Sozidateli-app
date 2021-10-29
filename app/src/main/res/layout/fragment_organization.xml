@@ -133,83 +133,6 @@
                 android:paddingBottom="20dp">
 
                 <TextView
-                    android:id="@+id/tvEvents"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:textColor="@color/profile_name_text"
-                    android:textSize="17sp"
-                    tools:ignore="MissingPrefix"
-                    tools:text="@string/organization_events" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvEvents"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_event_status" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnEvents"
-                    style="@style/Profile.Edit.Button"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:text="@string/organization_events_watch" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_members"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/white"
-                android:orientation="vertical"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
-
-                <TextView
-                    android:id="@+id/tvPeoples"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:textColor="@color/profile_name_text"
-                    android:textSize="17sp"
-                    tools:ignore="MissingPrefix"
-                    tools:text="@string/organization_peoples" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvPeoples"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_user" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnPeoples"
-                    style="@style/Profile.Edit.Button"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:text="@string/organization_peoples_watch" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/white"
-                android:orientation="vertical"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
-
-                <TextView
                     android:id="@+id/tvMainData"
                     fontPath="fonts/Roboto-Bold.ttf"
                     android:layout_width="match_parent"
@@ -342,6 +265,84 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="15sp"
                     android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_events"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/tvEvents"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/organization_events" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_event_status" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnEvents"
+                    style="@style/Profile.Edit.Button"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:text="@string/organization_events_watch" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/tvPeoples"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/organization_peoples" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPeoples"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_user" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnPeoples"
+                    style="@style/Profile.Edit.Button"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:text="@string/organization_peoples_watch" />
             </LinearLayout>
 
         </LinearLayout>
