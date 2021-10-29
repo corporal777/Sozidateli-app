@@ -749,9 +749,9 @@
     <string name="password_to_small">- Больше символов</string>
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальные символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
-    <string name="add_phone_dialog_text">Для доступа ко всем возможностям портала укажите Ваш телефон.</string>
+    <string name="add_phone_dialog_text">Пожалуйста, укажите Ваш актуальный мобильный номер телефона. Вы сможете использовать этот номер для входа в аккаунт и восстановления пароля.\nМы будем использовать этот номер только для обеспечения безопасности вашего аккаунта. Номер не будет виден другим пользователям. При желании Вы сможете выбрать, нужно ли использовать его для других целей.</string>
     <string name="add_email_dialog_title">Добавьте Ваш e-mail</string>
-    <string name="add_email_dialog_text">Для получения важной информации и доступа ко всем возможностям портала укажите Ваш e-mail</string>
+    <string name="add_email_dialog_text">Для получения важных уведомлений, пожалуйста, укажите Ваш актуальный электронный адрес.</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>
     <string name="code_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения. </string>
     <string name="send_code_again">Отправить код повторно</string>
@@ -818,9 +818,9 @@
     <string name="current_login_invalid">Введите правильный текущий логин</string>
     <string name="new_login_invalid">Введите правильный новый логин</string>
     <string name="profile_email_add">Добавить email</string>
-    <string name="confirm_phone_text">Этот номер телефона подтвержден другим пользователем. Это Ваша страница?</string>
-    <string name="confirm_phone_positive">Это не моя страница</string>
-    <string name="confirm_email_text">Этот e-mail подтвержден другим пользователем. Это Ваша страница?</string>
+    <string name="confirm_phone_text">Введенный номер %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный номер к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
+    <string name="confirm_phone_positive">Подтвердить</string>
+    <string name="confirm_email_text">Введенный e-mail %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный e-mail к текущему профилю, нажмите "Подтвердить".\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_email_phone_text">Этот номер телефона/e-mail подтвержден другим пользователем. Это Ваша страница?</string>
     <string name="confirm_phone_positive_password">Да, восстановить пароль</string>
     <string name="profile_edit_public_email_hint">Публичный e-mail</string>

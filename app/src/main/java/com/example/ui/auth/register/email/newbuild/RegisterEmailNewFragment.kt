@@ -95,7 +95,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showEmailNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text), getString(R.string.confirm_phone_positive),
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text, email), getString(R.string.confirm_phone_positive),
                 getString(R.string.confirm_phone_positive_password))
                 .setSelectCallback {
                     if (!it) {
@@ -107,7 +107,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showPhoneNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text), getString(R.string.confirm_phone_positive),
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone), getString(R.string.confirm_phone_positive),
                 getString(R.string.confirm_phone_positive_password))
                 .setSelectCallback {
                     if (!it) {

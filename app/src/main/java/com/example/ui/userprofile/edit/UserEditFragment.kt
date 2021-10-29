@@ -358,8 +358,8 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     }
 
     override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text),
-                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone),
+                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
                 .setSelectCallback {
                     if (it) {
                         showPhoneConfirm(phone)

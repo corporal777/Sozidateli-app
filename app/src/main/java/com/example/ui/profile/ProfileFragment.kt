@@ -115,8 +115,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text),
-                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text, email),
+                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
                 .setSelectCallback {
                     if (it) {
                         presenter.sendEmail(email)
@@ -125,8 +125,8 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text),
-                getString(R.string.cancel), getString(R.string.confirm_phone_positive))
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone),
+                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
                 .setSelectCallback {
                     if (it) {
                         presenter.sendPhone(phone)
