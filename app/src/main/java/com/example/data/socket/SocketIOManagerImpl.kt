@@ -127,6 +127,22 @@ class SocketIOManagerImpl
                 }
             }, BackpressureStrategy.LATEST)
 
+    override fun subscribeToTotalNotificationsCount(): Flowable<Int> =
+            Flowable.create({ emitter ->
+                val listener = Emitter.Listener { args ->
+                    Log.i("ChatSocket", "Data: " + args.toString())
+                    emitter.onNext(args[0].toString().toInt())
+                }
+
+                mSocket?.on("notification-count", listener)
+                Log.i("ChatSocket", "Started listening notification-count event")
+
+                emitter.setCancellable {
+                    Log.i("ChatSocket", "Stopped listening notification-count")
+                    mSocket?.off("notification-count", listener)
+                }
+            }, BackpressureStrategy.LATEST)
+
     override fun subscribeToInvitesCount(): Flowable<Int> =
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->

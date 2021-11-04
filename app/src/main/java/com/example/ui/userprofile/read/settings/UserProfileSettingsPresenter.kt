@@ -123,9 +123,9 @@ class UserProfileSettingsPresenter @Inject constructor(
                     .withLoadingDialog(viewState)
                     .subscribeSimple {
                         appData.updateUserNew {
-                            if (isFirst) {
+                            /*if (isFirst) {
                                 this.email?.value = email
-                            }
+                            }*/
                             this.email?.onConfirmation = email
                         }
                         viewState.showChangeEmailComplete(email)

@@ -110,7 +110,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         text.setSpan(StyleSpan(Typeface.BOLD), 8 , text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(ForegroundColorSpan(if (!hasBase && !hasMax) Color.RED
         else if (hasBase && !hasMax) ContextCompat.getColor(requireContext(), R.color.colorAccent)
-        else Color.GREEN) , 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        else ContextCompat.getColor(requireContext(), R.color.event_item_action_background_show_event)) , 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         state_title.text = text
     }
 

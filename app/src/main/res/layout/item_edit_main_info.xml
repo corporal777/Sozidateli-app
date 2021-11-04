@@ -53,7 +53,7 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Profile.Edit.InputContainer">
+    <!--<LinearLayout style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Profile.Edit.TextViewTitle"
@@ -135,7 +135,7 @@
             android:id="@+id/scNoMiddleName"
             style="@style/Profile.Edit.Switch"
             android:text="@string/profile_edit_user_no_middle_name" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         style="@style/Profile.Edit.InputContainer"

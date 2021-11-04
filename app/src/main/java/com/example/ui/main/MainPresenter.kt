@@ -602,6 +602,11 @@ class MainPresenter
             )).performOnBackgroundOutOnMain()
                     .subscribe({
                         appData.notificationsCount = it
+                        chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
+                                .performOnBackgroundOutOnMain()
+                                .subscribe({ nCount ->
+                                    appData.notificationsCount = nCount
+                                           }, {})
                     }, {
                         it.printStackTrace()
                         appData.notificationsCount = 0

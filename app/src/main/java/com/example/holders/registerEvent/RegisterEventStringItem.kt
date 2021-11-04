@@ -38,7 +38,7 @@ class RegisterEventStringItem(
                         maxLines = 8
                     }
                     EventRegisterField.Type.NUMBER -> {
-                        inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                        inputType = InputType.TYPE_CLASS_NUMBER//InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                         fieldData.field.mask?.takeIf { it.isNotEmpty() }?.let {
                             filters = arrayOf(SpecialCharacterInputFilter(it))
                         }

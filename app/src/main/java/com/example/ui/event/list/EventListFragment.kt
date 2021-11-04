@@ -98,7 +98,9 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
                     onEventClickListener,
                     createEventDataListItem(event = it),
                     it.userAgreement?.uri,
-                    it.binds?.eventRegistrationState
+                    it.binds?.eventRegistrationState,
+                    true,
+                    it.binds?.currentUserRegistration?.id.toString()
             )
         })
         Log.e("EventsList", "finish")

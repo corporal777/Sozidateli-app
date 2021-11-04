@@ -21,4 +21,5 @@ interface SocketIOManager {
     fun subscribeToInviteChange(chatId: String): Flowable<String>
     fun subscribeToInvitesCount(): Flowable<Int>
     fun connectToUpdates(): Completable
+    fun subscribeToTotalNotificationsCount(): Flowable<Int>
 }

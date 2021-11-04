@@ -22,6 +22,7 @@ class EventGroup(
         userAgreement: String?,
         eventRegistrationState: EventRegistrationStateModel?,
         canShowActionButton: Boolean = true,
+        registrationId: String? = null
 ) : NestedGroup() {
 
     private val eventStatusItem = EventStatusItem(
@@ -37,7 +38,8 @@ class EventGroup(
             eventClickListener,
             userAgreement,
             canShowActionButton,
-            eventRegistrationState
+            eventRegistrationState,
+            registrationId
     )
 
     init {

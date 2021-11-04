@@ -218,7 +218,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         aboutItem,
                         eventData?.userAgreement?.name?: eventData?.userAgreement?.uri,
                         null,
-                        false
+                        false,
+                        eventData?.binds?.currentUserRegistration?.id.toString()
                 ),
                 Section().apply {
                     //TODO add checking field hide for activities
@@ -227,7 +228,9 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToActivitiesFragment(eventData?.id?:0))
                     })
                     if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
-                    add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
+                    if (!eventData?.binds?.member?.filter { it.role == "speaker" }.isNullOrEmpty()) {
+                        add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
+                    }
 
                     val rating = eventData?.binds?.userFormResult?.sumBy { it.result?.ratingMark?: 0 }
                     val hasRating = eventData?.status?.value == Event.Status.FINISHED &&

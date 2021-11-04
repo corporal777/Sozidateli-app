@@ -36,10 +36,10 @@ import setOnClickListener
 class MainInfoEditItem(
         id: Long,
         context: Context,
-        private val name: String?,
+        /*private val name: String?,
         private val surname: String?,
         private val middleName: String?,
-        private val noMiddleName: Boolean,
+        private val noMiddleName: Boolean,*/
         private val gender: ToggleStringModel?,
         private val birthday: String?,
         private val address: UserAddress,
@@ -58,9 +58,9 @@ class MainInfoEditItem(
     private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
 
     private var mImage = image
-    private var mName = name
+    /*private var mName = name
     private var mSurname = surname
-    private var mMiddleName = middleName
+    private var mMiddleName = middleName*/
     private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
 
     private var mGender = gender?.value?.firstLetterToUppercase()
@@ -71,7 +71,7 @@ class MainInfoEditItem(
     private var mShowBirthday = showBirthday
     private var mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false
 
-    private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
+    //private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
 
     private val isCanChangeName = !canEditName//middleName.isNullOrEmpty()
 
@@ -80,7 +80,7 @@ class MainInfoEditItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            tilSurname.initNameInput(surname) {
+            /*tilSurname.initNameInput(surname) {
                 mSurname = it.toString()
                 checkDataValid()
             }
@@ -91,7 +91,7 @@ class MainInfoEditItem(
             tilMiddleName.initNameInput(mMiddleName) {
                 mMiddleName = it.toString()
                 checkDataValid()
-            }
+            }*/
             /*tilEmail.initEmailInput(email?.value) {
                 checkDataValid()
             }*/
@@ -101,7 +101,7 @@ class MainInfoEditItem(
                 checkDataValid()
             }*/
 
-            scNoMiddleName.apply {
+            /*scNoMiddleName.apply {
                 isChecked = mNoMiddleNameChecked
                 isEnabled = isCanChangeName
                 if (isCanChangeName) {
@@ -115,7 +115,7 @@ class MainInfoEditItem(
                         checkDataValid()
                     }
                 }
-            }
+            }*/
 
             scGender.apply {
                 isChecked = mGenderShow
@@ -253,7 +253,7 @@ class MainInfoEditItem(
         var isValid = true
         if (::viewHolder.isInitialized) {
             viewHolder.apply {
-                if (mSurname.isNullOrEmpty()) {
+                /*if (mSurname.isNullOrEmpty()) {
                     isValid = false
                 }
                 if (mName.isNullOrEmpty()) {
@@ -261,7 +261,7 @@ class MainInfoEditItem(
                 }
                 if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
                     isValid = false
-                }
+                }*/
                 if (mGender.isNullOrEmpty()) {
                     isValid = false
                 }
@@ -290,12 +290,12 @@ class MainInfoEditItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (isCanChangeName) {
+            /*if (isCanChangeName) {
                 if (name != mName) put(UserDetail.USER_NAME, mName)
                 if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
                 val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
                 if (this@MainInfoEditItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
-            }
+            }*/
             if (gender?.value != mGender) put(UserDetail.USER_GENDER, ToggleStringModel(getGender(), mGenderShow))
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))

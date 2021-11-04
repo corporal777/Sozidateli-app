@@ -268,7 +268,9 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                     showStartTime = false
                 },
                 itemData?.userAgreement?.name?: itemData?.userAgreement?.uri,
-               itemData?.binds?.eventRegistrationState
+               itemData?.binds?.eventRegistrationState,
+               true,
+               itemData?.binds?.currentUserRegistration?.id?.toString()
         )
     }
 

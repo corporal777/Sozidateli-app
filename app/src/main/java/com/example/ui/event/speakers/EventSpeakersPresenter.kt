@@ -55,11 +55,7 @@ class EventSpeakersPresenter
     }
 
     override fun onSpeakerClick(speaker: MemberModel) =
-            if (!appData.hasBaseState && !appData.hasMaxState) {
-                 viewState.showStateErrorMessage(StateType.BASE, false, null)
-            } else {
-                viewState.showSpeaker(speaker)
-            }
+            viewState.showSpeaker(speaker)
 
     override fun onSpeakerFavoriteChangeClick(speaker: MemberModel) {
         val id = speaker.user.toString()/*speaker.user.user_id.toString()*/

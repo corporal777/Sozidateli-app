@@ -150,7 +150,7 @@ class ProfileContactsEditItem(
             mEmails.forEach { initEmailsInput(viewHolder, it) }
             btnEmailAdd.apply {
                 setOnClickListener {
-                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true) {
+                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value?: "")) {
                         UserEmailsData(value = "", showInProfile = false).apply {
                             mEmails.add(this)
                             initEmailsInput(viewHolder, this)
@@ -254,7 +254,7 @@ class ProfileContactsEditItem(
                     it.isWhitespace()
                 }
             })
-            inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+            inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             initInput(csn.value) { csn.value = it?.toString()?: "" }
         }
         parent.findViewById<CheckBox>(R.id.scShowEmail).apply {
@@ -387,7 +387,7 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) {
+        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(context, mWorkPhone.phoneToServer()?: "")) {
             viewHolder.tilWorkPhone.apply {
                 error = invalidError
                 requestFocus()
@@ -395,6 +395,10 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
+        if (!AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value?: "")) {
+            viewHolder.emailsError.visibility = View.VISIBLE
+            isValid = false
+        }
         return isValid
     }
 
@@ -417,12 +421,17 @@ class ProfileContactsEditItem(
             if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
             val workPhoneUpdate = if (mNoWorkPhone) null
-            else mWorkPhone.phoneToServer()
-            put(UserDetail.USER_PHONE, arrayListOf(
-                    FieldDetails(value = mMobilePhone.phoneToServer(),
-                            type = PHONE_PERSONAL, isConfirmed = mIsPhoneConfirmed, isVisible = mShowMobilePhone, absent = false),
-                    FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone)
-            ))
+            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer()?: "")
+
+            val phonesList = mutableListOf<FieldDetails>()
+
+            if (!workPhoneUpdate.isNullOrEmpty()) {
+                phonesList.add(FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone))
+                put(UserDetail.USER_PHONE, phonesList)
+            } else {
+                phonesList.add(FieldDetails(value = null, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone))
+                put(UserDetail.USER_PHONE, phonesList)
+            }
 
             val siteUpdate = if (mNoSite) arrayListOf()
             else mSite
@@ -439,10 +448,14 @@ class ProfileContactsEditItem(
                 isUpdateLinks = true
                 //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
-
+            val contactEmails = if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
+                null
+            } else {
+                mEmails.map { EmailsModel(value = it.value, showInProfile = it.showInProfile) }
+            }
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
                     socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks),
-                    emails = mEmails.map { EmailsModel(value = it.value, showInProfile = it.showInProfile) }))
+                    emails = contactEmails))
 
 
         }

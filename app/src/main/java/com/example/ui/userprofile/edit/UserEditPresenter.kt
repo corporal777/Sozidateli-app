@@ -273,7 +273,7 @@ class UserEditPresenter
                     gender = it.gender
                     notes = it.notes
                 }
-                false
+                true
             }
         } else {
             val files = data
@@ -281,6 +281,7 @@ class UserEditPresenter
             val mp = mutableListOf<MultipartBody.Part?>()
             mp.add(textRequestBody(it.name, "name"))
             compositeDisposable += userRepository.changeRecommendedFile(it.id ?: 0, mp)
+                    .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
                     .subscribe({ res ->
@@ -303,7 +304,7 @@ class UserEditPresenter
                                     gender = it.gender
                                     notes = it.notes
                                 }
-                                false
+                                true
                             }
                         }
                     }, {
@@ -511,6 +512,7 @@ class UserEditPresenter
 
     private fun updateUserNew(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
         compositeDisposable += request
+                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
                 .subscribe({

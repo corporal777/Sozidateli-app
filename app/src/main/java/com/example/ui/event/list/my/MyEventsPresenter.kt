@@ -29,7 +29,8 @@ class MyEventsPresenter
 
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to limit, EventNew.EVENT_OFFSET to offset,
-                EventNew.EVENT_BINDS to "rights", EventNew.EVENT_USER_ID to appData.getId(),
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+                EventNew.EVENT_USER_ID to appData.getId(),
                 EventNew.EVENT_SORT_TYPE to "desc",
                 EventNew.EVENT_USER_STATUS to when (filter) {
             MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED

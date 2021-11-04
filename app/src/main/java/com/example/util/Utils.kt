@@ -69,6 +69,7 @@ object Utils {
     }
 
     fun validatePhoneBeforeSend(phone: String): String {
+        if (phone == "") return ""
         val phoneResult = if (!phone.contains("+")) "+$phone" else phone
         val sb = StringBuilder(phoneResult)
         if (phone.substring(0, 1) == "8")

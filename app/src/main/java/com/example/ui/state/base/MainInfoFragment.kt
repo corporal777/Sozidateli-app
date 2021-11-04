@@ -81,10 +81,10 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
             MainInfoEditItem(
                     1,
                     requireContext(),
-                    user.name,
+                    /*user.name,
                     user.lastName,
                     user.middleName?.value,
-                    user.middleName?.absent?: true,
+                    user.middleName?.absent?: true,*/
                     user.gender,
                     user.birthday?.value,
                     DaDataUtil.formatSavedLocation(requireContext(), user.address),
