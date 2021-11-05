@@ -1,18 +1,11 @@
 package com.example.holders
 
 import android.content.Context
-import android.util.Log
 import com.example.R
 import com.example.data.models.*
-import com.example.data.models.user.SocialRoles
-import com.example.data.models.user.User
-import com.example.data.models.user.UserData
-import com.example.extensions.findItemBy
 import com.example.ui.views.NoWorkDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import okhttp3.internal.notifyAll
 
 class ProfileDataWorkEditGroup(
         context: Context,
@@ -48,9 +41,8 @@ class ProfileDataWorkEditGroup(
             if (it?.isEmpty() == true) {
                 add(createWorkItem(null))
             } else {
-                it?.let { it1 ->
-                    works.addAll(it1)
-                    addAll(it1)
+                it?.forEach { it1 ->
+                    add(it1)
                 }
             }
         }

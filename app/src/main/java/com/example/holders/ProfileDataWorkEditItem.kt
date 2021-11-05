@@ -12,12 +12,6 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsMonthYearPicker
 import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.btnRemove
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.etFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.etStart
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.scFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilFinish
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.tilStart
 import java.util.*
 
 class ProfileDataWorkEditItem(

@@ -257,7 +257,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_eighth" />
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/tv_fill_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -288,7 +288,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/tv_fill_secondd"
@@ -299,7 +299,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fill_first">
+                app:layout_constraintTop_toBottomOf="@+id/tv_percentage">
 
                 <ImageView
                     android:layout_width="28dp"
