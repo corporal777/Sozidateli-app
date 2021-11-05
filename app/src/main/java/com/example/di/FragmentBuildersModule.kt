@@ -17,6 +17,7 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
+import com.example.ui.editwork.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
@@ -310,4 +311,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAllActivitiesFragment(): AllActivitiesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEditWorksFragment(): EditWorksFragment
 }

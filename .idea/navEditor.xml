@@ -607,6 +607,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="editWorksFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-630" />
+                            <option name="y" value="-2180" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="email_confirm_fragment">
                     <value>
                       <LayoutPositions>
@@ -1407,6 +1419,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_register_email_new_fragment_to_authorization_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_register_email_new_fragment_to_recovery_password_fragment">
                               <value>
                                 <LayoutPositions />
                               </value>

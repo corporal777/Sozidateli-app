@@ -59,6 +59,7 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileExperienceFragmentDirections.toEdit(UserEditDataType.WORK))
+        findNavController().navigate(R.id.editWorksFragment)
+        //findNavController().navigate(UserProfileExperienceFragmentDirections.toEdit(UserEditDataType.WORK))
     }
 }

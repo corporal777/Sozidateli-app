@@ -1193,4 +1193,11 @@
             android:name="eventId"
             app:argType="integer" />
     </fragment>
+
+    <fragment
+        android:id="@+id/editWorksFragment"
+        android:name="com.example.ui.editwork.EditWorksFragment"
+        android:label="EditWorksFragment"
+        tools:layout="@layout/fragment_edit_work_fragment"/>
+
 </navigation>
