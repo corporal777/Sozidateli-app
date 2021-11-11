@@ -36,6 +36,7 @@
         android:id="@+id/scShowEmail"
         style="@style/Profile.Edit.Switch"
         android:text="@string/profile_show_in_profile"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

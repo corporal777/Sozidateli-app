@@ -204,7 +204,7 @@ data class FileModel(
         var name: String? = null,
         val uri: String? = null,
         @SerializedName("showInProfile")
-        val showInProfile: Boolean? = false
+        var showInProfile: Boolean? = false
 ): Parcelable
 
 @Parcelize

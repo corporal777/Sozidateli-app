@@ -30,6 +30,7 @@
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scShowEmail"
             style="@style/Profile.Edit.Switch"
+            android:visibility="gone"
             android:text="@string/profile_show_in_profile" />
 
         <androidx.appcompat.widget.AppCompatTextView

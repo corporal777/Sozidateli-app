@@ -280,6 +280,7 @@ class UserEditPresenter
             val it = files.first()
             val mp = mutableListOf<MultipartBody.Part?>()
             mp.add(textRequestBody(it.name, "name"))
+            mp.add(textRequestBody(it.showInProfile.toString(), "showInProfile"))
             compositeDisposable += userRepository.changeRecommendedFile(it.id ?: 0, mp)
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()

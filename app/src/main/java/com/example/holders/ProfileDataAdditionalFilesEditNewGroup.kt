@@ -21,7 +21,7 @@ class ProfileDataAdditionalFilesEditNewGroup(
         private val deleteFile: (data: FileModel) -> Unit
 ) : NestedGroup() {
 
-    private var filesSave = files.map { FileModel(id = it.id, user = it.user, mimeType = it.mimeType, size = it.size, name = it.name, uri = it.uri) }
+    private var filesSave = files.map { FileModel(id = it.id, user = it.user, mimeType = it.mimeType, size = it.size, name = it.name, uri = it.uri, showInProfile = it.showInProfile) }
 
     private val fileGroup = Section().apply {
         setHeader(ProfileDataAdditionalFileHeaderItem(id))
@@ -84,8 +84,8 @@ class ProfileDataAdditionalFilesEditNewGroup(
         val result = mutableListOf<FileModel>()
         fileGroup.forEachGroups<ProfileDataFileEditableItemNew> {
             val f = filesSave.firstOrNull { file -> file.id == it.file.id }
-            if (f != null && f.name != it.file.name)
-                result.add(FileModel(id = it.file.id, name = it.file.name, user = it.file.user, mimeType = it.file.mimeType, size = it.file.size, uri = it.file.uri))
+            if ((f != null && f.name != it.file.name) || (f != null && f?.showInProfile != it.file.showInProfile))
+                result.add(FileModel(id = it.file.id, name = it.file.name, user = it.file.user, mimeType = it.file.mimeType, size = it.file.size, uri = it.file.uri, showInProfile = it.file.showInProfile))
         }
         return result
     }

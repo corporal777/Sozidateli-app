@@ -4,6 +4,7 @@ import com.example.R
 import com.example.data.models.FileModel
 import com.example.data.models.user.RecommendationFile
 import com.example.util.initInput
+import com.example.util.initSwitch
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_editable_file_new.*
@@ -28,6 +29,7 @@ class ProfileDataFileEditableItemNew(
                 //initInput(file.newName) { file.newName = it.toString() }
                 initInput(file.name) { file.name = it.toString() }
             }
+            scFile.initSwitch(file.showInProfile?: false) { file.showInProfile = it }
             btnEdit.setOnClickListener { onEditClick(file) }
             btnDelete.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItemNew) }
             tvFileName.setOnClickListener { onFileClick(file) }

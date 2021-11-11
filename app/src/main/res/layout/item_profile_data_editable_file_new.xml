@@ -79,4 +79,13 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_lay"
         tools:text="1.pdf" />
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scFile"
+        style="@style/Profile.Edit.Switch"
+        android:layout_marginTop="5dp"
+        android:text="@string/profile_show_in_profile"
+        app:layout_constraintTop_toBottomOf="@+id/tvFileName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
