@@ -63,6 +63,7 @@ class UserProfileEducationFragment : BaseFragment(), UserProfileEducationContrac
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileEducationFragmentDirections.toEdit(UserEditDataType.EDUCATION))
+        //findNavController().navigate(UserProfileEducationFragmentDirections.toEdit(UserEditDataType.EDUCATION))
+        findNavController().navigate(R.id.editEducationFragment)
     }
 }

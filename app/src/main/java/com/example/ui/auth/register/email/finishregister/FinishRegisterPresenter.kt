@@ -11,6 +11,7 @@ import com.example.data.models.UserDetail.Companion.USER_LAST_NAME
 import com.example.data.models.UserDetail.Companion.USER_MIDDLE_NAME
 import com.example.data.models.UserDetail.Companion.USER_NAME
 import com.example.data.models.UserDetail.Companion.USER_PHONE
+import com.example.data.models.UserDetail.Companion.USER_REGISTRATION_FINISH
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
@@ -223,6 +224,7 @@ class FinishRegisterPresenter
                                         if (defFirstName != firstName) put(USER_NAME, firstName?: "")
                                         if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
                                         if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
+                                        put(USER_REGISTRATION_FINISH, true)
                                     }
                                     /*mapOf(USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
@@ -247,6 +249,7 @@ class FinishRegisterPresenter
                                         if (defFirstName != firstName) put(USER_NAME, firstName?: "")
                                         if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
                                         if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
+                                        put(USER_REGISTRATION_FINISH, true)
                                     }
                                    /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
                                     USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/

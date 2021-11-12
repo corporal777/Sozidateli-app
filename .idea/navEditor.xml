@@ -607,6 +607,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="editEducationFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-640" />
+                            <option name="y" value="-2780" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="editWorksFragment">
                     <value>
                       <LayoutPositions>

@@ -120,7 +120,6 @@ class EditWorksFragment: BaseFragment(), EditWorksContract.View, ToolbarFragment
     }
 
     private fun updateListHasWork(hasWork: Boolean, holder: ItemProfileDataEditNoWorkNewBinding) {
-        //TODO need to update NO WORK item
         val currentList = adapter.currentList.toMutableList()
         currentList.forEach {
             it.hasWork = hasWork

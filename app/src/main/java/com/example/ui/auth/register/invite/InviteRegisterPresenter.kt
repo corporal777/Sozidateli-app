@@ -168,7 +168,8 @@ class InviteRegisterPresenter
                             compositeDisposable += userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_NAME to firstName,
                                     UserDetail.USER_LAST_NAME to lastName,
                                     UserDetail.USER_MIDDLE_NAME to midName,
-                                    UserDetail.USER_EMAIL to FieldDetails(value = email)))
+                                    UserDetail.USER_EMAIL to FieldDetails(value = email),
+                                    UserDetail.USER_REGISTRATION_FINISH to true))
                                     .withCheckInternetConnectivity()
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)

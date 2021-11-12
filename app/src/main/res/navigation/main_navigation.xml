@@ -1200,4 +1200,10 @@
         android:label="EditWorksFragment"
         tools:layout="@layout/fragment_edit_work_fragment"/>
 
+    <fragment
+        android:id="@+id/editEducationFragment"
+        android:name="com.example.ui.editeducation.EditEducationFragment"
+        android:label="EditEducationFragment"
+        tools:layout="@layout/fragment_edit_education_fragment"/>
+
 </navigation>

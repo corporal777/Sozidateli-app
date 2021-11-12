@@ -577,7 +577,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                             findNavController().navigate(R.id.userStateFragment)
                         }
                         ClickType.BASE -> {
-                            findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.BASE, "screen" to 1))
+                            findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.BASE, "screen" to 3))
                         }
                         ClickType.MAX -> {
                             if (presenter.getHasBase()) {

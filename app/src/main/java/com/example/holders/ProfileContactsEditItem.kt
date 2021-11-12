@@ -192,7 +192,7 @@ class ProfileContactsEditItem(
                 setOnClickListener(changeEmailClick)
             }
 
-            scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }
+            //scShowEmail.initSwitch(mShowEmail) { mShowEmail = it }
 
             updatePhoneConfirmationStatus(this)
         }
@@ -257,11 +257,11 @@ class ProfileContactsEditItem(
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             initInput(csn.value) { csn.value = it?.toString()?: "" }
         }
-        parent.findViewById<CheckBox>(R.id.scShowEmail).apply {
+        /*parent.findViewById<CheckBox>(R.id.scShowEmail).apply {
             initSwitch(csn.showInProfile) {
                 csn.showInProfile = it
             }
-        }
+        }*/
         parent.findViewById<View>(R.id.btnDeleteEmail).apply {
             setOnClickListener {
                 if (mEmails.remove(csn)) {
@@ -418,7 +418,7 @@ class ProfileContactsEditItem(
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
+            //if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
             val workPhoneUpdate = if (mNoWorkPhone) null
             else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer()?: "")
@@ -451,7 +451,7 @@ class ProfileContactsEditItem(
             val contactEmails = if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
                 null
             } else {
-                mEmails.map { EmailsModel(value = it.value, showInProfile = it.showInProfile) }
+                mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
             }
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
                     socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks),

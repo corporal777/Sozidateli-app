@@ -186,6 +186,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                     when (presenter.screen) {
                         1 -> findNavController().popBackStack(R.id.profile_fragment, false)
                         2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+                        3 -> findNavController().popBackStack()
                     }
                 //}
     }
