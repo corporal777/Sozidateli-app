@@ -156,6 +156,11 @@ class ProfileContactsEditItem(
                             initEmailsInput(viewHolder, this)
                         }
                     } else {
+                        if (mEmails[mEmails.size - 1].value.isEmpty()) {
+                            emailsError.text = context.resources.getString(R.string.fill_field)
+                        } else {
+                            emailsError.text = context.resources.getString(R.string.incorrect_data)
+                        }
                         emailsError.visibility = View.VISIBLE
                     }
                 }
@@ -396,6 +401,11 @@ class ProfileContactsEditItem(
         }
 
         if (!AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value?: "")) {
+            if (mEmails[mEmails.size - 1].value.isEmpty()) {
+                viewHolder.emailsError.text = context.resources.getString(R.string.fill_field)
+            } else {
+                viewHolder.emailsError.text = context.resources.getString(R.string.incorrect_data)
+            }
             viewHolder.emailsError.visibility = View.VISIBLE
             isValid = false
         }

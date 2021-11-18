@@ -104,6 +104,8 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
         /*etMobilePhone.getPhoneCallback { it.let { text ->
             presenter.onChangePhoneText(text)
         } }*/
+        etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeNameText(text) } }
+        etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
         etCode.onTextChanged {
             tilCode.error = null

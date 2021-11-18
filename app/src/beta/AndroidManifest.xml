@@ -15,12 +15,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="beta-lk.sozidateli.ru"
+                    android:host="beta.sozidateli.ru"
                     android:pathPrefix="/profile"
                     android:scheme="https" />
 
                 <data
-                    android:host="beta-lk.sozidateli.ru"
+                    android:host="beta.sozidateli.ru"
                     android:pathPrefix="/auth"
                     android:scheme="https" />
 

@@ -15,17 +15,17 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="alfa-lk.sozidateli.ru"
+                    android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/profile"
                     android:scheme="https" />
 
                 <data
-                    android:host="alfa-lk.sozidateli.ru"
+                    android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/auth"
                     android:scheme="https" />
 
                 <data
-                    android:host="alfa-lk.sozidateli.ru"
+                    android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/social"
                     android:scheme="https" />
 
