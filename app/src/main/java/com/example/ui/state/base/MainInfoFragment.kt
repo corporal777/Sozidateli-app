@@ -22,10 +22,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.userprofile.editfile.UserEditFileFragment
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.BaseStateDialog
-import com.example.ui.views.FinishRegisterDialog
-import com.example.ui.views.RegisterDataType
+import com.example.ui.views.*
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
@@ -92,7 +89,7 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                     user.birthday?.isVisible ?: false, user.state?.nameEdited ?: false,
                     user.email, user.image, { isEnable ->
                 btnSave.isEnabled = isEnable
-            }, { presenter.onConfirmPhoneClick(it) },
+            }, { presenter.onConfirmPhoneClick(it.replace(" ", "").replace("-","")) },
                     {
                         AlertDialog.Builder(requireContext())
                                 .setTitle(R.string.photo_alert_title)
@@ -189,6 +186,18 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                         3 -> findNavController().popBackStack()
                     }
                 //}
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
+        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone), getString(R.string.confirm_phone_positive),
+                getString(R.string.cancel))
+                .setSelectCallback {
+                    if (!it) {
+                        showPhoneConfirm(phone)
+                    } else {
+                        //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
+                    }
+                }
     }
 
     override fun showPhoneConfirm(phone: String) {

@@ -31,6 +31,9 @@ interface MainInfoContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun photoUpdated(photo: ImageModel)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique(phone: String)
     }
     interface Presenter : BaseContract.Presenter {
         fun onClickClose()

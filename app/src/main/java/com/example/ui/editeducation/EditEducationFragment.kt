@@ -57,9 +57,11 @@ class EditEducationFragment: BaseFragment(), EditEducationContract.View, Toolbar
         val newList = mutableListOf<EditEducationModel>()
         newList.addAll(acDegreeSpinner)
         newList.addAll(acDegreeList)
-        newList.add(EditEducationModel(-2, ADD_HIGHT_LEVEL, null, null,
-                null, null, null, null, null,
-                false, true, false, false, null, academicDegrees != null))
+        if (acDegreeSpinner[0].selectedDegree == "Более одного высшего" || acDegreeSpinner[0].selectedDegree == "Высшее") {
+            newList.add(EditEducationModel(-2, ADD_HIGHT_LEVEL, null, null,
+                    null, null, null, null, null,
+                    false, true, false, false, null, academicDegrees != null))
+        }
         newList.addAll(edList)
         if (edList.firstOrNull { !it.isDataValid } == null) {
             newList.add(EditEducationModel(newList[newList.size - 1].id + 1, EDUCATION_ITEM, birthday, EducationModelNew(null,null,null,null,null,null),null,null,

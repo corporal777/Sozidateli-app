@@ -96,24 +96,24 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun showEmailNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
         ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text, email), getString(R.string.confirm_phone_positive),
-                getString(R.string.confirm_phone_positive_password))
+                getString(R.string.event_register_no_form_negative))
                 .setSelectCallback {
                     if (!it) {
                         presenter.register(email, firstName, lastName, password, middleName, phone)
                     } else {
-                        findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
+                        //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
                     }
                 }
     }
 
     override fun showPhoneNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
         ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone), getString(R.string.confirm_phone_positive),
-                getString(R.string.confirm_phone_positive_password))
+                getString(R.string.event_register_no_form_negative))
                 .setSelectCallback {
                     if (!it) {
                         presenter.register(email, firstName, lastName, password, middleName, phone)
                     } else {
-                        findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
+                        //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
                     }
                 }
     }

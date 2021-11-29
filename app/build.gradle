@@ -24,7 +24,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 53
-        versionName "1.0.10"
+        versionName "1.0.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     dataBinding {
@@ -192,7 +192,6 @@ dependencies {
     implementation 'org.sufficientlysecure:html-textview:3.6'
     implementation 'me.saket:better-link-movement-method:2.2.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'com.hbb20:ccp:2.2.9'
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
     implementation 'com.romandanylyk:pageindicatorview:1.0.3'
     implementation 'com.github.shts:StoriesProgressView:3.0.0'

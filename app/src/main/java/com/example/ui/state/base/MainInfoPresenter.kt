@@ -11,6 +11,7 @@ import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
 import com.example.util.AuthValidateUtil
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.Utils
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
@@ -18,6 +19,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -150,7 +152,13 @@ class MainInfoPresenter
     }
 
     override fun onConfirmPhoneClick(phone: String) {
-        viewState.showPhoneConfirm(phone)
+        compositeDisposable += userRepository.checkEmailPhone(null, Utils.validatePhoneBeforeSend(phone))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({ viewState.showPhoneConfirm(phone) },
+                        { viewState.showPhoneNotUnique(phone) })
+        //viewState.showPhoneConfirm(phone)
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())

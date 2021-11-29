@@ -820,7 +820,7 @@
     <string name="profile_email_add">Добавить email</string>
     <string name="confirm_phone_text">Введенный номер %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный номер к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_phone_positive">Подтвердить</string>
-    <string name="confirm_email_text">Введенный e-mail %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный e-mail к текущему профилю, нажмите "Подтвердить".\nДля внесения изменений нажмите на «Отменить».</string>
+    <string name="confirm_email_text">Введенный e-mail %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный e-mail к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_email_phone_text">Этот номер телефона/e-mail подтвержден другим пользователем. Это Ваша страница?</string>
     <string name="confirm_phone_positive_password">Да, восстановить пароль</string>
     <string name="profile_edit_public_email_hint">Публичный e-mail</string>
@@ -833,5 +833,5 @@
     <string name="get_max">Получить «Максимальный»</string>
     <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового. Подробнее о статусах</string>
     <string name="title_get_max">Для совершения данного действия Вам необходимо повысить статус профиля до максимального. Подробнее о статусах</string>
-    <string name="incorrect_data">Не верный формат почты</string>
+    <string name="incorrect_data">Неверный формат e-mail</string>
 </resources>

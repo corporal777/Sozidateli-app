@@ -143,7 +143,7 @@ class RegisterEmailNewPresenter
                         .performOnBackgroundOutOnMain()
                         .withLoadingDialog(viewState)
                         .subscribe({ register(email, firstName, lastName, password, middleName, phone) },
-                                { viewState.showPhoneNotUnique(email, firstName, lastName, password, middleName, phone) })
+                                { viewState.showPhoneNotUnique(email, firstName, lastName, password, middleName, email) })
             }
         }
     }
