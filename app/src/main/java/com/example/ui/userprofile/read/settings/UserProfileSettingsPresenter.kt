@@ -51,6 +51,27 @@ class UserProfileSettingsPresenter @Inject constructor(
                         })
     }
 
+    override fun checkPasswordValid(password: String, newPassword: String) {
+        compositeDisposable += userRepository.checkPasswordNew(password)
+                .performOnBackgroundOutOnMain()
+                //.withLoadingDialog(viewState)
+                .subscribeSimple(
+                        onError = {
+                            viewState.showOldPasswordError()
+                        },
+                        onComplete = {
+                            viewState.hideNewPasswordDialog()
+                            onChangePasswordClickConfirm(password, newPassword, newPassword)
+                        }
+                )
+                /*.subscribe({
+                    viewState.hideNewPasswordDialog()
+                    onChangePasswordClickConfirm(password, newPassword, newPassword)
+                }, {
+                    viewState.showOldPasswordError()
+                })*/
+    }
+
     override fun onChangeEmailClick() {
         val email = appData.getUserNew().email
         if (email?.value == null) {

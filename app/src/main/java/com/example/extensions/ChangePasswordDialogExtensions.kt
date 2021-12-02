@@ -27,22 +27,6 @@ fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPasswo
             isNewValid = it.isValid
         }
     }
-    /*val tilNewPassword = view.findViewById<TextInputLayout>(R.id.tilNewPassword)
-    val etNewPassword = view.findViewById<EditText>(R.id.etNewPassword).apply {
-        onTextChanged {
-            tilNewPassword.error = if (it != null && !AuthValidateUtil.isValidPassword(it.toString())) shortPasswordError else null
-        }
-    }
-    val tilNewPasswordConfirm = view.findViewById<TextInputLayout>(R.id.tilNewPasswordConfirm)
-    val etNewPasswordConfirm = view.findViewById<EditText>(R.id.etNewPasswordConfirm).apply {
-        onTextChanged {
-            tilNewPasswordConfirm.error = if (etNewPassword.text.toString() != etNewPasswordConfirm.text.toString()) {
-                getString(R.string.auth_error_password_do_not_match)
-            } else {
-                null
-            }
-        }
-    }*/
 
     AlertDialog.Builder(requireContext())
             .setTitle(R.string.profile_password_change)
@@ -56,38 +40,12 @@ fun Fragment.showChangePasswordDialog(onConfirm: (oldPassword: String, newPasswo
                         setOnClickListener {
                             var hasError = false
                             val oldPassword = etOldPassword.text?.toString()
-                            //val newPassword = etNewPassword.text?.toString()
-                            //val newPasswordConfirm = etNewPasswordConfirm.text?.toString()
                             val newPassword = password.etPassword.text?.toString()
 
                             if (oldPassword.isNullOrEmpty()) {
                                 tilOldPassword.error = emptyFieldError
                                 hasError = true
                             }
-
-                            /*if (newPassword != null && !AuthValidateUtil.isValidPassword(newPassword)) {
-                                tilNewPassword.error = shortPasswordError
-                                hasError = true
-                            }
-
-                            if (newPassword != newPasswordConfirm) {
-                                tilNewPasswordConfirm.error = getString(R.string.auth_error_password_do_not_match)
-                                hasError = true
-                            } else {
-                                if (newPassword.isNullOrEmpty()) {
-                                    tilNewPassword.error = emptyFieldError
-                                    hasError = true
-                                }
-                                if (newPasswordConfirm.isNullOrEmpty()) {
-                                    tilNewPasswordConfirm.error = emptyFieldError
-                                    hasError = true
-                                }
-                            }
-
-                            if (!hasError && oldPassword != null && newPassword != null && newPasswordConfirm != null) {
-                                onConfirm(oldPassword, newPassword, newPasswordConfirm)
-                                dismiss()
-                            }*/
                             if (!hasError && oldPassword != null && isNewValid && newPassword != null) {
                                 onConfirm(oldPassword, newPassword, newPassword)
                                 dismiss()

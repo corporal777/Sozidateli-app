@@ -41,7 +41,8 @@ sealed class SearchFilter : Serializable {
             var registration: String? = null,
             var theme: Int? = null,
             var spec: Int? = null,
-            var format: Int? = null
+            var format: Int? = null,
+            var fullAddress: NewUserAddress? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
         var formats: List<NewEventFormat>? = null

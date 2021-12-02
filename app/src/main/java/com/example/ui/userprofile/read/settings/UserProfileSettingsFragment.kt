@@ -200,7 +200,24 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
                 ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showChangePassword() = showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
+    //override fun showChangePassword() = showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
+    var newPassDialog: ChangePasswordDialog? = null
+
+    override fun showChangePassword() {
+        newPassDialog = ChangePasswordDialog(requireActivity())
+                .setSelectCallback {
+                    presenter.checkPasswordValid(it.oldPassword, it.newPassword)
+                }
+    }
+
+    override fun showOldPasswordError() {
+        newPassDialog?.showInvalidCurrentPassword()
+    }
+
+    override fun hideNewPasswordDialog() {
+        newPassDialog?.closeDialog()
+        newPassDialog = null
+    }
 
     override fun showPasswordChangeComplete() = showPasswordChangeCompleteDialog()
 

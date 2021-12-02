@@ -3,6 +3,7 @@ package com.example.ui.search.event
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -120,7 +121,13 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
-                onTextChanged { filter.address = it.toString() }
+                onTextChanged {
+                    filter.address = it.toString()
+                    filter.fullAddress = null
+                }
+                onDataSelectedListener = {
+                    filter.fullAddress = it
+x                }
             }
             initTextFilter(etName, filter.name) { filter.name = it }
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }

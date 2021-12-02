@@ -55,6 +55,12 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showOldPasswordError()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideNewPasswordDialog()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -80,5 +86,6 @@ interface UserProfileSettingsContract {
         fun sendPhone(phone: String)
         fun onPasswordInputComplete(password: String, phone: String)
         fun confirmCode(phone: String, code: String)
+        fun checkPasswordValid(password: String, newPassword: String)
     }
 }

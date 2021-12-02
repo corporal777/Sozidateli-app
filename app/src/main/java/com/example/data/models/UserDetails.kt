@@ -328,6 +328,7 @@ data class NewUserAddress(
         @SerializedName("fullValue")
         var fullValue: String? = null,
         var description: AddressDescription? = null,
+        @SerializedName("shortValue")
         var shortAddres: String? = null,
         @SerializedName("showInProfile")
         val showInProfile: Boolean? = false

@@ -54,8 +54,19 @@ class SearchEventPresenter
             put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")
-            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, "%"+filter.dateStart+"%")
+            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, /*"%"+*/filter.dateStart+","+filter.dateFinish/*+"%"*/)
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
+            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
+                if (filter.fullAddress != null) {
+                    if (filter.fullAddress?.country != null) put(EventNew.EVENT_ADDRESS_COUNTRY, filter.fullAddress?.country!!)
+                    if (filter.fullAddress?.city != null) put(EventNew.EVENT_ADDRESS_CITY, filter.fullAddress?.city!!)
+                    if (filter.fullAddress?.region != null) put(EventNew.EVENT_ADDRESS_REGION, filter.fullAddress?.region!!)
+                    if (filter.fullAddress?.street != null) put(EventNew.EVENT_ADDRESS_STREET, filter.fullAddress?.street!!)
+
+                } else {
+
+                }
+            }
             val category = filter.spec ?: filter.theme
             if (category != null) put(EventNew.EVENT_CATEGORY, category)
         }

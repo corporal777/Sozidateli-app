@@ -71,6 +71,10 @@ data class EventNew(
                 const val EVENT_CODE = "code"
                 const val EVENT_USER_ID = "userRegistration.user"
                 const val EVENT_USER_STATUS = "userRegistration.status"
+                const val EVENT_ADDRESS_COUNTRY = "addressCountry"
+                const val EVENT_ADDRESS_CITY = "addressCity"
+                const val EVENT_ADDRESS_REGION = "addressRegion"
+                const val EVENT_ADDRESS_STREET= "addressStreet"
 
                 const val FILTER_REGISTRATION_PENDING = "pending"
                 const val FILTER_REGISTRATION_APPROVED = "approved"
