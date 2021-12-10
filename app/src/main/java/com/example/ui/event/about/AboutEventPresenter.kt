@@ -117,7 +117,7 @@ class AboutEventPresenter
                 eventData?.email?: arrayListOf(),
                 eventData?.site?.map { s -> s.value?: "" },
                 eventData?.socialLink?.map { l -> l.value?: "" },
-                eventData?.address?.getShortAddress(),
+                eventData?.address?.fullValue,
                 eventData?.address?.description?.place,
                 MapInfo(eventData?.address?.lat, eventData?.address?.lon, eventData?.address?.description?.title, eventData?.address?.description?.description),
                 /*event.places*/arrayListOf()

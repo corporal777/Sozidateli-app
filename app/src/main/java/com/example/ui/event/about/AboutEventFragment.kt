@@ -165,7 +165,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     ) {
         val aboutItem = EventDataAboutItem(
                 -(eventData?.id?.toLong()?: 0),
-                eventData?.binds?.organization?.legalInformation?.name?.full,
+                eventData?.binds?.organization?.legalInformation?.name?.short?:eventData?.binds?.organization?.legalInformation?.name?.full,
                 eventData?.name,
                 null,
                 eventData?.holdingDate?.from.formatToEventDatesIntervalNew(eventData?.holdingDate?.to),

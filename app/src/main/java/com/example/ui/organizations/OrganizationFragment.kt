@@ -128,7 +128,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
                     ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)*/))
         }
 
-        tvName.text = /*organization.name*/organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
+        tvName.text = /*organization.name*/organization.legalInformation?.name?.short ?: organization.legalInformation?.name?.full
 
         val links = /*organization.webLinks?.joinToString(separator = "\n")*/organization.site?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasLinks = !links.isNullOrEmpty()
