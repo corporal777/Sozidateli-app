@@ -144,6 +144,8 @@ fun String?.formatToEventDatesIntervalNew(finish: String?): String? {
     val endCalendar = endDate?.calendar()?.takeIf { startCalendar?.isSameDay(it) != true }
     val startMonth = startCalendar?.get(Calendar.MONTH)
     val endMonth = endCalendar?.get(Calendar.MONTH)
+    val startYear = startCalendar?.get(Calendar.YEAR)
+    val endYear = endCalendar?.get(Calendar.YEAR)
 
     val startFormatter = if (startCalendar != null) {
         SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
@@ -159,9 +161,14 @@ fun String?.formatToEventDatesIntervalNew(finish: String?): String? {
 
     return StringBuilder().apply {
         if (startFormatter != null) {
-            if (startFormatter != null && endFormatter != null && startMonth == endMonth) {
-                append(startCalendar?.get(Calendar.DAY_OF_MONTH))
-                append(" - ")
+            if (startFormatter != null && endFormatter != null && startYear == endYear) {
+                if (startFormatter != null && endFormatter != null && startMonth == endMonth) {
+                    append(startCalendar?.get(Calendar.DAY_OF_MONTH))
+                    append(" - ")
+                } else {
+                    append(startFormatter.format(startDate))
+                    if (endFormatter != null) append(" - ")
+                }
             } else {
                 append(startFormatter.format(startDate))
                 if (endFormatter != null) append(" - ")
