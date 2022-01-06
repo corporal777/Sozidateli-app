@@ -779,8 +779,8 @@
     <string name="base_fill_first">ФИО (если нет отчества, поставьте отметку «Нет отчества»)</string>
     <string name="base_fill_second">Пол</string>
     <string name="base_fill_third">Дата рождения</string>
-    <string name="base_fill_fourth">Регион проживания, населенный пункт</string>
-    <string name="base_fill_fifth">Мобильный телефон</string>
+    <string name="base_fill_fourth">Регион и населенный пункт фактического проживания</string>
+    <string name="base_fill_fifth">Подтвердить номер и e-mail</string>
     <string name="max_firth">Возможности статуса «Базовый»</string>
     <string name="max_second">Заявить о себе</string>
     <string name="max_third">Возможность быть частью команды проекта, подаваемого на грант</string>
@@ -790,10 +790,11 @@
     <string name="max_percentage">Заполнить профиль на 100%:</string>
     <string name="max_fill_first">Поля статуса «Базовый»</string>
     <string name="max_fill_second">Фото профиля</string>
+    <string name="max_info">Дополнительные сведения</string>
     <string name="max_fill_third">Опыт работы</string>
     <string name="max_fill_fourth">Образование</string>
     <string name="max_fill_fifth">Достижения</string>
-    <string name="max_fill_six">Социальные сети</string>
+    <string name="max_fill_six">Соцсети</string>
     <string name="max_fill_seventh">Интересы</string>
     <string name="get_state">Получить статус</string>
     <string name="you_got_base_state">Ура! Вы получили Базовый \nстатус</string>
@@ -834,4 +835,8 @@
     <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового. Подробнее о статусах</string>
     <string name="title_get_max">Для совершения данного действия Вам необходимо повысить статус профиля до максимального. Подробнее о статусах</string>
     <string name="incorrect_data">Неверный формат e-mail</string>
+    <string name="base_new_second">Легко и быстро регистрироваться и участвовать в мероприятиях</string>
+    <string name="base_new_third">Общаться с пользователями портала и экспертами мероприятия</string>
+    <string name="max_new_second">Возможность быть частью команды проекта, участвующего в конкурсе на получение грантов</string>
+    <string name="max_new_third">Получать приоритетную техническую поддержку</string>
 </resources>

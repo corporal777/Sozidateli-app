@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_second"
+                    android:text="@string/max_new_second"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_third"
+                    android:text="@string/max_new_third"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +99,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/tv_fourth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/tv_percentage"
@@ -197,7 +197,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_six" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_third" />
 
             <LinearLayout
                 android:id="@+id/tv_fill_first"
@@ -232,7 +232,7 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout
+            <LinearLayout
                 android:id="@+id/tv_fill_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,17 +256,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_fill_second"
+                    android:text="@string/max_info"
                     android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
 
-            </LinearLayout>-->
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/tv_fill_third"
+                android:id="@+id/tv_work_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -274,7 +274,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fill_first">
+                app:layout_constraintTop_toBottomOf="@+id/tv_fill_second">
 
                 <ImageView
                     android:layout_width="28dp"
@@ -289,7 +289,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_fill_third"
+                    android:text="@string/profile_phone_work"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tv_fill_third"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="25dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_work_phone">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/orange_circle"
+                    app:srcCompat="@drawable/ic_add_sn"
+                    android:layout_marginStart="10dp"
+                    android:padding="7dp"
+                    android:layout_marginTop="2dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="@string/max_fill_six"
                     android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -322,7 +355,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_fill_fourth"
+                    android:text="@string/max_fill_seventh"
                     android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -355,7 +388,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_fill_fifth"
+                    android:text="@string/max_fill_fourth"
                     android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -388,7 +421,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:text="@string/max_fill_six"
+                    android:text="@string/max_fill_third"
                     android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -397,7 +430,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/tv_fill_seventh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -428,7 +461,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnGetState"
@@ -445,7 +478,7 @@
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fill_seventh"
+                app:layout_constraintTop_toBottomOf="@+id/tv_fill_six"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:visibility="visible" />
 
