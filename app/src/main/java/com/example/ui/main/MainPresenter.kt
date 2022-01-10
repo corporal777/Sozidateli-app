@@ -218,7 +218,9 @@ class MainPresenter
             Completable.fromAction {
                 viewState.apply {
                     hideAllLoadingDialogs()
-                    showGreetings()
+                    if (!isEditingPhone) {
+                        showGreetings()
+                    }
                 }
             }
                     .subscribeOn(AndroidSchedulers.mainThread())
