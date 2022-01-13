@@ -775,7 +775,7 @@
     <string name="base_six">Общаться с пользователями портала и экспертами мероприятия</string>
     <string name="base_seventh">Получать новые знания, участвуя в обучающих мероприятиях Фонда президентских грантов</string>
     <string name="base_eighth">Легко и быстро регистрироваться и участвовать в мероприятиях Фонда президентских грантов и других организаций</string>
-    <string name="base_percentage">Заполнить профиль на более 40%:</string>
+    <string name="base_percentage">Заполнить поля профиля:</string>
     <string name="base_fill_first">ФИО (если нет отчества, поставьте отметку «Нет отчества»)</string>
     <string name="base_fill_second">Пол</string>
     <string name="base_fill_third">Дата рождения</string>
@@ -787,7 +787,7 @@
     <string name="max_fourth">Возможность зарегистрировать аккаунт своей организации на портале Созидатели</string>
     <string name="max_fifth">Получить приглашение выступить спикером или экспертом мероприятия</string>
     <string name="max_six">Получать приоритетную техническую поддержку</string>
-    <string name="max_percentage">Заполнить профиль на 100%:</string>
+    <string name="max_percentage">Заполнить поля профиля:</string>
     <string name="max_fill_first">Поля статуса «Базовый»</string>
     <string name="max_fill_second">Фото профиля</string>
     <string name="max_info">Дополнительные сведения</string>
