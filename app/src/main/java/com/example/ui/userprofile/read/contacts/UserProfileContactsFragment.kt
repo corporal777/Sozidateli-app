@@ -1,5 +1,6 @@
 package com.example.ui.userprofile.read.contacts
 
+import additionalNumber
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -16,6 +17,13 @@ import com.example.ui.base.BaseFragment
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import kotlinx.android.synthetic.main.fragment_user_profile_contacts.*
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvAdditionalNumber
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvEmail
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvPhoneMobile
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvPhoneMobileTitle
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvPhoneWork
+import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvSocialNetworks
+import kotlinx.android.synthetic.main.item_profile_data_personal.*
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,8 +56,9 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
         tvPhoneMobile.text = phone
-
-        tvPhoneWork.text = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value?.parsePhone(requireContext())
+        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
+        tvPhoneWork.text = workPhone?.value?.parsePhone(requireContext())
+        tvAdditionalNumber.additionalNumber(workPhone?.additional)
         tvEmail.text = (user.email?.value?: "")
         tvEmailPublic.text = user.contactInformation.emails?.joinToString("\n") { it.value?: "" }
         tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") { it.value?: "" }

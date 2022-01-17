@@ -44,6 +44,15 @@ data class UserDetail(
         var isCurrentUser: Boolean = false
 ): Parcelable {
 
+        val nameLastName: String
+                get() {
+                        val nameList = listOfNotNull(
+                                name,
+                                lastName
+                        )
+                        return nameList.joinToString(" ")
+                }
+
         val fullName: String
                 get() {
                         val nameList = listOfNotNull(
@@ -399,7 +408,8 @@ data class FieldDetails(
         val absent: Boolean? = false,
         val title: String? = null,
         @SerializedName("onConfirmation")
-        var onConfirmation: String? = null
+        var onConfirmation: String? = null,
+        var additional: String? = null
 ): Parcelable
 
 @Parcelize

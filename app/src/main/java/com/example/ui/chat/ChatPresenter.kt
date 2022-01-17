@@ -237,7 +237,7 @@ class ChatPresenter
                         val name = if (it.isEventChat()) {
                             it.binds?.event?.name?: ""
                         } else {
-                            it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
+                            it.binds?.users?.first { us -> us.id != appData.getId() }?.nameLastName?: ""
                         }
                         //val name = it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
                         if (userName != name) {

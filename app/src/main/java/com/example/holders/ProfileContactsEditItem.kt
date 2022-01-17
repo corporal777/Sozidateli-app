@@ -21,6 +21,19 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.btnSiteAdd
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.btnSocialNetworkAdd
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.etAdditionalNumber
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.etWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.llSites
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.llSocialNetworks
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.networksError
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.scNoSocialNetworks
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.scNoWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.scShowWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.scSite
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.sitesError
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.tilWorkPhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import onTextChanged
 import setOnClickListener
@@ -49,6 +62,7 @@ class ProfileContactsEditItem(
     private var mIsPhoneConfirmed = mobilePhone?.isConfirmed?: false//isPhoneConfirmed
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
+    private var mAdditionalPhone = workPhone?.additional
     private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
@@ -130,6 +144,11 @@ class ProfileContactsEditItem(
                 etWorkPhone.setText("")
                 checkPhone()
             }
+            etAdditionalNumber.apply {
+                initInput(mAdditionalPhone) {
+                    mAdditionalPhone = it.toString()
+                }
+            }
 
             llSocialNetworks.removeAllViews()
             mSocialNetworks.forEach { initSocialNetworkInput(viewHolder, it) }
@@ -205,6 +224,7 @@ class ProfileContactsEditItem(
 
     private fun checkPhone() {
         viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
+        viewHolder.tilAdditionalNumber.isEnabled = !mNoWorkPhone
     }
 
     private fun checkSites() {
@@ -436,10 +456,10 @@ class ProfileContactsEditItem(
             val phonesList = mutableListOf<FieldDetails>()
 
             if (!workPhoneUpdate.isNullOrEmpty()) {
-                phonesList.add(FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone))
+                phonesList.add(FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone))
                 put(UserDetail.USER_PHONE, phonesList)
             } else {
-                phonesList.add(FieldDetails(value = null, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone))
+                phonesList.add(FieldDetails(value = null, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone))
                 put(UserDetail.USER_PHONE, phonesList)
             }
 

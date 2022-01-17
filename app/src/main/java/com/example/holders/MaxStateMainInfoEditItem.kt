@@ -20,9 +20,21 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnAddInfo
+import kotlinx.android.synthetic.main.item_max_state_main_info.btnSiteAdd
+import kotlinx.android.synthetic.main.item_max_state_main_info.btnSocialNetworkAdd
+import kotlinx.android.synthetic.main.item_max_state_main_info.etAdditionalNumber
 import kotlinx.android.synthetic.main.item_max_state_main_info.etNotes
+import kotlinx.android.synthetic.main.item_max_state_main_info.etWorkPhone
+import kotlinx.android.synthetic.main.item_max_state_main_info.llSites
+import kotlinx.android.synthetic.main.item_max_state_main_info.llSocialNetworks
+import kotlinx.android.synthetic.main.item_max_state_main_info.networksError
+import kotlinx.android.synthetic.main.item_max_state_main_info.scNoSocialNetworks
+import kotlinx.android.synthetic.main.item_max_state_main_info.scNoWorkPhone
 import kotlinx.android.synthetic.main.item_max_state_main_info.scNotes
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
+import kotlinx.android.synthetic.main.item_max_state_main_info.scShowWorkPhone
+import kotlinx.android.synthetic.main.item_max_state_main_info.scSite
+import kotlinx.android.synthetic.main.item_max_state_main_info.sitesError
+import kotlinx.android.synthetic.main.item_max_state_main_info.tilWorkPhone
 import onTextChanged
 
 class MaxStateMainInfoEditItem(
@@ -48,6 +60,7 @@ class MaxStateMainInfoEditItem(
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
     private val isWorkPhoneVisible = workPhone?.value.isNullOrEmpty()
+    private var mAdditionalPhone = workPhone?.additional
     private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
             .map { it.copy() }
             .let {
@@ -94,6 +107,11 @@ class MaxStateMainInfoEditItem(
                     etWorkPhone.setText("")
                     checkPhone()
                     checkDataValid()
+                }
+                etAdditionalNumber.apply {
+                    initInput(mAdditionalPhone) {
+                        mAdditionalPhone = it.toString()
+                    }
                 }
             }
 
@@ -186,6 +204,7 @@ class MaxStateMainInfoEditItem(
 
     private fun checkPhone() {
         viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
+        viewHolder.tilAdditionalNumber.isEnabled = !mNoWorkPhone
     }
 
     private fun checkSites() {
@@ -320,7 +339,7 @@ class MaxStateMainInfoEditItem(
             put(UserDetail.USER_PHONE, arrayListOf(
                     FieldDetails(value = mobilePhone?.value,
                             type = PHONE_PERSONAL, isConfirmed = mobilePhone?.isConfirmed, isVisible = mobilePhone?.isVisible, absent = false),
-                    FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone)
+                    FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone)
             ))
 
             val siteUpdate = if (mNoSite) arrayListOf()

@@ -80,6 +80,24 @@
                 android:inputType="phone" />
         </com.example.ui.views.CustomTextInputLayout>
 
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilAdditionalNumber"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAdditionalNumber"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:maxLength="6"
+                android:digits="0123456789"
+                android:hint="@string/profile_additional_number"
+                android:inputType="phone" />
+        </com.example.ui.views.CustomTextInputLayout>
+
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scShowWorkPhone"
             style="@style/Profile.Edit.Switch"
