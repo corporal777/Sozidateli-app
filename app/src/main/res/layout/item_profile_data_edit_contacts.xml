@@ -161,7 +161,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAdditionalNumber"
                 style="@style/Profile.Edit.Input.SingleLine"
-                android:digits="0123456789+-"
+                android:digits="0123456789"
+                android:maxLength="6"
                 android:hint="@string/profile_additional_number"
                 android:inputType="phone" />
         </com.example.ui.views.CustomTextInputLayout>
