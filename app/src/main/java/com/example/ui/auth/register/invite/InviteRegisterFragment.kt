@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -37,6 +38,12 @@ import javax.inject.Provider
 
 class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
 
+    private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it == '-'
+        }
+    })
+
     @InjectPresenter
     lateinit var presenter: InviteRegisterPresenter
 
@@ -65,8 +72,11 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
         ivClose.setOnClickListener { presenter.onClickClose() }
 
         etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) } }
+        etFirstName.filters = filter
         etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+        etLastName.filters = filter
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+        etMiddleName.filters = filter
         //etEmail.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }
         //etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
         //etPasswordConfirm.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordConfirmText(text) } }

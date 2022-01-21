@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.text.SpannableString
 import android.text.Spanned
 import android.view.View
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
 import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
 import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
+import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,6 +50,12 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
     private val timerMessage by lazy {
         getString(R.string.auth_register_confirm_email_timer_two)
     }
+
+    private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it == '-'
+        }
+    })
 
     @InjectPresenter
     lateinit var presenter: FinishRegisterPresenter
@@ -105,8 +113,11 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
             presenter.onChangePhoneText(text)
         } }*/
         etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeNameText(text) } }
+        etFirstName.filters = filter
         etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+        etLastName.filters = filter
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+        etMiddleName.filters = filter
         etCode.onTextChanged {
             tilCode.error = null
             it?.toString()?.let { text -> presenter.onChangeCodeText(text) }

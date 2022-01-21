@@ -1,8 +1,10 @@
 package com.example.ui.auth.register.email.newbuild
 
+import android.R.attr
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -17,23 +19,21 @@ import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
-import kotlinx.android.synthetic.main.fragment_register_email_new.etEmail
-import kotlinx.android.synthetic.main.fragment_register_email_new.etFirstName
-import kotlinx.android.synthetic.main.fragment_register_email_new.etLastName
-import kotlinx.android.synthetic.main.fragment_register_email_new.etMiddleName
-import kotlinx.android.synthetic.main.fragment_register_email_new.ibRegister
-import kotlinx.android.synthetic.main.fragment_register_email_new.ivClose
-import kotlinx.android.synthetic.main.fragment_register_email_new.tilEmail
-import kotlinx.android.synthetic.main.fragment_register_email_new.tilFirstName
-import kotlinx.android.synthetic.main.fragment_register_email_new.tilLastName
-import kotlinx.android.synthetic.main.fragment_register_email_new.tvAgreeError
 import onTextChanged
+import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun layout() = R.layout.fragment_register_email_new
+
+    private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it == '-'
+        }
+    })
 
     @InjectPresenter
     lateinit var presenter: RegisterEmailNewPresenter
@@ -49,8 +49,11 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
         ivClose.setOnClickListener { presenter.onClickClose() }
 
         etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) } }
+        etFirstName.filters = filter
         etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+        etLastName.filters = filter
         etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+        etMiddleName.filters = filter
         etEmail.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) } }
         etEmailAgain.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailAgainText(text) } }
         /*etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
@@ -62,7 +65,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
             showUserAgreement()
         }
         password.setPasswordValidCallback {
-            presenter.onChangeNewPasswordText(it.password?: "", it.isValid)
+            presenter.onChangeNewPasswordText(it.password ?: "", it.isValid)
         }
         password.setChangedSelectionCallback {
             presenter.onClickAgree(it)
