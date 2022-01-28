@@ -200,7 +200,8 @@ class EventRegistrationPresenter
                         findRegistrationDataValue(field, responseField).fromJson<String>()
                 )
                 EventRegisterField.Type.DATE,
-                EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(
+                EventRegisterField.Type.DATETIME,
+                EventRegisterField.Type.DATETIMEPLANED -> EventRegisterFieldData.Date(
                         field,
                         findRegistrationDataValue(field, responseField).fromJson<String>()
                 )

@@ -58,6 +58,9 @@ data class Event(
 ): Parcelable {
 
     enum class Status {
+        @SerializedName("canceled")
+        CANCELED,
+
         @SerializedName("preparing")
         PREPARING,
 

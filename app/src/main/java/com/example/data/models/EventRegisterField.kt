@@ -56,6 +56,9 @@ data class EventRegisterField(
         GROUP,
 
         @SerializedName("checkboxes")
-        CHECKBOXES
+        CHECKBOXES,
+
+        @SerializedName("datetimeplaned")
+        DATETIMEPLANED
     }
 }

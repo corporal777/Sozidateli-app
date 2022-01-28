@@ -293,7 +293,10 @@ data class EventRegisterFields(
                 SELECT_BOX,
 
                 @SerializedName("radiobox")
-                RADIO_BOX
+                RADIO_BOX,
+
+                @SerializedName("datetimeplaned")
+                DATETIMEPLANED
         }
 }
 

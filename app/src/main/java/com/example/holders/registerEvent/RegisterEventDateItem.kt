@@ -12,6 +12,7 @@ import initAsDatePicker
 import initAsDateTimePicker
 import kotlinx.android.synthetic.main.item_register_event_input.*
 import onTextChanged
+import java.util.*
 
 
 open class RegisterEventDateItem(
@@ -45,6 +46,12 @@ open class RegisterEventDateItem(
                     EventRegisterField.Type.DATETIME -> {
                         value = valueString?.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
                         textInputLayout.initAsDateTimePicker(date) { year, month, day, hour, minute ->
+                            String.format(DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year, hour, minute)
+                        }
+                    }
+                    EventRegisterField.Type.DATETIMEPLANED -> {
+                        value = valueString?.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
+                        textInputLayout.initAsDateTimePicker(date, Calendar.getInstance().time) { year, month, day, hour, minute ->
                             String.format(DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year, hour, minute)
                         }
                     }

@@ -147,7 +147,7 @@ class AboutEventPresenter
     }
 
     override fun onGoToEventClick() {
-        if (event?.event?.binds?.currentUserRegistration == null)
+        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED)
             viewState.showEventRequest(eventId)
         /*compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
