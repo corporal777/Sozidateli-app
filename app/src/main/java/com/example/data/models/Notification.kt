@@ -22,7 +22,8 @@ data class Notification(
         val event: /*Event*/NotificationEntityModell?,
         val project_name: String?,
         val notificationMainType: String,
-        val entity: NotificationEntity?
+        val entity: NotificationEntity?,
+        val organization: Int
         ) : Parcelable {
 
     enum class Type {
@@ -77,7 +78,8 @@ data class Notification(
                     /*remoteNotification.entity?.model*/,
                     remoteNotification.entity?.model?.project?.name,
                     remoteNotification.entity?.type?: NotificationModel.NOTIFICATION_TYPE_EVENT,
-                    NotificationEntity(remoteNotification.entity?.type, remoteNotification.entity?.id)
+                    NotificationEntity(remoteNotification.entity?.type, remoteNotification.entity?.id),
+                    remoteNotification.entity?.model?.organization?:0
             )
             /*return Notification(
                     remoteNotification.id,

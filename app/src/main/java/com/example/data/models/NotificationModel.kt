@@ -54,7 +54,8 @@ data class NotificationEntityModelModel(
         val holdingDate: DateModel? = null,
         val status: /*NotificationStatusModel*/Any? = null,
         val project: ProjectObject? = null,
-        val state: Any? = null
+        val state: Any? = null,
+        val organization: Int? = null
 )
 @Parcelize
 data class ProjectObject(

@@ -70,7 +70,7 @@ abstract class NotificationItem(
             val ellipsizedMessage = message?.substringToWholeWord(maxLength)
             text = ellipsizedMessage
             getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
-            BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+            BetterLinkMovementMethod.linkifyHtml(/*Linkify.ALL, */this)
                     .setOnLinkClickListener(onLinkClickListener)
         }
 

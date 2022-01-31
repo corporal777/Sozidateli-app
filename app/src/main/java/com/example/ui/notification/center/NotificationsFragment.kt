@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -60,7 +61,11 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     private val openEventListener: OnOpenEventListener = { findNavController().navigate(NotificationsFragmentDirections.notificationToAboutEventFragment(it, AboutEventFragment.ABOUT_FROM_OTHER)) }
 
     private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
-        presenter.onNotificationUrlClick(url)
+        if (url.contains("/organization/")) {
+            findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to Uri.parse(url).lastPathSegment))
+        } else {
+            presenter.onNotificationUrlClick(url)
+        }
         true
     }
 
