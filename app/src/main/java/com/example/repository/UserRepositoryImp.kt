@@ -316,6 +316,11 @@ class UserRepositoryImp
                 }
     }
 
+    override fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>> {
+        return newApi.getNotifications(map)
+                .map { it.data }
+    }
+
     override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
         return newApi.getNotifications(map)
                 .map { it.totalCount }

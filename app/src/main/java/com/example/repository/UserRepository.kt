@@ -82,6 +82,7 @@ interface UserRepository {
     //fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
+    fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>>
     fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>

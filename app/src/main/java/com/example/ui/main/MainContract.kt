@@ -97,7 +97,7 @@ interface MainContract {
         fun onInappHidden()
         fun onInappAcceptClick(inapp: Notification)
         fun onInappCancelClick(inapp: Notification)
-        fun onInappOkClick()
+        fun onInappOkClick(inapp: Notification)
 
         fun onRetryConnectionClick()
 

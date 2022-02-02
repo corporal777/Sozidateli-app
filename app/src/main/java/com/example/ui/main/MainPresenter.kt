@@ -145,11 +145,29 @@ class MainPresenter
                     initInternetConnectionCheck()
                 })*/
         if (isAuthRequired) viewState.showLoadingDialog()
+        val inApp = userRepository.getInAppList(mapOf(NotificationModel.NOTIFICATION_LIMIT to 50,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+        )).doOnSuccess { inappList = LinkedList(it) }
+                .ignoreElement()
+                /*.performOnBackgroundOutOnMain()
+                .subscribe({
+                    appData.notificationsCount = it
+                    chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({ nCount ->
+                                appData.notificationsCount = nCount
+                            }, {})
+                }, {
+                    it.printStackTrace()
+                    appData.notificationsCount = 0
+                })*/
         val loadUser = userRepository.getUserShortNew()
                 //.doOnSuccess { inappList = LinkedList(it.inapps) }
                 .ignoreElement()
         val loadCalendar = checkUserLocation()
-        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
+        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar, inApp))
                 .andThen(Completable.defer { checkInternetConnected() })
                 .andThen(subscribeToNotifications())
                 .doOnComplete { connectToSocket(appData.getId()) }
@@ -371,7 +389,9 @@ class MainPresenter
                 }
     }
 
-    override fun onInappOkClick() {
+    override fun onInappOkClick(inapp: Notification) {
+        updateNotificationInvite(userRepository.markAsRead(inapp.id.toString()), inapp.id)
+        //userRepository.markAsRead(id.toString())
         viewState.hideInapp()
     }
 

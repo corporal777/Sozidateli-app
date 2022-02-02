@@ -448,7 +448,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 btnPositive.apply {
                     isVisible = true
                     text = getString(R.string.ok)
-                    setOnClickListener { presenter.onInappOkClick() }
+                    setOnClickListener { presenter.onInappOkClick(inapp) }
                 }
                 btnNegative.apply {
                     isVisible = false

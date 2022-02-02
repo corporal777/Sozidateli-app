@@ -33,7 +33,7 @@ class UserChatItem(
 
             updateBadge(viewHolder.tvBadge)
 
-            tvName.text = userChat.user.fullName
+            tvName.text = userChat.user.nameLastName
 
             tvLastMessage.apply {
                 text = when (userChat.lastMessageType) {
