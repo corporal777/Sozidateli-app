@@ -87,6 +87,8 @@ class EventRegistrationPresenter
                                 .subscribeSimple { fields ->
                                     if (fields.data.isNotEmpty()) {
                                         val form = fields.data.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
+                                        eventData.registrationHeadline = form?.title
+                                        eventData.registrationSubtitle = form?.subtitle
                                         val fieldsList = mapFields(form?.fields)
                                         formId = form?.id
 
