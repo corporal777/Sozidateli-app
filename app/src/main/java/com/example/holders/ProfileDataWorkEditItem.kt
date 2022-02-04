@@ -137,7 +137,7 @@ class ProfileDataWorkEditItem(
                     error = resources.getString(R.string.profile_work_finish_error)
                 }
                 if (!isOrganizationValid()) tilProject.apply {
-                    error = if ((mOrganization?.length?: 0) < 9 && (mOrganization?.length?: 0) > 0)
+                    error = if ((mOrganization?.length?: 0) < 4 && (mOrganization?.length?: 0) > 0)
                         resources.getString(R.string.ten_letters_error)
                     else
                         resources.getString(R.string.enter_organization)
@@ -182,7 +182,7 @@ class ProfileDataWorkEditItem(
     }
 
     private fun isOrganizationValid(): Boolean {
-        return (mOrganization?.length?: 0) >= 9
+        return (mOrganization?.length?: 0) >= 4
         //!mwOrganization.isNullOrBlank()
     }
     private fun isPositionValid(): Boolean {

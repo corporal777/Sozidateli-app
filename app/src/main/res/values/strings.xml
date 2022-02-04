@@ -735,7 +735,7 @@
     <string name="yes_delete">Да, хочу удалить</string>
     <string name="work_experience_data_delete_text">Все данные об опыте работы будут удалены.</string>
     <string name="work_experience_data_delete_title">Вы действительно хотите удалить данные?</string>
-    <string name="ten_letters_error">Пожалуйста, введите ботя бы 10 символов.</string>
+    <string name="ten_letters_error">Пожалуйста, введите ботя бы 5 символов.</string>
     <string name="five_letters_error">Пожалуйста, введите ботя бы 5 символов.</string>
     <string name="profile_fields_title">Вы почти в команде проекта «%s»</string>
     <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе «Уведомления».</string>

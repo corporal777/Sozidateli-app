@@ -207,7 +207,7 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
                 error = resources.getString(R.string.profile_education_finish_error)
             }
             if (!isOrganizationValid(item.education?.organization)) holder.tilInstitution.apply {
-                error = if ((item.education?.organization?.length?: 0) < 9 && (item.education?.organization?.length?: 0) > 0)
+                error = if ((item.education?.organization?.length?: 0) < 4 && (item.education?.organization?.length?: 0) > 0)
                     resources.getString(R.string.ten_letters_error)
                 else
                     resources.getString(R.string.profile_educate_institution_empty_error)
@@ -278,7 +278,7 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
     }
 
     private fun isOrganizationValid(mInstitution: String?): Boolean =
-        (mInstitution?.length?: 0) >= 9
+        (mInstitution?.length?: 0) >= 4
 
     private fun isSpecialityValid(mSpeciality: String?): Boolean =
         (mSpeciality?.length?: 0) >= 4

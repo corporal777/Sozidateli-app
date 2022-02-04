@@ -128,7 +128,7 @@ class ProfileDataEducationEditItem(
                     error = resources.getString(R.string.profile_education_finish_error)
                 }
                 if (!isOrganizationValid()) tilInstitution.apply {
-                    error = if ((mInstitution?.length?: 0) < 9 && (mInstitution?.length?: 0) > 0)
+                    error = if ((mInstitution?.length?: 0) < 4 && (mInstitution?.length?: 0) > 0)
                         resources.getString(R.string.ten_letters_error)
                     else
                         resources.getString(R.string.profile_educate_institution_empty_error)
@@ -173,7 +173,7 @@ class ProfileDataEducationEditItem(
     }
 
     private fun isOrganizationValid(): Boolean {
-        return (mInstitution?.length?: 0) >= 9
+        return (mInstitution?.length?: 0) >= 4
         //!mInstitution.isNullOrBlank()
     }
     private fun isSpecialityValid(): Boolean {

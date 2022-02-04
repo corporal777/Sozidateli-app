@@ -211,7 +211,7 @@ class EditEducationFragment: BaseFragment(), EditEducationContract.View, Toolbar
                 user.educationLevelList?.map { EducationLevelNew(it.id, it.name, it.order) },
         null, null, ToggleIntModelNew(user.educationLevel?.value, user.educationLevel?.showInProfile),
         false, true, false, false, user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name,
-                academicDegrees != null))
+                /*academicDegrees != null*/!academicDegree.isNullOrEmpty()))
 
         if (!academicDegree.isNullOrEmpty()) {
             val isDeleteVisible = (academicDegree.size) > 1

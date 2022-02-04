@@ -169,11 +169,12 @@ class ProfileContactsEditItem(
             mEmails.forEach { initEmailsInput(viewHolder, it) }
             btnEmailAdd.apply {
                 setOnClickListener {
-                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value?: "")) {
-                        UserEmailsData(value = "", showInProfile = false).apply {
-                            mEmails.add(this)
-                            initEmailsInput(viewHolder, this)
-                        }
+                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value
+                                    ?: "")) {
+                                        UserEmailsData(value = "", showInProfile = false).apply {
+                                            mEmails.add(this)
+                                        initEmailsInput(viewHolder, this)
+                                        }
                     } else {
                         if (mEmails[mEmails.size - 1].value.isEmpty()) {
                             emailsError.text = context.resources.getString(R.string.fill_field)
@@ -420,14 +421,16 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        if (!AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value?: "")) {
-            if (mEmails[mEmails.size - 1].value.isEmpty()) {
-                viewHolder.emailsError.text = context.resources.getString(R.string.fill_field)
-            } else {
-                viewHolder.emailsError.text = context.resources.getString(R.string.incorrect_data)
+        if (!mEmails.lastOrNull()?.value.isNullOrEmpty()) {
+            if (!AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value ?: "")) {
+                if (mEmails[mEmails.size - 1].value.isEmpty()) {
+                    viewHolder.emailsError.text = context.resources.getString(R.string.fill_field)
+                } else {
+                    viewHolder.emailsError.text = context.resources.getString(R.string.incorrect_data)
+                }
+                viewHolder.emailsError.visibility = View.VISIBLE
+                isValid = false
             }
-            viewHolder.emailsError.visibility = View.VISIBLE
-            isValid = false
         }
         return isValid
     }
@@ -478,10 +481,16 @@ class ProfileContactsEditItem(
                 isUpdateLinks = true
                 //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
             }
-            val contactEmails = if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
+            val contactEmails = mutableListOf<EmailsModel>()
+            /*val contactEmails = */if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
                 null
             } else {
-                mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
+                mEmails.forEach {
+                    if (!it.value.isNullOrEmpty()) {
+                        contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
+                    }
+                }
+                //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
             }
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
                     socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks),
