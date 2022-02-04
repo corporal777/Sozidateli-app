@@ -364,7 +364,11 @@ class MainPresenter
     }
 
     private fun showNextInapp() {
-        inappList?.pollFirst()?.let { viewState.showInapp(Notification.fromRemoteNotification(it)) }
+        inappList?.pollFirst()?.let {
+            val notification = Notification.fromRemoteNotification(it)
+            viewState.showInapp(notification)
+            onInappOkClick(notification)
+        }
     }
 
     override fun onInappHidden() {
@@ -390,7 +394,7 @@ class MainPresenter
     }
 
     override fun onInappOkClick(inapp: Notification) {
-        updateNotificationInvite(userRepository.markAsRead(inapp.id.toString()), inapp.id)
+        //updateNotificationInvite(userRepository.markAsRead(inapp.id.toString()), inapp.id)
         //userRepository.markAsRead(id.toString())
         viewState.hideInapp()
     }
