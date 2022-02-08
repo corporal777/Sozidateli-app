@@ -22,15 +22,17 @@ class UserProfileInterestsPresenter @Inject constructor(
 
     override fun onUserUpdated(user: UserDetail?) {
         val userInterests = user?.interests
-        compositeDisposable += userRepository.getInterestsList(null)
-                .map { groupUserInterests(userInterests, it.data) }
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.onInterestsUpdated(it)
-                }, {
-                    it.printStackTrace()
-                })
+        if (userInterests.isNullOrEmpty()) { viewState.showNextScreen() } else {
+            compositeDisposable += userRepository.getInterestsList(null)
+                    .map { groupUserInterests(userInterests, it.data) }
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribe({
+                        viewState.onInterestsUpdated(it)
+                    }, {
+                        it.printStackTrace()
+                    })
+        }
     }
 
     private fun groupUserInterests(

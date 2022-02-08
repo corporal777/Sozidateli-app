@@ -8,6 +8,7 @@ import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
+import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.DaDataItem
 import com.example.data.models.NewUserAddress
@@ -33,7 +34,7 @@ class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoComp
 
     var onDataSelectedListener: OnDataSelectedListener? = null
 
-    private val adapter = NoFilterArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
+    private val adapter = NoFilterArrayAdapter<String>(context, R.layout.item_town, android.R.id.text1)
             .apply {
                 setOnItemClickListener { _, _, position, _ ->
                     presenter.onItemSelected(position)

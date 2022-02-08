@@ -66,6 +66,10 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
         adapter.update(items)
     }
 
+    override fun showNextScreen() {
+        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
+    }
+
     override fun showEdit() {
         findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
     }
