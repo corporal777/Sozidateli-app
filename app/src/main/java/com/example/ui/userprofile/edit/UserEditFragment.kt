@@ -354,7 +354,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone))
+        findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone, "", null))
     }
 
     override fun showPhoneNotUnique(phone: String) {

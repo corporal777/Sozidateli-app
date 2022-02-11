@@ -3,7 +3,9 @@ package com.example.ui.userprofile.edit
 import android.graphics.Bitmap
 import android.system.Os.remove
 import android.util.Log
+import android.widget.Toast
 import com.arellomobile.mvp.InjectViewState
+import com.example.App
 import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.*
@@ -386,6 +388,7 @@ class UserEditPresenter
     }
 
     override fun onConfirmPhoneClick(phone: String) {
+   
         compositeDisposable += userRepository.checkEmailPhone(null, phone.phoneToServer()?: "")
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()

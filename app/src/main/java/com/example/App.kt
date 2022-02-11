@@ -12,6 +12,7 @@ import dagger.android.HasServiceInjector
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
+import ru.ok.android.sdk.BuildConfig
 import timber.log.Timber
 import javax.inject.Inject
 

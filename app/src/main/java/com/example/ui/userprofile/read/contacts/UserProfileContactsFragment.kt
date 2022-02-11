@@ -14,6 +14,8 @@ import com.example.data.models.user.User
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragmentDirections
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import kotlinx.android.synthetic.main.fragment_user_profile_contacts.*
@@ -59,10 +61,12 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
         tvPhoneWork.text = workPhone?.value?.parsePhone(requireContext())
         tvAdditionalNumber.additionalNumber(workPhone?.additional)
-        tvEmail.text = (user.email?.value?: "")
-        tvEmailPublic.text = user.contactInformation.emails?.joinToString("\n") { it.value?: "" }
-        tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") { it.value?: "" }
-        tvSite.text = user.contactInformation.site?.values?.joinToString("\n") { it.value?: "" }
+        tvEmail.text = (user.email?.value ?: "")
+        tvEmailPublic.text = user.contactInformation.emails?.joinToString("\n") { it.value ?: "" }
+        tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") {
+            it.value ?: ""
+        }
+        tvSite.text = user.contactInformation.site?.values?.joinToString("\n") { it.value ?: "" }
     }
 
     override fun showEdit() {

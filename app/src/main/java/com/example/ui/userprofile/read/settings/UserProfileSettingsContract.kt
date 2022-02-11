@@ -84,6 +84,8 @@ interface UserProfileSettingsContract {
         fun onDeleteProfileConfirm()
 
         fun sendPhone(phone: String)
+
+
         fun onPasswordInputComplete(password: String, phone: String)
         fun confirmCode(phone: String, code: String)
         fun checkPasswordValid(password: String, newPassword: String)

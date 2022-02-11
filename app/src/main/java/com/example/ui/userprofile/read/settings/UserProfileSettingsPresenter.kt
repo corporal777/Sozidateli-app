@@ -12,7 +12,9 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmPresenter
 import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
 import com.example.util.phoneToServer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -64,12 +66,12 @@ class UserProfileSettingsPresenter @Inject constructor(
                             onChangePasswordClickConfirm(password, newPassword, newPassword)
                         }
                 )
-                /*.subscribe({
-                    viewState.hideNewPasswordDialog()
-                    onChangePasswordClickConfirm(password, newPassword, newPassword)
-                }, {
-                    viewState.showOldPasswordError()
-                })*/
+        /*.subscribe({
+            viewState.hideNewPasswordDialog()
+            onChangePasswordClickConfirm(password, newPassword, newPassword)
+        }, {
+            viewState.showOldPasswordError()
+        })*/
     }
 
     override fun onChangeEmailClick() {
@@ -77,7 +79,7 @@ class UserProfileSettingsPresenter @Inject constructor(
         if (email?.value == null) {
             viewState.showChangeEmail()
         } else {
-            viewState.showNewChangeEmail(email.value?: "")
+            viewState.showNewChangeEmail(email.value ?: "")
         }
     }
 
@@ -161,21 +163,26 @@ class UserProfileSettingsPresenter @Inject constructor(
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
-                .subscribe({ sendPhone(phone) },
+                .subscribe({
+                    sendPhone(phone)
+                },
                         { viewState.showPhoneNotUnique(phone) })
     }
 
     override fun sendPhone(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone.phoneToServer()?: "")
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone.phoneToServer()
+                ?: "")
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     viewState.hideDialogProgress()
                     viewState.phoneSuccess(phone)
+
                 }, {
                     viewState.hideDialogProgress()
                     it.printStackTrace()
                 })
     }
+
 
     override fun onPasswordInputComplete(password: String, phone: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
@@ -184,6 +191,7 @@ class UserProfileSettingsPresenter @Inject constructor(
                 .subscribe({
                     viewState.hideDialogProgress2()
                     viewState.passwordSuccess(phone)
+
                 }, {
                     viewState.hideDialogProgress2()
                     viewState.showRequestErrorMessage()

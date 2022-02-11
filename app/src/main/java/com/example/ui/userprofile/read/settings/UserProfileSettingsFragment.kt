@@ -23,6 +23,7 @@ import com.example.ui.main.MainActivity
 import com.example.ui.views.*
 import com.example.util.PHONE_PERSONAL
 import com.google.android.material.textfield.TextInputLayout
+import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.fragment_user_profile_settings.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
@@ -71,10 +72,14 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
 
     override fun phoneSuccess(phone: String) {
         dialog.hideDialog()
+
         passwordDialog = SetPasswordDialog(requireActivity())
                 .setSelectCallback {
                     presenter.onPasswordInputComplete(it, phone)
                 }
+
+
+
     }
 
     override fun hideDialogProgress2() {
@@ -82,6 +87,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
     }
 
     override fun passwordSuccess(phone: String) {
+
         passwordDialog.hideDialog()
         dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
         dialog.setPhoneForCode(phone)
