@@ -1,11 +1,21 @@
 package com.example.ui.userprofile
 
+import android.view.View
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
+import com.example.data.models.UserEditDataType
 import com.example.data.models.user.User
+import com.example.di.FragmentBuildersModule_ContributeUserProfileInterestsFragment
 import com.example.repository.UserRepository
+import com.example.ui.userprofile.base.BaseUserProfileContract
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
+import com.example.ui.userprofile.read.interests.UserProfileInterestsContract
+import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
+import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
+import com.example.ui.userprofile.read.interests.UserProfileInterestsPresenter
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
@@ -18,10 +28,11 @@ import javax.inject.Inject
 
 @InjectViewState
 class UserProfilePresenter @Inject constructor(
-        val appData: AppData,
-        private val userRepository: UserRepository,
-        private val takePhoto: RxTakePhoto
-) : BaseUserProfilePresenter<UserProfileContract.View>(appData), UserProfileContract.Presenter {
+    val appData: AppData,
+    private val userRepository: UserRepository,
+    private val takePhoto: RxTakePhoto
+) : BaseUserProfilePresenter<UserProfileContract.View>(appData),
+    UserProfileContract.Presenter {
 
     override fun onEditAvatarClick() {
         val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
@@ -33,51 +44,59 @@ class UserProfilePresenter @Inject constructor(
 
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
         compositeDisposable += takePhotoRequest
-                .firstOrError()
-                .flatMap {
-                    takePhoto.crop(
-                            resultRotation = it,
-                            outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
-                            outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
-                            cropMode = CropImageView.CropMode.SQUARE
-                    )
-                }
-                .flatMap { userRepository.changeUserImage(it) }
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onSuccess = {
-                            compositeDisposable += userRepository.checkUserProfileSingle()
-                                    .performOnBackgroundOutOnMain()
-                                    .subscribeSimple(onSuccess = {})
-                            updateUserInternal {
-                                image = it
-                            }
-                        }
+            .firstOrError()
+            .flatMap {
+                takePhoto.crop(
+                    resultRotation = it,
+                    outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
+                    outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
+                    cropMode = CropImageView.CropMode.SQUARE
                 )
+            }
+            .flatMap { userRepository.changeUserImage(it) }
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onSuccess = {
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                        .performOnBackgroundOutOnMain()
+                        .subscribeSimple(onSuccess = {})
+                    updateUserInternal {
+                        image = it
+                    }
+                }
+            )
     }
 
     override fun onRemovePhotoClick() {
         compositeDisposable += userRepository.deleteImage()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onComplete = {
-                            compositeDisposable += userRepository.checkUserProfileSingle()
-                                    .performOnBackgroundOutOnMain()
-                                    .subscribeSimple(onSuccess = {})
-                            updateUserInternal {
-                                image = ImageModel(null, null, null, null, null, null)
-                            }
-                        }
-                )
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onComplete = {
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                        .performOnBackgroundOutOnMain()
+                        .subscribeSimple(onSuccess = {})
+                    updateUserInternal {
+                        image = ImageModel(null, null, null, null, null, null)
+                    }
+                }
+            )
     }
 
     override fun onMainDataClick() = viewState.showMainData()
 
     override fun onContactsClick() = viewState.showContacts()
 
-    override fun onInterestsClick() = viewState.showInterests()
+    override fun onInterestsClick() {
+
+        if (user.interests.isNullOrEmpty()) {
+            viewState.showEdit()
+        } else {
+            viewState.showInterests()
+        }
+
+    }
 
     override fun onEducationClick() = viewState.showEducation()
 

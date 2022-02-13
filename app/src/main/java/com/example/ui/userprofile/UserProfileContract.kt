@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
 interface UserProfileContract {
+
     interface View : BaseUserProfileContract.View {
 
         @StateStrategyType(SkipStrategy::class)
@@ -24,6 +25,14 @@ interface UserProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showExperience()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEdit()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showNextScreen()
+
+
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

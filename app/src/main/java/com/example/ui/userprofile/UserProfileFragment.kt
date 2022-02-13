@@ -8,8 +8,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.data.models.UserEditDataType
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.item_profile_data_current_user.btnEdit
@@ -51,28 +53,28 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
             clipToOutline = true
             transitionName = avatarUrl
             Picasso.get()
-                    .load(avatarUrl)
-                    .placeholder(R.drawable.avatar_placeholder_rectangle)
-                    .error(R.drawable.avatar_placeholder_rectangle)
-                    .into(this)
+                .load(avatarUrl)
+                .placeholder(R.drawable.avatar_placeholder_rectangle)
+                .error(R.drawable.avatar_placeholder_rectangle)
+                .into(this)
         }
     }
 
     override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.photo_alert_title)
-                .apply {
-                    if (canRemove) {
-                        setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                            showEditWarning(isBase, isMax, false,true) {
-                                presenter.onRemovePhotoClick()
-                            }
+            .setTitle(R.string.photo_alert_title)
+            .apply {
+                if (canRemove) {
+                    setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+                        showEditWarning(isBase, isMax, false, true) {
+                            presenter.onRemovePhotoClick()
                         }
                     }
                 }
-                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-                .show()
+            }
+            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+            .show()
     }
 
     override fun showMainData() {
@@ -93,5 +95,15 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
 
     override fun showExperience() {
         findNavController().navigate(UserProfileFragmentDirections.profileToExperience())
+    }
+
+    override fun showEdit() {
+        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
+
+    }
+
+    override fun showNextScreen() {
+        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
+
     }
 }

@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 
 abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
-        private val appData: AppData
+    private val appData: AppData
 ) : BasePresenter<V>(appData), BaseUserProfileContract.Presenter {
 
     protected val user: UserDetail
@@ -22,11 +22,13 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
         val updated = kotlin.runCatching { onUserUpdated(user) }.isSuccess
 
         compositeDisposable += appData.userNewChangeSubject
-                .skip(if (updated) 1 else 0)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onNext = ::onUserUpdated
-                )
+            .skip(if (updated) 1 else 0)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onNext = ::onUserUpdated
+            )
+
+
     }
 
     private fun onUserUpdated(optionalUser: Optional<UserDetail>) {
@@ -34,7 +36,10 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
     }
 
     protected open fun onUserUpdated(user: UserDetail?) {
-        viewState.onUserUpdated(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
+        viewState.onUserUpdated(
+            user,
+            if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
+        )
     }
 
     protected fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)

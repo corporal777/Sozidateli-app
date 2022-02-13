@@ -23,7 +23,8 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContract.View, ToolbarFragment {
+class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContract.View,
+    ToolbarFragment {
 
     override val title: String?
         get() = getString(R.string.user_profile_interests)
@@ -33,7 +34,10 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
     private val onItemExpandChange: OnExpandChange<*> = {
         if (it.isExpanded) {
             val position = adapter.getAdapterPosition(it.titleItem)
-            (rvInterests.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+            (rvInterests.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                position,
+                0
+            )
         }
     }
 
@@ -50,6 +54,7 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         rvInterests.adapter = adapter
         btnEdit.setOnClickListener(presenter::onEditClick)
     }
@@ -58,12 +63,15 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
         val items = interests.map {
             val parent = it.key
             val childList = it.value
-            ProfileExpandableSubtitleGroup(parent.name?: "", onExpandChange = onItemExpandChange).apply {
+            ProfileExpandableSubtitleGroup(
+                parent.name ?: "",
+                onExpandChange = onItemExpandChange
+            ).apply {
                 addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
             }
         }
-
         adapter.update(items)
+
     }
 
     override fun showNextScreen() {
