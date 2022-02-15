@@ -60,6 +60,9 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
     }
 
     override fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>) {
+        if (interests.isNullOrEmpty()){
+            navigateUp()
+        }
         val items = interests.map {
             val parent = it.key
             val childList = it.value

@@ -34,6 +34,15 @@ interface MainInfoContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun passwordSuccess(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun codeSuccess()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun phoneSuccess(phone: String)
     }
     interface Presenter : BaseContract.Presenter {
         fun onClickClose()
@@ -46,5 +55,9 @@ interface MainInfoContract {
         fun onTakePhotoFromGalleryClick()
         fun onTakePhotoFromCameraClick()
         fun onRemovePhotoClick()
+
+
+        fun onPasswordInputComplete(password: String, phone: String)
+        fun confirmCode(phone: String, code: String)
     }
 }

@@ -94,6 +94,7 @@ class UserProfilePresenter @Inject constructor(
             viewState.showEdit()
         } else {
             viewState.showInterests()
+            //viewState.showNextScreen()
         }
 
     }

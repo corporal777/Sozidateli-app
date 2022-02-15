@@ -35,9 +35,9 @@ class UserProfileInterestsPresenter @Inject constructor(
 //                        it.printStackTrace()
 //                    })
 //        }
-        if (userInterests.isNullOrEmpty()) {
-            viewState.showEdit()
-        }
+//        if (userInterests.isNullOrEmpty()) {
+//            viewState.showEdit()
+//        }
         compositeDisposable += userRepository.getInterestsList(null)
             .map { groupUserInterests(userInterests, it.data) }
             .performOnBackgroundOutOnMain()

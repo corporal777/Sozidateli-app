@@ -2,6 +2,7 @@ package com.example.holders
 
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.util.Log
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
@@ -15,42 +16,39 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import initAsDatePicker
-import isValidPhoneNumber
 import kotlinx.android.synthetic.main.item_edit_main_info.*
 import kotlinx.android.synthetic.main.item_edit_main_info.btnPhoneConfirm
 import kotlinx.android.synthetic.main.item_edit_main_info.scCity
 import kotlinx.android.synthetic.main.item_edit_main_info.scGender
 import kotlinx.android.synthetic.main.item_edit_main_info.tilMobilePhone
 import kotlinx.android.synthetic.main.item_edit_main_info.tvPhoneConfirmed
-import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.etMobilePhone
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etBirthday
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etCity
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilBirthday
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tvGender
 import onTextChanged
 import java.util.*
-import setOnClickListener
+
 
 class MainInfoEditItem(
-        id: Long,
-        context: Context,
-        /*private val name: String?,
-        private val surname: String?,
-        private val middleName: String?,
-        private val noMiddleName: Boolean,*/
-        private val gender: ToggleStringModel?,
-        private val birthday: String?,
-        private val address: UserAddress,
-        private val phone: List<FieldDetails>?,
-        private val showBirthday: Boolean,
-        private val canEditName: Boolean,
-        private val email: FieldDetails?,
-        private val image: ImageModel,
-        private val isEnableNext: (isEnable: Boolean) -> Unit,
-        private val confirmPhoneClick: (String) -> Unit,
-        private val onImageClick: (canRemove: Boolean) -> Unit
+    id: Long,
+    context: Context,
+    /*private val name: String?,
+    private val surname: String?,
+    private val middleName: String?,
+    private val noMiddleName: Boolean,*/
+    private val gender: ToggleStringModel?,
+    private val birthday: String?,
+    private val address: UserAddress,
+    private val phone: List<FieldDetails>?,
+    private val showBirthday: Boolean,
+    private val canEditName: Boolean,
+    private val email: FieldDetails?,
+    private val image: ImageModel,
+    private val isEnableNext: (isEnable: Boolean) -> Unit,
+    private val confirmPhoneClick: (String) -> Unit,
+    private val onImageClick: (canRemove: Boolean) -> Unit
 ) : Item(id) {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
@@ -58,18 +56,20 @@ class MainInfoEditItem(
     private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
 
     private var mImage = image
+
     /*private var mName = name
     private var mSurname = surname
     private var mMiddleName = middleName*/
     private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
 
     private var mGender = gender?.value?.firstLetterToUppercase()
-    private var mGenderShow = gender?.showInProfile?: true
+    private var mGenderShow = gender?.showInProfile ?: true
     var mBirthday = birthday?.formatToDefaultDate()
     private var mAddress = address
-    private var mAddressShow = address.showInProfile?: true
+    private var mAddressShow = address.showInProfile ?: true
     private var mShowBirthday = showBirthday
-    private var mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false
+    private var mIsPhoneConfirmed =
+        phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
 
     //private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
 
@@ -128,11 +128,13 @@ class MainInfoEditItem(
             etMobilePhone.apply {
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
-                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
+                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error =
+                        null
                     checkDataValid()
 
                     if (mIsPhoneConfirmed) {
-                        mIsPhoneConfirmed = mMobilePhone == phone?.firstOrNull { ph -> ph.type == PHONE_PERSONAL }?.value
+                        mIsPhoneConfirmed =
+                            mMobilePhone == phone?.firstOrNull { ph -> ph.type == PHONE_PERSONAL }?.value
                         updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
@@ -144,11 +146,11 @@ class MainInfoEditItem(
                 checkDataValid()
             }
             tilBirthday.initAsDatePicker(
-                    mBirthday?.let { defaultDateFormatter.parse(it) },
-                    maxDate = Calendar.getInstance().apply {
-                        add(Calendar.YEAR, -14)
-                    }
-                            .time
+                mBirthday?.let { defaultDateFormatter.parse(it) },
+                maxDate = Calendar.getInstance().apply {
+                    add(Calendar.YEAR, -14)
+                }
+                    .time
             ) { year, month, day ->
                 checkDataValid()
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
@@ -171,7 +173,13 @@ class MainInfoEditItem(
             scCity.initSwitch(mAddressShow) { mAddressShow = it }
             tvGender.apply {
                 keyListener = null
-                setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, mutableListOf(genderMale, genderFemale)))
+                setAdapter(
+                    NoFilterArrayAdapter(
+                        context,
+                        android.R.layout.simple_list_item_1,
+                        mutableListOf(genderMale, genderFemale)
+                    )
+                )
                 mGender = setGender(context)
                 initInput(mGender) {
                     mGender = it.toString()
@@ -182,7 +190,11 @@ class MainInfoEditItem(
             btnPhoneConfirm.apply {
                 setOnClickListener {
                     val phone = etMobilePhone.text.toString()
-                    if (/*phone.isValidPhoneNumber(context)*/Utils.newPhoneValidator(context, phone.replace(" ", "").replace("-", ""))) {
+                    if (/*phone.isValidPhoneNumber(context)*/Utils.newPhoneValidator(
+                            context,
+                            phone.replace(" ", "").replace("-", "")
+                        )
+                    ) {
                         confirmPhoneClick(phone)
                     } else {
                         tilMobilePhone.apply {
@@ -208,7 +220,10 @@ class MainInfoEditItem(
         }
     }
 
-    private fun TextInputLayout.initNameInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
+    private fun TextInputLayout.initNameInput(
+        text: String?,
+        onTextChanged: (text: CharSequence?) -> Unit
+    ) {
         editText?.setText(text)
         error = null
         isEnabled = true
@@ -224,7 +239,10 @@ class MainInfoEditItem(
         }
     }
 
-    private fun TextInputLayout.initEmailInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
+    private fun TextInputLayout.initEmailInput(
+        text: String?,
+        onTextChanged: (text: CharSequence?) -> Unit
+    ) {
         editText?.setText(text)
         error = null
         isEnabled = true
@@ -242,10 +260,10 @@ class MainInfoEditItem(
             clipToOutline = true
             transitionName = avatarUrl
             Picasso.get()
-                    .load(avatarUrl)
-                    .placeholder(R.drawable.avatar_placeholder_rectangle)
-                    .error(R.drawable.avatar_placeholder_rectangle)
-                    .into(this)
+                .load(avatarUrl)
+                .placeholder(R.drawable.avatar_placeholder_rectangle)
+                .error(R.drawable.avatar_placeholder_rectangle)
+                .into(this)
         }
     }
 
@@ -271,7 +289,7 @@ class MainInfoEditItem(
                 if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (mMobilePhone.isNullOrEmpty() || !mIsPhoneConfirmed) {
+                if (mMobilePhone.isNullOrEmpty() && phone?.firstOrNull()?.isConfirmed == true) {
                     isValid = false
                 }
                 if (mImage.uri.isNullOrEmpty()) isValid = false
@@ -288,6 +306,7 @@ class MainInfoEditItem(
 
     fun getEmail(): String = viewHolder.etEmail.text.toString()*/
 
+
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             /*if (isCanChangeName) {
@@ -296,23 +315,70 @@ class MainInfoEditItem(
                 val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
                 if (this@MainInfoEditItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
             }*/
-            if (gender?.value != mGender) put(UserDetail.USER_GENDER, ToggleStringModel(getGender(), mGenderShow))
+            if (gender?.value != mGender) put(
+                UserDetail.USER_GENDER,
+                ToggleStringModel(getGender(), mGenderShow)
+            )
             mBirthday?.formatToDefaultServerDate()?.let {
-                if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
+                if (birthday != it) put(
+                    UserDetail.USER_BIRTHDAY,
+                    FieldDetails(value = it, isVisible = mShowBirthday)
+                )
             }
             //if (email?.value != viewHolder.etEmail.text.toString()) put(UserDetail.USER_EMAIL, FieldDetails(value = viewHolder.etEmail.text.toString(), isConfirmed = false))
+
             if (address != mAddress) {
                 mAddress.showInProfile = mAddressShow
                 put(UserDetail.USER_ADDRESS, mAddress)
             }
+
             if (phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value != mMobilePhone) {
+
+                Log.e("OOOOOO", mMobilePhone)
+
                 val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
                 val work = phone?.firstOrNull { it.type == PHONE_WORK }
-                put(UserDetail.USER_PHONE, arrayListOf(
-                        FieldDetails(value = Utils.validatePhoneBeforeSend(mMobilePhone.phoneToServer()?: ""),
-                                type = PHONE_PERSONAL, isConfirmed = personal?.isConfirmed, isVisible = personal?.isVisible, absent = false),
-                        FieldDetails(value = work?.value, type = PHONE_WORK, isVisible = work?.isVisible, absent = work?.absent)
-                ))
+                put(
+                    UserDetail.USER_PHONE, arrayListOf(
+                        FieldDetails(
+                            value = Utils.validatePhoneBeforeSend(
+                                mMobilePhone.phoneToServer() ?: ""
+                            ),
+                            type = PHONE_PERSONAL,
+                            isConfirmed = personal?.isConfirmed,
+                            isVisible = personal?.isVisible,
+                            absent = false
+                        ),
+                        FieldDetails(
+                            value = work?.value,
+                            type = PHONE_WORK,
+                            isVisible = work?.isVisible,
+                            absent = work?.absent
+                        )
+                    )
+                )
+            }else{
+                val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
+                val work = phone?.firstOrNull { it.type == PHONE_WORK }
+                put(
+                    UserDetail.USER_PHONE, arrayListOf(
+                        FieldDetails(
+                            value = Utils.validatePhoneBeforeSend(
+                                personal?.value.phoneToServer() ?: ""
+                            ),
+                            type = PHONE_PERSONAL,
+                            isConfirmed = personal?.isConfirmed,
+                            isVisible = personal?.isVisible,
+                            absent = false
+                        ),
+                        FieldDetails(
+                            value = work?.value,
+                            type = PHONE_WORK,
+                            isVisible = work?.isVisible,
+                            absent = work?.absent
+                        )
+                    )
+                )
             }
         }
     }
@@ -320,7 +386,7 @@ class MainInfoEditItem(
     private fun getGender(): String? {
         return when (mGender) {
             genderMale -> GENDER_MALE
-            genderFemale-> GENDER_FEMALE
+            genderFemale -> GENDER_FEMALE
             else -> null
         }
     }
@@ -328,7 +394,7 @@ class MainInfoEditItem(
     private fun setGender(context: Context): String {
         return when (mGender) {
             GENDER_MALE, context.getString(R.string.profile_gender_male) -> genderMale
-            GENDER_FEMALE, context.getString(R.string.profile_gender_female)  -> genderFemale
+            GENDER_FEMALE, context.getString(R.string.profile_gender_female) -> genderFemale
             else -> ""
         }
     }

@@ -2,6 +2,7 @@ package com.example.ui.userprofile.read.contacts
 
 import additionalNumber
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvPhoneMobi
 import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvPhoneWork
 import kotlinx.android.synthetic.main.fragment_user_profile_contacts.tvSocialNetworks
 import kotlinx.android.synthetic.main.item_profile_data_personal.*
+import ru.ok.android.sdk.LOG_TAG
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -57,6 +59,7 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
+        Log.e("ACCOUNT", phone)
         tvPhoneMobile.text = phone
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
         tvPhoneWork.text = workPhone?.value?.parsePhone(requireContext())

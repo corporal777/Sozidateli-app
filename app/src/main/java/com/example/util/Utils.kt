@@ -68,6 +68,23 @@ object Utils {
         return isValid
     }
 
+    fun isNewPhoneIsValid(phone: String?): Boolean {
+        var valid = true
+        if (!phone.isNullOrEmpty()){
+            if (phone.contains("+")) {
+                if (phone.length == 12) {
+                    if (phone.substring(0, 3) != "+79") valid = false
+                } else valid = false
+            } else {
+                if (phone.length == 11) {
+                    val firstNumber = phone.substring(0, 2)
+                    if (firstNumber != "79" && firstNumber != "89") valid = false
+                } else valid = false
+            }
+        }
+        return valid
+    }
+
     fun validatePhoneBeforeSend(phone: String): String {
         if (phone == "") return ""
         val phoneResult = if (!phone.contains("+")) "+$phone" else phone

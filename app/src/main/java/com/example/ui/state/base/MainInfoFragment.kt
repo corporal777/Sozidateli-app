@@ -1,6 +1,7 @@
 package com.example.ui.state.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -9,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.data.models.user.RecommendationFile
@@ -19,6 +21,7 @@ import com.example.extensions.showChangeEmailDialog
 import com.example.holders.MainInfoEditItem
 import com.example.holders.MaxStateMainInfoEditItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.userprofile.editfile.UserEditFileFragment
@@ -35,10 +38,15 @@ import kotlinx.android.synthetic.main.fragment_user_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MainInfoFragment: BaseFragment(), MainInfoContract.View {
+
+class MainInfoFragment : BaseFragment(), MainInfoContract.View {
+
+    private lateinit var passwordDialog: SetPasswordDialog
+    private lateinit var dialog: AddPhoneEmailDialog
+    private lateinit var dataToSave: Map<String, Any?>
 
     private var canUpdateData = true
-    private lateinit var dialog: AddPhoneEmailDialog
+
     override fun layout(): Int = R.layout.fragment_main_info
 
     @InjectPresenter
@@ -59,12 +67,14 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                hideKeyboard()
-                navigateUp()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    hideKeyboard()
+                    navigateUp()
+                }
+            })
         ivClose.setOnClickListener { presenter.onClickClose() }
         recyclerView.apply {
             adapter = this@MainInfoFragment.adapter
@@ -76,49 +86,67 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
     override fun setPersonalData(user: UserDetail) {
         val dataItem = if (canUpdateData) {
             MainInfoEditItem(
-                    1,
-                    requireContext(),
-                    /*user.name,
-                    user.lastName,
-                    user.middleName?.value,
-                    user.middleName?.absent?: true,*/
-                    user.gender,
-                    user.birthday?.value,
-                    DaDataUtil.formatSavedLocation(requireContext(), user.address),
-                    user.phone,
-                    user.birthday?.isVisible ?: false, user.state?.nameEdited ?: false,
-                    user.email, user.image, { isEnable ->
-                btnSave.isEnabled = isEnable
-            }, { presenter.onConfirmPhoneClick(it.replace(" ", "").replace("-","")) },
-                    {
-                        AlertDialog.Builder(requireContext())
-                                .setTitle(R.string.photo_alert_title)
-                                .apply {
-                                    if (it) {
-                                        setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                                            presenter.onRemovePhotoClick()
-                                        }
-                                    }
+                1,
+                requireContext(),
+                /*user.name,
+                user.lastName,
+                user.middleName?.value,
+                user.middleName?.absent?: true,*/
+                user.gender,
+                user.birthday?.value,
+                DaDataUtil.formatSavedLocation(requireContext(), user.address),
+                user.phone,
+                user.birthday?.isVisible ?: false, user.state?.nameEdited ?: false,
+                user.email, user.image, { isEnable ->
+                    btnSave.isEnabled = isEnable
+                }, { phoneSuccess(it.replace(" ", "").replace("-", "")) },
+                {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.photo_alert_title)
+                        .apply {
+                            if (it) {
+                                setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+                                    presenter.onRemovePhotoClick()
                                 }
-                                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-                                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-                                .show()
-                    })
+                            }
+                        }
+                        .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+                        .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+                        .show()
+                })
         } else {
-            adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)
+            adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
+                ?.setPhoneNumberValid(
+                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed
+                        ?: false
+                )
             canUpdateData = true
             adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
         }
 
-        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhoneNumberValid(user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed?: false)
+        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
+            ?.setPhoneNumberValid(
+                user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed
+                    ?: false
+            )
 
         adapter.update(listOf(dataItem))
-
         onSaveClick = {
             recyclerView.requestFocus()
-            val dataToSave = dataItem?.getDataToSave() as MutableMap
+            dataToSave = dataItem?.getDataToSave() as MutableMap
             //if (dataItem.showConfirmEmail()) showChangeEmailComplete(dataItem.getEmail())
-            presenter.updateFiles(dataToSave)
+            val phone = dataToSave.get("phone") as ArrayList<FieldDetails>
+
+            if (user.phone?.firstOrNull()?.isConfirmed == true) {
+                if (!phone.firstOrNull()?.value.isNullOrEmpty()){
+                    phoneSuccess(phone.firstOrNull()?.value!!)
+                }
+
+            } else {
+                presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
+            }
+
+
         }
     }
 
@@ -139,21 +167,42 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
             UserState.MAX -> {
                 when (maxStateScreen(presenter.getUserData())) {
                     MaxStateScreenType.BASE ->
-                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateMainInfoFragment().setScreen(presenter.screen))
+                        findNavController().navigate(
+                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateMainInfoFragment()
+                                .setScreen(presenter.screen)
+                        )
                     MaxStateScreenType.INTERESTS ->
-                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToBaseStateInterestsFragment().setScreen(presenter.screen))
+                        findNavController().navigate(
+                            MainInfoFragmentDirections.actionMainInfoFragmentToBaseStateInterestsFragment()
+                                .setScreen(presenter.screen)
+                        )
                     MaxStateScreenType.WORK ->
-                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+                        findNavController().navigate(
+                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateWorkFragment()
+                                .setScreen(presenter.screen)
+                        )
                     MaxStateScreenType.EDUCATION ->
-                        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
+                        findNavController().navigate(
+                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateEducationFragment()
+                                .setScreen(presenter.screen)
+                        )
                     MaxStateScreenType.DONE -> {
-                        BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
-                                .setSelectCallback {
-                                    when (presenter.screen) {
-                                        1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                                        2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                                    }
+                        BaseStateDialog(
+                            resources.getString(R.string.you_got_max_state),
+                            requireActivity()
+                        )
+                            .setSelectCallback {
+                                when (presenter.screen) {
+                                    1 -> findNavController().popBackStack(
+                                        R.id.profile_fragment,
+                                        false
+                                    )
+                                    2 -> findNavController().popBackStack(
+                                        R.id.userStateFragment,
+                                        false
+                                    )
                                 }
+                            }
                     }
                 }
             }
@@ -162,9 +211,9 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
                     baseActionsWithSuccess()
                 } else {
                     dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
-                            .setSelectCallback {
-                                presenter.sendEmail(it.value)
-                            }.setNegativeClickCallback { baseActions() }
+                        .setSelectCallback {
+                            presenter.sendEmail(it.value)
+                        }.setNegativeClickCallback { baseActions() }
                 }
             }
         }
@@ -172,42 +221,79 @@ class MainInfoFragment: BaseFragment(), MainInfoContract.View {
 
     private fun baseActionsWithSuccess() {
         BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
-                .setSelectCallback {
-                    baseActions()
-        }
+            .setSelectCallback {
+                baseActions()
+            }
     }
 
     private fun baseActions() {
         /*BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
                 .setSelectCallback {*/
-                    when (presenter.screen) {
-                        1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                        2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                        3 -> findNavController().popBackStack()
-                    }
-                //}
+        when (presenter.screen) {
+            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+            3 -> findNavController().popBackStack()
+        }
+        //}
     }
 
     override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone), getString(R.string.confirm_phone_positive),
-                getString(R.string.cancel))
-                .setSelectCallback {
-                    if (!it) {
-                        showPhoneConfirm(phone)
-                    } else {
-                        //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
-                    }
+        ConfirmPhoneDialog(
+            requireContext(),
+            getString(R.string.confirm_phone_text, phone),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.cancel)
+        )
+            .setSelectCallback {
+                if (!it) {
+                    showPhoneConfirm(phone)
+                } else {
+                    //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
                 }
+            }
+    }
+
+    override fun passwordSuccess(phone: String) {
+
+        passwordDialog.hideDialog()
+        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
+        dialog.setPhoneForCode(phone)
+        dialog.setSelectCallback {
+            if (it.type == RegisterDataType.CODE) {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                presenter.confirmCode(phone, it.value)
+            }
+        }
+        dialog.setSendCodeCallback {
+        }
+    }
+
+    override fun codeSuccess() {
+        dialog.hideDialog()
+        presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
+    }
+
+    override fun phoneSuccess(phone: String) {
+        passwordDialog = SetPasswordDialog(requireActivity())
+            .setSelectCallback {
+                presenter.onPasswordInputComplete(it, phone)
+            }
     }
 
     override fun showPhoneConfirm(phone: String) {
         canUpdateData = false
-        findNavController().navigate(MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(Utils.validatePhoneBeforeSend(phone.replace(" ", "").replace("-", ""))/*phone.replace(" ", "").replace("-", "")*/))
+        findNavController().navigate(
+            MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(
+                Utils.validatePhoneBeforeSend(
+                    phone.replace(" ", "").replace("-", "")
+                )/*phone.replace(" ", "").replace("-", "")*/
+            )
+        )
     }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
-                ?: title, Toast.LENGTH_SHORT).show()
+            ?: title, Toast.LENGTH_SHORT).show()
     }
 }
