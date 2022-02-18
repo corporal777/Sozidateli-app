@@ -67,7 +67,11 @@ interface UserProfileSettingsContract {
         fun onChangePhoneClick()
 
         fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
+        fun onChangePasswordClickConfirm(
+            oldPassword: String,
+            newPassword: String,
+            newPasswordConfirm: String
+        )
 
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String, isFirst: Boolean)
@@ -85,7 +89,7 @@ interface UserProfileSettingsContract {
 
         fun sendPhone(phone: String)
 
-
+        fun onChangeNotConfirmedPhone(phone: String)
         fun onPasswordInputComplete(password: String, phone: String)
         fun confirmCode(phone: String, code: String)
         fun checkPasswordValid(password: String, newPassword: String)

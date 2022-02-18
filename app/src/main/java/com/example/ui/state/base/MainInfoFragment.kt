@@ -31,6 +31,7 @@ import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.Utils.maxStateScreen
 import com.example.util.firstLetterToUppercase
+import com.example.util.phoneToServer
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -131,19 +132,33 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
             )
 
         adapter.update(listOf(dataItem))
+
         onSaveClick = {
             recyclerView.requestFocus()
             dataToSave = dataItem?.getDataToSave() as MutableMap
             //if (dataItem.showConfirmEmail()) showChangeEmailComplete(dataItem.getEmail())
-            val phone = dataToSave.get("phone") as ArrayList<FieldDetails>
 
             if (user.phone?.firstOrNull()?.isConfirmed == true) {
-                if (!phone.firstOrNull()?.value.isNullOrEmpty()){
-                    phoneSuccess(phone.firstOrNull()?.value!!)
+                if (!dataItem.getPersonalPhone().isNullOrEmpty()) {
+                    val phone = dataItem.getPersonalPhone()
+                    if (Utils.isNewPhoneIsValid(phone)) {
+                        phoneSuccess(Utils.validatePhoneBeforeSend(
+                            phone ?: ""
+                        ))
+                    } else {
+                        Toast.makeText(requireContext(), "Неверный формат!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
 
             } else {
-                presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
+                if (Utils.isNewPhoneIsValid(dataItem.getPersonalPhone())){
+                    presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
+                }else{
+                    Toast.makeText(requireContext(), "Неверный формат!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
             }
 
 

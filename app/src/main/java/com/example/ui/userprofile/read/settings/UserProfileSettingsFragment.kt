@@ -30,7 +30,8 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.View, ToolbarFragment {
+class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.View,
+    ToolbarFragment {
 
     private lateinit var dialog: AddPhoneEmailDialog
     private lateinit var passwordDialog: SetPasswordDialog
@@ -38,6 +39,8 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         get() = getString(R.string.profile_settings)
 
     override fun layout() = R.layout.fragment_user_profile_settings
+    private var isConfirmed = false
+
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -53,17 +56,24 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         //btnPhoneEdit.setOnClickListener(presenter::onChangePhoneClick)
         btnPhoneEdit.setOnClickListener {
             dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
-                    .setSelectCallback {
-                        if (it.type == RegisterDataType.CHANGE_PHONE)
+                .setSelectCallback {
+                    if (it.type == RegisterDataType.CHANGE_PHONE) {
+                        if (isConfirmed) {
+                            //Toast.makeText(requireContext(), "isConfirmed", Toast.LENGTH_SHORT).show()
                             presenter.checkPhoneIsUnique(it.value)
+                        } else {
+                           presenter.onChangeNotConfirmedPhone(it.value)
+                        }
                     }
+                }
         }
         btnPasswordEdit.setOnClickListener(presenter::onChangePasswordClick)
-        btnEmailEdit.setOnClickListener(presenter::onChangeEmailClick)
+
         btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
         scPrivacy.setOnCheckedChangeListener { _, b ->
             presenter.onChangePrivacyConfirm(b)
         }
+        btnEmailEdit.setOnClickListener(presenter::onChangeEmailClick)
     }
 
     override fun hideDialogProgress() {
@@ -74,10 +84,9 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         dialog.hideDialog()
 
         passwordDialog = SetPasswordDialog(requireActivity())
-                .setSelectCallback {
-                    presenter.onPasswordInputComplete(it, phone)
-                }
-
+            .setSelectCallback {
+                presenter.onPasswordInputComplete(it, phone)
+            }
 
 
     }
@@ -103,7 +112,7 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
     }
 
     override fun codeSuccess() {
-        Toast.makeText(requireContext(), "Code confirmed", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(requireContext(), "Code confirmed", Toast.LENGTH_SHORT).show()
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
         dialog.hideDialog()
     }
@@ -115,33 +124,47 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
         tilName.initNameInput(user.name)
         tilMiddleName.initNameInput(user.getMiddleName())
         scNoMiddleName.apply {
-            isChecked = user.middleName?.absent?: false
+            isChecked = user.middleName?.absent ?: false
             isEnabled = false
         }
 
-        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
+        isConfirmed = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed == true
+
+        val phone =
+            user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
+                requireContext()
+            )
         //tvPhoneMobile.isVisible = phone != null
         //tvPhoneMobileTitle.isVisible = phone != null
         //btnPhoneEdit.isVisible = phone != null
         tvPhoneMobile.text = phone
 
         tvEmail.text = user.email?.onConfirmation ?: user.email?.value
-        scPrivacy.isChecked = user.state?.isHidden?: false
-        ivInfo.isVisible = !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
+        scPrivacy.isChecked = user.state?.isHidden ?: false
+        ivInfo.isVisible =
+            !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
         ivInfo.setOnClickListener {
-            WaitForAcceptDialog(requireActivity(), getString(R.string.wait_for_accept_title), getString(R.string.wait_for_accept_text),
-            getString(R.string.wait_for_accept_positive_button), getString(R.string.content_description_delete), true)
-                    .setSendCodeCallback {
-                        if (it) {
-                            presenter.registerEmailResend(user.email?.onConfirmation?: user.email?.value?: "")
+            WaitForAcceptDialog(
+                requireActivity(),
+                getString(R.string.wait_for_accept_title),
+                getString(R.string.wait_for_accept_text),
+                getString(R.string.wait_for_accept_positive_button),
+                getString(R.string.content_description_delete),
+                true
+            )
+                .setSendCodeCallback {
+                    if (it) {
+                        presenter.registerEmailResend(
+                            user.email?.onConfirmation ?: user.email?.value ?: ""
+                        )
+                    } else {
+                        if (user.email?.value == null) {
+                            presenter.onDeleteEmail()
                         } else {
-                            if (user.email?.value == null) {
-                                presenter.onDeleteEmail()
-                            } else {
-                                presenter.onDeleteConfirmEmail(user.email?.onConfirmation?: "")
-                            }
+                            presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
                         }
                     }
+                }
         }
     }
 
@@ -157,53 +180,60 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
 
     private fun showDisabledMainInputInfo(context: Context) {
         val supportEmail = context.getString(R.string.support_email)
-        val message = context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail).toSpannable()
+        val message =
+            context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail)
+                .toSpannable()
         Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
 
         AlertDialog.Builder(context)
-                .setTitle(R.string.profile_edit_name_disabled_title)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-                .apply {
-                    findViewById<TextView>(android.R.id.message)?.let {
-                        it.movementMethod = BetterLinkMovementMethod.getInstance()
-                    }
+            .setTitle(R.string.profile_edit_name_disabled_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.ok, null)
+            .show()
+            .apply {
+                findViewById<TextView>(android.R.id.message)?.let {
+                    it.movementMethod = BetterLinkMovementMethod.getInstance()
                 }
+            }
     }
 
     override fun showChangeEmail() = showChangeEmailDialog(presenter::checkEmailIsUnique)
 
-    override fun showNewChangeEmail(email: String) = showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
+    override fun showNewChangeEmail(email: String) =
+        showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text, email),
-                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
-                .setSelectCallback {
-                    if (it) {
-                        presenter.registerEmailResend(email)
-                    }
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_email_text, email),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    presenter.registerEmailResend(email)
                 }
+            }
     }
 
     override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone),
-                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
-                .setSelectCallback {
-                    if (it) {
-                        presenter.sendPhone(phone)
-                    } else {
-                        dialog.isProgressVisible(false)
-                    }
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_phone_text, phone),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    presenter.sendPhone(phone)
+                } else {
+                    dialog.isProgressVisible(false)
                 }
+            }
     }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
-                ?: title, Toast.LENGTH_SHORT).show()
+            ?: title, Toast.LENGTH_SHORT).show()
     }
 
     //override fun showChangePassword() = showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
@@ -211,9 +241,9 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
 
     override fun showChangePassword() {
         newPassDialog = ChangePasswordDialog(requireActivity())
-                .setSelectCallback {
-                    presenter.checkPasswordValid(it.oldPassword, it.newPassword)
-                }
+            .setSelectCallback {
+                presenter.checkPasswordValid(it.oldPassword, it.newPassword)
+            }
     }
 
     override fun showOldPasswordError() {
@@ -245,21 +275,25 @@ class UserProfileSettingsFragment : BaseFragment(), UserProfileSettingsContract.
                 }
             }
         }
-                .show()
+            .show()
     }
 
     override fun showDeleteProfile() {
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.user_profile_delete_confirm_title)
-                .setMessage(R.string.user_profile_delete_confirm_message)
-                .setNegativeButton(R.string.user_profile_delete_confirm_approve) { _, _ ->
-                    presenter.onDeleteProfileConfirm()
-                }
-                .setPositiveButton(R.string.user_profile_delete_confirm_decline) { _, _ -> Unit }
-                .show()
+            .setTitle(R.string.user_profile_delete_confirm_title)
+            .setMessage(R.string.user_profile_delete_confirm_message)
+            .setNegativeButton(R.string.user_profile_delete_confirm_approve) { _, _ ->
+                presenter.onDeleteProfileConfirm()
+            }
+            .setPositiveButton(R.string.user_profile_delete_confirm_decline) { _, _ -> Unit }
+            .show()
     }
 
     override fun showPhoneEdit() {
-        findNavController().navigate(UserProfileSettingsFragmentDirections.toEdit(UserEditDataType.PHONE))
+        findNavController().navigate(
+            UserProfileSettingsFragmentDirections.toEdit(
+                UserEditDataType.PHONE
+            )
+        )
     }
 }

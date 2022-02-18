@@ -25,10 +25,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class NotificationItem(
-        private val notification: Notification,
-        private val onReadMoreClickListener: OnNotificationReadMoreClickListener,
-        private val onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-        private val openEventListener: OnOpenEventListener
+    private val notification: Notification,
+    private val onReadMoreClickListener: OnNotificationReadMoreClickListener,
+    private val onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
+    private val openEventListener: OnOpenEventListener
 ) : Item(notification.id.toLong()) {
 
     abstract fun getTitleView(viewHolder: GroupieViewHolder): TextView
@@ -39,28 +39,40 @@ abstract class NotificationItem(
     @CallSuper
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.apply {
-            setBackgroundColor(ContextCompat.getColor(context, if (notification.wasRead) R.color.notification_center_notification_read else R.color.notification_center_notification_unread))
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    if (notification.wasRead) R.color.notification_center_notification_read else R.color.notification_center_notification_unread
+                )
+            )
         }
 
         getTitleView(viewHolder).apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
-                text = context.resources.getString(R.string.notification_event_title,
-                        "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
+                text = context.resources.getString(
+                    R.string.notification_event_title,
+                    "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>"
+                ).parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
-                        .setOnLinkClickListener { _, url ->
-                            /*val eventMass = url.split("event")
-                            val eventId = eventMass.last().replace("/", "")*/
-                            openEventListener(/*eventId*/notification.eventId.toString())
-                            true
-                        }
+                    .setOnLinkClickListener { _, url ->
+                        /*val eventMass = url.split("event")
+                        val eventId = eventMass.last().replace("/", "")*/
+                        openEventListener(/*eventId*/notification.eventId.toString())
+                        true
+                    }
                 removeUrlUnderline()
             } else {
-                val titleRes = when (notification.type) {
-                    Notification.Type.SIMPLE -> R.string.notifications_simple_title
-                    Notification.Type.ACCEPTABLE -> R.string.notifications_acceptable_title
-                    Notification.Type.RATE -> R.string.notifications_rate_title
+                if (notification.notificationMainType.contentEquals(resources.getString(R.string.notifications_simple_title))) {
+                    text = resources.getString(R.string.notifications_simple_title)
+                } else {
+                    val titleRes = when (notification.type) {
+                        Notification.Type.SIMPLE -> R.string.notifications_simple_title
+                        Notification.Type.ACCEPTABLE -> R.string.notifications_acceptable_title
+                        Notification.Type.RATE -> R.string.notifications_rate_title
+                    }
+
+                    text = resources.getString(titleRes)
                 }
-                text = resources.getString(titleRes)
             }
         }
 
@@ -71,11 +83,14 @@ abstract class NotificationItem(
             text = ellipsizedMessage
             getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
             BetterLinkMovementMethod.linkifyHtml(/*Linkify.ALL, */this)
-                    .setOnLinkClickListener(onLinkClickListener)
+                .setOnLinkClickListener(onLinkClickListener)
         }
 
         getDateView(viewHolder).apply {
-            val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_FULL_MONTH, Locale.getDefault()))
+            val parsedDate = notification.date.parseAndFormat(
+                defaultServerDateTimeFormatter,
+                SimpleDateFormat(DATE_TIME_FORMAT_DEFAULT_FULL_MONTH, Locale.getDefault())
+            )
             text = parsedDate
         }
 

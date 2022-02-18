@@ -85,7 +85,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnAccept"
         app:layout_constraintTop_toTopOf="@+id/btnAccept"
         app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/tvAcceptState"
@@ -99,7 +99,7 @@
         app:layout_goneMarginTop="16dp"
         tools:ignore="MissingPrefix"
         tools:text="@string/notifications_state_accepted"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnChangeDecision"
@@ -108,5 +108,20 @@
         android:text="@string/notifications_change_decision"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvAcceptState"
         app:layout_constraintStart_toEndOf="@+id/tvAcceptState"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/btnMarkAsRead"-->
+<!--        style="@style/Notification.ActionButton"-->
+<!--        fontPath="fonts/Roboto-Medium.ttf"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:text="@string/notifications_mark_as_read"-->
+<!--        app:layout_constrainedWidth="true"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/btnReadMore"-->
+<!--        tools:visibility="visible" />-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

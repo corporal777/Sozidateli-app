@@ -53,7 +53,7 @@ class MainInfoPresenter
                                 user.address?.shortAddres = add.data[0].region
                             if (!isImageUpdating) setPersonalData(user)
 
-                            Log.e("FIRST", user.phone?.firstOrNull()?.value)
+//                            Log.e("FIRST", user.phone?.firstOrNull()?.value)
 
                             isImageUpdating = false
                         }, {
@@ -92,8 +92,8 @@ class MainInfoPresenter
     }
 
     private fun onEditSave(data: MutableMap<String, Any?>, onComplete: (UserDetail) -> Boolean) {
-        val phoneNew = data.get("phone") as ArrayList<FieldDetails>
-        Log.e("NEW", phoneNew[0].value)
+//        val phoneNew = data.get("phone") as ArrayList<FieldDetails>
+//        Log.e("NEW", phoneNew[0].value)
 
         if (data.isEmpty()) {
             viewState.navigateUp()
@@ -173,7 +173,7 @@ class MainInfoPresenter
     }
 
     override fun onConfirmPhoneClick(phone: String) {
-        Log.e("CHANGE", phone)
+        //Log.e("CHANGE", phone)
         compositeDisposable += userRepository.checkEmailPhone(
             null,
             Utils.validatePhoneBeforeSend(phone)

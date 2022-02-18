@@ -25,6 +25,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
+import com.example.ui.views.GetMaxStateDialog
 import com.example.ui.views.ProfileDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -55,37 +56,53 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
     }
 
     override fun setData(notification: Notification) {
+        Log.e("NOTE", notification.toString())
+
         tvDate.apply {
-            val parsedDate = notification.date.parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
+            val parsedDate = notification.date.parseAndFormat(
+                defaultServerDateTimeFormatter,
+                defaultDateTimeFormatter
+            )
             text = parsedDate
         }
 
         tvMessage.apply {
             text = notification.message?.parseAsHtml()
             BetterLinkMovementMethod.linkifyHtml(this)
-                    .setOnLinkClickListener { _, url ->
-                        if (url.contains("https") || url.contains("http")) {
-                            val i = Intent(Intent.ACTION_VIEW)
-                            i.data = Uri.parse(url)
-                            startActivity(i)
-                        } else if (url.contains("organization")) {
-                            val organizationId = url.replace("organization", "").replace("/", "")
-                            findNavController().navigate(NotificationFragmentDirections.notificationToOrganizationFragment(organizationId))
-                            Log.INFO
-                        } else if (url.contains("event")) {
-                            val eventId = url.replace("event", "").replace("/", "")
-                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
-                        } else {
-                            Log.INFO
-                        }
-                        true
+                .setOnLinkClickListener { _, url ->
+                    if (url.contains("https") || url.contains("http")) {
+                        val i = Intent(Intent.ACTION_VIEW)
+                        i.data = Uri.parse(url)
+                        startActivity(i)
+                    } else if (url.contains("organization")) {
+                        val organizationId = url.replace("organization", "").replace("/", "")
+                        findNavController().navigate(
+                            NotificationFragmentDirections.notificationToOrganizationFragment(
+                                organizationId
+                            )
+                        )
+                        Log.INFO
+                    } else if (url.contains("event")) {
+                        val eventId = url.replace("event", "").replace("/", "")
+                        findNavController().navigate(
+                            NotificationFragmentDirections.notificationToAboutEventFragment(
+                                eventId,
+                                ABOUT_FROM_OTHER
+                            )
+                        )
+                    } else {
+                        Log.INFO
                     }
+                    true
+                }
         }
 
         val titleRes: Int
         var actionTextRes: Int? = null
         var canRate = false
         var isAccepted = false
+
+        var isCanceled = false
         //var canAccept = false
         //var canChangeAccept = false
 
@@ -111,18 +128,23 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         /*btnAccept.isEnabled = false
                         btnCancel.isEnabled = true*/
                         isAccepted = true
+                        btnAccept.isVisible = false
+                        btnCancel.isVisible = false
                         //canChangeAccept = true
                         actionTextRes = R.string.notifications_state_accepted
                     }
                     Notification.AcceptState.CANCELED -> {
                         btnAccept.enableOrDisableButton(true)
                         btnCancel.enableOrDisableButton(false)
+                        isCanceled = true
+                        btnCancel.isVisible = false
+                        btnAccept.isVisible = false
                         /*btnAccept.isEnabled = true
                         btnAccept.setBackgroundResource(R.drawable.background_corners)
                         btnCancel.isEnabled = false
                         btnCancel.setBackgroundResource(R.drawable.background_corners_disabled)*/
                         //canChangeAccept = true
-                        //actionTextRes = R.string.notifications_state_cancelled
+                        actionTextRes = R.string.notifications_state_cancelled
                     }
                     else -> {
                         btnAccept.enableOrDisableButton(true)
@@ -141,15 +163,22 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
         tvTitle.apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
-                text = context.resources.getString(R.string.notification_event_title,
-                        "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>").parseAsHtml()
+                text = context.resources.getString(
+                    R.string.notification_event_title,
+                    "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>"
+                ).parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
-                        .setOnLinkClickListener { _, url ->
-                            val eventMass = url.split("event")
-                            val eventId = eventMass.last().replace("/", "")
-                            findNavController().navigate(NotificationFragmentDirections.notificationToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
-                            true
-                        }
+                    .setOnLinkClickListener { _, url ->
+                        val eventMass = url.split("event")
+                        val eventId = eventMass.last().replace("/", "")
+                        findNavController().navigate(
+                            NotificationFragmentDirections.notificationToAboutEventFragment(
+                                eventId,
+                                ABOUT_FROM_OTHER
+                            )
+                        )
+                        true
+                    }
                 removeUrlUnderline()
             } else {
                 text = getString(titleRes)
@@ -167,8 +196,22 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         }
 
         btnAccept.apply {
-            //isVisible = canAccept
-            setOnClickListener { presenter.onNotificationAcceptClick() }
+            setOnClickListener {
+                if (!isCanceled) {
+                    isAccepted = true
+                    presenter.onNotificationAcceptClick()
+                    btnAccept.enableOrDisableButton(false)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Приглашение уже отклонено!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
+//            //isVisible = canAccept
         }
 
         btnCancel.apply {
@@ -176,8 +219,14 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
             setOnClickListener {
                 if (isAccepted)
                     showCancelInfo()
-                else
+                else {
                     presenter.onNotificationCancelClick()
+                    isCanceled = true
+                    btnCancel.enableOrDisableButton(false)
+
+                }
+
+
             }
         }
 
@@ -187,7 +236,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         }*/
     }
 
-    fun AppCompatButton.enableOrDisableButton(isEnabledd: Boolean) {
+    private fun AppCompatButton.enableOrDisableButton(isEnabledd: Boolean) {
         isEnabled = isEnabledd
         if (isEnabledd)
             setBackgroundResource(R.drawable.background_corners)
@@ -197,7 +246,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
     private fun showCancelInfo() {
         CtpDialog(requireContext())
-                .setSelectCallback {}
+            .setSelectCallback {}
     }
 
     override fun showUrl(url: String) {
@@ -207,11 +256,23 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
     }
 
     override fun showErrorDialog(errors: List<String>, projectName: String) {
-        ProfileDialog(requireContext(), projectName, errors).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
+//        ProfileDialog(
+//            requireContext(),
+//            projectName,
+//            errors
+//        ).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
+
+
+        GetMaxStateDialog(requireContext())
+            .setSelectCallback { findNavController().navigate(R.id.userStateFragment) }
     }
 
     override fun showRating(eventId: String) {
-        findNavController().navigate(NotificationFragmentDirections.notificationToEventRating(eventId))
+        findNavController().navigate(
+            NotificationFragmentDirections.notificationToEventRating(
+                eventId
+            )
+        )
     }
 
     override fun layout() = R.layout.fragment_notification

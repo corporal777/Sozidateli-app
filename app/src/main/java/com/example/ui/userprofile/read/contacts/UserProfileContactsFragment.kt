@@ -59,7 +59,7 @@ class UserProfileContactsFragment : BaseFragment(), UserProfileContactsContract.
         val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         tvPhoneMobile.isVisible = phone != null
         tvPhoneMobileTitle.isVisible = phone != null
-        Log.e("ACCOUNT", phone)
+
         tvPhoneMobile.text = phone
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
         tvPhoneWork.text = workPhone?.value?.parsePhone(requireContext())

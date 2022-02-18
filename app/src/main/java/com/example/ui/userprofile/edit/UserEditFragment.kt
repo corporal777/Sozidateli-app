@@ -29,15 +29,14 @@ import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.main.MainActivity
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.ITEM_POSITION
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
-import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.InfoDialog
-import com.example.ui.views.WaitForAcceptDialog
+import com.example.ui.views.*
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.*
@@ -51,11 +50,15 @@ import javax.inject.Provider
 
 class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
 
+    private lateinit var dialog: AddPhoneEmailDialog
+
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
     private var mainInfoFiles: List<FileModel>? = null
 
     override val title: String? = null
+
+    private lateinit var data: ProfileContactsEditItem
 
     override fun layout() = R.layout.fragment_user_edit
 
@@ -306,25 +309,41 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
             presenter::onChangeEmailClick,
             presenter::onConfirmPhoneClick
         )
-
+        data = item
         adapter.update(listOf(item))
-
+//        if (userPhone?.value.isNullOrEmpty()) {
+//            btnSave.isEnabled = false
+//        }
         onSaveClick = {
             recyclerView.requestFocus()
-            if (item.checkDataValid()) {
-                if (item.isPhoneValidated()) {
-                    showEditWarning(
-                        presenter.getBaseUserState(),
-                        presenter.getMaxUserState(),
-                        item.checkBaseFieldsValid(),
-                        item.checkMaxFieldsValid()
-                    ) {
-                        presenter.onSaveContactsClick(item.getDataToSave())
+            if (userPhone?.isConfirmed == true) {
+                //Toast.makeText(requireContext(), "ConfirmedPhone", Toast.LENGTH_SHORT).show()
+                if (item.checkDataValid()) {
+                    if (item.isPhoneValidated()) {
+                        //Toast.makeText(requireContext(), "Just Save", Toast.LENGTH_SHORT).show()
+                        showEditWarning(
+                            presenter.getBaseUserState(),
+                            presenter.getMaxUserState(),
+                            item.checkBaseFieldsValid(),
+                            item.checkMaxFieldsValid()
+                        ) {
+                            presenter.onSaveContactsClick(item.getDataToSave())
+                        }
+                    } else {
+//                        Toast.makeText(requireContext(), "Just Change", Toast.LENGTH_SHORT)
+//                            .show()
+                        presenter.onConfirmPhoneClick(item.getPersonalPhone() ?: "")
                     }
-                } else {
-                    presenter.onConfirmPhoneClick(item.getPersonalPhone() ?: "")
                 }
+            } else {
+                if (!item.getPersonalPhone().isNullOrEmpty()) {
+//                    Toast.makeText(requireContext(), "Not ConfirmedPhone", Toast.LENGTH_SHORT)
+//                        .show()
+                    presenter.onSaveContactsClick(item.getDataToSaveWithInConfirmedPhone())
+                }
+
             }
+
         }
     }
 
@@ -378,7 +397,27 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone, "", null))
+        showConfirmPhoneDialog(phone)
+        // findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone, "", null))
+    }
+
+    private fun showConfirmPhoneDialog(phone: String) {
+        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
+        dialog.setPhoneForCode(phone)
+        dialog.setSelectCallback {
+            if (it.type == RegisterDataType.CODE) {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                presenter.confirmCode(phone, it.value)
+            }
+        }
+        dialog.setSendCodeCallback {
+        }
+    }
+
+    override fun codeSuccess() {
+        dialog.hideDialog()
+        presenter.onSaveContactsClick(data.getDataToSave())
+
     }
 
     override fun showPhoneNotUnique(phone: String) {
@@ -392,6 +431,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 }
             }
     }
+
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
@@ -527,7 +567,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
                 presenter.getBaseUserState(),
                 presenter.getMaxUserState(), false, userInterests.isEmpty()
             ) {
-                if (userInterests.isNullOrEmpty()){
+                if (userInterests.isNullOrEmpty()) {
                     btnSave.isEnabled = false
                 }
                 presenter.onSaveInterestsClick(userInterests)

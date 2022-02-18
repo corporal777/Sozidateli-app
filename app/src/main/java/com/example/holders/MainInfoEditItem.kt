@@ -3,6 +3,7 @@ package com.example.holders
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
@@ -138,6 +139,7 @@ class MainInfoEditItem(
                         updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
+
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
 
@@ -289,7 +291,7 @@ class MainInfoEditItem(
                 if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (mMobilePhone.isNullOrEmpty() && phone?.firstOrNull()?.isConfirmed == true) {
+                if (mMobilePhone.isNullOrEmpty()) {
                     isValid = false
                 }
                 if (mImage.uri.isNullOrEmpty()) isValid = false
@@ -306,6 +308,7 @@ class MainInfoEditItem(
 
     fun getEmail(): String = viewHolder.etEmail.text.toString()*/
 
+    fun getPersonalPhone() = mMobilePhone.phoneToServer()
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
@@ -334,10 +337,9 @@ class MainInfoEditItem(
 
             if (phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value != mMobilePhone) {
 
-                Log.e("OOOOOO", mMobilePhone)
-
                 val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
                 val work = phone?.firstOrNull { it.type == PHONE_WORK }
+
                 put(
                     UserDetail.USER_PHONE, arrayListOf(
                         FieldDetails(
@@ -357,7 +359,9 @@ class MainInfoEditItem(
                         )
                     )
                 )
-            }else{
+
+
+            } else {
                 val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
                 val work = phone?.firstOrNull { it.type == PHONE_WORK }
                 put(

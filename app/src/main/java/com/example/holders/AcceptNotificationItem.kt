@@ -10,13 +10,19 @@ import kotlinx.android.synthetic.main.item_notification_accept.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class AcceptNotificationItem(
-        private val notification: Notification,
-        onReadMoreClickListener: OnNotificationReadMoreClickListener,
-        onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-        private val acceptClickListener: OnNotificationAcceptClickListener,
-        private val changeDecisionClickListener: OnNotificationChangeDecisionClickListener,
-        private val openEventListener: OnOpenEventListener
-) : NotificationItem(notification, onReadMoreClickListener, onLinkClickListener, openEventListener) {
+    private val notification: Notification,
+    onReadMoreClickListener: OnNotificationReadMoreClickListener,
+    onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
+    private val acceptClickListener: OnNotificationAcceptClickListener,
+    private val changeDecisionClickListener: OnNotificationChangeDecisionClickListener,
+    private val openEventListener: OnOpenEventListener,
+    private val onNotificationReadClickListener: OnNotificationReadListener
+) : NotificationItem(
+    notification,
+    onReadMoreClickListener,
+    onLinkClickListener,
+    openEventListener
+) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         super.bind(viewHolder, position)
@@ -44,7 +50,10 @@ class AcceptNotificationItem(
 
             val isReadMoreVisible = getReadMoreView(viewHolder).isVisible
             val isAcceptable = notification.acceptState == Notification.AcceptState.NONE
-            val isEnabled = notification.acceptState != Notification.AcceptState.DISABLED
+            val isEnabled =
+                notification.acceptState != Notification.AcceptState.DISABLED
+
+
             /*if (notification.acceptState == Notification.AcceptState.CANCELED) {
                 btnAccept.isVisible = false
                 btnCancel.isVisible = false
@@ -52,6 +61,8 @@ class AcceptNotificationItem(
                 btnAccept.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
                 btnCancel.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
             }*/
+
+
             btnAccept.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
             btnCancel.isVisible = !isReadMoreVisible && isEnabled && isAcceptable
             btnChangeDecision.isVisible = !isReadMoreVisible && isEnabled && !isAcceptable
@@ -83,3 +94,4 @@ class AcceptNotificationItem(
 
 typealias OnNotificationAcceptClickListener = (notification: Notification, isAccept: Boolean) -> Unit
 typealias OnNotificationChangeDecisionClickListener = (notification: Notification) -> Unit
+typealias OnNotificationReadListener = (id: Int) -> Unit

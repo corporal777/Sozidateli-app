@@ -39,51 +39,66 @@ import onTextChanged
 import setOnClickListener
 
 class ProfileContactsEditItem(
-        private val context: Context,
-        private val mobilePhone: FieldDetails?,
-        private val workPhone: FieldDetails?,
-        private val socialNetworks: LinksModel?,
-        private val site: LinksModel?,
-        private val email: FieldDetails?,
-        private val showEmail: Boolean,
-        private val emails: List<EmailsModel>,
-        private val changeEmailClick: () -> Unit,
-        private val confirmPhoneClick: (String) -> Unit
+    private val context: Context,
+    private val mobilePhone: FieldDetails?,
+    private val workPhone: FieldDetails?,
+    private val socialNetworks: LinksModel?,
+    private val site: LinksModel?,
+    private val email: FieldDetails?,
+    private val showEmail: Boolean,
+    private val emails: List<EmailsModel>,
+    private val changeEmailClick: () -> Unit,
+    private val confirmPhoneClick: (String) -> Unit
 ) : Item() {
+
+    private lateinit var mEditedPhone: String
 
     private lateinit var viewHolder: GroupieViewHolder
 
     private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
-    private val invalidNumberSecondError = context.getString(R.string.invalid_phone_number_second_error)
+    private val invalidNumberSecondError =
+        context.getString(R.string.invalid_phone_number_second_error)
     private val invalidError = context.getString(R.string.fill_field)
 
     private var mMobilePhone = mobilePhone?.value
-    private var mShowMobilePhone = mobilePhone?.isVisible?: false//showMobilePhone
-    private var mIsPhoneConfirmed = mobilePhone?.isConfirmed?: false//isPhoneConfirmed
+    private var mShowMobilePhone = mobilePhone?.isVisible ?: false//showMobilePhone
+    private var mIsPhoneConfirmed = mobilePhone?.isConfirmed ?: false//isPhoneConfirmed
     private var mWorkPhone = workPhone?.value
-    private var mShowWorkPhone = workPhone?.isVisible?: false//showWorkPhone
+    private var mShowWorkPhone = workPhone?.isVisible ?: false//showWorkPhone
     private var mAdditionalPhone = workPhone?.additional
-    private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
-            .map { it.copy() }
-            .let {
-                if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
-                else it
-            }
-            .toMutableList()
-    private var mNoSite = site?.absent?: false//user_site_absent
-    private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
-    private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
+    private var mSite = (site?.values?.map {
+        UserDataSite(
+            value = it.value ?: "",
+            showInProfile = it.showInProfile ?: false
+        )
+    } ?: emptyList())
+        .map { it.copy() }
+        .let {
+            if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
+            else it
+        }
+        .toMutableList()
+    private var mNoSite = site?.absent ?: false//user_site_absent
+    private var mNoNetworks = socialNetworks?.absent ?: false//user_social_links_absent
+    private var mNoWorkPhone = workPhone?.absent ?: false//user_work_phone_absent
 
     private var mShowEmail = showEmail
-    private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
-            .map { it.copy() }
-            .let {
-                if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
-                else it
-            }
-            .toMutableList()
+    private var mSocialNetworks = (socialNetworks?.values?.map {
+        UserDataSocialLink(
+            value = it.value ?: "",
+            showInProfile = it.showInProfile ?: false
+        )
+    } ?: emptyList())
+        .map { it.copy() }
+        .let {
+            if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
+            else it
+        }
+        .toMutableList()
 
-    private var mEmails = (emails?.map { UserEmailsData(value = it.value?: "", showInProfile = it.showInProfile) }?: emptyList())
+    private var mEmails =
+        (emails?.map { UserEmailsData(value = it.value ?: "", showInProfile = it.showInProfile) }
+            ?: emptyList())
             .map { it.copy() }
             .let {
                 if (it.isEmpty()) it.plus(UserEmailsData(value = "", showInProfile = false))
@@ -100,7 +115,8 @@ class ProfileContactsEditItem(
             etMobilePhone.apply {
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
-                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error = null
+                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error =
+                        null
 
                     if (mobilePhone?.isConfirmed == true) {
                         mIsPhoneConfirmed = mMobilePhone == mobilePhone.value
@@ -130,7 +146,8 @@ class ProfileContactsEditItem(
             etWorkPhone.apply {
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
-                    if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error = null
+                    if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error =
+                        null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
@@ -169,12 +186,15 @@ class ProfileContactsEditItem(
             mEmails.forEach { initEmailsInput(viewHolder, it) }
             btnEmailAdd.apply {
                 setOnClickListener {
-                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value
-                                    ?: "")) {
-                                        UserEmailsData(value = "", showInProfile = false).apply {
-                                            mEmails.add(this)
-                                        initEmailsInput(viewHolder, this)
-                                        }
+                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(
+                            mEmails.lastOrNull()?.value
+                                ?: ""
+                        )
+                    ) {
+                        UserEmailsData(value = "", showInProfile = false).apply {
+                            mEmails.add(this)
+                            initEmailsInput(viewHolder, this)
+                        }
                     } else {
                         if (mEmails[mEmails.size - 1].value.isEmpty()) {
                             emailsError.text = context.resources.getString(R.string.fill_field)
@@ -273,7 +293,8 @@ class ProfileContactsEditItem(
 
     private fun initEmailsInput(viewHolder: GroupieViewHolder, em: UserEmailsData) {
         var csn = em
-        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_email, viewHolder.llEmails, false)
+        val parent = LayoutInflater.from(context)
+            .inflate(R.layout.item_profile_email, viewHolder.llEmails, false)
         val etSn = parent.findViewById<EditText>(R.id.etEm).apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
@@ -281,7 +302,7 @@ class ProfileContactsEditItem(
                 }
             })
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-            initInput(csn.value) { csn.value = it?.toString()?: "" }
+            initInput(csn.value) { csn.value = it?.toString() ?: "" }
         }
         /*parent.findViewById<CheckBox>(R.id.scShowEmail).apply {
             initSwitch(csn.showInProfile) {
@@ -308,7 +329,8 @@ class ProfileContactsEditItem(
 
     private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
         var csn = sn
-        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
+        val parent = LayoutInflater.from(context)
+            .inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
@@ -316,7 +338,7 @@ class ProfileContactsEditItem(
                 }
             })
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-            initInput(csn.value) { csn.value = it?.toString()?: "" }
+            initInput(csn.value) { csn.value = it?.toString() ?: "" }
         }
         parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
             isVisible = sn.value.isNotEmpty()
@@ -341,7 +363,8 @@ class ProfileContactsEditItem(
     }
 
     private fun initSiteInput(viewHolder: GroupieViewHolder, site: UserDataSite) {
-        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
+        val parent = LayoutInflater.from(context)
+            .inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
         val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
@@ -350,7 +373,7 @@ class ProfileContactsEditItem(
             })
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             hint = context.resources.getString(R.string.profile_site)
-            initInput(site.value) { site.value = it?.toString()?: ""}
+            initInput(site.value) { site.value = it?.toString() ?: "" }
         }
 
         parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
@@ -379,8 +402,8 @@ class ProfileContactsEditItem(
     fun checkBaseFieldsValid(): Boolean {
         var isValid = false
         if (mobilePhone?.value != mMobilePhone
-                && !mMobilePhone.isNullOrEmpty()
-                && !mMobilePhone.isValidPhoneNumber(context)
+            && !mMobilePhone.isNullOrEmpty()
+            && !mMobilePhone.isValidPhoneNumber(context)
         ) {
             viewHolder.tilMobilePhone.apply {
                 error = invalidNumberSecondError
@@ -403,8 +426,8 @@ class ProfileContactsEditItem(
         isValid = validatePhone()
 
         if (mobilePhone?.value != mMobilePhone
-                && !mMobilePhone.isNullOrEmpty()
-                && !mMobilePhone.isValidPhoneNumber(context)
+            && !mMobilePhone.isNullOrEmpty()
+            && !mMobilePhone.isValidPhoneNumber(context)
         ) {
             viewHolder.tilMobilePhone.apply {
                 error = invalidNumberSecondError
@@ -413,7 +436,11 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(context, mWorkPhone.phoneToServer()?: "")) {
+        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
+                context,
+                mWorkPhone.phoneToServer() ?: ""
+            )
+        ) {
             viewHolder.tilWorkPhone.apply {
                 error = invalidError
                 requestFocus()
@@ -426,7 +453,8 @@ class ProfileContactsEditItem(
                 if (mEmails[mEmails.size - 1].value.isEmpty()) {
                     viewHolder.emailsError.text = context.resources.getString(R.string.fill_field)
                 } else {
-                    viewHolder.emailsError.text = context.resources.getString(R.string.incorrect_data)
+                    viewHolder.emailsError.text =
+                        context.resources.getString(R.string.incorrect_data)
                 }
                 viewHolder.emailsError.visibility = View.VISIBLE
                 isValid = false
@@ -454,15 +482,31 @@ class ProfileContactsEditItem(
             //if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
             val workPhoneUpdate = if (mNoWorkPhone) null
-            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer()?: "")
+            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer() ?: "")
 
             val phonesList = mutableListOf<FieldDetails>()
 
             if (!workPhoneUpdate.isNullOrEmpty()) {
-                phonesList.add(FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone))
+                phonesList.add(
+                    FieldDetails(
+                        value = workPhoneUpdate,
+                        type = PHONE_WORK,
+                        isVisible = mShowWorkPhone,
+                        absent = mNoWorkPhone,
+                        additional = mAdditionalPhone
+                    )
+                )
                 put(UserDetail.USER_PHONE, phonesList)
             } else {
-                phonesList.add(FieldDetails(value = null, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone))
+                phonesList.add(
+                    FieldDetails(
+                        value = null,
+                        type = PHONE_WORK,
+                        isVisible = mShowWorkPhone,
+                        absent = mNoWorkPhone,
+                        additional = mAdditionalPhone
+                    )
+                )
                 put(UserDetail.USER_PHONE, phonesList)
             }
 
@@ -483,18 +527,129 @@ class ProfileContactsEditItem(
             }
             val contactEmails = mutableListOf<EmailsModel>()
             /*val contactEmails = */if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
-                null
-            } else {
-                mEmails.forEach {
-                    if (!it.value.isNullOrEmpty()) {
-                        contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
-                    }
+            null
+        } else {
+            mEmails.forEach {
+                if (!it.value.isNullOrEmpty()) {
+                    contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
                 }
-                //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
             }
-            put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
-                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks),
-                    emails = contactEmails))
+            //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
+        }
+            put(
+                UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(
+                    site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }
+                        .map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
+                    socialLinks = LinksModel(
+                        values = networkUpdate.filter { it.value.isNotBlank() }
+                            .map { ToggleStringModel(it.value, it.showInProfile) },
+                        absent = mNoNetworks
+                    ),
+                    emails = contactEmails
+                )
+            )
+
+
+        }
+    }
+
+    fun getDataToSaveWithInConfirmedPhone(): MutableMap<String, Any?> {
+        return mutableMapOf<String, Any?>().apply {
+            //if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
+
+            val workPhoneUpdate = if (mNoWorkPhone) null
+            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer() ?: "")
+
+            val phonesList = mutableListOf<FieldDetails>()
+
+            if (!workPhoneUpdate.isNullOrEmpty()) {
+                phonesList.add(
+                    FieldDetails(
+                        value = workPhoneUpdate,
+                        type = PHONE_WORK,
+                        isVisible = mShowWorkPhone,
+                        absent = mNoWorkPhone,
+                        additional = mAdditionalPhone
+                    )
+                )
+                put(UserDetail.USER_PHONE, phonesList)
+            } else {
+                phonesList.add(
+                    FieldDetails(
+                        value = null,
+                        type = PHONE_WORK,
+                        isVisible = mShowWorkPhone,
+                        absent = mNoWorkPhone,
+                        additional = mAdditionalPhone
+                    )
+                )
+                put(UserDetail.USER_PHONE, phonesList)
+            }
+
+
+            val list = mutableListOf<FieldDetails>()
+            if (mMobilePhone != mobilePhone?.value) {
+                list.add(
+                    FieldDetails(
+                        mMobilePhone.phoneToServer(),
+                        type = PHONE_PERSONAL,
+                        true,
+                        false,
+                        false
+                    )
+                )
+                put(UserDetail.USER_PHONE, list)
+            } else {
+                list.add(
+                    FieldDetails(
+                        mobilePhone?.value.phoneToServer(),
+                        type = PHONE_PERSONAL,
+                        true,
+                        false,
+                        false
+                    )
+                )
+                put(UserDetail.USER_PHONE, list)
+            }
+
+            val siteUpdate = if (mNoSite) arrayListOf()
+            else mSite
+            var isUpdateSites = false
+            if (mNoSite != site?.absent || site.values?.toHashSet() != siteUpdate.toHashSet()) {
+                isUpdateSites = true
+                //put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
+            }
+
+            val networkUpdate = if (mNoNetworks) arrayListOf()
+            else mSocialNetworks
+            var isUpdateLinks = false
+            if (mNoNetworks != socialNetworks?.absent || socialNetworks.values?.toHashSet() != networkUpdate.toHashSet()) {
+                isUpdateLinks = true
+                //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
+            }
+            val contactEmails = mutableListOf<EmailsModel>()
+            /*val contactEmails = */if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
+            null
+        } else {
+            mEmails.forEach {
+                if (!it.value.isNullOrEmpty()) {
+                    contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
+                }
+            }
+            //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
+        }
+            put(
+                UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(
+                    site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }
+                        .map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
+                    socialLinks = LinksModel(
+                        values = networkUpdate.filter { it.value.isNotBlank() }
+                            .map { ToggleStringModel(it.value, it.showInProfile) },
+                        absent = mNoNetworks
+                    ),
+                    emails = contactEmails
+                )
+            )
 
 
         }

@@ -41,9 +41,15 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     @ProvidePresenter
     fun providePresenter(): NotificationsPresenter = presenterProvider.get()
 
-    private val readMoreClickListener: OnNotificationReadMoreClickListener = { presenter.onNotificationReadMoreClick(it) }
+    private val readMoreClickListener: OnNotificationReadMoreClickListener =
+        { presenter.onNotificationReadMoreClick(it) }
 
-    private val readClickListener: OnNotificationReadClickListener = { presenter.onNotificationReadClick(it) }
+    private val readClickListener: OnNotificationReadClickListener =
+        { presenter.onNotificationReadClick(it) }
+
+    private val readListener: OnNotificationReadListener =
+        { presenter.onNotificationReadClick(it) }
+
 
     private val acceptClickListener: OnNotificationAcceptClickListener = { notification, isAccept ->
         presenter.apply {
@@ -56,13 +62,24 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         presenter.onNotificationChangeDecisionClick(it)
     }
 
-    private val rateClickListener: OnNotificationRateClickListener = { presenter.onNotificationRateClick(it) }
+    private val rateClickListener: OnNotificationRateClickListener =
+        { presenter.onNotificationRateClick(it) }
 
-    private val openEventListener: OnOpenEventListener = { findNavController().navigate(NotificationsFragmentDirections.notificationToAboutEventFragment(it, AboutEventFragment.ABOUT_FROM_OTHER)) }
+    private val openEventListener: OnOpenEventListener = {
+        findNavController().navigate(
+            NotificationsFragmentDirections.notificationToAboutEventFragment(
+                it,
+                AboutEventFragment.ABOUT_FROM_OTHER
+            )
+        )
+    }
 
     private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
         if (url.contains("/organization/")) {
-            findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to Uri.parse(url).lastPathSegment))
+            findNavController().navigate(
+                R.id.organization_fragment,
+                bundleOf("organizationId" to Uri.parse(url).lastPathSegment)
+            )
         } else {
             presenter.onNotificationUrlClick(url)
         }
@@ -90,18 +107,54 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     override fun setData(notifications: List<Notification?>) {
         adapter.update(notifications.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
-            else when (it.type) {
-                Notification.Type.SIMPLE -> SimpleNotificationItem(it, readMoreClickListener, linkClickListener, readClickListener, openEventListener)
-                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(it, readMoreClickListener, linkClickListener, acceptClickListener, changeDecisionClickListener, openEventListener)
-                Notification.Type.RATE -> RateNotificationItem(it, readMoreClickListener, linkClickListener, rateClickListener, openEventListener)
+
+            if (it == null) {
+                PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
             }
+            else when (it.type) {
+                Notification.Type.SIMPLE -> SimpleNotificationItem(
+                    it,
+                    readMoreClickListener,
+                    linkClickListener,
+                    readClickListener,
+                    openEventListener
+                )
+//                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
+//                    it,
+//                    readMoreClickListener,
+//                    linkClickListener,
+//                    acceptClickListener,
+//                    changeDecisionClickListener,
+//                    openEventListener,
+//                    readListener,
+//                )
+                Notification.Type.ACCEPTABLE -> SimpleNotificationItem(
+                    it,
+                    readMoreClickListener,
+                    linkClickListener,
+                    readClickListener,
+                    openEventListener
+                )
+                Notification.Type.RATE -> RateNotificationItem(
+                    it,
+                    readMoreClickListener,
+                    linkClickListener,
+                    rateClickListener,
+                    openEventListener
+                )
+
+            }
+
         })
         swipeToRefresh.isRefreshing = false
     }
 
     override fun showNotification(notification: Notification) {
-        findNavController().navigate(NotificationsFragmentDirections.notificationsCenterToNotification(notification))
+        findNavController().navigate(
+            NotificationsFragmentDirections.notificationsCenterToNotification(
+                notification
+            )
+        )
     }
 
     override fun showUrl(url: String) {
@@ -118,7 +171,11 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
     }
 
     override fun showRating(eventId: String) {
-        findNavController().navigate(NotificationsFragmentDirections.notificationsCenterToEventRating(eventId))
+        findNavController().navigate(
+            NotificationsFragmentDirections.notificationsCenterToEventRating(
+                eventId
+            )
+        )
     }
 
 

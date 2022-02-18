@@ -172,6 +172,7 @@
     <string name="edit">Редактировать</string>
     <string name="save">Сохранить</string>
     <string name="ok">Ок</string>
+    <string name="get">Получить \"Максимальный\"</string>
     <string name="cancel">Отмена</string>
     <string name="revoke">Отменить</string>
     <string name="add_record">Добавить запись</string>
@@ -767,6 +768,10 @@
     <string name="about_states">О статусах</string>
     <string name="base">Базовый</string>
     <string name="max">Максимальный</string>
+
+    <string name="get_max_state_title">Получить статус</string>
+    <string name="get_max_state_text">Для совершения данного действия Вам необходимо получить максимальный статус</string>
+
     <string name="base_first">Искать единомышленников</string>
     <string name="base_second">Первым узнавать о мероприятиях, проводимых в регионах России для сотрудников, волонтеров некоммерческих организаций и активных граждан</string>
     <string name="base_third">Знакомиться с организациями для сотрудничества, обмена опытом и участия в их работе в качестве волонтера</string>

@@ -72,6 +72,7 @@ class NotificationPresenter
                             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.entity?.id?:0)
                             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.entity?.id?:0)
                             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.entity?.id?:0)
+
                         }
                     }
                     else {
@@ -81,6 +82,21 @@ class NotificationPresenter
                     }
                 }, { it.printStackTrace() })
 
+    }
+
+    override fun onNotificationCancelClick() {
+        //updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
+        when (notification.notificationMainType) {
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.entity?.id?:0)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.entity?.id?:0)
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.entity?.id?:0)
+            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.entity?.id?:0)
+
+//            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.id)
+//            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.id)
+//            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
+//            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
+        }
     }
 
     private fun approveOrgMember(id: Int) {
@@ -95,15 +111,7 @@ class NotificationPresenter
         updateNotificationInvite(userRepository.approveAssistance(id.toString()), id)
     }
 
-    override fun onNotificationCancelClick() {
-        //updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
-        when (notification.notificationMainType) {
-            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
-        }
-    }
+
 
     private fun declineOrgMember(id: Int) {
         updateNotificationInvite(userRepository.declineOrgMember(id.toString(), DeclineBody(appData.getId())), id)

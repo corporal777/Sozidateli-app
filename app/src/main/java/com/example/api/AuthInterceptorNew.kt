@@ -1,5 +1,6 @@
 package com.example.api
 
+import android.util.Log
 import com.example.data.AppData
 import okhttp3.Interceptor
 import okhttp3.Response

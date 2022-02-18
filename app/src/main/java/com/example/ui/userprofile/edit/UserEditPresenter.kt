@@ -8,10 +8,12 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.App
 import com.example.BuildConfig
 import com.example.data.AppData
+import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
+import com.example.repository.AuthRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -38,10 +40,11 @@ import javax.inject.Inject
 @InjectViewState
 class UserEditPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val userRepository: UserRepository,
-        private val commonRepository: CommonRepository,
-        private val takePhoto: RxTakePhoto
+    private val appData: AppData,
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
+    private val commonRepository: CommonRepository,
+    private val takePhoto: RxTakePhoto
 ) : BasePresenter<UserEditContract.View>(appData), UserEditContract.Presenter {
 
     private val compositeFilesDisposable = CompositeDisposable()
@@ -388,7 +391,6 @@ class UserEditPresenter
     }
 
     override fun onConfirmPhoneClick(phone: String) {
-   
         compositeDisposable += userRepository.checkEmailPhone(null, phone.phoneToServer()?: "")
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
@@ -396,6 +398,18 @@ class UserEditPresenter
                 .subscribe({ viewState.showPhoneConfirm(phone) },
                         { viewState.showPhoneNotUnique(phone) })
         //viewState.showPhoneConfirm(phone)
+    }
+
+    fun confirmCode(phone: String, code: String){
+        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                appData.updatePhone(phone)
+                viewState.codeSuccess()
+            }, {
+
+                it.printStackTrace()
+            })
     }
 
     override fun onAddFileClick() {

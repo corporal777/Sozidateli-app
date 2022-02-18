@@ -42,7 +42,9 @@ class NotificationsPresenter
                 NotificationModel.NOTIFICATION_LOAD_MODEL to true,
                 NotificationModel.NOTIFICATION_SORT to "desc"))
     }
-            .applyErrorHandler { viewState.showRequestErrorMessage() }
+            .applyErrorHandler {
+                viewState.showRequestErrorMessage()
+            }
             .buildList(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
