@@ -15,42 +15,43 @@ import com.example.R
 import com.example.data.models.*
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
-import kotlinx.android.synthetic.main.item_max_state_main_info.btnAddInfo
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnSiteAdd
 import kotlinx.android.synthetic.main.item_max_state_main_info.btnSocialNetworkAdd
 import kotlinx.android.synthetic.main.item_max_state_main_info.etAdditionalNumber
-import kotlinx.android.synthetic.main.item_max_state_main_info.etNotes
 import kotlinx.android.synthetic.main.item_max_state_main_info.etWorkPhone
 import kotlinx.android.synthetic.main.item_max_state_main_info.llSites
 import kotlinx.android.synthetic.main.item_max_state_main_info.llSocialNetworks
 import kotlinx.android.synthetic.main.item_max_state_main_info.networksError
 import kotlinx.android.synthetic.main.item_max_state_main_info.scNoSocialNetworks
 import kotlinx.android.synthetic.main.item_max_state_main_info.scNoWorkPhone
-import kotlinx.android.synthetic.main.item_max_state_main_info.scNotes
 import kotlinx.android.synthetic.main.item_max_state_main_info.scShowWorkPhone
 import kotlinx.android.synthetic.main.item_max_state_main_info.scSite
 import kotlinx.android.synthetic.main.item_max_state_main_info.sitesError
+import kotlinx.android.synthetic.main.item_max_state_main_info.tilAdditionalNumber
 import kotlinx.android.synthetic.main.item_max_state_main_info.tilWorkPhone
+import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
 import onTextChanged
 
 class MaxStateMainInfoEditItem(
-        id: Long,
-        private val context: Context,
-        private val mobilePhone: FieldDetails?,
-        private val workPhone: FieldDetails?,
-        private val socialNetworks: LinksModel?,
-        private val site: LinksModel?,
-        private val notes: ToggleStringModel?,
-        private val image: ImageModel,
-        private val emails: List<EmailsModel>,
-        private val addInfoClick:() -> Unit,
-        private val enableNextButton:(enable: Boolean) -> Unit,
-        private val onImageClick: (canRemove: Boolean) -> Unit
+    id: Long,
+    private val context: Context,
+    private val mobilePhone: FieldDetails?,
+    private val workPhone: FieldDetails?,
+    private val socialNetworks: LinksModel?,
+    private val site: LinksModel?,
+    private val notes: ToggleStringModel?,
+    private val image: ImageModel,
+    private val emails: List<EmailsModel>,
+    private val addInfoClick:() -> Unit,
+    private val enableNextButton:(enable: Boolean) -> Unit,
+    private val onImageClick: (canRemove: Boolean) -> Unit
 ) : Item(id) {
+
+    private val invalidNumberSecondError =
+        context.getString(R.string.invalid_phone_number_second_error)
 
     private lateinit var viewHolder: GroupieViewHolder
 
@@ -62,12 +63,12 @@ class MaxStateMainInfoEditItem(
     private val isWorkPhoneVisible = workPhone?.value.isNullOrEmpty()
     private var mAdditionalPhone = workPhone?.additional
     private var mSite = (site?.values?.map { UserDataSite(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
-            .map { it.copy() }
-            .let {
-                if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
-                else it
-            }
-            .toMutableList()
+        .map { it.copy() }
+        .let {
+            if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
+            else it
+        }
+        .toMutableList()
     private val isSitesVisible = site?.values?.isEmpty() == true
     private var mNoSite = site?.absent?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
@@ -76,12 +77,12 @@ class MaxStateMainInfoEditItem(
     private val isImageVisible = (image.uri == null) || (image.uri == "")
 
     private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
-            .map { it.copy() }
-            .let {
-                if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
-                else it
-            }
-            .toMutableList()
+        .map { it.copy() }
+        .let {
+            if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
+            else it
+        }
+        .toMutableList()
     private val isNetworkVisible = socialNetworks?.values?.isEmpty() == true
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
@@ -320,6 +321,31 @@ class MaxStateMainInfoEditItem(
         viewHolder.llSites.addView(parent)
     }
 
+    fun workPhoneIsValid(): Boolean{
+        var isValid = true
+        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
+                context,
+                mWorkPhone.phoneToServer() ?: ""
+            )
+        ) {
+            viewHolder.tilWorkPhone.apply {
+                //error = invalidError
+                error = invalidNumberSecondError
+                requestFocus()
+            }
+            isValid = false
+        }
+        return isValid
+    }
+
+    fun notValidWorkPhoneError(){
+        viewHolder.tilWorkPhone.apply {
+            //error = invalidError
+            error = invalidNumberSecondError
+            requestFocus()
+        }
+    }
+
     fun checkDataValid(): Boolean {
         var isValid = true
         if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) isValid = false
@@ -337,9 +363,9 @@ class MaxStateMainInfoEditItem(
             val workPhoneUpdate = if (mNoWorkPhone) null
             else validatePhoneBeforeSend(mWorkPhone.phoneToServer()?: "")
             put(UserDetail.USER_PHONE, arrayListOf(
-                    FieldDetails(value = mobilePhone?.value,
-                            type = PHONE_PERSONAL, isConfirmed = mobilePhone?.isConfirmed, isVisible = mobilePhone?.isVisible, absent = false),
-                    FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone)
+                FieldDetails(value = mobilePhone?.value,
+                    type = PHONE_PERSONAL, isConfirmed = mobilePhone?.isConfirmed, isVisible = mobilePhone?.isVisible, absent = false),
+                FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone)
             ))
 
             val siteUpdate = if (mNoSite) arrayListOf()
@@ -359,7 +385,7 @@ class MaxStateMainInfoEditItem(
             }
 
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
-                    socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks), emails = emails))
+                socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks), emails = emails))
 
             /*when {
                 isUpdateSites && isUpdateLinks -> {

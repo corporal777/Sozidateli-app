@@ -41,23 +41,19 @@
         tools:text="@string/work_experience_data_delete_text"
         tools:visibility="visible" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnGetMax"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/colorAccent"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
+        android:background="@drawable/background_action_button_selector"
+        android:text="@string/get_max"
         android:letterSpacing="0.01"
-        android:stateListAnimator="@null"
-        android:text="@string/get"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/text_color_action_button"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMessage"
         tools:visibility="visible" />
 

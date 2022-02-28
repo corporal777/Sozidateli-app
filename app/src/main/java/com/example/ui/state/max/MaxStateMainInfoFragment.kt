@@ -28,10 +28,8 @@ import com.example.holders.ProfileDataAdditionalFilesEditNewGroup
 import com.example.holders.ProfileDataFileEditItem
 import com.example.holders.ProfileDataFileItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.state.UserStateFragmentDirections
 import com.example.ui.views.BaseStateDialog
 import com.example.ui.views.InfoDialog
-import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -40,7 +38,7 @@ import kotlinx.android.synthetic.main.fragment_user_edit.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
+class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
@@ -52,21 +50,22 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
 
     override fun layout(): Int = R.layout.fragment_max_state_info
 
-    private val galleryImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { uri ->
-        uri?.let {
-            it.data?.data?.let {  file ->
-                val filePath = FileUtils.getPath(requireContext(), file)
-                val mimeType = FileUtils.getMimeType(requireContext(), file)
-                if (filePath.isEmpty()) {
-                    val path = UriUtils.pickedExistingPicture(requireContext(), file).path
-                    val type = UriUtils.getMimeType(requireContext(), file)?: ""
-                    presenter.onFilePicked(path, type)
-                } else {
-                    presenter.onFilePicked(filePath, mimeType)
+    private val galleryImage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { uri ->
+            uri?.let {
+                it.data?.data?.let { file ->
+                    val filePath = FileUtils.getPath(requireContext(), file)
+                    val mimeType = FileUtils.getMimeType(requireContext(), file)
+                    if (filePath.isEmpty()) {
+                        val path = UriUtils.pickedExistingPicture(requireContext(), file).path
+                        val type = UriUtils.getMimeType(requireContext(), file) ?: ""
+                        presenter.onFilePicked(path, type)
+                    } else {
+                        presenter.onFilePicked(filePath, mimeType)
+                    }
                 }
             }
         }
-    }
 
     @InjectPresenter
     lateinit var presenter: MaxStateMainInfoPresenter
@@ -85,12 +84,14 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                hideKeyboard()
-                navigateUp()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    hideKeyboard()
+                    navigateUp()
+                }
+            })
         ivClose.setOnClickListener {
             when (presenter.screen) {
                 1 -> findNavController().popBackStack(R.id.profile_fragment, false)
@@ -106,24 +107,26 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
     }
 
     override fun setPersonalData(user: UserDetail) {
-        if(!isGoToNextStep(user)) {
-            if (canUpdateFields) filesAddedBefore = user.binds?.recommendationFile?.isNotEmpty()?: false
+        if (!isGoToNextStep(user)) {
+            if (canUpdateFields) filesAddedBefore =
+                user.binds?.recommendationFile?.isNotEmpty() ?: false
             val userPhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
             val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
             val dataItem = if (canUpdateFields) MaxStateMainInfoEditItem(
-                    1,
-                    requireContext(),
-                    userPhone,
-                    workPhone,
-                    user.contactInformation.socialLinks,
-                    user.contactInformation.site,
-                    user.notes,
-                    user.image,
-                    user.contactInformation.emails?: emptyList(),
-                    { showWhyUserShouldAddDataToNotesField() },{ isOtherInfoValid = it
-                buttonNextEnabled(it)
-            }, {
-                AlertDialog.Builder(requireContext())
+                1,
+                requireContext(),
+                userPhone,
+                workPhone,
+                user.contactInformation.socialLinks,
+                user.contactInformation.site,
+                user.notes,
+                user.image,
+                user.contactInformation.emails ?: emptyList(),
+                { showWhyUserShouldAddDataToNotesField() }, {
+                    isOtherInfoValid = it
+                    buttonNextEnabled(it)
+                }, {
+                    AlertDialog.Builder(requireContext())
                         .setTitle(R.string.photo_alert_title)
                         .apply {
                             if (it) {
@@ -135,7 +138,7 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                         .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
                         .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
                         .show()
-            }) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
+                }) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
 
             /*if (!filesAddedBefore) {
                 isFilesValid = user.binds?.recommendationFile?.isNotEmpty()?: false
@@ -169,17 +172,24 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
                     }
                 }
             } else {*/
-                isFilesValid = true
-                adapter.update(listOf(dataItem))
-                onSaveClick = {
+            isFilesValid = true
+            adapter.update(listOf(dataItem))
+            onSaveClick = {
+                if (dataItem?.workPhoneIsValid() == true) {
                     recyclerView.requestFocus()
-                    val dataToSave = dataItem?.getDataToSave() as MutableMap
+                    val dataToSave = dataItem.getDataToSave() as MutableMap
                     presenter.updateFiles(dataToSave)
+                } else {
+                    dataItem?.notValidWorkPhoneError()
                 }
+            }
             //}
         } else {
             if (!presenter.isUpdatePhoto)
-                findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen))
+                findNavController().navigate(
+                    R.id.baseStateInterestsFragment,
+                    bundleOf("screen" to presenter.screen)
+                )
             presenter.isUpdatePhoto = false
         }
         buttonNextEnabled(isFilesValid)
@@ -224,15 +234,15 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
 
     override fun showFileSelector() {
         PermissionsBuilder(REQUEST_GALLERY)
-                .addPermissions(REQUIRED_GALLERY_PERMISSIONS)
-                .setPermissionsGrantedCallback {
-                    val intent = Intent()
-                    intent.type = "*/*"
-                    intent.action = Intent.ACTION_GET_CONTENT
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-                    galleryImage.launch(intent)
-                }
-                .request()
+            .addPermissions(REQUIRED_GALLERY_PERMISSIONS)
+            .setPermissionsGrantedCallback {
+                val intent = Intent()
+                intent.type = "*/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                galleryImage.launch(intent)
+            }
+            .request()
     }
 
     override fun downloadFile(file: String) {
@@ -246,14 +256,16 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
 
     override fun setFileEditData(file: FileModel) {
         val editItem = ProfileDataFileEditItem(file.name)
-        adapter.update(listOf(
+        adapter.update(
+            listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
                 /*ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
                     hasDivider = false
                     compactMargin = true
                 }*/
-        ))
+            )
+        )
 
         onSaveClick = {
             hideKeyboard()
@@ -268,32 +280,49 @@ class MaxStateMainInfoFragment: BaseFragment(), MaxStateMainInfoContract.View {
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
-        InfoDialog(requireContext(), getString(R.string.profile_edit_additional_notes_data), requireActivity())
-                .setSelectCallback {  }
+        InfoDialog(
+            requireContext(),
+            getString(R.string.profile_edit_additional_notes_data),
+            requireActivity()
+        )
+            .setSelectCallback { }
     }
 
     override fun goToNext() {
+
         when (Utils.maxStateScreen(presenter.getUserData())) {
             MaxStateScreenType.WORK ->
-                findNavController().navigate(MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+                findNavController().navigate(
+                    MaxStateMainInfoFragmentDirections.actionMaxStateMainInfoFragmentToMaxStateWorkFragment()
+                        .setScreen(presenter.screen)
+                )
             MaxStateScreenType.EDUCATION ->
-                findNavController().navigate(R.id.maxStateEducationFragment, bundleOf("screen" to presenter.screen))
-            MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
-                    .setSelectCallback {
-                        when (presenter.screen) {
-                            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                        }
+                findNavController().navigate(
+                    R.id.maxStateEducationFragment,
+                    bundleOf("screen" to presenter.screen)
+                )
+            MaxStateScreenType.DONE -> BaseStateDialog(
+                resources.getString(R.string.you_got_max_state),
+                requireActivity()
+            )
+                .setSelectCallback {
+                    when (presenter.screen) {
+                        1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                        2 -> findNavController().popBackStack(R.id.userStateFragment, false)
                     }
+                }
             else ->
-                findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to presenter.screen))
+                findNavController().navigate(
+                    R.id.baseStateInterestsFragment,
+                    bundleOf("screen" to presenter.screen)
+                )
         }
     }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
-                ?: title, Toast.LENGTH_SHORT).show()
+            ?: title, Toast.LENGTH_SHORT).show()
     }
 
     override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)

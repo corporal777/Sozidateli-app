@@ -442,7 +442,8 @@ class ProfileContactsEditItem(
             )
         ) {
             viewHolder.tilWorkPhone.apply {
-                error = invalidError
+                //error = invalidError
+                error = invalidNumberSecondError
                 requestFocus()
             }
             isValid = false

@@ -785,7 +785,8 @@
     <string name="base_fill_second">Пол</string>
     <string name="base_fill_third">Дата рождения</string>
     <string name="base_fill_fourth">Регион и населенный пункт фактического проживания</string>
-    <string name="base_fill_fifth">Подтвердить номер и e-mail</string>
+    <string name="base_fill_fifth">Мобильный телефон</string>
+    <string name="base_fill_sixth">Подтвердить e-mail</string>
     <string name="max_firth">Возможности статуса «Базовый»</string>
     <string name="max_second">Заявить о себе</string>
     <string name="max_third">Возможность быть частью команды проекта, подаваемого на грант</string>

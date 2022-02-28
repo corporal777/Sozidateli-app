@@ -1,17 +1,10 @@
 package com.example.ui.notification
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.util.Linkify
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
 import androidx.core.text.parseAsHtml
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -26,7 +19,6 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
-import com.example.ui.views.ProfileDialog
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import removeUrlUnderline
@@ -36,6 +28,7 @@ import javax.inject.Provider
 class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarFragment {
 
     override val title: CharSequence? = null
+    var isCanceled = false
 
     @InjectPresenter
     lateinit var presenter: NotificationPresenter
@@ -102,8 +95,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         var canRate = false
         var isAccepted = false
 
-        var isCanceled = false
-        //var canAccept = false
+
+        //        //var canAccept = false
         //var canChangeAccept = false
 
         when (notification.type) {
@@ -118,6 +111,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                 titleRes = R.string.notifications_acceptable_title
                 when (notification.acceptState) {
                     Notification.AcceptState.DISABLED -> {
+                        tvActionText.isVisible = true
                         actionTextRes = R.string.notifications_state_disabled
                         btnAccept.isVisible = false
                         btnCancel.isVisible = false
@@ -128,25 +122,27 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                         /*btnAccept.isEnabled = false
                         btnCancel.isEnabled = true*/
                         isAccepted = true
-                        btnAccept.isVisible = false
-                        btnCancel.isVisible = false
+
                         //canChangeAccept = true
-                        actionTextRes = R.string.notifications_state_accepted
+                        //actionTextRes = R.string.notifications_state_accepted
+                        btnAccept.text = getString(R.string.notifications_state_accepted)
                     }
                     Notification.AcceptState.CANCELED -> {
                         btnAccept.enableOrDisableButton(true)
                         btnCancel.enableOrDisableButton(false)
                         isCanceled = true
-                        btnCancel.isVisible = false
-                        btnAccept.isVisible = false
                         /*btnAccept.isEnabled = true
                         btnAccept.setBackgroundResource(R.drawable.background_corners)
                         btnCancel.isEnabled = false
                         btnCancel.setBackgroundResource(R.drawable.background_corners_disabled)*/
                         //canChangeAccept = true
-                        actionTextRes = R.string.notifications_state_cancelled
+                        //actionTextRes = R.string.notifications_state_cancelled
+                        btnCancel.text = getString(R.string.notifications_state_cancelled)
+
                     }
                     else -> {
+                        tvActionText.isVisible = false
+
                         btnAccept.enableOrDisableButton(true)
                         btnCancel.enableOrDisableButton(true)
                         /*btnAccept.isEnabled = true
@@ -197,18 +193,8 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 
         btnAccept.apply {
             setOnClickListener {
-                if (!isCanceled) {
-                    isAccepted = true
-                    presenter.onNotificationAcceptClick()
-                    btnAccept.enableOrDisableButton(false)
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Приглашение уже отклонено!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
+                isAccepted = true
+                presenter.onNotificationAcceptClick()
             }
 
 //            //isVisible = canAccept
@@ -222,11 +208,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
                 else {
                     presenter.onNotificationCancelClick()
                     isCanceled = true
-                    btnCancel.enableOrDisableButton(false)
-
                 }
-
-
             }
         }
 
@@ -262,9 +244,23 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 //            errors
 //        ).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
 
-
+        btnAccept.enableOrDisableButton(true)
         GetMaxStateDialog(requireContext())
             .setSelectCallback { findNavController().navigate(R.id.userStateFragment) }
+    }
+
+    override fun showSuccessAccepted() {
+        btnAccept.enableOrDisableButton(false)
+        btnCancel.enableOrDisableButton(true)
+        btnAccept.text = getString(R.string.notifications_state_accepted)
+        btnCancel.text = getString(R.string.notifications_cancel)
+    }
+
+    override fun showSuccessCanceled() {
+        btnCancel.enableOrDisableButton(false)
+        btnAccept.enableOrDisableButton(true)
+        btnCancel.text = getString(R.string.notifications_state_cancelled)
+        btnAccept.text = getString(R.string.notifications_accept)
     }
 
     override fun showRating(eventId: String) {
