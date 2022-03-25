@@ -100,6 +100,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     is RecommendationsFragment,
                     is EventTabsFragment -> onOpenStartDestination()
                     else -> onOpenNotStartDestination()
+
+
                 }
 
                 onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)

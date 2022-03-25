@@ -6,6 +6,7 @@ import org.junit.Test
 
 class UserFullNameTest {
 
+
     @Test
     fun correctNoMiddleNameTest() {
         val name = "Иван"

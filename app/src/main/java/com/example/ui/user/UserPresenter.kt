@@ -1,6 +1,7 @@
 package com.example.ui.user
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
@@ -8,7 +9,6 @@ import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.data.models.user.UserData
 import com.example.repository.ChatRepository
@@ -19,7 +19,6 @@ import com.example.ui.base.BasePresenter
 import com.example.util.loadBitmap
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
@@ -29,11 +28,11 @@ import javax.inject.Inject
 @InjectViewState
 class UserPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val chatRepository: ChatRepository,
-        private val userRepository: UserRepository,
-        private val commonRepository: CommonRepository,
-        private val eventRepository: EventRepository
+    private val appData: AppData,
+    private val chatRepository: ChatRepository,
+    private val userRepository: UserRepository,
+    private val commonRepository: CommonRepository,
+    private val eventRepository: EventRepository
 ) : BasePresenter<UserContract.View>(appData), UserContract.Presenter {
 
     lateinit var userId: String
@@ -63,73 +62,88 @@ class UserPresenter
     private fun loadUserData(withLoading: Boolean) {
         val getUser = if (isCurrentUser()) {
             userRepository.getUserShortNew()
-                    .flatMapObservable { appData.userNewChangeSubject }
-                    .map { it.value!! }
+                .flatMapObservable { appData.userNewChangeSubject }
+                .map { it.value!! }
         } else {
             userRepository.getUserByIdNew(userId).toObservable()
+
         }
-                .performOnBackgroundOutOnMain()
-                .flatMapMaybe { user -> user.image?.uri.loadAvatar().map { user to it } }
-                .observeOn(Schedulers.io())
+            .performOnBackgroundOutOnMain()
+
+            .flatMapMaybe { user ->
+                user.image?.uri.loadAvatar().map { user to it }
+            }
+            .observeOn(Schedulers.io())
+
+
 
         compositeDisposable += commonRepository.getInterests()
-                .flatMapObservable { interests ->
-                    getUser.map {
-                        val user = it.first
-                        val avatar = it.second.value
-                        UserData(user, avatar, groupUserInterests(user, interests))
-                    }
+            .flatMapObservable { interests ->
+                getUser.map {
+                    val user = it.first
+                    val avatar = it.second.value
+                    UserData(user, avatar, groupUserInterests(user, interests))
                 }
-                .performOnBackgroundOutOnMain()
-                .let {
-                    if (withLoading) it.withLoadingDialog(viewState)
-                    else it
+            }
+            .performOnBackgroundOutOnMain()
+            .let {
+                if (withLoading) it.withLoadingDialog(viewState)
+                else it
+            }
+            .subscribe({
+                profileUserData = if (BuildConfig.NEW_PROFILE_EDIT) {
+                    ProfileUserData(
+                        it,
+                        !BuildConfig.NEW_PROFILE_EDIT
+                    )
+                } else {
+                    ProfileUserData(
+                        it,
+                        isCurrentUser()
+                    )
                 }
-                .subscribe({
-                    profileUserData = if (BuildConfig.NEW_PROFILE_EDIT) {
-                        ProfileUserData(
-                                it,
-                                !BuildConfig.NEW_PROFILE_EDIT
-                        )
-                    } else {
-                        ProfileUserData(
-                                it,
-                                isCurrentUser()
-                        )
-                    }
-                    compositeDisposable += userRepository.searchAddress(profileUserData.userData.user.address?.getShortAddress()?: "")
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({ add ->
-                                viewState.apply {
-                                    if (add.data?.isNotEmpty() == true)
-                                        profileUserData.userData.user.address?.shortAddres = add.data[0].region
-                                    setUser(profileUserData)
-                                    if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                                }
-                            }, {
-                                viewState.apply {
-                                    setUser(profileUserData)
-                                    if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                                }
-                            })
-                }, { it.printStackTrace() })
+                compositeDisposable += userRepository.searchAddress(
+                    profileUserData.userData.user.address?.getShortAddress() ?: ""
+                )
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({ add ->
+                        viewState.apply {
+                            if (add.data?.isNotEmpty() == true)
+                                profileUserData.userData.user.address?.shortAddres =
+                                    add.data[0].region
+                            setUser(profileUserData)
+                            if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                        }
+                    }, {
+                        viewState.apply {
+                            setUser(profileUserData)
+                            if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                        }
+                    })
+            }, {
+                it.printStackTrace()
+                viewState.showUserHiddenDialog()
+            })
     }
 
     private fun getAdditionalData() {
         compositeDisposable += userRepository.getEducationLevel()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
 
         compositeDisposable += userRepository.getSpeciality()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
 
         compositeDisposable += userRepository.getAcademicDegrees()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
     }
 
-    private fun groupUserInterests(user: /*User*/UserDetail, interests: List<InterestNew>): MutableMap<InterestNew, MutableList<InterestNew>>? {
+    private fun groupUserInterests(
+        user: /*User*/UserDetail,
+        interests: List<InterestNew>
+    ): MutableMap<InterestNew, MutableList<InterestNew>>? {
         val groups = mutableMapOf<InterestNew, MutableList<InterestNew>>()
         val headers = interests.filter { it.parent == 0 }
         headers.forEach {
@@ -149,16 +163,20 @@ class UserPresenter
         val user = profileUserData.user
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeSimple {
-                        viewState.openChat(user.fullName, user.image.uri, it.id.toString())
-                    }
-                    /*.subscribe({
-                        viewState.openChat(user.fullName, user.image.uri, it.id.toString())
-                    }, { it.printStackTrace() })*/
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.openChat(user.fullName, user.image.uri, it.id.toString())
+                }
+            /*.subscribe({
+                viewState.openChat(user.fullName, user.image.uri, it.id.toString())
+            }, { it.printStackTrace() })*/
         } else {
-            viewState.openChat(user.fullName, user.image.uri, profileUserData.user.binds?.chatRoomWithMe?.id.toString())
+            viewState.openChat(
+                user.fullName,
+                user.image.uri,
+                profileUserData.user.binds?.chatRoomWithMe?.id.toString()
+            )
         }
     }
 
@@ -171,44 +189,49 @@ class UserPresenter
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, userId.toInt())))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }
+        compositeDisposable += eventRepository.addToFavorites(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, userId.toInt())
+            )
+        )
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+            }
     }
 
     override fun onUnsubscribeClick() {
         compositeDisposable += eventRepository.deleteFromFavorite(profileUserData.user.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    profileUserData.user.binds?.userFavorite = null
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                }
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                profileUserData.user.binds?.userFavorite = null
+                viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+            }
     }
 
     override fun onUnblockClick() {
         val user = profileUserData.user
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
-                    .flatMapCompletable { chatRepository.deleteBan(user.binds?.isUserInBan?.id?:1) }
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        profileUserData.user.binds?.isUserInBan = null
-                        viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                    }, { it.printStackTrace() })
+                .flatMapCompletable { chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    profileUserData.user.binds?.isUserInBan = null
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
         } else {
-            compositeDisposable += chatRepository.deleteBan(user.binds?.isUserInBan?.id?:1)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        profileUserData.user.binds?.isUserInBan = null
-                        viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                    }, { it.printStackTrace() })
+            compositeDisposable += chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    profileUserData.user.binds?.isUserInBan = null
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
         }
     }
 
@@ -220,21 +243,21 @@ class UserPresenter
         val user = profileUserData.user
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
-                    .flatMap { chatRepository.chatBann(CreateChatBody(userId.toInt())) }
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        profileUserData.user.binds?.isUserInBan = it
-                        viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                    }, { it.printStackTrace() })
+                .flatMap { chatRepository.chatBann(CreateChatBody(userId.toInt())) }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    profileUserData.user.binds?.isUserInBan = it
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
         } else {
             compositeDisposable += chatRepository.chatBann(CreateChatBody(userId.toInt()))
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        profileUserData.user.binds?.isUserInBan = it
-                        viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                    }, { it.printStackTrace() })
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    profileUserData.user.binds?.isUserInBan = it
+                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                }, { it.printStackTrace() })
         }
     }
 
@@ -274,8 +297,17 @@ class UserPresenter
         viewState.showChangePassword()
     }
 
-    override fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
-        onEditSave(mapOf(User.FIELD_USER_OLD_PASSWORD to oldPassword, User.FIELD_USER_NEW_PASSWORD to newPassword)) {
+    override fun onChangePasswordClickConfirm(
+        oldPassword: String,
+        newPassword: String,
+        newPasswordConfirm: String
+    ) {
+        onEditSave(
+            mapOf(
+                User.FIELD_USER_OLD_PASSWORD to oldPassword,
+                User.FIELD_USER_NEW_PASSWORD to newPassword
+            )
+        ) {
             viewState.showPasswordChangeComplete()
             false
         }
@@ -292,24 +324,24 @@ class UserPresenter
             if (data.size == 1) {
                 //updateUser(userRepository.changeUserImage(avatar), onComplete)
                 compositeDisposable += userRepository.changeUserImage(avatar)
-                        .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
-                        .subscribe({
-                            viewState.navigateUp()
-                        }, {
-                            it.printStackTrace()
-                            viewState.showUpdateError(it.message)
-                        })
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribe({
+                        viewState.navigateUp()
+                    }, {
+                        it.printStackTrace()
+                        viewState.showUpdateError(it.message)
+                    })
             } else {
                 compositeDisposable += userRepository.changeUserImage(avatar)
-                        .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
-                        .subscribe({
-                            viewState.navigateUp()
-                        }, {
-                            it.printStackTrace()
-                            viewState.showUpdateError(it.message)
-                        })
+                    .performOnBackgroundOutOnMain()
+                    .withLoadingDialog(viewState)
+                    .subscribe({
+                        viewState.navigateUp()
+                    }, {
+                        it.printStackTrace()
+                        viewState.showUpdateError(it.message)
+                    })
                 /*updateUser(userRepository.changeUserImage(avatar)
                         .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)*/
             }
@@ -320,18 +352,18 @@ class UserPresenter
 
     private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
         compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    appData.getUser().apply {
-                        it.user_status?.let { status -> user_status = status }
-                        it.user_status_detail?.let { details -> user_status_detail = details }
-                    }
-                    if (onComplete(it)) viewState.navigateUp()
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                })
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({
+                appData.getUser().apply {
+                    it.user_status?.let { status -> user_status = status }
+                    it.user_status_detail?.let { details -> user_status_detail = details }
+                }
+                if (onComplete(it)) viewState.navigateUp()
+            }, {
+                it.printStackTrace()
+                viewState.showUpdateError(it.message)
+            })
     }
 
     private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {

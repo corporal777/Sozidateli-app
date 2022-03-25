@@ -10,8 +10,10 @@ import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import io.reactivex.plugins.RxJavaPlugins
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
@@ -53,6 +55,8 @@ open class BasePresenter<V : BaseContract.View>
             )
     }
 
+
+
     fun getUserData() = appDat.getUserNew()
 
     fun getHasBase() = appDat.hasBaseState
@@ -63,6 +67,7 @@ open class BasePresenter<V : BaseContract.View>
         onApiError: ((ApiError) -> Unit)?
     ): Consumer<Throwable> {
         return Consumer {
+
             if (it is NoInternetConnectionException) if (onNoInternetConnectionException != null) onNoInternetConnectionException() else onReceiveNoInternetError()
             else if (it is ApiError) if (onApiError != null) onApiError(it) else onReceiveApiError(
                 it
@@ -105,6 +110,18 @@ open class BasePresenter<V : BaseContract.View>
 //
 //                            }
 //                        }
+                        401 -> {
+                            RxJavaPlugins.setErrorHandler { e ->
+                                if (e is UndeliverableException) {
+                                    Log.e("ERROR UNDELIVERABLE", e.message?:"")
+                                    onReceiveError(e)
+                                } else {
+                                    Thread.currentThread().also { thread ->
+                                        thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+                                    }
+                                }
+                            }
+                        }
                         403 -> {
                             try {
                                 val error = Gson().fromJson(

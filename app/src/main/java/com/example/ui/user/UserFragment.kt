@@ -26,6 +26,8 @@ import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.InfoDialog
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -323,6 +325,14 @@ class UserFragment : BaseFragment(), UserContract.View, ToolbarFragment {
 
     override fun setProfileTitle() {
         toolbarContentActionBar.title = getString(R.string.profile_current_user_label)
+    }
+
+    override fun showUserHiddenDialog() {
+        val message = "Данный профиль недоступен"
+        BaseStateDialog(message, requireActivity()).setSelectCallback {
+            findNavController().navigateUp()
+        }
+
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {

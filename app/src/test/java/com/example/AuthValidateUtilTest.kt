@@ -44,6 +44,28 @@ class AuthValidateUtilTest {
         assertFalse(AuthValidateUtil.isValidEmail(""))
     }
 
+    //phone number test
+
+    @Test
+    fun correctPhoneNumberSimpleReturnsTrue() {
+        assertTrue("Correct phone",AuthValidateUtil.isValidPhone("+79267806176"))
+    }
+
+    @Test
+    fun invalidPhoneNumberNotFirstNumberIsNineReturnsFalse() {
+        assertFalse(AuthValidateUtil.isValidPhone("+78267806176"))
+    }
+
+    @Test
+    fun invalidPhoneNumberLengthReturnsFalse() {
+        assertFalse(AuthValidateUtil.isValidPhone("+7926780617"))
+    }
+
+    @Test
+    fun invalidPhoneNumberEmptyReturnsFalse() {
+        assertFalse(AuthValidateUtil.isValidPhone(""))
+    }
+
     // password tests
 
     @Test

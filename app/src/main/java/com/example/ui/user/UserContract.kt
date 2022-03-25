@@ -51,6 +51,9 @@ interface UserContract {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setProfileTitle()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showUserHiddenDialog()
     }
 
     interface Presenter : BaseContract.Presenter {

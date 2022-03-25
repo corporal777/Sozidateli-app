@@ -38,7 +38,8 @@ import kotlinx.android.synthetic.main.item_action_button.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment, DoNotCheckConnectionFragment, NavBarColorFragment {
+class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment,
+    DoNotCheckConnectionFragment, NavBarColorFragment {
 
     override val title: String? = null
 
@@ -57,20 +58,21 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     private var noInternetDialog: BottomSheetDialog? = null
 
-    private val bottomNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
-        presenter.apply {
-            when (it.itemId) {
-                R.id.tab_event_my_schedule -> onMyScheduleTabSelected()
-                R.id.tab_event_schedule -> onScheduleTabSelected()
-                R.id.about_event -> onAboutSelected()
-                R.id.event_location -> onMapTabsSelected()
-                R.id.to_list -> onToListSelected()
-                else -> return@OnNavigationItemSelectedListener false
+    private val bottomNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener {
+            presenter.apply {
+                when (it.itemId) {
+                    R.id.tab_event_my_schedule -> onMyScheduleTabSelected()
+                    R.id.tab_event_schedule -> onScheduleTabSelected()
+                    R.id.about_event -> onAboutSelected()
+                    R.id.event_location -> onMapTabsSelected()
+                    R.id.to_list -> onToListSelected()
+                    else -> return@OnNavigationItemSelectedListener false
+                }
             }
-        }
 
-        return@OnNavigationItemSelectedListener true
-    }
+            return@OnNavigationItemSelectedListener true
+        }
 
     private val childFragmentCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
@@ -84,7 +86,8 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
             bottomNavigation.apply {
                 val itemLocation = menu.findItem(R.id.event_location)
-                itemLocation.isVisible = !presenter.userEvent.eventInfo.event.address?.fullValue.isNullOrBlank()
+                itemLocation.isVisible =
+                    !presenter.userEvent.eventInfo.event.address?.fullValue.isNullOrBlank()
                 setOnNavigationItemSelectedListener(null)
                 selectedItemId = tabId
                 setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
@@ -102,42 +105,58 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         super.onViewCreated(view, savedInstanceState)
         BottomNavigationViewHelper(bottomNavigation).removeShiftMode()
         setHasOptionsMenu(true)
-        bottomNavigation.apply { setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener) }
+        bottomNavigation.apply {
+            setOnNavigationItemSelectedListener(
+                bottomNavigationItemSelectedListener
+            )
+        }
+
 
         childFragmentManager.registerFragmentLifecycleCallbacks(childFragmentCallback, false)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback
+        )
     }
 
     override fun showMyScheduleTab() = selectTab(R.id.tab_event_my_schedule)
 
     override fun showScheduleTab() = selectTab(R.id.tab_event_schedule)
 
-    override fun showAboutTab(eventId: String) = selectTab(R.id.about_event, AboutEventFragmentArgs.Builder(eventId, ABOUT_FROM_EVENT).build().toBundle())
+    override fun showAboutTab(eventId: String) = selectTab(
+        R.id.about_event,
+        AboutEventFragmentArgs.Builder(eventId, ABOUT_FROM_EVENT).build().toBundle()
+    )
 
-    override fun showMapTab(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) = selectTab(R.id.event_location, EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle())
+    override fun showMapTab(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) =
+        selectTab(
+            R.id.event_location,
+            EventLocationFragmentArgs.Builder(eventName, mapInfo, places).build().toBundle()
+        )
 
     private fun selectTab(tabId: Int, args: Bundle? = null) {
         val fragmentTag = generateFragmentTag(tabId)
         val newFragment = childFragmentManager.findFragmentByTag(fragmentTag)
-                ?: createTabFragment(tabId, args)
+            ?: createTabFragment(tabId, args)
 
         childFragmentManager.beginTransaction()
-                .apply {
-                    if (!newFragment.isAdded) add(navHostContainer.id, newFragment, fragmentTag)
+            .apply {
+                if (!newFragment.isAdded) add(navHostContainer.id, newFragment, fragmentTag)
+            }
+            .attach(newFragment)
+            .apply {
+                for (fragment in childFragmentManager.fragments) {
+                    if (fragment != newFragment) detach(fragment)
                 }
-                .attach(newFragment)
-                .apply {
-                    for (fragment in childFragmentManager.fragments) {
-                        if (fragment != newFragment) detach(fragment)
-                    }
-                }
-                .setCustomAnimations(
-                        R.anim.nav_default_enter_anim,
-                        R.anim.nav_default_exit_anim,
-                        R.anim.nav_default_pop_enter_anim,
-                        R.anim.nav_default_pop_exit_anim)
-                .setReorderingAllowed(true)
-                .commitNow()
+            }
+            .setCustomAnimations(
+                R.anim.nav_default_enter_anim,
+                R.anim.nav_default_exit_anim,
+                R.anim.nav_default_pop_enter_anim,
+                R.anim.nav_default_pop_exit_anim
+            )
+            .setReorderingAllowed(true)
+            .commitNow()
     }
 
     private fun createTabFragment(tabId: Int, args: Bundle?): Fragment {
@@ -168,9 +187,12 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     override fun showEventList() {
-        findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
+        findNavController().navigate(
+            R.id.recommendations_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
-                .build())
+                .build()
+        )
+
     }
 
     override fun showNotifications() {
@@ -196,12 +218,14 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {
             BottomSheetDialog(requireContext()).apply {
-                val layout = LayoutInflater.from(requireContext()).inflate(R.layout.layout_no_internet, null).apply {
-                    this.btnAction.text = getString(R.string.no_internet_action_to_calendar)
-                    this.btnAction.setOnClickListener {
-                        presenter.onMyScheduleTabSelected()
-                    }
-                }
+                val layout =
+                    LayoutInflater.from(requireContext()).inflate(R.layout.layout_no_internet, null)
+                        .apply {
+                            this.btnAction.text = getString(R.string.no_internet_action_to_calendar)
+                            this.btnAction.setOnClickListener {
+                                presenter.onMyScheduleTabSelected()
+                            }
+                        }
                 setContentView(layout)
                 setCancelable(false)
                 setOnKeyListener { _, keyCode, _ ->

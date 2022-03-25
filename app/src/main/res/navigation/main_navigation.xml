@@ -422,6 +422,10 @@
         <action
             android:id="@+id/event_to_notifications"
             app:destination="@id/notifications_fragment" />
+
+        <action
+            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
+            app:destination="@id/activitiesFragment" />
     </fragment>
 
     <activity
@@ -896,6 +900,7 @@
         <action
             android:id="@+id/action_about_event_fragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
+
     </fragment>
 
     <fragment

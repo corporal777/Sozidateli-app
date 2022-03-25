@@ -5,7 +5,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
-import com.example.data.models.Place
 import com.example.data.models.createMapInfo
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
@@ -22,12 +21,13 @@ import javax.inject.Inject
 @InjectViewState
 class EventTabsPresenter
 @Inject constructor(
-        private val eventData: UserEventData,
-        private val eventRepository: EventRepository,
-        private val userRepository: UserRepository,
-        appData: AppData,
-        @Connectivity private val connectivity: Observable<Boolean>
+    private val eventData: UserEventData,
+    private val eventRepository: EventRepository,
+    private val userRepository: UserRepository,
+    appData: AppData,
+    @Connectivity private val connectivity: Observable<Boolean>
 ) : BasePresenter<EventTabsContract.View>(appData), EventTabsContract.Presenter {
+
 
     /*private*/ val userEvent = eventData.userEvent!!
     private var isInternetConnected = false
@@ -37,15 +37,18 @@ class EventTabsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
+        Log.e("TOKEN", appDat.token?:"")
+
         compositeDisposable += connectivity
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(onNext = {
-                    isInternetConnected = it
-                    if (it) {
-                        viewState.showNoConnectionMessage(false)
-                        if (eventData.isDataFromLocalStorage) loadData()
-                    }
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(onNext = {
+                isInternetConnected = it
+                if (it) {
+                    viewState.showNoConnectionMessage(false)
+                    if (eventData.isDataFromLocalStorage) loadData()
+                }
+            })
 
         onMyScheduleTabSelected()
     }
@@ -56,6 +59,7 @@ class EventTabsPresenter
         else if (!isInternetConnected) {
             viewState.apply {
                 showAboutTab(userEvent.eventId)
+                Log.e("EVENT ID", userEvent.eventId)
                 //showMyScheduleTab()
                 showNoConnectionMessage(false)
             }
@@ -64,8 +68,8 @@ class EventTabsPresenter
 
     private fun loadData() {
         compositeDisposable += eventData.load(userEvent.eventId)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple { }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple { }
     }
 
     override fun onMyScheduleTabSelected() {
@@ -101,36 +105,40 @@ class EventTabsPresenter
     }
 
     override fun onToListSelected() {
-        compositeDisposable += eventRepository.deleteAllCalendarEvents(EventCalendarBody.CALENDAR_EVENT)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            Log.ERROR
-                        },
-                        onComplete = {
-                            eventData.clear()
-                            viewState.showEventList()
-                        },
-                        onNoInternetConnectionException = {
-                            viewState.showNoConnectionMessage(true)
-                        })
 
-        /*compositeDisposable += eventRepository.setDefaultEvent("0")
-                .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onComplete = {
-                            eventData.clear()
-                            viewState.showEventList()
-                        },
-                        onNoInternetConnectionException = {
-                            viewState.showNoConnectionMessage(true)
-                        })*/
+        compositeDisposable += eventRepository.deleteAllCalendarEvents(EventCalendarBody.CALENDAR_EVENT)
+            .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    Log.ERROR
+                    Log.e("Event tabs presenter:", it.message?:"")
+
+                },
+                onComplete = {
+                    eventData.clear()
+                    viewState.showEventList()
+                },
+                onNoInternetConnectionException = {
+                    viewState.showNoConnectionMessage(true)
+                })
+
+
+        /* compositeDisposable += eventRepository.setDefaultEvent("0")
+                 .andThen(userRepository.getUserShort().ignoreElement().onErrorComplete())
+                 .withCheckInternetConnectivity()
+                 .performOnBackgroundOutOnMain()
+                 .withLoadingDialog(viewState)
+                 .subscribeSimple(
+                         onComplete = {
+                             eventData.clear()
+                             viewState.showEventList()
+                         },
+                         onNoInternetConnectionException = {
+                             viewState.showNoConnectionMessage(true)
+                         })*/
     }
 
     private fun selectTab(command: TabSelectCommand) {
@@ -143,9 +151,10 @@ class EventTabsPresenter
                 is TabSelectCommand.AboutEvent -> showAboutTab(userEvent.eventId)
                 is TabSelectCommand.Map -> {
                     val eventInfo = userEvent.eventInfo
-                    showMapTab(eventInfo.event.name?: "",
-                            eventInfo.event.createMapInfo(),
-                            /*eventInfo.places.toTypedArray()*/arrayOf()
+                    showMapTab(
+                        eventInfo.event.name ?: "",
+                        eventInfo.event.createMapInfo(),
+                        /*eventInfo.places.toTypedArray()*/arrayOf()
                     )
                 }
             }

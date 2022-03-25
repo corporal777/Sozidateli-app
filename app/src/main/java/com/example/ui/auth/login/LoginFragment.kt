@@ -9,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
+import com.example.BuildConfig.NEW_PROFILE_EDIT
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment

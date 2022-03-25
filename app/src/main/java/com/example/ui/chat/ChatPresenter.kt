@@ -674,10 +674,15 @@ class ChatPresenter
     }
 
     override fun onUserClick() {
+
         if (chat?.isEventChat != true) {
-            chat?.user?.id?.let { viewState.showUser(it) }
+            chat?.user?.id?.let {
+                viewState.showUser(it)
+            }
         } else {
-            chat?.eventId?.let { viewState.showEvent(it) }
+            chat?.eventId?.let {
+                viewState.showEvent(it)
+            }
         }
     }
 

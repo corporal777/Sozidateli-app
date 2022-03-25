@@ -2,6 +2,7 @@ package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -48,6 +49,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         headGroup.update(listOf(
                 ScreenLabelItem(getString(R.string.tab_recommended_title)),
                 RecommendationsHeaderItem(

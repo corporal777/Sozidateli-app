@@ -3,6 +3,7 @@ package com.example.ui.base
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
@@ -41,6 +44,18 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        RxJavaPlugins.setErrorHandler { e ->
+            if (e is UndeliverableException) {
+                Log.e("ERROR FRAG", e.message?: "")
+            } else {
+                Thread.currentThread().also { thread ->
+                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+                }
+            }
+        }
+
+
         return inflater.inflate(layout(), container, false)
     }
 

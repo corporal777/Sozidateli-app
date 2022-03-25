@@ -81,6 +81,8 @@ object Utils {
                     if (firstNumber != "79" && firstNumber != "89") valid = false
                 } else valid = false
             }
+        }else {
+            valid = false
         }
         return valid
     }

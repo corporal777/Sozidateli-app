@@ -20,5 +20,7 @@ object AuthValidateUtil {
     fun isValidEmail(email: CharSequence) = EMAIL_PATTERN.matcher(email).matches()
 
     fun isValidPassword(password: CharSequence) = PASSWORD_PATTERN.matcher(password).matches()
+
+    fun isValidPhone(phone : String) = Utils.isNewPhoneIsValid(phone)
 }
 
