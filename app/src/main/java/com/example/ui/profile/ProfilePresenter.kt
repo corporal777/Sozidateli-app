@@ -152,6 +152,10 @@ class ProfilePresenter
                         { viewState.showPhoneNotUnique(phone) })
     }
 
+    override fun onQrScannerToAuthWebClick() {
+        viewState.showQrScannerToAuthWebSite()
+    }
+
     override fun sendPhone(phone: String) {
         compositeDisposable += authRepository.registerPhoneResend("personal", phone)
                 .performOnBackgroundOutOnMain()

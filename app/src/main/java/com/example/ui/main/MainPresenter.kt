@@ -3,6 +3,7 @@ package com.example.ui.main
 import android.Manifest
 import android.app.NotificationManager
 import android.location.Location
+import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -189,6 +190,7 @@ class MainPresenter
                 isEditingPhone = false
 //                    AuthBackground.clear()
             }, {
+                Log.e("MESS", it.message.toString())
                 it.printStackTrace()
                 isAuthRequired = true
                 viewState.apply {
@@ -609,6 +611,12 @@ class MainPresenter
                     viewState.showNotification(it.data[0])
                 }
             }
+    }
+
+    override fun openAuthWebsiteFragment(code: String) {
+        if (!isAuthRequired){
+            viewState.showAuthWebsiteFragment(code)
+        }
     }
 
     override fun onSetPassword(/*email: String, */code: String, password: String) {

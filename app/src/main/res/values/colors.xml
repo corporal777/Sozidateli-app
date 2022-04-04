@@ -221,4 +221,7 @@
     <color name="tabs_background">#1F767680</color>
     <color name="selected_tabs_background">#74B12A</color>
     <color name="divider_color">#E6E4EA</color>
+
+
+    <color name="transparent_white">#00FFFFFF</color>
 </resources>

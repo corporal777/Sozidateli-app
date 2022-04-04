@@ -174,6 +174,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     class PermissionsParams {
         var permissionsToRequest = arrayOf<String>()
         var permissionsGrantedCallback: () -> Unit = {}
+        var permissionsNotGrantedCallback: () -> Unit = {}
         var requestCode:Int = -1
     }
 
@@ -190,6 +191,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
         fun setPermissionsGrantedCallback(block: () -> Unit): PermissionsBuilder {
             params.permissionsGrantedCallback = block
+            return this
+        }
+
+        fun setPermissionsNotGrantedCallback(block: () -> Unit): PermissionsBuilder {
+            params.permissionsNotGrantedCallback = block
             return this
         }
 

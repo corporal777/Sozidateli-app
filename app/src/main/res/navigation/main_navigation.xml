@@ -537,6 +537,9 @@
         <action
             android:id="@+id/action_profile_fragment_to_maxStateEducationFragment"
             app:destination="@id/maxStateEducationFragment" />
+        <action
+            android:id="@+id/action_profile_fragment_to_qrScannerAuthWebsiteFragment"
+            app:destination="@id/qrScannerToAuthWebSiteFragment" />
     </fragment>
 
     <fragment
@@ -1216,5 +1219,28 @@
         android:name="com.example.ui.editeducation.EditEducationFragment"
         android:label="EditEducationFragment"
         tools:layout="@layout/fragment_edit_education_fragment"/>
+
+    <fragment
+        android:id="@+id/qrScannerToAuthWebSiteFragment"
+        android:name="com.example.ui.qrscanner.QrScannerToAuthWebFragment"
+        android:label="QrScannerToAuthWebFragment"
+        tools:layout="@layout/fragment_auth_web">
+
+        <action
+            android:id="@+id/action_qr_scanner_fragment_to_AuthWebsiteFragment"
+            app:destination="@id/authWebsiteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/authWebsiteFragment"
+        android:name="com.example.ui.qrscanner.auth.AuthWebsiteFragment"
+        android:label="AuthWebSiteFragment"
+        tools:layout="@layout/fragment_auth_website">
+
+        <argument
+            android:name="qrCode"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

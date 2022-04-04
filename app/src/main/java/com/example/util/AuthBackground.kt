@@ -49,7 +49,7 @@ object AuthBackground {
         val (top: Int, bottom: Int) = cropSide(imageHeight, (displayHeight * heightScale).toInt())
         val (left: Int, right: Int) = cropSide(imageWidth, (displayWidth * widthScale).toInt(), 0.6f)
 
-        return BitmapRegionDecoder.newInstance(res.openRawResource(resId), false).decodeRegion(
+        return BitmapRegionDecoder.newInstance(res.openRawResource(resId), false)!!.decodeRegion(
                 Rect(left, top, right, bottom),
                 BitmapFactory.Options()
         )

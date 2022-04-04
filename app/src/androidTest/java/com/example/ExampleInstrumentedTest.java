@@ -1,4 +1,4 @@
-package com.sozidateli;
+package com.example;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

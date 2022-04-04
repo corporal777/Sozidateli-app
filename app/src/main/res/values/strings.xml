@@ -45,6 +45,7 @@
     <string name="event_action_cancel_request">Отозвать заявку</string>
 
     <string name="auth_title_login">Присоединяйтесь\nк сообществу лидеров\nсоциальных проектов</string>
+    <string name="auth_web_title_login">Подтвердите вход по QR-коду в личный кабинет на сайте sozidateli.ru</string>
     <string name="auth_with_social_network">С помощью социальных сетей</string>
     <string name="auth_with_email">С помощью электронной почты</string>
     <string name="auth_or_login">Уже есть аккаунт?</string>
@@ -360,6 +361,7 @@
     <string name="profile_about_app">О приложении</string>
     <string name="profile_setting_chat">Настройки чата</string>
     <string name="profile_banned">Заблокированные</string>
+    <string name="profile_auth_to_web_site">Войти в личный кабинет на сайте</string>
     <string name="profile_support">Написать в техническую поддержку</string>
     <string name="profile_rate">Оценить приложение</string>
     <string name="profile_logout">Выйти</string>
@@ -845,4 +847,6 @@
     <string name="base_new_third">Общаться с пользователями портала и экспертами мероприятия</string>
     <string name="max_new_second">Возможность быть частью команды проекта, участвующего в конкурсе на получение грантов</string>
     <string name="max_new_third">Получать приоритетную техническую поддержку</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="do_not_confirm">Не подтверждать</string>
 </resources>

@@ -46,6 +46,8 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
+import com.example.ui.qrscanner.auth.AuthWebsiteFragment
+import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.search.chat.SearchChatFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
@@ -318,4 +320,10 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEditEducationFragment(): EditEducationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeQrScannerAuthWebsiteFragment(): QrScannerToAuthWebFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAuthWebsiteFragment(): AuthWebsiteFragment
 }

@@ -25,6 +25,8 @@ const val AUTH_CONFIRM_EMAIL = "email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 const val AUTH_CONFIRM_INVITE_ID = "invite"
 
+var QR_CODE_TO_AUTH_WEB = ""
+
 const val RECOVERY_EMAIL = "recover_email"
 const val CHANGE_EMAIL = "email"
 const val USIP = "usip"
@@ -91,9 +93,11 @@ const val IMAGE_MAX_SIZE_CHAT = 1024
 const val USER_DATA_EMPTY = "-"
 
 const val REQUEST_GALLERY = 12
+const val REQUEST_CAMERA = 15
 val REQUIRED_GALLERY_PERMISSIONS =
         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
+val REQUIRED_CAMERA_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
 const val DEGREES_MAX_SIZE = 10
 const val PHONE_PERSONAL = "personal"
 const val PHONE_WORK = "work"

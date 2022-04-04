@@ -56,6 +56,9 @@ interface ProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showQrScannerToAuthWebSite()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -73,5 +76,6 @@ interface ProfileContract {
         fun confirmCode(phone: String, code: String)
         fun checkEmailIsUnique(email: String)
         fun checkPhoneIsUnique(phone: String)
+        fun onQrScannerToAuthWebClick()
     }
 }

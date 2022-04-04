@@ -16,6 +16,12 @@ interface NewApi {
     @POST("v1/user/login")
     fun authEmailOrPhone(@Body body: AuthBody): Single<NewAuthResponse>
 
+    @POST("v1/user/accept-qr")
+    fun authWithQrCode(@Body body: QrBody): Single<NewAuthResponse>
+
+    @POST("v1/user/send-qr")
+    fun sendQrCodeToGetDeviceInfo(@Body body: QrBody): Single<QrAuthResponse>
+
     @GET("v1/user/{id}")
     fun getUserShort(@Path("id") id: Int, @Query("binds") binds: List<String>?): Maybe<UserDetail>
 

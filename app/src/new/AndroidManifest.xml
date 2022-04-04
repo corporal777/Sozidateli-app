@@ -38,6 +38,11 @@
                     android:host="sozidateli.ru"
                     android:pathPrefix="/event"
                     android:scheme="https" />
+                <data
+                    android:path="/"
+                    android:scheme="https"
+                    android:host="alfa.sozidateli.ru"/>
+
             </intent-filter>
         </activity>
 

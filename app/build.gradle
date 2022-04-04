@@ -18,14 +18,16 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: "com.hiya.jacoco-android"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 53
         versionName "1.0.25"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        multiDexEnabled true
+        flavorDimensions "default"
 
     }
     dataBinding {
@@ -59,6 +61,7 @@ android {
 
     defaultConfig {
         buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
+        signingConfig signingConfigs.debug
 
         applicationVariants.all { variant ->
             def buildType = variant.buildType.name + "-Frankenstein"
@@ -73,30 +76,50 @@ android {
             minifyEnabled false
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
+//            if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
+//
+//            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
+        }
 
-            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-        }
-        beta {
-            initWith(debug)
-            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-            matchingFallbacks = ['debug', 'release']
-        }
+//        beta {
+//           initWith(debug)
+//            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
+//            matchingFallbacks = ['debug', 'release']
+//        }
+//        "new" {
+//            initWith(debug)
+//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
+//            matchingFallbacks = ['debug', 'release']
+//        }
+    }
+    productFlavors {
         "new" {
-            initWith(debug)
+            applicationId = "ru.houseofapps.sozidateli"
             buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-            matchingFallbacks = ['debug', 'release']
+
+        }
+        beta {
+            applicationId = "ru.houseofapps.sozidateli"
+            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
+            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
+
         }
     }
+
 
     variantFilter { variant ->
         if (variant.name == "debug") {
@@ -224,22 +247,20 @@ dependencies {
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
 
     // tests
-    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha04'
-    debugImplementation("androidx.fragment:fragment-testing:1.4.1")
     androidTestImplementation 'androidx.test:rules:1.4.1-alpha05'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    implementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.test.ext:junit-ktx:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.3'
+
 
     //fragment
     implementation 'androidx.fragment:fragment-ktx:1.3.0-beta01'
     implementation 'com.hbb20:ccp:2.4.5'
 
-    implementation ('io.socket:socket.io-client:1.0.0') {
+    implementation('io.socket:socket.io-client:1.0.0') {
         exclude group: 'org.json', module: 'json'
     }
 }

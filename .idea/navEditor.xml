@@ -91,6 +91,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="authWebsiteFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="authorization_fragment">
                     <value>
                       <LayoutPositions>
@@ -363,6 +375,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_about_event_fragment_to_activitiesFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_event_tabs_fragment_to_chat_list_tabs_fragment">
                               <value>
                                 <LayoutPositions />
@@ -879,6 +896,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_profile_fragment_to_qrScannerAuthWebsiteFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_profile_fragment_to_userStateFragment">
                               <value>
                                 <LayoutPositions />
@@ -910,6 +932,27 @@
                               </value>
                             </entry>
                             <entry key="profile_to_user_profile">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="qrScannerToAuthWebSiteFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_qr_scanner_fragment_to_AuthWebsiteFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -1477,6 +1520,11 @@
                               </value>
                             </entry>
                             <entry key="profile_to_main_data">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="to_edit">
                               <value>
                                 <LayoutPositions />
                               </value>

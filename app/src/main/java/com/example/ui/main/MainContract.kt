@@ -78,6 +78,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun showAuthWebsiteFragment(code : String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -107,5 +110,6 @@ interface MainContract {
         fun onStoriesComplete()
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
         fun openPgrfFromInvite(inviteId: String)
+        fun openAuthWebsiteFragment(code : String)
     }
 }

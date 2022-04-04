@@ -11,11 +11,8 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -26,11 +23,7 @@ import com.example.data.models.UserDetail
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
-import com.example.ui.state.UserState
-import com.example.ui.state.UserStateFragmentDirections
-import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
-import com.example.util.Utils
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
@@ -79,65 +72,91 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         tvStates.setOnClickListener {
             findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
         }
+        tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
         //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
         //showUserStateDialog()
     }
 
     override fun setUser(user: UserDetail) {
         val avatar = user.image?.uri
-        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar).placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
+        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar)
+            .placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
         tvName.text = user.fullName
         tvIdTitle.text = getString(R.string.user_id, user.id.toString())
         if (isShowPopup && !::dialog.isInitialized) {
-            dialog = AddPhoneEmailDialog(requireActivity(),
-                    if (user.email?.value != null) RegisterDataType.PHONE else RegisterDataType.EMAIL)
-            .setSelectCallback {
-                when (it.type) {
-                    RegisterDataType.PHONE -> {
-                        presenter.checkPhoneIsUnique(it.value)
+            dialog = AddPhoneEmailDialog(
+                requireActivity(),
+                if (user.email?.value != null) RegisterDataType.PHONE else RegisterDataType.EMAIL
+            )
+                .setSelectCallback {
+                    when (it.type) {
+                        RegisterDataType.PHONE -> {
+                            presenter.checkPhoneIsUnique(it.value)
+                        }
+                        RegisterDataType.EMAIL -> {
+                            presenter.checkEmailIsUnique(it.value)
+                        }
                     }
-                    RegisterDataType.EMAIL -> {
-                        presenter.checkEmailIsUnique(it.value)
-                    }
-                }
-            }.setNegativeClickCallback { showUserStateDialog() }
+                }.setNegativeClickCallback { showUserStateDialog() }
         }
     }
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
-        val text = SpannableString(getString(R.string.state, if (!hasBase && !hasMax) getString(R.string.state_empty)
-        else if (hasBase && !hasMax) getString(R.string.state_base) else getString(R.string.state_max)))
-        text.setSpan(StyleSpan(Typeface.BOLD), 8 , text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        text.setSpan(ForegroundColorSpan(if (!hasBase && !hasMax) Color.RED
-        else if (hasBase && !hasMax) ContextCompat.getColor(requireContext(), R.color.colorAccent)
-        else ContextCompat.getColor(requireContext(), R.color.event_item_action_background_show_event)) , 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val text = SpannableString(
+            getString(
+                R.string.state, if (!hasBase && !hasMax) getString(R.string.state_empty)
+                else if (hasBase && !hasMax) getString(R.string.state_base) else getString(R.string.state_max)
+            )
+        )
+        text.setSpan(StyleSpan(Typeface.BOLD), 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(
+            ForegroundColorSpan(
+                if (!hasBase && !hasMax) Color.RED
+                else if (hasBase && !hasMax) ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                )
+                else ContextCompat.getColor(
+                    requireContext(),
+                    R.color.event_item_action_background_show_event
+                )
+            ), 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         state_title.text = text
     }
 
     override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_email_text, email),
-                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
-                .setSelectCallback {
-                    if (it) {
-                        presenter.sendEmail(email)
-                    }
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_email_text, email),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    presenter.sendEmail(email)
                 }
+            }
     }
 
     override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(requireContext(), getString(R.string.confirm_phone_text, phone),
-                getString(R.string.revoke), getString(R.string.confirm_phone_positive))
-                .setSelectCallback {
-                    if (it) {
-                        presenter.sendPhone(phone)
-                    }
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_phone_text, phone),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    presenter.sendPhone(phone)
                 }
+            }
+    }
+
+    override fun showQrScannerToAuthWebSite() {
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToQrScannerAuthWebsiteFragment())
     }
 
     override fun emailSuccess() {
         dialog.hideDialog()
         FinishRegisterDialog(requireContext())
-                .setSelectCallback { showUserStateDialog() }
+            .setSelectCallback { showUserStateDialog() }
     }
 
     override fun phoneSuccess(phone: String) {
@@ -145,10 +164,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
         dialog.setPhoneForCode(phone)
         dialog.setSelectCallback {
-                    if (it.type == RegisterDataType.CODE) {
-                        (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                        presenter.confirmCode(phone, it.value)
-                    }
+            if (it.type == RegisterDataType.CODE) {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                presenter.confirmCode(phone, it.value)
+            }
         }
         dialog.setNegativeClickCallback { showUserStateDialog() }
         dialog.setSendCodeCallback {
@@ -169,7 +188,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     override fun showProfile(uid: String) {
         //if (BuildConfig.NEW_PROFILE_EDIT) {
-            findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
+        findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
         /*} else {
             findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
         }*/
@@ -177,11 +196,11 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
 
     private fun showUserStateDialog() {
         ChangeStateDialog(requireActivity(), StateType.SUCCESS)
-                .setClickCallback {
-                    if (it == ClickType.INFO) {
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-                    }
+            .setClickCallback {
+                if (it == ClickType.INFO) {
+                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
                 }
+            }
     }
 
     override fun showFavorites() {
@@ -229,7 +248,12 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         try {
             startActivity(Intent(ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
         } catch (e: android.content.ActivityNotFoundException) {
-            startActivity(Intent(ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+            startActivity(
+                Intent(
+                    ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                )
+            )
         }
     }
 

@@ -48,6 +48,7 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
@@ -60,7 +61,6 @@ import com.example.util.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import kotlinx.android.synthetic.main.item_action_button.view.*
 import kotlinx.android.synthetic.main.layout_inapp.*
 import org.json.JSONObject
@@ -90,54 +90,66 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ContextCompat.getColor(this, R.color.navBarDefault)
     }
 
-    private val navFragmentsLifecycleCallback = object : FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-            presenter.apply {
-                when (f) {
-                    is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
-                    is SplashFragment,
-                    is AuthorizationFragment,
-                    is RecommendationsFragment,
-                    is EventTabsFragment -> onOpenStartDestination()
-                    else -> onOpenNotStartDestination()
+    private val navFragmentsLifecycleCallback =
+        object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(
+                fm: FragmentManager,
+                f: Fragment,
+                v: View,
+                savedInstanceState: Bundle?
+            ) {
+                presenter.apply {
+                    when (f) {
+                        is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
+                        is SplashFragment,
+                        is AuthorizationFragment,
+                        is RecommendationsFragment,
+                        is EventTabsFragment -> onOpenStartDestination()
+                        else -> onOpenNotStartDestination()
 
 
+                    }
+
+                    onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
                 }
 
-                onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
+                if (f is ToolbarFragment) {
+                    supportActionBar?.title = f.title
+                    (supportActionBar as? ToolbarContentActionBar)?.apply {
+                        f.setupToolbarContent(
+                            this
+                        )
+                    }
+                    showToolbar()
+                } else {
+                    hideToolbar()
+                }
+
+                val isLightStatus: Boolean
+                val bg: Drawable?
+                if (f is BackgroundImageFragment) {
+                    bg = f.getFragmentBackgroundDrawable()
+                    isLightStatus = f.isLightStatus
+                } else {
+                    bg = null
+                    isLightStatus = true
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.decorView.systemUiVisibility =
+                        if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+                }
+
+                window.navigationBarColor =
+                    if (f is NavBarColorFragment) f.navBarColor else navBarColorDefault
+
+                root.background = bg
             }
 
-            if (f is ToolbarFragment) {
-                supportActionBar?.title = f.title
-                (supportActionBar as? ToolbarContentActionBar)?.apply { f.setupToolbarContent(this) }
-                showToolbar()
-            } else {
-                hideToolbar()
+            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                super.onFragmentDestroyed(fm, f)
+                if (f is StoriesFragment) presenter.onStoriesComplete()
             }
-
-            val isLightStatus: Boolean
-            val bg: Drawable?
-            if (f is BackgroundImageFragment) {
-                bg = f.getFragmentBackgroundDrawable()
-                isLightStatus = f.isLightStatus
-            } else {
-                bg = null
-                isLightStatus = true
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
-            }
-
-            window.navigationBarColor = if (f is NavBarColorFragment) f.navBarColor else navBarColorDefault
-
-            root.background = bg
         }
-
-        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-            super.onFragmentDestroyed(fm, f)
-            if (f is StoriesFragment) presenter.onStoriesComplete()
-        }
-    }
 
     private val backClick = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -167,9 +179,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.getSupportActionBar()?.apply {
             setDisplayShowCustomEnabled(true)
             setDisplayShowTitleEnabled(false)
-            setCustomView(ToolbarContentView(this@MainActivity), ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+            setCustomView(
+                ToolbarContentView(this@MainActivity),
+                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            )
         }
-        navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
+        navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
+            navFragmentsLifecycleCallback,
+            false
+        )
         onBackPressedDispatcher.addCallback(this, backClick)
         subscribeOnNotificationChanel()
         inappBehavior = ScrollingChildBehavior.from(inappContainer).apply {
@@ -220,6 +238,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
         val appLinkAction = intent.action
         if (Intent.ACTION_VIEW == appLinkAction) {
+
+           // QR_CODE_TO_AUTH_WEB = intent.dataString ?: "Invalid qr code"
+            var mCode = intent.dataString ?: "Invalid qr code"
+
+            if (!mCode.isNullOrEmpty() || !mCode.contentEquals("Invalid qr code")) {
+                presenter.openAuthWebsiteFragment(mCode)
+            }
+
             intent.data?.also {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val email = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
@@ -233,7 +259,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     if (lastPath.contains(PATH_HIDDEN))
-                        presenter.onHandleEvent(authCode?: "")
+                        presenter.onHandleEvent(authCode ?: "")
                     else
                         presenter.onHandleEvent(lastPath)
                 } else if (lastPath == PATH_CHANGE_EMAIL) {
@@ -251,34 +277,55 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }
                 } else if (changeEmail != null && authCode != null && lastPath != PGRF) {
                     if (lastPath == REGISTER_CONFIRM) {
-                        showFinishRegister("", "", "", "", email?: "", authCode, false, false, true)
+                        showFinishRegister(
+                            "",
+                            "",
+                            "",
+                            "",
+                            email ?: "",
+                            authCode,
+                            false,
+                            false,
+                            true
+                        )
                         //presenter.onHandleAuthLink(email?: "", authCode?: "")
                     } else {
                         //if (lastPath == PATH_CONFIRM_EMAIL)
-                            presenter.onHandleChangeEmailConfirm(authCode?: "", email?: "")
+                        presenter.onHandleChangeEmailConfirm(authCode ?: "", email ?: "")
                         //else presenter.onInviteRegister(changeEmail, authCode)
                     }
                 } else if (lastPath == REGISTER_CONFIRM) {
-                    presenter.onHandleAuthLink(email?: "", authCode?: "")
+                    presenter.onHandleAuthLink(email ?: "", authCode ?: "")
                 } else if (lastPath == PATH_CONFIRM_EMAIL) {
-                    presenter.onHandleChangeEmailConfirm(authCode?: "", email?: "")
+                    presenter.onHandleChangeEmailConfirm(authCode ?: "", email ?: "")
                 } else if (lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
-                    presenter.onInviteRegister(json["email"].toString(), authCode?: "", if (json["name"].toString() != "null") json["name"].toString() else "",
-                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "", if (json["middleName"].toString() != "null") json["middleName"].toString() else "", 0)
+                    presenter.onInviteRegister(
+                        json["email"].toString(),
+                        authCode ?: "",
+                        if (json["name"].toString() != "null") json["name"].toString() else "",
+                        if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
+                        if (json["middleName"].toString() != "null") json["middleName"].toString() else "",
+                        0
+                    )
                 } else if (lastPath == PGRF) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
                     val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
                     if (!ignoreDeeplink)
-                        presenter.onInviteRegister(json["email"].toString(), authCode
-                                ?: "", if (json["name"].toString() != "null") json["name"].toString() else "",
-                                if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
-                                if (json["middleName"].toString() != "null") json["middleName"].toString() else "", invite?.toInt()
-                                ?: 0)
+                        presenter.onInviteRegister(
+                            json["email"].toString(),
+                            authCode
+                                ?: "",
+                            if (json["name"].toString() != "null") json["name"].toString() else "",
+                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
+                            if (json["middleName"].toString() != "null") json["middleName"].toString() else "",
+                            invite?.toInt()
+                                ?: 0
+                        )
                     ignoreDeeplink = false
                 }
             }
@@ -315,12 +362,28 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ignoreDeeplink = isIgnore
     }
 
-    override fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int) {
-        findNavController().navigate(R.id.to_invite_register, bundleOf("code" to code,
-                "email" to email, "name" to name, "lastName" to lastName, "middleName" to middleName, "invite" to invite), NavOptions.Builder()
+    override fun showInviteRegister(
+        email: String,
+        code: String,
+        name: String,
+        lastName: String,
+        middleName: String,
+        invite: Int
+    ) {
+        findNavController().navigate(
+            R.id.to_invite_register, bundleOf(
+                "code" to code,
+                "email" to email,
+                "name" to name,
+                "lastName" to lastName,
+                "middleName" to middleName,
+                "invite" to invite
+            ), NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
-                .build())
+                .build()
+        )
     }
+
 
     private fun wasLaunchedFromResents(intent: Intent): Boolean {
         return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
@@ -332,9 +395,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showDialogRecoverPassword(/*email: String,*/ code: String) {
         NewPasswordDialog(this)
-                .setSelectCallback {
-                    presenter.onSetPassword(/*email,*/ code, it)
-                }
+            .setSelectCallback {
+                presenter.onSetPassword(/*email,*/ code, it)
+            }
     }
 
     override fun showDialogChangeEmailSuccess() {
@@ -347,19 +410,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showDialogHasMaxState() {
         BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
-                        .setSelectCallback {}
+            .setSelectCallback {}
     }
 
     override fun showDialogHasBaseState() {
         BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
-                .setSelectCallback {}
+            .setSelectCallback {}
     }
 
     override fun showChat(chatId: String, userName: String) {
-        findNavController().navigate(R.id.chat_fragment, bundleOf(
+        findNavController().navigate(
+            R.id.chat_fragment, bundleOf(
                 FIELD_LABEL to userName,
                 FIELD_CHAT_ID to chatId
-        ))
+            )
+        )
     }
 
     private fun subscribeOnNotificationChanel() {
@@ -367,31 +432,61 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             // Create channel to show notifications.
             val channelId = getString(R.string.app_name)
             val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(NotificationChannel(channelId,
-                    channelId, NotificationManager.IMPORTANCE_HIGH))
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    channelId,
+                    channelId, NotificationManager.IMPORTANCE_HIGH
+                )
+            )
         }
     }
 
-    override fun showGreetings() = findNavController().navigate(R.id.welcome_fragment, null, NavOptions.Builder()
+    override fun showGreetings() = findNavController().navigate(
+        R.id.welcome_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
-            .build())
+            .build()
+    )
 
-    override fun showLogin() = findNavController().navigate(R.id.authorization_fragment, null, NavOptions.Builder()
+    override fun showLogin() = findNavController().navigate(
+        R.id.authorization_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
-            .build())
+            .build()
+    )
 
-    override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean) =
-            findNavController().navigate(R.id.register_email_finish_fragment, bundleOf("code" to code,
-            "name" to name, "lastName" to lastName, "email" to email, "phone" to phone, "middleName" to middleName,
-            "isConfirmed" to userPhoneConfirmed, "isNoMiddleName" to isNoMiddleName, "nameEditable" to nameEditable), NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build())
+    override fun showFinishRegister(
+        name: String,
+        lastName: String,
+        middleName: String?,
+        phone: String?,
+        email: String,
+        code: String,
+        userPhoneConfirmed: Boolean,
+        isNoMiddleName: Boolean,
+        nameEditable: Boolean
+    ) =
+        findNavController().navigate(
+            R.id.register_email_finish_fragment, bundleOf(
+                "code" to code,
+                "name" to name,
+                "lastName" to lastName,
+                "email" to email,
+                "phone" to phone,
+                "middleName" to middleName,
+                "isConfirmed" to userPhoneConfirmed,
+                "isNoMiddleName" to isNoMiddleName,
+                "nameEditable" to nameEditable
+            ), NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build()
+        )
 
     override fun showRecommendations() {
         if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment) {
-            findNavController().navigate(R.id.recommendations_fragment, null, NavOptions.Builder()
+            findNavController().navigate(
+                R.id.recommendations_fragment, null, NavOptions.Builder()
                     .setPopUpTo(R.id.main_navigation, true)
-                    .build())
+                    .build()
+            )
             if (invite != -1) {
                 presenter.openPgrfFromInvite(invite.toString())
                 invite = -1
@@ -399,12 +494,25 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun showEvent() = findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+    override fun showEvent() = findNavController().navigate(
+        R.id.event_tabs_fragment, null, NavOptions.Builder()
             .setPopUpTo(R.id.main_navigation, true)
-            .build())
+            .build()
+    )
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
+        findNavController().navigate(
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+        )
+    }
+
+    override fun showAuthWebsiteFragment(code: String) {
+
+        findNavController().navigate(
+            R.id.authWebsiteFragment,
+            AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
+        )
     }
 
     override fun showStories() {
@@ -412,15 +520,24 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showOrganization(organization: String) {
-        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization).build().toBundle())
+        findNavController().navigate(
+            R.id.organization_fragment,
+            OrganizationFragmentArgs.Builder(organization).build().toBundle()
+        )
     }
 
     override fun showNotification(notification: Notification) {
-        findNavController().navigate(R.id.notification_fragment, NotificationFragmentArgs.Builder(notification).build().toBundle())
+        findNavController().navigate(
+            R.id.notification_fragment,
+            NotificationFragmentArgs.Builder(notification).build().toBundle()
+        )
     }
 
     override fun showRating(event: String) {
-        findNavController().navigate(R.id.event_rating_fragment, EventRatingFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+            R.id.event_rating_fragment,
+            EventRatingFragmentArgs.Builder(event).build().toBundle()
+        )
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
@@ -442,8 +559,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showInapp(inapp: Notification) {
         supportFragmentManager.beginTransaction()
-                .replace(flNotificationContainer.id, createNotificationFragment(inapp))
-                .commitNowAllowingStateLoss()
+            .replace(flNotificationContainer.id, createNotificationFragment(inapp))
+            .commitNowAllowingStateLoss()
 
         when (inapp.type) {
             Notification.Type.SIMPLE -> {
@@ -504,13 +621,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 false
             }
             BottomSheetDialog(this).apply {
-                val layout = LayoutInflater.from(this@MainActivity).inflate(R.layout.layout_no_internet, null).apply {
-                    this.btnAction.text = getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
-                    this.btnAction.setOnClickListener {
-                        if (mustGoToEvent) this@MainActivity.findNavController().popBackStack(R.id.event_tabs_fragment, false)
-                        else presenter.onRetryConnectionClick()
+                val layout = LayoutInflater.from(this@MainActivity)
+                    .inflate(R.layout.layout_no_internet, null).apply {
+                        this.btnAction.text =
+                            getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
+                        this.btnAction.setOnClickListener {
+                            if (mustGoToEvent) this@MainActivity.findNavController()
+                                .popBackStack(R.id.event_tabs_fragment, false)
+                            else presenter.onRetryConnectionClick()
+                        }
                     }
-                }
                 setContentView(layout)
                 setCancelable(false)
                 setOnKeyListener { _, keyCode, _ ->
@@ -555,50 +675,74 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onDestroy() {
-        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
+        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(
+            navFragmentsLifecycleCallback
+        )
         super.onDestroy()
     }
 
     override fun showEmailErrorMessage() {
-        ApiErrorDialog(this, getString(R.string.email_exist_error_title),
-        getString(R.string.email_exist_error_text))
-                .setSelectCallback {  }
+        ApiErrorDialog(
+            this, getString(R.string.email_exist_error_title),
+            getString(R.string.email_exist_error_text)
+        )
+            .setSelectCallback { }
     }
 
     override fun showPhoneErrorMessage() {
-        ApiErrorDialog(this, getString(R.string.phone_exist_error_title),
-                getString(R.string.phone_exist_error_text))
-                .setSelectCallback {  }
+        ApiErrorDialog(
+            this, getString(R.string.phone_exist_error_title),
+            getString(R.string.phone_exist_error_text)
+        )
+            .setSelectCallback { }
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
         ChangeStateDialog(this, type)
-                .setClickCallback {
-                    when (it) {
-                        ClickType.INFO -> {
-                            findNavController().navigate(R.id.userStateFragment)
-                        }
-                        ClickType.BASE -> {
-                            findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.BASE, "screen" to 3))
-                        }
-                        ClickType.MAX -> {
-                            if (presenter.getHasBase()) {
-                                when (Utils.maxStateScreen(presenter.getUserData())) {
-                                    MaxStateScreenType.BASE ->
-                                        findNavController().navigate(R.id.maxStateMainInfoFragment, bundleOf("screen" to 1))
-                                    MaxStateScreenType.INTERESTS ->
-                                        findNavController().navigate(R.id.baseStateInterestsFragment, bundleOf("screen" to 1))
-                                    MaxStateScreenType.WORK ->
-                                        findNavController().navigate(R.id.maxStateWorkFragment, bundleOf("screen" to 1))
-                                    MaxStateScreenType.EDUCATION ->
-                                        findNavController().navigate(R.id.maxStateEducationFragment, bundleOf("screen" to 1))
-                                }
-                            } else {
-                                findNavController().navigate(R.id.mainInfoFragment, bundleOf("type" to UserState.MAX, "screen" to 1))
+            .setClickCallback {
+                when (it) {
+                    ClickType.INFO -> {
+                        findNavController().navigate(R.id.userStateFragment)
+                    }
+                    ClickType.BASE -> {
+                        findNavController().navigate(
+                            R.id.mainInfoFragment,
+                            bundleOf("type" to UserState.BASE, "screen" to 3)
+                        )
+                    }
+                    ClickType.MAX -> {
+                        if (presenter.getHasBase()) {
+                            when (Utils.maxStateScreen(presenter.getUserData())) {
+                                MaxStateScreenType.BASE ->
+                                    findNavController().navigate(
+                                        R.id.maxStateMainInfoFragment,
+                                        bundleOf("screen" to 1)
+                                    )
+                                MaxStateScreenType.INTERESTS ->
+                                    findNavController().navigate(
+                                        R.id.baseStateInterestsFragment,
+                                        bundleOf("screen" to 1)
+                                    )
+                                MaxStateScreenType.WORK ->
+                                    findNavController().navigate(
+                                        R.id.maxStateWorkFragment,
+                                        bundleOf("screen" to 1)
+                                    )
+                                MaxStateScreenType.EDUCATION ->
+                                    findNavController().navigate(
+                                        R.id.maxStateEducationFragment,
+                                        bundleOf("screen" to 1)
+                                    )
                             }
+                        } else {
+                            findNavController().navigate(
+                                R.id.mainInfoFragment,
+                                bundleOf("type" to UserState.MAX, "screen" to 1)
+                            )
                         }
                     }
                 }
+            }
     }
 
     override fun showNotificationErrorMessage() {

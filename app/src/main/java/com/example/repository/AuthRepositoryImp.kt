@@ -85,6 +85,14 @@ class AuthRepositoryImp
     override fun authEmailOrPhoneWithResult(login: AuthBody): Single<NewAuthResponse> =
             newApi.authEmailOrPhone(login)
 
+    override fun sendQrCode(body: QrBody): Single<QrAuthResponse> {
+        return newApi.sendQrCodeToGetDeviceInfo(body)
+    }
+
+    override fun authWebWithQrCode(body: QrBody): Single<NewAuthResponse> {
+        return newApi.authWithQrCode(body)
+    }
+
     override fun register(body: RegisterBody): Completable {
         return newApi.registerEmail(body).doOnSuccess {
             appData.setUserShortNew(it)
