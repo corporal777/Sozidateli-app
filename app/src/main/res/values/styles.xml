@@ -623,4 +623,20 @@
         <item name="android:textStyle">bold</item>
         <item name="colorPrimary">@color/dialog_buttons</item>
     </style>
+
+
+    <style name="MainBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconTint">@drawable/bottom_navigation_colors</item>
+        <item name="itemTextColor">@drawable/bottom_navigation_colors</item>
+        <item name="itemTextAppearanceActive">@style/CustomNavigationView.TextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/CustomNavigationView.TextAppearance</item>
+    </style>
+
+    <style name="CustomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:itemPadding">0dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="fontFamily">@font/sf_pro_text</item>
+    </style>
+
 </resources>

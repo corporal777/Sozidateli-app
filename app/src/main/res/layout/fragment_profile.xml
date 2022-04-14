@@ -247,6 +247,7 @@
 
 
         <TextView
+            android:layout_marginBottom="70dp"
             android:id="@+id/tvLogout"
             style="@style/Profile.Button"
             android:layout_marginTop="20dp"

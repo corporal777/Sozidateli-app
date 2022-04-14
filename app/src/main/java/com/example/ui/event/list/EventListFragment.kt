@@ -13,9 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.*
+import com.example.extensions.formatToEventDatesIntervalNew
+import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.extensions.getAffiliationString
-import com.example.holders.*
-import com.example.holders.EventGroup
+import com.example.holders.EventDataListItem
+import com.example.holders.EventStatusItem
+import com.example.holders.NoDataItem
+import com.example.holders.PlaceholderItem
+import com.example.holders.new.EventGroupNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
@@ -26,12 +31,12 @@ import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.StateType
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.Group
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list.*
 
-abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(), EventListContract.View {
+abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(),
+    EventListContract.View {
 
     abstract var presenter: P
 
@@ -53,8 +58,12 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionCancel(event: String, registrationId: String?) =
+            presenter.onActionCancel(event, registrationId)
+
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
+            presenter.onActionWriteToOrganization(emails)
+
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
             presenter.onShowEventClick(event)
@@ -83,25 +92,50 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
 
     override fun setData(events: List<EventNew?>) {
         Log.e("EventsList", "start")
-        Log.e("EventsList", "size: "+ events.size)
+        Log.e("EventsList", "size: " + events.size)
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventGroup(
-                    it.id.toString(),
-                    it.status?.value,
-                    it.binds?.currentUserRegistration?.status?.value,
-                    it.binds?.organization?.backgroundColor?.value,
-                    it.image?.uri,
-                    EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
-                    it.binds?.organization?.email,
-                    (it.status?.value?: "") != Event.Status.REGISTRATION,
-                    onEventClickListener,
-                    createEventDataListItem(event = it),
-                    it.userAgreement?.uri,
-                    it.binds?.eventRegistrationState,
-                    true,
-                    it.binds?.currentUserRegistration?.id.toString()
+            else EventGroupNew(
+                it.id.toString(),
+                it.status?.value,
+                it.binds?.currentUserRegistration?.status?.value,
+                it.binds?.organization?.backgroundColor?.value,
+                it.image?.uri,
+                EventFormat(
+                    name = if (it.format?.name.isNullOrEmpty()) it.format?.custom
+                        ?: "" else it.format?.name ?: ""
+                ),
+                it.binds?.organization?.email,
+                (it.status?.value ?: "") != Event.Status.REGISTRATION,
+                onEventClickListener,
+                //createEventDataListItem(event = it),
+                it.userAgreement?.uri,
+                it.binds?.eventRegistrationState,
+                true,
+                it.binds?.currentUserRegistration?.id.toString(),
+
+                it.name,
+                it.address?.getShortAddress(),
+                it.holdingDate?.from,
+                it.binds?.getFirstActionStartDate(),
+                it.holdingDate?.from.formatToEventDatesIntervalOnMain(it.holdingDate?.to) ?: ""
             )
+//            else EventGroup(
+//                    it.id.toString(),
+//                    it.status?.value,
+//                    it.binds?.currentUserRegistration?.status?.value,
+//                    it.binds?.organization?.backgroundColor?.value,
+//                    it.image?.uri,
+//                    EventFormat(name = if (it.format?.name.isNullOrEmpty()) it.format?.custom?: "" else it.format?.name?: ""),
+//                    it.binds?.organization?.email,
+//                    (it.status?.value?: "") != Event.Status.REGISTRATION,
+//                    onEventClickListener,
+//                    createEventDataListItem(event = it),
+//                    it.userAgreement?.uri,
+//                    it.binds?.eventRegistrationState,
+//                    true,
+//                    it.binds?.currentUserRegistration?.id.toString()
+//            )
         })
         Log.e("EventsList", "finish")
         swipeToRefresh.isRefreshing = false
@@ -109,11 +143,11 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
 
     protected open fun createEventDataListItem(event: EventNew): EventDataListItem {
         return EventDataListItem(
-                -event.id?.toLong()!!,
-                event.name,
-                event.address?.getShortAddress(),
-                event.holdingDate?.from,
-                event.binds?.getFirstActionStartDate()
+            -event.id?.toLong()!!,
+            event.name,
+            event.address?.getShortAddress(),
+            event.holdingDate?.from,
+            event.binds?.getFirstActionStartDate()
         )
     }
 
@@ -126,17 +160,17 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         val emailsList = emails.map {
             it.getAffiliationString(underlinedEmail = true)
         }
-                .filter { it.isNotEmpty() }
-                .toTypedArray()
+            .filter { it.isNotEmpty() }
+            .toTypedArray()
 
         AlertDialog.Builder(requireContext())
-                .setItems(emailsList) { dialog, which ->
-                    val email = emails[which]
-                    presenter.onWriteToOrganizationEmailChosen(email)
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+            .setItems(emailsList) { dialog, which ->
+                val email = emails[which]
+                presenter.onWriteToOrganizationEmailChosen(email)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun showWriteToOrganization(email: EventPhoneModel) {
@@ -149,41 +183,55 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+            position,
+            offset
+        )
     }
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-                R.id.about_event_fragment,
-                AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
-                null,
-                eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
+            null,
+            eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+            R.id.request_fragment,
+            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun selectEvent() {
-        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+        findNavController().navigate(
+            R.id.event_tabs_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
-                .build())
+                .build()
+        )
     }
 
     override fun showSearch(format: Int) {
         val filter = SearchFilter.Event().apply { this.format = format }
-        findNavController().navigate(R.id.search_tabs_fragment, SearchTabsFragmentArgs.Builder(filter).build().toBundle())
+        findNavController().navigate(
+            R.id.search_tabs_fragment,
+            SearchTabsFragmentArgs.Builder(filter).build().toBundle()
+        )
     }
 
     override fun showRegistrationFieldsRequest(fields: List<String>) {
         EventRegistrationProfileFieldsDialog(requireContext(), fields) {
             presenter.onShowEditProfileClick()
         }
-                .show()
+            .show()
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(
+            R.id.user_profile_fragment,
+            UserFragmentArgs.Builder(id).build().toBundle()
+        )
     }
 
     override fun layout() = R.layout.layout_list

@@ -268,6 +268,20 @@ class EventRepositoryImp
                 PaginationResponse(it.totalCount, it.data ?: arrayListOf())
             }
 
+    override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+        return newApi.getOrganizationEventsList(map)
+            .map {
+                val eventFormats = appData.getEventFormats()
+                if (!eventFormats.isNullOrEmpty()) {
+                    it.data?.forEach { ev ->
+                        ev?.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                    }
+                }
+                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
+            }
+    }
+
     override fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination> =
         newApi.getEventsListWithoutPagination(map)
             .map {
@@ -280,6 +294,21 @@ class EventRepositoryImp
                 }
                 it
             }
+
+    override fun getOrganizationEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination> {
+        return newApi.getOrganizationEventsListWithoutPagination(map)
+            .map {
+                val eventFormats = appData.getEventFormats()
+                if (!eventFormats.isNullOrEmpty()) {
+                    it.data?.forEach { ev ->
+                        ev?.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                    }
+                }
+                it
+            }
+    }
+
 
     override fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>> {
         val eventFormats = appData.getEventFormats()
@@ -311,6 +340,7 @@ class EventRepositoryImp
                     it.state?.rating?.askDelay,
                     it.binds?.form
                 )
+
             }
 
     override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =

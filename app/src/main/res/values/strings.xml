@@ -43,6 +43,7 @@
     <string name="event_action_write_to_organisation">Написать организатору</string>
     <string name="event_action_participate">Участвовать</string>
     <string name="event_action_cancel_request">Отозвать заявку</string>
+    <string name="event_action_was_sent_request">Подана заявка</string>
 
     <string name="auth_title_login">Присоединяйтесь\nк сообществу лидеров\nсоциальных проектов</string>
     <string name="auth_web_title_login">Подтвердите вход по QR-коду в личный кабинет на сайте sozidateli.ru</string>
@@ -219,7 +220,7 @@
     <string name="search_organizations">Организации</string>
     <string name="search_events">Мероприятия</string>
     <string name="search_users">Пользователи</string>
-    <string name="search_input_hint">Поиск</string>
+    <string name="search_input_hint">Поиск мероприятий или организаций</string>
     <string name="search_filter_address">Область, край или город</string>
     <string name="search_filter_region">Введите регион и/или населенный пункт</string>
     <string name="search_filter_organization_address">Адрес</string>
@@ -849,4 +850,8 @@
     <string name="max_new_third">Получать приоритетную техническую поддержку</string>
     <string name="confirm">Подтвердить</string>
     <string name="do_not_confirm">Не подтверждать</string>
+    <string name="label_main_tab">Главная</string>
+    <string name="label_my_events_tab">Моё расписание</string>
+    <string name="notifications_tab_label">Уведомления</string>
+    <string name="add_to_calendar">Добавить в календарь</string>
 </resources>

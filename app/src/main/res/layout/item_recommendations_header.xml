@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical">
 
@@ -19,6 +20,7 @@
         android:longClickable="false" />
 
     <HorizontalScrollView
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
@@ -62,6 +64,7 @@
     </HorizontalScrollView>
 
     <TextView
+        android:visibility="gone"
         fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

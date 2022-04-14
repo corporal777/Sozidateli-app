@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -39,6 +40,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
+import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.allactivities.AllActivitiesFragment
@@ -47,7 +49,9 @@ import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
+import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
@@ -113,6 +117,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
                 }
 
+                setupNavBarItems(f)
+
                 if (f is ToolbarFragment) {
                     supportActionBar?.title = f.title
                     (supportActionBar as? ToolbarContentActionBar)?.apply {
@@ -153,6 +159,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val backClick = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+
             val fr = navHostFragment.childFragmentManager.fragments[0]
             val navContr = findNavController(R.id.navHostFragment)
             if (fr is TagsFragment) {
@@ -189,6 +196,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             false
         )
         onBackPressedDispatcher.addCallback(this, backClick)
+        setupMainNavBar()
         subscribeOnNotificationChanel()
         inappBehavior = ScrollingChildBehavior.from(inappContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -239,11 +247,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         val appLinkAction = intent.action
         if (Intent.ACTION_VIEW == appLinkAction) {
 
-           // QR_CODE_TO_AUTH_WEB = intent.dataString ?: "Invalid qr code"
-            var mCode = intent.dataString ?: "Invalid qr code"
+            // QR_CODE_TO_AUTH_WEB = intent.dataString ?: "Invalid qr code"
+            var mCode = intent.dataString ?: ""
 
-            if (!mCode.isNullOrEmpty() || !mCode.contentEquals("Invalid qr code")) {
+            if (!mCode.isNullOrEmpty() || mCode.contentEquals("code") || mCode.contentEquals("qr")) {
                 presenter.openAuthWebsiteFragment(mCode)
+                intent.data = null
             }
 
             intent.data?.also {
@@ -508,7 +517,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showAuthWebsiteFragment(code: String) {
-
         findNavController().navigate(
             R.id.authWebsiteFragment,
             AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
@@ -755,6 +763,66 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     fun startEditPhoneListener(value: Boolean) {
         presenter.isEditingPhone = value
+    }
+
+    private fun setupMainNavBar() {
+        val navController = findNavController(R.id.navHostFragment)
+        mainNavBar.setupWithNavController(navController)
+        mainNavBar.setOnNavigationItemReselectedListener { }
+        mainNavBar.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.main -> {
+                    findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)
+                    true
+                }
+                R.id.chats -> {
+                    findNavController(R.id.navHostFragment).navigate(R.id.chat_list_tabs_fragment)
+                    true
+                }
+                R.id.notification -> {
+                    findNavController(R.id.navHostFragment).navigate(R.id.notifications_fragment)
+                    true
+                }
+                R.id.profile -> {
+                    findNavController(R.id.navHostFragment).navigate(R.id.profile_fragment)
+                    true
+                }
+                else -> false
+            }
+        }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.welcome_fragment, R.id.splash_fragment, R.id.login_fragment, R.id.authorization_fragment, R.id.chat_fragment -> {
+                    hideNavBar()
+                }
+                else -> showNavBar()
+            }
+        }
+    }
+
+    private fun setupNavBarItems(f : Fragment){
+        when(f) {
+            is RecommendationsFragment -> {
+                mainNavBar.selectedItemId = mainNavBar.menu.findItem(R.id.main).itemId
+            }
+            is ProfileFragment -> {
+                mainNavBar.selectedItemId = mainNavBar.menu.findItem(R.id.profile).itemId
+            }
+            is ChatListTabsFragment -> {
+                mainNavBar.selectedItemId = mainNavBar.menu.findItem(R.id.chats).itemId
+            }
+            is NotificationsFragment -> {
+                mainNavBar.selectedItemId = mainNavBar.menu.findItem(R.id.notification).itemId
+            }
+        }
+    }
+
+    fun showNavBar() {
+        mainNavBar.visibility = View.VISIBLE
+    }
+
+    fun hideNavBar() {
+        mainNavBar.visibility = View.GONE
     }
 
     override fun getLoadingView(): View = flLoading

@@ -26,9 +26,7 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), RecommendationsContract.View, ToolbarFragment {
-
-    override val title: String? = null
+class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), RecommendationsContract.View {
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "RecommendationsPresenter")
     override lateinit var presenter: RecommendationsPresenter
@@ -52,11 +50,10 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
 
         headGroup.update(listOf(
                 ScreenLabelItem(getString(R.string.tab_recommended_title)),
-                RecommendationsHeaderItem(
-                        { presenter.onSearchClick() },
-                        { presenter.onOrganizationsClick() },
-                        { presenter.onMyEventsClick() }
-                )
+                RecommendationsHeaderItem { presenter.onSearchClick() }
+//                        { presenter.onOrganizationsClick() },
+//                        { presenter.onMyEventsClick() }
+
         ))
     }
 
@@ -103,22 +100,4 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter>(), R
         }*/
     }
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        toolbarContentActionBar.apply {
-            addRightView(AccountView(requireContext()).also {
-                it.canShowBadge = false
-                it.setOnClickListener { presenter.onMenuAccountClick() }
-            })
-            addRightView(ChatView(requireContext()).also {
-                it.setOnClickListener {
-                    wasShow = false
-                    presenter.onMenuChatClick()
-                }
-            })
-            addRightView(NotificationsView(requireContext()).also {
-                it.setOnClickListener { presenter.onMenuNotificationsClick() }
-            })
-        }
-    }
 }

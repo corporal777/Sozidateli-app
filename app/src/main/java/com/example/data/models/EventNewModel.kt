@@ -57,6 +57,7 @@ data class EventNew(
                 const val EVENT_SORT_FIELD = "sortField"
                 const val EVENT_SORT_TYPE = "sortType"
                 const val EVENT_LIMIT = "limit"
+                const val EVENT_ACTIVE = "onlyActive"
                 const val EVENT_OFFSET = "offset"
                 const val EVENT_BINDS = "binds"
                 const val EVENT_ID = "id"

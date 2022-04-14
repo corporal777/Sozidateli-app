@@ -15,6 +15,9 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -36,6 +39,7 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,6 +53,38 @@
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/main_navigation" />
         </FrameLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/nav_bar_divider"
+                app:layout_constraintBottom_toTopOf="@id/mainNavBar"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#C6C6C8"/>
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/mainNavBar"
+                style="@style/MainBottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="4dp"
+                app:itemBackground="@android:color/transparent"
+                android:background="@android:color/white"
+                app:labelVisibilityMode="labeled"
+                app:layout_constraintTop_toBottomOf="@id/nav_bar_divider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/main_bottom_nav_menu" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include layout="@layout/layout_inapp" />
@@ -112,4 +148,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

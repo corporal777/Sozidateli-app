@@ -70,6 +70,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.User.Title"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/user_profile_birthday" />

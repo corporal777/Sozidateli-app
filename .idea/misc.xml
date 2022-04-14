@@ -10,9 +10,25 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_button_registered.xml" value="0.1385" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_button_underline.xml" value="0.1385" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_corners.xml" value="0.1405" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_corners_border.xml" value="0.125" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_corners_disabled.xml" value="0.1405" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_event_action.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_gradient.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_gradient_down.xml" value="0.125" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/background_input_normal.xml" value="0.1405" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/btn_background_corners_white.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/btn_background_rounded_corners_event.xml" value="0.125" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/divider.xml" value="0.113" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/ic_back.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/ic_back_white.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/ic_main_tab.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/ic_my_events_tab.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/ic_profile_tab.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/drawable/main_bottom_nav_colors.xml" value="0.125" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/font/font_bals.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/font/roboto_thin.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/activity_main_new.xml" value="0.22" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/dialog_add_phone_email.xml" value="0.15307971014492755" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/dialog_api_error.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/dialog_base_state.xml" value="0.1796875" />
@@ -65,6 +81,8 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_event_tabs.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_events_tabs.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_favorite.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_finish_register.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_home.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_invite_register.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_invites_list.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_login.xml" value="0.1796875" />
@@ -82,6 +100,7 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_profile_edit.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_profile_full.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_qr_scanner.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_register_email_new.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_register_sn.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_request.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/fragment_search.xml" value="0.1796875" />
@@ -117,10 +136,14 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_day_all_header.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_dropdown.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_edit_main_info.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event.xml" value="0.22" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_data_about.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_data_list.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_detail_new.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_new.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_page.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_placeholder.xml" value="0.1796875" />
-        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_status.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_event_status.xml" value="0.22" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_max_state_main_info.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_my_events_header.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_notification_accept.xml" value="0.1796875" />
@@ -132,15 +155,25 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_button_edit.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_current_user.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_edit_contacts.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_edit_education_level.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_edit_interest.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_edit_personal_new.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_edit_save.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_data_interest.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_profile_social_network.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_recommendations_header.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_register_event_date.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_register_event_header.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_screen_label.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_search_event_placeholder.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_title.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_town.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_user_chat_placeholder.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/item_user_placeholder.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/layout_inapp.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/layout_list.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/view_toolbar_content.xml" value="0.1796875" />
+        <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/menu/main_bottom_nav_menu.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/menu/menu_event.xml" value="0.1796875" />
       </map>
     </option>

@@ -1,85 +1,99 @@
 package com.example.ui.auth.login
 
 import android.view.View
-import android.widget.TextView
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
+import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
+import androidx.test.rule.ActivityTestRule
 import com.example.R
 import com.example.ui.main.MainActivity
-import junit.framework.TestCase
+import com.example.util.AuthValidateUtil
+import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.junit.Before
+import org.hamcrest.Matchers
+import org.hamcrest.TypeSafeMatcher
+import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+@LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginFragmentTest : TestCase() {
+class LoginFragmentTest {
 
-    private lateinit var scenario: ActivityScenario<MainActivity>
+    private val mLogin = "t_3@houseofapps.ru"
+    private val mPassword = "Lera1801"
+    //private val mPresenter = LoginPresenterTest()
 
-    private var mLogin = "t_3@houseofapps.ru"
-    private var mPassword = "Lera1801"
-
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-
-        scenario = ActivityScenario.launch(MainActivity::class.java)
-        scenario.moveToState(Lifecycle.State.STARTED)
-    }
+    @Rule
+    @JvmField
+    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    fun setLoginAndPassword() {
+    fun mainActivityTest() {
 
-//        onView(withId(R.id.etLogin)).check(matches(isDisplayed()))
-//        onView(withId(R.id.etPassword)).check(matches(isDisplayed()))
-//        onView(withId(R.id.ibLogin)).check(matches(isDisplayed()))
+        var textInputEtLogin = onView(
+            Matchers.allOf(
+                withId(R.id.etLogin),
+                isDisplayed()
+            )
+        )
+        textInputEtLogin.perform(replaceText("t_3@houseofapps.ru"), closeSoftKeyboard())
 
-//        val loginResult: ViewInteraction = onView(withId(R.id.etLogin))
-//        mLogin = getText(loginResult)
-//        val passwordResult : ViewInteraction = onView(withId(R.id.etPassword))
-//        mPassword = getText(passwordResult)
+        textInputEtLogin = onView(
+            Matchers.allOf(
+                withId(R.id.etLogin), withText("t_3@houseofapps.ru"),
+                isDisplayed()
+            )
+        )
+        textInputEtLogin.perform(pressImeActionButton())
 
-        onView(withId(R.id.etLogin))
-            .perform(typeText(mLogin))
+        var textInputEtPassword = onView(
+            Matchers.allOf(
+                withId(R.id.etPassword),
+                isDisplayed()
+            )
+        )
+        textInputEtPassword.perform(replaceText("Lera1801"), closeSoftKeyboard())
 
-        onView(withId(R.id.etPassword))
-            .perform(typeText(mPassword))
+        textInputEtPassword = onView(
+            Matchers.allOf(
+                withId(R.id.etPassword), withText("Lera1801"),
+                isDisplayed()
+            )
+        )
+        textInputEtPassword.perform(pressImeActionButton())
 
-        onView(withId(R.id.ibLogin)).perform(click())
 
+        Assert.assertTrue(AuthValidateUtil.isValidEmail("t_3@houseofapps.ru"))
+        Assert.assertTrue(AuthValidateUtil.isValidPassword("Lera1801"))
+
+        val mButton = onView(withId(R.id.ibLogin))
+        mButton.check(matches(isDisplayed()))
+        mButton.perform(click())
+        //mPresenter.getData(mLogin, mPassword)
 
     }
 
-    private fun getText(matcher: ViewInteraction): String {
-        var text = String()
-        matcher.perform(object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return isAssignableFrom(TextView::class.java)
+    private fun childAtPosition(
+        parentMatcher: Matcher<View>, position: Int
+    ): Matcher<View> {
+
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description) {
+                description.appendText("Child at position $position in parent ")
+                parentMatcher.describeTo(description)
             }
 
-            override fun getDescription(): String {
-                return "Text of the view"
+            public override fun matchesSafely(view: View): Boolean {
+                val parent = view.parent
+                return parent is ViewGroup && parentMatcher.matches(parent)
+                        && view == parent.getChildAt(position)
             }
-
-            override fun perform(uiController: UiController, view: View) {
-                val tv = view as TextView
-                text = tv.text.toString()
-            }
-        })
-
-        return text
+        }
     }
-
 }

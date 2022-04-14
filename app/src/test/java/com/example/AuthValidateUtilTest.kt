@@ -10,8 +10,9 @@ class AuthValidateUtilTest {
     // email tests
 
     @Test
-    fun correctEmailSimpleReturnsTrue() {
-        assertTrue(AuthValidateUtil.isValidEmail("name@email.com"))
+    fun correctEmailSimpleReturnsTrue(email : String) {
+        //assertTrue(AuthValidateUtil.isValidEmail("name@email.com"))
+        assertTrue(AuthValidateUtil.isValidEmail(email))
     }
 
     @Test

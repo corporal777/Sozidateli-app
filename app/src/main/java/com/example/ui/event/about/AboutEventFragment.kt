@@ -3,17 +3,18 @@ package com.example.ui.event.about
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.navigation.NavOptions
@@ -113,6 +114,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         recyclerView.apply {
             adapter = groupAdapter
 
@@ -337,6 +340,9 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         when {
             event?.binds?.eventRegistrationState?.prohibitions?.registrationClosed == false -> {
                 when (actions?.get(0)) {
+                    "" -> {
+                        visibility = false
+                    }
                     "register" -> {
                         textRes = R.string.event_action_participate
                         clickAction = {
@@ -377,7 +383,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                             presenter.onSelectEventClick()
                         }
                     }
-                } else {
+                }  else {
                     textRes = R.string.about_event_registration_closed
                 }
             }

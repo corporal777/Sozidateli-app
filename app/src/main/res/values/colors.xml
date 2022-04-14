@@ -224,4 +224,6 @@
 
 
     <color name="transparent_white">#00FFFFFF</color>
+    <color name="bottom_nav_item_selected_color">#C3996C</color>
+    <color name="bottom_nav_item_unselected_color">#979592</color>
 </resources>

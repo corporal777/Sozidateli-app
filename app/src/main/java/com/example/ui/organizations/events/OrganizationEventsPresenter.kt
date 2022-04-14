@@ -34,10 +34,10 @@ class OrganizationEventsPresenter
     }*/
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //TODO Finish this screen
-        return eventRepository.getEventsList(mapOf(
+        return eventRepository.getOrganizationEventsList(mapOf(
                 EventNew.EVENT_LIMIT to limit,
                 EventNew.EVENT_OFFSET to offset,
-                EventNew.EVENT_SORT_TYPE to "desc",
+               // EventNew.EVENT_SORT_TYPE to "desc",
                 EventNew.EVENT_ORGANIZATION to organizationId))
     }
 }

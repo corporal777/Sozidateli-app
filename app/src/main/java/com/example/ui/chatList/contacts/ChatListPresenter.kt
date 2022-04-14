@@ -1,7 +1,9 @@
 package com.example.ui.chatList.contacts
 
+import android.os.Build
 import android.util.SparseArray
 import android.util.SparseIntArray
+import androidx.annotation.RequiresApi
 import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -211,6 +213,7 @@ class ChatListPresenter
         chatsPagination.onItemTake(position)
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onChatOnScreen(chatId: Int) {
         val oldSubscription = chatUnreadMessageSubscriptions[chatId]
         if (oldSubscription != null && !oldSubscription.isDisposed) {
@@ -223,7 +226,8 @@ class ChatListPresenter
                     chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))
                 })
 
-        chatUnreadMessageSubscriptions[chatId] = subscription
+        //chatUnreadMessageSubscriptions[chatId] = subscription
+        chatUnreadMessageSubscriptions.put(chatId, subscription)
         compositeDisposable.add(subscription)
     }
 

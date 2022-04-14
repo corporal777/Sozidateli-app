@@ -25,7 +25,7 @@ class AuthWebsitePresenter
     private val authRepository: AuthRepository
 ) : BasePresenter<AuthWebsiteContract.View>(appData), AuthWebsiteContract.Presenter {
 
-    private var mToken = ""
+    var mToken = ""
 
 
     override fun initToken(str: String) {
@@ -64,8 +64,8 @@ class AuthWebsitePresenter
                     onReceiveError(it)
                 },
                 onSuccess = {
-                    Log.d("DATA", it.toString())
-                    viewState.showSuccessEnterMessage()
+                    Log.d("DATA AUTH QR WEB", it.toString())
+                    viewState.showEventList()
                 })
 
     }

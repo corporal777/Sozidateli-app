@@ -1,7 +1,9 @@
 package com.example.ui.chatList.contacts
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,6 +69,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun setChatsData(chats: List<UserChat?>, favorites: List</*User*/UserDetail>) {
         if (chats.isEmpty()) {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))

@@ -21,7 +21,6 @@ import javax.inject.Provider
 
 class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsiteContract.View {
 
-    private var showFinishRegister = false
     override val isLightStatus = false
 
     private val mArgs: AuthWebsiteFragmentArgs by navArgs()
@@ -36,18 +35,13 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
 
     @ProvidePresenter
     fun providePresenter(): AuthWebsitePresenter = presenterProvider.get().apply {
-
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         mArgs.let {
             mCode = it.qrCode
-            val mToken = getTokenFromQrCode(mCode)
-            mPresenter.initToken(mToken)
+            val mTokenFromCode = getTokenFromQrCode(mCode)
+            this.mToken = mTokenFromCode
         }
     }
+
 
     override fun setEnterData(data: QrAuthResponse) {
         tvDevice.text = data.mDevice
@@ -68,7 +62,7 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
     override fun showSuccessEnterMessage() {
         val message = "Авторизация прошла успешно"
         BaseStateDialog(message, requireActivity()).setSelectCallback {
-
+            showEventList()
         }
     }
 

@@ -7,14 +7,14 @@ import kotlinx.android.synthetic.main.item_recommendations_header.*
 
 class RecommendationsHeaderItem(
     private val onSearchClick: () -> Unit,
-    private val onOrganizationsClick: () -> Unit,
-    private val onMyEventsClick: () -> Unit
+//    private val onOrganizationsClick: () -> Unit,
+//    private val onMyEventsClick: () -> Unit
 ) : Item() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             etSearch.setOnClickListener { onSearchClick() }
-            btnOrganizations.setOnClickListener { onOrganizationsClick() }
-            btnMyEvents.setOnClickListener { onMyEventsClick() }
+//            btnOrganizations.setOnClickListener { onOrganizationsClick() }
+//            btnMyEvents.setOnClickListener { onMyEventsClick() }
         }
     }
 

@@ -32,13 +32,13 @@ import setOnClickListener
 
 class EventStatusItem(
         itemId: Long,
-        private val eventId: String,
-        private val status: Event.Status?,
-        private val userRegistration: Event.Status?,
-        private val backgroundColor: String?,
-        private val logo: String?,
-        private val format: EventFormat?,
-        private val organizationEmails: List<EventPhoneModel/*EmailAffiliation*/>?,
+        val eventId: String,
+        val status: Event.Status?,
+        val userRegistration: Event.Status?,
+        val backgroundColor: String?,
+        val logo: String?,
+        val format: EventFormat?,
+        val organizationEmails: List<EventPhoneModel/*EmailAffiliation*/>?,
         private val conferenceRegistrationClosed: Boolean,
         private val onEventClickListener: OnEventClickListener,
         private val userAgreement: String?,
@@ -101,6 +101,10 @@ class EventStatusItem(
                     textBackground = R.color.event_status_declined_background
                     textRes = R.string.event_status_decline
                 }
+//                Event.Status.REGISTRATION -> {
+//                    textBackground = R.color.event_status_wait_confirmation_background
+//                    textRes = R.string.event_action_was_sent_request
+//                }
                 else -> {
                     isVisible = false
                     return

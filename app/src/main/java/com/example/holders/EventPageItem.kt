@@ -8,6 +8,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_page.*
 
+
 class EventPageItem(
         private val id: Int,
         private val title: String,

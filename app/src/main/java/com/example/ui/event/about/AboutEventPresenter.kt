@@ -31,10 +31,7 @@ class AboutEventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showLoadingDialog()
-
         val userEventInfo = userEventData.userEvent?.eventInfo
-
-        Log.e("TOKEN", appData.token?:"")
 
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
@@ -42,14 +39,21 @@ class AboutEventPresenter
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
+
         compositeDisposable += eventInfoMaybe
-            .subscribeSimple(onSuccess = ::setEventInfoData)
+            .subscribeSimple(
+                onSuccess = {
+                    setEventInfoData(it)
+                },
+                onError = {
+                    it.printStackTrace()
+                })
+
     }
 
     private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
-        //val event = eventInfo
-        val event = eventInfo?.event
+        Log.e("EVENT ID", eventId)
         viewState.apply {
             /*setEventData(
                     event,
@@ -156,8 +160,11 @@ class AboutEventPresenter
     }
 
     override fun onGoToEventClick() {
-        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED)
+        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
             viewState.showEventRequest(eventId)
+        }
+
+
         /*compositeDisposable += eventRepository.checkUserProfile()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -201,7 +208,6 @@ class AboutEventPresenter
             .subscribeSimple(
                 onError = {
                     Log.ERROR
-                    Log.e("About event presenter:", it.message?:"")
                 },
                 onComplete = {
                     viewState.selectEvent()

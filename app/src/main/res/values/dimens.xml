@@ -104,4 +104,6 @@
     <dimen name="lines_space">-5dp</dimen>
     <dimen name="viewpager_next_item_visible">26dp</dimen>
     <dimen name="viewpager_current_item_horizontal_margin">42dp</dimen>
+    <dimen name="background_corners_seven">7dp</dimen>
+    <dimen name="background_corners_eight">8dp</dimen>
 </resources>

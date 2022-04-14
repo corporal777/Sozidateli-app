@@ -220,7 +220,7 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             }
         }
         btnEvents.apply {
-            isVisible = (organization.binds?.eventsSize?:0) > 3
+            isVisible = (organization.binds?.eventsSize?:0) > 0
             setOnClickListener { presenter.onShowMoreEventsClick() }
         }
 
