@@ -1,20 +1,22 @@
 package com.example.ui.search.organization
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
+import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.layout_filter_organization.view.*
 import onTextChanged
 import javax.inject.Inject
@@ -28,6 +30,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     @Inject
     lateinit var presenterProvider: Provider<SearchOrganizationPresenter>
 
+
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
@@ -40,13 +43,51 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mCanShowEventAndOrganizations = true
+    }
+    override fun createItemNew(itemData: List<OrganizationNew?>): Group {
+        var label = ""
+        var title = ""
+
+        val mSection = Section()
+        mSection.update(itemData.map {
+            if (it == null) {
+                label = ""
+                PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
+            } else {
+                title = when(itemData.size){
+                    1 -> {
+                        "организация найдена"
+                    }
+                    2 -> {
+                        "организации найдено"
+                    }
+                    else -> "организаций найдено"
+                }
+                label = itemData.size.toString() + " " + title
+                OrganizationItem(
+                    it,
+                    { presenter.onOrganizationClick(it) },
+                    { presenter.onOrganizationSubscriptionClick(it) }
+                )
+            }
+        })
+        headerSection.update(listOf(SearchItemLabel(label)))
+        return mSection
+    }
+
     override fun createItem(itemData: OrganizationNew/*Organization*/?): Group {
+
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
-        else OrganizationItem(
+        else {
+            OrganizationItem(
                 itemData,
                 { presenter.onOrganizationClick(itemData) },
                 { presenter.onOrganizationSubscriptionClick(itemData) }
-        )
+            )
+        }
     }
 
     @SuppressLint("InflateParams")
@@ -68,4 +109,6 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
             etInn.text = null
         }
     }
+
+
 }

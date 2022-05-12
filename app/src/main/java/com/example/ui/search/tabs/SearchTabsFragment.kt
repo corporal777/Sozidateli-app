@@ -24,9 +24,8 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragment, SearchInterfaceProvider {
+class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterfaceProvider {
 
-    override val title = ""
 
     @InjectPresenter
     lateinit var presenter: SearchTabsPresenter
@@ -73,6 +72,10 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
             setupToolbarIcons(currentItem)
         }
 
+        tvCancel.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         etSearch.apply {
             SearchInput(this).apply {
                 setOnTextChange { presenter.onSearchTextChange(it) }
@@ -88,8 +91,8 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
 
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 clSearch.setBackgroundResource(
-                        if (hasFocus) R.drawable.background_input_focused
-                        else R.drawable.background_input_normal
+                        if (hasFocus) R.drawable.background_search_field_rounded_focused
+                        else R.drawable.background_search_field_rounded_normal
                 )
             }
         }
@@ -114,11 +117,11 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, ToolbarFragm
         }
     }
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
-        setupToolbarIcons(viewPager.currentItem)
-    }
+//    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+//        super.setupToolbarContent(toolbarContentActionBar)
+//        this.toolbarContentActionBar = toolbarContentActionBar
+//        setupToolbarIcons(viewPager.currentItem)
+//    }
 
     private fun setupToolbarIcons(position: Int) {
         toolbarContentActionBar?.apply {

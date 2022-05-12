@@ -18,11 +18,16 @@ interface SubeventContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSpeaker(speaker: MemberModel)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateSubevent(subEvent: EventActivityModel)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onSpeakerClick(speaker: MemberModel)
         fun onSpeakerChangeSubscriptionClick(speaker: MemberModel)
         fun onSubeventChangeSubscriptionClick(subevent: EventActivityModel)
-    }
+
+        fun onAddToScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)    }
 }

@@ -68,5 +68,8 @@ interface ActivitiesContract {
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
 
         fun onShowAllTagsClick()
+
+        fun onSearchTextChange(text: String)
+        fun onSearchTextSubmit(text: String)
     }
 }

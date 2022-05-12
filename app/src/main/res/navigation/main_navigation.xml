@@ -891,7 +891,7 @@
 
     <fragment
         android:id="@+id/about_event_fragment"
-        android:name="com.example.ui.event.about.AboutEventFragment"
+        android:name="com.example.ui.event.about.old.AboutEventFragment"
         tools:layout="@layout/fragment_about_event">
         <argument
             android:name="eventId"
@@ -1240,6 +1240,54 @@
         <argument
             android:name="qrCode"
             app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_speaker_fragment"
+        android:name="com.example.ui.event.speakers.UserSpeakerFragment"
+        tools:layout="@layout/fragment_user_speaker">
+        <action
+            android:id="@+id/user_to_chat"
+            app:destination="@id/chat_fragment"
+            app:launchSingleTop="true" />
+
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/about_event_fragment_new"
+        android:name="com.example.ui.event.about.redesign.AboutEventFragmentNew"
+        tools:layout="@layout/fragment_about_event_new">
+        <argument
+            android:name="eventId"
+            app:argType="string"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
+            app:destination="@id/activitiesFragment" />
+
+        <action
+            android:id="@+id/action_about_event_fragment_new_to_map_fragment_new"
+            app:destination="@id/fragment_map_new" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_map_new"
+        android:name="com.example.ui.event.location.map.redesign.MapFragmentNew"
+        tools:layout="@layout/fragment_map_new">
+
+        <argument
+            android:name="mapInfo"
+            app:argType="com.example.data.models.MapInfo"
+            app:nullable="true" />
 
     </fragment>
 

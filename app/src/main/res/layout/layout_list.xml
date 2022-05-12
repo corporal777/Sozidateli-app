@@ -6,12 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/main_background">
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:paddingBottom="50dp"
-        android:clipToPadding="true"
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:paddingBottom="50dp"
         app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager" />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

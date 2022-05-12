@@ -13,6 +13,8 @@ class PlaceholderItem(
     }
 
     override fun getLayout() = when (type) {
+        Type.SPEAKER -> R.layout.item_speaker_placeholder
+        Type.SUB_EVENT -> R.layout.item_sub_event_placeholder
         Type.EVENT -> R.layout.item_event_placeholder
         Type.SEARCH_EVENT -> R.layout.item_search_event_placeholder
         Type.ORGANIZATION -> R.layout.item_organization_placeholder
@@ -22,6 +24,8 @@ class PlaceholderItem(
     }
 
     enum class Type {
+        SPEAKER,
+        SUB_EVENT,
         EVENT,
         ORGANIZATION,
         SEARCH_EVENT,

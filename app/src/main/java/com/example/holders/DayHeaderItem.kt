@@ -13,13 +13,15 @@ open class DayHeaderItem(
         val isDay: Boolean = true
 ) : Item(date) {
 
-    private val dateFormat = SimpleDateFormat("EE d.MM.yyyy", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+    //private val dateFormat = SimpleDateFormat("EE d.MM.yyyy", Locale.getDefault())
     private val dateFormatWithoutDay = SimpleDateFormat("d.MM.yyyy", Locale.getDefault())
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            if (isDay) tvDate.text = dateFormat.format(date).capitalize()
-            else tvDate.text = dateFormatWithoutDay.format(date).capitalize()
+            tvDate.text = dateFormat.format(date).capitalize()
+//            if (isDay) tvDate.text = dateFormat.format(date).capitalize()
+//            else tvDate.text = dateFormatWithoutDay.format(date).capitalize()
         }
     }
 

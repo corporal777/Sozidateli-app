@@ -13,17 +13,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.*
-import com.example.extensions.formatToEventDatesIntervalNew
-import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.extensions.getAffiliationString
 import com.example.holders.EventDataListItem
 import com.example.holders.EventStatusItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.new.EventGroupNew
+import com.example.holders.redesign.EventGroupNew
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.about.old.AboutEventFragment.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
@@ -96,29 +95,8 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroupNew(
-                it.id.toString(),
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.binds?.organization?.backgroundColor?.value,
-                it.image?.uri,
-                EventFormat(
-                    name = if (it.format?.name.isNullOrEmpty()) it.format?.custom
-                        ?: "" else it.format?.name ?: ""
-                ),
-                it.binds?.organization?.email,
-                (it.status?.value ?: "") != Event.Status.REGISTRATION,
+                it,
                 onEventClickListener,
-                //createEventDataListItem(event = it),
-                it.userAgreement?.uri,
-                it.binds?.eventRegistrationState,
-                true,
-                it.binds?.currentUserRegistration?.id.toString(),
-
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.binds?.getFirstActionStartDate(),
-                it.holdingDate?.from.formatToEventDatesIntervalOnMain(it.holdingDate?.to) ?: ""
             )
 //            else EventGroup(
 //                    it.id.toString(),
@@ -190,11 +168,16 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showAboutEvent(event: String) {
+//        findNavController().navigate(
+//            R.id.about_event_fragment,
+//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
+//            null,
+//            eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
+
         findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
-            null,
-            eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle())
+
     }
 
     override fun showEventRequest(event: String) {

@@ -3,21 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="10dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/etSearch"
-        style="@style/Input.Search"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="@drawable/background_input"
         android:gravity="center_vertical"
-        android:hint="@string/search_input_hint"
-        android:imeOptions="actionSearch"
-        android:inputType="textFilter"
-        android:longClickable="false" />
+        android:background="@drawable/background_search_field_rounded_normal"
+        android:layout_height="37dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            fontPath="fonts/sf_pro_text.ttf"
+            android:letterSpacing="-0.02"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/etSearch"
+            android:textSize="17sp"
+            android:gravity="center_vertical"
+            style="@style/Input.Search"
+            android:hint="@string/search_input_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textFilter"
+            android:longClickable="false" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <HorizontalScrollView
         android:visibility="gone"

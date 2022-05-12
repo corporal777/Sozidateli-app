@@ -1,5 +1,7 @@
 package com.example.holders;
 
+import android.annotation.SuppressLint;
+
 import com.xwray.groupie.Group;
 import com.xwray.groupie.GroupDataObserver;
 import com.xwray.groupie.Item;
@@ -48,6 +50,7 @@ public class PagedListGroup<T extends Item> implements Group, GroupDataObserver 
                     return newItem.isSameAs(oldItem);
                 }
 
+                @SuppressLint("DiffUtilEquals")
                 @Override
                 public boolean areContentsTheSame(@NonNull T oldItem, @NonNull T newItem) {
                     return newItem.equals(oldItem);
@@ -157,6 +160,7 @@ public class PagedListGroup<T extends Item> implements Group, GroupDataObserver 
     public void onItemMoved(@NonNull Group group, int fromPosition, int toPosition) {
         throw new UnsupportedOperationException();
     }
+
 
     private int getItemPosition(@NonNull Group group) {
         List<T> currentList = differ.getCurrentList();

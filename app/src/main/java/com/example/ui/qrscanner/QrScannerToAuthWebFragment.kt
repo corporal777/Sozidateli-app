@@ -75,7 +75,7 @@ class QrScannerToAuthWebFragment : BaseFragment(), QrScannerToAuthWebContract.Vi
                 requireActivity().runOnUiThread {
                     Log.e("Result", "Camera Result ${it.text}")
                     val mDecodedCode = it.text
-                    showToast(mDecodedCode)
+//                    showToast(mDecodedCode)
                     mPresenter.onSuccessScanning(mDecodedCode)
                     stopPreview()
                 }

@@ -18,20 +18,23 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: "com.hiya.jacoco-android"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 53
         versionName "1.0.25"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
-        flavorDimensions "default"
+        //flavorDimensions "default"
 
     }
     dataBinding {
         enabled = true
+    }
+    buildFeatures {
+        viewBinding = true
     }
     lintOptions {
         abortOnError false
@@ -84,41 +87,41 @@ android {
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
         }
 
-//        beta {
-//           initWith(debug)
-//            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-//            matchingFallbacks = ['debug', 'release']
-//        }
-//        "new" {
-//            initWith(debug)
-//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-//            matchingFallbacks = ['debug', 'release']
-//        }
-    }
-    productFlavors {
-        "new" {
-            applicationId = "ru.houseofapps.sozidateli"
-            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-
-        }
         beta {
-            applicationId = "ru.houseofapps.sozidateli"
+           initWith(debug)
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-
+            matchingFallbacks = ['debug', 'release']
+        }
+        "new" {
+            initWith(debug)
+            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
+            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
+            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
+            matchingFallbacks = ['debug', 'release']
         }
     }
+//    productFlavors {
+//        "new" {
+//            applicationId = "ru.houseofapps.sozidateli"
+//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
+//
+//        }
+//        beta {
+//            applicationId = "ru.houseofapps.sozidateli"
+//            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
+//
+//        }
+//    }
 
 
     variantFilter { variant ->
@@ -134,6 +137,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 
     testOptions {
@@ -169,8 +176,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    implementation 'com.google.android.gms:play-services-maps:18.0.1'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.4'
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -211,6 +220,8 @@ dependencies {
     implementation "com.github.lisawray.groupie:groupie:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-databinding:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:2.6.0"
+    implementation 'com.google.android:flexbox:1.0.0'
+
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
@@ -222,6 +233,9 @@ dependencies {
     implementation 'com.romandanylyk:pageindicatorview:1.0.3'
     implementation 'com.github.shts:StoriesProgressView:3.0.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    implementation 'io.coil-kt:coil:1.1.1'
+    implementation 'io.coil-kt:coil-video:1.3.2'
+    implementation 'com.github.Commit451.coil-transformations:transformations:1.0.0'
 
     // leakcanary
 //    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
@@ -257,39 +271,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.3'
 
 
-//    //Test Dependencies
-//    //Junit tests
-//    testImplementation("junit:junit:4.13.2")
-//    testImplementation("org.hamcrest:hamcrest:2.2")
-//    testImplementation("org.hamcrest:hamcrest-library:2.2")
-//    testImplementation("org.mockito:mockito-core:4.2.0")
-//    testImplementation("androidx.arch.core:core-testing:2.1.0")
-//    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
-//    testImplementation("org.mockito:mockito-inline:4.2.0")
-//    testImplementation "org.robolectric:robolectric:4.8-alpha-1"
-//
-//    //Instrumental Test
-//    def android_x_version = '1.4.0'
-//    def espressoVersion = '3.4.0'
-//    androidTestImplementation("androidx.test:core:$android_x_version")
-//    androidTestImplementation("androidx.test:core-ktx:$android_x_version")
-//    androidTestImplementation("org.hamcrest:hamcrest:2.2")
-//    androidTestImplementation("org.hamcrest:hamcrest-library:2.2")
-//    debugImplementation("androidx.fragment:fragment-testing:$android_x_version")
-//    androidTestImplementation("androidx.test:runner:$android_x_version")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
-//    androidTestImplementation("androidx.test:runner:$android_x_version")
-//    androidTestImplementation("androidx.test:rules:$android_x_version")
-//    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.3")
-//    androidTestImplementation("androidx.test.espresso:espresso-contrib:$espressoVersion")
-//    androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
-//    androidTestImplementation("androidx.test.espresso:espresso-accessibility:$espressoVersion")
-//    androidTestImplementation("androidx.test.espresso:espresso-web:$espressoVersion")
-//    androidTestImplementation("androidx.test.espresso.idling:idling-concurrent:$espressoVersion")
-//    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:$espressoVersion")
-//    androidTestImplementation("org.mockito:mockito-core:4.2.0")
-//    androidTestImplementation("com.linkedin.dexmaker:dexmaker-mockito-inline:2.28.1")
-//    androidTestImplementation 'androidx.navigation:navigation-testing:2.3.5'
+    //Yandex App Metrica
+    implementation 'com.yandex.android:mobmetricalib:4.0.0'
 
 
     //fragment

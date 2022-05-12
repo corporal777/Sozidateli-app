@@ -8,9 +8,11 @@
     android:fillViewport="true"
     tools:background="@android:color/black">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ivLogo"
@@ -18,144 +20,151 @@
             android:layout_height="85dp"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_main"
-            app:layout_constraintBottom_toTopOf="@+id/tvJoinMessage"
+            app:layout_constraintBottom_toTopOf="@id/space"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread" />
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
-            fontPath="fonts/Roboto-Medium.ttf"
             android:id="@+id/tvJoinMessage"
+            fontPath="fonts/sf_pro_display_semibold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="40dp"
             android:lineSpacingExtra="2dp"
             android:text="@string/auth_web_title_login"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@id/llEmail"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+            app:layout_constraintTop_toBottomOf="@id/ivLogo"
             tools:ignore="MissingPrefix" />
 
+
         <LinearLayout
-            android:id="@+id/llEmail"
+            android:id="@+id/llInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="60dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/tvJoinMessage"
-            app:layout_constraintBottom_toTopOf="@+id/btnConfirm"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside">
+            app:layout_constraintTop_toBottomOf="@id/tvJoinMessage">
 
             <TextView
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/tvEmail"
-                android:textStyle="bold"
-                fontPath="fonts/Roboto-Medium.ttf"
+                fontPath="fonts/sf_pro_display_semibold.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Информация о входе:"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/auth_block_label_text_size"
+                android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingPrefix" />
 
 
             <LinearLayout
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/device"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Устройство:"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
                     tools:ignore="MissingPrefix" />
 
                 <TextView
-                    android:layout_marginStart="10dp"
                     android:id="@+id/tvDevice"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text=""
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
                     tools:ignore="MissingPrefix" />
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/ip"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="IP адрес:"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
                     tools:ignore="MissingPrefix" />
 
 
                 <TextView
-                    android:layout_marginStart="10dp"
                     android:id="@+id/tvIPAddress"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text=""
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
                     tools:ignore="MissingPrefix" />
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/time"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Время:"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
                     tools:ignore="MissingPrefix" />
 
                 <TextView
-                    android:layout_marginStart="10dp"
-                    app:layout_constraintStart_toEndOf="@id/time"
-                    app:layout_constraintTop_toBottomOf="@id/ip"
                     android:id="@+id/tvTime"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text=""
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/auth_block_label_text_size"
+                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                    app:layout_constraintStart_toEndOf="@id/time"
+                    app:layout_constraintTop_toBottomOf="@id/ip"
                     tools:ignore="MissingPrefix" />
 
             </LinearLayout>
         </LinearLayout>
+
+        <androidx.legacy.widget.Space
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConfirm"
@@ -163,15 +172,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/background_corners"
             android:minHeight="@dimen/auth_button_min_height"
             android:text="@string/confirm"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:layout_marginBottom="30dp"
             android:theme="@style/ViewBackgroundAccent"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm" />
 
 
@@ -181,8 +191,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/background_corners_border"
             android:minHeight="@dimen/auth_button_min_height"
             android:text="@string/do_not_confirm"
@@ -190,7 +200,11 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:theme="@style/ViewBackgroundAccent"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </ScrollView>

@@ -11,8 +11,10 @@ import com.example.data.models.user.User
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
+import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onTextChanged
 
@@ -28,6 +30,40 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 { presenter.onUserClick(itemData) },
                 itemData.getUserSubscribeAction(),
                 { presenter.onUserActionCLick(itemData) })
+    }
+
+    override fun createItemNew(itemData: List<UserDetail?>): Group {
+        val mSection = Section()
+        var label = ""
+        var title = ""
+        mSection.update(itemData.map {
+            if (it == null){
+                label = ""
+                PlaceholderItem(PlaceholderItem.Type.USER)
+            }
+            else {
+                title = when(itemData.size){
+                    1 -> {
+                        "пользователь"
+                    }
+                    2,3,4 -> {
+                        "пользователя"
+                    }
+                    else -> "пользователей"
+                }
+                label = itemData.size.toString() + " " + title + " найдено"
+                UserItem(
+                    it.id,
+                    it.fullName,
+                    it.address?.city,
+                    it.image?.uri,
+                    { presenter.onUserClick(it) },
+                    it.getUserSubscribeAction(),
+                    { presenter.onUserActionCLick(it) })
+            }
+        })
+        headerSection.update(listOf(SearchItemLabel(label)))
+        return mSection
     }
 
     override fun updateUser(user: UserDetail) {

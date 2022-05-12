@@ -30,8 +30,8 @@ import com.example.holders.EventStatusItem
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs

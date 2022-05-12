@@ -41,6 +41,11 @@ class RecommendationsPresenter
                 EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false, EVENT_STATUS to "registration,running,registrationFinished,approved"))
     }
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
+    }
+
     override fun onSearchClick() = viewState.showSearch()
 
     override fun onOrganizationsClick() = viewState.showOrganizations()

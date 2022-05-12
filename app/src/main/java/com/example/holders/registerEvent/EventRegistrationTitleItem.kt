@@ -28,7 +28,7 @@ class EventRegistrationTitleItem(
 
     override fun getLayout() = R.layout.item_event_registration_field_title
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
         if (other !is EventRegistrationTitleItem) return false
 

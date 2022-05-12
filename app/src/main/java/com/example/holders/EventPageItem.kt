@@ -32,7 +32,7 @@ class EventPageItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
         if (other !is EventPageItem) return false
 

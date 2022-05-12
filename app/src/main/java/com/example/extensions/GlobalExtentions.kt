@@ -358,6 +358,10 @@ fun View.setOnClickListener(listener: () -> Unit) {
     setOnClickListener { listener() }
 }
 
+fun View.onClickListener(listener: () -> Unit) {
+    setOnClickListener { listener() }
+}
+
 fun JSONObject.getStringOrNull(name: String): String? {
     return if (has(name)) getString(name) else null
 }

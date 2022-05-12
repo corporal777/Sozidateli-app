@@ -94,22 +94,22 @@ open class BasePresenter<V : BaseContract.View>
                     }
                 } else if (it is HttpException) {
                     when (it.code()) {
-//                        409 -> {
-//                            try {
-//                                val error = Gson().fromJson(
-//                                        it.response()?.errorBody()?.string(),
-//                                        NewErrors::class.java
-//                                )
-//                                when (error.errors[0].message) {
-//                                    "User with same email exists" -> viewState.showEmailErrorMessage()
-//                                    "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
-//                                    "such phone already registered" -> viewState.showPhoneErrorMessage()
-//                                    else -> onReceiveError(it)
-//                                }
-//                            } catch (e: Exception) {
-//
-//                            }
-//                        }
+                        409 -> {
+                            try {
+                                val error = Gson().fromJson(
+                                        it.response()?.errorBody()?.string(),
+                                        NewErrors::class.java
+                                )
+                                when (error.errors[0].message) {
+                                    "User with same email exists" -> viewState.showEmailErrorMessage()
+                                    "User is not in MAX PROTECTION" -> viewState.showNotificationErrorMessage()
+                                    "such phone already registered" -> viewState.showPhoneErrorMessage()
+                                    else -> onReceiveError(it)
+                                }
+                            } catch (e: Exception) {
+
+                            }
+                        }
                         401 -> {
                             RxJavaPlugins.setErrorHandler { e ->
                                 if (e is UndeliverableException) {

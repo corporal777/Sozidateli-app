@@ -7,6 +7,7 @@ import com.example.ui.base.BaseContract
 
 interface MapContract {
     interface View : BaseContract.View {
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun initializeMap()
 

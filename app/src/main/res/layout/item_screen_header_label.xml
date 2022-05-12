@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tvHeaderLabel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:letterSpacing="0.01"
+    android:layout_marginTop="10dp"
+    android:textStyle="bold"
+    android:lineSpacingExtra="0sp"
+    fontPath="fonts/sf_pro_display_bold.ttf"
+    android:text="@string/tab_recommended_title"
+    android:textColor="@android:color/black"
+    android:textSize="34sp"
+    tools:ignore="MissingPrefix" />

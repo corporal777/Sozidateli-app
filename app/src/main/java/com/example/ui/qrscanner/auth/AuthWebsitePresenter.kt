@@ -10,9 +10,13 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withDelay
 import withLoadingDialog
+import withProgressBarLoadingDialog
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -20,7 +24,6 @@ class AuthWebsitePresenter
 @Inject constructor(
     private val userRepository: UserRepository,
     private val appData: AppData,
-    private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
     private val authRepository: AuthRepository
 ) : BasePresenter<AuthWebsiteContract.View>(appData), AuthWebsiteContract.Presenter {
@@ -34,22 +37,22 @@ class AuthWebsitePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
         compositeDisposable += authRepository.sendQrCode(QrBody(mToken, null))
+            .withDelay(1000)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
+                    viewState.hideContent()
                 },
                 onSuccess = {
                     viewState.setEnterData(it)
+                    viewState.showContent()
                 }
             )
-
-    }
-
-    override fun getEnterData() {
 
     }
 
@@ -58,7 +61,7 @@ class AuthWebsitePresenter
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, true))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
@@ -71,7 +74,17 @@ class AuthWebsitePresenter
     }
 
     override fun onDoNotConfirmToEnterWebsiteClick() {
-        viewState.showEventList()
+        compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, false))
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    viewState.showEventList()
+                })
     }
 
 

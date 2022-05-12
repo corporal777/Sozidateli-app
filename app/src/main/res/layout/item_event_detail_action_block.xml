@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/vk_black">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEventAction"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/custom_btn_white_selectable"
+                android:letterSpacing="-0.02"
+                android:text="@string/go_to_event"
+                android:textAllCaps="false"
+                android:textColor="@color/event_item_action_text"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvRequestsDate"
+                fontPath="fonts/sf_pro_text_medium.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:letterSpacing="-0.02"
+                android:text="Заявки принимаются до 7 июля"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnEventAction"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:id="@+id/tvDescription"
+                fontPath="fonts/sf_pro_text.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="20dp"
+                android:letterSpacing="-0.02"
+                android:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
+Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. "
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRequestsDate"
+                tools:ignore="MissingPrefix" />
+
+            <LinearLayout
+                android:id="@+id/address_ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription">
+
+                <TextView
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Адрес:"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="г. Тула, Ленина 15"
+                    android:textColor="#C3996C"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/phone_ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/address_ln">
+
+                <TextView
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Телефон:"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tv_phone"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="+7 (495) 111 -11- 22"
+                    android:textColor="#C3996C"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/email_ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/phone_ln">
+
+                <TextView
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="E-mail:"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tv_email"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="love@houseofapps.ru"
+                    android:textColor="#C3996C"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/link_ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/email_ln">
+
+                <TextView
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Сайт:"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tv_link"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="leader-russia.ru"
+                    android:textColor="#C3996C"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/network_ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/link_ln">
+
+                <TextView
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Соцсеть:"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tv_social_network"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="vk.com/leader"
+                    android:textColor="#C3996C"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+</layout>
+

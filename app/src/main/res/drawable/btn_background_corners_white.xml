@@ -5,8 +5,7 @@
             <corners android:radius="99dp" />
             <stroke
                 android:width="2dp"
-                android:color="#FFFFFF" />
+                android:color="@color/white" />
         </shape>
     </item>
-    <item android:drawable="?attr/selectableItemBackground" />
 </layer-list>

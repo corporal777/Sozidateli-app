@@ -32,6 +32,25 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         }
     }
 
+
+    override fun showProgressBarLoadingDialog() {
+        if (!isFinishing) runOnUiThread {
+            countVisibleLoading++
+            getProgressBarLoadingView().visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideProgressBarLoadingDialog() {
+        if (!isFinishing) runOnUiThread {
+            countVisibleLoading--
+            if (countVisibleLoading <= 0) {
+                countVisibleLoading = 0
+                getProgressBarLoadingView().visibility = View.GONE
+            }
+
+        }
+    }
+
     override fun hideLoadingDialog() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading--
@@ -78,6 +97,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     abstract fun layout(): Int
 
     abstract fun getLoadingView(): View
+    abstract fun getProgressBarLoadingView(): View
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

@@ -36,7 +36,7 @@ class ProfileDataUserEditableItem(
         }
     }
 
-    override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun isSameAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (!super.isSameAs(other)) return false
         if (other !is ProfileDataUserEditableItem) return false
         if (other.avatar != avatar) return false

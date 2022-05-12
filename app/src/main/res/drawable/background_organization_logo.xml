@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:radius="@dimen/organization_logo_corners_radius" />
+            <corners android:radius="@dimen/profile_full_padding_top" />
         </shape>
     </item>
 </layer-list>

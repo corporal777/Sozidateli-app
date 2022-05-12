@@ -19,7 +19,8 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.editeducation.EditEducationFragment
 import com.example.ui.editwork.EditWorksFragment
-import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
+import com.example.ui.event.about.old.AboutEventFragment
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.contacts.EventContactsFragment
@@ -30,11 +31,13 @@ import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.map.MapFragment
+import com.example.ui.event.location.map.redesign.MapFragmentNew
 import com.example.ui.event.rating.EventRatingFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.event.speakers.EventSpeakersFragment
+import com.example.ui.event.speakers.UserSpeakerFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
@@ -130,7 +133,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeAboutFragment(): AboutFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeAboutEventFragment(): AboutEventFragment
+    abstract fun contributeAboutEventFragment(): AboutEventFragmentNew
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment
@@ -326,4 +329,13 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAuthWebsiteFragment(): AuthWebsiteFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserSpeakerFragment(): UserSpeakerFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAboutEventFragmentNew(): AboutEventFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMapFragmentNew(): MapFragmentNew
 }

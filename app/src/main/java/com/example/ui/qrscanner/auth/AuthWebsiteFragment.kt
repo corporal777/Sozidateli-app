@@ -3,6 +3,7 @@ package com.example.ui.qrscanner.auth
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -11,6 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.QrAuthResponse
 import com.example.extensions.longToDate
+import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BaseStateDialog
@@ -46,7 +48,7 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
     override fun setEnterData(data: QrAuthResponse) {
         tvDevice.text = data.mDevice
         tvIPAddress.text = data.mIPAddress
-        tvTime.text = longToDate(data.mTime.toLong())
+        tvTime.text = longToTime(data.mTimeStamp)
     }
 
 
@@ -69,7 +71,6 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
     override fun showErrorEnterMessage() {
         val message = "Не удалось подтвердить вход"
         BaseStateDialog(message, requireActivity()).setSelectCallback {
-
         }
 
     }
@@ -80,6 +81,22 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
                 .setPopUpTo(R.id.main_navigation, true)
                 .build()
         )
+    }
+
+    override fun showContent() {
+        tvJoinMessage.isVisible = true
+        llInfo.isVisible = true
+        btnConfirm.isVisible = true
+        btnDoNotConfirm.isVisible = true
+
+
+    }
+
+    override fun hideContent() {
+        tvJoinMessage.isVisible = false
+        llInfo.isVisible = false
+        btnConfirm.isVisible = false
+        btnDoNotConfirm.isVisible = false
     }
 
 

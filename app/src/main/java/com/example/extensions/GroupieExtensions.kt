@@ -1,5 +1,6 @@
 package com.example.extensions
 
+import com.example.holders.CalendarHorizontalListItem
 import com.xwray.groupie.*
 
 inline fun <VH : GroupieViewHolder, reified I : Item<*>> GroupAdapter<VH>.findItemBy(selector: (I) -> Boolean): I? {

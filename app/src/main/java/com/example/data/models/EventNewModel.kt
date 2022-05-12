@@ -330,6 +330,13 @@ data class EventAuditoriumModel(
         val name: String? = null
 ): Parcelable
 
+data class TestModel(
+        val id : Int,
+        val name : String,
+        val uri: String
+)
+
+
 @Parcelize
 data class MemberModel(
         val id: Int? = null,

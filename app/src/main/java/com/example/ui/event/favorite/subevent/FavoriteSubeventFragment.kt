@@ -7,10 +7,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
-import com.example.data.models.SubEvent
 import com.example.holders.DayHeaderItem
 import com.example.holders.NoDataItem
-import com.example.holders.SubEventItem
+import com.example.ui.subevent.items.SubEventItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.xwray.groupie.Group

@@ -2,7 +2,7 @@ package com.example.holders
 
 import com.example.R
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
+import com.example.ui.subevent.items.SubEventItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

@@ -2,7 +2,7 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/event_item_action_background_show_event" />
-            <corners android:radius="@dimen/background_default_corners_radius" />
+            <corners android:radius="@dimen/background_corners_eight" />
         </shape>
     </item>
     <item android:drawable="?attr/selectableItemBackground" />

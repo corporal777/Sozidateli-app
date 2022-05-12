@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="14dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     android:layout_marginTop="8dp"
-    android:layout_marginEnd="14dp"
     android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <TextView
+        fontPath="fonts/sf_pro_display_regular.OTF"
+        android:letterSpacing="-0.04"
         android:id="@+id/tvDayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,12 +19,13 @@
         android:gravity="center"
         android:textAllCaps="true"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
-        tools:text="SUN" />
+        android:textSize="11sp"
+        tools:text="SUN"
+        tools:ignore="MissingPrefix" />
 
     <TextView
         android:id="@+id/tvDayNumber"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/sf_pro_text_bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -32,7 +35,8 @@
         android:minWidth="28dp"
         android:minHeight="28dp"
         android:textColor="@color/text_color_calendar_day"
-        android:textSize="16sp"
+        android:textSize="17sp"
+        android:letterSpacing="-0.02"
         tools:ignore="MissingPrefix"
         tools:text="26" />
 </LinearLayout>

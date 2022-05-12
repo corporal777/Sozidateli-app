@@ -213,7 +213,7 @@ class ChatListPresenter
         chatsPagination.onItemTake(position)
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     override fun onChatOnScreen(chatId: Int) {
         val oldSubscription = chatUnreadMessageSubscriptions[chatId]
         if (oldSubscription != null && !oldSubscription.isDisposed) {

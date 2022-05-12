@@ -55,6 +55,12 @@ interface BaseContract {
         fun hideLoadingDialog()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showProgressBarLoadingDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideProgressBarLoadingDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
     }
 

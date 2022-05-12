@@ -1,47 +1,71 @@
 package com.example.holders
 
-import androidx.core.view.isVisible
+import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
+import android.view.View
+import android.widget.CompoundButton
 import com.example.R
 import com.example.data.models.Tag
-import com.example.ui.views.TagChip
+import com.example.ui.views.TagChipNew
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
-import setOnClickListener
 
 class TagsHorizontalListItem(
-        private val tags: List<Tag>,
-        private val onSelectedChange: () -> Unit,
-        private val onShowAllClick: () -> Unit
+    private val tags: List<Tag>,
+    private val onSelectedChange: () -> Unit,
+    private val onShowAllClick: () -> Unit
 ) : Item() {
 
+    @SuppressLint("ResourceAsColor", "ResourceType")
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            btnMoreTags.apply {
-                setOnClickListener(onShowAllClick)
-                isVisible = tags.size >= 3
-            }
+
             tagGroup.apply {
                 removeAllViews()
 
-//                LayoutInflater.from(context).inflate(R.layout.layout_tag_button, this, true).apply {
-//                    findViewById<Button>(R.id.btnTag).apply {
-//                        text = context.getText(R.string.schedule_show_all_tags)
-//                        setOnClickListener(onShowAllClick)
-//                    }
-//                }
-
-                tags.forEach { tag ->
-                    val chip = TagChip(context).apply {
+                val chip: (Tag) -> CompoundButton = { tag ->
+                    TagChipNew(context).apply {
+                        id = tag.id.toInt()
                         text = tag.name
                         isChecked = tag.isSelected
+
                         setOnCheckedChangeListener { _, isChecked ->
                             tag.isSelected = isChecked
                             onSelectedChange()
                         }
                     }
+                }
+                if (tags.size > 6) {
+                    val otherSize = tags.size - 5
+                    for (i in tags.indices) {
+                        tags[i].apply {
+                            addView(chip(this))
+                        }
+                        if (i == 5) break
+                    }
+                    addView(TagChipNew(context).apply {
+                        id = 1
+                        text = "Еще $otherSize "
+                        isChecked = false
+                        isClickable = true
+                        val img: Drawable =
+                            context.resources.getDrawable(R.drawable.ic_arrow_down_for_tags)
+                        setCompoundDrawablesWithIntrinsicBounds(null, null, img, null)
+                        setOnClickListener {
+                            for (i in 6 until tags.size) {
+                                tags[i].apply {
+                                    addView(chip(this))
+                                }
+                            }
+                            visibility = View.GONE
+                        }
 
-                    addView(chip)
+                    })
+                } else {
+                    tags.forEach { tag ->
+                        addView(chip(tag))
+                    }
                 }
             }
         }

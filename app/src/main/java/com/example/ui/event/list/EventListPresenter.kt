@@ -45,7 +45,8 @@ abstract class EventListPresenter<V : EventListContract.View>(
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
         }
-                .buildList(enablePlaceholders = true)
+                //.buildList(enablePlaceholders = true)
+                .buildList(enablePlaceholders = false)
 
         compositeDisposable += Observable.create(paginationList)
                 .performOnBackgroundOutOnMain()

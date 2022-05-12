@@ -62,7 +62,7 @@ class ActionButtonItem(
         else -> R.layout.item_action_button
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
         if (other !is ActionButtonItem) return false
 

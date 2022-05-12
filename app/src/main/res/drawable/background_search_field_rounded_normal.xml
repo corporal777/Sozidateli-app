@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <padding
+                android:left="@dimen/background_input_padding"
+                android:right="@dimen/background_input_padding_five" />
+            <solid android:color="@color/search_field_background_color"/>
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</layer-list>

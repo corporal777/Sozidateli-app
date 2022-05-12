@@ -81,6 +81,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.hideLoadingDialog()
     }
 
+    override fun showProgressBarLoadingDialog() {
+        mActivity?.showProgressBarLoadingDialog()
+    }
+
+    override fun hideProgressBarLoadingDialog() {
+        mActivity?.hideProgressBarLoadingDialog()
+    }
+
     override fun hideAllLoadingDialogs() {
         mActivity?.hideAllLoadingDialogs()
     }

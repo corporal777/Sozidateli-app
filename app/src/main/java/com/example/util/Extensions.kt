@@ -1,14 +1,30 @@
 package com.example.util
 
+import android.annotation.TargetApi
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.util.Log
+import android.util.Patterns
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupWindow
+import androidx.core.view.*
 import androidx.fragment.app.FragmentManager
+import coil.load
+import coil.request.ImageRequest
+import coil.size.Scale
+import coil.transform.Transformation
 import com.example.R
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import onTextChanged
+import java.io.File
 import java.util.*
 
 fun String.firstLetterToUppercase(): String {
@@ -70,3 +86,89 @@ fun PopupWindow.settings() {
 }
 
 fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")
+
+
+
+@TargetApi(21)
+fun Activity.setWindowTransparency(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
+    InsetUtil.removeSystemInsets(window.decorView, listener)
+    //window.navigationBarColor = Color.TRANSPARENT
+    //window.statusBarColor = Color.TRANSPARENT
+
+}
+
+
+fun View.updateMargin(
+    left: Int = marginLeft,
+    top: Int = marginTop,
+    right: Int = marginRight,
+    bottom: Int = marginBottom
+) = updateLayoutParams<ViewGroup.MarginLayoutParams> { updateMargins(left, top, right, bottom) }
+
+typealias OnSystemInsetsChangedListener = (statusBarSize: Int, navigationBarSize: Int) -> Unit
+
+
+object InsetUtil {
+
+    fun removeSystemInsets(view: View, listener: OnSystemInsetsChangedListener) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+
+            //view.updatePadding(bottom = insets.systemWindowInsetBottom + 10)
+            ViewCompat.onApplyWindowInsets(
+                view,
+                insets.replaceSystemWindowInsets(0, 0, 0, insets.systemWindowInsetBottom)
+            )
+        }
+    }
+
+}
+
+
+
+fun ImageView.setImage(
+    image: Any?, crossfad: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    //error: Int? = R.drawable.ic_profile,
+    error: Int? = null,
+    transformations: List<Transformation>? = null
+) {
+    val resImage: Any = image ?: ""
+    when (resImage) {
+        is Int -> load(resImage) {
+            setParams(crossfad, placeholder, error, transformations)
+        }
+        is String ->
+            if (Patterns.WEB_URL.matcher(resImage).matches())
+                load(resImage) {
+                    setParams(crossfad, placeholder, error, transformations)
+                }
+            else
+                load(File(resImage)) {
+                    setParams(crossfad, placeholder, error, transformations)
+                }
+        is Drawable ->
+            load(resImage) {
+                setParams(crossfad, placeholder, error, transformations)
+            }
+        is Bitmap -> load(resImage) {
+            setParams(crossfad, placeholder, error, transformations)
+        }
+    }
+}
+
+
+
+
+fun ImageRequest.Builder.setParams(
+    crossfad: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    error: Int? = R.drawable.background_image_placeholder,
+    transformations: List<Transformation>? = null
+) {
+    if (crossfad != null) crossfade(crossfad)
+    if (placeholder != null) placeholder(placeholder)
+    if (error != null) error(error)
+    if (!transformations.isNullOrEmpty())
+        transformations(transformations)
+    scale(Scale.FILL)
+}

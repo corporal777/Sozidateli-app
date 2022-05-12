@@ -69,7 +69,7 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     override fun setChatsData(chats: List<UserChat?>, favorites: List</*User*/UserDetail>) {
         if (chats.isEmpty()) {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))

@@ -102,6 +102,15 @@ fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completab
 
 }
 
+fun Completable.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Completable {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+
+
+}
+
 fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
     return this.doFinally(getHideLoadingAction(baseView, loadingDisposable))
@@ -110,6 +119,31 @@ fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<
             .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
 
 }
+
+fun <T> Single<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
+fun <T> Single<T>.withDelay(time : Long):Single<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+fun <T> Maybe<T>.withDelay(time : Long):Maybe<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+fun <T> Maybe<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
 
 fun <T> Maybe<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
@@ -147,6 +181,20 @@ fun <T> Observable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Obs
             .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
 }
 
+fun <T> Observable<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    var isFirstHidden = false
+    return this.doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnNext {
+            if (!isFirstHidden) {
+                isFirstHidden = true
+                hideProgressBarLoading(baseView, loadingDisposable)
+            }
+        }
+        .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+}
+
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
             .delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
@@ -160,16 +208,43 @@ private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable
             .subscribe()
 }
 
+private fun getLoadingProgressBarDisposable(baseView: BaseContract.LoadingView): Disposable {
+    return Completable.complete()
+        //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete {
+            baseView.showProgressBarLoadingDialog()
+        }
+        .doOnDispose {
+            baseView.hideProgressBarLoadingDialog()
+        }
+        .subscribe()
+}
+
 private fun getHideLoadingAction(baseView: BaseContract.LoadingView, loading: Disposable) = Action {
     hideLoading(baseView, loading)
+}
+
+private fun getHideProgressBarLoadingAction(baseView: BaseContract.LoadingView, loading: Disposable) = Action {
+    hideProgressBarLoading(baseView, loading)
 }
 
 private fun <T> getHideLoadingConsumer(baseView: BaseContract.LoadingView, loading: Disposable) = Consumer<T> {
     hideLoading(baseView, loading)
 }
 
+private fun <T> getHideProgressBarLoadingConsumer(baseView: BaseContract.LoadingView, loading: Disposable) = Consumer<T> {
+    hideProgressBarLoading(baseView, loading)
+}
+
+
 private fun hideLoading(baseView: BaseContract.LoadingView, loading: Disposable) {
     if (loading.isDisposed) baseView.hideLoadingDialog()
+    else loading.dispose()
+}
+
+private fun hideProgressBarLoading(baseView: BaseContract.LoadingView, loading: Disposable) {
+    if (loading.isDisposed) baseView.hideProgressBarLoadingDialog()
     else loading.dispose()
 }
 

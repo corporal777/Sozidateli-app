@@ -7,7 +7,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -139,4 +138,10 @@ class SearchChatFragment : AbstractSearchUserFragment<SearchChatPresenter>(), Se
     override fun provideSearchInterface(): SearchInterface = searchInterface
 
     override fun layout() = R.layout.fragment_chat_search
+
+
+    override fun createItemNew(itemData: List<UserDetail?>): Group {
+        TODO("Not yet implemented")
+    }
+
 }

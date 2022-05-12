@@ -143,6 +143,10 @@ interface NewApi {
     fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
 
     //+
+    @GET("v1/event/{id}")
+    fun getEventDetailsNew(@Path("id") eventId : String, @Query("binds") binds: String): Single<EventNew>
+
+    //+
     @FormUrlEncoded
     @POST("v1/event-mailing")
     fun mailToEvent(@Field("message") message: String, @Field("event") event: String,

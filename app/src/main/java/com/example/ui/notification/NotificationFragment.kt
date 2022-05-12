@@ -16,7 +16,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
 import kotlinx.android.synthetic.main.fragment_notification.*

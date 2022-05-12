@@ -81,6 +81,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun showAuthWebsiteFragment(code : String)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun showBadge(show : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

@@ -13,10 +13,9 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.example.R
-import com.example.data.models.Event
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import kotlinx.android.synthetic.main.fragment_qr_scanner.*
 import javax.inject.Inject
 import javax.inject.Provider

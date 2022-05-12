@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
@@ -33,35 +35,52 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
+import com.example.extensions.dp
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.auth.login.LoginFragment
+import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
+import com.example.ui.auth.register.sn.RegisterSnFragment
+import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.old.AboutEventFragment
+import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.location.map.redesign.MapFragmentNew
 import com.example.ui.event.rating.EventRatingFragmentArgs
+import com.example.ui.event.speakers.UserSpeakerFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
+import com.example.ui.qrscanner.QrScannerToAuthWebFragment
+import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
+import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
+import com.example.ui.subevent.SubeventFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
@@ -94,6 +113,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ContextCompat.getColor(this, R.color.navBarDefault)
     }
 
+
+    private lateinit var mBadgeNotification: BadgeDrawable
+
+
     private val navFragmentsLifecycleCallback =
         object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewCreated(
@@ -110,14 +133,40 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         is RecommendationsFragment,
                         is EventTabsFragment -> onOpenStartDestination()
                         else -> onOpenNotStartDestination()
-
-
                     }
-
                     onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
                 }
 
+
+                when(f) {
+                    is SplashFragment,
+                    is AuthWebsiteFragment,
+                    is WelcomeFragment,
+                    is LoginFragment,
+                    is StoriesFragment,
+                    is AuthorizationFragment,
+                    is RegisterEmailNewFragment,
+                    is QrScannerToAuthWebFragment,
+                    is RegisterSnFragment,
+                    is SearchTabsFragment,
+                    is SubeventFragment,
+                    is UserSpeakerFragment,
+                    is ActivitiesFragment,
+                    is MapFragmentNew,
+                    is ChatFragment -> {
+                        hideNavBar()
+                    }
+                    else -> showNavBar()
+                }
+
                 setupNavBarItems(f)
+
+
+                if (f is StoriesFragment || f is AboutEventFragment || f is AboutEventFragmentNew || f is AuthorizationFragment || f is AuthWebsiteFragment || f is QrScannerToAuthWebFragment || f is WelcomeFragment) {
+                    root.updateMargin(top = 0)
+                } else {
+                    root.updateMargin(top = 80)
+                }
 
                 if (f is ToolbarFragment) {
                     supportActionBar?.title = f.title
@@ -162,9 +211,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
             val fr = navHostFragment.childFragmentManager.fragments[0]
             val navContr = findNavController(R.id.navHostFragment)
+//            if (fr is MapFragmentNew){
+//                navContr.navigateUp()
+//            }
             if (fr is TagsFragment) {
                 fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
-                navContr.navigateUp()
+
             } else if (fr is AllActivitiesFragment) {
                 fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
                 navContr.navigateUp()
@@ -191,6 +243,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             )
         }
+
+        setWindowTransparency()
+
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
             navFragmentsLifecycleCallback,
             false
@@ -247,7 +302,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         val appLinkAction = intent.action
         if (Intent.ACTION_VIEW == appLinkAction) {
 
-            // QR_CODE_TO_AUTH_WEB = intent.dataString ?: "Invalid qr code"
+            QR_CODE_TO_AUTH_WEB = intent.dataString ?: ""
             var mCode = intent.dataString ?: ""
 
             if (!mCode.isNullOrEmpty() || mCode.contentEquals("code") || mCode.contentEquals("qr")) {
@@ -523,6 +578,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
     }
 
+
     override fun showStories() {
         findNavController().navigate(R.id.stories_fragment)
     }
@@ -683,9 +739,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onDestroy() {
-        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(
-            navFragmentsLifecycleCallback
-        )
+        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
         super.onDestroy()
     }
 
@@ -792,16 +846,47 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.welcome_fragment, R.id.splash_fragment, R.id.login_fragment, R.id.authorization_fragment, R.id.chat_fragment -> {
+                R.id.splash_fragment -> {
                     hideNavBar()
                 }
-                else -> showNavBar()
             }
         }
+
+        mBadgeNotification = mainNavBar.getOrCreateBadge(R.id.notification)
+        mBadgeNotification.backgroundColor = Color.RED
     }
 
-    private fun setupNavBarItems(f : Fragment){
-        when(f) {
+
+    override fun showBadge(show: Boolean) {
+        mBadgeNotification.isVisible = show
+        //showNotificationBadge(show)
+    }
+
+
+    private fun showNotificationBadge(canShow: Boolean) {
+        val bottomMenu = mainNavBar.getChildAt(0) as? BottomNavigationMenuView
+        val notificationItem = bottomMenu?.getChildAt(3) as? BottomNavigationItemView
+
+        val badge = LayoutInflater.from(this)
+            .inflate(R.layout.badge_layout_new, bottomMenu, false)
+
+        val badgeLayout: FrameLayout.LayoutParams =
+            FrameLayout.LayoutParams(badge?.layoutParams!!).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+                topMargin = resources.getDimension(R.dimen.design_bottom_navigation_margin).toInt()
+                leftMargin = 10.dp
+            }
+        if (canShow) {
+            notificationItem?.addView(badge, badgeLayout)
+        } else {
+            notificationItem?.removeView(badge)
+        }
+
+
+    }
+
+    private fun setupNavBarItems(f: Fragment) {
+        when (f) {
             is RecommendationsFragment -> {
                 mainNavBar.selectedItemId = mainNavBar.menu.findItem(R.id.main).itemId
             }
@@ -826,6 +911,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun getLoadingView(): View = flLoading
+
+
+    override fun getProgressBarLoadingView():View = progressBarLoading
+
 
     override fun layout() = R.layout.activity_main
 }

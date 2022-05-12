@@ -11,8 +11,7 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.extensions.*
 import com.example.holders.DayAllHeaderItem
 import com.example.holders.DayHeaderItem
-import com.example.holders.NoDataItem
-import com.example.holders.SubEventItem
+import com.example.ui.subevent.items.SubEventItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.subevent.SubeventFragmentArgs

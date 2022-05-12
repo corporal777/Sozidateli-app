@@ -1,0 +1,101 @@
+package com.example.ui.subevent.items
+
+import android.widget.CompoundButton
+import androidx.core.view.isInvisible
+import com.example.R
+import com.example.data.models.EventActivityModel
+import com.example.data.models.Tags
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.formatToIntervalNew
+import com.example.ui.views.TagChip
+import com.example.ui.views.UserSubscribeButton
+import com.example.util.weak
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.item_sub_event.*
+
+open class SubEventItem(
+    private val subEvent: EventActivityModel,
+    private val mode: Mode,
+    clickListener: OnSubEventClickListener,
+    private val canDoActions: Boolean = true
+) : Item(subEvent.id?.toLong()?: 0) {
+
+    private val clickListener by weak(clickListener)
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        viewHolder.apply {
+            tvTime.text = subEvent.holdingDate?.from.formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+            tvStatus.text = subEvent.title
+
+            when (mode) {
+                Mode.SCHEDULE -> {
+                    btnAction.apply {
+                        text = (if (subEvent.binds?.userCalendar != null) context.getString(R.string.sub_event_remove_from_schedule)
+                        else context.getString(R.string.sub_event_add_to_schedule))
+
+                        //isEnabled = subEvent.isInCalendar || subEvent.canAddToCalendar
+
+                        setOnClickListener {
+                            clickListener?.apply {
+                                if (subEvent.binds?.userCalendar != null) onRemoveFromScheduleClick(subEvent)
+                                else onAddToScheduleClick(subEvent)
+                            }
+                        }
+                        isInvisible = !canDoActions
+                    }
+
+                    btnSubscribe.isInvisible = true
+                }
+                Mode.FAVORITE -> {
+                    btnSubscribe.apply {
+                        btnAction.isInvisible = false
+                        setAction(if (subEvent.binds?.userFavorite != null) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
+                        setOnClickListener { clickListener?.onChangeFavoriteClick(subEvent) }
+                    }
+
+                    btnAction.isInvisible = true
+                }
+            }
+
+            root.setOnClickListener {
+                clickListener?.onSubEventClick(subEvent)
+            }
+
+            tagGroup.apply {
+                val createChip: (Tags) -> CompoundButton = {
+                    TagChip(context).apply {
+                        text = it.name
+                        isCompactTag = true
+                        isChecked = true
+                        isClickable = false
+                    }
+                }
+
+                removeAllViews()
+                val tags = subEvent.binds?.tag ?: emptyList()
+                tags.forEach { if (subEvent.tag?.contains(it.id) == true) addView(createChip(it))  }
+            }
+        }
+    }
+
+    override fun getLayout() = R.layout.item_sub_event
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
+        if (other !is SubEventItem) return false
+        if (subEvent != other.subEvent) return false
+        if (mode != other.mode) return false
+        return true
+    }
+
+    enum class Mode {
+        SCHEDULE, FAVORITE
+    }
+
+    interface OnSubEventClickListener {
+        fun onSubEventClick(subEvent: EventActivityModel)
+        fun onAddToScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
+        fun onChangeFavoriteClick(subEvent: EventActivityModel)
+    }
+}

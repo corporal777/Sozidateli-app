@@ -1,6 +1,8 @@
 package com.example.ui.event.activities
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
@@ -10,26 +12,32 @@ import com.example.data.models.*
 import com.example.extensions.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.schedule.EventScheduleContract
+import com.example.ui.search.SearchInterface
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
+import withProgressBarLoadingDialog
+import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.TemporalAdjusters.firstDayOfMonth
+import java.time.temporal.TemporalAdjusters.firstInMonth
 import java.util.*
-import java.util.Locale.filterTags
 import javax.inject.Inject
 
 @InjectViewState
 class ActivitiesPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository,
-        private val userEventData: UserEventData,
-        private val appData: AppData,
+    private val eventRepository: EventRepository,
+    private val userEventData: UserEventData,
+    private val appData: AppData,
 ) : BasePresenter<ActivitiesContract.View>(appData), ActivitiesContract.Presenter {
 
     lateinit var userEvent: UserEvent
+
+    lateinit var searchInterface: SearchInterface
 
     protected var currentDay: EventScheduleCalendarDay? = null
     protected var tags: List<Tag> = emptyList()
@@ -40,27 +48,167 @@ class ActivitiesPresenter
 
     var firstAttach = true
 
+    private var mStartEventDate = ""
+    private var mEndEventDate = ""
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getEventData() {
         compositeDisposable += userEventData.loadEventData(eventId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    Log.e("ActivitiesFragment", "Events: " + it.activity.activities.size)
-                    userEvent = it
-                    if (currentDay == null) {
-                        findDay()
-                    }
-                    canDoActions = userEvent.eventInfo.event.binds?.currentUserRegistration != null
-                    invalidateData()
+            .withCheckInternetConnectivity()
+            .withProgressBarLoadingDialog(viewState)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                Log.e("ActivitiesFragment", "Events: " + it.activity.activities.size)
+                userEvent = it
+                mStartEventDate = userEvent.eventInfo.event.holdingDate?.from ?: ""
+                mEndEventDate = userEvent.eventInfo.event.holdingDate?.to ?: ""
+                if (currentDay == null) {
+                    findDay()
                 }
+                canDoActions = userEvent.eventInfo.event.binds?.currentUserRegistration != null
+                invalidateData()
+            }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getAllDates(): ArrayList<String> {
+        val mStartDate = defaultServerDateFormatter.parse(mStartEventDate).time
+        val mEndDate = defaultServerDateFormatter.parse(mEndEventDate).time
+
+        val prevDate = defaultServerDateFormatter.parse(mStartEventDate).time - 1
+
+        val mStartYear = mStartDate.calendar().get(Calendar.YEAR)
+        val mStartMonth = mStartDate.calendar().get(Calendar.MONTH)
+
+        var mDayOfWeek = mStartDate.calendar().get(Calendar.DAY_OF_WEEK)
+        var mStartDay = mStartDate.calendar().get(Calendar.DAY_OF_MONTH) - 1
+
+
+        val mDates = arrayListOf<String>()
+        val calPrev = Calendar.getInstance()
+        val calStart = mStartDate.calendar()
+        val calEnd = mEndDate.calendar()
+
+        calPrev.set(Calendar.MONTH, calStart.get(Calendar.MONTH) - 1)
+
+        Log.e("DATE", calStart.get(Calendar.YEAR).toString() + " " + calStart.get(Calendar.MONTH))
+        Log.e("DATE", calEnd.get(Calendar.YEAR).toString() + " " + calEnd.get(Calendar.MONTH))
+        Log.e("DATE", calPrev.get(Calendar.YEAR).toString() + " " + calPrev.get(Calendar.MONTH))
+
+        val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        val maxDayPrev = calPrev.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val maxDayStart = calStart.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val maxDayEnd = calEnd.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        val prev = LocalDate.of(
+            calStart.get(Calendar.YEAR),
+            calStart.get(Calendar.MONTH),
+            calStart.get(Calendar.DAY_OF_MONTH)
+        )
+        val firstMonday = prev.with(firstInMonth(DayOfWeek.MONDAY))
+        val firstMondayValue = firstMonday.dayOfWeek.value
+        val firstDayOfMonth = prev.with(firstDayOfMonth())
+        val dayOfWeekValue = firstDayOfMonth.dayOfWeek.value
+
+        if (mDayOfWeek == 2) {
+            for (i in mStartDay until maxDayStart) {
+                calStart[Calendar.DAY_OF_MONTH] = i + 1
+                Log.e("DAY", calStart.get(Calendar.DAY_OF_MONTH).toString())
+                mDates.add(df.format(calStart.time))
+            }
+        } else {
+            when {
+                getMonday(mDayOfWeek) < mStartDay || getMonday(mDayOfWeek) == mStartDay -> {
+                    mStartDay -= getMonday(mDayOfWeek)
+                    for (i in mStartDay until maxDayStart) {
+                        calStart[Calendar.DAY_OF_MONTH] = i + 1
+                        Log.e("DAY", calStart.get(Calendar.DAY_OF_MONTH).toString())
+                        mDates.add(df.format(calStart.time))
+                    }
+
+                }
+                else -> {
+                    val prev = LocalDate.of(
+                        calStart.get(Calendar.YEAR),
+                        calStart.get(Calendar.MONTH),
+                        calStart.get(Calendar.DAY_OF_MONTH)
+                    )
+                    val lastDay = prev.with(TemporalAdjusters.lastDayOfMonth())
+                    val dayOfWeekValue = lastDay.dayOfWeek.value
+
+                    val startPrev = maxDayPrev - dayOfWeekValue
+                    for (i in startPrev until maxDayPrev) {
+                        calPrev[Calendar.DAY_OF_MONTH] = i + 1
+                        Log.e("DAY PREV", calPrev.get(Calendar.DAY_OF_MONTH).toString())
+                        mDates.add(df.format(calPrev.time))
+                    }
+                    for (i in 0 until maxDayStart) {
+                        calStart[Calendar.DAY_OF_MONTH] = i + 1
+                        Log.e("DAY", calStart.get(Calendar.DAY_OF_MONTH).toString())
+                        mDates.add(df.format(calStart.time))
+                    }
+
+                }
+            }
+        }
+
+        val mEndMonth = mEndDate.calendar().get(Calendar.MONTH)
+        var mEndDayOfWeek = mEndDate.calendar().get(Calendar.DAY_OF_WEEK)
+        var mEndDay = mEndDate.calendar().get(Calendar.DAY_OF_MONTH)
+
+        if (mEndDayOfWeek == 1) {
+            for (i in 0 until mEndDay) {
+                calEnd[Calendar.DAY_OF_MONTH] = i + 1
+                mDates.add(df.format(calEnd.time))
+            }
+        } else {
+            for (i in 0 until maxDayEnd) {
+                calEnd[Calendar.DAY_OF_MONTH] = i + 1
+                mDates.add(df.format(calEnd.time))
+                if (calEnd[Calendar.DAY_OF_MONTH] > mEndDay && calEnd.get(Calendar.DAY_OF_WEEK) == 1) {
+                    break
+                }
+                if (calEnd[Calendar.DAY_OF_MONTH] == maxDayEnd && calEnd.get(Calendar.DAY_OF_WEEK) != 1) {
+                    val currentDW = (7 - calEnd.get(Calendar.DAY_OF_WEEK)) + 1
+                    val calNext = Calendar.getInstance()
+                    calNext.set(Calendar.MONTH, calEnd.get(Calendar.MONTH) + 1)
+                    for (k in 0 until currentDW) {
+                        calNext[Calendar.DAY_OF_MONTH] = k + 1
+                        mDates.add(df.format(calNext.time))
+                    }
+                }
+            }
+        }
+
+
+        return mDates
+
+    }
+
+
     //private val onLoadingComplete: () -> Unit = {
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun invalidateData() {
         viewState.apply {
             tags = userEvent.activity.groups.plus(userEvent.activity.tags)
-            val days = userEventData.createCalendarDays(userEvent.activity.dates.map { defaultServerDateFormatter.parse(it.date).time })
-            daysSize = days.size
+            val eventDays = userEventData.createCalendarDays(userEvent.activity.dates.map {
+                defaultServerDateFormatter.parse(it.date).time
+            })
+
+            var days = userEventData.createCalendarDaysNew(getAllDates().map {
+                defaultServerDateFormatter.parse(it).time
+            })
+
+            days.forEachIndexed { index, day ->
+                eventDays.forEach { eventDay ->
+                    if (day.millis == eventDay.millis){
+                        days[index] = eventDay
+                    }
+                }
+            }
+
+            daysSize = days?.size!!
             setDays(days)
 
             if (tagsNew != null) {
@@ -76,6 +224,7 @@ class ActivitiesPresenter
 
             setTags(tags)
             currentDay?.let { day ->
+                Log.e("WEEK", currentDay?.week.toString())
                 selectDay(day)
                 scrollToDay(day)
             }
@@ -84,8 +233,10 @@ class ActivitiesPresenter
         invalidateDay()
     }
 
-    fun getTagsList() = userEvent.activity.groups.plus(userEvent.activity.tags).map { NewTags(it.id, it.name, it.isSelected) }
+    fun getTagsList() = userEvent.activity.groups.plus(userEvent.activity.tags)
+        .map { NewTags(it.id, it.name, it.isSelected) }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun attachView(view: ActivitiesContract.View?) {
         super.attachView(view)
         if (firstAttach) {
@@ -96,26 +247,31 @@ class ActivitiesPresenter
 
     private fun findDay() {
         compositeDisposable += findNearestDayFromEventDays(System.currentTimeMillis())
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onError = {
-                            Log.e("ActivitiesFragment", "Date error")
-                            viewState.apply { showEmptyEventPlaceholder() }
-                            onReceiveError(it)
-                        },
-                        onComplete = {
-                            /*onLoadingComplete*/
-                        })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    Log.e("ActivitiesFragment", "Date error")
+                    viewState.apply { showEmptyEventPlaceholder() }
+                    onReceiveError(it)
+                },
+                onComplete = {
+                    /*onLoadingComplete*/
+                })
     }
 
     private fun findNearestDayFromEventDays(date: Long): Completable {
         return Completable.fromAction {
-            val days = /*userEventData.days ?: emptyList()*/userEventData.createCalendarDays(userEvent.activity.dates.map { defaultServerDateFormatter.parse(it.date).time })
+            val days = /*userEventData.days ?: emptyList()*/
+                userEventData.createCalendarDays(userEvent.activity.dates.map {
+                    defaultServerDateFormatter.parse(it.date).time
+                })
             val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
             val other = Calendar.getInstance()
             currentDay = days.find {
                 it.hasEvents &&
-                        (dateCalendar.isSameDay(other.apply { timeInMillis = it.millis }) || it.millis - date > 0)
+                        (dateCalendar.isSameDay(other.apply {
+                            timeInMillis = it.millis
+                        }) || it.millis - date > 0)
             } ?: days.lastOrNull()
         }
     }
@@ -143,18 +299,29 @@ class ActivitiesPresenter
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
-                subEvent,
-                eventRepository.addEventToCalendarWithResult(EventCalendarBody(appData.getId(),
-                        EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id?: 0)))
-                        .flatMapCompletable { subEv -> Completable.fromAction { subEvent.binds?.userCalendar = subEv } }
+            subEvent,
+            eventRepository.addEventToCalendarWithResult(
+                EventCalendarBody(
+                    appData.getId(),
+                    EventCalendarBodyEntity(
+                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY,
+                        subEvent.id ?: 0
+                    )
+                )
+            )
+                .flatMapCompletable { subEv ->
+                    Completable.fromAction {
+                        subEvent.binds?.userCalendar = subEv
+                    }
+                }
         )
     }
 
     override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
-                subEvent,
-                eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
-                        .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
+            subEvent,
+            eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
+                .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
         )
     }
 
@@ -162,12 +329,17 @@ class ActivitiesPresenter
         viewState.showAllTags()
     }
 
-    protected open fun processChangeEventInCalendarStatusRequest(subEvent: EventActivityModel, request: Completable) {
+
+    protected open fun processChangeEventInCalendarStatusRequest(
+        subEvent: EventActivityModel,
+        request: Completable
+    ) {
         compositeDisposable += request
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.updateSubevent(subEvent) }
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            //.withLoadingDialog(viewState)
+            .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
     private fun invalidateDay() {
@@ -184,8 +356,48 @@ class ActivitiesPresenter
 
         viewState.apply {
             Log.e("ActivitiesFragment", "Events: " + subEvents.size + " invalidateDay")
-            setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
-            if (subEvents.isEmpty()) {
+            //setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
+            if (!subEvents.isNullOrEmpty()) {
+                setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
+                currentDay?.let { day -> showCurrentDay(day, daysSize) }
+                hidePlaceholder()
+            } else {
+                Log.e("ActivitiesFragment", "Activities error")
+                showEmptyDayPlaceholder()
+                hideCurrentDay()
+            }
+//            if (subEvents.isEmpty()) {
+//
+//            } else {
+//                setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
+//                currentDay?.let { day -> showCurrentDay(day, daysSize) }
+//                hidePlaceholder()
+//            }
+        }
+    }
+
+    private fun invalidateResultOfSearchActivities(searchWord: String) {
+        val day = currentDay ?: return daySubEventsError()
+        val selectedTags = tags.filter { it.isSelected }
+        val subEvents = userEvent.activity.activities.let {
+            it.filter { event ->
+                val date = defaultServerDateTimeFormatter.parse(event.holdingDate?.from)
+                filterSubEvent(event)
+                        && filterTags(event, selectedTags)
+                        && date.time >= day.millis.startOfDay() && date.time <= day.millis.endOfDay()
+            }
+        }
+
+        val resultSubEvents = subEvents.filter { eventNew ->
+            eventNew.description?.contains(searchWord, true) ?: false || eventNew.title?.contains(
+                searchWord, true
+            ) ?: false || isSameSpeaker(searchWord, eventNew)
+        }
+
+        viewState.apply {
+            Log.e("ActivitiesFragment", "Found Events: " + resultSubEvents.size + " invalidateDay")
+            setSubEvents(resultSubEvents, if (mustFilterTags()) selectedTags else emptyList())
+            if (resultSubEvents.isEmpty()) {
                 Log.e("ActivitiesFragment", "Activities error")
                 showEmptyDayPlaceholder()
                 hideCurrentDay()
@@ -213,4 +425,39 @@ class ActivitiesPresenter
 
     fun filterSubEvent(subEvent: EventActivityModel): Boolean = true
     fun mustFilterTags(): Boolean = true
+
+    override fun onSearchTextChange(text: String) {
+        invalidateResultOfSearchActivities(text)
+        onSearchTextSubmit(text)
+    }
+
+    override fun onSearchTextSubmit(text: String) {
+        invalidateResultOfSearchActivities(text)
+        searchInterface.apply {
+            searchText = text
+            searchTextCallback?.invoke()
+        }
+    }
+
+
+    private fun isSameSpeaker(text: String, event: EventActivityModel): Boolean {
+        var isSame = false
+        event.binds?.member?.forEach {
+            it.binds?.user?.name?.contains(text, ignoreCase = true)
+            isSame = true
+        }
+        return isSame
+
+    }
+
+    private fun getMonday(day: Int): Int {
+        var mDay = 0
+        if (day != 2 && day != 1) {
+            mDay = day - 2
+        }
+        if (day == 1) {
+            mDay = day + 5
+        }
+        return mDay
+    }
 }

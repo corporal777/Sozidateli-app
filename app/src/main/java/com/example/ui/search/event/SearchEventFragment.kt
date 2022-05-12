@@ -3,7 +3,7 @@ package com.example.ui.search.event
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -12,25 +12,29 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.EventPhoneModel
+import com.example.data.models.SearchFilter
 import com.example.extensions.getAffiliationString
-import com.example.holders.EventDataListItem
-import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
 import com.example.holders.PlaceholderItem
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.holders.redesign.EventGroupNew
+import com.example.holders.redesign.SearchItemLabel
+import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
 import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, SearchFilter.EventNew>(), SearchEventContract.View {
+class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, SearchFilter.EventNew>(),
+    SearchEventContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchEventPresenter
@@ -41,11 +45,17 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     @ProvidePresenter
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
+    private val mContentSection = Section()
+
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionCancel(event: String, registrationId: String?) =
+            presenter.onActionCancel(event, registrationId)
+
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
+            presenter.onActionWriteToOrganization(emails)
+
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
@@ -53,16 +63,16 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
         AlertDialog.Builder(requireContext())
-                .setItems(
-                        emails.map { it.getAffiliationString(underlinedEmail = true) }
-                                .toTypedArray()
-                ) { dialog, which ->
-                    val email = emails[which]
-                    presenter.onWriteToOrganizationEmailChosen(email)
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+            .setItems(
+                emails.map { it.getAffiliationString(underlinedEmail = true) }
+                    .toTypedArray()
+            ) { dialog, which ->
+                val email = emails[which]
+                presenter.onWriteToOrganizationEmailChosen(email)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun showWriteToOrganization(email: EventPhoneModel) {
@@ -75,45 +85,99 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
+        findNavController().navigate(
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+            R.id.request_fragment,
+            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun selectEvent() {
-        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+        findNavController().navigate(
+            R.id.event_tabs_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
-                .build())
+                .build()
+        )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mCanShowEventAndOrganizations = true
+    }
+
+    override fun createItemNew(itemData: List<EventNew?>): Group {
+        var label = ""
+        var title = ""
+
+        val mSection = Section()
+        mSection.update(itemData.map {
+            if (it == null) {
+                label = ""
+                PlaceholderItem(PlaceholderItem.Type.EVENT)
+            } else {
+                title = when(itemData.size){
+                    1 -> {
+                        "мероприятие"
+                    }
+                    2 -> {
+                        "мероприятия"
+                    }
+                    else -> "мероприятий"
+                }
+                label = itemData.size.toString() + " " + title + " найдено"
+                EventGroupNew(
+                    it,
+                    onEventClickListener,
+                )
+
+            }
+        })
+        headerSection.update(listOf(SearchItemLabel(label)))
+        return mSection
     }
 
     override fun createItem(itemData: EventNew?): Group {
+
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventGroup(
-                itemData.id.toString(),
-                itemData.status?.value,
-                itemData.binds?.currentUserRegistration?.status?.value,
-                itemData.binds?.organization?.backgroundColor?.value,
-                itemData.image?.uri,
-                EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
-                itemData.binds?.organization?.email,
-                (itemData.status?.value?: "") != Event.Status.REGISTRATION,
+        else {
+            return EventGroupNew(
+                itemData,
                 onEventClickListener,
-                EventDataListItem(
-                        -(itemData.id?.toLong()?: 0),
-                        itemData.name,
-                        itemData.address?.getShortAddress(),
-                        itemData.holdingDate?.from,
-                        itemData.binds?.getFirstActionStartDate()
-                ).apply {
-                    showStartTime = false
-                },
-                itemData.userAgreement?.name?: itemData.userAgreement?.uri,
-                itemData.binds?.eventRegistrationState,
-                true,
-                itemData.binds?.currentUserRegistration?.id?.toString()
-        )
+            )
+        }
+
+        //return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
+//        else EventGroup(
+//                itemData.id.toString(),
+//                itemData.status?.value,
+//                itemData.binds?.currentUserRegistration?.status?.value,
+//                itemData.binds?.organization?.backgroundColor?.value,
+//                itemData.image?.uri,
+//                EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
+//                itemData.binds?.organization?.email,
+//                (itemData.status?.value?: "") != Event.Status.REGISTRATION,
+//                onEventClickListener,
+//                EventDataListItem(
+//                        -(itemData.id?.toLong()?: 0),
+//                        itemData.name,
+//                        itemData.address?.getShortAddress(),
+//                        itemData.holdingDate?.from,
+//                        itemData.binds?.getFirstActionStartDate()
+//                ).apply {
+//                    showStartTime = false
+//                },
+//                itemData.userAgreement?.name?: itemData.userAgreement?.uri,
+//                itemData.binds?.eventRegistrationState,
+//                true,
+//                itemData.binds?.currentUserRegistration?.id?.toString()
+//        )
+
     }
 
     @SuppressLint("InflateParams")
@@ -127,7 +191,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 }
                 onDataSelectedListener = {
                     filter.fullAddress = it
-x                }
+                    x
+                }
             }
             initTextFilter(etName, filter.name) { filter.name = it }
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
@@ -138,7 +203,14 @@ x                }
                 tilTheme.isVisible = false
                 tilSpec.isVisible = false
             } else {
-                initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
+                initInterests(
+                    interests,
+                    tvTheme,
+                    tilSpec,
+                    tvSpec,
+                    filter.theme,
+                    filter.spec
+                ) { theme, spec ->
                     filter.theme = theme
                     filter.spec = spec
                 }
@@ -152,13 +224,13 @@ x                }
             } else {
                 tilFormat.isVisible = true
                 initDropDownView(
-                        tvFormat,
-                        formats,
-                        formats.find { it.id == filter.format }?.name,
-                        null,
-                        { it.name?: "" },
-                        { it?.id },
-                        { filter.format = it }
+                    tvFormat,
+                    formats,
+                    formats.find { it.id == filter.format }?.name,
+                    null,
+                    { it.name ?: "" },
+                    { it?.id },
+                    { filter.format = it }
                 )
             }
         }
@@ -176,4 +248,6 @@ x                }
             tvFormat.text = null
         }
     }
+
+
 }

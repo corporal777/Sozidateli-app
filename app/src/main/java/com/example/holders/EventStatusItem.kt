@@ -307,7 +307,7 @@ class EventStatusItem(
 
     override fun getLayout() = R.layout.item_event_status
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
         if (other !is EventStatusItem) return false
 

@@ -19,9 +19,9 @@ import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment
-import com.example.ui.event.about.AboutEventFragment.Companion.ABOUT_FROM_EVENT
-import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
+import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_EVENT
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -79,7 +79,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             val tabId = when (f) {
                 is EventMyScheduleFragment -> R.id.tab_event_my_schedule
                 is EventCompleteScheduleFragment -> R.id.tab_event_schedule
-                is AboutEventFragment -> R.id.about_event
+                is AboutEventFragmentNew -> R.id.about_event
                 is EventLocationFragment -> R.id.event_location
                 else -> throw IllegalArgumentException("No tab fo fragment $f")
             }
@@ -163,7 +163,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         val fragment = when (tabId) {
             R.id.tab_event_my_schedule -> EventMyScheduleFragment()
             R.id.tab_event_schedule -> EventCompleteScheduleFragment()
-            R.id.about_event -> AboutEventFragment()
+            R.id.about_event -> AboutEventFragmentNew()
             R.id.event_location -> EventLocationFragment()
             else -> throw IllegalArgumentException("No fragment fo tab $tabId")
         }

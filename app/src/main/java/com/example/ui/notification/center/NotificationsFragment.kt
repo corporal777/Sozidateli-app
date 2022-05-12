@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -15,9 +14,7 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragment
-import com.example.ui.notification.NotificationFragmentDirections
-import com.example.ui.notification.NotificationFragmentDirections.notificationToAboutEventFragment
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -69,7 +66,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
         findNavController().navigate(
             NotificationsFragmentDirections.notificationToAboutEventFragment(
                 it,
-                AboutEventFragment.ABOUT_FROM_OTHER
+                AboutEventFragmentNew.ABOUT_FROM_OTHER
             )
         )
     }

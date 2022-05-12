@@ -6,6 +6,8 @@ import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.vk.sdk.VKSdk
+import com.yandex.metrica.YandexMetrica
+import com.yandex.metrica.YandexMetricaConfig
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
@@ -32,6 +34,10 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
     override fun onCreate() {
         super.onCreate()
+
+        val config: YandexMetricaConfig = YandexMetricaConfig.newConfigBuilder("faf7bdc3-762b-4c6a-8813-a6a8fb26f448").build()
+        YandexMetrica.activate(applicationContext, config)
+        YandexMetrica.enableActivityAutoTracking(this)
 
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
         // This process is dedicated to LeakCanary for heap analysis.

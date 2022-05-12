@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            app:layout_constraintBottom_toTopOf="@id/organization_cl"
+            android:letterSpacing="0.02"
+            android:textStyle="bold"
+            android:lineSpacingExtra="2sp"
+            android:id="@+id/tvHeader"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:text="Мероприятие проводит"
+            android:textColor="@color/vk_black"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintBottom_toTopOf="@id/tvInfo"
+            android:layout_width="match_parent"
+            android:id="@+id/organization_cl"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvHeader">
+
+
+            <LinearLayout
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/background_image_with_stroke"
+                android:layout_marginStart="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/cv_photo"
+                android:layout_width="90dp"
+                android:layout_height="90dp">
+
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:id="@+id/ivOrganizationLogo"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/img_test" />
+
+            </LinearLayout>
+
+
+
+            <TextView
+                android:letterSpacing="-0.02"
+                android:maxLines="2"
+                android:id="@+id/tvOrganizationLabel"
+                fontPath="fonts/sf_pro_display_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:text="ООО Сбербанк"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cv_photo"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <com.example.ui.views.UserSubscribeButton
+                android:layout_marginStart="7dp"
+                android:id="@+id/btnActionFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cv_photo"
+                app:subscribeAction="favorite" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            app:layout_constraintBottom_toTopOf="@id/tvGoTo"
+            android:textStyle="bold"
+            android:id="@+id/tvInfo"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="25dp"
+            android:paddingBottom="5dp"
+            android:letterSpacing="0.02"
+            android:text="Информация"
+            android:textColor="@color/vk_black"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/organization_cl" />
+
+        <TextView
+            app:layout_constraintBottom_toTopOf="@id/tvGetDocuments"
+            android:layout_marginTop="5dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/custom_text_background_selectable"
+            android:id="@+id/tvGoTo"
+            fontPath="fonts/sf_pro_text_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:letterSpacing="-0.02"
+            android:text="Как добраться"
+            android:textColor="#C3996C"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvInfo" />
+
+
+        <TextView
+            app:layout_constraintBottom_toTopOf="@id/tvSafeCovid"
+            android:layout_marginTop="5dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/tvGetDocuments"
+            fontPath="fonts/sf_pro_text_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:letterSpacing="-0.02"
+            android:text="Какие документы взять с собой"
+            android:textColor="#C3996C"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvGoTo" />
+
+
+        <TextView
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="5dp"
+            android:id="@+id/tvSafeCovid"
+            fontPath="fonts/sf_pro_text_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:letterSpacing="-0.02"
+            android:text="Меры по противодействию COVID-19"
+            android:textColor="#C3996C"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvGetDocuments" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

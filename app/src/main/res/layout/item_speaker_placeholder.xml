@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shimmer_view_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/itemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/profile_padding_start"
+        android:layout_marginEnd="@dimen/profile_padding_start"
+        android:layout_marginBottom="@dimen/event_item_margin_bottom"
+        android:background="@drawable/background_event"
+        android:minHeight="@dimen/event_item_height">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/tvOrganizationLabel"
+                android:layout_width="140dp"
+                android:layout_height="180dp"
+                android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
+                android:background="@color/placeholder"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/tvEventDate"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/event_item_date_text_size"
+                android:layout_marginStart="@dimen/profile_height_field"
+                android:layout_marginEnd="@dimen/profile_height_field"
+                android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
+                android:background="@color/placeholder"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvOrganizationLabel" />
+
+            <View
+                android:id="@+id/tvEventType"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/event_item_event_name_text_size"
+                android:layout_marginStart="@dimen/profile_avatar_size"
+                android:layout_marginEnd="@dimen/profile_avatar_size"
+                android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
+                android:background="@color/placeholder"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEventDate" />
+
+            <View
+                android:id="@+id/tvEventLabel"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/event_item_event_name_text_size"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:background="@color/placeholder"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEventType" />
+
+            <View
+                android:id="@+id/btnGoToEvent"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/action_button_height"
+                android:layout_marginStart="@dimen/profile_height_field"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/profile_height_field"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/background_corners"
+                android:theme="@style/ViewPlaceholder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvEventLabel"
+                app:layout_constraintVertical_bias="1.0" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

@@ -1,20 +1,16 @@
 package com.example.holders
 
-import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.Notification
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
-import com.example.ui.event.about.AboutEventFragment
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item

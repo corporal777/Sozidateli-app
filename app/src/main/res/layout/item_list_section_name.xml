@@ -7,8 +7,9 @@
     android:background="@color/list_background">
 
     <TextView
+        android:letterSpacing="0.02"
         android:id="@+id/tvName"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -16,7 +17,7 @@
         android:paddingStart="@dimen/margin_horizontal_default"
         android:paddingTop="20dp"
         android:paddingEnd="@dimen/margin_horizontal_default"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

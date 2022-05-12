@@ -1,41 +1,69 @@
 package com.example.holders
 
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.util.Linkify
+import android.util.Log
+import android.view.View
+import android.widget.CompoundButton
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.SubeventInfo
-import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.formatToInterval
+import com.example.data.models.*
+import com.example.extensions.*
+import com.example.ui.views.TagChipNew
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
+import com.google.android.material.chip.Chip
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.fragment_about_event_new.*
 import kotlinx.android.synthetic.main.item_subevent_info.*
+import kotlinx.android.synthetic.main.item_subevent_info.tvDescription
+import kotlinx.android.synthetic.main.item_subevent_info.tvLocation
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import setOnClickListener
+import java.text.SimpleDateFormat
+import java.util.*
 
 open class SubeventInfoItem(
-        private val subevent: EventActivityModel,
-        private val onFavoriteClickListener: () -> Unit
-) : Item(subevent.id?.toLong()?:0) {
+    private val subEvent: EventActivityModel,
+    //private val onFavoriteClickListener: () -> Unit,
+    private val onAddClickListener: (subEvent: EventActivityModel) -> Unit,
+    private val onRemoveClickListener: (subEvent: EventActivityModel) -> Unit,
+    private val onTagCLick: (id: Int) -> Unit
+) : Item(subEvent.id?.toLong() ?: 0) {
 
+
+    private val dateFrom = subEvent.holdingDate?.from
+    private val dateTo = subEvent.holdingDate?.to
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            val time = subevent.holdingDate?.from
-                    .formatToInterval(subevent.holdingDate?.to, defaultServerDateTimeFormatter, true)
-                    ?.let {
-                        StringBuilder(it)
-                                .append(" ")
-                                .append(tvTitle.context.getString(R.string.sub_event_time_msk))
-                    }
-            tvTime.text = time
-            tvTitle.text = subevent.title
+            val time = subEvent.holdingDate?.from
+                .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+                ?.let {
+                    StringBuilder(it)
+                        .append(" ")
+                    //.append(tvTitle.context.getString(R.string.sub_event_time_msk))
+                }
+
+            val dayAndMonth =
+                subEvent.holdingDate?.from.formatToSubEventDatesInterval(subEvent.holdingDate?.to)
+
+
+            tvTime.text = "$dayAndMonth $time"
+            tvTitle.text = subEvent.title
             tvDescription.apply {
-                text = subevent.description
-                isVisible = !subevent.description.isNullOrEmpty()
+                text = subEvent.description
+                isVisible = !subEvent.description.isNullOrEmpty()
             }
 
-            val message = subevent.description
+            val message = subEvent.description
 
             tvDescription.apply {
                 isVisible = !message.isNullOrEmpty()
@@ -44,15 +72,69 @@ open class SubeventInfoItem(
             }
 
             tvLocation.apply {
-                val locations = subevent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
+                val locations =
+                    subEvent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
                 text = locations
                 isVisible = locations?.isNotEmpty() == true
             }
 
-            btnSubscribe.apply {
-                setAction(this, subevent.binds?.userFavorite != null)
-                setOnClickListener(onFavoriteClickListener)
+            btnAddToTimetable.apply {
+
+                if (subEvent.binds?.userCalendar != null) {
+                    text = context.getString(R.string.sub_event_remove_from_schedule)
+                    setOnClickListener {
+                        onRemoveClickListener(subEvent)
+                    }
+                } else {
+                    text = context.getString(R.string.sub_event_add_to_schedule)
+                    setOnClickListener {
+                        onAddClickListener(subEvent)
+                    }
+                }
+
+
             }
+
+//            if (!subEvent.binds?.tag.isNullOrEmpty()) {
+//                subEvent.binds?.tag?.forEach {
+//                    tagsGroup.addView(createTagChip(viewHolder.root.context, it))
+//                }
+//            }
+
+            tagsGroup.apply {
+                val createChip: (Tags) -> CompoundButton = {
+                    TagChipNew(context).apply {
+                        id = it.id ?: 0
+                        text = it.name
+                        isChecked = false
+                        isClickable = false
+                        setOnClickListener {
+                            onTagCLick(id)
+                        }
+                    }
+                }
+
+                removeAllViews()
+
+                val listTags = subEvent?.binds?.tag
+                val needTags = subEvent.tag
+                if (!listTags.isNullOrEmpty() && !needTags.isNullOrEmpty()) {
+                    listTags.forEach { tag ->
+                        needTags.forEach { id ->
+                            if (tag.id == id) {
+                                addView(createChip(tag))
+                            }
+                        }
+                    }
+
+                }
+            }
+
+
+//            btnSubscribe.apply {
+//                setAction(this, subevent.binds?.userFavorite != null)
+//                setOnClickListener(onFavoriteClickListener)
+//            }
         }
     }
 
@@ -60,13 +142,94 @@ open class SubeventInfoItem(
         val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewHolder, position, payloads)
         else {
-            if (payload is Boolean) setAction(viewHolder.btnSubscribe, payload)
+            //if (payload is Boolean) setAction(viewHolder.btnSubscribe, payload)
+            //if (payload is Boolean) setAction(viewHolder.btnAddToTimetable, payload)
         }
     }
 
     private fun setAction(button: UserSubscribeButton, isInFavorites: Boolean) {
         button.setAction(if (isInFavorites) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
     }
+
+
+    private fun String?.formatToSubEventDatesInterval(finish: String?): String? {
+
+
+        val start = this
+
+        val startDate = start?.parseToDate(defaultServerDateTimeFormatter)
+        val endDate = finish?.parseToDate(defaultServerDateTimeFormatter)
+        val startCalendar = startDate?.calendar()
+        val endCalendar = endDate?.calendar()?.takeIf { startCalendar?.isSameDay(it) != true }
+        val startMonth = startCalendar?.get(Calendar.MONTH)
+        val endMonth = endCalendar?.get(Calendar.MONTH)
+        val startYear = startCalendar?.get(Calendar.YEAR)
+        val endYear = endCalendar?.get(Calendar.YEAR)
+
+        val startDay = startCalendar?.get(Calendar.DAY_OF_MONTH)
+        val endDay = startCalendar?.get(Calendar.DAY_OF_MONTH)
+
+        Log.e("DATE", startDay.toString())
+        Log.e("MONTH", startMonth.toString())
+
+        val startFormatter = if (startCalendar != null) {
+            SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_NO_YEAR, Locale.getDefault())
+        } else {
+            null
+        }
+
+        val endFormatter = if (endCalendar != null) {
+            SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_NO_YEAR, Locale.getDefault())
+        } else {
+            null
+        }
+
+        val startDayFormatter = if (startCalendar != null) {
+            SimpleDateFormat("EEE", Locale.getDefault())
+        } else {
+            null
+        }
+        val endDayFormatter = if (endCalendar != null) {
+            SimpleDateFormat("EEE", Locale.getDefault())
+        } else {
+            null
+        }
+
+        val dayAndMonth = StringBuilder().apply {
+            if (startFormatter != null) {
+                if (startFormatter != null && endFormatter != null && startYear == endYear) {
+                    if (startFormatter != null && endFormatter != null && startMonth == endMonth) {
+                        append(startCalendar?.get(Calendar.MONTH))
+                        append(" - ")
+                    } else {
+                        append(
+                            startFormatter.format(startDate) + " (" + startDayFormatter?.format(
+                                startDate
+                            ) + "),"
+                        )
+                        if (endFormatter != null) append(" - ")
+                    }
+                } else {
+                    //append(startFormatter.format(startDate))
+                    append(
+                        startFormatter.format(startDate) + " (" + startDayFormatter?.format(
+                            startDate
+                        ) + "),"
+                    )
+                    if (endFormatter != null) append(" - ")
+                }
+            }
+            if (endFormatter != null && startFormatter != null)
+                if (startDay == endDay) {
+                    if (endFormatter != null)
+                        append(endFormatter.format(endDate) + " (" + endDayFormatter?.format(endDate) + "),")
+                }
+
+        }.toString()
+
+        return dayAndMonth
+    }
+
 
     override fun getLayout() = R.layout.item_subevent_info
 }

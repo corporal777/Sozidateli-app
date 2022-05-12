@@ -20,11 +20,17 @@ interface AuthWebsiteContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEventList()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showContent()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideContent()
+
 
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun getEnterData()
+
         fun onConfirmEnterToWebsiteClick()
         fun onDoNotConfirmToEnterWebsiteClick()
         fun initToken(str : String)

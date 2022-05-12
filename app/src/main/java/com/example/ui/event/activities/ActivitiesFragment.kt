@@ -1,11 +1,14 @@
 package com.example.ui.event.activities
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
+import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -15,17 +18,27 @@ import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragment
+import com.example.holders.redesign.EventActivityItem
+import com.example.holders.redesign.ScreenHeaderItem
+import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.activities.items.CalendarHorizontalListPager
+import com.example.ui.event.activities.items.EmptyActivityItem
+import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_activitys.*
+import kotlinx.android.synthetic.main.fragment_activitys.ivBack
+import kotlinx.android.synthetic.main.fragment_activitys.recyclerView
+import kotlinx.android.synthetic.main.fragment_activitys.shadow
+import kotlinx.android.synthetic.main.fragment_subevent.*
+import kotlinx.android.synthetic.main.fragment_user_speaker.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragment {
+class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, SearchInterfaceProvider {
 
     @InjectPresenter
     lateinit var presenter: ActivitiesPresenter
@@ -33,11 +46,19 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
     @Inject
     lateinit var presenterProvider: Provider<ActivitiesPresenter>
 
+    private val searchInterface = SearchInterface()
+    private var mDy: Int = 0
+
     @ProvidePresenter
     fun providePresenter(): ActivitiesPresenter = presenterProvider.get().apply {
         eventId = ActivitiesFragmentArgs.fromBundle(requireArguments()).eventId.toString()
+        searchInterface = this@ActivitiesFragment.searchInterface.apply {
+
+        }
     }
 
+    private val headerSection = Section()
+    private val searchSection = Section()
     private val tagsSection = Section()
     private val calendarSection = Section()
     private val daySection = Section()
@@ -45,7 +66,9 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
     private val allSection = Section()
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
+            add(headerSection)
             add(calendarSection)
+            add(searchSection)
             add(allSection)
             add(tagsSection)
             add(daySection)
@@ -53,8 +76,9 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
         }
     }
 
-    private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
-        override fun onSubEventClick(subEvent: EventActivityModel) {
+    private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
+
+        override fun onActivityClick(subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
 
@@ -66,22 +90,41 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
             presenter.onRemoveFromScheduleClick(subEvent)
         }
 
-        override fun onChangeFavoriteClick(subEvent: EventActivityModel) {
-            // do nothing
+        override fun onUpdateScheduleState(subEvent: EventActivityModel) {
+
         }
+
     }
 
-    private var calendarItem: CalendarHorizontalListItem? = null
+    //private var calendarItem: CalendarHorizontalListItem? = null
+    private var calendarItem: CalendarHorizontalListPager? = null
 
     override fun layout(): Int = R.layout.fragment_activitys
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = groupAdapter
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    mDy += dy
+                    shadow.apply {
+                        isVisible = mDy >= 60
+                    }
+                }
+            })
+        }
+        btnGoToScheme.setOnClickListener {
+
+        }
+        ivBack.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setFragmentResultListener("tags_fragment") { _, bundle ->
@@ -99,6 +142,15 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
     }
 
     override fun setTags(tags: List<Tag>?) {
+        headerSection.update(listOf(ScreenHeaderItem(getString(R.string.timetable))))
+
+        searchSection.update(listOf(SearchActivityItem({
+                  presenter.onSearchTextChange(it)
+        }, {
+            presenter.onSearchTextSubmit(it)
+            hideKeyboard()
+        })))
+
         if (tags == null || tags.isEmpty()) tagsSection.update(emptyList())
         else {
             tagsSection.update(listOf(TagsHorizontalListItem(tags, {
@@ -115,11 +167,12 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
             null
         } else {
             if (days.size > 1) {
-                val item = CalendarHorizontalListItem(days) { presenter.onDaySelected(it) }
+               // val item = CalendarHorizontalListItem(days) { presenter.onDaySelected(it) }
+                val item = CalendarHorizontalListPager(days) { presenter.onDaySelected(it) }
                 calendarSection.update(listOf(item))
-                allSection.update(listOf(AllActivitiesItem {
-                    findNavController().navigate(ActivitiesFragmentDirections.actionActivitiesFragmentToAllActivitiesFragment(presenter.eventId.toInt()))
-                }))
+//                allSection.update(listOf(AllActivitiesItem {
+//                    findNavController().navigate(ActivitiesFragmentDirections.actionActivitiesFragmentToAllActivitiesFragment(presenter.eventId.toInt()))
+//                }))
                 item
             } else {
                 calendarSection.update(emptyList())
@@ -137,8 +190,15 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
     }
 
     override fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>) {
+//        eventsSection.update(subEvents.map { subEvent ->
+//            SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener, presenter.canDoActions)
+//        })
+        selectedTags.forEach {
+            Log.e("TAGS", it.id.toString())
+        }
+
         eventsSection.update(subEvents.map { subEvent ->
-            SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener, presenter.canDoActions)
+            EventActivityItem(subEvent, selectedTags,onSubEventClickListener)
         })
     }
 
@@ -155,6 +215,7 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
                 title = title,
                 description = description
         )))
+
     }
 
     override fun hidePlaceholder() = Unit
@@ -190,12 +251,22 @@ class ActivitiesFragment: BaseFragment(), ActivitiesContract.View, ToolbarFragme
 
     override fun updateSubevent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
-        eventsSection.findItemBy<SubEventItem> { it -> it.id == idLong }?.notifyChanged()
+        eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }?.notifyChanged()
     }
 
     fun getEmptyDayPlaceholderText(): String = getString(R.string.schedule_my_empty_day_placeholder_title)
     fun getEmptyDayPlaceholderDescription(): String? = getString(R.string.schedule_my_empty_day_placeholder_description)
 
-    override val title: CharSequence?
-        get() = getString(R.string.program)
+
+    override fun provideSearchInterface(): SearchInterface {
+        return searchInterface
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (recyclerView != null){
+            mDy += recyclerView.scrollY
+        }
+    }
+
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import com.example.R
-import com.example.data.models.Interest
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
 import com.example.extensions.defaultDateFormatter
@@ -22,11 +21,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import initDropDownView
-import kotlinx.android.synthetic.main.fragment_search.recyclerView
-import kotlinx.android.synthetic.main.layout_list.*
+import kotlinx.android.synthetic.main.layout_list.swipeToRefresh
+import kotlinx.android.synthetic.main.layout_list_search.*
 import onTextChanged
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> : BaseFragment(), SearchContract.View<I, F> {
@@ -35,6 +35,10 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     private var filterDialog: BottomSheetDialog? = null
     private var filterView: View? = null
+
+    val headerSection = Section()
+
+    var mCanShowEventAndOrganizations = false
 
     protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
@@ -63,8 +67,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
+        searchList.apply {
             adapter = this@SearchFragment.adapter
+
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -74,9 +79,19 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         if (data.isEmpty()) {
             adapter.update(listOf(NoDataItem(getString(R.string.search_no_data_text), getString(R.string.search_no_data_description))))
         } else {
+
             Log.e("SearchEventsList", "start")
             Log.e("SearchEventsList", "size: "+data.size)
-            adapter.update(data.map(::createItem))
+
+            when {
+                mCanShowEventAndOrganizations-> {
+                    adapter.update(listOf(headerSection, createItemNew(data)))
+                }
+                else -> {
+                    adapter.update(data.map(::createItem))
+                }
+            }
+
             Log.e("SearchEventsList", "finish")
         }
         swipeToRefresh.isRefreshing = false
@@ -153,10 +168,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         }, onVariantChange = onSubscriptionChange)
     }
 
-    protected fun initInterests(interests: Map<InterestNew, List<InterestNew>>,
-                                tvTheme: AutoCompleteTextView,
-                                tilSpec: TextInputLayout, tvSpec: AutoCompleteTextView,
-                                theme: Int?, spec: Int?, onInterestChange: (theme: Int?, spec: Int?) -> Unit) {
+    protected fun initInterests(interests: Map<InterestNew, List<InterestNew>>, tvTheme: AutoCompleteTextView, tilSpec: TextInputLayout, tvSpec: AutoCompleteTextView, theme: Int?, spec: Int?, onInterestChange: (theme: Int?, spec: Int?) -> Unit) {
         var currentTheme = theme
         var currentSpec: Int?
 
@@ -167,14 +179,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
         val themes = interests.keys
         val selectedTheme = findInterest(theme, themes)
-        initDropDownView(
-                tvTheme,
-                themes,
-                selectedTheme?.name,
-                null,
-                transformKey = { it.name?: "" },
-                findValue = { it?.id },
-                onVariantChange = { id ->
+        initDropDownView(tvTheme, themes, selectedTheme?.name, null, transformKey = { it.name?: "" }, findValue = { it?.id }, onVariantChange = { id ->
                     currentTheme = id
                     currentSpec = null
                     onInterestChange(id, null)
@@ -194,15 +199,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(spec, interests)
-            initDropDownView(
-                    textView,
-                    interests,
-                    selectedTheme?.name,
-                    null,
-                    transformKey = { it.name?: "" },
-                    findValue = { it?.id },
-                    onVariantChange = { onSpecChange(it) }
-            )
+            initDropDownView(textView, interests, selectedTheme?.name, null, transformKey = { it.name?: "" }, findValue = { it?.id }, onVariantChange = { onSpecChange(it) })
             textView.isEnabled = true
             inputLayout.isEnabled = true
         }
@@ -213,8 +210,9 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     }
 
     protected abstract fun createItem(itemData: I?): Group
+    protected abstract fun createItemNew(itemData: List<I?>): Group
     protected abstract fun createFilterView(filter: F): View
     protected abstract fun clearFilterView(filterView: View)
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.layout_list_search
 }

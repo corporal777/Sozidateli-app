@@ -9,6 +9,7 @@
     android:paddingEnd="2dp">
 
     <com.example.ui.views.toolbar.ToolbarButton
+        android:visibility="gone"
         android:id="@+id/ivImage"
         android:layout_width="48dp"
         android:layout_height="48dp"
