@@ -83,14 +83,16 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             Log.e("SearchEventsList", "start")
             Log.e("SearchEventsList", "size: "+data.size)
 
-            when {
-                mCanShowEventAndOrganizations-> {
-                    adapter.update(listOf(headerSection, createItemNew(data)))
-                }
-                else -> {
-                    adapter.update(data.map(::createItem))
-                }
-            }
+            adapter.update(data.map(::createItem))
+
+//            when {
+//                mCanShowEventAndOrganizations-> {
+//                    adapter.update(listOf(headerSection, createItemNew(data)))
+//                }
+//                else -> {
+//                    adapter.update(data.map(::createItem))
+//                }
+//            }
 
             Log.e("SearchEventsList", "finish")
         }

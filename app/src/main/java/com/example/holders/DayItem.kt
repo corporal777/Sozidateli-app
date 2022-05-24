@@ -14,6 +14,7 @@ open class DayItem(
     private val onDaySelect: (date: EventScheduleCalendarDay) -> Unit
 ) : Item() {
 
+    var mDay = day
     var isSelected = false
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -35,6 +36,13 @@ open class DayItem(
             }
         }
     }
+
+    fun changeDay(){
+        if (isSelected) return
+        isSelected = true
+        notifyChanged()
+    }
+
 
     private fun performSelectClick() {
         if (isSelected) return

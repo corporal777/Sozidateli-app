@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:letterSpacing="-0.02"
                 android:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
 Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. "

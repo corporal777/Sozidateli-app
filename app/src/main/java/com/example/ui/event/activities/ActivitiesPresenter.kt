@@ -1,6 +1,7 @@
 package com.example.ui.event.activities
 
 import android.os.Build
+import android.os.DropBoxManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.arellomobile.mvp.InjectViewState
@@ -13,6 +14,8 @@ import com.example.extensions.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.search.SearchInterface
+import com.example.util.custom.LinkedSet
+import com.xwray.groupie.kotlinandroidextensions.Item
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -25,6 +28,8 @@ import java.time.temporal.TemporalAdjusters
 import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.firstInMonth
 import java.util.*
+import java.util.function.Function
+import java.util.stream.Collectors
 import javax.inject.Inject
 
 @InjectViewState
@@ -41,6 +46,7 @@ class ActivitiesPresenter
 
     protected var currentDay: EventScheduleCalendarDay? = null
     protected var tags: List<Tag> = emptyList()
+    protected var mSearchWord = ""
     var tagsNew: List<Tag.EventTag>? = null
     lateinit var eventId: String
     var daysSize = 0
@@ -50,6 +56,7 @@ class ActivitiesPresenter
 
     private var mStartEventDate = ""
     private var mEndEventDate = ""
+    val mSubEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getEventData() {
@@ -75,11 +82,6 @@ class ActivitiesPresenter
         val mStartDate = defaultServerDateFormatter.parse(mStartEventDate).time
         val mEndDate = defaultServerDateFormatter.parse(mEndEventDate).time
 
-        val prevDate = defaultServerDateFormatter.parse(mStartEventDate).time - 1
-
-        val mStartYear = mStartDate.calendar().get(Calendar.YEAR)
-        val mStartMonth = mStartDate.calendar().get(Calendar.MONTH)
-
         var mDayOfWeek = mStartDate.calendar().get(Calendar.DAY_OF_WEEK)
         var mStartDay = mStartDate.calendar().get(Calendar.DAY_OF_MONTH) - 1
 
@@ -91,11 +93,7 @@ class ActivitiesPresenter
 
         calPrev.set(Calendar.MONTH, calStart.get(Calendar.MONTH) - 1)
 
-        Log.e("DATE", calStart.get(Calendar.YEAR).toString() + " " + calStart.get(Calendar.MONTH))
-        Log.e("DATE", calEnd.get(Calendar.YEAR).toString() + " " + calEnd.get(Calendar.MONTH))
-        Log.e("DATE", calPrev.get(Calendar.YEAR).toString() + " " + calPrev.get(Calendar.MONTH))
-
-        val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
         val maxDayPrev = calPrev.getActualMaximum(Calendar.DAY_OF_MONTH)
         val maxDayStart = calStart.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -114,7 +112,6 @@ class ActivitiesPresenter
         if (mDayOfWeek == 2) {
             for (i in mStartDay until maxDayStart) {
                 calStart[Calendar.DAY_OF_MONTH] = i + 1
-                Log.e("DAY", calStart.get(Calendar.DAY_OF_MONTH).toString())
                 mDates.add(df.format(calStart.time))
             }
         } else {
@@ -123,7 +120,6 @@ class ActivitiesPresenter
                     mStartDay -= getMonday(mDayOfWeek)
                     for (i in mStartDay until maxDayStart) {
                         calStart[Calendar.DAY_OF_MONTH] = i + 1
-                        Log.e("DAY", calStart.get(Calendar.DAY_OF_MONTH).toString())
                         mDates.add(df.format(calStart.time))
                     }
 
@@ -197,12 +193,17 @@ class ActivitiesPresenter
             })
 
             var days = userEventData.createCalendarDaysNew(getAllDates().map {
+                val list = LinkedSet<EventActivityModel>()
+                mSubEventsMap[it] = list
+
                 defaultServerDateFormatter.parse(it).time
             })
 
+
+
             days.forEachIndexed { index, day ->
                 eventDays.forEach { eventDay ->
-                    if (day.millis == eventDay.millis){
+                    if (day.millis == eventDay.millis) {
                         days[index] = eventDay
                     }
                 }
@@ -224,7 +225,6 @@ class ActivitiesPresenter
 
             setTags(tags)
             currentDay?.let { day ->
-                Log.e("WEEK", currentDay?.week.toString())
                 selectDay(day)
                 scrollToDay(day)
             }
@@ -239,6 +239,12 @@ class ActivitiesPresenter
     @RequiresApi(Build.VERSION_CODES.O)
     override fun attachView(view: ActivitiesContract.View?) {
         super.attachView(view)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
         if (firstAttach) {
             getEventData()
             firstAttach = false
@@ -276,16 +282,19 @@ class ActivitiesPresenter
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
         viewState.apply { selectDay(day) }
         invalidateDay()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onTagSelectedListChange() {
         invalidateDay()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onDayChanged(date: Long) {
         val currentDayDate = currentDay?.millis ?: return
         if (date.calendar().isSameDay(currentDayDate.calendar())) invalidateDay()
@@ -325,11 +334,6 @@ class ActivitiesPresenter
         )
     }
 
-    override fun onShowAllTagsClick() {
-        viewState.showAllTags()
-    }
-
-
     protected open fun processChangeEventInCalendarStatusRequest(
         subEvent: EventActivityModel,
         request: Completable
@@ -342,71 +346,125 @@ class ActivitiesPresenter
             .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun invalidateDay() {
+
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
-        val subEvents = userEvent.activity.activities.let {
-            it.filter { event ->
-                val date = defaultServerDateTimeFormatter.parse(event.holdingDate?.from)
-                filterSubEvent(event)
-                        && filterTags(event, selectedTags)
-                        && date.time >= day.millis.startOfDay() && date.time <= day.millis.endOfDay()
-            }
-        }
 
-        viewState.apply {
-            Log.e("ActivitiesFragment", "Events: " + subEvents.size + " invalidateDay")
-            //setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
-            if (!subEvents.isNullOrEmpty()) {
-                setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
-                currentDay?.let { day -> showCurrentDay(day, daysSize) }
-                hidePlaceholder()
-            } else {
-                Log.e("ActivitiesFragment", "Activities error")
-                showEmptyDayPlaceholder()
-                hideCurrentDay()
+        val subEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
+        val filteredMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
+
+//        val mDates = getAllDates()
+//        mDates.forEach {
+//            val date = defaultServerDateFormatter.parse(it)
+//            val list = arrayListOf<EventActivityModel>()
+//            userEvent.activity.activities.filter { x -> date == defaultServerDateFormatter.parse(x.holdingDate?.from) }
+//                .forEach { event ->
+//                    list.add(event)
+//                }
+//            subEventsMap[it] = list
+//        }
+
+        subEventsMap.clear()
+        subEventsMap.putAll(mSubEventsMap)
+
+        subEventsMap
+            .filter {
+                defaultServerDateTimeFormatter.parse(it.key).time >= day.millis.startOfDay()
             }
-//            if (subEvents.isEmpty()) {
+            .map {
+                val date = defaultServerDateFormatter.parse(it.key)
+                val list = arrayListOf<EventActivityModel>()
+                userEvent.activity.activities.filter { x ->
+                    date == defaultServerDateFormatter.parse(
+                        x.holdingDate?.from
+                    )
+                }
+                    .forEach { event ->
+                        list.add(event)
+                    }
+                it.value.clear()
+                it.value.addAll(list)
+
+                it.value.forEach { event ->
+                    if (!mSearchWord.isNullOrEmpty()) {
+                        if (!isEventHasParams(mSearchWord, event)) {
+                            val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+                            it.value.remove(event)
+                            if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
+                                it.value.add(emptyEvent)
+                            }
+                        }
+
+                    }
+                    if (!selectedTags.isNullOrEmpty()) {
+                        selectedTags.forEach { tag ->
+                            if (!event.tag.isNullOrEmpty() && !event.tag.contains(tag.id.toInt())) {
+                                val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+                                it.value.remove(event)
+                                if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
+                                    it.value.add(emptyEvent)
+                                }
+                            }
+                        }
+                    }
+                }
+                filteredMap.put(it.key, it.value)
+            }
+
+
+//        val filteredSubEvents = subEventsMap.filter {
+//            it.value.forEach { event ->
+//                if (!mSearchWord.isNullOrEmpty()) {
+//                    if (!isEventHasParams(mSearchWord, event)) {
+//                        val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+//                        it.value.remove(event)
+//                        if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
+//                            it.value.add(emptyEvent)
+//                        }
+//                    }
 //
-//            } else {
-//                setSubEvents(subEvents, if (mustFilterTags()) selectedTags else emptyList())
-//                currentDay?.let { day -> showCurrentDay(day, daysSize) }
-//                hidePlaceholder()
+//                }
+//                if (!selectedTags.isNullOrEmpty()) {
+//                    selectedTags.forEach { tag ->
+//                        if (!event.tag.isNullOrEmpty() && !event.tag.contains(tag.id.toInt())) {
+//                            val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+//                            it.value.remove(event)
+//                            if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
+//                                it.value.add(emptyEvent)
+//                            }
+//                        }
+//                    }
+//                }
 //            }
-        }
-    }
+//
+//            defaultServerDateTimeFormatter.parse(it.key).time >= day.millis.startOfDay()
+//        }
 
-    private fun invalidateResultOfSearchActivities(searchWord: String) {
-        val day = currentDay ?: return daySubEventsError()
-        val selectedTags = tags.filter { it.isSelected }
-        val subEvents = userEvent.activity.activities.let {
-            it.filter { event ->
-                val date = defaultServerDateTimeFormatter.parse(event.holdingDate?.from)
-                filterSubEvent(event)
-                        && filterTags(event, selectedTags)
-                        && date.time >= day.millis.startOfDay() && date.time <= day.millis.endOfDay()
-            }
-        }
 
-        val resultSubEvents = subEvents.filter { eventNew ->
-            eventNew.description?.contains(searchWord, true) ?: false || eventNew.title?.contains(
-                searchWord, true
-            ) ?: false || isSameSpeaker(searchWord, eventNew)
-        }
+//        val subEvents = userEvent.activity.activities.let {
+//            it.filter { event ->
+//                val date = defaultServerDateTimeFormatter.parse(event.holdingDate?.from)
+//                filterSubEvent(event)
+//                        && filterTags(event, selectedTags)
+//                        //&& date.time >= day.millis.startOfDay() && date.time <= day.millis.endOfDay()
+//                        && date.time >= day.millis.startOfDay()
+//            }
+//        }
 
         viewState.apply {
-            Log.e("ActivitiesFragment", "Found Events: " + resultSubEvents.size + " invalidateDay")
-            setSubEvents(resultSubEvents, if (mustFilterTags()) selectedTags else emptyList())
-            if (resultSubEvents.isEmpty()) {
-                Log.e("ActivitiesFragment", "Activities error")
-                showEmptyDayPlaceholder()
-                hideCurrentDay()
-            } else {
-                currentDay?.let { day -> showCurrentDay(day, daysSize) }
-                hidePlaceholder()
-            }
+            //Log.e("ActivitiesFragment", "Events: " + filteredSubEvents.size + " invalidateDay")
+
+            setSubEventsNew(
+                filteredMap,
+                if (mustFilterTags()) selectedTags else emptyList()
+            )
+            currentDay?.let { day -> showCurrentDay(day, daysSize) }
+
         }
     }
+
 
     private fun daySubEventsError() {
         viewState.apply {
@@ -426,13 +484,15 @@ class ActivitiesPresenter
     fun filterSubEvent(subEvent: EventActivityModel): Boolean = true
     fun mustFilterTags(): Boolean = true
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onSearchTextChange(text: String) {
-        invalidateResultOfSearchActivities(text)
         onSearchTextSubmit(text)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onSearchTextSubmit(text: String) {
-        invalidateResultOfSearchActivities(text)
+        mSearchWord = text
+        invalidateDay()
         searchInterface.apply {
             searchText = text
             searchTextCallback?.invoke()
@@ -443,12 +503,38 @@ class ActivitiesPresenter
     private fun isSameSpeaker(text: String, event: EventActivityModel): Boolean {
         var isSame = false
         event.binds?.member?.forEach {
-            it.binds?.user?.name?.contains(text, ignoreCase = true)
-            isSame = true
+            if (!text.isNullOrEmpty() && it.binds?.user?.name?.contains(
+                    text,
+                    ignoreCase = true
+                ) == true
+            ) {
+                isSame = true
+            }
         }
         return isSame
 
     }
+
+
+    private fun isEventHasParams(param: String, event: EventActivityModel): Boolean {
+        var isHas = false
+        if (!event.description.isNullOrEmpty() && !param.isNullOrEmpty()) {
+            val desc = event.description
+            if (desc.contains(param, true)) {
+                isHas = true
+            }
+        } else if (!event.title.isNullOrEmpty() && !param.isNullOrEmpty()) {
+            val title = event.title
+            if (title.contains(param, true)) {
+                isHas = true
+            }
+        } else if (isSameSpeaker(param, event)) {
+            isHas = true
+        }
+        return isHas
+    }
+
+    override fun onShowAllTagsClick() = viewState.showAllTags()
 
     private fun getMonday(day: Int): Int {
         var mDay = 0
@@ -460,4 +546,5 @@ class ActivitiesPresenter
         }
         return mDay
     }
+
 }

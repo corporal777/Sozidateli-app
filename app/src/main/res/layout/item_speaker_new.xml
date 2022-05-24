@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.cardview.widget.CardView
             android:layout_marginVertical="10dp"
@@ -26,8 +27,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/background_gradient_down"
+                    android:layout_height="120dp"
+                    android:background="@drawable/footer_speaker_gradient"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
                 <TextView
@@ -40,7 +41,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:letterSpacing="0.02"
-                    android:text="Екатерина Кисеева"
+                    tools:text="Екатерина Кисеева"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"

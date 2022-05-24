@@ -54,6 +54,11 @@
                     android:scheme="https"
                     android:host="alfa.sozidateli.ru"/>
 
+                <data
+                    android:path="/qr"
+                    android:scheme="https"
+                    android:host="sozidateli.ru"/>
+
             </intent-filter>
 
             <nav-graph android:value="@navigation/main_navigation" />

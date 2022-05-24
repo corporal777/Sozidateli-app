@@ -62,7 +62,9 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
+import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
@@ -153,6 +155,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     is UserSpeakerFragment,
                     is ActivitiesFragment,
                     is MapFragmentNew,
+                    is PartnerFragment,
+                    is OrganizationFragment,
                     is ChatFragment -> {
                         hideNavBar()
                     }
@@ -211,9 +215,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
             val fr = navHostFragment.childFragmentManager.fragments[0]
             val navContr = findNavController(R.id.navHostFragment)
-//            if (fr is MapFragmentNew){
-//                navContr.navigateUp()
-//            }
             if (fr is TagsFragment) {
                 fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
 
@@ -242,6 +243,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 ToolbarContentView(this@MainActivity),
                 ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             )
+            IS_EXPANDED = true
         }
 
         setWindowTransparency()
@@ -827,6 +829,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             when (item.itemId) {
                 R.id.main -> {
                     findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)
+                    true
+                }
+                R.id.my_events -> {
+                    findNavController(R.id.navHostFragment).navigate(R.id.my_events_fragment_new)
                     true
                 }
                 R.id.chats -> {

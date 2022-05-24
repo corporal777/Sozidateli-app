@@ -47,7 +47,6 @@ class CalendarHorizontalListPager(
             //groupAdapter.update(listItems)
             groupAdapter.update(listOf(section))
             viewPager.adapter = groupAdapter
-
         }
     }
 
@@ -55,7 +54,6 @@ class CalendarHorizontalListPager(
         for (i in 0 until section.itemCount) {
             val item = section.getItem(i) as CalendarHorizontalListItem
             item.selectDay(day)
-
         }
         deselectAllExcept(day)
     }

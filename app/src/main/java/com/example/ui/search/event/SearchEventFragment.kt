@@ -19,6 +19,7 @@ import com.example.extensions.getAffiliationString
 import com.example.holders.EventStatusItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
+import com.example.holders.redesign.EventItemNew
 import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
@@ -47,17 +48,16 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     private val mContentSection = Section()
 
-    private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
+    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-        override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
+       // override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
 
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
-            presenter.onActionWriteToOrganization(emails)
+        //override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
 
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
-        override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
+        //override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 

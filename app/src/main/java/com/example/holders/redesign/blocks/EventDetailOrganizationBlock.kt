@@ -11,7 +11,7 @@ import com.xwray.groupie.databinding.BindableItem
 class EventDetailOrganizationBlock(
     private val eventData: EventNew?,
     private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
-    private val organizationClickListener: () -> Unit,
+    private val onOrganizationClick : (id : String) -> Unit
 ) : BindableItem<ItemEventDetailOrganizationBlockBinding>() {
 
 
@@ -31,13 +31,12 @@ class EventDetailOrganizationBlock(
             tvOrganizationLabel.text = organizationName
             ivOrganizationLogo.setImage(organizationLogo)
 
-            tvGoTo.setOnClickListener {
-                Toast.makeText(viewBinding.root.context, "Go to", Toast.LENGTH_SHORT).show()
-            }
-
             btnActionFavorite.apply {
                 setAction(getAction())
                 setOnClickListener { actionClickListener(this.action) }
+            }
+            organizationCl.setOnClickListener {
+                onOrganizationClick.invoke(eventData?.organization.toString())
             }
 
         }
@@ -57,6 +56,7 @@ class EventDetailOrganizationBlock(
             }
         }
     }
+
 
     private fun getAction(): UserSubscribeButton.Action {
         return if (isFavorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE

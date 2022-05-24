@@ -7,6 +7,7 @@ import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -33,8 +34,8 @@ import setOnClickListener
 
 class EventItemNew(
     val eventData: EventNew?,
-    private val onEventClickListener: EventStatusItem.OnEventClickListener
-) : BindableItem<ItemEventNewBinding>() {
+    private val onEventClickListener: OnEventClickListener
+) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
 
     val eventId = eventData?.id.toString()
     val state = eventData?.state
@@ -46,12 +47,14 @@ class EventItemNew(
     private val organizationEmails = eventData?.binds?.organization?.email
 
     private val userAgreement = eventData?.userAgreement?.uri
-    private val eventRegistrationState: EventRegistrationStateModel? = eventData?.binds?.eventRegistrationState
+    private val eventRegistrationState: EventRegistrationStateModel? =
+        eventData?.binds?.eventRegistrationState
     private val registrationId = eventData?.binds?.currentUserRegistration?.id.toString()
     private val name: String? = eventData?.name
     private val address = eventData?.address?.getShortAddress()
-    val date: String = eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to)
-        ?: ""
+    val date: String =
+        eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to)
+            ?: ""
 
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
@@ -81,39 +84,44 @@ class EventItemNew(
                 Picasso.get().load(logo).into(this)
             }
 
-            setApproveStatus(btnEventAction,tvEventState)
+            setApproveStatus(btnEventAction, tvEventState)
             decorActionButton(btnEventAction)
         }
     }
 
-    private fun setApproveStatus(button : Button, tvStatus: TextView) {
+    private fun setApproveStatus(button: Button, tvStatus: TextView) {
         tvStatus.apply {
             val textBackground: Int
             val textRes: Int
+            var buttonVisibility = false
             when (userRegistration) {
                 Event.Status.APPROVED -> {
                     textBackground = R.color.event_status_approved_background
                     textRes = R.string.event_status_approved
+                    buttonVisibility = false
                 }
                 Event.Status.PENDING -> {
                     textBackground = R.color.event_status_wait_confirmation_background
                     textRes = R.string.event_status_wait_confirmation
+                    buttonVisibility = true
                 }
                 Event.Status.DECLINED -> {
                     textBackground = R.color.event_status_declined_background
                     textRes = R.string.event_status_decline
+                    buttonVisibility = false
                 }
                 Event.Status.REGISTRATION_FINISHED -> {
                     textBackground = R.color.event_status_wait_confirmation_background
                     textRes = R.string.about_event_registration_closed
+                    buttonVisibility = false
                 }
                 Event.Status.FINISHED -> {
                     textBackground = R.color.event_status_wait_confirmation_background
                     textRes = R.string.event_status_finished
+                    buttonVisibility = false
                 }
                 else -> {
                     isVisible = false
-                    button.isVisible = true
                     return
                 }
             }
@@ -121,14 +129,13 @@ class EventItemNew(
             text = resources.getString(textRes)
             backgroundTintList = ContextCompat.getColorStateList(context, textBackground)
             isVisible = true
-            button.isVisible = false
+            button.isVisible = buttonVisibility
         }
     }
 
     private fun decorActionButton(btnAction: Button) {
-        var textBackground: Int? = null
-        var textColor = Color.BLACK
-        @StringRes var textRes: Int? = null
+        var btnBackground: Int? = null
+        @StringRes var btnText: Int? = null
         var clickAction: (() -> Unit)? = null
         var visibility = true
 
@@ -139,8 +146,8 @@ class EventItemNew(
                 eventRegistrationState?.prohibitions?.registrationClosed == false -> {
                     when (actions?.get(0)) {
                         "register" -> {
-                            textBackground = R.drawable.custom_btn_white_selectable
-                            textRes = R.string.event_action_participate
+                            btnBackground = R.drawable.custom_btn_white_selectable
+                            btnText = R.string.event_action_participate
                             clickAction = {
                                 eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
                                     if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ userAgreement.isNullOrEmpty()) {
@@ -155,27 +162,29 @@ class EventItemNew(
                             }
                         }
                         "withdraw" -> {
-                            textBackground = R.drawable.custom_btn_white_selectable
-                            textRes = R.string.event_action_cancel_request
+                            btnBackground = R.drawable.custom_btn_white_selectable
+                            btnText = R.string.event_action_cancel_request
                             clickAction = {
                                 eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
                                     onEventClickListener.onActionCancel(eventId, registrationId)
                                 }
                             }
                         }
+                        else -> visibility = false
                     }
                 }
                 else -> {
-                    textBackground = R.drawable.background_event_action_disabled
-                    textRes = R.string.about_event_registration_closed
+                    visibility = false
+                    // textBackground = R.drawable.btn_action_background_registration_closed
+                    //textRes = R.string.about_event_registration_closed
                 }
             }
         }
 
         btnAction.apply {
-            text = textRes?.let { context.getString(it) }
-            setTextColor(textColor)
-            background = textBackground?.let { ContextCompat.getDrawable(context, it) }
+            text = btnText?.let { context.getString(it) }
+            setTextColor(Color.BLACK)
+            background = btnBackground?.let { ContextCompat.getDrawable(context, it) }
 
             if (clickAction != null) {
                 setOnClickListener(clickAction)
@@ -199,24 +208,24 @@ class EventItemNew(
     private fun showAgreementRegisterDialog(context: Context, url: String) {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.dialog_event_registration_agreement_form, null).apply {
-            val agreementText =
-                SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
-                    val linkStart = 11
-                    val linkEnd = length
-                    setSpan(ClickableSpan(drawUnderline = false) {
-                        showUserAgreement(context, url)
-                    }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                val agreementText =
+                    SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
+                        val linkStart = 11
+                        val linkEnd = length
+                        setSpan(ClickableSpan(drawUnderline = false) {
+                            showUserAgreement(context, url)
+                        }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
+
+                tvAgree.apply {
+                    text = agreementText
+                    movementMethod = LinkMovementMethod.getInstance()
                 }
 
-            tvAgree.apply {
-                text = agreementText
-                movementMethod = LinkMovementMethod.getInstance()
+                cbAgree.setOnCheckedChangeListener { _, checked ->
+                    btnPositive.isEnabled = checked
+                }
             }
-
-            cbAgree.setOnCheckedChangeListener { _, checked ->
-                btnPositive.isEnabled = checked
-            }
-        }
 
         AlertDialog.Builder(context)
             .setView(view)
@@ -267,13 +276,25 @@ class EventItemNew(
         return true
     }
 
+    override fun bind(
+        viewBinding: ItemEventNewBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is EventNew) {
+                decorActionButton(viewBinding.btnEventAction)
+            }
+        }
+
+    }
+
     interface OnEventClickListener {
         fun onActionRegister(event: String)
-        fun onActionShowEvent(event: String)
         fun onActionCancel(event: String, registrationId: String?)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
         fun onShowEventClick(view: View, event: String)
-        fun onShowFilterClick(format: Int)
         fun onShowUpdateState()
     }
 }

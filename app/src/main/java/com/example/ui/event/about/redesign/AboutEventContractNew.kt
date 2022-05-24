@@ -6,26 +6,17 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
-import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.OneExecutionByTagStateStrategy
 
 interface AboutEventContractNew {
     interface View : BaseContract.View {
 
-        //@StateStrategyType(OneExecutionStateStrategy::class)
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventData(
-                /*eventData: EventData,
-                userRegistration: Event.RegistrationStatus?,
-                pages: List<EventPage>,
-                partners: List<EventParther>,
-                showContacts: Boolean,
-                userAgreement: String?*/
                 eventData: EventNew?,
                 userRegistration: Event.Status?,
                 pages: List<PageModel>?,
                 partners: List<PartnerModel>?,
-                showContacts: Boolean,
+                tags : List<Tag>,
                 userAgreement: String?
         )
 
@@ -48,20 +39,8 @@ interface AboutEventContractNew {
         fun showSpeakers(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showContacts(eventName: String, phones: List<EventPhoneModel>, emails: List<EventPhoneModel>, webLinks: List<String>?, socialLinks: List<String>?, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
-        //fun showContacts(eventName: String, phones: List<PhoneAffiliation>, emails: List<EmailAffiliation>, webLinks: List<String>?, socialLinks: List<String>?, address: String?, place: String?, mapInfo: MapInfo?, places: List<Place>?)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showLogoImage(url: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showRating(eventId: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showAgreement(url: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showOrganization(organization: String)
@@ -69,41 +48,17 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
-        fun showWriteToOrganizationForm()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "message")
-        fun hideWriteToOrganizationForm()
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showShare(eventId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showWriteToOrganizationComplete()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showWriteToOrganizationError()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun selectEvent()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showRegistrationFieldsRequest(fields: List<String>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEditProfile(id: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showShare()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubevent(subEvent: EventActivityModel)
+        fun updateSubEvent(subEvent: EventActivityModel)
 
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventActivities(eventId: String, listTags : List<NewTags>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSpeakerProfile(speakerId: Int)
@@ -112,36 +67,26 @@ interface AboutEventContractNew {
         fun showMap(mapInfo: MapInfo?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: List<EventActivityModel>)
+        fun setSubEvents(subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onContactsClick()
-        fun onSpeakersClick()
         fun onGoToEventClick()
-        fun onSelectEventClick()
         fun onPageClick(page: Int/*EventPage*/)
         fun onPartnerClick(partner: Int/*EventParther*/)
-        fun onLogoClick()
         fun onRefreshRequest()
-        fun onShowFilterClick(format: Int)
         fun onChangeFavoriteClick()
-        fun onWriteToOrganizationClick()
-        fun onWriteToOrganizationMessage(message: String)
-        fun onRateClick()
-        fun onAgreementClick()
         fun onOrganizationClick(organization: String)
 
         fun onActionCancel()
-        fun onActionWriteToOrganization()
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/)
-        fun onShowEditProfileClick()
         fun onShareClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onSpeakerClick(speaker: Int)
-
         fun onMapPageSelected()
+        fun onTagSelected()
+
+        fun onShowEventActivitiesClick()
     }
 }

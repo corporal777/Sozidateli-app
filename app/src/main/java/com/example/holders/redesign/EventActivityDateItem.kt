@@ -13,13 +13,16 @@ class EventActivityDateItem(
         private val date: String?
 ) : BindableItem<ItemEventTimetableBinding>() {
 
-    private val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("EEEE, dd MMMM", Locale.getDefault())
 
     override fun bind(viewBinding: ItemEventTimetableBinding, position: Int) {
         viewBinding.apply {
             tvTimetableDate.text = date?.parseAndFormat(defaultServerDateFormatter, dateFormat)?.firstLetterToUppercase()
         }
     }
+
+
+    fun getDay(): String? = date
 
     override fun getLayout(): Int = R.layout.item_event_timetable
 

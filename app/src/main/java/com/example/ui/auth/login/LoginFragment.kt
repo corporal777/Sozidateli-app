@@ -1,6 +1,8 @@
 package com.example.ui.auth.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -36,6 +38,8 @@ class LoginFragment : BaseFragment(), LoginContract.View {
             isRegister = isRegistered
             invite = inviteId
             (requireActivity() as MainActivity).invite = inviteId
+            deviceId = Settings.Secure.getString(requireActivity().contentResolver,
+                Settings.Secure.ANDROID_ID)
         }
     }
 

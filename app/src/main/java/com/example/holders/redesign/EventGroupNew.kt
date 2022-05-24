@@ -7,8 +7,7 @@ import com.xwray.groupie.NestedGroup
 
 class EventGroupNew(
     data : EventNew?,
-    eventClickListener: EventStatusItem.OnEventClickListener,
-
+    eventClickListener: EventItemNew.OnEventClickListener,
 ) : NestedGroup() {
     private val eventStatusItem = EventItemNew(
         data,
@@ -34,6 +33,10 @@ class EventGroupNew(
             //dataItem -> 1
             else -> -1
         }
+    }
+
+    fun updateButtonState(event : EventNew?){
+        eventStatusItem.notifyChanged(event)
     }
 
     override fun getGroupCount() = 1

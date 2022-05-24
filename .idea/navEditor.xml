@@ -40,6 +40,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_about_event_fragment_new_to_map_fragment_new">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_about_event_fragment_to_activitiesFragment">
                               <value>
                                 <LayoutPositions />
@@ -670,6 +675,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="my_events_fragment_new">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

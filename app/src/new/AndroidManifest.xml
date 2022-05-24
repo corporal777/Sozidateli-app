@@ -20,6 +20,16 @@
                     android:scheme="https" />
 
                 <data
+                    android:path="/qr"
+                    android:scheme="https"
+                    android:host="alfa.sozidateli.ru"/>
+
+                <data
+                    android:path="/qr"
+                    android:scheme="https"
+                    android:host="sozidateli.ru"/>
+
+                <data
                     android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/auth"
                     android:scheme="https" />

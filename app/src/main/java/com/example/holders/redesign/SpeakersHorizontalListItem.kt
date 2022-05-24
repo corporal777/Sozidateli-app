@@ -8,26 +8,52 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SpeakersHorizontalListItem(
-    data: List<MemberModel>?,
+    val data: List<MemberModel>,
     val onItemClick: (id: Int) -> Unit
 ) : HorizontalListItem<GroupieViewHolder>() {
 
+    var mCount = 5
+    val items = arrayListOf<EventSpeakerItem>().apply {
+        if (data.size > 5){
+            for (i in 0 until 5) {
+                data[i].let {
+                    add(EventSpeakerItem(
+                        it.binds?.user?.id ?: 0,
+                        it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
+                        it.binds?.user?.image?.uri ?: ""
+                    ) { id -> onItemClick(id) })
+                }
+            }
+        }
 
-    val items = data?.filter { it.role == "speaker" }?.map {
-        EventSpeakerItem(
-            it.binds?.user?.id ?: 0,
-            it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-            it.binds?.user?.image?.uri ?: ""
-        ) { id -> onItemClick(id) }
     }
 
     init {
         adapter = GroupAdapter<GroupieViewHolder>().apply {
-            if (items != null){
+
+            if (data.size > 5) {
+                val showAll: () -> Unit = {
+                    for (i in 5 until data.size) {
+                        data[i].let {
+                            items.add(EventSpeakerItem(
+                                it.binds?.user?.id ?: 0,
+                                it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
+                                it.binds?.user?.image?.uri ?: ""
+                            ) { id -> onItemClick(id) })
+                        }
+                    }
+                    this.clear()
+                    addAll(items)
+                }
+                addAll(items)
+                add(ShowAllSpeakersItem{showAll.invoke()})
+            }else {
                 addAll(items)
             }
             backgroundColor = Color.WHITE
         }
+
+
     }
 
 }

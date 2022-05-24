@@ -48,6 +48,7 @@ interface EventListContract {
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+
         fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()
 

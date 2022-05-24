@@ -27,7 +27,8 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            app:layout_constraintBottom_toTopOf="@id/tvInfo"
+            android:foreground="@drawable/custom_text_background_selectable"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:id="@+id/organization_cl"
             android:layout_marginTop="15dp"
@@ -84,80 +85,6 @@
                 app:subscribeAction="favorite" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <TextView
-            app:layout_constraintBottom_toTopOf="@id/tvGoTo"
-            android:textStyle="bold"
-            android:id="@+id/tvInfo"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="25dp"
-            android:paddingBottom="5dp"
-            android:letterSpacing="0.02"
-            android:text="Информация"
-            android:textColor="@color/vk_black"
-            android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/organization_cl" />
-
-        <TextView
-            app:layout_constraintBottom_toTopOf="@id/tvGetDocuments"
-            android:layout_marginTop="5dp"
-            android:paddingStart="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:background="@drawable/custom_text_background_selectable"
-            android:id="@+id/tvGoTo"
-            fontPath="fonts/sf_pro_text_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:letterSpacing="-0.02"
-            android:text="Как добраться"
-            android:textColor="#C3996C"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvInfo" />
-
-
-        <TextView
-            app:layout_constraintBottom_toTopOf="@id/tvSafeCovid"
-            android:layout_marginTop="5dp"
-            android:paddingStart="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:id="@+id/tvGetDocuments"
-            fontPath="fonts/sf_pro_text_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:letterSpacing="-0.02"
-            android:text="Какие документы взять с собой"
-            android:textColor="#C3996C"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvGoTo" />
-
-
-        <TextView
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="5dp"
-            android:id="@+id/tvSafeCovid"
-            fontPath="fonts/sf_pro_text_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:letterSpacing="-0.02"
-            android:text="Меры по противодействию COVID-19"
-            android:textColor="#C3996C"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvGetDocuments" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

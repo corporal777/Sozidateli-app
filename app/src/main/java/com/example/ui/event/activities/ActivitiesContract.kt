@@ -8,6 +8,7 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.Tag
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import com.example.util.custom.LinkedSet
 
 interface ActivitiesContract {
 
@@ -26,6 +27,9 @@ interface ActivitiesContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSubEventsNew(subEvents: Map<String, LinkedSet<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()

@@ -3,10 +3,7 @@ package com.example.ui.event.about.old
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -29,13 +26,8 @@ import com.example.data.models.*
 import com.example.extensions.*
 import com.example.holders.*
 import com.example.holders.EventGroup
-import com.example.holders.redesign.EventActivityItem
-import com.example.holders.redesign.EventTagsListItem
-import com.example.holders.redesign.blocks.*
-import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.contacts.EventContactsFragmentArgs
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -44,12 +36,10 @@ import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
-import com.example.ui.subevent.SubeventFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.StateType
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.ui.views.toolbar.widget.OnTransparentListener
 import com.example.util.ClickableSpan
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section

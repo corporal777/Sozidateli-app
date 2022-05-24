@@ -21,6 +21,7 @@ import com.example.ui.user.UserFragmentDirections
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.fragment_my_events.*
 import kotlinx.android.synthetic.main.fragment_subevent.*
 import kotlinx.android.synthetic.main.fragment_user_speaker.*
 import kotlinx.android.synthetic.main.fragment_user_speaker.ivBack
@@ -66,10 +67,10 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
             setHasFixedSize(true)
             setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 mDy += scrollY - oldScrollY
-                shadow.apply {
-                    isVisible = mDy >= 60
-                    alpha = 1f
-                    animate().setDuration(500).alpha(1.0f)
+                if (mDy >= 30){
+                    userSpeakerBarLayout.elevation = 10f
+                }else {
+                    userSpeakerBarLayout.elevation = 0f
                 }
             }
         }

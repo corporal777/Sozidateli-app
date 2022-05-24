@@ -28,9 +28,10 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_about_event_new.*
-import kotlinx.android.synthetic.main.fragment_about_event_new.shadow
+import kotlinx.android.synthetic.main.fragment_activitys.*
 import kotlinx.android.synthetic.main.fragment_subevent.*
 import kotlinx.android.synthetic.main.fragment_subevent.ivBack
+import kotlinx.android.synthetic.main.fragment_subevent.recyclerView
 import kotlinx.android.synthetic.main.fragment_user_speaker.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -80,8 +81,12 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
             }
            setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                mDy += scrollY - oldScrollY
-               toolbar_shadow.apply {
-                   isVisible = mDy >= 60
+               subEventAppBar.apply {
+                   if (mDy >= 30){
+                       elevation = 10f
+                   }else {
+                       elevation = 0f
+                   }
                }
            }
         }

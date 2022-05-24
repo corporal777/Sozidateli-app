@@ -3,163 +3,169 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:cardBackgroundColor="#F6F6F6"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="10dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardActivity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            app:cardBackgroundColor="#F6F6F6"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="10dp">
 
-
-            <TextView
-                android:id="@+id/tvLectureTime"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="15dp"
-                tools:text="9:00 - 15:00"
-                android:textColor="@color/vk_black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvLectureName"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="15dp"
-                android:text="Лекция 1. Предпосылки возникновения объемно-пространственных форм искусства текстиля («пластического взрыва» 1960-80 гг.)."
-                android:textColor="@color/vk_black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLectureTime" />
-
-
-
-            <LinearLayout
-                android:visibility="visible"
-                android:layout_marginHorizontal="15dp"
-                android:id="@+id/auditoryContainer"
-                app:layout_constraintBottom_toTopOf="@id/listTags"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLectureName"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    fontPath="fonts/sf_pro_display_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_auditory"
-                    android:textColor="@color/hint_gray"
-                    android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/tvLectureAuditory"
+                    android:id="@+id/tvLectureTime"
                     fontPath="fonts/sf_pro_display_bold.ttf"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    tools:text="Кабинет №12"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="15dp"
+                    tools:text="9:00 - 15:00"
+                    android:textColor="@color/vk_black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvLectureName"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="15dp"
+                    tools:text="Лекция 1. Предпосылки возникновения объемно-пространственных форм искусства текстиля («пластического взрыва» 1960-80 гг.)."
+                    android:textColor="@color/vk_black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLectureTime" />
+
+
+
+                <LinearLayout
+                    android:visibility="visible"
+                    android:layout_marginHorizontal="15dp"
+                    android:id="@+id/auditoryContainer"
+                    app:layout_constraintBottom_toTopOf="@id/listTags"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLectureName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        fontPath="fonts/sf_pro_display_bold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_auditory"
+                        android:textColor="@color/hint_gray"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvLectureAuditory"
+                        fontPath="fonts/sf_pro_display_bold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        tools:text="Кабинет №12"
+                        android:textColor="@color/vk_black"
+                        android:textSize="13sp"
+                        />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:id="@+id/listTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="@dimen/margin_horizontal_default"
+                    android:paddingEnd="@dimen/margin_horizontal_default"
+                    android:scrollbars="none"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/auditoryContainer">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/tagGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipSpacingHorizontal="8dp"
+                        app:chipSpacingVertical="8dp" />
+                </HorizontalScrollView>
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/divider"
+                    app:layout_constraintTop_toTopOf="@id/tvLectureDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvLectureDesc"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginVertical="15dp"
+                    tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля... "
                     android:textColor="@color/vk_black"
                     android:textSize="13sp"
-                  />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"
+                    app:layout_constraintTop_toBottomOf="@id/listTags" />
 
-            </LinearLayout>
-
-            <HorizontalScrollView
-                android:id="@+id/listTags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:clipToPadding="false"
-                android:paddingStart="@dimen/margin_horizontal_default"
-                android:paddingEnd="@dimen/margin_horizontal_default"
-                android:scrollbars="none"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/auditoryContainer">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/tagGroup"
+                <TextView
+                    android:id="@+id/tvShowMore"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="8dp"
-                    app:chipSpacingVertical="8dp" />
-            </HorizontalScrollView>
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginTop="57dp"
+                    android:background="@drawable/custom_text_background_selectable"
+                    android:letterSpacing="-0.02"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="@string/yet_btn_text"
+                    android:textColor="#C3996C"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
 
-            <TextView
-                android:id="@+id/tvLectureDesc"
-                fontPath="fonts/sf_pro_display_regular.OTF"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginVertical="15dp"
-                tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля... "
-                android:textColor="@color/vk_black"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/listTags" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnAddToTimetable"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/custom_btn_green_selectable"
+                    android:letterSpacing="-0.02"
+                    android:minWidth="200dp"
+                    android:minHeight="40dp"
+                    android:text="@string/add_to_timetable"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLectureDesc" />
 
-            <TextView
-                android:id="@+id/tvShowMore"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="7dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:letterSpacing="-0.02"
-                android:padding="10dp"
-                android:text="@string/yet_btn_text"
-                android:textColor="#C3996C"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"
-                app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAddToTimetable"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="20dp"
-                android:background="@drawable/custom_btn_green_selectable"
-                android:letterSpacing="-0.02"
-                android:minWidth="200dp"
-                android:minHeight="40dp"
-                android:text="@string/add_to_timetable"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvLectureDesc" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
-
+        </androidx.cardview.widget.CardView>
 
 </layout>

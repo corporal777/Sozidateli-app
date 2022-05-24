@@ -3,7 +3,7 @@
     <item>
         <shape>
             <padding
-                android:left="@dimen/background_input_padding"
+                android:left="@dimen/background_large_corners_radius"
                 android:right="@dimen/background_input_padding_five" />
             <solid android:color="@color/search_field_background_color"/>
             <corners android:radius="10dp" />

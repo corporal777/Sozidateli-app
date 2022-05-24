@@ -14,6 +14,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupWindow
+import androidx.annotation.ColorInt
 import androidx.core.view.*
 import androidx.fragment.app.FragmentManager
 import coil.load
@@ -157,8 +158,6 @@ fun ImageView.setImage(
 }
 
 
-
-
 fun ImageRequest.Builder.setParams(
     crossfad: Int? = 500,
     placeholder: Int? = R.drawable.background_image_placeholder,
@@ -171,4 +170,13 @@ fun ImageRequest.Builder.setParams(
     if (!transformations.isNullOrEmpty())
         transformations(transformations)
     scale(Scale.FILL)
+}
+
+@ColorInt
+fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
+    val alpha = Math.round(Color.alpha(color) * factor)
+    val red = Color.red(color)
+    val green = Color.green(color)
+    val blue = Color.blue(color)
+    return Color.argb(alpha, red, green, blue)
 }

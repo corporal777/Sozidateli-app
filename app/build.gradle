@@ -81,6 +81,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
+            buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
+
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
@@ -89,6 +91,8 @@ android {
 
         beta {
            initWith(debug)
+            buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
+
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
@@ -97,6 +101,8 @@ android {
         }
         "new" {
             initWith(debug)
+            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
+
             buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
@@ -220,9 +226,10 @@ dependencies {
     implementation "com.github.lisawray.groupie:groupie:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-databinding:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:2.6.0"
-    implementation 'com.google.android:flexbox:1.0.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    kapt 'com.github.bumptech.glide:compiler:4.13.0'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'

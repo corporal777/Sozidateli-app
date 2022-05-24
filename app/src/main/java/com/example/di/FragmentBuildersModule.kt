@@ -32,6 +32,7 @@ import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.map.MapFragment
 import com.example.ui.event.location.map.redesign.MapFragmentNew
+import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.rating.EventRatingFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -338,4 +339,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMapFragmentNew(): MapFragmentNew
+
+    @ContributesAndroidInjector
+    abstract fun contributeMyEventsFragmentNew(): MyEventsFragmentNew
 }

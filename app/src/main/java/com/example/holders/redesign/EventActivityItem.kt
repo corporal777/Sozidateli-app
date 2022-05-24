@@ -26,6 +26,7 @@ class EventActivityItem(
 ) : Item(subEvent.id?.toLong() ?: 0) {
 
     private val clickListener by weak(clickListener)
+    private var isExpanded = false
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -42,20 +43,31 @@ class EventActivityItem(
                         fullDescription.substring(0, 180).replace("\n", " ")
                     ).append("...")
                         .toString()
-                    tvLectureDesc.text = shortDescription
+
+                    if (isExpanded){
+                        tvShowMore.isVisible = false
+                        tvLectureDesc.text = fullDescription
+                    }else {
+                        tvShowMore.isVisible = true
+                        tvLectureDesc.text = shortDescription
+                    }
 
                     tvShowMore.setOnClickListener {
                         tvLectureDesc.apply {
+                            isExpanded = true
                             alpha = 0F
                             animate().setDuration(500).alpha(1.0f)
-                            tvLectureDesc.text = fullDescription
+                            text = fullDescription
+                            tvShowMore.isVisible = false
                         }
-                        tvShowMore.visibility = View.GONE
                     }
+
+
                 } else {
-                    tvShowMore.visibility = View.GONE
+                    tvShowMore.isVisible = false
                     tvLectureDesc.text = fullDescription
                 }
+
             }
 
             tvLectureName.text = subEvent.title
@@ -90,7 +102,6 @@ class EventActivityItem(
                 }
 
                 removeAllViews()
-
                 if (!selectedTags.isNullOrEmpty() && !subEvent.tag.isNullOrEmpty()) {
                     listTags.isVisible = true
                     val tags = subEvent.tag
@@ -113,6 +124,8 @@ class EventActivityItem(
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventActivityItem) return false
         if (subEvent != other.subEvent) return false
+        if (subEvent.description != other.subEvent.description) return false
+        if (isExpanded != other.isExpanded) return false
         if (selectedTags != other.selectedTags) return false
         return true
     }

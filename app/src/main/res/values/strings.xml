@@ -25,6 +25,7 @@
     <string name="tab_organizations_title">Организаторы</string>
 
     <string name="my_events_title">Мои мероприятия</string>
+    <string name="my_timetable_title">Моё расписание</string>
     <string name="my_events_accepted">Участие подтверждено</string>
     <string name="my_events_pending">Заявка на рассмотрении</string>
     <string name="my_events_declined">Заявка не подтверждена</string>
@@ -220,7 +221,7 @@
     <string name="search_organizations">Организации</string>
     <string name="search_events">Мероприятия</string>
     <string name="search_users">Пользователи</string>
-    <string name="search_input_hint"> Поиск мероприятий или организаций</string>
+    <string name="search_input_hint">Поиск мероприятий, организаций или пользователей</string>
     <string name="search_filter_address">Область, край или город</string>
     <string name="search_filter_region">Введите регион и/или населенный пункт</string>
     <string name="search_filter_organization_address">Адрес</string>
@@ -849,7 +850,7 @@
     <string name="confirm">Подтвердить</string>
     <string name="do_not_confirm">Не подтверждать</string>
     <string name="label_main_tab">Главная</string>
-    <string name="label_my_events_tab">Моё расписание</string>
+    <string name="label_my_events_tab">Мои мероприятия</string>
     <string name="notifications_tab_label">Уведомления</string>
     <string name="add_to_calendar">Добавить в календарь</string>
     <string name="show_full_timetable">Смотреть полное расписание</string>
@@ -864,7 +865,12 @@
     <string name="timetable">Расписание</string>
     <string name="scheme_of_building">Схема комплекса</string>
     <string name="search_input_activity_hint">Название, описание или спикера</string>
+    <string name="search_input_event_hint">Название или описание мероприятия</string>
     <string name="schedule_tags_title_new">Теги</string>
     <string name="yet_btn_text">еще</string>
+    <string name="no_activity_title">Событий нет</string>
+    <string name="no_activity_with_params_title">По данным параметрам нет событий</string>
+    <string name="no_event_with_params_title">По данным параметрам нет мероприятий</string>
+    <string name="show_all_speakers">Посмотреть всех спикеров</string>
 
 </resources>

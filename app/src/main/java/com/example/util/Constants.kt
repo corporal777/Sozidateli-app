@@ -102,3 +102,5 @@ val REQUIRED_CAMERA_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.p
 const val DEGREES_MAX_SIZE = 10
 const val PHONE_PERSONAL = "personal"
 const val PHONE_WORK = "work"
+
+var IS_EXPANDED = true

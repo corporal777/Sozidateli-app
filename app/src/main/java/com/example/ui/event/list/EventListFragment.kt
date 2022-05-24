@@ -19,6 +19,7 @@ import com.example.holders.EventStatusItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
+import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.old.AboutEventFragment.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.old.AboutEventFragmentArgs
@@ -54,21 +55,21 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         })
     }
 
-    private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
+    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-        override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
+        //override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
 
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
-            presenter.onActionWriteToOrganization(emails)
+       // override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
+           // presenter.onActionWriteToOrganization(emails)
 
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
             presenter.onShowEventClick(event)
         }
 
-        override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
+       // override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 

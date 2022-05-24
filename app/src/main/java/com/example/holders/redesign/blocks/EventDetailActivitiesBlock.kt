@@ -1,49 +1,49 @@
 package com.example.holders.redesign.blocks
 
+import android.util.Log
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
+import com.example.data.models.EventTagModel
+import com.example.data.models.Tag
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.holders.redesign.EventTagsListItem
+import com.example.ui.chat.`ChatContract$View$$State`
+import com.example.ui.event.activities.items.NoSubEventItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.Item
 
 class EventDetailActivitiesBlock(
-    subEvents: List<EventActivityModel>,
+    val subEvents: MutableMap<String, ArrayList<EventActivityModel>>,
     private val clickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
 
     private val mDataItem = Section()
 
-    //private val mTagsItem = EventTagsListItem(eventData?.binds?.tag!!, {onTagCLick(it)})
+    private var mListTags = arrayListOf<Tag>()
+    //private val mTagsItem = EventDetailTagsBlock(eventData) {}
 
     init {
         //add(mTagsItem)
+        updateData(emptyList())
+        add(mDataItem)
+    }
 
+    private fun updateData(listTags: List<Tag>) {
         if (!subEvents.isNullOrEmpty()) {
-            val listMap = subEvents.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
-            var mSize = 4
-            run breaking@{
-                listMap.map {
-                    if (mSize == 0){
-                        return@breaking
-                    }
-                    mDataItem.add(EventActivityDateItem(it.key))
-                    it.value.forEach { data ->
-                        if (mSize != 0){
-                            mDataItem.add(EventActivityItem(data,null, clickListener))
-                            mSize -= 1
-                        }else {
-                            return@breaking
-                        }
-                    }
+            mDataItem.clear()
+            val listMap = subEvents
+            listMap.map {
+                val dateItem = EventActivityDateItem(it.key)
+                mDataItem.add(dateItem)
+                it.value.forEach { data ->
+                    mDataItem.add(EventActivityItem(data, emptyList(), clickListener))
                 }
             }
-        }
 
-        add(mDataItem)
+        }
     }
 
     override fun getGroup(position: Int): Group {
@@ -56,12 +56,11 @@ class EventDetailActivitiesBlock(
 
     override fun getPosition(group: Group): Int {
         return when (group) {
-            //mTagsItem -> 0
+            // mTagsItem -> 0
             mDataItem -> 0
             else -> -1
         }
     }
-
 
     fun updateButtonState(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()

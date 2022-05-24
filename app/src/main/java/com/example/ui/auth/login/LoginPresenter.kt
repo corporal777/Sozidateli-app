@@ -44,6 +44,7 @@ class LoginPresenter
     var login = ""
     var password = ""
     var loginType = "email"
+    var deviceId = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -74,7 +75,7 @@ class LoginPresenter
     override fun onClickLogin(login: String, password: String, invite: Int) {
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
         if (invite != -1) {
-            compositeDisposable += authRepository.authEmailOrPhoneWithResult(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
+            compositeDisposable += authRepository.authEmailOrPhoneWithResult(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password), deviceId))
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)
@@ -102,7 +103,7 @@ class LoginPresenter
                             }
                     )
         } else {
-            compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password)))
+            compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, validatedLogin), LoginModel("common", password), deviceId))
                     .withCheckInternetConnectivity()
                     .performOnBackgroundOutOnMain()
                     .withLoadingDialog(viewState)

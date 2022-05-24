@@ -34,8 +34,15 @@ class CalendarHorizontalListItem(
                 it.notifyChanged()
             }
         }
-
         deselectAllExcept(day)
+    }
+
+    fun changeDay(day: EventScheduleCalendarDay) : Boolean{
+        var isDay = false
+        items.find { it.day == day }?.let {
+            isDay = true
+        }
+        return isDay
     }
 
     fun scrollToDay(day: EventScheduleCalendarDay): Boolean {
@@ -54,6 +61,27 @@ class CalendarHorizontalListItem(
     fun deselectAllExcept(except: EventScheduleCalendarDay) {
         items.forEach {
             if (it.day != except && it.isSelected) {
+                it.isSelected = false
+                it.notifyChanged()
+            }
+        }
+    }
+
+
+    fun selectDayNew(day: EventScheduleCalendarDay) {
+        items.find { it.day.dayOfMonth == day.dayOfMonth }?.let {
+            if (!it.isSelected) {
+                it.isSelected = true
+                it.notifyChanged()
+            }
+        }
+        deselectAllExceptNew(day)
+    }
+
+
+    fun deselectAllExceptNew(except: EventScheduleCalendarDay){
+        items.forEach {
+            if (it.day.dayOfMonth != except.dayOfMonth && it.isSelected) {
                 it.isSelected = false
                 it.notifyChanged()
             }

@@ -7,7 +7,7 @@ import com.xwray.groupie.NestedGroup
 
 class EventDetailSpeakersBlock(
     val title: String,
-    data: List<MemberModel>?,
+    data: List<MemberModel>,
     val onItemClick: (id: Int) -> Unit
 ) : NestedGroup() {
 

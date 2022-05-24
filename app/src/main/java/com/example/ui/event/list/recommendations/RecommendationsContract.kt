@@ -2,39 +2,47 @@ package com.example.ui.event.list.recommendations
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.EventNew
+import com.example.data.models.EventPhoneModel
+import com.example.ui.base.BaseContract
 import com.example.ui.event.list.EventListContract
+import com.example.util.AddToEndSingleByTagStateStrategy
+import com.example.util.pagination.PaginationListGroupAdapter
 
 interface RecommendationsContract {
-    interface View : EventListContract.View {
+    interface View : BaseContract.View{
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun setData(events: List<EventNew/*Event*/?>)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun showEmptyListPlaceholder()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun scrollToPositionWithOffset(position: Int, offset: Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAboutEvent(event: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRequest(event: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSearch()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showOrganizations()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showMyEvents()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showChat()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAccount()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showNotifications()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun showNeedMoreState()
     }
 
-    interface Presenter : EventListContract.Presenter {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
-        fun onOrganizationsClick()
-        fun onMyEventsClick()
-        fun onMenuChatClick()
-        fun onMenuAccountClick()
-        fun onMenuNotificationsClick()
+
+        fun onScrollChange(position: Int, offset: Int)
+        fun onRefreshRequest()
+
+        fun onActionRegister(event: String)
+        fun onActionCancel(event: String, registrationId: String?)
+        fun onActionShowEvent(event: String)
+        fun onShowEventClick(event: String)
     }
 }

@@ -38,7 +38,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatButton
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
                     android:id="@+id/btnEventAction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -71,8 +71,8 @@
                 android:gravity="center"
                 android:layout_marginBottom="5dp"
                 android:letterSpacing="-0.02"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:text="Участие одобрено"
                 android:textAllCaps="false"
                 android:textSize="12sp"
