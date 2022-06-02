@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:foreground="@drawable/custom_text_background_selectable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -11,7 +11,7 @@
             android:id="@+id/image_container"
             android:layout_width="140dp"
             android:layout_height="180dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             app:cardCornerRadius="10dp"
@@ -33,10 +33,33 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/background_gradient_down"
+                    android:layout_height="120dp"
+                    android:background="@drawable/footer_speaker_gradient"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_show_speaker_status"
+                    android:layout_width="35dp"
+                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/btn_speaker_status_circle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/iv_speaker_status"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_speaker_status_pending"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
@@ -58,7 +81,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/tvSpeakersLocation"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="0dp"
@@ -75,7 +98,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvSpeakersName" />
 
         <TextView
-            android:maxLines="6"
             android:id="@+id/tvSpeakersPosition"
             fontPath="fonts/sf_pro_display_regular.OTF"
             android:layout_width="0dp"

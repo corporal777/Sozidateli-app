@@ -5,6 +5,7 @@ import android.content.Intent.*
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -12,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -29,18 +31,21 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
+class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment{
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
-    override val title: String
+
+    override val title: CharSequence?
         get() = getString(R.string.profile_label)
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
+    private var mDy: Int = 0
 
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
+
 
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get().apply {
@@ -52,9 +57,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //(screenTittle as TextView).text = getString(R.string.profile_label)
 
         ivAvatar.apply {
             clipToOutline = true
@@ -76,6 +82,7 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
         //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
         //showUserStateDialog()
     }
+
 
     override fun setUser(user: UserDetail) {
         val avatar = user.image?.uri
@@ -258,4 +265,5 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment {
     }
 
     override fun layout() = R.layout.fragment_profile
+
 }

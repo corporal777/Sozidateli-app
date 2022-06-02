@@ -43,4 +43,5 @@ class PaginationList<T>(
     fun invalidate() {
         pagedList?.dataSource?.invalidate()
     }
+
 }

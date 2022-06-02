@@ -5,33 +5,35 @@ import com.example.data.models.EventActivityModel
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
+import com.example.ui.event.activities.items.NoSubEventItem
+import com.example.ui.event.my.items.NoEventItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class SpeakersActivitiesGroup(
-    private val id: Int,
-    private val list: List<EventActivityModel>
+    private val noActivitiesTitle : String,
+    private val list: List<EventActivityModel>,
+    val clickListener : EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
 
     private val mDataItem = Section()
 
     init {
-        val listActivitiesMap =
-            list.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
-        listActivitiesMap.map { map ->
-            val date = EventActivityDateItem(map.key)
-            val list = arrayListOf<EventActivityItem>()
-            mDataItem.add(date)
-            map.value.forEach {data ->
-                mDataItem.add(EventActivityItem(data, null, null))
-                data.binds?.member?.forEach {
-                    if (it.id == id) {
-
-                    }
+        if (!list.isNullOrEmpty()) {
+            val listActivitiesMap =
+                list.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
+            listActivitiesMap.map { map ->
+                val date = EventActivityDateItem(map.key)
+                mDataItem.add(date)
+                map.value.forEach { data ->
+                    mDataItem.add(EventActivityItem(data, null, clickListener))
                 }
             }
+        } else {
+            mDataItem.add(NoSubEventItem(noActivitiesTitle))
         }
+
         add(mDataItem)
     }
 
@@ -53,9 +55,8 @@ class SpeakersActivitiesGroup(
 
 
     fun updateButtonState(subEvent: EventActivityModel) {
-        Log.e("SUB", subEvent.id.toString())
         val idLong = subEvent.id?.toLong()
-        mDataItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged()
+        mDataItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged(subEvent)
     }
 
     override fun getGroupCount() = 1

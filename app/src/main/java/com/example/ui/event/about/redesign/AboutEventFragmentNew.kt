@@ -24,6 +24,7 @@ import com.example.data.models.*
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPageItemNew
@@ -39,6 +40,7 @@ import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.example.ui.views.StateType
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.toolbar.widget.OnTransparentListener
 import com.example.util.adjustAlpha
 import com.google.android.material.snackbar.Snackbar
@@ -87,6 +89,9 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
         override fun onActionRegister() = presenterNew.onGoToEventClick()
         override fun onActionCancel() = presenterNew.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
+        override fun onSubscribeEvent() = presenterNew.onCreateEventSubscriptionClick()
+        override fun onDeleteSubscribeEvent() = presenterNew.onDeleteEventSubscriptionClick()
+
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
@@ -109,11 +114,6 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mMaxOffset = 425f
-        if (tool_bar != null) {
-            tool_bar.setMaxOffset(mMaxOffset)
-        }
-
         eventContentList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = groupAdapter
@@ -121,75 +121,10 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     mDy += dy
-                    Log.e("OFFSET", mDy.toString())
-                    if (tool_bar != null) {
-                        tool_bar.updateTop(mDy.toFloat())
-                    }
+                    updateView(mDy)
                 }
             })
         }
-
-
-        tool_bar.addOnScrollStateListener(object : OnTransparentListener {
-
-            override fun onTransparentStart(fraction: Float) {
-                Log.e("START", fraction.toString())
-                toolbar_container.apply {
-                    alpha = 1f
-                    background = null
-                }
-            }
-
-            override fun onTransparentMiddle(fraction: Float) {
-                toolbar_container.apply {
-                    aboutEventToolbar.background = null
-                    requireActivity().window.decorView.systemUiVisibility = 0
-                    setWhiteIcons()
-                    background = ColorDrawable(adjustAlpha(Color.BLACK, fraction / 1800))
-                }
-            }
-
-            override fun onTransparentMoreMiddle(fraction: Float) {
-                Log.e("MIDDLE", fraction.toString())
-                toolbar_container.apply {
-                    requireActivity().window.decorView.systemUiVisibility = 0
-                    setWhiteIcons()
-                    background = ColorDrawable(Color.BLACK)
-                }
-            }
-
-            override fun onTransparentEnd(fraction: Float) {
-                Log.e("END", fraction.toString())
-                toolbar_container.apply {
-                    appBar.elevation = 0f
-                    aboutEventToolbar.elevation = 0f
-                    tool_bar.elevation = 0f
-                    aboutEventToolbar.background = ColorDrawable(Color.BLACK)
-                    appBar.background = null
-                    //background = ColorDrawable(adjustAlpha(Color.WHITE, (fraction) / 3000))
-                    background = ColorDrawable(adjustAlpha(Color.WHITE, (fraction - 2000) / 1800))
-                    setBlackIcons()
-                    toolbarShadow.isVisible = false
-                }
-            }
-
-            override fun onTransparentMoreEnd(fraction: Float) {
-                Log.e("END", fraction.toString())
-                toolbar_container.apply {
-                    tool_bar.elevation = 10f
-                    appBar.elevation = 10f
-                    aboutEventToolbar.elevation = 10f
-                    background = ColorDrawable(Color.WHITE)
-                    aboutEventToolbar.background = ColorDrawable(Color.WHITE)
-                    appBar.background = ColorDrawable(Color.WHITE)
-                    setBlackIcons()
-                    toolbarShadow.isVisible = false
-                }
-            }
-
-            override fun onTransparentUpdateFraction(fraction: Float) {
-            }
-        })
 
 
         iv_share.setOnClickListener(presenterNew::onShareClick)
@@ -208,17 +143,18 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     override fun setSubEvents(
         subEvents: MutableMap<String, ArrayList<EventActivityModel>>
     ) {
-        if (subEvents.isNullOrEmpty()) {
-            val listPlaceholders = listOf(
-                PlaceholderItem(PlaceholderItem.Type.SUB_EVENT),
-                PlaceholderItem(PlaceholderItem.Type.SUB_EVENT),
-                PlaceholderItem(PlaceholderItem.Type.SUB_EVENT),
-                PlaceholderItem(PlaceholderItem.Type.SUB_EVENT)
-            )
-            subEventsBlock.update(listPlaceholders)
-        } else subEventsBlock.update(
-            listOf(EventDetailActivitiesBlock(subEvents, onSubEventClickListener))
+        subEventsBlock.update(
+            subEvents.map {
+                EventDetailActivitiesBlock(it.key, it.value, onSubEventClickListener)
+            }
+            //listOf(EventDetailActivitiesBlock(subEvents, onSubEventClickListener))
         )
+    }
+
+    override fun showErrorMessage(message: String) {
+        MessageDialogWithGreenButton(requireContext(), message).setSelectCallback {
+            findNavController().navigateUp()
+        }
     }
 
 
@@ -268,17 +204,17 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                 if (!eventData?.binds?.member.isNullOrEmpty()) {
                     add(EventDetailBlocksLabelItem(getString(R.string.speakers)))
                     val speakers = eventData?.binds?.member?.filter { it.role == "speaker" }
-                    add(SpeakersHorizontalListItem(speakers!!) {
-                        presenterNew.onSpeakerClick(it)
-                    })
+                    add(SpeakersHorizontalListItem(speakers!!,
+                        {presenterNew.onSpeakerClick(it)},
+                        { presenterNew.onShowAllSpeakersClick() }))
                 }
                 add(EventDetailBlocksLabelItem(getString(R.string.event_program)))
                 add(EventDetailTagsBlock(tags) {
                     presenterNew.onTagSelected()
-                    //subEventsBlock.findGroupBy<EventDetailActivitiesBlock> { true }?.showSubEventTags(it)
                 })
+
             },
-            Section().apply { add(subEventsBlock) },
+            subEventsBlock,
             Section().apply {
                 add(EventDetailShowActivitiesButtonBlock {
                     presenterNew.onShowEventActivitiesClick()
@@ -299,7 +235,9 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     }
 
     override fun updateSubEvent(subEvent: EventActivityModel) {
-        subEventsBlock.findGroupBy<EventDetailActivitiesBlock> { true }?.updateButtonState(subEvent)
+        //subEventsBlock.findGroupBy<EventDetailActivitiesBlock> { true }?.updateButtonState(subEvent)
+        val idLong = subEvent.id?.toLong()
+        subEventsBlock.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged(subEvent)
     }
 
     override fun setActionButton(event: EventNew/*EventData*/?, userRegistration: Event.Status?) {
@@ -449,5 +387,46 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
         }
         startActivity(intent)
 
+    }
+
+    private fun updateView(offset : Int){
+        Log.e("OFFSET", offset.toString())
+        if (offset == 0){
+            tbBackground.setBackgroundColor(Color.TRANSPARENT)
+        }
+        if (offset > 0 && offset < 1700) {
+            tbBackground.apply {
+                tbContent.setBackgroundColor(Color.TRANSPARENT)
+                setBackgroundColor(Color.BLACK)
+                val mAlpha = Math.abs(offset / (1000).toFloat())
+                Log.e("WHITE", mAlpha.toString())
+                alpha = mAlpha
+                aboutEventAppBar.apply {
+                    elevation = 0f
+                    background = null
+                    aboutEventToolbar.background = null
+                }
+                //setWhiteIcons()
+            }
+        }
+        if (offset > 1900) {
+            tbBackground.apply {
+                tbContent.setBackgroundColor(Color.BLACK)
+                setBackgroundColor(Color.WHITE)
+                val value = offset - 1900
+                val mAlpha = Math.abs(value / (1000).toFloat())
+                Log.e("BLACk", mAlpha.toString())
+                alpha = mAlpha
+            }
+            aboutEventAppBar.apply {
+                elevation = 10f
+                setBackgroundColor(Color.WHITE)
+                aboutEventToolbar.setBackgroundColor(Color.WHITE)
+            }
+            setBlackIcons()
+        }
+        if (offset < 2060){
+            setWhiteIcons()
+        }
     }
 }

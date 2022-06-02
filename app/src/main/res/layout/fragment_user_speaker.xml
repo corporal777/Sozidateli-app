@@ -52,6 +52,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAddToFavorite"
+                    android:visibility="invisible"
                     fontPath="fonts/sf_pro_text_semibold.ttf"
                     android:layout_width="155dp"
                     android:layout_height="30dp"

@@ -41,9 +41,6 @@ import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.login.LoginFragment
-import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
-import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
@@ -52,29 +49,23 @@ import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.old.AboutEventFragment
 import com.example.ui.event.about.old.AboutEventFragmentArgs
-import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.location.map.redesign.MapFragmentNew
+import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.rating.EventRatingFragmentArgs
-import com.example.ui.event.speakers.UserSpeakerFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
-import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
-import com.example.ui.subevent.SubeventFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -139,32 +130,41 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
                 }
 
-
-                when(f) {
-                    is SplashFragment,
-                    is AuthWebsiteFragment,
-                    is WelcomeFragment,
-                    is LoginFragment,
-                    is StoriesFragment,
-                    is AuthorizationFragment,
-                    is RegisterEmailNewFragment,
-                    is QrScannerToAuthWebFragment,
-                    is RegisterSnFragment,
-                    is SearchTabsFragment,
-                    is SubeventFragment,
-                    is UserSpeakerFragment,
-                    is ActivitiesFragment,
-                    is MapFragmentNew,
-                    is PartnerFragment,
-                    is OrganizationFragment,
-                    is ChatFragment -> {
-                        hideNavBar()
-                    }
-                    else -> showNavBar()
+                when (f) {
+                    is AboutEventFragmentNew,
+                    is RecommendationsFragment,
+                    is MyEventsFragmentNew,
+                    is ChatListTabsFragment,
+                    is ProfileFragment,
+                    is NotificationsFragment -> showNavBar()
+                    else -> hideNavBar()
                 }
 
-                setupNavBarItems(f)
+//                when(f) {
+//                    is SplashFragment,
+//                    is AuthWebsiteFragment,
+//                    is WelcomeFragment,
+//                    is LoginFragment,
+//                    is StoriesFragment,
+//                    is AuthorizationFragment,
+//                    is RegisterEmailNewFragment,
+//                    is QrScannerToAuthWebFragment,
+//                    is RegisterSnFragment,
+//                    is SearchTabsFragment,
+//                    is SubeventFragment,
+//                    is UserSpeakerFragment,
+//                    is ActivitiesFragment,
+//                    is MapFragmentNew,
+//                    is PartnerFragment,
+//                    is OrganizationFragment,
+//                    is EventSpeakersFragment,
+//                    is ChatFragment -> {
+//                        hideNavBar()
+//                    }
+//                    else -> showNavBar()
+//                }
 
+                setupNavBarItems(f)
 
                 if (f is StoriesFragment || f is AboutEventFragment || f is AboutEventFragmentNew || f is AuthorizationFragment || f is AuthWebsiteFragment || f is QrScannerToAuthWebFragment || f is WelcomeFragment) {
                     root.updateMargin(top = 0)
@@ -243,9 +243,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 ToolbarContentView(this@MainActivity),
                 ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             )
-            IS_EXPANDED = true
-        }
 
+        }
+        IS_EXPANDED = true
         setWindowTransparency()
 
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
@@ -297,6 +297,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         super.onNewIntent(intent)
         handleIntent(intent)
     }
+
 
     private fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents(intent)) return
@@ -741,7 +742,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun onDestroy() {
-        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
+        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(
+            navFragmentsLifecycleCallback
+        )
         super.onDestroy()
     }
 
@@ -828,7 +831,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mainNavBar.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)
+                    findNavController(R.id.navHostFragment).popBackStack(
+                        R.id.recommendations_fragment,
+                        false
+                    )
                     true
                 }
                 R.id.my_events -> {
@@ -918,9 +924,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun getLoadingView(): View = flLoading
 
-
-    override fun getProgressBarLoadingView():View = progressBarLoading
-
+    override fun getProgressBarLoadingView(): View = progressBarLoading
 
     override fun layout() = R.layout.activity_main
 }

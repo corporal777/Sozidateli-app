@@ -6,7 +6,6 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
 import com.example.extensions.findItemBy
@@ -114,5 +113,5 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         findNavController().navigate(OrganizationsFragmentDirections.organizationsFragmentToSelf(OrganizationsFilter.FAVORITES))
     }
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_event_speakers
 }

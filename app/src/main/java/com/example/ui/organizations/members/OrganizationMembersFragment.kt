@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationNewMemberModel
 import com.example.holders.OrganizationUserItem
 import com.example.interfaces.ToolbarFragment
@@ -70,5 +69,5 @@ class OrganizationMembersFragment : BaseFragment(), OrganizationMembersContract.
         findNavController().navigate(OrganizationMembersFragmentDirections.organizationMembersToUser(userId))
     }
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_event_speakers
 }

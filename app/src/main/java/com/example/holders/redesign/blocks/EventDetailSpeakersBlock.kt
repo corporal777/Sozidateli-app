@@ -11,7 +11,7 @@ class EventDetailSpeakersBlock(
     val onItemClick: (id: Int) -> Unit
 ) : NestedGroup() {
 
-    private val mDataItem = SpeakersHorizontalListItem(data) { onItemClick(it) }
+    private val mDataItem = SpeakersHorizontalListItem(data, { onItemClick(it) }, {})
     private val mHeaderItem = EventDetailBlocksLabelItem(title)
 
     init {

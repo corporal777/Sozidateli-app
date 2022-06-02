@@ -5,62 +5,64 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
 
         <TextView
-            app:layout_constraintBottom_toTopOf="@id/organization_cl"
-            android:letterSpacing="0.02"
-            android:textStyle="bold"
-            android:lineSpacingExtra="2sp"
             android:id="@+id/tvHeader"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="20dp"
+            android:letterSpacing="0.02"
             android:text="Мероприятие проводит"
             android:textColor="@color/vk_black"
             android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/organization_cl"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/organization_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:foreground="@drawable/custom_text_background_selectable"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="match_parent"
-            android:id="@+id/organization_cl"
-            android:layout_marginTop="15dp"
-            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tvHeader">
 
 
-            <LinearLayout
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/background_image_with_stroke"
-                android:layout_marginStart="15dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:id="@+id/cv_photo"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvImage"
                 android:layout_width="90dp"
-                android:layout_height="90dp">
+                android:layout_height="90dp"
+                android:layout_marginStart="15dp"
+                android:elevation="0dp"
+                app:cardCornerRadius="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/event_item_action_border"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:scaleType="centerCrop"
                     android:id="@+id/ivOrganizationLogo"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/img_test" />
 
-            </LinearLayout>
-
+            </com.google.android.material.card.MaterialCardView>
 
 
             <TextView
-                android:letterSpacing="-0.02"
-                android:maxLines="2"
+                android:layout_marginTop="10dp"
                 android:id="@+id/tvOrganizationLabel"
                 fontPath="fonts/sf_pro_display_semibold.ttf"
                 android:layout_width="0dp"
@@ -68,21 +70,25 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="10dp"
                 android:ellipsize="end"
-                android:text="ООО Сбербанк"
+                android:letterSpacing="-0.02"
+                android:maxLines="2"
+                tools:text="ООО Сбербанк"
                 android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cv_photo"
+                app:layout_constraintStart_toEndOf="@id/cvImage"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
             <com.example.ui.views.UserSubscribeButton
-                android:layout_marginStart="7dp"
                 android:id="@+id/btnActionFavorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:layout_marginBottom="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cv_photo"
+                app:layout_constraintStart_toEndOf="@id/cvImage"
                 app:subscribeAction="favorite" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

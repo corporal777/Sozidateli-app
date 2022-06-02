@@ -62,7 +62,7 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
     private val infoSection = Section()
     private val speakersSection by lazy {
         Section().apply {
-            setHeader(EventDetailBlocksLabelItem( getString(R.string.speakers)).apply {
+            setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)).apply {
 
             })
             setHideWhenEmpty(true)
@@ -79,16 +79,16 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
                 add(infoSection)
                 add(speakersSection)
             }
-           setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-               mDy += scrollY - oldScrollY
-               subEventAppBar.apply {
-                   if (mDy >= 30){
-                       elevation = 10f
-                   }else {
-                       elevation = 0f
-                   }
-               }
-           }
+            setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                mDy += scrollY - oldScrollY
+                subEventAppBar.apply {
+                    if (mDy >= 30) {
+                        elevation = 10f
+                    } else {
+                        elevation = 0f
+                    }
+                }
+            }
         }
 
         ivBack.setOnClickListener {
@@ -107,20 +107,26 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
             showToast("Removed")
             presenter.onRemoveFromScheduleClick(it)
         }, {
-           showToast(it.toString())
+            showToast(it.toString())
         })))
     }
 
     override fun setSpeakers(speakers: List<MemberModel>) {
         speakersSection.update(speakers.map { speaker ->
-            SpeakerGroup(speaker, { presenter.onSpeakerClick(it) }, { presenter.onSpeakerChangeSubscriptionClick(it) })
+            SpeakerGroup(
+                speaker,
+                { presenter.onSpeakerClick(it) },
+                { presenter.onSpeakerChangeSubscriptionClick(it) })
         })
     }
 
     override fun showSpeakerProfile(speaker: MemberModel) {
+//
         findNavController().navigate(
-            R.id.user_speaker_fragment,
-            UserSpeakerFragmentArgs.Builder(speaker.user.toString(), mEventId).build().toBundle()
+            SubeventFragmentDirections.actionSubEventFragmentToUserSpeakerFragment(
+                speaker.id.toString(),
+                mEventId
+            )
         )
         //findNavController().navigate(R.id.user_fragment, UserFragmentArgs.Builder(speaker.user.toString()).build().toBundle())
     }
@@ -143,7 +149,7 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
 
     override fun onStart() {
         super.onStart()
-        if (recyclerView != null){
+        if (recyclerView != null) {
             mDy += recyclerView.scrollY
         }
     }

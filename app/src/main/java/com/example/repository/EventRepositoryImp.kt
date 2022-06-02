@@ -324,7 +324,7 @@ class EventRepositoryImp
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(
             eventId,
-            "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state"
+            "rights,organization,tag,page,activity,activity.userCalendar,user-registration,user-form-result,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state,is-user-subscribed,event-subscribe"
         )
             .map {
                 val eventFormats = appData.getEventFormats()
@@ -343,8 +343,17 @@ class EventRepositoryImp
 
             }
 
+    override fun getEventMember(memberId: String): Maybe<MemberModel> =
+        newApi.getEventMember(memberId, "user,user.userFavorite,user.chat-room-with-me,activities,activity.userCalendar")
+
     override fun getEventDetailsNew(eventId: String): Single<EventNew> =
         newApi.getEventDetailsNew(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state")
+
+    override fun createEventSubscription(eventId: Int): Completable =
+        newApi.createEventSubscription(EventSubscriptionRequest(eventId))
+
+    override fun deleteEventSubscription(eventId: Int): Completable =
+        newApi.deleteEventSubscription(eventId)
 
     override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
         newApi.getEventDetails(eventId, "rights,current-user-registration")

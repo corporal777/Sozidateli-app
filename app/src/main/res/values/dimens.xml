@@ -108,4 +108,9 @@
     <dimen name="viewpager_current_item_horizontal_margin">42dp</dimen>
     <dimen name="background_corners_seven">7dp</dimen>
     <dimen name="background_corners_eight">8dp</dimen>
+
+    <dimen name="margin_ten">10dp</dimen>
+    <dimen name="margin_twenty">20dp</dimen>
+    <dimen name="margin_thirty">30dp</dimen>
+    <dimen name="margin_forty">30dp</dimen>
 </resources>

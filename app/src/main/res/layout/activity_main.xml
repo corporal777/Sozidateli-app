@@ -17,25 +17,24 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="10dp"
             android:orientation="vertical"
-            app:elevation="0dp">
+            app:elevation="10dp">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:contentInsetStart="0dp"
-                android:contentInsetLeft="0dp"
-                android:contentInsetEnd="0dp"
-                android:contentInsetRight="0dp"
-                android:elevation="0dp"
-                app:contentInsetEnd="0dp"
-                app:contentInsetLeft="0dp"
-                app:contentInsetRight="0dp"
+                android:background="@color/white"
+                android:elevation="10dp"
                 app:contentInsetStart="0dp"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -68,19 +67,42 @@
             android:alpha="0.5"
             android:background="@android:color/white" />
 
-        <ProgressBar
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center" />
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:indicatorColor="#BE9B72"
+            android:indeterminate="true"
+            app:trackCornerRadius="6dp"
+            app:trackThickness="4.1dp" />
+
+<!--        <ProgressBar-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_gravity="center" />-->
+
     </FrameLayout>
 
 
-    <ProgressBar
-        android:visibility="gone"
+    <!--    <ProgressBar-->
+    <!--        android:indeterminateDrawable="@drawable/custom_progress_background"         android:visibility="visible"-->
+    <!--        android:id="@+id/progressBarLoading"-->
+    <!--        android:layout_width="40dp"-->
+    <!--        android:layout_height="40dp"-->
+    <!--        android:layout_gravity="center" />-->
+
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBarLoading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        app:indicatorColor="#BE9B72"
+        android:indeterminate="true"
+        app:trackCornerRadius="6dp"
+        app:trackThickness="4.1dp" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/errorContainer"
@@ -124,30 +146,30 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
 
         <View
             android:id="@+id/nav_bar_divider"
-            app:layout_constraintBottom_toTopOf="@id/mainNavBar"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#C6C6C8"/>
+            android:background="#C6C6C8"
+            app:layout_constraintBottom_toTopOf="@id/mainNavBar"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/mainNavBar"
             style="@style/MainBottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/white"
             app:elevation="4dp"
             app:itemBackground="@android:color/transparent"
-            android:background="@android:color/white"
             app:labelVisibilityMode="labeled"
-            app:layout_constraintTop_toBottomOf="@id/nav_bar_divider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nav_bar_divider"
             app:menu="@menu/main_bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

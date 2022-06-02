@@ -40,7 +40,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(List(20) { null })
+        viewState.setData(List(10) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true

@@ -68,6 +68,9 @@ interface AboutEventContractNew {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSubEvents(subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showErrorMessage(message: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -83,10 +86,14 @@ interface AboutEventContractNew {
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
         fun onSubEventClick(subEvent: EventActivityModel)
-        fun onSpeakerClick(speaker: Int)
+        fun onSpeakerClick(memberId: Int)
+        fun onShowAllSpeakersClick()
         fun onMapPageSelected()
         fun onTagSelected()
 
         fun onShowEventActivitiesClick()
+
+        fun onCreateEventSubscriptionClick()
+        fun onDeleteEventSubscriptionClick()
     }
 }

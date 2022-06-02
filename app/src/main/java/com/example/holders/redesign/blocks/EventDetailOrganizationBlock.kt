@@ -22,7 +22,7 @@ class EventDetailOrganizationBlock(
 
 
     private val organizationLogo = eventData?.binds?.organization?.logo?.uri
-        ?: "https://upload.wikimedia.org/wikipedia/commons/a/af/Sberbank_logo_2020_en.png?20210830141558"
+        ?: "https://www.laplandiya.org/uploads/pages/1545/img/news-20171130-1512033017-ysxmq6.jpg"
 
 
     override fun bind(viewBinding: ItemEventDetailOrganizationBlockBinding, position: Int) {

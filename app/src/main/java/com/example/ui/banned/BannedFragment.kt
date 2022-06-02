@@ -9,7 +9,6 @@ import com.example.R
 import com.example.data.models.UserChat
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

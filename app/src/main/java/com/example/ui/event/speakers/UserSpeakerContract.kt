@@ -1,6 +1,7 @@
 package com.example.ui.event.speakers
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
@@ -15,7 +16,7 @@ interface UserSpeakerContract{
         fun openChat(userName: String, userAvatar: String?, chatId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeakerMainInfo(speaker: UserDetail)
+        fun showSpeakerMainInfo(speaker: MemberModel, isCurrentUser : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSpeaker(speaker: UserDetail)
@@ -28,10 +29,20 @@ interface UserSpeakerContract{
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEmptyMainDataPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateSubEvent(subEvent: EventActivityModel)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showSubEvent(eventId: String, subEventId: String)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onWriteMessageClick(speaker: UserDetail)
         fun onAddSpeakerToFavoriteClick(id: String)
+
+        fun onAddToScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
+        fun onSubEventClick(subEvent: EventActivityModel)
     }
 }

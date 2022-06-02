@@ -4,16 +4,16 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.bodies.CreateChatBody
+import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class UserSpeakerPresenter
 ) : BasePresenter<UserSpeakerContract.View>(appData), UserSpeakerContract.Presenter {
 
     lateinit var eventId: String
-    lateinit var userId: String
+    lateinit var memberId: String
 
     lateinit var mUser: UserDetail
     private lateinit var mProfileUserData: ProfileUserData
@@ -42,35 +42,23 @@ class UserSpeakerPresenter
 
     private fun loadUserData() {
         viewState.setEmptyMainDataPlaceholder()
-        viewState.setEmptyEventsPlaceholder()
-        userRepository.getUserByIdNew(userId).toObservable()
+        // userRepository.getUserByIdNew(userId).toObservable()
+        compositeDisposable += eventRepository.getEventMember(memberId)
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
-            //.withLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
-                    viewState.setEmptyMainDataPlaceholder()
-                }, onNext = {
-                    mUser = it
-                    viewState.showSpeakerMainInfo(it)
-                    loadEventActivities()
-                })
-
-    }
-
-    private fun loadEventActivities() {
-        eventRepository.getEventActivities(eventId.toInt())
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.setEmptyEventsPlaceholder()
                 },
                 onSuccess = {
-                    viewState.setSpeakerActivities(it)
-                }
-            )
+                    if (it.binds?.user != null) {
+                        mUser = it.binds.user
+                    }
+                    viewState.showSpeakerMainInfo(it, isCurrentUser())
+                    viewState.setSpeakerActivities(it.binds?.activities ?: emptyList())
+                })
+
+
     }
 
     override fun onWriteMessageClick(speaker: UserDetail) {
@@ -89,10 +77,6 @@ class UserSpeakerPresenter
                             speaker.image?.uri, it.id.toString()
                         )
                     })
-
-            /*.subscribe({
-                viewState.openChat(user.fullName, user.image.uri, it.id.toString())
-            }, { it.printStackTrace() })*/
         } else {
             viewState.openChat(
                 speaker.fullName,
@@ -135,10 +119,71 @@ class UserSpeakerPresenter
                 }
     }
 
-    override fun onItemTake(position: Int) {
-        TODO("Not yet implemented")
+
+
+    override fun onSubEventClick(subEvent: EventActivityModel) {
+        //viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
+        checkInternetAndRun {
+            viewState.showSubEvent(eventId, subEvent.id.toString())
+        }
     }
 
-    private fun isCurrentUser() = userId == appData.getId().toString()
 
+    override fun onItemTake(position: Int) {
+    }
+
+    override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
+        processChangeEventInCalendarStatusRequest(
+            subEvent,
+            eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
+                .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
+        )
+    }
+
+    override fun onAddToScheduleClick(subEvent: EventActivityModel) {
+        processChangeEventInCalendarStatusRequest(
+            subEvent,
+            eventRepository.addEventToCalendarWithResult(
+                EventCalendarBody(
+                    appData.getId(),
+                    EventCalendarBodyEntity(
+                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id
+                            ?: 0
+                    )
+                )
+            )
+                .flatMapCompletable { subEv ->
+                    Completable.fromAction {
+                        subEvent.binds?.userCalendar = subEv
+                    }
+                }
+        )
+    }
+
+    fun isCurrentUser() = getUserDetailId() == appData.getId().toString()
+
+    private fun processChangeEventInCalendarStatusRequest(
+        subEvent: EventActivityModel,
+        request: Completable
+    ) {
+        compositeDisposable += request
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            //.withLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onComplete = {
+                    Log.e("ID", subEvent.binds?.userCalendar?.id.toString())
+                    viewState.updateSubEvent(subEvent)
+                })
+
+
+    }
+
+    fun getUserDetailId(): String {
+        return mUser.id.toString()
+    }
 }

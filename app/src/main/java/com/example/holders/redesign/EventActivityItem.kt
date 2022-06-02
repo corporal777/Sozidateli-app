@@ -1,23 +1,25 @@
 package com.example.holders.redesign
 
-import android.util.Log
-import android.view.View
 import android.widget.CompoundButton
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
-import com.example.data.models.Tags
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToIntervalNew
-import com.example.ui.views.TagChip
 import com.example.ui.views.TagChipNew
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.weak
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_lecture.*
 import kotlinx.android.synthetic.main.item_lecture.tagGroup
-import kotlinx.android.synthetic.main.item_sub_event.*
+import setOnClickListener
+
 
 class EventActivityItem(
     private val subEvent: EventActivityModel,
@@ -27,6 +29,10 @@ class EventActivityItem(
 
     private val clickListener by weak(clickListener)
     private var isExpanded = false
+
+    val mToday = System.currentTimeMillis()
+    val mEndDate =
+        defaultServerDateFormatter.parse(subEvent?.holdingDate?.to).calendar()
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -44,10 +50,10 @@ class EventActivityItem(
                     ).append("...")
                         .toString()
 
-                    if (isExpanded){
+                    if (isExpanded) {
                         tvShowMore.isVisible = false
                         tvLectureDesc.text = fullDescription
-                    }else {
+                    } else {
                         tvShowMore.isVisible = true
                         tvLectureDesc.text = shortDescription
                     }
@@ -77,19 +83,29 @@ class EventActivityItem(
                 tvLectureAuditory.text = subEvent.binds?.auditorium?.name
             }
 
-            btnAddToTimetable.apply {
-                if (subEvent.binds?.userCalendar != null) {
-                    text = context.getString(R.string.sub_event_remove_from_schedule)
-                    setOnClickListener {
-                        clickListener?.onRemoveFromScheduleClick(subEvent)
-                    }
-                } else {
-                    text = context.getString(R.string.sub_event_add_to_schedule)
-                    setOnClickListener {
-                        clickListener?.onAddToScheduleClick(subEvent)
-                    }
-                }
-            }
+//            btnAddToTimetable.apply {
+//                if (mEndDate.timeInMillis > mToday) {
+//                    if (subEvent.binds?.userCalendar != null) {
+//                        text = context.getString(R.string.sub_event_remove_from_schedule)
+//                        setOnClickListener {
+//                            clickListener?.onRemoveFromScheduleClick(subEvent)
+//                        }
+//                    } else {
+//                        text = context.getString(R.string.sub_event_add_to_schedule)
+//                        setOnClickListener {
+//                            clickListener?.onAddToScheduleClick(subEvent)
+//                        }
+//                    }
+//                } else {
+//                    val text = "Событие уже пройдено"
+//                    setOnClickListener {
+//                        MessageDialogWithGrayButton(this.context, text)
+//                    }
+//                }
+//
+//            }
+
+            decorActionButton(btnAddToTimetable, subEvent)
 
             tagGroup.apply {
                 val createChip: (Tag) -> CompoundButton = {
@@ -107,7 +123,7 @@ class EventActivityItem(
                     val tags = subEvent.tag
                     tags.forEach { tag ->
                         selectedTags.forEach { selectedTag ->
-                            if (tag == selectedTag.id.toInt()){
+                            if (tag == selectedTag.id.toInt()) {
                                 addView(createChip(selectedTag), 0)
                             }
                         }
@@ -121,6 +137,36 @@ class EventActivityItem(
         }
     }
 
+    private fun decorActionButton(button: AppCompatButton, mSubEvent: EventActivityModel) {
+        var mText = ""
+        var mBackground = 0
+        var clickAction: (() -> Unit)? = null
+        
+        button.apply {
+            if (mSubEvent.binds?.userCalendar != null) {
+                text = context.getString(R.string.sub_event_remove_from_schedule)
+                background = ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)
+                setOnClickListener {
+                    clickListener?.onRemoveFromScheduleClick(mSubEvent)
+                }
+            } else {
+                if (mEndDate.timeInMillis > mToday) {
+                    text = context.getString(R.string.sub_event_add_to_schedule)
+                    background = ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
+                    setOnClickListener {
+                        clickListener?.onAddToScheduleClick(mSubEvent)
+                    }
+                } else {
+                    val text = "Событие уже пройдено"
+                    setOnClickListener {
+                        MessageDialogWithGreenButton(this.context, text)
+                    }
+                }
+            }
+            
+        }
+    }
+
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventActivityItem) return false
         if (subEvent != other.subEvent) return false
@@ -128,6 +174,17 @@ class EventActivityItem(
         if (isExpanded != other.isExpanded) return false
         if (selectedTags != other.selectedTags) return false
         return true
+    }
+
+    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+        if (payload == null) super.bind(viewHolder, position, payloads)
+        else {
+            if (payload is EventActivityModel) {
+                decorActionButton(viewHolder.btnAddToTimetable, payload)
+            }
+        }
+
     }
 
     override fun getLayout(): Int = R.layout.item_lecture

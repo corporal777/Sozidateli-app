@@ -3,7 +3,6 @@ package com.example.ui.event.activities
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.setFragmentResultListener
@@ -27,9 +26,8 @@ import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.activities.items.SubEventsWithDateItem
 import com.example.ui.event.activities.items.CalendarHorizontalListPager
-import com.example.ui.event.activities.items.NoSubEventItem
+import com.example.ui.event.activities.items.SubEventsWithDateItem
 import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.example.util.custom.LinkedSet
@@ -38,9 +36,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_activitys.*
-import kotlinx.android.synthetic.main.fragment_activitys.recyclerView
-import kotlinx.android.synthetic.main.fragment_activitys.tvLabelLarge
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -449,6 +444,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         val value = savedInstanceState?.getFloat("value")
         updateViews(value ?: 0f)
     }
+
 
     fun createCalendarDay(date: Long): EventScheduleCalendarDay {
         val cal = date.calendar()

@@ -3,8 +3,8 @@
     android:interpolator="@android:anim/accelerate_interpolator"
     android:shareInterpolator="false">
     <alpha
-        android:duration="@integer/slide_from_right_alpha_duration"
+        android:duration="100"
         android:fromAlpha="1.0"
-        android:interpolator="@android:interpolator/accelerate_quad"
+        android:interpolator="@android:interpolator/linear"
         android:toAlpha="0.0" />
 </set>

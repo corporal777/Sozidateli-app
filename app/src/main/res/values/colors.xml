@@ -84,9 +84,10 @@
     <color name="event_item_action_background_show_event">#7C9E58</color>
     <color name="event_item_address_text">#999999</color>
     <color name="event_status_approved_background">#74B12A</color>
-    <color name="event_status_declined_background">#FF0000</color>
+    <color name="event_status_declined_background">#B82D2D</color>
+    <color name="event_status_cancelled_background">#B82D2D</color>
     <color name="event_status_wait_confirmation_background">#77767E</color>
-    <color name="event_status_finished_background">#979797</color>
+    <color name="event_status_finished_background">#4E4E4E</color>
     <color name="event_calendar_day_name_text">#000000</color>
     <color name="event_calendar_day_date_text">#000000</color>
     <color name="event_calendar_day_date_text_selected">#FFFFFF</color>

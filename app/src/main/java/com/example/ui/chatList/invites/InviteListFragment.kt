@@ -2,7 +2,6 @@ package com.example.ui.chatList.invites
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
@@ -15,7 +14,6 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BadgeDrawable
 import com.example.util.pagination.PaginationListGroupAdapter
 import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject

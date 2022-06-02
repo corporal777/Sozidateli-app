@@ -76,6 +76,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.showLoadingDialog()
     }
 
+
     override fun hideLoadingDialog() {
         mActivity?.hideLoadingDialog()
     }
@@ -159,6 +160,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
                     }
                 }
     }
+
 
     override fun showPhoneErrorMessage() {
         context?.let {

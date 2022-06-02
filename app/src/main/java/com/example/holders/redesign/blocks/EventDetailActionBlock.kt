@@ -4,16 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
@@ -22,15 +22,15 @@ import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
-import com.example.extensions.dateFormatterShortDayFullMothShortYear
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.formatToEventDatesIntervalOnMain
-import com.example.extensions.parseAndFormat
+import com.example.extensions.*
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.util.ClickableSpan
 import com.xwray.groupie.databinding.BindableItem
 import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.*
 import kotlinx.android.synthetic.main.dialog_event_registration_agreement_no_form.view.*
 import setOnClickListener
+import java.time.temporal.ChronoUnit
+import java.util.*
 
 class EventDetailActionBlock(
     var eventData: EventNew?,
@@ -42,43 +42,63 @@ class EventDetailActionBlock(
     val userRegistration: Event.Status? = eventData?.binds?.currentUserRegistration?.status?.value
     val backgroundColor: String? = eventData?.binds?.organization?.backgroundColor?.value
     val logo: String? = eventData?.image?.uri
-    val format: EventFormat? = EventFormat(
-        name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom
-            ?: "" else eventData?.format?.name ?: ""
-    )
 
-    val date: String =
-        eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to)
-            ?: ""
+    private var mDate = ""
 
-    private val limitDate = eventData?.requestsApply?.dateLimit
-        ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
+    init {
+        val limitDate = eventData?.requestsApply?.dateLimit
+            ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
+        val startRequestDate = eventData?.requestsApply?.dateFrom
+            ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
+
+        if (!eventData?.requestsApply?.dateFrom.isNullOrEmpty()) {
+            val mToday = Date()
+            val mStartDate = defaultServerDateFormatter.parse(eventData?.requestsApply?.dateFrom)
+            //val mDay = ChronoUnit.DAYS.between(mStartDate.toInstant(), mToday.toInstant())
+
+            val mTodayCal = Calendar.getInstance(Locale.getDefault())
+            val mStartCal =
+                defaultServerDateFormatter.parse(eventData?.requestsApply?.dateFrom).calendar()
+
+            mDate = if (mStartCal.timeInMillis > mTodayCal.timeInMillis) {
+                val day = daysBetween(mTodayCal.time, mStartCal.time)
+                "До начала приема заявок $day дней"
+            } else {
+                "Заявки принимаются до $limitDate"
+            }
+        } else {
+            mDate = "Заявки принимаются до $limitDate"
+        }
+
+    }
 
     override fun bind(viewBinding: ItemEventDetailActionBlockBinding, position: Int) {
         viewBinding.apply {
 
             tvDescription.text = eventData?.description
-            tvRequestsDate.text = "Заявки принимаются до $limitDate"
+            tvRequestsDate.text = mDate
 
             tvAddress.text = showDetailAddress(eventData?.address?.fullValue ?: "")
 
             if (!eventData?.phone.isNullOrEmpty()) {
                 phoneLn.isVisible = true
                 tvPhone.text = eventData?.phone?.get(0)?.value
-            }
+            } else phoneLn.isVisible = false
 
             if (!eventData?.email.isNullOrEmpty()) {
                 emailLn.isVisible = true
                 tvEmail.text = eventData?.email?.get(0)?.value
-            }
+            } else emailLn.isVisible = false
+
             if (!eventData?.site.isNullOrEmpty()) {
                 linkLn.isVisible = true
                 tvLink.text = eventData?.site?.get(0)?.value
-            }
+            } else linkLn.isVisible = false
+
             if (!eventData?.socialLink.isNullOrEmpty()) {
                 networkLn.isVisible = true
                 tvSocialNetwork.text = eventData?.socialLink?.get(0)?.value
-            }
+            } else networkLn.isVisible = false
 
             decorActionButton(eventData, btnEventAction)
         }
@@ -89,9 +109,11 @@ class EventDetailActionBlock(
         @StringRes var btnText: Int? = null
         var clickAction: (() -> Unit)? = null
         var visibility = true
+        var mTextSize = 0f
 
         val userAgreement = eventNew?.userAgreement?.uri
-        val eventRegistrationState: EventRegistrationStateModel? = eventNew?.binds?.eventRegistrationState
+        val eventRegistrationState: EventRegistrationStateModel? =
+            eventNew?.binds?.eventRegistrationState
 
         if (eventRegistrationState != null) {
             val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
@@ -100,6 +122,7 @@ class EventDetailActionBlock(
                 eventRegistrationState?.prohibitions?.registrationClosed == false -> {
                     when (actions?.get(0)) {
                         "register" -> {
+                            mTextSize = 17f
                             btnBackground = R.drawable.custom_btn_white_selectable
                             btnText = R.string.event_action_participate
                             clickAction = {
@@ -116,6 +139,7 @@ class EventDetailActionBlock(
                             }
                         }
                         "withdraw" -> {
+                            mTextSize = 17f
                             btnBackground = R.drawable.custom_btn_white_selectable
                             btnText = R.string.event_action_cancel_request
                             clickAction = {
@@ -128,8 +152,32 @@ class EventDetailActionBlock(
                     }
                 }
                 else -> {
-                    btnBackground = R.drawable.btn_action_background_registration_closed
-                    btnText = R.string.about_event_registration_closed
+                    when (actions?.get(0)) {
+                        "subscribe" -> {
+                            mTextSize = 16f
+                            btnBackground = R.drawable.custom_btn_white_selectable
+                            if (eventNew.binds?.isUserSubscribed == true) {
+                                btnText = R.string.event_action_unsubscribe_request
+                                clickAction = {
+                                    eventRegistrationState.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                        clickListener.onDeleteSubscribeEvent()
+                                    }
+                                }
+                            } else {
+                                btnText = R.string.event_action_subscribe_request
+                                clickAction = {
+                                    eventRegistrationState.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+                                        clickListener.onSubscribeEvent()
+                                    }
+                                }
+                            }
+                        }
+                        else -> {
+                            mTextSize = 17f
+                            btnBackground = R.drawable.btn_action_background_registration_closed
+                            btnText = R.string.about_event_registration_closed
+                        }
+                    }
                 }
             }
         }
@@ -138,7 +186,7 @@ class EventDetailActionBlock(
             text = btnText?.let { context.getString(it) }
             setTextColor(Color.BLACK)
             background = btnBackground?.let { ContextCompat.getDrawable(context, it) }
-
+            this.textSize = mTextSize
             if (clickAction != null) {
                 setOnClickListener(clickAction)
             } else {
@@ -151,59 +199,8 @@ class EventDetailActionBlock(
     }
 
     private fun showAgreementRegisterDialog(context: Context, url: String) {
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.dialog_event_registration_agreement_form, null).apply {
-                val agreementText =
-                    SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
-                        val linkStart = 11
-                        val linkEnd = length
-                        setSpan(ClickableSpan(drawUnderline = false) {
-                            showUserAgreement(context, url)
-                        }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                    }
-
-                tvAgree.apply {
-                    text = agreementText
-                    movementMethod = LinkMovementMethod.getInstance()
-                }
-
-                cbAgree.setOnCheckedChangeListener { _, checked ->
-                    btnPositive.isEnabled = checked
-                }
-            }
-
-        AlertDialog.Builder(context)
-            .setView(view)
-            .create()
-            .apply {
-                setOnShowListener {
-                    view.apply {
-                        btnPositive.apply {
-                            isEnabled = false
-                            setOnClickListener {
-                                clickListener?.onActionRegister()
-                                dismiss()
-                            }
-                        }
-
-                        btnNegative.setOnClickListener {
-                            dismiss()
-                        }
-                    }
-                }
-            }
-            .show()
-    }
-
-
-
-    private fun showUserAgreement(context: Context, url: String) {
-        try {
-            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(viewIntent)
-        } catch (e: Throwable) {
-            Toast.makeText(context, R.string.about_event_agreement_open_error, Toast.LENGTH_LONG)
-                .show()
+        EventAgreementRegisterDialog(context, url).setSelectCallback {
+            clickListener.onActionRegister()
         }
     }
 
@@ -244,6 +241,12 @@ class EventDetailActionBlock(
         fun onActionRegister()
         fun onActionCancel()
         fun onShowUpdateState()
+        fun onSubscribeEvent()
+        fun onDeleteSubscribeEvent()
+    }
+
+    private fun daysBetween(d1: Date, d2: Date): Int {
+        return ((d2.time - d1.time) / (1000 * 60 * 60 * 24)).toInt()
     }
 
 }

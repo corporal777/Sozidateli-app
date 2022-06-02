@@ -3,6 +3,9 @@ package com.example.ui.event.registration
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -30,6 +33,7 @@ import com.example.holders.registerEvent.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.BottomDialog
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.util.ClickableSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.Group
@@ -171,50 +175,10 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
     override fun showAgreementRegisterDialog(url: String) {
         bottomDialog?.dismiss()
 
-        val dialog = BottomSheetDialog(requireContext()).apply {
-            setOnCancelListener { presenter.onRegisterCancelClick() }
+        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+            presenter.onRegisterClick()
         }
 
-        val view = layoutInflater.inflate(R.layout.dialog_event_registration_agreement_no_form, null).apply {
-            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
-                val linkStart = 11
-                val linkEnd = length
-                setSpan(ClickableSpan(drawUnderline = false) {
-                    showUserAgreement(url)
-                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
-
-            tvAgree.apply {
-                text = agreementText
-                movementMethod = LinkMovementMethod.getInstance()
-            }
-
-            btnPositive.apply {
-                isEnabled = false
-                setOnClickListener {
-                    presenter.onRegisterClick()
-                    dialog.dismiss()
-                }
-            }
-
-            cbAgree.setOnCheckedChangeListener { _, checked ->
-                btnPositive.isEnabled = checked
-            }
-        }
-
-        dialog.apply {
-            setContentView(view)
-            show()
-        }
-    }
-
-    private fun showUserAgreement(url: String) {
-        try {
-            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(viewIntent)
-        } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
-        }
     }
 
     override fun showSuccessRegister(moderation: String?) {

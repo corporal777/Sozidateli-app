@@ -310,6 +310,8 @@ data class UserState(
         val isBlocked: Int? = null,
         @SerializedName("isSuspend")
         val isSuspend: BooleanModel? = null,
+        @SerializedName("registrationState")
+        val isRegistered : Boolean? = null
 ): Parcelable
 
 @Parcelize

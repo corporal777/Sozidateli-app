@@ -45,6 +45,7 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?)
+
     }
 
     interface LoadingView {

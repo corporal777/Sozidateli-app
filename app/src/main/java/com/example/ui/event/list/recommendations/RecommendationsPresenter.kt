@@ -131,10 +131,7 @@ class RecommendationsPresenter
     }
 
     override fun onSearchClick() = viewState.showSearch()
-    override fun onActionRegister(event: String) {
-        viewState.showEventRequest(event)
-        paginationList.invalidate()
-    }
+    override fun onActionRegister(event: String) { viewState.showEventRequest(event) }
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
     override fun onRefreshRequest() = paginationList.invalidate()
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)

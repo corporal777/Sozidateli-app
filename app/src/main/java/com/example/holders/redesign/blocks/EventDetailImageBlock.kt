@@ -1,13 +1,7 @@
 package com.example.holders.redesign.blocks
 
 import android.annotation.SuppressLint
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
-import coil.request.DefaultRequestOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.R
-import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
@@ -33,14 +27,6 @@ class EventDetailImageBlock (
             tvLocation.text = eventData?.address?.getShortAddress()
             tvTitle.text = eventData?.name
             ivLogo.setImage(logo)
-
-//            Glide.with(viewBinding.root.context)
-//                .load(logo)
-//                .apply(RequestOptions.placeholderOf(R.drawable.background_image_placeholder)
-//                    .error(R.drawable.background_image_placeholder)
-//                    .override(1700, 1500))
-//                .into(ivLogo)
-
         }
     }
 

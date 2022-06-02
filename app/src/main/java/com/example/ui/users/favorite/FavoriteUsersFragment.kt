@@ -8,10 +8,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.TitledSection
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -84,5 +82,5 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_event_speakers
 }

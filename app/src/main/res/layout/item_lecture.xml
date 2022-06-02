@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.cardview.widget.CardView
+            android:foreground="@drawable/custom_text_background_selectable"
             android:id="@+id/cardActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

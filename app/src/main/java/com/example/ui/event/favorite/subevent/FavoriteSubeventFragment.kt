@@ -95,5 +95,5 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, 
         findNavController().navigate(FavoriteSubeventFragmentDirections.favoriteSubeventsFragmentToSubeventFragment(eventId, subEventId))
     }
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_event_speakers
 }

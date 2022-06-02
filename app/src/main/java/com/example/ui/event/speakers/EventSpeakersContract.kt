@@ -10,10 +10,10 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventSpeakersContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(data: List<MemberModel>)
+        fun setData(data: List<MemberModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeaker(speaker: MemberModel)
+        fun showSpeaker(eventId : String, speaker: MemberModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSpeaker(speaker: MemberModel)

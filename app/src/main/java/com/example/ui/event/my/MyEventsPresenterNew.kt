@@ -57,12 +57,12 @@ class MyEventsPresenterNew
         viewState.apply {
             initTags()
             setSearchBlock()
-            getEvents()
+            getEventsData()
             getFiltersData()
         }
     }
 
-    private fun getEvents() {
+    private fun getEventsData() {
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -147,6 +147,8 @@ class MyEventsPresenterNew
                 put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState")
                 put(EventNew.EVENT_USER_ID, appData.getId())
                 put(EventNew.EVENT_SORT_TYPE, "desc")
+                put(EventNew.EVENT_SORT_FIELD, "id")
+                put(EventNew.EVENT_STATUS, "cancelled,registration,registrationFinished,running,finished")
                 put(EventNew.EVENT_USER_STATUS, when (mEventStateFilter) {
                     MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED
                     MyEventsFilter.PENDING -> EventNew.FILTER_REGISTRATION_PENDING
@@ -188,7 +190,7 @@ class MyEventsPresenterNew
 
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
-        getEvents()
+        getEventsData()
     }
 
     override fun onRefreshRequest() {
@@ -196,7 +198,7 @@ class MyEventsPresenterNew
     }
 
     override fun updateData() {
-        getEvents()
+        getEventsData()
     }
 
     override fun onActionRegister(event: String) {
@@ -223,7 +225,8 @@ class MyEventsPresenterNew
 
     override fun setEventStateFilter(filter: MyEventsFilter) {
         this.mEventStateFilter = filter
-        paginationList.invalidate()
+        //paginationList.invalidate()
+        getEventsData()
     }
 
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)

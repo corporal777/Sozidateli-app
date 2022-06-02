@@ -4,25 +4,39 @@ import android.graphics.Color
 import com.example.data.models.MemberModel
 import com.example.holders.HorizontalListItem
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Item
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SpeakersHorizontalListItem(
     val data: List<MemberModel>,
-    val onItemClick: (id: Int) -> Unit
+    val onItemClick: (id: Int) -> Unit,
+    val showAllSpeakers: () -> Unit
 ) : HorizontalListItem<GroupieViewHolder>() {
 
-    var mCount = 5
-    val items = arrayListOf<EventSpeakerItem>().apply {
-        if (data.size > 5){
+    val items = arrayListOf<Item<*>>().apply {
+        if (data.size > 5) {
             for (i in 0 until 5) {
                 data[i].let {
                     add(EventSpeakerItem(
-                        it.binds?.user?.id ?: 0,
+                        it.id ?: 0,
                         it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-                        it.binds?.user?.image?.uri ?: ""
+                        it.binds?.user?.image?.uri ?: "",
+                        it.status ?: "",
+                        it.binds?.user?.state?.isRegistered ?: false
                     ) { id -> onItemClick(id) })
                 }
+            }
+            add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
+        } else {
+            data.map {
+                EventSpeakerItem(
+                    it.id ?: 0,
+                    it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
+                    it.binds?.user?.image?.uri ?: "",
+                    it.status ?: "",
+                    it.binds?.user?.state?.isRegistered ?: false
+                ) { id -> onItemClick(id) }
             }
         }
 
@@ -30,30 +44,9 @@ class SpeakersHorizontalListItem(
 
     init {
         adapter = GroupAdapter<GroupieViewHolder>().apply {
-
-            if (data.size > 5) {
-                val showAll: () -> Unit = {
-                    for (i in 5 until data.size) {
-                        data[i].let {
-                            items.add(EventSpeakerItem(
-                                it.binds?.user?.id ?: 0,
-                                it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-                                it.binds?.user?.image?.uri ?: ""
-                            ) { id -> onItemClick(id) })
-                        }
-                    }
-                    this.clear()
-                    addAll(items)
-                }
-                addAll(items)
-                add(ShowAllSpeakersItem{showAll.invoke()})
-            }else {
-                addAll(items)
-            }
+            addAll(items)
             backgroundColor = Color.WHITE
         }
-
-
     }
 
 }

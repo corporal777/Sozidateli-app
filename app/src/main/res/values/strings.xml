@@ -40,10 +40,13 @@
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
     <string name="event_status_finished">Мероприятие завершено</string>
     <string name="event_status_decline">Заявка отклонена</string>
+    <string name="event_status_cancelled">Мероприятие отменено</string>
     <string name="event_action_show_event">Перейти в мероприятие</string>
     <string name="event_action_write_to_organisation">Написать организатору</string>
     <string name="event_action_participate">Участвовать</string>
     <string name="event_action_cancel_request">Отозвать заявку</string>
+    <string name="event_action_subscribe_request">Уведомить о старте приема заявок</string>
+    <string name="event_action_unsubscribe_request">Не уведомлять о старте приема заявок</string>
     <string name="event_action_was_sent_request">Подана заявка</string>
 
     <string name="auth_title_login">Присоединяйтесь\nк сообществу лидеров\nсоциальных проектов</string>
@@ -872,5 +875,6 @@
     <string name="no_activity_with_params_title">По данным параметрам нет событий</string>
     <string name="no_event_with_params_title">По данным параметрам нет мероприятий</string>
     <string name="show_all_speakers">Посмотреть всех спикеров</string>
+    <string name="speakers_activities_label">События спикера</string>
 
 </resources>

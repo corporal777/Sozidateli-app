@@ -3,7 +3,13 @@
     android:interpolator="@android:anim/decelerate_interpolator"
     android:shareInterpolator="false">
     <translate
-        android:duration="@integer/slide_from_right_transition_duration"
-        android:fromXDelta="0.0%"
-        android:toXDelta="100.0%" />
+        android:duration="100"
+        android:fromXDelta="0"
+        android:toXDelta="30%" />
+
+    <alpha
+        android:duration="90"
+        android:fromAlpha="0.9"
+        android:interpolator="@android:interpolator/linear"
+        android:toAlpha="0.0" />
 </set>

@@ -1,257 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/list_background">
+    android:paddingBottom="50dp"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <ScrollView
+        android:background="@color/list_background"
+        android:id="@+id/profileScrollView"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
-        <!--<include
-            android:id="@+id/screenTittle"
-            layout="@layout/item_screen_label"
-            android:layout_width="match_parent"
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default" />-->
-
-        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:paddingTop="2dp">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="104dp"
-                android:layout_height="104dp"
+            <!--<include
+                android:id="@+id/screenTittle"
+                layout="@layout/item_screen_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/background_corners"
-                android:contentDescription="@string/content_description_avatar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/avatar_placeholder" />
+                android:layout_marginEnd="@dimen/margin_horizontal_default" />-->
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@android:color/white"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="16dp"
-                android:maxLines="2"
-                android:textColor="@color/profile_name_text"
-                android:textSize="17sp"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-                app:layout_constraintTop_toTopOf="@+id/ivAvatar"
-                app:layout_constraintVertical_chainStyle="packed"
-                tools:text="@tools:sample/full_names" />
+                android:layout_width="match_parent"
+                android:paddingTop="2dp">
 
-            <TextView
-                android:id="@+id/tvIdTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:text="@string/user_id"
-                android:textSize="17sp"
-                app:layout_constraintStart_toStartOf="@+id/tvName"
-                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                <ImageView
+                    android:background="@drawable/background_corners"
+                    android:contentDescription="@string/content_description_avatar"
+                    android:id="@+id/ivAvatar"
+                    android:layout_height="104dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="104dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/avatar_placeholder" />
 
-            <!--<androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnEdit"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/action_button_change_screen_background"
-                android:minHeight="38dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/profile_edit"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tvName"
-                app:layout_constraintTop_toBottomOf="@+id/tvName"
-                app:layout_constraintVertical_bias="1.0" />-->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:maxLines="2"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="17sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="@tools:sample/full_names" />
 
-            <TextView
-                android:id="@+id/state_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:text="@string/state"
-                android:textSize="17sp"
-                app:layout_constraintStart_toStartOf="@+id/tvIdTitle"
-                app:layout_constraintTop_toBottomOf="@+id/tvIdTitle" />
+                <TextView
+                    android:id="@+id/tvIdTitle"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_width="wrap_content"
+                    android:text="@string/user_id"
+                    android:textSize="17sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
-            <!--<LinearLayout
-                android:id="@+id/states_lay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
-                app:layout_constraintStart_toStartOf="@+id/state_title"
-                app:layout_constraintTop_toBottomOf="@+id/state_title">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnBaseState"
+                <!--<androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnEdit"
                     fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/background_corners_large"
                     android:backgroundTint="@color/action_button_change_screen_background"
                     android:minHeight="38dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="@string/base_state"
+                    android:text="@string/profile_edit"
                     android:textAllCaps="false"
                     android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivAvatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/tvName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName"
+                    app:layout_constraintVertical_bias="1.0" />-->
+
+                <TextView
+                    android:id="@+id/state_title"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_width="wrap_content"
+                    android:text="@string/state"
+                    android:textSize="17sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvIdTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/tvIdTitle" />
+
+                <!--<LinearLayout
+                    android:id="@+id/states_lay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
                     app:layout_constraintStart_toStartOf="@+id/state_title"
-                    app:layout_constraintTop_toBottomOf="@+id/state_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/state_title">
 
-                <Space
-                    android:id="@+id/spacer"
-                    android:layout_width="7dp"
-                    android:layout_height="7dp"
-                    app:layout_constraintStart_toEndOf="@+id/btnBaseState"
-                    app:layout_constraintBottom_toBottomOf="@+id/btnBaseState"
-                    app:layout_constraintTop_toTopOf="@+id/btnBaseState" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnBaseState"
+                        fontPath="fonts/Roboto-Medium.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/background_corners_large"
+                        android:backgroundTint="@color/action_button_change_screen_background"
+                        android:minHeight="38dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:text="@string/base_state"
+                        android:textAllCaps="false"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
+                        app:layout_constraintStart_toStartOf="@+id/state_title"
+                        app:layout_constraintTop_toBottomOf="@+id/state_title" />
+
+                    <Space
+                        android:id="@+id/spacer"
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        app:layout_constraintStart_toEndOf="@+id/btnBaseState"
+                        app:layout_constraintBottom_toBottomOf="@+id/btnBaseState"
+                        app:layout_constraintTop_toTopOf="@+id/btnBaseState" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnMaxState"
+                        fontPath="fonts/Roboto-Medium.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="7dp"
+                        android:background="@drawable/background_corners_large"
+                        android:backgroundTint="@color/badge_attention_low"
+                        android:minHeight="38dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:text="@string/max_state"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
+                        app:layout_constraintStart_toEndOf="@+id/spacer"
+                        app:layout_constraintTop_toBottomOf="@+id/state_title" />
+
+                </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnMaxState"
+                    android:id="@+id/btnAboutStates"
                     fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@drawable/background_corners_large"
-                    android:backgroundTint="@color/badge_attention_low"
+                    android:backgroundTint="@color/stories_progress_primary"
                     android:minHeight="38dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="@string/max_state"
+                    android:text="@string/about_states"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/btnAboutStates"
-                    app:layout_constraintStart_toEndOf="@+id/spacer"
-                    app:layout_constraintTop_toBottomOf="@+id/state_title" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/state_title"
+                    app:layout_constraintTop_toBottomOf="@+id/state_title" />-->
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAboutStates"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/background_corners_large"
-                android:backgroundTint="@color/stories_progress_primary"
-                android:minHeight="38dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/about_states"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/state_title"
-                app:layout_constraintTop_toBottomOf="@+id/state_title" />-->
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvStates"
+                android:layout_marginTop="20dp"
+                android:text="@string/about_states" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvStates"
-            style="@style/Profile.Button"
-            android:layout_marginTop="20dp"
-            android:text="@string/about_states" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvEditProfile"
+                android:text="@string/profile_edit" />
 
-        <View style="@style/ViewDivider.Horizontal" />
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvEditProfile"
-            style="@style/Profile.Button"
-            android:text="@string/profile_edit" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvSettings"
+                android:text="@string/profile_settings" />
 
-        <View style="@style/ViewDivider.Horizontal" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvFavorite"
+                android:layout_marginTop="20dp"
+                android:text="@string/profile_favorite" />
 
-        <TextView
-            android:id="@+id/tvSettings"
-            style="@style/Profile.Button"
-            android:text="@string/profile_settings" />
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvFavorite"
-            style="@style/Profile.Button"
-            android:layout_marginTop="20dp"
-            android:text="@string/profile_favorite" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvEvents"
+                android:text="@string/profile_me_events" />
 
-        <View style="@style/ViewDivider.Horizontal" />
-
-        <TextView
-            android:id="@+id/tvEvents"
-            style="@style/Profile.Button"
-            android:text="@string/profile_me_events" />
-
-        <View style="@style/ViewDivider.Horizontal" />
+            <View style="@style/ViewDivider.Horizontal" />
 
 
-        <TextView
-            android:id="@+id/tvBanned"
-            style="@style/Profile.Button"
-            android:text="@string/profile_banned" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvBanned"
+                android:text="@string/profile_banned" />
 
-        <TextView
-            android:layout_marginTop="20dp"
-            android:id="@+id/tvAuthToWebSite"
-            style="@style/Profile.Button"
-            android:text="@string/profile_auth_to_web_site" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvAuthToWebSite"
+                android:layout_marginTop="20dp"
+                android:text="@string/profile_auth_to_web_site" />
 
-        <View style="@style/ViewDivider.Horizontal" />
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvRate"
-            style="@style/Profile.Button"
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvRate"
 
-            android:text="@string/profile_rate" />
+                android:text="@string/profile_rate" />
 
-        <View style="@style/ViewDivider.Horizontal" />
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvSupport"
-            style="@style/Profile.Button"
-            android:text="@string/profile_support" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvSupport"
+                android:text="@string/profile_support" />
 
-        <View style="@style/ViewDivider.Horizontal" />
+            <View style="@style/ViewDivider.Horizontal" />
 
-        <TextView
-            android:id="@+id/tvAboutApplication"
-            style="@style/Profile.Button"
-            android:text="@string/profile_about_app" />
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvAboutApplication"
+                android:text="@string/profile_about_app" />
 
 
-        <TextView
-            android:layout_marginBottom="70dp"
-            android:id="@+id/tvLogout"
-            style="@style/Profile.Button"
-            android:layout_marginTop="20dp"
-            android:text="@string/profile_logout"
-            android:textColor="@color/profile_logout_text" />
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                style="@style/Profile.Button"
+                android:id="@+id/tvLogout"
+                android:layout_marginBottom="70dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/profile_logout"
+                android:textColor="@color/profile_logout_text" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

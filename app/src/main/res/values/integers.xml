@@ -5,4 +5,6 @@
     <integer name="slide_from_bottom_alpha_duration">300</integer>
     <integer name="slide_from_right_transition_duration">250</integer>
     <integer name="slide_from_right_alpha_duration">200</integer>
+
+    <integer name="slide_from_right_duration_hundred">100</integer>
 </resources>

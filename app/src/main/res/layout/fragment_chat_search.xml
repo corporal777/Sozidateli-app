@@ -57,7 +57,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        layout="@layout/layout_list"
+        layout="@layout/fragment_event_speakers"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

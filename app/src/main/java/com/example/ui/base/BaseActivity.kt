@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 

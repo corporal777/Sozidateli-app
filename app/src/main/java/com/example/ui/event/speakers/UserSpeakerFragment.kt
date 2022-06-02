@@ -12,17 +12,18 @@ import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.data.models.UserDetail
+import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
+import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.blocks.EventDetailBlocksLabelItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.speakers.new.SpeakersActivitiesGroup
 import com.example.ui.event.speakers.new.UserSpeakerMainInfoItem
-import com.example.ui.user.UserFragmentDirections
+import com.example.ui.subevent.SubeventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_my_events.*
-import kotlinx.android.synthetic.main.fragment_subevent.*
 import kotlinx.android.synthetic.main.fragment_user_speaker.*
 import kotlinx.android.synthetic.main.fragment_user_speaker.ivBack
 import javax.inject.Inject
@@ -34,7 +35,7 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
     @InjectPresenter
     lateinit var presenter: UserSpeakerPresenter
 
-    private var userId = 0
+    private var memberId = 0
     private var mDy: Int = 0
 
     @Inject
@@ -43,8 +44,8 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
     @ProvidePresenter
     fun providePresenter(): UserSpeakerPresenter = presenterProvider.get().apply {
         val args = UserSpeakerFragmentArgs.fromBundle(requireArguments())
-        userId = args.userId
-        this@UserSpeakerFragment.userId = userId.toInt()
+        memberId = args.userId
+        this@UserSpeakerFragment.memberId = memberId.toInt()
         eventId = args.eventId
     }
 
@@ -59,6 +60,19 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
         add(subEventsDataSection)
     }
 
+    private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
+        override fun onActivityClick(subEvent: EventActivityModel) =
+            presenter.onSubEventClick(subEvent)
+
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddToScheduleClick(subEvent)
+
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
+            presenter.onRemoveFromScheduleClick(subEvent)
+
+        override fun onUpdateScheduleState(subEvent: EventActivityModel) {}
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,9 +81,9 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
             setHasFixedSize(true)
             setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 mDy += scrollY - oldScrollY
-                if (mDy >= 30){
+                if (mDy >= 30) {
                     userSpeakerBarLayout.elevation = 10f
-                }else {
+                } else {
                     userSpeakerBarLayout.elevation = 0f
                 }
             }
@@ -79,7 +93,7 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
             findNavController().navigateUp()
         }
         btnAddToFavorite.setOnClickListener {
-            presenter.onAddSpeakerToFavoriteClick(userId.toString())
+            presenter.onAddSpeakerToFavoriteClick(presenter.getUserDetailId())
         }
     }
 
@@ -91,8 +105,8 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
     }
 
 
-    override fun showSpeakerMainInfo(speaker: UserDetail) {
-        if (speaker.binds?.userFavorite == null) {
+    override fun showSpeakerMainInfo(speaker: MemberModel, isCurrentUser: Boolean) {
+        if (speaker.binds?.user?.binds?.userFavorite == null) {
             btnAddToFavorite.text = getString(R.string.add_to_favorites)
         } else {
             btnAddToFavorite.text = getString(R.string.delete_from_favorites)
@@ -101,30 +115,36 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
         mainDataSection.update(
             listOf(
                 UserSpeakerMainInfoItem(
-                    speaker,
-                    speaker.fullName,
-                    speaker.address?.city,
-                    speaker.binds?.organization?.get(0)?.binds?.member?.get(0)?.position?.value,
-                    speaker.image.uri
+                    presenter.isCurrentUser(),
+                    speaker.binds?.user,
+                    speaker.binds?.user?.fullName ?: "",
+                    speaker.binds?.user?.address?.city,
+                    speaker.description,
+                    speaker.binds?.user?.image?.uri,
+                    speaker.status ?: "",
+                    speaker.binds?.user?.state?.isRegistered ?: false
                 ) {
                     presenter.onWriteMessageClick(it)
                 }
             )
         )
+        if (!isCurrentUser){
+            btnAddToFavorite.isVisible = true
+        }
+
     }
 
     override fun setSpeakerActivities(data: List<EventActivityModel>) {
-        if (data.isNullOrEmpty()) {
-            //subEventsDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.EVENT)))
-        } else {
-            //labelSection.update(listOf(EventDetailBlocksLabelItem("События спикера")))
-            subEventsDataSection.update(
-                listOf(
-                    EventDetailBlocksLabelItem("События спикера"),
-                    SpeakersActivitiesGroup(userId, data)
+        subEventsDataSection.update(
+            listOf(
+                EventDetailBlocksLabelItem(getString(R.string.speakers_activities_label)),
+                SpeakersActivitiesGroup(
+                    getString(R.string.no_activity_title),
+                    data,
+                    onSubEventClickListener
                 )
             )
-        }
+        )
     }
 
     override fun setEmptyEventsPlaceholder() {
@@ -132,9 +152,20 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
     }
 
     override fun setEmptyMainDataPlaceholder() {
-        mainDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SPEAKER)))
+        mainDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN)))
     }
 
+    override fun updateSubEvent(subEvent: EventActivityModel) {
+        //subEventsBlock.findGroupBy<EventDetailActivitiesBlock> { true }?.updateButtonState(subEvent)
+        val idLong = subEvent.id?.toLong()
+        subEventsDataSection.findGroupBy<SpeakersActivitiesGroup> { true }
+            ?.updateButtonState(subEvent)
+    }
+
+    override fun showSubEvent(eventId: String, subEventId: String) {
+        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+        findNavController().navigate(R.id.subevent_fragment, args)
+    }
 
     override fun updateSpeaker(speaker: UserDetail) {
         if (speaker.binds?.userFavorite == null) {

@@ -3,6 +3,7 @@ package com.example.ui.event.registration
 import android.Manifest
 import android.content.ContentResolver
 import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -164,7 +165,9 @@ class EventRegistrationPresenter
                                     }
                             }
                         }
-                } else registerToEvent()
+                } else {
+                    registerToEvent()
+                }
             }
     }
 

@@ -143,8 +143,19 @@ interface NewApi {
     fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
 
     //+
+    @GET("v1/event-member/{id}")
+    fun getEventMember(@Path("id") memberId : String, @Query("binds") binds: String): Maybe<MemberModel>
+
+    //+
     @GET("v1/event/{id}")
     fun getEventDetailsNew(@Path("id") eventId : String, @Query("binds") binds: String): Single<EventNew>
+
+    //+
+    @POST("v1/event-subscriptions")
+    fun createEventSubscription(@Body body: EventSubscriptionRequest) : Completable
+
+    @DELETE("v1/event-subscriptions/{id}")
+    fun deleteEventSubscription(@Path("id") eventId : Int) : Completable
 
     //+
     @FormUrlEncoded

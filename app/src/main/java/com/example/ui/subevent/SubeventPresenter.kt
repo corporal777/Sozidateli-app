@@ -31,15 +31,16 @@ class SubeventPresenter @Inject constructor(
 
     private var firstLoading = true
 
-    override fun attachView(view: SubeventContract.View?) {
-        super.attachView(view)
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        getSubEventData()
+    }
+
+    private fun getSubEventData(){
         val eventId = event
         val subeventId = subevent
         compositeDisposable += eventRepository.getEventActivityDetail(subeventId)
-//                .let {
-//                    if (firstLoading) it.withLoadingDialog(viewState)
-//                    else it
-//                }
             .withProgressBarLoadingDialog(viewState)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {

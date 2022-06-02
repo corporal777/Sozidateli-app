@@ -38,9 +38,10 @@ class EventSpeakersPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                //.withLoadingDialog(viewState)
                 .subscribeSimple {
                     val uid = appData.getId()
                     it.forEach { speaker -> speaker.binds?.user?.isCurrentUser = speaker.binds?.user?.id == uid }
@@ -50,12 +51,11 @@ class EventSpeakersPresenter
 
     override fun attachView(view: EventSpeakersContract.View?) {
         super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
+//        if (firstLaunch) firstLaunch = false
+//        else pagination.invalidate()
     }
 
-    override fun onSpeakerClick(speaker: MemberModel) =
-            viewState.showSpeaker(speaker)
+    override fun onSpeakerClick(speaker: MemberModel) = viewState.showSpeaker(eventId, speaker)
 
     override fun onSpeakerFavoriteChangeClick(speaker: MemberModel) {
         val id = speaker.user.toString()/*speaker.user.user_id.toString()*/

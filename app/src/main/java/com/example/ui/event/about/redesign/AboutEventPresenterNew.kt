@@ -9,10 +9,12 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withLoadingDialog
 import withProgressBarLoadingDialog
@@ -36,25 +38,23 @@ class AboutEventPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showLoadingDialog()
         val userEventInfo = userEventData.userEvent?.eventInfo
 
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
-            //else eventRepository.getEventDetails(eventId)
-            else userEventData.loadEventData(eventId)
+            else eventRepository.getEventDetails(eventId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
 
         compositeDisposable += eventInfoMaybe
             .subscribeSimple(
-                onSuccess = { userEvent ->
-                    mUserEvent = userEvent as UserEvent
-                    setEventInfoData(userEvent.eventInfo)
+                onSuccess = { eventInfo ->
+                    setEventInfoData(eventInfo)
                 },
                 onError = {
                     it.printStackTrace()
+                    catchExceptionMessage(it)
                 })
 
         Log.e("TOKEN", appData.token!!)
@@ -78,28 +78,19 @@ class AboutEventPresenterNew
                 eventInfo?.event?.userAgreement?.name ?: eventInfo?.event?.userAgreement?.uri
             )
         }
-        setSubEvents()
+        setSubEvents(eventInfo?.event)
     }
 
-    private fun getSubEvents() {
-        compositeDisposable += userEventData.loadEventData(eventId)
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                mUserEvent = it
-            }
-    }
-
-    private fun setSubEvents() {
-        mUserEvent.let {
-            if (!it.activity.activities.isNullOrEmpty()) {
-                val listSubEvents = it.activity.activities.groupBy { event ->
+    private fun setSubEvents(eventNew: EventNew?) {
+        eventNew.let {
+            if (!it?.binds?.activity.isNullOrEmpty()) {
+                val listSubEvents = it?.binds?.activity?.groupBy { event ->
                     event.holdingDate?.from?.split(" ")?.get(0)
                 }
                 val filteredSubEvents = mutableMapOf<String, ArrayList<EventActivityModel>>()
                 var mSize = 4
 
-                listSubEvents.map { map ->
+                listSubEvents?.map { map ->
                     if (mSize != 0) {
                         filteredSubEvents[map.key ?: ""] = arrayListOf()
                     }
@@ -111,20 +102,19 @@ class AboutEventPresenterNew
                     }
                 }
 
-                viewState.setSubEvents(filteredSubEvents)
+                viewState.setSubEvents(filteredSubEvents.toSortedMap())
             }
         }
 
     }
 
-    override fun onTagSelected(){
-        //setSubEvents()
+    override fun onTagSelected() {
         val selectedTags = mTags.filter { x -> x.isSelected }.map {
             NewTags(it.id, it.name, it.isSelected)
         }
         viewState.showEventActivities(eventId, selectedTags)
         mTags.map {
-            if (it.isSelected){
+            if (it.isSelected) {
                 it.isSelected = false
             }
         }
@@ -134,22 +124,56 @@ class AboutEventPresenterNew
         viewState.showEventActivities(eventId, emptyList())
     }
 
+    override fun onCreateEventSubscriptionClick() {
+        compositeDisposable += eventRepository.createEventSubscription(eventId.toInt())
+            .andThen(eventRepository.getEventDetails(eventId))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                this.event = it
+                viewState.setActionButton(
+                    it.event,
+                    it?.event?.binds?.currentUserRegistration?.status?.value
+                )
+            }
+    }
+
+    override fun onDeleteEventSubscriptionClick() {
+
+        val mSubscriptionId = event?.event?.binds?.eventSubscribe?.id ?: 0
+        compositeDisposable += eventRepository.deleteEventSubscription(eventId.toInt())
+            .andThen(eventRepository.getEventDetails(eventId))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                this.event = it
+                viewState.setActionButton(
+                    it.event,
+                    it?.event?.binds?.currentUserRegistration?.status?.value
+                )
+            }
+
+    }
+
     override fun onRefreshRequest() {
-        compositeDisposable += userEventData.loadEventData(eventId)
-        //compositeDisposable += eventRepository.getEventDetails(eventId)
+            compositeDisposable += eventRepository.getEventDetails(eventId)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(onError = {
                 it.printStackTrace()
             }, onSuccess = {
-                mUserEvent = it
-                setEventInfoData(it.eventInfo)
+                setEventInfoData(it)
             })
 
     }
 
-    override fun onPageClick(page: Int) { checkInternetAndRun { viewState.showPage(eventId, page.toString()) } }
-    override fun onPartnerClick(partner: Int) { checkInternetAndRun { viewState.showPartner(eventId, partner.toString()) } }
+    override fun onPageClick(page: Int) {
+        checkInternetAndRun { viewState.showPage(eventId, page.toString()) }
+    }
+
+    override fun onPartnerClick(partner: Int) {
+        checkInternetAndRun { viewState.showPartner(eventId, partner.toString()) }
+    }
 
     override fun onGoToEventClick() {
         if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
@@ -193,7 +217,8 @@ class AboutEventPresenterNew
         }
     }
 
-    override fun onSpeakerClick(speakerId: Int) = viewState.showSpeakerProfile(speakerId)
+    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId)
+    override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
     override fun onMapPageSelected() {
         viewState.apply {
@@ -279,7 +304,28 @@ class AboutEventPresenterNew
             }
     }
 
-    override fun onOrganizationClick(organization: String) = viewState.showOrganization(organization)
+    override fun onOrganizationClick(organization: String) =
+        viewState.showOrganization(organization)
+
     override fun onShareClick() = viewState.showShare(eventId)
 
+    private fun catchExceptionMessage(t : Throwable){
+        val exc = t as HttpException
+        var message = ""
+        try {
+            val error = Gson().fromJson(
+                exc.response()?.errorBody()?.string(),
+                NewErrors::class.java
+            )
+            when(error.errors[0].message) {
+                "you have no access for such operation" -> {
+                    message = "В данный момент страница мероприятия доступна только владельцу или администратору"
+                }
+            }
+            Log.e("MESSAGE", error.errors[0].message?:"")
+        } catch (e: Exception) {
+
+        }
+        viewState.showErrorMessage(message)
+    }
 }
