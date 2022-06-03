@@ -444,7 +444,7 @@ class EventRepositoryImp
     override fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>> =
         newApi.getEventActivities(
             eventId,
-            "event,member,tag,auditorium,userCalendar,member.user.userFavorite,userFavorite",
+            "event,member,tag,auditorium,userCalendar,member.user,member.user.userFavorite,userFavorite",
             "holdingDate.from",
             "asc"
         )

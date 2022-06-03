@@ -141,10 +141,9 @@ class UserEventData(
     }
 
 
-    fun createCalendarDaysNew(
-        dates: List<Long>
-    ): ArrayList<EventScheduleCalendarDay> {
+    fun createCalendarDaysNew(dates: List<Long>): ArrayList<EventScheduleCalendarDay> {
         val sortedDates = dates.sorted()
+
         return sortedDates.map { day ->
             val cal = day.calendar()
             EventScheduleCalendarDay(

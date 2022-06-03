@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:foreground="@drawable/custom_text_background_selectable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:foreground="@drawable/custom_text_background_selectable">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/image_container"
@@ -41,23 +42,23 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btn_show_speaker_status"
                     android:layout_width="35dp"
-                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
                     android:layout_height="34dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/btn_speaker_status_circle"
+                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/iv_speaker_status"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/ic_speaker_status_pending"/>
+                        android:src="@drawable/ic_speaker_status_pending"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,51 +70,46 @@
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:letterSpacing="0.02"
-            android:text="Екатерина Кисеева"
             android:textColor="@color/vk_black"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Екатерина Кисеева" />
 
         <TextView
-            android:visibility="visible"
             android:id="@+id/tvSpeakersLocation"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="15dp"
             android:letterSpacing="0.02"
-            android:text="Москва"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName" />
+            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
+            tools:text="Москва" />
 
         <TextView
             android:id="@+id/tvSpeakersPosition"
             fontPath="fonts/sf_pro_display_regular.OTF"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="10dp"
             android:letterSpacing="0.02"
-            android:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)"
+            android:maxLines="6"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation" />
+            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

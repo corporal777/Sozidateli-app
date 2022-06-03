@@ -9,11 +9,12 @@ import com.example.util.custom.LinkedSet
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
+import java.util.*
 
 class SubEventsWithDateItem(
     private val emptyEventTitle : String,
     private val noEventWithParamsTitle : String,
-    subEvents: Map<String, LinkedSet<EventActivityModel>>,
+    subEvents: Map<String, LinkedList<EventActivityModel>>,
     val selectedTags : List<Tag>,
     private val clickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {

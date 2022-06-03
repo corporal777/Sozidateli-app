@@ -69,7 +69,7 @@ class CalendarHorizontalListItem(
 
 
     fun selectDayNew(day: EventScheduleCalendarDay) {
-        items.find { it.day.dayOfMonth == day.dayOfMonth }?.let {
+        items.find { it.day.millis == day.millis }?.let {
             if (!it.isSelected) {
                 it.isSelected = true
                 it.notifyChanged()

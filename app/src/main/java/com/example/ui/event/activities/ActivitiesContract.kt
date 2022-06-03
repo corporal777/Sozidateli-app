@@ -9,6 +9,7 @@ import com.example.data.models.Tag
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.custom.LinkedSet
+import java.util.*
 
 interface ActivitiesContract {
 
@@ -29,7 +30,7 @@ interface ActivitiesContract {
         fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEventsNew(subEvents: Map<String, LinkedSet<EventActivityModel>>, selectedTags: List<Tag>)
+        fun setSubEventsNew(subEvents: Map<String, LinkedList<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()

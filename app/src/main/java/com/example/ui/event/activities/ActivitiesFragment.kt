@@ -141,9 +141,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = groupAdapter
-            isHardwareAccelerated
-            setHasFixedSize(false)
-            setWillNotDraw(true)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -293,7 +290,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
     }
 
     override fun setSubEventsNew(
-        subEvents: Map<String, LinkedSet<EventActivityModel>>,
+        subEvents: Map<String, LinkedList<EventActivityModel>>,
         selectedTags: List<Tag>
     ) {
         eventsSection.update(

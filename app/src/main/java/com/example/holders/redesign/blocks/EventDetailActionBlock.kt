@@ -75,10 +75,9 @@ class EventDetailActionBlock(
     override fun bind(viewBinding: ItemEventDetailActionBlockBinding, position: Int) {
         viewBinding.apply {
 
-            tvDescription.text = eventData?.description
             tvRequestsDate.text = mDate
-
             tvAddress.text = showDetailAddress(eventData?.address?.fullValue ?: "")
+            tvDescription.text = eventData?.description
 
             if (!eventData?.phone.isNullOrEmpty()) {
                 phoneLn.isVisible = true

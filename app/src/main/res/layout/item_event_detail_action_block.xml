@@ -4,225 +4,225 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/vk_black"
+        android:paddingBottom="20dp"
+        tools:ignore="MissingPrefix">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEventAction"
+            fontPath="fonts/sf_pro_text_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/custom_btn_white_selectable"
+            android:letterSpacing="-0.02"
+            android:text="@string/go_to_event"
+            android:textAllCaps="false"
+            android:textColor="@color/event_item_action_text"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvRequestsDate"
+            fontPath="fonts/sf_pro_text_medium.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnEventAction"
+            tools:text="Заявки принимаются до 7 июля" />
+
+
+        <TextView
+            android:id="@+id/tvDescription"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:breakStrategy="simple"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@id/address_ln"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRequestsDate"
+            tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
+Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. " />
+
+        <LinearLayout
+            android:id="@+id/address_ln"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:background="@color/vk_black">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnEventAction"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:background="@drawable/custom_btn_white_selectable"
-                android:letterSpacing="-0.02"
-                android:text="@string/go_to_event"
-                android:textAllCaps="false"
-                android:textColor="@color/event_item_action_text"
-                android:textSize="17sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription">
 
             <TextView
-                android:id="@+id/tvRequestsDate"
-                fontPath="fonts/sf_pro_text_medium.ttf"
-                android:layout_width="0dp"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:letterSpacing="-0.02"
-                tools:text="Заявки принимаются до 7 июля"
+                android:text="Адрес:"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnEventAction"
                 tools:ignore="MissingPrefix" />
 
 
             <TextView
-                android:id="@+id/tvDescription"
-                fontPath="fonts/sf_pro_text.ttf"
-                android:layout_width="0dp"
+                android:id="@+id/tv_address"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:letterSpacing="-0.02"
-                tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
-Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. "
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="#C3996C"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="г. Тула, Ленина 15" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/phone_ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/address_ln">
+
+            <TextView
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Телефон:"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvRequestsDate"
                 tools:ignore="MissingPrefix" />
 
-            <LinearLayout
-                android:id="@+id/address_ln"
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/tv_phone"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@id/tvDescription">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="#C3996C"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="+7 (495) 111 -11- 22" />
 
-                <TextView
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Адрес:"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/email_ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/phone_ln">
 
-                <TextView
-                    android:id="@+id/tv_address"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    tools:text="г. Тула, Ленина 15"
-                    android:textColor="#C3996C"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/phone_ln"
-                android:layout_width="match_parent"
+            <TextView
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/address_ln">
-
-                <TextView
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Телефон:"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                android:text="E-mail:"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
 
-                <TextView
-                    android:id="@+id/tv_phone"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    tools:text="+7 (495) 111 -11- 22"
-                    android:textColor="#C3996C"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/email_ln"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_email"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/phone_ln">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="#C3996C"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="love@houseofapps.ru" />
 
-                <TextView
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="E-mail:"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/link_ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/email_ln">
 
-                <TextView
-                    android:id="@+id/tv_email"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    tools:text="love@houseofapps.ru"
-                    android:textColor="#C3996C"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/link_ln"
-                android:layout_width="match_parent"
+            <TextView
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/email_ln">
-
-                <TextView
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Сайт:"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                android:text="Сайт:"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
 
-                <TextView
-                    android:id="@+id/tv_link"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    tools:text="leader-russia.ru"
-                    android:textColor="#C3996C"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/network_ln"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_link"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/link_ln">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="#C3996C"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="leader-russia.ru" />
 
-                <TextView
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Соцсеть:"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/network_ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/link_ln">
+
+            <TextView
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Соцсеть:"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
 
-                <TextView
-                    android:id="@+id/tv_social_network"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    tools:text="vk.com/leader"
-                    android:textColor="#C3996C"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+            <TextView
+                android:id="@+id/tv_social_network"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="#C3996C"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="vk.com/leader" />
 
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
 

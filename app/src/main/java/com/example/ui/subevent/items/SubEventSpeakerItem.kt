@@ -32,22 +32,21 @@ class SubEventSpeakerItem(
                 isVisible = !location.isNullOrEmpty()
                 text = location
             }
+//            val fullDescription = description
+//            if (!fullDescription.isNullOrEmpty()) {
+//                if (fullDescription.length > 140) {
+//                    val shortDescription = StringBuilder(
+//                        fullDescription.substring(0, 139).replace("\n", " ")
+//                    ).append("...")
+//                        .toString()
+//                    tvSpeakersPosition.text = shortDescription
+//
+//                } else {
+//                    tvSpeakersPosition.text = fullDescription
+//                }
+//            }
 
-            val fullDescription = description
-            if (!fullDescription.isNullOrEmpty()) {
-                if (fullDescription.length > 140) {
-                    val shortDescription = StringBuilder(
-                        fullDescription.substring(0, 139).replace("\n", " ")
-                    ).append("...")
-                        .toString()
-                    tvSpeakersPosition.text = shortDescription
-
-                } else {
-                    tvSpeakersPosition.text = fullDescription
-                }
-            }
-
-            //tvSpeakersPosition.text = description
+            tvSpeakersPosition.text = description
 
             root.setOnClickListener {
                 onSpeakerClick.invoke()

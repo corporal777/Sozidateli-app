@@ -1,5 +1,6 @@
 package com.example.ui.event.activities
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.DropBoxManager
 import android.util.Log
@@ -17,7 +18,9 @@ import com.example.ui.search.SearchInterface
 import com.example.util.custom.LinkedSet
 import com.xwray.groupie.kotlinandroidextensions.Item
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import performOnBackground
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarLoadingDialog
@@ -56,7 +59,7 @@ class ActivitiesPresenter
 
     private var mStartEventDate = ""
     private var mEndEventDate = ""
-    val mSubEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
+    private val mSubEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getEventData() {
@@ -75,6 +78,21 @@ class ActivitiesPresenter
                 canDoActions = userEvent.eventInfo.event.binds?.currentUserRegistration != null
                 invalidateData()
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun attachView(view: ActivitiesContract.View?) {
+        super.attachView(view)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        if (firstAttach) {
+            getEventData()
+            firstAttach = false
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -192,68 +210,52 @@ class ActivitiesPresenter
     private fun invalidateData() {
         viewState.apply {
             tags = userEvent.activity.groups.plus(userEvent.activity.tags)
-            val eventDays = userEventData.createCalendarDays(userEvent.activity.dates.map {
-                defaultServerDateFormatter.parse(it.date).time
-            })
+            var mDays = arrayListOf<EventScheduleCalendarDay>()
+            compositeDisposable += Completable.fromAction {
+                val eventDays = userEventData.createCalendarDays(userEvent.activity.dates.map {
+                    defaultServerDateFormatter.parse(it.date).time
+                })
 
-            var days = userEventData.createCalendarDaysNew(getAllDates().map {
-                val list = LinkedSet<EventActivityModel>()
-                mSubEventsMap[it] = list
+                mDays = userEventData.createCalendarDaysNew(getAllDates().map {
+                    defaultServerDateFormatter.parse(it).time
+                })
 
-                defaultServerDateFormatter.parse(it).time
-            })
-
-
-
-            days.forEachIndexed { index, day ->
-                eventDays.forEach { eventDay ->
-                    if (day.millis == eventDay.millis) {
-                        days[index] = eventDay
+                mDays.forEachIndexed { index, day ->
+                    eventDays.forEach { eventDay ->
+                        if (day.millis == eventDay.millis) {
+                            mDays[index] = eventDay
+                        }
                     }
                 }
-            }
 
-            daysSize = days?.size!!
-            setDays(days)
-
-            if (tagsNew != null) {
-                tags.forEach {
-                    val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
-                    if (nt != null) {
-                        it.isSelected = nt.isSelected
-                    } else {
-                        it.isSelected = it.isSelected
+                if (tagsNew != null) {
+                    tags.forEach {
+                        val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
+                        if (nt != null) {
+                            it.isSelected = nt.isSelected
+                        } else {
+                            it.isSelected = it.isSelected
+                        }
                     }
                 }
-            }
 
-            setTags(tags)
-            currentDay?.let { day ->
-                selectDay(day)
-                scrollToDay(day)
-            }
-        }
+            }.performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    daysSize = mDays?.size!!
+                    setDays(mDays)
 
-        invalidateDay()
-    }
+                    setTags(tags)
+                    currentDay?.let { day ->
+                        selectDay(day)
+                        scrollToDay(day)
+                    }
+                    invalidateDay()
+                }
 
-    fun getTagsList() = userEvent.activity.groups.plus(userEvent.activity.tags)
-        .map { NewTags(it.id, it.name, it.isSelected) }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun attachView(view: ActivitiesContract.View?) {
-        super.attachView(view)
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        if (firstAttach) {
-            getEventData()
-            firstAttach = false
         }
     }
+
 
     private fun findDay() {
         compositeDisposable += findNearestDayFromEventDays(System.currentTimeMillis())
@@ -291,6 +293,74 @@ class ActivitiesPresenter
         currentDay = day
         viewState.apply { selectDay(day) }
         invalidateDay()
+    }
+
+
+    @SuppressLint("LogNotTimber")
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun invalidateDay() {
+
+        val day = currentDay ?: return daySubEventsError()
+        val selectedTags = tags.filter { it.isSelected }
+        val mFilteredMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
+        compositeDisposable += Completable.fromAction {
+            getAllDates()
+                .filter {
+                    defaultServerDateTimeFormatter.parse(it).time >= day.millis.startOfDay()
+                }
+                .map {
+                    val list = LinkedList<EventActivityModel>()
+                    val date = defaultServerDateFormatter.parse(it)
+                    userEvent.activity.activities.filter { x ->
+                        date == defaultServerDateFormatter.parse(
+                            x.holdingDate?.from
+                        )
+                    }.map { event ->
+                        list.add(event)
+                        if (!mSearchWord.isNullOrEmpty()) {
+                            val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+                            if (!isEventHasParams(mSearchWord, event)) {
+                                list.remove(event)
+                                if (!list.contains(emptyEvent) && list.isNullOrEmpty()) {
+                                    list.add(emptyEvent)
+                                }
+                            }
+                        } else if (!selectedTags.isNullOrEmpty()) {
+                            val emptyEvent =
+                                EventActivityModel(hide = true, mNoEvent = true)
+                            selectedTags.forEach { tag ->
+                                if (!filterTagsNew(event, tag)) {
+                                    list.remove(event)
+                                    if (!list.contains(emptyEvent) && list.isNullOrEmpty()) {
+                                        list.add(emptyEvent)
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    mFilteredMap[it] = list
+                }
+        }
+            .performOnBackgroundOutOnMain()
+            //.withProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onComplete = {
+                    viewState.apply {
+                        Log.e(
+                            "ActivitiesFragment",
+                            "Events: " + mFilteredMap.size + " invalidateDay"
+                        )
+                        setSubEventsNew(
+                            mFilteredMap,
+                            if (mustFilterTags()) selectedTags else emptyList()
+                        )
+                        currentDay?.let { day -> showCurrentDay(day, daysSize) }
+
+                    }
+                })
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -350,76 +420,6 @@ class ActivitiesPresenter
             .subscribeSimple { viewState.updateSubevent(subEvent) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun invalidateDay() {
-
-        val day = currentDay ?: return daySubEventsError()
-        val selectedTags = tags.filter { it.isSelected }
-
-        val subEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
-        val filteredMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
-
-        subEventsMap.clear()
-        subEventsMap.putAll(mSubEventsMap)
-
-        subEventsMap
-            .filter {
-                defaultServerDateTimeFormatter.parse(it.key).time >= day.millis.startOfDay()
-            }
-            .map {
-                val date = defaultServerDateFormatter.parse(it.key)
-                val list = LinkedList<EventActivityModel>()
-                userEvent.activity.activities.filter { x ->
-                    date == defaultServerDateFormatter.parse(
-                        x.holdingDate?.from
-                    )
-                }
-                    .forEach { event ->
-                        list.add(event)
-                    }
-
-                it.value.clear()
-                it.value.addAll(list)
-
-                it.value.forEach { event ->
-                    if (!mSearchWord.isNullOrEmpty()) {
-                        if (!isEventHasParams(mSearchWord, event)) {
-                            val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
-                            it.value.remove(event)
-                            if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
-                                it.value.add(emptyEvent)
-                            }
-                        }
-
-                    }
-                    if (!selectedTags.isNullOrEmpty()) {
-                        selectedTags.forEach { tag ->
-                            //if (!event.tag.isNullOrEmpty() && !event.tag.contains(tag.id.toInt())) {
-                            if (filterTagsNew(event, tag)) {
-                                val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
-                                it.value.remove(event)
-                                if (!it.value.contains(emptyEvent) && it.value.isNullOrEmpty()) {
-                                    it.value.add(emptyEvent)
-                                }
-                            }
-                        }
-                    }
-                }
-                filteredMap.put(it.key, it.value)
-            }
-
-        viewState.apply {
-            Log.e("ActivitiesFragment", "Events: " + filteredMap.size + " invalidateDay")
-
-            setSubEventsNew(
-                filteredMap,
-                if (mustFilterTags()) selectedTags else emptyList()
-            )
-            currentDay?.let { day -> showCurrentDay(day, daysSize) }
-
-        }
-    }
-
 
     private fun daySubEventsError() {
         viewState.apply {
@@ -437,15 +437,15 @@ class ActivitiesPresenter
     }
 
     private fun filterTagsNew(event: EventActivityModel, selectedTag: Tag): Boolean {
-        var isNotHas = false
+        var isHas = false
         if (!event.tag.isNullOrEmpty()) {
-            if (!event.tag.contains(selectedTag.id.toInt())) {
-                isNotHas = true
+            if (event.tag.contains(selectedTag.id.toInt())) {
+                isHas = true
             }
         } else {
-            isNotHas = false
+            isHas = false
         }
-        return isNotHas
+        return isHas
     }
 
     fun filterSubEvent(subEvent: EventActivityModel): Boolean = true
@@ -470,13 +470,7 @@ class ActivitiesPresenter
     private fun isSameSpeaker(text: String, event: EventActivityModel): Boolean {
         var isSame = false
         event.binds?.member?.forEach {
-            if (!text.isNullOrEmpty() && it.binds?.user?.name?.contains(
-                    text,
-                    ignoreCase = true
-                ) == true
-            ) {
-                isSame = true
-            }
+            isSame = it.binds?.user?.nameLastName!!.contains(text, ignoreCase = true)
         }
         return isSame
 
@@ -485,17 +479,14 @@ class ActivitiesPresenter
 
     private fun isEventHasParams(param: String, event: EventActivityModel): Boolean {
         var isHas = false
-        if (!event.description.isNullOrEmpty() && !param.isNullOrEmpty()) {
+        if (!event.description.isNullOrEmpty() || !event.title.isNullOrEmpty()) {
             val desc = event.description
-            if (desc.contains(param, true)) {
-                isHas = true
-            }
-        } else if (!event.title.isNullOrEmpty() && !param.isNullOrEmpty()) {
             val title = event.title
-            if (title.contains(param, true)) {
+            if (desc!!.contains(param, true) || title!!.contains(param, true)) {
                 isHas = true
             }
-        } else if (isSameSpeaker(param, event)) {
+        }
+        if (isSameSpeaker(param, event)) {
             isHas = true
         }
         return isHas
@@ -513,5 +504,8 @@ class ActivitiesPresenter
         }
         return mDay
     }
+
+    fun getTagsList() = userEvent.activity.groups.plus(userEvent.activity.tags)
+        .map { NewTags(it.id, it.name, it.isSelected) }
 
 }
