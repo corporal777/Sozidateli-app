@@ -35,7 +35,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Completable
 import kotlinx.android.synthetic.main.fragment_activitys.*
+import performOnBackgroundOutOnMain
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -231,7 +233,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
             item.selectDay(day)
         }
         deselectAllExcept(day)
-
         mIsCurrentPageItem = calendarPager.currentItem
         mIsCurrentPageDay = day
     }
@@ -340,7 +341,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
 
     override fun updateSubevent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
-        eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }?.notifyChanged()
+        eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
     }
 
 

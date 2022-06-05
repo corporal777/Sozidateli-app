@@ -18,6 +18,7 @@ import com.example.ui.search.SearchInterface
 import com.example.util.custom.LinkedSet
 import com.xwray.groupie.kotlinandroidextensions.Item
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackground
@@ -59,7 +60,8 @@ class ActivitiesPresenter
 
     private var mStartEventDate = ""
     private var mEndEventDate = ""
-    private val mSubEventsMap = mutableMapOf<String, LinkedSet<EventActivityModel>>()
+    private val mReadyDates = arrayListOf<String>()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getEventData() {
@@ -217,6 +219,7 @@ class ActivitiesPresenter
                 })
 
                 mDays = userEventData.createCalendarDaysNew(getAllDates().map {
+                    mReadyDates.add(it)
                     defaultServerDateFormatter.parse(it).time
                 })
 
@@ -291,8 +294,9 @@ class ActivitiesPresenter
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
-        viewState.apply { selectDay(day) }
         invalidateDay()
+        viewState.apply { selectDay(day) }
+
     }
 
 
@@ -303,43 +307,47 @@ class ActivitiesPresenter
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
         val mFilteredMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
+
         compositeDisposable += Completable.fromAction {
-            getAllDates()
+            mReadyDates
                 .filter {
                     defaultServerDateTimeFormatter.parse(it).time >= day.millis.startOfDay()
                 }
-                .map {
-                    val list = LinkedList<EventActivityModel>()
+                .map{
+                    val mList = LinkedList<EventActivityModel>()
                     val date = defaultServerDateFormatter.parse(it)
-                    userEvent.activity.activities.filter { x ->
+
+                    mList.addAll(userEvent.activity.activities.filter { x ->
                         date == defaultServerDateFormatter.parse(
                             x.holdingDate?.from
                         )
-                    }.map { event ->
-                        list.add(event)
+                    })
+
+                    mList.map { event ->
                         if (!mSearchWord.isNullOrEmpty()) {
                             val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
                             if (!isEventHasParams(mSearchWord, event)) {
-                                list.remove(event)
-                                if (!list.contains(emptyEvent) && list.isNullOrEmpty()) {
-                                    list.add(emptyEvent)
+                                mList.remove(event)
+                                if (!mList.contains(emptyEvent) && mList.isNullOrEmpty()) {
+                                    mList.add(emptyEvent)
                                 }
                             }
-                        } else if (!selectedTags.isNullOrEmpty()) {
+                        }
+                        if (!selectedTags.isNullOrEmpty()) {
                             val emptyEvent =
                                 EventActivityModel(hide = true, mNoEvent = true)
                             selectedTags.forEach { tag ->
                                 if (!filterTagsNew(event, tag)) {
-                                    list.remove(event)
-                                    if (!list.contains(emptyEvent) && list.isNullOrEmpty()) {
-                                        list.add(emptyEvent)
+                                    mList.remove(event)
+                                    if (!mList.contains(emptyEvent) && mList.isNullOrEmpty()) {
+                                        mList.add(emptyEvent)
                                     }
                                 }
                             }
                         }
 
                     }
-                    mFilteredMap[it] = list
+                    mFilteredMap[it] = mList
                 }
         }
             .performOnBackgroundOutOnMain()
@@ -355,7 +363,7 @@ class ActivitiesPresenter
                             mFilteredMap,
                             if (mustFilterTags()) selectedTags else emptyList()
                         )
-                        currentDay?.let { day -> showCurrentDay(day, daysSize) }
+                        //currentDay?.let { day -> showCurrentDay(day, daysSize) }
 
                     }
                 })

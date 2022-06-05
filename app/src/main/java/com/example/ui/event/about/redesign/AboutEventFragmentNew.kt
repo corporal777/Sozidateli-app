@@ -143,12 +143,9 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     override fun setSubEvents(
         subEvents: MutableMap<String, ArrayList<EventActivityModel>>
     ) {
-        subEventsBlock.update(
-            subEvents.map {
-                EventDetailActivitiesBlock(it.key, it.value, onSubEventClickListener)
-            }
-            //listOf(EventDetailActivitiesBlock(subEvents, onSubEventClickListener))
-        )
+        if (!subEvents.isNullOrEmpty()){
+            subEventsBlock.update(listOf(EventDetailActivitiesBlock(subEvents, onSubEventClickListener)))
+        }
     }
 
     override fun showErrorMessage(message: String) {
@@ -192,7 +189,11 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             Section().apply {
                 add(organizationItem)
                 add(EventDetailBlocksLabelItem(getString(R.string.information)))
-                add(EventPageItemNew(1, getString(R.string.how_to_go)) { presenterNew.onMapPageSelected() })
+                add(
+                    EventPageItemNew(
+                        1,
+                        getString(R.string.how_to_go)
+                    ) { presenterNew.onMapPageSelected() })
                 if (!pages.isNullOrEmpty()) {
                     addAll(pages.map { item ->
                         EventPageItemNew(
@@ -204,9 +205,11 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                 if (!eventData?.binds?.member.isNullOrEmpty()) {
                     add(EventDetailBlocksLabelItem(getString(R.string.speakers)))
                     val speakers = eventData?.binds?.member?.filter { it.role == "speaker" }
-                    add(SpeakersHorizontalListItem(speakers!!,
-                        {presenterNew.onSpeakerClick(it)},
-                        { presenterNew.onShowAllSpeakersClick() }))
+                    add(
+                        SpeakersHorizontalListItem(speakers!!,
+                            { presenterNew.onSpeakerClick(it) },
+                            { presenterNew.onShowAllSpeakersClick() })
+                    )
                 }
                 add(EventDetailBlocksLabelItem(getString(R.string.event_program)))
                 add(EventDetailTagsBlock(tags) {
@@ -220,7 +223,11 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                     presenterNew.onShowEventActivitiesClick()
                 })
                 if (!partners.isNullOrEmpty()) {
-                    add(EventDetailPartnersBlock(getString(R.string.partners_label), partners) { presenterNew.onPartnerClick(it) })
+                    add(
+                        EventDetailPartnersBlock(
+                            getString(R.string.partners_label),
+                            partners
+                        ) { presenterNew.onPartnerClick(it) })
                 }
             }
         ))
@@ -283,7 +290,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             shareApp.putExtra(Intent.EXTRA_TEXT, mShareLink)
             startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
         } catch (e: Exception) {
-           showRequestErrorMessage()
+            showRequestErrorMessage()
         }
     }
 
@@ -370,7 +377,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     }
 
 
-    private fun addToCalendar(eventData : EventNew) {
+    private fun addToCalendar(eventData: EventNew) {
         val mStartDate = defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "")
         val mEndDate = defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "")
         val mStartCal = mStartDate.calendar()
@@ -383,15 +390,18 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             putExtra(CalendarContract.Events.TITLE, eventData.name)
             putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
             putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
-            putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+            putExtra(
+                CalendarContract.Events.AVAILABILITY,
+                CalendarContract.Events.AVAILABILITY_BUSY
+            )
         }
         startActivity(intent)
 
     }
 
-    private fun updateView(offset : Int){
+    private fun updateView(offset: Int) {
         Log.e("OFFSET", offset.toString())
-        if (offset == 0){
+        if (offset == 0) {
             tbBackground.setBackgroundColor(Color.TRANSPARENT)
         }
         if (offset > 0 && offset < 1700) {
@@ -425,7 +435,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             }
             setBlackIcons()
         }
-        if (offset < 2060){
+        if (offset < 2060) {
             setWhiteIcons()
         }
     }

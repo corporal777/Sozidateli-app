@@ -16,8 +16,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 
 class EventDetailActivitiesBlock(
-    val date: String,
-    val list: ArrayList<EventActivityModel>,
+    val subEvents: MutableMap<String, ArrayList<EventActivityModel>>,
     private val clickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
 
@@ -28,12 +27,13 @@ class EventDetailActivitiesBlock(
 
     init {
         mDataItem.apply {
-            add(EventActivityDateItem(date))
-            list.map { data ->
-                add(EventActivityItem(data, emptyList(), clickListener))
+            subEvents.map {
+                add(EventActivityDateItem(it.key))
+                it.value.map { data ->
+                    add(EventActivityItem(data, emptyList(), clickListener))
+                }
             }
         }
-
         add(mDataItem)
     }
 
