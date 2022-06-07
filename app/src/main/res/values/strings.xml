@@ -876,5 +876,6 @@
     <string name="no_event_with_params_title">По данным параметрам нет мероприятий</string>
     <string name="show_all_speakers">Посмотреть всех спикеров</string>
     <string name="speakers_activities_label">События спикера</string>
+    <string name="sub_event_already_gone_title">Событие уже прошло</string>
 
 </resources>

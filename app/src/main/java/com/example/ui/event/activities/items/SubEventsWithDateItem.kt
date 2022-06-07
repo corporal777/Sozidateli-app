@@ -12,49 +12,55 @@ import com.xwray.groupie.Section
 import java.util.*
 
 class SubEventsWithDateItem(
-    private val emptyEventTitle : String,
-    private val noEventWithParamsTitle : String,
-    subEvents: Map<String, LinkedList<EventActivityModel>>,
-    val selectedTags : List<Tag>,
+    val date: String,
+    val listEvents: List<EventActivityModel>,
+    val selectedTags: List<Tag>,
     private val clickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
 
     private val mDataItem = Section()
+    private val mDateItem = EventActivityDateItem(date)
+
+    private val mNoParamTitle = "По данным параметрам нет событий"
+    private val mNoSubEvent = "Событий нет"
+    private var prevEventNoParam = false
 
     init {
-        if (!subEvents.isNullOrEmpty()) {
-            subEvents.map {
-                mDataItem.add(EventActivityDateItem(it.key))
-                if (!it.value.isNullOrEmpty()){
-                    it.value.forEach { data ->
-                        if (data.mNoEvent){
-                            mDataItem.add(NoSubEventItem(noEventWithParamsTitle))
-                        }else {
-                            mDataItem.add(EventActivityItem(data, selectedTags, clickListener))
-                        }
-
+        add(mDateItem)
+        if (!listEvents.isNullOrEmpty()) {
+            listEvents.map { data ->
+                if (data.mNoEvent){
+                    if (listEvents.size < 2){
+                        mDataItem.add(NoSubEventItem(mNoParamTitle))
                     }
                 }else {
-                    mDataItem.add(NoSubEventItem(emptyEventTitle))
+                    mDataItem.add(EventActivityItem(data, selectedTags, clickListener))
                 }
-
             }
+        } else {
+            mDataItem.add(NoSubEventItem(mNoSubEvent))
         }
         add(mDataItem)
     }
 
     override fun getGroup(position: Int): Group {
         return when (position) {
-            //0 -> mTagsItem
-            0 -> mDataItem
+            0 -> mDateItem
+            1 -> mDataItem
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
         }
     }
 
+    fun update(newData: Map<String, List<EventActivityModel>>) {
+
+        mDataItem.notifyChanged()
+        this.notifyItemChanged(0)
+    }
+
     override fun getPosition(group: Group): Int {
         return when (group) {
-            //mTagsItem -> 0
-            mDataItem -> 0
+            mDateItem -> 0
+            mDataItem -> 1
             else -> -1
         }
     }
@@ -65,10 +71,26 @@ class SubEventsWithDateItem(
         mDataItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged()
     }
 
-    fun getDayName() : String? {
-        return mDataItem.findItemBy<EventActivityDateItem> { true }?.getDay()
+    fun updateEventType(subEvent: EventActivityModel) {
+        val idLong = subEvent.id?.toLong()
+        var position = 0
+        val item = mDataItem.findItemBy<EventActivityItem> { it.id == idLong }
+        if (item != null) {
+            position = mDataItem.getPosition(item)
+            if (subEvent.mNoEvent) {
+                mDataItem.remove(item)
+                mDataItem.add(position, NoSubEventItem(mNoParamTitle))
+            } else {
+                mDataItem.add(position, EventActivityItem(subEvent, selectedTags, clickListener))
+            }
+        }
+
     }
 
-    override fun getGroupCount() = 1
+    fun getDayName(): String? {
+        return mDateItem.findItemBy<EventActivityDateItem> { true }?.getDay()
+    }
+
+    override fun getGroupCount() = 2
 
 }

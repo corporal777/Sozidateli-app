@@ -1,7 +1,9 @@
 package com.example.holders.redesign
 
 import android.widget.CompoundButton
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
@@ -22,7 +24,7 @@ import setOnClickListener
 
 
 class EventActivityItem(
-    private val subEvent: EventActivityModel,
+    val subEvent: EventActivityModel,
     private val selectedTags: List<Tag>?,
     clickListener: OnEventActivityClickListener?,
 ) : Item(subEvent.id?.toLong() ?: 0) {
@@ -36,8 +38,6 @@ class EventActivityItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            val desc =
-                "Обратите внимание, что ответы, содержащие только ссылки, не приветствуются , ответы SO должны быть конечной точкой поиска решения (в отличие от еще одной остановки ссылок, которые со временем устаревают). Пожалуйста, рассмотрите возможность добавления здесь отдельного синопсиса, оставив ссылку в качестве ссылки. Это полезно, но кажется, что текст обрезается только в зависимости от количества символов. Было бы неплохо, если бы его можно было расширять/сворачивать по количеству строк. Вы можете использовать новый TransitionManager для анимации и вызывать атрибут maxLines, чтобы установить количество"
 
             tvLectureTime.text = subEvent.holdingDate?.from
                 .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
@@ -83,28 +83,6 @@ class EventActivityItem(
                 tvLectureAuditory.text = subEvent.binds?.auditorium?.name
             }
 
-//            btnAddToTimetable.apply {
-//                if (mEndDate.timeInMillis > mToday) {
-//                    if (subEvent.binds?.userCalendar != null) {
-//                        text = context.getString(R.string.sub_event_remove_from_schedule)
-//                        setOnClickListener {
-//                            clickListener?.onRemoveFromScheduleClick(subEvent)
-//                        }
-//                    } else {
-//                        text = context.getString(R.string.sub_event_add_to_schedule)
-//                        setOnClickListener {
-//                            clickListener?.onAddToScheduleClick(subEvent)
-//                        }
-//                    }
-//                } else {
-//                    val text = "Событие уже пройдено"
-//                    setOnClickListener {
-//                        MessageDialogWithGrayButton(this.context, text)
-//                    }
-//                }
-//
-//            }
-
             decorActionButton(btnAddToTimetable, subEvent)
 
             tagGroup.apply {
@@ -138,32 +116,31 @@ class EventActivityItem(
     }
 
     private fun decorActionButton(button: AppCompatButton, mSubEvent: EventActivityModel) {
-        var mText = ""
-        var mBackground = 0
-        var clickAction: (() -> Unit)? = null
-        
+
         button.apply {
             if (mSubEvent.binds?.userCalendar != null) {
                 text = context.getString(R.string.sub_event_remove_from_schedule)
-                background = ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)
+                background =
+                    ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)
                 setOnClickListener {
                     clickListener?.onRemoveFromScheduleClick(mSubEvent)
                 }
             } else {
                 if (mEndDate.timeInMillis > mToday) {
                     text = context.getString(R.string.sub_event_add_to_schedule)
-                    background = ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
+                    background =
+                        ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
                     setOnClickListener {
                         clickListener?.onAddToScheduleClick(mSubEvent)
                     }
                 } else {
-                    val text = "Событие уже пройдено"
+                    val text = context.getString(R.string.sub_event_already_gone_title)
                     setOnClickListener {
                         MessageDialogWithGreenButton(this.context, text)
                     }
                 }
             }
-            
+
         }
     }
 
@@ -171,6 +148,7 @@ class EventActivityItem(
         if (other !is EventActivityItem) return false
         if (subEvent != other.subEvent) return false
         if (subEvent.description != other.subEvent.description) return false
+        if (subEvent.mNoEvent != other.subEvent.mNoEvent) return false
         if (isExpanded != other.isExpanded) return false
         if (selectedTags != other.selectedTags) return false
         return true
@@ -186,6 +164,7 @@ class EventActivityItem(
         }
 
     }
+
 
     override fun getLayout(): Int = R.layout.item_lecture
 

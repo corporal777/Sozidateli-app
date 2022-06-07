@@ -8,8 +8,6 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.Tag
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.custom.LinkedSet
-import java.util.*
 
 interface ActivitiesContract {
 
@@ -27,10 +25,7 @@ interface ActivitiesContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEventsNew(subEvents: Map<String, LinkedList<EventActivityModel>>, selectedTags: List<Tag>)
+        fun setSubEvents(subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
@@ -61,6 +56,12 @@ interface ActivitiesContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubevent(subEvent: EventActivityModel)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun deleteOrAddSubEventsNew(action : ActivitiesPresenter.SubEventAction, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateSubEventsNew(subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
     }
 
     interface Presenter : BaseContract.Presenter {

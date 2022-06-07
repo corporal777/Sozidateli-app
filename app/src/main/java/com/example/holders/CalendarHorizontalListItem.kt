@@ -37,7 +37,7 @@ class CalendarHorizontalListItem(
         deselectAllExcept(day)
     }
 
-    fun changeDay(day: EventScheduleCalendarDay) : Boolean{
+    fun changeDay(day: EventScheduleCalendarDay): Boolean {
         var isDay = false
         items.find { it.day == day }?.let {
             isDay = true
@@ -79,7 +79,7 @@ class CalendarHorizontalListItem(
     }
 
 
-    fun deselectAllExceptNew(except: EventScheduleCalendarDay){
+    fun deselectAllExceptNew(except: EventScheduleCalendarDay) {
         items.forEach {
             if (it.day.dayOfMonth != except.dayOfMonth && it.isSelected) {
                 it.isSelected = false

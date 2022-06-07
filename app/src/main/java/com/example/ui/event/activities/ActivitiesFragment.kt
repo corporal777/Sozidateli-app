@@ -3,6 +3,7 @@ package com.example.ui.event.activities
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.setFragmentResultListener
@@ -18,6 +19,7 @@ import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.NoDataItem
@@ -27,17 +29,16 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.activities.items.CalendarHorizontalListPager
+import com.example.ui.event.activities.items.SubEventItemNew
+import com.example.ui.event.activities.items.SubEventsData
 import com.example.ui.event.activities.items.SubEventsWithDateItem
 import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubeventFragmentArgs
-import com.example.util.custom.LinkedSet
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.Completable
 import kotlinx.android.synthetic.main.fragment_activitys.*
-import performOnBackgroundOutOnMain
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -56,6 +57,8 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
     private var mDy = 0
     private var mAppBarScrollValue = 0f
     var mCount = 0
+
+    private var mAllDatesMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
 
     @ProvidePresenter
     fun providePresenter(): ActivitiesPresenter = presenterProvider.get().apply {
@@ -151,10 +154,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                     val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastItem = mLayoutManager.findLastCompletelyVisibleItemPosition()
                     try {
-                        val firstItem = eventsSection.getItem(0) as EventActivityDateItem
-                        val firstDay =
-                            createCalendarDay(defaultServerDateFormatter.parse(firstItem.getDay()).time)
-
                         if (mDy <= 0) {
                             mIsCurrentPageDay?.let { changeDay(it) }
                             calendarPager?.setCurrentItem(mIsCurrentPageItem, true)
@@ -165,8 +164,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                             changeDay(now)
                             changeDayWhenScrollDown(now)
                         }
-
-
                     } catch (e: Exception) {
 
                     }
@@ -227,7 +224,9 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         }
     }
 
-    override fun selectDay(day: EventScheduleCalendarDay) {
+    override fun selectDay(
+        day: EventScheduleCalendarDay
+    ) {
         for (i in 0 until calendarSection.itemCount) {
             val item = calendarSection.getItem(i) as CalendarHorizontalListItem
             item.selectDay(day)
@@ -264,9 +263,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                 mIsCurrentPageItem = calendarPager.currentItem
             }
         })
-        if (day.hasEvents) {
-
-        }
     }
 
     private fun changeDayWhenScrollDown(day: EventScheduleCalendarDay) {
@@ -281,38 +277,85 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         })
     }
 
-    override fun setSubEvents(subEvents: List<EventActivityModel>, selectedTags: List<Tag>) {
-//        eventsSection.update(subEvents.map { subEvent ->
-//            SubEventItem(subEvent, SubEventItem.Mode.SCHEDULE, onSubEventClickListener, presenter.canDoActions)
-//        })
-//        eventsSection.update(subEvents.map { subEvent ->
-//            EventActivityItem(subEvent, selectedTags,onSubEventClickListener)
-//        })
-    }
 
-    override fun setSubEventsNew(
-        subEvents: Map<String, LinkedList<EventActivityModel>>,
+    override fun setSubEvents(
+        subEvents: Map<String, List<EventActivityModel>>,
         selectedTags: List<Tag>
     ) {
         eventsSection.update(
-            listOf(
-                SubEventsWithDateItem(
-                    getString(R.string.no_activity_title),
-                    getString(R.string.no_activity_with_params_title),
-                    subEvents,
-                    selectedTags,
-                    onSubEventClickListener
-                )
-            )
+            subEvents.map {
+                SubEventsWithDateItem(it.key, it.value, selectedTags, onSubEventClickListener)
+            }
         )
-
-
     }
 
-    override fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int) {
-        //daySection.update(listOf(DayHeaderItem(day.millis, daysSize != 1)))
+
+    override fun deleteOrAddSubEventsNew(
+        action: ActivitiesPresenter.SubEventAction,
+        subEvents: Map<String, List<EventActivityModel>>,
+        selectedTags: List<Tag>
+    ) {
+        when (action) {
+            ActivitiesPresenter.SubEventAction.DELETE -> {
+                subEvents.map {
+                    try {
+                        val group =
+                            eventsSection.findGroupBy<SubEventsWithDateItem> { x -> x.date == it.key }
+                        if (it.key == group?.date) {
+                            eventsSection.remove(group)
+                        }
+                    } catch (e: Exception) {
+
+                    }
+                }
+            }
+            ActivitiesPresenter.SubEventAction.ADD -> {
+                if (!subEvents.isNullOrEmpty()) {
+                    var mPosition = 0
+                    subEvents.map {
+                        eventsSection.add(
+                            mPosition,
+                            SubEventsWithDateItem(
+                                it.key,
+                                it.value,
+                                selectedTags,
+                                onSubEventClickListener
+                            )
+                        )
+                        mPosition += 1
+                    }
+
+                }
+            }
+        }
     }
 
+    override fun updateSubEventsNew(
+        subEvents: Map<String, List<EventActivityModel>>,
+        selectedTags: List<Tag>
+    ) {
+        Log.e("SIZE", subEvents.size.toString())
+        subEvents.map {
+            val group = eventsSection.findGroupBy<SubEventsWithDateItem> { x -> x.date == it.key }
+            if (group != null) {
+                val position = eventsSection.getPosition(group)
+                eventsSection.remove(group)
+                eventsSection.add(
+                    position,
+                    SubEventsWithDateItem(it.key, it.value, selectedTags, onSubEventClickListener)
+                )
+            }
+//            it.value.forEach { event ->
+//                val idLong = event.id?.toLong()
+////                eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }
+////                    ?.notifyChanged(event)
+//
+//
+//            }
+
+        }
+
+    }
 
     override fun showEmptyEventPlaceholder() {
         showPlaceholder(getString(R.string.schedule_empty_event_placeholder), null)
@@ -341,7 +384,8 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
 
     override fun updateSubevent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
-        eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
+        eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }
+            ?.notifyChanged(subEvent)
     }
 
 
@@ -454,6 +498,10 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
             cal.get(Calendar.DAY_OF_MONTH),
             false
         )
+    }
+
+    override fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int) {
+        //daySection.update(listOf(DayHeaderItem(day.millis, daysSize != 1)))
     }
 
 }

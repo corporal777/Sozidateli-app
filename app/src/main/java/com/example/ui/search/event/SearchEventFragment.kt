@@ -23,6 +23,7 @@ import com.example.holders.redesign.EventItemNew
 import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
@@ -85,10 +86,13 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     }
 
     override fun showAboutEvent(event: String) {
+//        findNavController().navigate(
+//            R.id.about_event_fragment,
+//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+//        )
         findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
-        )
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle())
     }
 
     override fun showEventRequest(event: String) {

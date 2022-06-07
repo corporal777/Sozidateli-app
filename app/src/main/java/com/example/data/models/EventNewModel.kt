@@ -420,7 +420,8 @@ data class EventActivityModel(
     val auditorium: Int? = null,
     val member: List<EventActivityMember>? = null,
     val binds: EventActivityBinds? = null,
-    var mNoEvent: Boolean = false
+    var mNoEvent: Boolean = false,
+    var mIsEmpty : Boolean = false
 ) : Parcelable
 
 @Parcelize
