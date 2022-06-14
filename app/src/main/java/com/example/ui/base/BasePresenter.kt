@@ -56,7 +56,6 @@ open class BasePresenter<V : BaseContract.View>
     }
 
 
-
     fun getUserData() = appDat.getUserNew()
 
     fun getHasBase() = appDat.hasBaseState
@@ -94,11 +93,27 @@ open class BasePresenter<V : BaseContract.View>
                     }
                 } else if (it is HttpException) {
                     when (it.code()) {
+                        400 -> {
+                            try {
+                                val error = Gson().fromJson(
+                                    it.response()?.errorBody()?.string(),
+                                    NewErrors::class.java
+                                )
+                                when (error.errors[0].message) {
+                                    "The event activity has ended" -> {
+                                        val message = "Событие уже прошло"
+                                        viewState.showErrorMessage(false, message)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                            }
+
+                        }
                         409 -> {
                             try {
                                 val error = Gson().fromJson(
-                                        it.response()?.errorBody()?.string(),
-                                        NewErrors::class.java
+                                    it.response()?.errorBody()?.string(),
+                                    NewErrors::class.java
                                 )
                                 when (error.errors[0].message) {
                                     "User with same email exists" -> viewState.showEmailErrorMessage()
@@ -111,16 +126,16 @@ open class BasePresenter<V : BaseContract.View>
                             }
                         }
                         401 -> {
-                            RxJavaPlugins.setErrorHandler { e ->
-                                if (e is UndeliverableException) {
-                                    Log.e("ERROR UNDELIVERABLE", e.message?:"")
-                                    onReceiveError(e)
-                                } else {
-                                    Thread.currentThread().also { thread ->
-                                        thread.uncaughtExceptionHandler.uncaughtException(thread, e)
-                                    }
-                                }
-                            }
+//                            RxJavaPlugins.setErrorHandler { e ->
+//                                if (e is UndeliverableException) {
+//                                    Log.e("ERROR UNDELIVERABLE", e.message?:"")
+//                                    onReceiveError(e)
+//                                } else {
+//                                    Thread.currentThread().also { thread ->
+//                                        thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+//                                    }
+//                                }
+//                            }
                         }
                         403 -> {
                             try {
@@ -139,6 +154,11 @@ open class BasePresenter<V : BaseContract.View>
                                         getHasBase(),
                                         getUserData()
                                     )
+                                    "you have no access for such operation" -> {
+                                        val message =
+                                            "В данный момент страница мероприятия доступна только владельцу или администратору"
+                                        viewState.showErrorMessage(true, message)
+                                    }
                                     else -> onReceiveError(it)
                                 }
                             } catch (e: Exception) {
@@ -225,4 +245,6 @@ open class BasePresenter<V : BaseContract.View>
             createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
         )
     }
+
+
 }

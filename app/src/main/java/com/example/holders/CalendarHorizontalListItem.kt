@@ -1,14 +1,9 @@
 package com.example.holders
 
 import android.graphics.Color
-import androidx.annotation.BoolRes
-import androidx.recyclerview.widget.RecyclerView
 import com.example.data.models.EventScheduleCalendarDay
-import com.example.ui.event.activities.items.CalendarGroup
 import com.example.ui.event.activities.items.HorizontalListItemNew
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.NestedGroup
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class CalendarHorizontalListItem(
@@ -43,6 +38,10 @@ class CalendarHorizontalListItem(
             isDay = true
         }
         return isDay
+    }
+
+    fun getFirstItem() : EventScheduleCalendarDay{
+        return items[0].day
     }
 
     fun scrollToDay(day: EventScheduleCalendarDay): Boolean {

@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -68,6 +69,7 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -140,30 +142,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     else -> hideNavBar()
                 }
 
-//                when(f) {
-//                    is SplashFragment,
-//                    is AuthWebsiteFragment,
-//                    is WelcomeFragment,
-//                    is LoginFragment,
-//                    is StoriesFragment,
-//                    is AuthorizationFragment,
-//                    is RegisterEmailNewFragment,
-//                    is QrScannerToAuthWebFragment,
-//                    is RegisterSnFragment,
-//                    is SearchTabsFragment,
-//                    is SubeventFragment,
-//                    is UserSpeakerFragment,
-//                    is ActivitiesFragment,
-//                    is MapFragmentNew,
-//                    is PartnerFragment,
-//                    is OrganizationFragment,
-//                    is EventSpeakersFragment,
-//                    is ChatFragment -> {
-//                        hideNavBar()
-//                    }
-//                    else -> showNavBar()
-//                }
-
                 setupNavBarItems(f)
 
                 if (f is StoriesFragment || f is AboutEventFragment || f is AboutEventFragmentNew || f is AuthorizationFragment || f is AuthWebsiteFragment || f is QrScannerToAuthWebFragment || f is WelcomeFragment) {
@@ -234,6 +212,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private var noInternetDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setMainTheme()
         super.onCreate(savedInstanceState)
         super.setSupportActionBar(toolbar)
         super.getSupportActionBar()?.apply {
@@ -764,6 +743,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .setSelectCallback { }
     }
 
+    override fun showErrorMessage(canGoBack: Boolean, message: String) {
+    }
+
+
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
         ChangeStateDialog(this, type)
             .setClickCallback {
@@ -927,4 +910,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun getProgressBarLoadingView(): View = progressBarLoading
 
     override fun layout() = R.layout.activity_main
+
+    private fun setMainTheme() {
+        window.navigationBarColor =
+            navBarColorDefault
+        setTheme(R.style.AppTheme)
+    }
 }

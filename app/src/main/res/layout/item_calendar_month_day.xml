@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDayNumber"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/background_calendar_date_selector"
+            android:gravity="center"
+            android:letterSpacing="-0.02"
+            android:minWidth="28dp"
+            android:minHeight="28dp"
+            android:textColor="@color/text_color_calendar_day"
+            android:textSize="17sp"
+            tools:ignore="MissingPrefix"
+            tools:text="26" />
+    </LinearLayout>
+
+</layout>
+

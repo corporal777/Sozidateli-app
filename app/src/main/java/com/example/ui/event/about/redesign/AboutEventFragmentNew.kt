@@ -57,11 +57,9 @@ import javax.inject.Provider
 class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     BackgroundImageFragment {
 
-    private var screenType = ABOUT_FROM_OTHER
     private var mLightStatus = false
 
     private var mDy: Int = 0
-    private var mMaxOffset = 0f
     private var mEventId = ""
 
     override fun layout() = R.layout.fragment_about_event_new
@@ -143,17 +141,17 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     override fun setSubEvents(
         subEvents: MutableMap<String, ArrayList<EventActivityModel>>
     ) {
-        if (!subEvents.isNullOrEmpty()){
-            subEventsBlock.update(listOf(EventDetailActivitiesBlock(subEvents, onSubEventClickListener)))
+        if (!subEvents.isNullOrEmpty()) {
+            subEventsBlock.update(
+                listOf(
+                    EventDetailActivitiesBlock(
+                        subEvents,
+                        onSubEventClickListener
+                    )
+                )
+            )
         }
     }
-
-    override fun showErrorMessage(message: String) {
-        MessageDialogWithGreenButton(requireContext(), message).setSelectCallback {
-            findNavController().navigateUp()
-        }
-    }
-
 
     override fun setEventData(
         eventData: EventNew?,

@@ -9,18 +9,23 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
 import com.example.extensions.*
 import com.example.ui.views.TagChipNew
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
 import com.google.android.material.chip.Chip
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_about_event_new.*
+import kotlinx.android.synthetic.main.item_lecture.*
 import kotlinx.android.synthetic.main.item_subevent_info.*
+import kotlinx.android.synthetic.main.item_subevent_info.btnAddToTimetable
 import kotlinx.android.synthetic.main.item_subevent_info.tvDescription
 import kotlinx.android.synthetic.main.item_subevent_info.tvLocation
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -35,11 +40,6 @@ open class SubeventInfoItem(
     private val onRemoveClickListener: (subEvent: EventActivityModel) -> Unit,
     private val onTagCLick: (id: Int) -> Unit
 ) : Item(subEvent.id?.toLong() ?: 0) {
-
-
-    private val dateFrom = subEvent.holdingDate?.from
-    private val dateTo = subEvent.holdingDate?.to
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -78,28 +78,7 @@ open class SubeventInfoItem(
                 isVisible = locations?.isNotEmpty() == true
             }
 
-            btnAddToTimetable.apply {
-
-                if (subEvent.binds?.userCalendar != null) {
-                    text = context.getString(R.string.sub_event_remove_from_schedule)
-                    setOnClickListener {
-                        onRemoveClickListener(subEvent)
-                    }
-                } else {
-                    text = context.getString(R.string.sub_event_add_to_schedule)
-                    setOnClickListener {
-                        onAddClickListener(subEvent)
-                    }
-                }
-
-
-            }
-
-//            if (!subEvent.binds?.tag.isNullOrEmpty()) {
-//                subEvent.binds?.tag?.forEach {
-//                    tagsGroup.addView(createTagChip(viewHolder.root.context, it))
-//                }
-//            }
+            decorActionButton(viewHolder.btnAddToTimetable, subEvent)
 
             tagsGroup.apply {
                 val createChip: (Tags) -> CompoundButton = {
@@ -144,6 +123,9 @@ open class SubeventInfoItem(
         else {
             //if (payload is Boolean) setAction(viewHolder.btnSubscribe, payload)
             //if (payload is Boolean) setAction(viewHolder.btnAddToTimetable, payload)
+            if (payload is EventActivityModel) {
+                decorActionButton(viewHolder.btnAddToTimetable, payload)
+            }
         }
     }
 
@@ -151,6 +133,27 @@ open class SubeventInfoItem(
         button.setAction(if (isInFavorites) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
     }
 
+    private fun decorActionButton(button: AppCompatButton, mSubEvent: EventActivityModel) {
+
+        button.apply {
+            if (mSubEvent.binds?.userCalendar != null) {
+                text = context.getString(R.string.sub_event_remove_from_schedule)
+                background =
+                    ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)
+                setOnClickListener {
+                    onRemoveClickListener(subEvent)
+                }
+            } else {
+                text = context.getString(R.string.sub_event_add_to_schedule)
+                background =
+                    ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
+                setOnClickListener {
+                    onAddClickListener(subEvent)
+                }
+            }
+
+        }
+    }
 
     private fun String?.formatToSubEventDatesInterval(finish: String?): String? {
 
@@ -169,8 +172,6 @@ open class SubeventInfoItem(
         val startDay = startCalendar?.get(Calendar.DAY_OF_MONTH)
         val endDay = startCalendar?.get(Calendar.DAY_OF_MONTH)
 
-        Log.e("DATE", startDay.toString())
-        Log.e("MONTH", startMonth.toString())
 
         val startFormatter = if (startCalendar != null) {
             SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_NO_YEAR, Locale.getDefault())

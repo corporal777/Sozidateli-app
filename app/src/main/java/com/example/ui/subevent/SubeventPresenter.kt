@@ -44,7 +44,6 @@ class SubeventPresenter @Inject constructor(
             .withProgressBarLoadingDialog(viewState)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                Log.e("TAG", it.binds?.tag.toString())
                 if (firstLoading) viewState.setData(it)
                 firstLoading = false
 
@@ -158,14 +157,8 @@ class SubeventPresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             //.withLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onComplete = {
-                    viewState.updateSubevent(subEvent)
-                })
-
-
+            .subscribeSimple {
+                viewState.updateSubevent(subEvent)
+            }
     }
 }

@@ -227,9 +227,10 @@
 
     <color name="transparent_white">#00FFFFFF</color>
     <color name="bottom_nav_item_selected_color">#C3996C</color>
-    <color name="chip_background_color">#74DAE2E8</color>
+    <color name="chip_background_color">#14747480</color>
     <color name="bottom_nav_item_unselected_color">#979592</color>
     <color name="color_green_button_new">#8CA26B</color>
     <color name="search_field_background_color">#1F767680</color>
     <color name="main_brown_color_new">#BE9B72</color>
+    <color name="text_color_weekend">#993C3C43</color>
 </resources>

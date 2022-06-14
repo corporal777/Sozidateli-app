@@ -41,7 +41,6 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
 
-
         @StateStrategyType(SkipStrategy::class)
         fun showOrganization(organization: String)
 
@@ -69,8 +68,6 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSubEvents(subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showErrorMessage(message: String)
     }
 
     interface Presenter : BaseContract.Presenter {

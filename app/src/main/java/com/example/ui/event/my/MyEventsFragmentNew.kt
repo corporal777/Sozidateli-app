@@ -88,9 +88,18 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
 
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) {presenter.onActionRegister(event)}
-        override fun onActionCancel(event: String, registrationId: String?) {presenter.onActionCancel(event, registrationId)}
-        override fun onShowEventClick(view: View, event: String) {presenter.onShowEventClick(event)}
+        override fun onActionRegister(event: String) {
+            presenter.onActionRegister(event)
+        }
+
+        override fun onActionCancel(event: String, registrationId: String?) {
+            presenter.onActionCancel(event, registrationId)
+        }
+
+        override fun onShowEventClick(view: View, event: String) {
+            presenter.onShowEventClick(event)
+        }
+
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
@@ -112,7 +121,7 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
         }
 
         btnGoToMyTimeTable.setOnClickListener {
-
+            showMyScheduleEvents()
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -179,14 +188,22 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
     }
 
     override fun showEmptyListPlaceholder() {
-        eventsSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message),getString(R.string.no_event_with_params_title))))
+        eventsSection.update(
+            listOf(
+                NoEventItem(
+                    getString(R.string.empty_list_placeholder_message),
+                    getString(R.string.no_event_with_params_title)
+                )
+            )
+        )
         swipeToRefresh.isRefreshing = false
     }
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
             R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle())
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: String) {
@@ -196,12 +213,18 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
         )
     }
 
+    private fun showMyScheduleEvents() {
+        findNavController().navigate(
+            R.id.my_schedule_events_fragment
+        )
+    }
+
     override fun setActionButton(event: EventNew?) {
         eventsSection.findGroupBy<EventGroupNew> { true }?.updateButtonState(event)
     }
 
 
-    private fun createEventFiltersView(filter : SearchFilter.EventNew): View {
+    private fun createEventFiltersView(filter: SearchFilter.EventNew): View {
         return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
@@ -214,7 +237,7 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
                     x
                 }
             }
-            initTextFilter(etName, filter.name){filter.name = it}
+            initTextFilter(etName, filter.name) { filter.name = it }
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
             initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
 
@@ -256,6 +279,7 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
 
         }
     }
+
     private fun initTextFilter(editText: EditText, text: String?, onTextChange: (String?) -> Unit) {
         editText.apply {
             onTextChanged { onTextChange(it?.toString()) }
@@ -263,7 +287,12 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
         }
     }
 
-    private fun initDateFilter(editText: EditText, inputLayout: TextInputLayout, date: String?, onDateChange: (String?) -> Unit) {
+    private fun initDateFilter(
+        editText: EditText,
+        inputLayout: TextInputLayout,
+        date: String?,
+        onDateChange: (String?) -> Unit
+    ) {
         val parsedDate = date?.let { defaultServerDateFormatter.parse(it) }
         val formattedDate = parsedDate?.let { defaultDateFormatter.format(it) }
         editText.apply {
@@ -276,7 +305,15 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
         }
     }
 
-    private fun initInterests(interests: Map<InterestNew, List<InterestNew>>, tvTheme: AutoCompleteTextView, tilSpec: TextInputLayout, tvSpec: AutoCompleteTextView, theme: Int?, spec: Int?, onInterestChange: (theme: Int?, spec: Int?) -> Unit) {
+    private fun initInterests(
+        interests: Map<InterestNew, List<InterestNew>>,
+        tvTheme: AutoCompleteTextView,
+        tilSpec: TextInputLayout,
+        tvSpec: AutoCompleteTextView,
+        theme: Int?,
+        spec: Int?,
+        onInterestChange: (theme: Int?, spec: Int?) -> Unit
+    ) {
         var currentTheme = theme
         var currentSpec: Int?
 
@@ -287,27 +324,47 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
 
         val themes = interests.keys
         val selectedTheme = findInterest(theme, themes)
-        initDropDownView(tvTheme, themes, selectedTheme?.name, null, transformKey = { it.name?: "" }, findValue = { it?.id }, onVariantChange = { id ->
-            currentTheme = id
-            currentSpec = null
-            onInterestChange(id, null)
-            val specs = findInterest(id, themes)?.let { interests[it] }
-            initSpec(tilSpec, tvSpec, specs, null, onSpecChange)
-        }
+        initDropDownView(
+            tvTheme,
+            themes,
+            selectedTheme?.name,
+            null,
+            transformKey = { it.name ?: "" },
+            findValue = { it?.id },
+            onVariantChange = { id ->
+                currentTheme = id
+                currentSpec = null
+                onInterestChange(id, null)
+                val specs = findInterest(id, themes)?.let { interests[it] }
+                initSpec(tilSpec, tvSpec, specs, null, onSpecChange)
+            }
         )
 
         val specs = selectedTheme?.let { interests[it] }
         initSpec(tilSpec, tvSpec, specs, spec, onSpecChange)
     }
 
-    private fun initSpec(inputLayout: View, textView: AutoCompleteTextView, interests: List<InterestNew>?, spec: Int?, onSpecChange: (spec: Int?) -> Unit) {
+    private fun initSpec(
+        inputLayout: View,
+        textView: AutoCompleteTextView,
+        interests: List<InterestNew>?,
+        spec: Int?,
+        onSpecChange: (spec: Int?) -> Unit
+    ) {
         if (interests == null) {
             textView.isEnabled = false
             textView.text = null
             inputLayout.isEnabled = false
         } else {
             val selectedTheme = findInterest(spec, interests)
-            initDropDownView(textView, interests, selectedTheme?.name, null, transformKey = { it.name?: "" }, findValue = { it?.id }, onVariantChange = { onSpecChange(it) })
+            initDropDownView(
+                textView,
+                interests,
+                selectedTheme?.name,
+                null,
+                transformKey = { it.name ?: "" },
+                findValue = { it?.id },
+                onVariantChange = { onSpecChange(it) })
             textView.isEnabled = true
             inputLayout.isEnabled = true
         }

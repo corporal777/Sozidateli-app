@@ -24,8 +24,6 @@ interface UserSpeakerContract{
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSpeakerActivities(data : List<EventActivityModel>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEmptyEventsPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEmptyMainDataPlaceholder()

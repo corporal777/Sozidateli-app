@@ -13,7 +13,6 @@ import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.event.activities.adapter.SubEventsAdapter
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item

@@ -46,8 +46,8 @@ fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Un
 }
 
 fun FragmentManager.showDatePicker(
-        currentDate: String?,
-        onDateSelected: (date: Long) -> Unit
+    currentDate: String?,
+    onDateSelected: (date: Long) -> Unit
 ) {
     var selection = if (!currentDate.isNullOrBlank())
         serverDateToMilliseconds(currentDate, DATE_FORMAT_SHORT_MONTH_FULL_YEAR)
@@ -62,18 +62,18 @@ fun FragmentManager.showDatePicker(
     endDate.add(Calendar.YEAR, -14)
 
     val picker = MaterialDatePicker
-            .Builder
-            .datePicker()
-            .setTitleText(R.string.profile_birthday)
-            .setTheme(R.style.DatePickerStyle)
-            .setSelection(selection)
-            .setCalendarConstraints(
-                    CalendarConstraints.Builder()
-                            .setEnd(endDate.timeInMillis)
-                            .setOpenAt(selection)
-                            .setValidator(WeekDayValidator()).build()
-            )
-            .build()
+        .Builder
+        .datePicker()
+        .setTitleText(R.string.profile_birthday)
+        .setTheme(R.style.DatePickerStyle)
+        .setSelection(selection)
+        .setCalendarConstraints(
+            CalendarConstraints.Builder()
+                .setEnd(endDate.timeInMillis)
+                .setOpenAt(selection)
+                .setValidator(WeekDayValidator()).build()
+        )
+        .build()
     picker.addOnPositiveButtonClickListener {
         onDateSelected.invoke(it)
     }
@@ -89,12 +89,11 @@ fun PopupWindow.settings() {
 fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")
 
 
-
 @TargetApi(21)
 fun Activity.setWindowTransparency(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
     InsetUtil.removeSystemInsets(window.decorView, listener)
-    //window.navigationBarColor = Color.TRANSPARENT
-    //window.statusBarColor = Color.TRANSPARENT
+//    window.navigationBarColor = Color.TRANSPARENT
+//    window.statusBarColor = Color.TRANSPARENT
 
 }
 
@@ -123,7 +122,6 @@ object InsetUtil {
     }
 
 }
-
 
 
 fun ImageView.setImage(
@@ -179,4 +177,22 @@ fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
     val green = Color.green(color)
     val blue = Color.blue(color)
     return Color.argb(alpha, red, green, blue)
+}
+
+fun getMonthName(month: Int): String {
+    val monthNames = arrayOf(
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь"
+    )
+    return monthNames[month]
 }

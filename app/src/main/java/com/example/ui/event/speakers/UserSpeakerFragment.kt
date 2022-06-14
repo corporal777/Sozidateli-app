@@ -147,9 +147,6 @@ class UserSpeakerFragment : BaseFragment(), UserSpeakerContract.View {
         )
     }
 
-    override fun setEmptyEventsPlaceholder() {
-        //subEventsDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SUB_EVENT)))
-    }
 
     override fun setEmptyMainDataPlaceholder() {
         mainDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN)))

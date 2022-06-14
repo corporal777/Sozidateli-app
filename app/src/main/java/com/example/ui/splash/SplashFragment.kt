@@ -1,5 +1,6 @@
 package com.example.ui.splash
 
+import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -25,4 +26,5 @@ class SplashFragment : BaseFragment(), BackgroundImageFragment, SplashContract.V
     override fun getFragmentBackgroundDrawable() = AuthBackground.get(resources)
 
     override fun layout() = R.layout.fragment_splash
+
 }

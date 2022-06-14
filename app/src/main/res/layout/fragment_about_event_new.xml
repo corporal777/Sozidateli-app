@@ -2,105 +2,103 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:visibility="visible"
     android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
     android:paddingBottom="20dp"
-    tools:ignore="MissingPrefix"
-    android:layout_height="match_parent">
+    tools:ignore="MissingPrefix">
 
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeToRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/eventContentList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="50dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_event_detail_image_block" />
-
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-        <com.google.android.material.appbar.AppBarLayout
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/aboutEventAppBar"
-            android:background="@null"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventContentList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="0dp">
+            android:clipToPadding="false"
+            android:paddingBottom="50dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_event_detail_image_block" />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/aboutEventToolbar"
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/aboutEventAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        app:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/aboutEventToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:background="@null"
+            app:contentInsetStart="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tbContent"
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
-                android:background="@null"
-                app:contentInsetStart="0dp">
+                android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/tbContent"
+                    android:id="@+id/tbBackground"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tbBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/custom_toolbar_btn_background_selectable"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_back_white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/iv_back"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@drawable/custom_toolbar_btn_background_selectable"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_back_white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnAddToCalendar"
-                        fontPath="fonts/sf_pro_text_semibold.ttf"
-                        android:layout_width="145dp"
-                        android:layout_height="30dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/custom_btn_add_to_calendar_background"
-                        android:minHeight="@dimen/auth_button_min_height"
-                        android:text="@string/add_to_calendar"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="11sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/iv_share" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnAddToCalendar"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="145dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/custom_btn_add_to_calendar_background"
+                    android:minHeight="@dimen/auth_button_min_height"
+                    android:text="@string/add_to_calendar"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/iv_share" />
 
 
-                    <ImageView
-                        android:id="@+id/iv_share"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@drawable/custom_toolbar_btn_background_selectable"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_share_white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                <ImageView
+                    android:id="@+id/iv_share"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/custom_toolbar_btn_background_selectable"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_share_white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.appbar.MaterialToolbar>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
-
-
+    </com.google.android.material.appbar.AppBarLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

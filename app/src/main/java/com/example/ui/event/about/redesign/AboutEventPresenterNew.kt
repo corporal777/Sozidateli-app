@@ -48,15 +48,16 @@ class AboutEventPresenterNew
                 .withLoadingDialog(viewState)
 
         compositeDisposable += eventInfoMaybe
-            .subscribeSimple(
-                onSuccess = { eventInfo ->
-                    setEventInfoData(eventInfo)
-                },
-                onError = {
-                    it.printStackTrace()
-                    catchExceptionMessage(it)
-                })
-
+//            .subscribeSimple(
+//                onError = {
+//                    it.printStackTrace()
+//                },
+//                onSuccess = { eventInfo ->
+//                    setEventInfoData(eventInfo)
+//                })
+            .subscribeSimple { eventInfo ->
+                setEventInfoData(eventInfo)
+            }
         Log.e("TOKEN", appData.token!!)
     }
 
@@ -156,7 +157,7 @@ class AboutEventPresenterNew
     }
 
     override fun onRefreshRequest() {
-            compositeDisposable += eventRepository.getEventDetails(eventId)
+        compositeDisposable += eventRepository.getEventDetails(eventId)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(onError = {
@@ -238,16 +239,9 @@ class AboutEventPresenterNew
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
-            //.withLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onComplete = {
-                    viewState.updateSubEvent(subEvent)
-                })
-
-
+            .subscribeSimple {
+                viewState.updateSubEvent(subEvent)
+            }
     }
 
 
@@ -309,23 +303,5 @@ class AboutEventPresenterNew
 
     override fun onShareClick() = viewState.showShare(eventId)
 
-    private fun catchExceptionMessage(t : Throwable){
-        val exc = t as HttpException
-        var message = ""
-        try {
-            val error = Gson().fromJson(
-                exc.response()?.errorBody()?.string(),
-                NewErrors::class.java
-            )
-            when(error.errors[0].message) {
-                "you have no access for such operation" -> {
-                    message = "В данный момент страница мероприятия доступна только владельцу или администратору"
-                }
-            }
-            Log.e("MESSAGE", error.errors[0].message?:"")
-        } catch (e: Exception) {
 
-        }
-        viewState.showErrorMessage(message)
-    }
 }

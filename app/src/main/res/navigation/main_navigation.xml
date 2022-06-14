@@ -1350,4 +1350,12 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/my_schedule_events_fragment"
+        android:name="com.example.ui.event.my.schedule.MyScheduleEventsFragment"
+        android:label="MyScheduleEventsFragment"
+        tools:layout="@layout/fragment_my_schedule_events">
+
+    </fragment>
+
 </navigation>

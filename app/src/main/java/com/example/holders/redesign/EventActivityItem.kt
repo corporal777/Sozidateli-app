@@ -32,9 +32,6 @@ class EventActivityItem(
     private val clickListener by weak(clickListener)
     private var isExpanded = false
 
-    val mToday = System.currentTimeMillis()
-    val mEndDate =
-        defaultServerDateFormatter.parse(subEvent?.holdingDate?.to).calendar()
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
@@ -126,18 +123,11 @@ class EventActivityItem(
                     clickListener?.onRemoveFromScheduleClick(mSubEvent)
                 }
             } else {
-                if (mEndDate.timeInMillis > mToday) {
-                    text = context.getString(R.string.sub_event_add_to_schedule)
-                    background =
-                        ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
-                    setOnClickListener {
-                        clickListener?.onAddToScheduleClick(mSubEvent)
-                    }
-                } else {
-                    val text = context.getString(R.string.sub_event_already_gone_title)
-                    setOnClickListener {
-                        MessageDialogWithGreenButton(this.context, text)
-                    }
+                text = context.getString(R.string.sub_event_add_to_schedule)
+                background =
+                    ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
+                setOnClickListener {
+                    clickListener?.onAddToScheduleClick(mSubEvent)
                 }
             }
 

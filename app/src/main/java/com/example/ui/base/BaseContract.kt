@@ -46,6 +46,9 @@ interface BaseContract {
         @StateStrategyType(SkipStrategy::class)
         fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showErrorMessage(canGoBack : Boolean, message: String)
+
     }
 
     interface LoadingView {
@@ -65,5 +68,6 @@ interface BaseContract {
         fun hideAllLoadingDialogs()
     }
 
-    interface Presenter
+    interface Presenter {
+    }
 }

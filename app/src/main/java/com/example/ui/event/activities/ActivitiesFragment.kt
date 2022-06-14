@@ -17,11 +17,9 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.findGroupBy
-import com.example.extensions.findItemBy
+import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
+import com.example.holders.DayItem
 import com.example.holders.NoDataItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
@@ -29,8 +27,7 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.activities.items.CalendarHorizontalListPager
-import com.example.ui.event.activities.items.SubEventItemNew
-import com.example.ui.event.activities.items.SubEventsData
+import com.example.ui.event.activities.items.SearchActivityItem
 import com.example.ui.event.activities.items.SubEventsWithDateItem
 import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubeventFragmentArgs
@@ -301,8 +298,10 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                     try {
                         val group =
                             eventsSection.findGroupBy<SubEventsWithDateItem> { x -> x.date == it.key }
-                        if (it.key == group?.date) {
-                            eventsSection.remove(group)
+                        if (group != null){
+                            if (it.key == group.date) {
+                                eventsSection.remove(group)
+                            }
                         }
                     } catch (e: Exception) {
 

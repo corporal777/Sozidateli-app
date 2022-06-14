@@ -101,10 +101,8 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
         headerSection.update(listOf(ScreenHeaderItem(getString(R.string.event))))
 
         infoSection.update(listOf(SubeventInfoItem(subEvent, {
-            showToast("Added")
             presenter.onAddToScheduleClick(it)
         }, {
-            showToast("Removed")
             presenter.onRemoveFromScheduleClick(it)
         }, {
             showToast(it.toString())
@@ -144,7 +142,7 @@ class SubeventFragment : BaseFragment(), SubeventContract.View {
 
     override fun updateSubevent(subEvent: EventActivityModel) {
         val idLong = subEvent?.id?.toLong()
-        infoSection.findItemBy<SubeventInfoItem> { it -> it.id == idLong }?.notifyChanged()
+        infoSection.findItemBy<SubeventInfoItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
     }
 
     override fun onStart() {

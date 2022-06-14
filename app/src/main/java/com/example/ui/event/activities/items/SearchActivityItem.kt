@@ -1,13 +1,11 @@
-package com.example.ui.event.activities
+package com.example.ui.event.activities.items
 
 import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemSearchActivityBinding
 import com.example.util.SearchInput
-import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.fragment_search_tabs.*
 import onTextChanged
 
 class SearchActivityItem(
