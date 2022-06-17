@@ -93,16 +93,16 @@ class AboutEventPresenterNew
 
                 listSubEvents?.map { map ->
                     if (mSize != 0) {
-                        filteredSubEvents[map.key ?: ""] = arrayListOf()
-                    }
-                    map.value.forEach { event ->
-                        if (mSize != 0) {
-                            filteredSubEvents[map.key]?.add(event)
+                        val list = arrayListOf<EventActivityModel>()
+                        map.value.forEach { event ->
+                            if (mSize != 0) {
+                                list.add(event)
+                                mSize -= 1
+                            }
                         }
-                        mSize -= 1
+                        filteredSubEvents[map.key ?: ""] = list
                     }
                 }
-
                 viewState.setSubEvents(filteredSubEvents.toSortedMap())
             }
         }

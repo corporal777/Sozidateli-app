@@ -246,6 +246,7 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/menu/menu_event.xml" value="0.1796875" />
         <entry key="app/src/main/res/drawable/background_action_button_register.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/background_action_button_selector.xml" value="0.1395" />
+        <entry key="app/src/main/res/drawable/background_bottom_sheet.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_button_cancel.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_calendar_date_selector.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_corners.xml" value="0.1505" />
@@ -365,6 +366,7 @@
         <entry key="app/src/main/res/layout/item_event_detail_show_activities_block.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_detail_speakers_block.xml" value="0.1603780110677083" />
         <entry key="app/src/main/res/layout/item_event_detail_tags_block.xml" value="0.20277777777777778" />
+        <entry key="app/src/main/res/layout/item_event_image_header.xml" value="0.2754241133158185" />
         <entry key="app/src/main/res/layout/item_event_new.xml" value="0.3231513694480613" />
         <entry key="app/src/main/res/layout/item_event_page.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_page_new.xml" value="0.3098958333333333" />
@@ -399,10 +401,11 @@
         <entry key="app/src/main/res/layout/item_sub_event.xml" value="0.2395345052083333" />
         <entry key="app/src/main/res/layout/item_sub_event_new.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_sub_event_placeholder.xml" value="0.26592000325520826" />
-        <entry key="app/src/main/res/layout/item_sub_event_speaker.xml" value="0.3047246104051292" />
+        <entry key="app/src/main/res/layout/item_sub_event_speaker.xml" value="0.3905053598774885" />
         <entry key="app/src/main/res/layout/item_subevent_info.xml" value="0.25052846272786455" />
         <entry key="app/src/main/res/layout/item_tags_horizontal_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_title.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/item_title_sub_event.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_user.xml" value="0.19995625813802081" />
         <entry key="app/src/main/res/layout/item_user_placeholder.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_user_speaker_main_info.xml" value="0.28790791829427076" />

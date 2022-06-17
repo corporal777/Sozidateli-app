@@ -142,7 +142,7 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         V pagerView = createView(position);
-        pagerView.setContentDescription(mcv.getCalendarContentDescription());
+        //pagerView.setContentDescription(mcv.getCalendarContentDescription());
         pagerView.setAlpha(0);
         pagerView.setSelectionEnabled(selectionEnabled);
 

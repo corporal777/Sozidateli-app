@@ -5,17 +5,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listSubEvents"
-            tools:listitem="@layout/item_lecture"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

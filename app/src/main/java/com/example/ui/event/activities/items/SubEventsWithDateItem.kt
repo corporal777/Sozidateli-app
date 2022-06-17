@@ -2,6 +2,7 @@ package com.example.ui.event.activities.items
 
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
@@ -19,7 +20,8 @@ class SubEventsWithDateItem(
 ) : NestedGroup() {
 
     private val mDataItem = Section()
-    private val mDateItem = EventActivityDateItem(date)
+    private val mId = defaultServerDateFormatter.parse(date).time
+    private val mDateItem = EventActivityDateItem(date, mId)
 
     private val mNoParamTitle = "По данным параметрам нет событий"
     private val mNoSubEvent = "Событий нет"

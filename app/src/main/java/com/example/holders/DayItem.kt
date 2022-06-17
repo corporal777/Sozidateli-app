@@ -2,11 +2,13 @@ package com.example.holders
 
 import android.graphics.Color
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.extensions.calendar
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_day.*
+import kotlinx.android.synthetic.main.item_lecture.*
 import java.util.*
 
 open class DayItem(
@@ -36,13 +38,6 @@ open class DayItem(
             }
         }
     }
-
-    fun changeDay(){
-        if (isSelected) return
-        isSelected = true
-        notifyChanged()
-    }
-
 
     private fun performSelectClick() {
         if (isSelected) return

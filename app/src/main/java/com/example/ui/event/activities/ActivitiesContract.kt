@@ -25,22 +25,16 @@ interface ActivitiesContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+        fun setSubEvents(day : EventScheduleCalendarDay, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun scrollContent(day: EventScheduleCalendarDay)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
-        fun showEmptyDayPlaceholder()
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
-        fun hidePlaceholder()
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
         fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
-        fun hideCurrentDay()
 
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
@@ -48,17 +42,8 @@ interface ActivitiesContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
         fun showDataFormCacheMessage(cacheDate: String)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
-        fun hideDataFormCacheMessage()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showAllTags()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubevent(subEvent: EventActivityModel)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun deleteOrAddSubEventsNew(action : ActivitiesPresenter.SubEventAction, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+        fun updateSubEvent(subEvent: EventActivityModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEventsNew(subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)

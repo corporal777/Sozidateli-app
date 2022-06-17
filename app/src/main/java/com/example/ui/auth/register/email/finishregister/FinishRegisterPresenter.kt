@@ -53,6 +53,8 @@ class FinishRegisterPresenter
     private var noMiddleNameChecked = false
     private var phoneCode: String? = null
     var loginType = "email"
+    var deviceId = ""
+    var deviceModel = ""
 
     var snUser: SnUser? = null
     private var phoneVerified: Boolean = false
@@ -118,7 +120,7 @@ class FinishRegisterPresenter
 
     override fun getData() {
         val login = if (loginType == "email") email else phone
-        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, login?: ""), LoginModel("temporary", code)))
+        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, login?: ""), LoginModel("temporary", code), deviceId, deviceModel))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

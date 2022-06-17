@@ -16,6 +16,8 @@ import com.example.R
 import com.example.data.models.SnUser
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
+import com.example.util.getDeviceId
+import com.example.util.getDeviceName
 import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged
 import javax.inject.Inject
@@ -38,8 +40,8 @@ class LoginFragment : BaseFragment(), LoginContract.View {
             isRegister = isRegistered
             invite = inviteId
             (requireActivity() as MainActivity).invite = inviteId
-            deviceId = Settings.Secure.getString(requireActivity().contentResolver,
-                Settings.Secure.ANDROID_ID)
+            deviceId = getDeviceId(requireContext())
+            deviceModel = getDeviceName()
         }
     }
 

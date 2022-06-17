@@ -9,7 +9,9 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.*
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -19,16 +21,13 @@ import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
-import com.example.holders.DayItem
 import com.example.holders.NoDataItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.activities.items.CalendarHorizontalListPager
-import com.example.ui.event.activities.items.SearchActivityItem
-import com.example.ui.event.activities.items.SubEventsWithDateItem
+import com.example.ui.event.activities.items.*
 import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubeventFragmentArgs
 import com.google.android.material.appbar.AppBarLayout
@@ -36,26 +35,24 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_activitys.*
+import kotlinx.android.synthetic.main.fragment_map_new.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterfaceProvider {
+
+class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
 
     @InjectPresenter
     lateinit var presenter: ActivitiesPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ActivitiesPresenter>
-    private var mIsCurrentPageItem = 0
-    private var mIsCurrentPageDay: EventScheduleCalendarDay? = null
 
-    private val searchInterface = SearchInterface()
     private var mDy = 0
     private var mAppBarScrollValue = 0f
     var mCount = 0
-
-    private var mAllDatesMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
+    var mCanChangeDay = false
 
     @ProvidePresenter
     fun providePresenter(): ActivitiesPresenter = presenterProvider.get().apply {
@@ -65,27 +62,18 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
             t.isSelected = it.isSelected
             t
         }
-        searchInterface = this@ActivitiesFragment.searchInterface.apply {
-
-        }
     }
 
-    private val headerSection = Section()
     private val searchSection = Section()
     private val tagsSection = Section()
     private val calendarSection = Section()
     private val daySection = Section()
     private val eventsSection = Section()
-    private val allSection = Section()
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            //add(headerSection)
-            // add(calendarSection)
             add(searchSection)
-            add(allSection)
             add(tagsSection)
-            add(daySection)
             add(eventsSection)
         }
     }
@@ -117,7 +105,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
 
     }
 
-    private var calendarItem: CalendarHorizontalListPager? = null
 
     override fun layout(): Int = R.layout.fragment_activitys
 
@@ -143,30 +130,37 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         super.onViewCreated(view, savedInstanceState)
         recyclerView.apply {
             adapter = groupAdapter
+            val mLayoutManager = this.layoutManager as LinearLayoutManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     mDy += dy
-                    val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastItem = mLayoutManager.findLastCompletelyVisibleItemPosition()
+                    val lastItem = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     try {
                         if (mDy <= 0) {
-                            mIsCurrentPageDay?.let { changeDay(it) }
-                            calendarPager?.setCurrentItem(mIsCurrentPageItem, true)
+                            changeDay(presenter.getFirstDay())
+                            calendarPager?.setCurrentItem(0, true)
                         } else {
-                            val item = eventsSection.getItem(lastItem) as EventActivityDateItem
+                            val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
                             val now =
-                                createCalendarDay(defaultServerDateFormatter.parse(item.getDay()).time)
-                            changeDay(now)
+                                createCalendarDay(defaultServerDateFormatter.parse(item?.date).time)
                             changeDayWhenScrollDown(now)
+                            if (!mCanChangeDay){
+                                changeDay(now)
+                            }
                         }
                     } catch (e: Exception) {
 
                     }
                 }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    mCanChangeDay = newState !== SCROLL_STATE_DRAGGING
+                }
             })
         }
+
 
         calendarPager.apply {
             adapter = calendarAdapter
@@ -185,10 +179,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun setTags(tags: List<Tag>?) {
-        //headerSection.update(listOf(ScreenHeaderItem(getString(R.string.timetable))))
-
-        searchSection.update(listOf(SearchActivityItem({
-            //presenter.onSearchTextChange(it)
+        searchSection.update(listOf(SearchActivityItem({ //presenter.onSearchTextChange(it)
         }, {
             presenter.onSearchTextSubmit(it)
             hideKeyboard()
@@ -215,7 +206,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                 calendarSection.add(CalendarHorizontalListItem(listDays) {
                     presenter.onDaySelected(it)
                 })
-                //listItems.add(CalendarHorizontalListItem(listDays, onDaySelect))
                 listDays.clear()
             }
         }
@@ -229,8 +219,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
             item.selectDay(day)
         }
         deselectAllExcept(day)
-        mIsCurrentPageItem = calendarPager.currentItem
-        mIsCurrentPageDay = day
     }
 
     private fun changeDay(day: EventScheduleCalendarDay) {
@@ -257,7 +245,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
             if (item != null) {
                 mPosition = calendarSection.getPosition(item)
                 calendarPager?.setCurrentItem(mPosition, true)
-                mIsCurrentPageItem = calendarPager.currentItem
             }
         })
     }
@@ -276,6 +263,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
 
 
     override fun setSubEvents(
+        day: EventScheduleCalendarDay,
         subEvents: Map<String, List<EventActivityModel>>,
         selectedTags: List<Tag>
     ) {
@@ -284,50 +272,33 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                 SubEventsWithDateItem(it.key, it.value, selectedTags, onSubEventClickListener)
             }
         )
+        for (i in 0 until 5) {
+            eventsSection.add(SubEventItemEmpty())
+        }
+        scrollContent(day)
     }
 
 
-    override fun deleteOrAddSubEventsNew(
-        action: ActivitiesPresenter.SubEventAction,
-        subEvents: Map<String, List<EventActivityModel>>,
-        selectedTags: List<Tag>
-    ) {
-        when (action) {
-            ActivitiesPresenter.SubEventAction.DELETE -> {
-                subEvents.map {
-                    try {
-                        val group =
-                            eventsSection.findGroupBy<SubEventsWithDateItem> { x -> x.date == it.key }
-                        if (group != null){
-                            if (it.key == group.date) {
-                                eventsSection.remove(group)
-                            }
-                        }
-                    } catch (e: Exception) {
-
-                    }
+    override fun scrollContent(day: EventScheduleCalendarDay) {
+        val mSmoothScroller: SmoothScroller =
+            object : LinearSmoothScroller(requireContext()) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
                 }
             }
-            ActivitiesPresenter.SubEventAction.ADD -> {
-                if (!subEvents.isNullOrEmpty()) {
-                    var mPosition = 0
-                    subEvents.map {
-                        eventsSection.add(
-                            mPosition,
-                            SubEventsWithDateItem(
-                                it.key,
-                                it.value,
-                                selectedTags,
-                                onSubEventClickListener
-                            )
-                        )
-                        mPosition += 1
-                    }
-
-                }
+        val date = defaultServerDateFormatter.format(day.millis)
+        val group =
+            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
+        if (group != null) {
+            if (date == group.date) {
+                val position = groupAdapter.getAdapterPosition(group)
+                val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                mSmoothScroller.targetPosition = position
+                mLayoutManager.startSmoothScroll(mSmoothScroller)
             }
         }
     }
+
 
     override fun updateSubEventsNew(
         subEvents: Map<String, List<EventActivityModel>>,
@@ -344,14 +315,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
                     SubEventsWithDateItem(it.key, it.value, selectedTags, onSubEventClickListener)
                 )
             }
-//            it.value.forEach { event ->
-//                val idLong = event.id?.toLong()
-////                eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }
-////                    ?.notifyChanged(event)
-//
-//
-//            }
-
         }
 
     }
@@ -360,9 +323,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         showPlaceholder(getString(R.string.schedule_empty_event_placeholder), null)
     }
 
-    override fun showEmptyDayPlaceholder() {
-        showPlaceholder(getEmptyDayPlaceholderText(), getEmptyDayPlaceholderDescription())
-    }
 
     private fun showPlaceholder(title: String, description: String?) {
         eventsSection.update(
@@ -381,27 +341,10 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         findNavController().navigate(R.id.subevent_fragment, args)
     }
 
-    override fun updateSubevent(subEvent: EventActivityModel) {
+    override fun updateSubEvent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
         eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }
             ?.notifyChanged(subEvent)
-    }
-
-
-    override fun hideDataFormCacheMessage() {
-        //tvCacheData.visibility = View.GONE
-    }
-
-    override fun showAllTags() {
-        findNavController().navigate(
-            ActivitiesFragmentDirections.actionActivitiesFragmentToEventTagsFragment()
-                .setTags(presenter.getTagsList().toTypedArray())
-        )
-        //findNavController().navigate(R.id.event_tags_fragment, bundleOf("tags" to presenter.getTagsList()))
-    }
-
-    override fun hideCurrentDay() {
-        daySection.update(emptyList())
     }
 
     private fun getEmptyDayPlaceholderText(): String =
@@ -411,18 +354,12 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
         getString(R.string.schedule_my_empty_day_placeholder_description)
 
 
-    override fun provideSearchInterface(): SearchInterface {
-        return searchInterface
-    }
-
     override fun showDataFormCacheMessage(cacheDate: String) {
         //        tvCacheData.apply {
 //            text = String.format(getString(R.string.schedule_cache_data), cacheDate)
 //            visibility = VISIBLE
 //        }
     }
-
-    override fun hidePlaceholder() = Unit
 
     private fun initCollapseLabel() {
         activitiesAppBar.addOnOffsetChangedListener(
@@ -502,5 +439,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View, SearchInterf
     override fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int) {
         //daySection.update(listOf(DayHeaderItem(day.millis, daysSize != 1)))
     }
+
 
 }

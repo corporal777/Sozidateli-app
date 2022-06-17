@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingBottom="50dp"
+    android:layout_marginBottom="45dp"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -255,7 +255,7 @@
             <TextView
                 style="@style/Profile.Button"
                 android:id="@+id/tvLogout"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/profile_logout"
                 android:textColor="@color/profile_logout_text" />

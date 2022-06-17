@@ -1,6 +1,7 @@
 package com.example.ui.event.my.schedule
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +12,23 @@ import com.example.R
 import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
+import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.about.redesign.AboutEventPresenterNew
 import com.example.ui.event.activities.items.SearchActivityItem
+import com.example.ui.event.my.schedule.items.SubEventsWithHeaderGroup
 import com.example.ui.views.dialogs_new.CalendarBottomSheet
+import com.example.ui.views.dialogs_new.CalendarBottomSheetFragment
+import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import kotlinx.android.synthetic.main.fragment_activitys.*
 import kotlinx.android.synthetic.main.fragment_my_schedule_events.*
+import kotlinx.android.synthetic.main.fragment_my_schedule_events.activitiesAppBar
 import kotlinx.android.synthetic.main.fragment_my_schedule_events.calendarPager
 import setOnClickListener
 import javax.inject.Inject
@@ -32,7 +39,7 @@ class MyScheduleEventsFragment : BaseFragment(), MyScheduleEventsContract.View {
 
     private var mAppBarScrollValue = 0f
 
-    private var _binding : FragmentMyScheduleEventsBinding? = null
+    private var _binding: FragmentMyScheduleEventsBinding? = null
     private val mBinding get() = _binding!!
 
     @InjectPresenter
@@ -51,11 +58,23 @@ class MyScheduleEventsFragment : BaseFragment(), MyScheduleEventsContract.View {
     private val calendarSection = Section()
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
             add(searchSection)
             add(eventsSection)
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    mPresenter.onItemTake(position)
+                }
+            })
         }
     }
+
+//    private val groupAdapter by lazy {
+//        GroupAdapter<GroupieViewHolder>().apply {
+//            add(searchSection)
+//            add(eventsSection)
+//        }
+//    }
 
     private val calendarAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
@@ -89,6 +108,18 @@ class MyScheduleEventsFragment : BaseFragment(), MyScheduleEventsContract.View {
     }
 
     override fun setContent(data: List<EventNew?>) {
+        data.forEach {
+            var isFirstItem = true
+            val title = it?.name
+            val image = it?.image?.uri
+            val mSubEventsMap = it?.binds?.activity?.groupBy { event ->
+                event.holdingDate?.from?.split(" ")?.get(0) ?: ""
+            }
+            mSubEventsMap?.forEach {
+                eventsSection.add(SubEventsWithHeaderGroup(isFirstItem, title, image, it.key, it.value))
+                isFirstItem = false
+            }
+        }
     }
 
     override fun setHeaderAndCalendar(month: String, days: List<EventScheduleCalendarDay>?) {
@@ -114,7 +145,6 @@ class MyScheduleEventsFragment : BaseFragment(), MyScheduleEventsContract.View {
                 listDays.clear()
             }
         }
-
     }
 
     override fun setSearchBlock() {
@@ -126,8 +156,37 @@ class MyScheduleEventsFragment : BaseFragment(), MyScheduleEventsContract.View {
     }
 
 
-
     override fun showAboutEvent(event: String) {
+    }
+
+    override fun scrollToDay(day: EventScheduleCalendarDay) {
+        var mPosition = 0
+        Handler().post(Runnable {
+            selectDay(day)
+            val item =
+                calendarSection.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
+            if (item != null) {
+                mPosition = calendarSection.getPosition(item)
+                calendarPager?.setCurrentItem(mPosition, true)
+            }
+        })
+    }
+
+    override fun selectDay(
+        day: EventScheduleCalendarDay
+    ) {
+        for (i in 0 until calendarSection.itemCount) {
+            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
+            item.selectDay(day)
+        }
+        deselectAllExcept(day)
+    }
+
+    private fun deselectAllExcept(except: EventScheduleCalendarDay) {
+        for (i in 0 until calendarSection.itemCount) {
+            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
+            item.deselectAllExcept(except)
+        }
     }
 
     private fun initCollapseLabel() {

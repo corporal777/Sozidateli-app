@@ -33,8 +33,6 @@ class ActivitiesPresenter
 
     lateinit var userEvent: UserEvent
 
-    lateinit var searchInterface: SearchInterface
-
     protected var currentDay: EventScheduleCalendarDay? = null
     protected var tags: List<Tag> = emptyList()
     protected var mSearchWord = ""
@@ -43,8 +41,10 @@ class ActivitiesPresenter
     var daysSize = 0
     var canDoActions = false
 
+
     var firstAttach = true
     private lateinit var mFirstDay: EventScheduleCalendarDay
+    private lateinit var mLastDay: EventScheduleCalendarDay
 
     private var mStartEventDate = ""
     private var mEndEventDate = ""
@@ -99,7 +99,8 @@ class ActivitiesPresenter
         val calStart = mStartDate.calendar()
         val calEnd = mEndDate.calendar()
 
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        //val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         val maxDayStart = calStart.getActualMaximum(Calendar.DAY_OF_MONTH)
 
@@ -114,7 +115,7 @@ class ActivitiesPresenter
                     mStartDay -= getMonday(mDayOfWeek)
                     for (i in mStartDay until maxDayStart) {
                         calStart[Calendar.DAY_OF_MONTH] = i + 1
-                        mDates.add(df.format(calStart.time))
+                       mDates.add(df.format(calStart.time))
                     }
 
                 }
@@ -173,7 +174,7 @@ class ActivitiesPresenter
             for (i in 0 until maxDayEnd) {
                 calEnd[Calendar.DAY_OF_MONTH] = i + 1
                 if (!mDates.contains(df.format(calEnd.time)))
-                    mDates.add(df.format(calEnd.time))
+                   mDates.add(df.format(calEnd.time))
 
                 if (calEnd[Calendar.DAY_OF_MONTH] > mEndDay && calEnd.get(Calendar.DAY_OF_WEEK) == 1) {
                     break
@@ -185,7 +186,7 @@ class ActivitiesPresenter
                     for (k in 0 until currentDW) {
                         calNext[Calendar.DAY_OF_MONTH] = k + 1
                         if (!mDates.contains(df.format(calNext.time)))
-                            mDates.add(df.format(calNext.time))
+                           mDates.add(df.format(calNext.time))
                     }
                 }
             }
@@ -230,6 +231,7 @@ class ActivitiesPresenter
                     }
                 }
                 mFirstDay = mDays[0]
+                mLastDay = mDays.last()
 
                 mShortSubEventsMap = userEvent.activity.activities.groupBy { event ->
                     event.holdingDate?.from?.split(" ")?.get(0) ?: ""
@@ -297,71 +299,13 @@ class ActivitiesPresenter
 
 
     override fun onDaySelected(day: EventScheduleCalendarDay) {
-        var oldDay = currentDay
         currentDay = day
-        viewState.apply { selectDay(day) }
-        //invalidateDay()
-        updateSubEventsByDay(oldDay ?: return daySubEventsError())
-    }
-
-
-    private fun updateSubEventsByDay(oldDay: EventScheduleCalendarDay) {
-        val day = currentDay ?: return daySubEventsError()
-        val selectedTags = tags.filter { it.isSelected }
-        var mFilteredMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
-
-        var mSubEventAction: SubEventAction? = null
-
-        compositeDisposable += Completable.fromAction {
-            val map = mSubEventsMap.filter {
-                if (day.millis > oldDay.millis) {
-                    mSubEventAction = SubEventAction.DELETE
-                    defaultServerDateTimeFormatter.parse(it.key).time < day.millis.startOfDay()
-                } else {
-                    mSubEventAction = SubEventAction.ADD
-                    defaultServerDateTimeFormatter.parse(it.key).time >= day.millis.startOfDay()
-                            && defaultServerDateTimeFormatter.parse(it.key).time < oldDay.millis.startOfDay()
-                }
-            }
-
-            map.map { values ->
-                val mList = LinkedList<EventActivityModel>()
-                values.value.forEach { event ->
-                    val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
-                    mList.add(event)
-                    if (!mSearchWord.isNullOrEmpty()) {
-                        if (!isEventHasParams(mSearchWord, event)) {
-                            mList.remove(event)
-                            if (!mList.contains(emptyEvent) && mList.isNullOrEmpty()) {
-                                mList.add(emptyEvent)
-                            }
-                        }
-                    }
-                    if (!selectedTags.isNullOrEmpty()) {
-                        selectedTags.forEach { tag ->
-                            if (!filterTagsNew(event, tag)) {
-                                mList.remove(event)
-                                if (!mList.contains(emptyEvent) && mList.isNullOrEmpty()) {
-                                    mList.add(emptyEvent)
-                                }
-                            }
-                        }
-                    }
-                }
-                mFilteredMap[values.key] = mList
-            }
+        viewState.apply {
+            selectDay(day)
+            scrollContent(day)
         }
-
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.deleteOrAddSubEventsNew(
-                    mSubEventAction ?: SubEventAction.DELETE,
-                    mFilteredMap,
-                    selectedTags
-                )
-            }
+        //invalidateDay()
     }
-
 
     @SuppressLint("LogNotTimber")
     private fun updateSubEventsByTagOrText() {
@@ -371,18 +315,8 @@ class ActivitiesPresenter
         val mOnlySubEventsMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
 
         compositeDisposable += Completable.fromAction {
-
-
-            mShortSubEventsMap.map {
-                Log.e(it.key, it.value.size.toString())
-            }
-            mShortSubEventsMap.filter {
-                defaultServerDateFormatter.parse(it.key).time >= day.millis.startOfDay()
-            }.map { map ->
-                val mKey = defaultServerDateFormatter.parse(map.key).time
-                val mEventDate = defaultServerDateTimeFormatter.format(mKey)
+            mShortSubEventsMap.map { map ->
                 val mList = LinkedList<EventActivityModel>()
-
                 map.value.forEach { event ->
                     mList.add(event)
                     val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
@@ -405,7 +339,7 @@ class ActivitiesPresenter
                         }
                     }
                 }
-                mOnlySubEventsMap.put(mEventDate, mList)
+                mOnlySubEventsMap.put(map.key, mList)
             }
         }
             .performOnBackgroundOutOnMain()
@@ -424,21 +358,12 @@ class ActivitiesPresenter
 
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
-        var mFilteredMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
+        var mFilteredMap = mSubEventsMap
 
-        compositeDisposable += Completable.fromAction {
-            mFilteredMap = mSubEventsMap.filter {
-                defaultServerDateTimeFormatter.parse(it.key).time >= day.millis.startOfDay()
-            } as MutableMap<String, LinkedList<EventActivityModel>>
+        viewState.apply {
+            Log.e("ActivitiesFragment", "Events: " + mFilteredMap.size)
+            setSubEvents(day, mFilteredMap, selectedTags)
         }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onComplete = {
-                    viewState.apply {
-                        Log.e("ActivitiesFragment", "Events: " + mFilteredMap.size)
-                        setSubEvents(mFilteredMap, selectedTags)
-                    }
-                })
     }
 
 
@@ -491,14 +416,13 @@ class ActivitiesPresenter
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             //.withLoadingDialog(viewState)
-            .subscribeSimple { viewState.updateSubevent(subEvent) }
+            .subscribeSimple { viewState.updateSubEvent(subEvent) }
     }
 
 
     private fun daySubEventsError() {
         viewState.apply {
             Log.e("ActivitiesFragment", "Activities Date error")
-            hideCurrentDay()
             showEmptyEventPlaceholder()
         }
     }
@@ -567,7 +491,8 @@ class ActivitiesPresenter
         return isHas
     }
 
-    override fun onShowAllTagsClick() = viewState.showAllTags()
+    override fun onShowAllTagsClick() {
+    }
 
     private fun getMonday(day: Int): Int {
         var mDay = 0
@@ -584,12 +509,16 @@ class ActivitiesPresenter
         .map { NewTags(it.id, it.name, it.isSelected) }
 
 
-    enum class SubEventAction {
-        DELETE, ADD, UPDATE, NONE
-    }
-
     fun getFirstDay(): EventScheduleCalendarDay {
         return mFirstDay
+    }
+
+    fun getLastDay() :EventScheduleCalendarDay {
+        return mLastDay
+    }
+
+    fun getCurrentDay(day: EventScheduleCalendarDay): EventScheduleCalendarDay{
+        return day
     }
 
 }

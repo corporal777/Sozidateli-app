@@ -1,11 +1,15 @@
 package com.example.util
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.util.Log
+import android.os.Build
+import android.provider.Settings
+import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
@@ -195,4 +199,38 @@ fun getMonthName(month: Int): String {
         "Декабрь"
     )
     return monthNames[month]
+}
+
+@SuppressLint("HardwareIds")
+fun getDeviceId(context : Context): String {
+    return Settings.Secure.getString(context.contentResolver,
+        Settings.Secure.ANDROID_ID)
+}
+
+fun getDeviceName(): String {
+    val manufacturer: String = Build.MANUFACTURER
+    val model: String = Build.MODEL
+    return if (model.startsWith(manufacturer)) {
+        capitalize(model)
+    } else capitalize(manufacturer) + " " + model
+}
+
+private fun capitalize(str: String): String {
+    if (TextUtils.isEmpty(str)) {
+        return str
+    }
+    val arr = str.toCharArray()
+    var capitalizeNext = true
+    var phrase = ""
+    for (c in arr) {
+        if (capitalizeNext && Character.isLetter(c)) {
+            phrase += Character.toUpperCase(c)
+            capitalizeNext = false
+            continue
+        } else if (Character.isWhitespace(c)) {
+            capitalizeNext = true
+        }
+        phrase += c
+    }
+    return phrase
 }

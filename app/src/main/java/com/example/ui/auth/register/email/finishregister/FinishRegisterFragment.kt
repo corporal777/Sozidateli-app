@@ -25,6 +25,8 @@ import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog.Companion.CODE_SIZE
 import com.example.util.ClickableSpan
 import com.example.util.Utils.timerFormatter
+import com.example.util.getDeviceId
+import com.example.util.getDeviceName
 import com.example.util.initSwitch
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnResend
@@ -85,6 +87,8 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
                 (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                 presenter.getData()
             } else presenter.startTimer()
+            presenter.deviceId = getDeviceId(requireContext())
+            presenter.deviceModel = getDeviceName()
         }
     }
 

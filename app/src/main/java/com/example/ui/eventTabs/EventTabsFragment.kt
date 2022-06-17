@@ -48,7 +48,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
     }
 
     @InjectPresenter
-    lateinit var presenter: EventTabsPresenter
+    lateinit var mPresenter: EventTabsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<EventTabsPresenter>
@@ -60,7 +60,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     private val bottomNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
-            presenter.apply {
+            mPresenter.apply {
                 when (it.itemId) {
                     R.id.tab_event_my_schedule -> onMyScheduleTabSelected()
                     R.id.tab_event_schedule -> onScheduleTabSelected()
@@ -87,7 +87,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
             bottomNavigation.apply {
                 val itemLocation = menu.findItem(R.id.event_location)
                 itemLocation.isVisible =
-                    !presenter.userEvent.eventInfo.event.address?.fullValue.isNullOrBlank()
+                    !mPresenter.userEvent.eventInfo.event.address?.fullValue.isNullOrBlank()
                 setOnNavigationItemSelectedListener(null)
                 selectedItemId = tabId
                 setOnNavigationItemSelectedListener(bottomNavigationItemSelectedListener)
@@ -97,7 +97,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            presenter.onHandleBackCLick()
+            mPresenter.onHandleBackCLick()
         }
     }
 
@@ -204,13 +204,13 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         toolbarContentActionBar.apply {
             addRightView(AccountView(requireContext()).also {
                 it.canShowBadge = false
-                it.setOnClickListener { presenter.onMenuAccountClick() }
+                it.setOnClickListener { mPresenter.onMenuAccountClick() }
             })
             addRightView(ChatView(requireContext()).also {
-                it.setOnClickListener { presenter.onMenuChatClick() }
+                it.setOnClickListener { mPresenter.onMenuChatClick() }
             })
             addRightView(NotificationsView(requireContext()).also {
-                it.setOnClickListener { presenter.onMenuNotificationsClick() }
+                it.setOnClickListener { mPresenter.onMenuNotificationsClick() }
             })
         }
     }
@@ -223,7 +223,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
                         .apply {
                             this.btnAction.text = getString(R.string.no_internet_action_to_calendar)
                             this.btnAction.setOnClickListener {
-                                presenter.onMyScheduleTabSelected()
+                                mPresenter.onMyScheduleTabSelected()
                             }
                         }
                 setContentView(layout)

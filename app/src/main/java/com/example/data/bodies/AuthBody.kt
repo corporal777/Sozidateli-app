@@ -3,7 +3,8 @@ package com.example.data.bodies
 data class AuthBody(
         var login: LoginModel,
         var password: LoginModel,
-        var deviceId : String = ""
+        var deviceId : String = "",
+        var deviceModel : String = ""
 )
 
 data class LoginModel(
