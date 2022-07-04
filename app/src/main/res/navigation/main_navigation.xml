@@ -17,8 +17,8 @@
 
         <argument
             android:name="showFinishRegister"
-            app:argType="boolean"
-            android:defaultValue="false"/>
+            android:defaultValue="false"
+            app:argType="boolean" />
 
         <action
             android:id="@+id/login_to_login_email_action"
@@ -42,7 +42,7 @@
 
         <action
             android:id="@+id/login_to_mail"
-            app:destination="@+id/recommendations_fragment"/>
+            app:destination="@+id/recommendations_fragment" />
 
         <action
             android:id="@+id/login_to_register_email_action"
@@ -64,13 +64,13 @@
             app:destination="@id/recovery_password_fragment" />
         <argument
             android:name="isRegistered"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
 
         <argument
             android:name="inviteId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -113,7 +113,7 @@
         <action
             android:id="@+id/action_register_email_fragment_to_authorization_fragment"
             app:destination="@id/authorization_fragment"
-            app:popUpTo="@id/authorization_fragment"/>
+            app:popUpTo="@id/authorization_fragment" />
     </fragment>
 
     <fragment
@@ -128,7 +128,7 @@
         <action
             android:id="@+id/invite_register_to_mail"
             app:destination="@+id/recommendations_fragment"
-            app:popUpTo="@id/main_navigation"/>
+            app:popUpTo="@id/main_navigation" />
 
         <argument
             android:name="code"
@@ -156,12 +156,12 @@
             app:nullable="false" />
         <argument
             android:name="invite"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
             android:id="@+id/action_to_invite_register_to_login_fragment"
             app:destination="@id/login_fragment"
-            app:popUpTo="@id/main_navigation"/>
+            app:popUpTo="@id/main_navigation" />
 
     </fragment>
 
@@ -173,7 +173,7 @@
         <action
             android:id="@+id/register_to_mail"
             app:destination="@+id/recommendations_fragment"
-            app:popUpTo="@id/main_navigation"/>
+            app:popUpTo="@id/main_navigation" />
 
         <action
             android:id="@+id/email_register_to_phone_confirm_fragment"
@@ -211,18 +211,18 @@
 
         <argument
             android:name="isConfirmed"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
 
         <argument
             android:name="nameEdited"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
 
         <argument
             android:name="isNoMiddleName"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
 
     </fragment>
 
@@ -233,7 +233,7 @@
 
         <action
             android:id="@+id/register_to_finish_register"
-            app:destination="@id/register_email_finish_fragment"/>
+            app:destination="@id/register_email_finish_fragment" />
 
         <action
             android:id="@+id/email_register_to_email_confirm"
@@ -296,9 +296,9 @@
 
         <action
             android:id="@+id/email_confirm_to_finish_register"
-            app:destination="@id/register_email_finish_fragment"/>
-            <!--app:popUpTo="@id/register_sn_fragment"
-            app:popUpToInclusive="true" />-->
+            app:destination="@id/register_email_finish_fragment" />
+        <!--app:popUpTo="@id/register_sn_fragment"
+        app:popUpToInclusive="true" />-->
 
     </fragment>
 
@@ -344,7 +344,7 @@
             app:destination="@id/notifications_fragment" />
         <argument
             android:name="isOpenProfile"
-            app:argType="boolean"/>
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -384,8 +384,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"
-             />
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
     </fragment>
 
     <fragment
@@ -456,13 +455,13 @@
     </activity>
 
     <fragment
-        android:id="@+id/subevent_fragment"
-        android:name="com.example.ui.subevent.SubeventFragment">
+        android:id="@+id/subEvent_fragment"
+        android:name="com.example.ui.subevent.SubEventFragment">
         <argument
             android:name="eventId"
             app:argType="string" />
         <argument
-            android:name="subeventId"
+            android:name="subEventId"
             app:argType="string" />
 
         <action
@@ -471,7 +470,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
     </fragment>
 
     <fragment
@@ -500,7 +499,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/profile_to_my_events"
@@ -508,7 +507,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/profile_to_about"
@@ -516,7 +515,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/profile_to_user_profile"
@@ -524,7 +523,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/profile_to_favorite"
@@ -545,7 +544,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <argument
             android:name="isShowPopup"
@@ -557,7 +556,7 @@
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/action_profile_fragment_to_mainInfoFragment"
@@ -746,7 +745,6 @@
     </fragment>
 
 
-
     <fragment
         android:id="@+id/user_profile_main_data_fragment"
         android:name="com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment"
@@ -910,6 +908,11 @@
         <action
             android:id="@+id/qr_scanner_to_about_event_fragment"
             app:destination="@id/about_event_fragment" />
+
+        <action
+            android:id="@+id/qr_scanner_to_about_event_fragment_new"
+            app:destination="@id/about_event_fragment_new" />
+
     </fragment>
 
     <fragment
@@ -936,7 +939,7 @@
             app:nullable="false" />
         <argument
             android:name="screenType"
-            app:argType="integer"/>
+            app:argType="integer" />
         <action
             android:id="@+id/action_about_event_fragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
@@ -945,7 +948,7 @@
 
     <fragment
         android:id="@+id/speakers_list_fragment"
-        android:name="com.example.ui.event.speakers.EventSpeakersFragment"
+        android:name="com.example.ui.event.speakers.list.EventSpeakersFragment"
         android:label="@string/speakers">
         <action
             android:id="@+id/action_event_speaker_fragment_to_userSpeakerFragment"
@@ -1059,12 +1062,12 @@
 
     <fragment
         android:id="@+id/event_tags_fragment"
-        android:name="com.example.ui.tags.TagsFragment" >
+        android:name="com.example.ui.tags.TagsFragment">
         <argument
             android:name="tags"
+            android:defaultValue="@null"
             app:argType="com.example.data.models.NewTags[]"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -1080,7 +1083,7 @@
 
         <action
             android:id="@+id/favorite_subevents_fragment_to_subevent_fragment"
-            app:destination="@id/subevent_fragment" />
+            app:destination="@id/subEvent_fragment" />
     </fragment>
 
     <fragment
@@ -1096,7 +1099,7 @@
             android:id="@+id/password_confirm_to_phone_confirm"
             app:destination="@+id/phone_confirm_fragment"
             app:popUpTo="@id/password_confirm_fragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -1119,7 +1122,7 @@
     <fragment
         android:id="@+id/userStateFragment"
         android:name="com.example.ui.state.UserStateFragment"
-        android:label="UserStateFragment" >
+        android:label="UserStateFragment">
         <action
             android:id="@+id/action_userStateFragment_to_mainInfoFragment"
             app:destination="@id/mainInfoFragment" />
@@ -1140,15 +1143,15 @@
     <fragment
         android:id="@+id/mainInfoFragment"
         android:name="com.example.ui.state.base.MainInfoFragment"
-        android:label="MainInfoFragment" >
+        android:label="MainInfoFragment">
         <argument
             android:name="type"
-            app:argType="com.example.ui.state.UserState"
-            android:defaultValue="BASE" />
+            android:defaultValue="BASE"
+            app:argType="com.example.ui.state.UserState" />
         <argument
             android:name="screen"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:defaultValue="1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_mainInfoFragment_to_baseStateInterestsFragment"
             app:destination="@id/baseStateInterestsFragment" />
@@ -1168,12 +1171,12 @@
     <fragment
         android:id="@+id/baseStateInterestsFragment"
         android:name="com.example.ui.state.max.interests.BaseStateInterestsFragment"
-        android:label="BaseStateInterestsFragment" >
+        android:label="BaseStateInterestsFragment">
 
         <argument
             android:name="screen"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:defaultValue="1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_baseStateInterestsFragment_to_maxStateMainInfoFragment"
             app:destination="@id/maxStateMainInfoFragment" />
@@ -1187,11 +1190,11 @@
     <fragment
         android:id="@+id/maxStateMainInfoFragment"
         android:name="com.example.ui.state.max.MaxStateMainInfoFragment"
-        android:label="MaxStateMainInfoFragment" >
+        android:label="MaxStateMainInfoFragment">
         <argument
             android:name="screen"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:defaultValue="1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_maxStateMainInfoFragment_to_baseStateInterestsFragment"
             app:destination="@id/baseStateInterestsFragment" />
@@ -1209,8 +1212,8 @@
 
         <argument
             android:name="screen"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:defaultValue="1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_maxStateWorkFragment_to_maxStateEducationFragment"
             app:destination="@id/maxStateEducationFragment" />
@@ -1224,8 +1227,8 @@
 
         <argument
             android:name="screen"
-            app:argType="integer"
-            android:defaultValue="1" />
+            android:defaultValue="1"
+            app:argType="integer" />
 
     </fragment>
     <fragment
@@ -1238,9 +1241,9 @@
             app:argType="integer" />
         <argument
             android:name="tags"
+            android:defaultValue="@null"
             app:argType="com.example.data.models.NewTags[]"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
 
         <action
             android:id="@+id/action_activitiesFragment_to_allActivitiesFragment"
@@ -1263,13 +1266,13 @@
         android:id="@+id/editWorksFragment"
         android:name="com.example.ui.editwork.EditWorksFragment"
         android:label="EditWorksFragment"
-        tools:layout="@layout/fragment_edit_work_fragment"/>
+        tools:layout="@layout/fragment_edit_work_fragment" />
 
     <fragment
         android:id="@+id/editEducationFragment"
         android:name="com.example.ui.editeducation.EditEducationFragment"
         android:label="EditEducationFragment"
-        tools:layout="@layout/fragment_edit_education_fragment"/>
+        tools:layout="@layout/fragment_edit_education_fragment" />
 
     <fragment
         android:id="@+id/qrScannerToAuthWebSiteFragment"
@@ -1296,12 +1299,16 @@
 
     <fragment
         android:id="@+id/user_speaker_fragment"
-        android:name="com.example.ui.event.speakers.UserSpeakerFragment"
+        android:name="com.example.ui.event.speakers.member.UserSpeakerFragment"
         tools:layout="@layout/fragment_user_speaker">
         <action
             android:id="@+id/user_to_chat"
             app:destination="@id/chat_fragment"
             app:launchSingleTop="true" />
+
+        <action
+            android:id="@+id/speaker_to_user"
+            app:destination="@id/user_fragment" />
 
         <argument
             android:name="userId"

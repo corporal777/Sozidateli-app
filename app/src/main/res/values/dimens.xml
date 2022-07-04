@@ -3,6 +3,20 @@
     <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
 
+
+    <!--  new margins  -->
+    <dimen name="padding_text_view_calendar">4dp</dimen>
+    <dimen name="event_added_to_favorite_dialog_size">180dp</dimen>
+    <dimen name="event_added_to_favorite_dialog_icon_size">55dp</dimen>
+
+    <dimen name="margin_top_sub_events_fragment">15dp</dimen>
+    <dimen name="margin_start_sub_events_fragment">20dp</dimen>
+
+
+    <dimen name="sub_event_description_text_size">13sp</dimen>
+    <dimen name="sub_event_description_show_more_text_size">15sp</dimen>
+    <!--  new margins  -->
+
     <dimen name="auth_logo_margin_top">24dp</dimen>
     <dimen name="auth_logo_height">40dp</dimen>
     <dimen name="auth_button_min_height">48dp</dimen>
@@ -114,4 +128,7 @@
     <dimen name="margin_twenty">20dp</dimen>
     <dimen name="margin_thirty">30dp</dimen>
     <dimen name="margin_forty">30dp</dimen>
+
+    <dimen name="default_blur_dialog_title_size">10sp</dimen>
+    <dimen name="default_blur_dialog_corner_radius">15dp</dimen>
 </resources>

@@ -3,8 +3,10 @@ package com.example.util
 import android.util.Log
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.longToDate
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 
 fun validateEndDate(mStart: String?, mFinish: String?): Boolean {
@@ -42,6 +44,7 @@ fun formatDateYear(date: Date): String {
 }
 
 fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> {
+    val timeLong = System.currentTimeMillis()
     val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val mDates = arrayListOf<String>()
     val mEventStartDate = defaultServerDateFormatter.parse(startDate).time
@@ -53,11 +56,11 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
     if (mDayOfWeek != 2) {
         val mCalOfMonday = Calendar.getInstance()
         mCalOfMonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        mCalOfMonday.set(Calendar.DAY_OF_WEEK_IN_MONTH, mWeekOfMonth)
+        //mCalOfMonday.set(Calendar.DAY_OF_WEEK_IN_MONTH, mWeekOfMonth)
+        mCalOfMonday.set(Calendar.WEEK_OF_MONTH, mWeekOfMonth)
         mCalOfMonday.set(Calendar.MONTH, mCalStartEvent.get(Calendar.MONTH))
         mCalOfMonday.set(Calendar.YEAR, mCalStartEvent.get(Calendar.YEAR))
 
-        Log.e("DAY", mCalOfMonday.get(Calendar.DATE).toString())
         if (mCalOfMonday.get(Calendar.MONTH) == mCalStartEvent.get(Calendar.MONTH)) {
             if (mCalOfMonday.get(Calendar.DATE) > mCalStartEvent.get(Calendar.DATE)) {
                 val day = mCalOfMonday.get(Calendar.DATE)
@@ -70,7 +73,9 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
                     diff = maxDay - diff
                     for (i in diff - 1 until maxDay) {
                         prevCal[Calendar.DAY_OF_MONTH] = i + 1
-                        mDates.add(df.format(prevCal.time))
+                        if (!mDates.contains(df.format(prevCal.time))) {
+                            mDates.add(df.format(prevCal.time))
+                        }
                     }
                 } else {
                     mStartDay = mCalOfMonday.get(Calendar.DATE) - 7
@@ -79,11 +84,11 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
             } else {
                 mStartDay = mCalOfMonday.get(Calendar.DATE) - 1
             }
-        } else {
+        } else if (mCalOfMonday.get(Calendar.MONTH) < mCalStartEvent.get(Calendar.MONTH)) {
             mStartDay = 0
-            val prevMaxDays = mCalOfMonday.getActualMaximum(Calendar.DAY_OF_MONTH)
-            val beginPrevDays = mCalOfMonday.get(Calendar.DAY_OF_MONTH) - 1
-            for (i in beginPrevDays until prevMaxDays) {
+            val mMaxDays = mCalOfMonday.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val day = mCalOfMonday.get(Calendar.DATE) - 1
+            for (i in day until mMaxDays) {
                 mCalOfMonday[Calendar.DAY_OF_MONTH] = i + 1
                 mDates.add(df.format(mCalOfMonday.time))
             }
@@ -117,14 +122,12 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
             cal.set(Calendar.YEAR, mCalStartEvent.get(Calendar.YEAR))
             cal.set(Calendar.MONTH, i + 1)
             val maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
-            Log.e("MONTH", cal.get(Calendar.MONTH).toString())
             (0 until maxDay).forEach { k ->
                 cal[Calendar.DAY_OF_MONTH] = k + 1
                 if (!mDates.contains(df.format(cal.time))) {
                     mDates.add(df.format(cal.time))
                 }
             }
-            cal.clear()
         }
 
     }
@@ -137,7 +140,6 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
         mCalOfSunday.set(Calendar.DAY_OF_WEEK_IN_MONTH, mWeekOfMonthEnd)
         mCalOfSunday.set(Calendar.MONTH, mCalEndEvent.get(Calendar.MONTH))
         mCalOfSunday.set(Calendar.YEAR, mCalEndEvent.get(Calendar.YEAR))
-        Log.e("SUNDAY", mCalOfSunday.get(Calendar.DAY_OF_MONTH).toString())
 
         if (mCalOfSunday.get(Calendar.MONTH) == mCalEndEvent.get(Calendar.MONTH)) {
             mEndDay = mCalOfSunday.get(Calendar.DATE)
@@ -174,8 +176,70 @@ fun getDaysFromMondayToSunday(startDate: String, endDate: String): List<String> 
             }
         }
     }
-    mDates.forEach {
-        Log.e("DATE", it)
+    Log.e("TIME OF FUNC", (System.currentTimeMillis() - timeLong).toString())
+    return mDates
+}
+
+fun getDaysFromDateToDate(startDate: String, endDate: String): ArrayList<String> {
+    val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val mDates = arrayListOf<String>()
+
+    val mStartDate = defaultServerDateFormatter.parse(startDate).time
+    val mEndDate = defaultServerDateFormatter.parse(endDate).time
+
+    for (i in mStartDate..mEndDate step 86400000) {
+        val cal = i.calendar()
+        val mDate = df.format(cal.time)
+        if (!mDates.contains(mDate)) {
+            mDates.add(mDate)
+        }
     }
     return mDates
+}
+
+fun getDaysFromMondayToSundayNew(startDate: String, endDate: String): ArrayList<String> {
+    val timeLong = System.currentTimeMillis()
+    val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val mDates = arrayListOf<String>()
+    val mCalStartEvent = defaultServerDateFormatter.parse(startDate).time.calendar()
+    val mWeekOfMonthStart = mCalStartEvent.get(Calendar.WEEK_OF_MONTH)
+    val mStartDayOfWeek = mCalStartEvent.get(Calendar.DAY_OF_WEEK)
+
+    val mCalEndEvent = defaultServerDateFormatter.parse(endDate).time.calendar()
+    val mWeekOfMonthEnd = mCalEndEvent.get(Calendar.WEEK_OF_MONTH)
+    val mEndDayOfWeek = mCalEndEvent.get(Calendar.DAY_OF_WEEK)
+
+    var mStartDate = defaultServerDateFormatter.parse(startDate).time
+    var mEndDate = defaultServerDateFormatter.parse(endDate).time
+
+    if (mStartDayOfWeek != 2) {
+        val mCalOfMonday = Calendar.getInstance()
+        mCalOfMonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        mCalOfMonday.set(Calendar.WEEK_OF_MONTH, mWeekOfMonthStart)
+        mCalOfMonday.set(Calendar.MONTH, mCalStartEvent.get(Calendar.MONTH))
+        mCalOfMonday.set(Calendar.YEAR, mCalStartEvent.get(Calendar.YEAR))
+        mStartDate = mCalOfMonday.timeInMillis
+    }
+    if (mEndDayOfWeek != 1) {
+        val mCalOfSunday = Calendar.getInstance()
+        mCalOfSunday.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+        mCalOfSunday.set(Calendar.DAY_OF_WEEK_IN_MONTH, mWeekOfMonthEnd)
+        mCalOfSunday.set(Calendar.MONTH, mCalEndEvent.get(Calendar.MONTH))
+        mCalOfSunday.set(Calendar.YEAR, mCalEndEvent.get(Calendar.YEAR))
+
+        if (mCalOfSunday.timeInMillis < mCalEndEvent.timeInMillis) {
+            mCalOfSunday.set(Calendar.DATE, mCalOfSunday.get(Calendar.DATE) + 7)
+        }
+        mEndDate = mCalOfSunday.timeInMillis
+    }
+
+    for (i in mStartDate..mEndDate step 86400000) {
+        val cal = i.calendar()
+        val mDate = df.format(cal.time)
+        if (!mDates.contains(mDate)) {
+            mDates.add(mDate)
+        }
+    }
+    return mDates
+
 }

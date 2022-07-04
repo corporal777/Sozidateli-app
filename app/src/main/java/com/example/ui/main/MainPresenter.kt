@@ -47,18 +47,18 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter
 @Inject constructor(
-        private val userEventData: UserEventData,
-        private val chatHelper: ChatHelper,
-        private val authRepository: AuthRepository,
-        private val userRepository: UserRepository,
-        private val appData: AppData,
-        private val chatRepository: ChatRepository,
-        private val locationProviderClient: FusedLocationProviderClient,
-        private val rxPermissions: RxPermissions,
-        private val notificationManager: NotificationManager,
-        private val connectivityProvider: ConnectivityProvider,
-        private val eventRepository: EventRepository,
-        private val socket: SocketIOManager
+    private val userEventData: UserEventData,
+    private val chatHelper: ChatHelper,
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
+    private val appData: AppData,
+    private val chatRepository: ChatRepository,
+    private val locationProviderClient: FusedLocationProviderClient,
+    private val rxPermissions: RxPermissions,
+    private val notificationManager: NotificationManager,
+    private val connectivityProvider: ConnectivityProvider,
+    private val eventRepository: EventRepository,
+    private val socket: SocketIOManager
 ) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
 
     private var isRegister = false
@@ -81,18 +81,19 @@ class MainPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         if (!appData.isStoriesShown) {
+            //viewState.setStartDestinationRecommendationsFragment()
             viewState.showStories()
         } else {
             onStoriesComplete()
         }
 
         compositeDisposable += appData.notificationsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.showBadge(it > 0)
-                }, {
-                    viewState.showBadge(false)
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.showBadge(it > 0)
+            }, {
+                viewState.showBadge(false)
+            })
 
     }
 
@@ -103,151 +104,109 @@ class MainPresenter
 
     private fun subscribeToTokenUpdates() {
         compositeDisposable += appData.tokenChangeSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe { token ->
-                    unsubscribeChat()
-                    if (token.value == null) {
-                        isAuthRequired = true
-                        viewState.apply {
-                            showLogin()
-                            checkIntent()
-                        }
-                    } else {
-                        if (!isRegister) loadUser()
+            .performOnBackgroundOutOnMain()
+            .subscribe { token ->
+                unsubscribeChat()
+                if (token.value == null) {
+                    isAuthRequired = true
+                    viewState.apply {
+                        showLogin()
+                        //setStartDestinationAuthFragment()
+                        checkIntent()
                     }
+                } else {
+                    if (!isRegister) loadUser()
                 }
+            }
     }
 
     var isEditingPhone = false
     private fun loadUser() {
-        /*if (isAuthRequired) viewState.showLoadingDialog()
-        val loadUser = userRepository.getUserShort()
-                .doOnSuccess { inappList = LinkedList(it.inapps) }
-                .ignoreElement()
+        if (isAuthRequired) viewState.showLoadingDialog()
+        val inApp = userRepository.getInAppList(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 50,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )
+        ).doOnSuccess { inappList = LinkedList(it) }
+            .ignoreElement()
+
+        val loadUser = userRepository.getUserShortNew()
+            //.doOnSuccess { inappList = LinkedList(it.inapps) }
+            .ignoreElement()
         val loadCalendar = checkUserLocation()
-        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar))
-                .andThen(Completable.defer { checkInternetConnected() })
-                .andThen(subscribeToNotifications())
-                .doOnComplete { connectToSocket(appData.getUser().user_id) }
-                .andThen(Completable.defer { checkShowGreetings() })
-                .andThen(Maybe.defer { checkUserEvent() })
-                .performOnBackgroundOutOnMain()
-                .subscribe({ isMustShowEvent ->
+        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar, inApp))
+            .andThen(Completable.defer { checkInternetConnected() })
+            .andThen(subscribeToNotifications())
+            .doOnComplete { connectToSocket(appData.getId()) }
+            .andThen(Completable.defer { checkShowGreetings() })
+            .andThen(Maybe.defer { checkUserEvent() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({ isMustShowEvent ->
+                if (!isEditingPhone) {
                     viewState.apply {
                         hideLoadingDialog()
-                        if (isMustShowEvent) showEvent()
-                        else showRecommendations()
+                        if (isMustShowEvent) {
+                            showEvent()
+                        } else {
+                            if (!isFromQr) {
+                                //setStartDestinationRecommendationsFragment()
+                                showRecommendations()
+                            } else {
+                                if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
+                                    showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
+                                    isFromQr = false
+                                }
+                            }
+
+                        }
                         checkIntent()
                         showNextInapp()
                     }
 
                     initInternetConnectionCheck()
+                }
+                isEditingPhone = false
 //                    AuthBackground.clear()
-                }, {
-                    it.printStackTrace()
-                    isAuthRequired = true
-                    viewState.apply {
-                        hideLoadingDialog()
-                        showLogin()
-                        checkIntent()
-                    }
-                    initInternetConnectionCheck()
-                })*/
-        if (isAuthRequired) viewState.showLoadingDialog()
-        val inApp = userRepository.getInAppList(
-                mapOf(
-                        NotificationModel.NOTIFICATION_LIMIT to 50,
-                        NotificationModel.NOTIFICATION_USER to appData.getId(),
-                        NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                        NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-                )
-        ).doOnSuccess { inappList = LinkedList(it) }
-                .ignoreElement()
-        /*.performOnBackgroundOutOnMain()
-        .subscribe({
-            appData.notificationsCount = it
-            chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({ nCount ->
-                        appData.notificationsCount = nCount
-                    }, {})
-        }, {
-            it.printStackTrace()
-            appData.notificationsCount = 0
-        })*/
-        val loadUser = userRepository.getUserShortNew()
-                //.doOnSuccess { inappList = LinkedList(it.inapps) }
-                .ignoreElement()
-        val loadCalendar = checkUserLocation()
-        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar, inApp))
-                .andThen(Completable.defer { checkInternetConnected() })
-                .andThen(subscribeToNotifications())
-                .doOnComplete { connectToSocket(appData.getId()) }
-                .andThen(Completable.defer { checkShowGreetings() })
-                .andThen(Maybe.defer { checkUserEvent() })
-                .performOnBackgroundOutOnMain()
-                .subscribe({ isMustShowEvent ->
-                    if (!isEditingPhone) {
-                        viewState.apply {
-                            hideLoadingDialog()
-                            if (isMustShowEvent) {
-                                showEvent()
-                            } else {
-                                if (!isFromQr){
-                                    showRecommendations()
-                                }else {
-                                    if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
-                                        showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
-                                        isFromQr = false
-                                    }
-                                }
-
-                            }
-                            checkIntent()
-                            showNextInapp()
-                        }
-
-                        initInternetConnectionCheck()
-                    }
-                    isEditingPhone = false
-//                    AuthBackground.clear()
-                }, {
-                    it.printStackTrace()
-                    isAuthRequired = true
-                    viewState.apply {
-                        hideLoadingDialog()
-                        showLogin()
-                        checkIntent()
-                    }
-                    initInternetConnectionCheck()
-                })
+            }, {
+                it.printStackTrace()
+                isAuthRequired = true
+                viewState.apply {
+                    hideLoadingDialog()
+                    showLogin()
+                    checkIntent()
+                }
+                initInternetConnectionCheck()
+            })
     }
 
     private fun initInternetConnectionCheck() {
         compositeDisposable += connectivityProvider.observeNetworkConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    isInternetConnected = it
-                    checkInternetConnection()
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                isInternetConnected = it
+                checkInternetConnection()
+            }, {
+                it.printStackTrace()
+            })
     }
 
     private fun checkInternetConnected(): Completable {
         return Completable.create { emitter ->
             val connection = connectivityProvider.observeNetworkConnectivity()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        isInternetConnected = it
-                        if (it || appData.getUser().default_event != null) {
-                            if (!emitter.isDisposed) emitter.onComplete()
-                        } else {
-                            checkInternetConnection()
-                        }
-                    }, {
-                        if (!emitter.isDisposed) emitter.onError(it)
-                    })
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    isInternetConnected = it
+                    if (it || appData.getUser().default_event != null) {
+                        if (!emitter.isDisposed) emitter.onComplete()
+                    } else {
+                        checkInternetConnection()
+                    }
+                }, {
+                    if (!emitter.isDisposed) emitter.onError(it)
+                })
 
             emitter.setDisposable(connection)
         }
@@ -264,8 +223,8 @@ class MainPresenter
                     }
                 }
             }
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
         } else {
             Completable.complete()
         }
@@ -274,8 +233,8 @@ class MainPresenter
     private fun checkUserEvent(): Maybe<Boolean> {
         return appData.defaultEvent?.let { event ->
             userEventData.load(event.toString())
-                    .andThen(Maybe.just(true))
-                    .onErrorReturn { false }
+                .andThen(Maybe.just(true))
+                .onErrorReturn { false }
         } ?: Maybe.just(false)
         /*return appData.getUser().default_event?.let { event ->
             userEventData.load(event.id)
@@ -313,92 +272,92 @@ class MainPresenter
                 .onErrorComplete()*/
 
         return eventRepository.getUserCalendarEvent(EventCalendarBody.CALENDAR_EVENT)
-                .flatMapObservable { Observable.fromIterable(it.data) }
-                .filter { calendar ->
-                    val now = System.currentTimeMillis() / 1000
-                    appData.defaultEvent = calendar.entity?.id
-                    serverDateToMilliseconds(
-                            calendar.date?.to ?: "",
+            .flatMapObservable { Observable.fromIterable(it.data) }
+            .filter { calendar ->
+                val now = System.currentTimeMillis() / 1000
+                appData.defaultEvent = calendar.entity?.id
+                serverDateToMilliseconds(
+                    calendar.date?.to ?: "",
+                    DATE_FORMAT_SERVER_TIMESTAMP
+                ) > now &&
+                        serverDateToMilliseconds(
+                            calendar.date?.from ?: "",
                             DATE_FORMAT_SERVER_TIMESTAMP
-                    ) > now &&
-                            serverDateToMilliseconds(
-                                    calendar.date?.from ?: "",
-                                    DATE_FORMAT_SERVER_TIMESTAMP
-                            ) <= now
+                        ) <= now
+            }
+            .toList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMapMaybe { calendar ->
+                if (calendar.isEmpty()) Maybe.empty()
+                else getLocation()
+                    .timeout(5, TimeUnit.SECONDS)
+                    .map { calendar to it }
+            }
+            .observeOn(Schedulers.io())
+            //.flatMapCompletable { Completable.complete() }
+            //.onErrorComplete()
+            .flatMapCompletable {
+                val calendar = it.first
+                val location = it.second
+                val ids = calendar.map { calendarItem -> calendarItem.id }
+                val atEvents = calendar.map { calendarItem ->
+                    checkUserLocationInEventArea(
+                        location, /*calendarItem.address?.lat?:*/
+                        0.0, /*calendarItem.address?.lon?:*/
+                        0.0
+                    )
                 }
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { calendar ->
-                    if (calendar.isEmpty()) Maybe.empty()
-                    else getLocation()
-                            .timeout(5, TimeUnit.SECONDS)
-                            .map { calendar to it }
-                }
-                .observeOn(Schedulers.io())
-                //.flatMapCompletable { Completable.complete() }
-                //.onErrorComplete()
-                .flatMapCompletable {
-                    val calendar = it.first
-                    val location = it.second
-                    val ids = calendar.map { calendarItem -> calendarItem.id }
-                    val atEvents = calendar.map { calendarItem ->
-                        checkUserLocationInEventArea(
-                                location, /*calendarItem.address?.lat?:*/
-                                0.0, /*calendarItem.address?.lon?:*/
-                                0.0
-                        )
-                    }
-                    userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
-                }
-                .onErrorComplete()
+                userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
+            }
+            .onErrorComplete()
     }
 
     @SuppressLint("MissingPermission")
     private fun getLocation(): Maybe<Location> {
         return rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                .firstElement()
-                .flatMap { isGranted ->
-                    if (isGranted) {
-                        Maybe.create<Location> { emitter ->
-                            val locationRequest = LocationRequest.create()
-                                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                                    .setNumUpdates(1)
+            .firstElement()
+            .flatMap { isGranted ->
+                if (isGranted) {
+                    Maybe.create<Location> { emitter ->
+                        val locationRequest = LocationRequest.create()
+                            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                            .setNumUpdates(1)
 
-                            val callback = object : LocationCallback() {
-                                override fun onLocationResult(location: LocationResult) {
-                                    emitter.onSuccess(location.lastLocation)
-                                }
-                            }
-                            locationProviderClient.requestLocationUpdates(
-                                    locationRequest,
-                                    callback,
-                                Looper.myLooper()!!
-                            )
-                                    .addOnFailureListener {
-                                        emitter.onError(it)
-                                        it.printStackTrace()
-                                    }
-
-                            emitter.setCancellable {
-                                locationProviderClient.removeLocationUpdates(callback)
+                        val callback = object : LocationCallback() {
+                            override fun onLocationResult(location: LocationResult) {
+                                emitter.onSuccess(location.lastLocation)
                             }
                         }
-                    } else Maybe.empty()
-                }
+                        locationProviderClient.requestLocationUpdates(
+                            locationRequest,
+                            callback,
+                            Looper.myLooper()!!
+                        )
+                            .addOnFailureListener {
+                                emitter.onError(it)
+                                it.printStackTrace()
+                            }
+
+                        emitter.setCancellable {
+                            locationProviderClient.removeLocationUpdates(callback)
+                        }
+                    }
+                } else Maybe.empty()
+            }
     }
 
     private fun checkUserLocationInEventArea(
-            userLocation: Location,
-            areaLat: Double,
-            areaLon: Double
+        userLocation: Location,
+        areaLat: Double,
+        areaLon: Double
     ): Boolean {
         val distance = FloatArray(1).apply {
             Location.distanceBetween(
-                    userLocation.latitude,
-                    userLocation.longitude,
-                    areaLat,
-                    areaLon,
-                    this
+                userLocation.latitude,
+                userLocation.longitude,
+                areaLat,
+                areaLon,
+                this
             )
         }
 
@@ -427,12 +386,12 @@ class MainPresenter
 
     private fun updateNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notificationManager.cancel(notificationId)
-                    viewState.hideInapp()
-                }
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                notificationManager.cancel(notificationId)
+                viewState.hideInapp()
+            }
     }
 
     override fun onInappOkClick(inapp: Notification) {
@@ -449,20 +408,20 @@ class MainPresenter
     override fun onHandleEvent(event: String) {
         if (isAuthRequired) return
         compositeDisposable += eventRepository.getEventsList(
-                mapOf(
-                        EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                        EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-                        EventNew.EVENT_CODE to event
-                )
+            mapOf(
+                EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+                EventNew.EVENT_CODE to event
+            )
         )
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    if (it.data.isNotEmpty())
-                        viewState.showEvent(it.data[0]?.id.toString())
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({
+                if (it.data.isNotEmpty())
+                    viewState.showEvent(it.data[0]?.id.toString())
+            }, {
+                it.printStackTrace()
+            })
         /*compositeDisposable += eventRepository.getEventByCode(event)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -475,12 +434,12 @@ class MainPresenter
     }
 
     override fun onInviteRegister(
-            email: String,
-            code: String,
-            name: String,
-            lastName: String,
-            middleName: String,
-            invite: Int
+        email: String,
+        code: String,
+        name: String,
+        lastName: String,
+        middleName: String,
+        invite: Int
     ) {
         viewState.showInviteRegister(email, code, name, lastName, middleName, invite)
     }
@@ -494,39 +453,39 @@ class MainPresenter
                 .call(compositeDisposable)*/
         isRegister = true
         userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = emaill))
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    compositeDisposable += userRepository.getUserShortNew()
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                viewState.showFinishRegister(
-                                        it.name ?: "",
-                                        it.lastName ?: "",
-                                        it.middleName?.value,
-                                        it.phone?.get(0)?.value,
-                                        it.email?.value ?: "",
-                                        code,
-                                        it.phone?.get(0)?.isConfirmed ?: false,
-                                        it.middleName?.value == USER_DATA_EMPTY,
-                                        it.state?.nameEdited ?: true
-                                )
-                            }, { viewState.showLogin() })
-                    /*try {
-                        appData.getUserNew().apply {
-                            viewState.showFinishRegister(name?: "",
-                                    lastName?: "", middleName?.value,
-                                    phone?.get(0)?.value, email?.value?: "", code,
-                                    phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
-                        }
-                    } catch (e: Exception) {
-                        viewState.showLogin()
-                    }*/
-                    isRegister = false
-                }, {
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                compositeDisposable += userRepository.getUserShortNew()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        viewState.showFinishRegister(
+                            it.name ?: "",
+                            it.lastName ?: "",
+                            it.middleName?.value,
+                            it.phone?.get(0)?.value,
+                            it.email?.value ?: "",
+                            code,
+                            it.phone?.get(0)?.isConfirmed ?: false,
+                            it.middleName?.value == USER_DATA_EMPTY,
+                            it.state?.nameEdited ?: true
+                        )
+                    }, { viewState.showLogin() })
+                /*try {
+                    appData.getUserNew().apply {
+                        viewState.showFinishRegister(name?: "",
+                                lastName?: "", middleName?.value,
+                                phone?.get(0)?.value, email?.value?: "", code,
+                                phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
+                    }
+                } catch (e: Exception) {
                     viewState.showLogin()
-                    isRegister = false
-                })
-                .call(compositeDisposable)
+                }*/
+                isRegister = false
+            }, {
+                viewState.showLogin()
+                isRegister = false
+            })
+            .call(compositeDisposable)
 
         /*authRepository.registerData(email, code)
                 .performOnBackgroundOutOnMain()
@@ -539,58 +498,58 @@ class MainPresenter
 
     override fun onHandleRecoverPasswordLink(/*email: String, */code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe {
-                    viewState.showDialogRecoverPassword(/*email,*/ code)
-                }.call(compositeDisposable)
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe {
+                viewState.showDialogRecoverPassword(/*email,*/ code)
+            }.call(compositeDisposable)
     }
 
     override fun onHandleChangeEmailConfirm(code: String, email: String) {
         //if (isAuthRequired) return
         userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    userRepository.getUserShortData()
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                appData.updateUserNew {
-                                    this.email = it.email
-                                }
-                            }, {})
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                if (appData.hasMaxState && appData.hasBaseState) {
-                                    viewState.showDialogHasMaxState()
-                                } else if (!appData.hasMaxState && appData.hasBaseState) {
-                                    viewState.showDialogHasBaseState()
-                                }
-                            }, {})
-                    viewState.showDialogChangeEmailSuccess()
-                }, {
-                    userRepository.getUserShortData()
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                appData.updateUserNew {
-                                    this.email = it.email
-                                }
-                            }, {})
-                    viewState.showDialogChangeEmailError()
-                })
-                .call(compositeDisposable)
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({
+                userRepository.getUserShortData()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        appData.updateUserNew {
+                            this.email = it.email
+                        }
+                    }, {})
+                compositeDisposable += userRepository.checkUserProfileSingle()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        if (appData.hasMaxState && appData.hasBaseState) {
+                            viewState.showDialogHasMaxState()
+                        } else if (!appData.hasMaxState && appData.hasBaseState) {
+                            viewState.showDialogHasBaseState()
+                        }
+                    }, {})
+                viewState.showDialogChangeEmailSuccess()
+            }, {
+                userRepository.getUserShortData()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        appData.updateUserNew {
+                            this.email = it.email
+                        }
+                    }, {})
+                viewState.showDialogChangeEmailError()
+            })
+            .call(compositeDisposable)
     }
 
     override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
         compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    // do nothing
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({
+                // do nothing
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun onHandleNotification(notification: RemoteNotification) {
@@ -610,29 +569,29 @@ class MainPresenter
 
     private fun showNotification(notificationId: Int) {
         compositeDisposable += userRepository.getNotificationDetail(notificationId.toString(), true)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
     }
 
     override fun openPgrfFromInvite(inviteId: String) {
         compositeDisposable += userRepository.getNotificationsList(
-                mapOf(
-                        NotificationModel.NOTIFICATION_LIMIT to 5,
-                        NotificationModel.NOTIFICATION_OFFSET to 0,
-                        NotificationModel.NOTIFICATION_USER to appData.getId(),
-                        NotificationModel.NOTIFICATION_LOAD_MODEL to true,
-                        NotificationModel.NOTIFICATION_SORT to "desc",
-                        NotificationModel.NOTIFICATION_ENTITY_TYPE to "invitePgfr",
-                        NotificationModel.NOTIFICATION_EVENT_ID to inviteId
-                )
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 5,
+                NotificationModel.NOTIFICATION_OFFSET to 0,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_LOAD_MODEL to true,
+                NotificationModel.NOTIFICATION_SORT to "desc",
+                NotificationModel.NOTIFICATION_ENTITY_TYPE to "invitePgfr",
+                NotificationModel.NOTIFICATION_EVENT_ID to inviteId
+            )
         )
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    if (!it.data.isNullOrEmpty()) {
-                        viewState.showNotification(it.data[0])
-                    }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (!it.data.isNullOrEmpty()) {
+                    viewState.showNotification(it.data[0])
                 }
+            }
     }
 
     override fun openAuthWebsiteFragment(code: String) {
@@ -646,32 +605,32 @@ class MainPresenter
 
     override fun onSetPassword(/*email: String, */code: String, password: String) {
         authRepository.recoverPasswordNew(RecoverPasswordBody("email", code, password))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({}, { viewState.showDialogRecoverPassword(/*email,*/ code) })
-                .call(compositeDisposable)
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({}, { viewState.showDialogRecoverPassword(/*email,*/ code) })
+            .call(compositeDisposable)
     }
 
 
     private fun connectToSocket(userId: Int) {
         chatCompositeDisposable += socket.connect()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val connected = it == SocketConnectionState.CONNECTED
-                    chatHelper.isConnectingToSocket = connected
-                    if (connected) {
-                        EventBus.getDefault().post(OnSocketConnectEvent())
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val connected = it == SocketConnectionState.CONNECTED
+                chatHelper.isConnectingToSocket = connected
+                if (connected) {
+                    EventBus.getDefault().post(OnSocketConnectEvent())
 
-                        if (chatCompositeDisposable.size() == 1) {
-                            //subscribeChatNewMessage()
-                            subscribeChatUnreadCount()
-                            subscribeChatRequestsCount()
-                            emitValueUpdates()
-                        }
+                    if (chatCompositeDisposable.size() == 1) {
+                        //subscribeChatNewMessage()
+                        subscribeChatUnreadCount()
+                        subscribeChatRequestsCount()
+                        emitValueUpdates()
                     }
-                }, {
-                    it.printStackTrace()
-                })
+                }
+            }, {
+                it.printStackTrace()
+            })
         /*chatCompositeDisposable += haChat.connect(userId.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -694,23 +653,23 @@ class MainPresenter
     private fun subscribeToNotifications(): Completable {
         return Completable.fromAction {
             userRepository.getNotificationNotReadedSize(
-                    mapOf(
-                            NotificationModel.NOTIFICATION_LIMIT to 1,
-                            NotificationModel.NOTIFICATION_USER to appData.getId(),
-                            NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-                    )
+                mapOf(
+                    NotificationModel.NOTIFICATION_LIMIT to 1,
+                    NotificationModel.NOTIFICATION_USER to appData.getId(),
+                    NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+                )
             ).performOnBackgroundOutOnMain()
-                    .subscribe({
-                        appData.notificationsCount = it
-                        chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
-                                .performOnBackgroundOutOnMain()
-                                .subscribe({ nCount ->
-                                    appData.notificationsCount = nCount
-                                }, {})
-                    }, {
-                        it.printStackTrace()
-                        appData.notificationsCount = 0
-                    })
+                .subscribe({
+                    appData.notificationsCount = it
+                    chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({ nCount ->
+                            appData.notificationsCount = nCount
+                        }, {})
+                }, {
+                    it.printStackTrace()
+                    appData.notificationsCount = 0
+                })
         }
 
         /*return userRepository.getFcmToken()
@@ -722,13 +681,13 @@ class MainPresenter
 
     private fun subscribeChatUnreadCount() {
         chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    appData.chatUnreadMessageCount = it
-                }, {
-                    it.printStackTrace()
-                    appData.chatUnreadMessageCount = 0
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                appData.chatUnreadMessageCount = it
+            }, {
+                it.printStackTrace()
+                appData.chatUnreadMessageCount = 0
+            })
         /*chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -751,25 +710,25 @@ class MainPresenter
 
     private fun emitValueUpdates() {
         compositeDisposable += socket.connectToUpdates()
-                .performOnBackgroundOutOnMain()
-                .subscribe()
+            .performOnBackgroundOutOnMain()
+            .subscribe()
     }
 
     private fun subscribeChatRequestsCount() {
         compositeDisposable += Flowable.create<Int>({ emitter ->
             val disposables = CompositeDisposable()
             disposables += chatRepository.getChatInvitesCount()
-                    .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+                .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
             disposables += socket.subscribeToInvitesCount()
-                    .subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
+                .subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
             /*disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
             disposables += haChat.subscribeToExcludeFlagChange()
                     .flatMapSingle { chatRepository.getChatInvitesCount() }
                     .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })*/
             emitter.setDisposable(disposables)
         }, BackpressureStrategy.LATEST)
-                .performOnBackgroundOutOnMain()
-                .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
+            .performOnBackgroundOutOnMain()
+            .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
     }
 
     /*private fun processNewChatMessage(newMessage: NewMessage) {
@@ -831,13 +790,13 @@ class MainPresenter
 
     override fun onRetryConnectionClick() {
         compositeDisposable += connectivityProvider.checkInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    isInternetConnected = it
-                    checkInternetConnection()
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                isInternetConnected = it
+                checkInternetConnection()
+            }, {
+                it.printStackTrace()
+            })
     }
 
     private fun checkInternetConnection() {
@@ -847,13 +806,13 @@ class MainPresenter
     override fun onRequestShowErrorMessage(message: String) {
         errorMessageDisposable.clear()
         errorMessageDisposable += Completable.fromAction { viewState.showErrorMessage(message) }
-                .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.hideErrorMessage()
-                }, {
-                    viewState.hideErrorMessage()
-                })
+            .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                viewState.hideErrorMessage()
+            }, {
+                viewState.hideErrorMessage()
+            })
     }
 
     override fun onRequestHideErrorMessage() {

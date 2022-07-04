@@ -1,6 +1,5 @@
 package com.example.repository
 
-import android.util.Log
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
@@ -324,7 +323,7 @@ class EventRepositoryImp
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(
             eventId,
-            "rights,organization,tag,page,activity,activity.userCalendar,user-registration,user-form-result,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state,is-user-subscribed,event-subscribe"
+            "rights,organization,organization.userFavorite,tag,page,activity,activity.userCalendar,user-registration,user-form-result,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state,is-user-subscribed,event-subscribe"
         )
             .map {
                 val eventFormats = appData.getEventFormats()
@@ -344,10 +343,16 @@ class EventRepositoryImp
             }
 
     override fun getEventMember(memberId: String): Maybe<MemberModel> =
-        newApi.getEventMember(memberId, "user,user.userFavorite,user.chat-room-with-me,activities,activity.userCalendar")
+        newApi.getEventMember(
+            memberId,
+            "user,user.userFavorite,user.chat-room-with-me,activities,activity.userCalendar"
+        )
 
     override fun getEventDetailsNew(eventId: String): Single<EventNew> =
-        newApi.getEventDetailsNew(eventId, "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state")
+        newApi.getEventDetailsNew(
+            eventId,
+            "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state"
+        )
 
     override fun createEventSubscription(eventId: Int): Completable =
         newApi.createEventSubscription(EventSubscriptionRequest(eventId))
@@ -372,6 +377,17 @@ class EventRepositoryImp
                     it.data
                 )
             }
+
+    override fun getSpeakersWithoutPagination(map: Map<String, Any>): Maybe<List<MemberModel>> =
+        newApi.getSpeakers(map)
+            .map {
+                it.data
+            }
+
+    override fun getUserCalendarEvents(): Maybe<List<EventNew>?> =
+        newApi.getUserCalendarEvents("activity.userCalendar,activity.auditorium").map {
+            it.data
+        }
 
     override fun getPartnerDetails(partnerId: String): Single<PartnerModel> =
         newApi.getPartnerDetails(partnerId, "event")

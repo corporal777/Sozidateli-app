@@ -62,7 +62,7 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View, ToolbarFragmen
     }
 
     override fun showEvent(eventId: /*Event*/String) {
-        findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
+        findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragmentNew(eventId))
     }
 
     override fun showEventNotFoundError() {

@@ -14,7 +14,7 @@ import com.example.holders.DayHeaderItem
 import com.example.ui.subevent.items.SubEventItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.subevent.SubeventFragmentArgs
+import com.example.ui.subevent.SubEventFragmentArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -107,8 +107,8 @@ class AllActivitiesFragment: BaseFragment(), AllActivitiesContract.View, Toolbar
     override fun hidePlaceholder() = Unit
 
     override fun showSubEvent(eventId: String, subEventId: String) {
-        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-        findNavController().navigate(R.id.subevent_fragment, args)
+        val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+        findNavController().navigate(R.id.subEvent_fragment, args)
     }
 
     override fun showDataFormCacheMessage(cacheDate: String) {

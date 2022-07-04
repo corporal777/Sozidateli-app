@@ -29,14 +29,14 @@ class SpeakersHorizontalListItem(
             }
             add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
         } else {
-            data.map {
-                EventSpeakerItem(
+            data.forEach {
+                add(EventSpeakerItem(
                     it.id ?: 0,
                     it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
                     it.binds?.user?.image?.uri ?: "",
                     it.status ?: "",
                     it.binds?.user?.state?.isRegistered ?: false
-                ) { id -> onItemClick(id) }
+                ) { id -> onItemClick(id) })
             }
         }
 

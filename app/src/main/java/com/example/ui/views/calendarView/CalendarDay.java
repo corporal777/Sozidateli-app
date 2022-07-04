@@ -13,10 +13,11 @@ import org.threeten.bp.LocalDate;
 public final class CalendarDay implements Parcelable {
 
 
+
     @NonNull
     private final LocalDate date;
 
-    private CalendarDay(final int year, final int month, final int day) {
+    public CalendarDay(final int year, final int month, final int day) {
         date = LocalDate.of(year, month, day);
     }
 
@@ -24,11 +25,13 @@ public final class CalendarDay implements Parcelable {
         this.date = date;
     }
 
-    @NonNull public static CalendarDay today() {
+    @NonNull
+    public static CalendarDay today() {
         return from(LocalDate.now());
     }
 
-    @NonNull public static CalendarDay from(int year, int month, int day) {
+    @NonNull
+    public static CalendarDay from(int year, int month, int day) {
         return new CalendarDay(year, month, day);
     }
 
@@ -51,7 +54,8 @@ public final class CalendarDay implements Parcelable {
         return date.getDayOfMonth();
     }
 
-    @NonNull public LocalDate getDate() {
+    @NonNull
+    public LocalDate getDate() {
         return date;
     }
 
@@ -70,7 +74,8 @@ public final class CalendarDay implements Parcelable {
         return date.isAfter(other.getDate());
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         return o instanceof CalendarDay && date.equals(((CalendarDay) o).getDate());
     }
 

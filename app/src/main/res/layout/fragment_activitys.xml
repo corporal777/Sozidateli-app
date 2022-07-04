@@ -46,6 +46,7 @@
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:visibility="invisible"
                         android:id="@+id/btnGoToScheme"
                         fontPath="fonts/sf_pro_text_semibold.ttf"
                         android:layout_width="145dp"

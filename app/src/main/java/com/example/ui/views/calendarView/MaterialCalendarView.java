@@ -582,7 +582,7 @@ public class MaterialCalendarView extends ViewGroup {
         setCurrentDate(day, true);
     }
 
-    public void setCurrentDate(@Nullable CalendarDay day, boolean useSmoothScroll) {
+    public void setCurrentDate(@Nullable CalendarDay day,  boolean useSmoothScroll) {
         if (day == null) {
             return;
         }
@@ -590,6 +590,7 @@ public class MaterialCalendarView extends ViewGroup {
         pager.setCurrentItem(index, useSmoothScroll);
         updateUi();
     }
+
 
     public CalendarDay getMinimumDate() {
         return minDate;

@@ -233,4 +233,6 @@
     <color name="search_field_background_color">#1F767680</color>
     <color name="main_brown_color_new">#BE9B72</color>
     <color name="text_color_weekend">#993C3C43</color>
+
+    <color name="colorOverlay">#78ffffff</color>
 </resources>

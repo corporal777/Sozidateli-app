@@ -52,6 +52,7 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getUserCalendarEvents(): Maybe<List<EventNew>?>
     fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
     fun getOrganizationEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
@@ -65,6 +66,7 @@ interface EventRepository {
     fun mailToEvent(body: MessageToEventBody): Completable
     fun getPageDetails(pageId: String): Single<PageModel>
     fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>
+    fun getSpeakersWithoutPagination(map: Map<String, Any>): Maybe<List<MemberModel>>
     fun getPartnerDetails(partnerId : String): Single<PartnerModel>
     fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel>
     fun deleteFromFavorite(id : String): Completable

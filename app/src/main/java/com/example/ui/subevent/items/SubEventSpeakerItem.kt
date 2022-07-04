@@ -10,14 +10,14 @@ import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
 class SubEventSpeakerItem(
-        private val id: Int,
-        private val name: String,
-        private val location: String,
-        private val description: String?,
-        private val avatar: String?,
-        val status : String,
-        val isRegistered: Boolean,
-        private val onSpeakerClick: () -> Unit
+    private val id: Int,
+    private val name: String,
+    private val location: String,
+    private val description: String?,
+    private val avatar: String?,
+    val status: String,
+    val isRegistered: Boolean,
+    private val onSpeakerClick: () -> Unit
 ) : BindableItem<ItemSubEventSpeakerBinding>() {
 
 
@@ -29,7 +29,10 @@ class SubEventSpeakerItem(
             }
             tvSpeakersName.text = name
             tvSpeakersLocation.apply {
-                isVisible = !location.isNullOrEmpty()
+                if (!location.isNullOrEmpty()) {
+                    isVisible = true
+                    tvSpeakersPosition.maxLines = 6
+                } else isVisible = false
                 text = location
             }
 //            val fullDescription = description

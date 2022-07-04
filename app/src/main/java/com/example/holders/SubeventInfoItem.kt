@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 open class SubeventInfoItem(
+    private val isApproved: Boolean,
     private val subEvent: EventActivityModel,
     //private val onFavoriteClickListener: () -> Unit,
     private val onAddClickListener: (subEvent: EventActivityModel) -> Unit,
@@ -55,7 +56,6 @@ open class SubeventInfoItem(
             val dayAndMonth =
                 subEvent.holdingDate?.from.formatToSubEventDatesInterval(subEvent.holdingDate?.to)
 
-
             tvTime.text = "$dayAndMonth $time"
             tvTitle.text = subEvent.title
             tvDescription.apply {
@@ -70,13 +70,12 @@ open class SubeventInfoItem(
                 text = message
                 BetterLinkMovementMethod.linkify(Linkify.ALL, this)
             }
-
-            tvLocation.apply {
-                val locations =
-                    subEvent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
-                text = locations
-                isVisible = locations?.isNotEmpty() == true
-            }
+            val location =
+                subEvent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
+            if (!location.isNullOrEmpty()) {
+                auditoryLn.isVisible = true
+                tvLocation.text = location
+            } else auditoryLn.isVisible = false
 
             decorActionButton(viewHolder.btnAddToTimetable, subEvent)
 
@@ -133,10 +132,11 @@ open class SubeventInfoItem(
         button.setAction(if (isInFavorites) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
     }
 
-    private fun decorActionButton(button: AppCompatButton, mSubEvent: EventActivityModel) {
+    private fun decorActionButton(button: AppCompatButton, subEvent: EventActivityModel) {
 
         button.apply {
-            if (mSubEvent.binds?.userCalendar != null) {
+            isVisible = isApproved
+            if (subEvent.binds?.userCalendar != null) {
                 text = context.getString(R.string.sub_event_remove_from_schedule)
                 background =
                     ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)

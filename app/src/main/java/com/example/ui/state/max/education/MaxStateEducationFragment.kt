@@ -14,8 +14,8 @@ import com.example.holders.ProfileDataEducationEditGroupNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.state.max.work.MaxStateWorkFragmentArgs
 import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.BaseStateDialog
 import com.example.ui.views.RegisterDataType
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -102,7 +102,7 @@ class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View 
     }
 
     private fun maxActionWithSuccess() {
-        BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
                 .setSelectCallback {
                     maxActions()
                 }

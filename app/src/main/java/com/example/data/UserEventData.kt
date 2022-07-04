@@ -1,5 +1,6 @@
 package com.example.data
 
+import com.example.data.database.EventMemberDao
 import com.example.data.database.UserEventDao
 import com.example.data.models.*
 import com.example.extensions.calendar
@@ -9,6 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function
 import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.CompletableSubject
@@ -17,7 +19,8 @@ import kotlin.collections.ArrayList
 
 class UserEventData(
     private val eventRepository: EventRepository,
-    private val userEventDao: UserEventDao
+    private val userEventDao: UserEventDao,
+    private val eventMemberDao: EventMemberDao
 ) {
 
     var days: List<EventScheduleCalendarDay>? = null
@@ -123,6 +126,7 @@ class UserEventData(
             .doOnSuccess { it.isDataFromLocalStorage = true }
     }
 
+
     fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
         if (dates.isEmpty()) return arrayListOf()
         val sortedDates = dates.sorted()
@@ -180,5 +184,18 @@ class UserEventData(
 
     interface OnDataUpdateListener {
         fun onDataUpdated()
+    }
+
+
+    fun insertEventMembers(eventMember: EventMember) {
+        eventMemberDao.insert(eventMember)
+    }
+
+    fun updateEventMembers(eventMember: EventMember){
+        eventMemberDao.update(eventMember)
+    }
+
+    fun getSortedSpeakersFromLocalDb(id: String): Single<EventMember> {
+        return eventMemberDao.getById(id)
     }
 }

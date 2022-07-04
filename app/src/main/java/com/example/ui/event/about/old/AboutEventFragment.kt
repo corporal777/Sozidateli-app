@@ -31,7 +31,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.contacts.EventContactsFragmentArgs
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
-import com.example.ui.event.speakers.EventSpeakersFragmentArgs
+import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
@@ -48,9 +48,9 @@ import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.*
 import kotlinx.android.synthetic.main.dialog_event_registration_agreement_no_form.view.*
 import kotlinx.android.synthetic.main.fragment_about_event.*
 import kotlinx.android.synthetic.main.item_action_button.view.*
+import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
-import setOnClickListener
 
 class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragment {
 

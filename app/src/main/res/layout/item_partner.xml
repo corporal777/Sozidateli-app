@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:foreground="@drawable/custom_text_background_selectable"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="15dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvImage"

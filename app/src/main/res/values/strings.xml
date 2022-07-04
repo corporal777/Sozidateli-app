@@ -159,7 +159,7 @@
     <string name="news_read_more">Подробнее</string>
 
     <string name="speakers">Спикеры</string>
-    <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="go_to_profile">Перейти в профиль</string>
     <string name="remove_from_favorites">В избранном</string>
     <string name="block">Заблокировать</string>
     <string name="unblock">Разблокировать</string>
@@ -877,6 +877,11 @@
     <string name="show_all_speakers">Посмотреть всех спикеров</string>
     <string name="speakers_activities_label">События спикера</string>
     <string name="sub_event_already_gone_title">Событие уже прошло</string>
+    <string name="address_label">Адрес:</string>
+    <string name="format_label">Формат:</string>
+    <string name="added_to_favorite">Добавлено в\nизбранное</string>
+    <string name="scan_qr_code_title">Сканировать QR-код</string>
+    <string name="add_to_favorites">Добавить в избранное</string>
 
 
     <string-array name="custom_months">

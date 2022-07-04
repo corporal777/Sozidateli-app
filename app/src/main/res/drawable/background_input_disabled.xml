@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <padding
-        android:left="@dimen/background_input_padding"
-        android:right="@dimen/background_input_padding" />
-    <solid android:color="@color/input_disabled_background" />
-    <corners android:radius="@dimen/background_input_corners_radius" />
-</shape>

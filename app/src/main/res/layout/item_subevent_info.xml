@@ -13,9 +13,9 @@
         fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
         android:textColor="@color/text_color_title"
         android:textSize="14sp"
         tools:ignore="MissingPrefix"
@@ -26,9 +26,9 @@
         fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
         android:textSize="14sp"
         tools:ignore="MissingPrefix"
         tools:text="9:00-10:00" />
@@ -49,21 +49,22 @@
     <!--        tools:text="Павильон 1" />-->
 
     <LinearLayout
+        android:id="@+id/auditoryLn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_sub_events_fragment">
 
         <TextView
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_padding_start"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:drawablePadding="10dp"
+            android:text="@string/label_auditory"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="14sp"
-            tools:ignore="MissingPrefix"
-            android:text="@string/label_auditory" />
+            tools:ignore="MissingPrefix" />
 
 
         <TextView
@@ -72,7 +73,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/chat_message_padding_vertical"
-            android:layout_marginTop="16dp"
             android:drawablePadding="10dp"
             android:textColor="@color/vk_black"
             android:textSize="14sp"
@@ -87,37 +87,29 @@
         fontPath="fonts/sf_pro_text_bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:minWidth="200dp"
-        android:minHeight="40dp"
-        android:layout_marginVertical="20dp"
+        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
         android:background="@drawable/custom_btn_green_selectable"
         android:letterSpacing="-0.02"
+        android:minWidth="200dp"
+        android:minHeight="40dp"
         android:text="@string/add_to_timetable"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvLectureDesc"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/auditoryLn" />
 
-<!--    <com.example.ui.views.UserSubscribeButton-->
-<!--        android:id="@+id/btnSubscribe"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="4dp"-->
-<!--        android:layout_marginEnd="@dimen/margin_horizontal_default"-->
-<!--        app:subscribeAction="favorite" />-->
 
     <TextView
-        fontPath="fonts/sf_pro_display_regular.OTF"
         android:id="@+id/tvDescription"
+        fontPath="fonts/sf_pro_display_regular.OTF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_padding_start"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
         android:textColor="@color/text_color_default"
         android:textSize="13sp"
         tools:ignore="MissingPrefix"
@@ -127,15 +119,14 @@
         android:id="@+id/tagsGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
+        app:chipSpacingHorizontal="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDescription"
-        app:chipSpacingHorizontal="5dp"
-        app:lineSpacing="10dp"/>
-
+        app:lineSpacing="10dp" />
 
 
 </LinearLayout>

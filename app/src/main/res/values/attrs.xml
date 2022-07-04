@@ -19,6 +19,13 @@
     </declare-styleable>
 
 
+    <declare-styleable name="ExpandableTextView">
+        <attr name="limitedMaxLines" format="integer" />
+        <attr name="originalText" format="string" />
+        <attr name="expandAction" format="string" />
+        <attr name="expandActionColor" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="MaterialCalendarView">
 
         <attr name="mcv_dateTextAppearance" format="reference"/>
@@ -79,6 +86,18 @@
         <attr name="mcv_titleAnimationOrientation" format="enum">
             <enum name="vertical" value="0"/>
             <enum name="horizontal" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="BlurDialog">
+        <attr name="blurDialogIcon" format="reference" />
+        <attr name="blurDialogTitle" format="string" />
+        <attr name="blurDialogTitleSize" format="dimension"/>
+        <attr name="blurDialogCornerRadius" format="dimension"/>
+        <attr name="blurDialogDuration" format="enum">
+            <enum name="length_infinite" value="-1"/>
+            <enum name="length_short" value="0"/>
+            <enum name="length_long" value="1"/>
         </attr>
     </declare-styleable>
 

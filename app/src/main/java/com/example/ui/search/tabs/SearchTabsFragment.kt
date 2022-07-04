@@ -1,6 +1,7 @@
 package com.example.ui.search.tabs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -21,6 +22,7 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
 import kotlinx.android.synthetic.main.fragment_search_tabs.*
 import onTextChanged
+import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -46,16 +48,17 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
 
     private val fragments by lazy {
         listOf(
-                SearchEventFragment(),
-                SearchOrganizationFragment(),
-                SearchUserFragment()
+            SearchEventFragment(),
+            SearchOrganizationFragment(),
+            SearchUserFragment()
         )
     }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             selectTab(position)
-            setupToolbarIcons(position)
+            //setupToolbarIcons(position)
+            setupQrScannerButton(position)
         }
     }
 
@@ -63,13 +66,17 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
         super.onViewCreated(view, savedInstanceState)
         viewPager.run {
             addOnPageChangeListener(pageChangeListener)
-            adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            adapter = object : FragmentStatePagerAdapter(
+                childFragmentManager,
+                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            ) {
                 override fun getItem(position: Int) = fragments[position]
 
                 override fun getCount() = fragments.size
             }
             selectTab(currentItem)
-            setupToolbarIcons(currentItem)
+            //setupToolbarIcons(currentItem)
+            setupQrScannerButton(currentItem)
         }
 
         tvCancel.setOnClickListener {
@@ -91,8 +98,8 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
 
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 clSearch.setBackgroundResource(
-                        if (hasFocus) R.drawable.background_search_field_rounded_focused
-                        else R.drawable.background_search_field_rounded_normal
+                    if (hasFocus) R.drawable.background_search_field_rounded_focused
+                    else R.drawable.background_search_field_rounded_normal
                 )
             }
         }
@@ -103,7 +110,9 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
         }
 
         btnFilter.setOnClickListener { presenter.onFilterClick() }
-
+        cardQrScanner.setOnClickListener {
+            presenter.onScanClick()
+        }
         btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
         btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
         btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
@@ -133,6 +142,10 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
                 })
             }
         }
+    }
+
+    private fun setupQrScannerButton(position: Int) {
+        cardQrScanner.isVisible = position == 0
     }
 
     override fun provideSearchInterface(): SearchInterface {

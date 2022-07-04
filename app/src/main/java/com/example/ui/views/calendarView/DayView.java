@@ -68,10 +68,12 @@ class DayView extends AppCompatCheckedTextView {
 
         setDay(day);
         setDaysTextAppearance(day);
-
     }
 
     private void setDaysTextAppearance(CalendarDay day) {
+//        int value = 5;
+//        int padding = (int) getContext().getResources().getDisplayMetrics().density * value;
+//        setPadding(0,0,0, padding);
         DayOfWeek weekDay = day.getDate().getDayOfWeek();
         if (weekDay == DayOfWeek.SATURDAY || weekDay == DayOfWeek.SUNDAY) {
             setTextAppearance(getContext(), R.style.TextAppearance_MaterialCalendarWidget_WeekendDate);

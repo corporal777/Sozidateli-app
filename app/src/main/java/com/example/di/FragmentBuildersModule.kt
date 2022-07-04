@@ -38,8 +38,8 @@ import com.example.ui.event.rating.EventRatingFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
-import com.example.ui.event.speakers.EventSpeakersFragment
-import com.example.ui.event.speakers.UserSpeakerFragment
+import com.example.ui.event.speakers.list.EventSpeakersFragment
+import com.example.ui.event.speakers.member.UserSpeakerFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
@@ -68,7 +68,7 @@ import com.example.ui.state.max.MaxStateMainInfoFragment
 import com.example.ui.state.max.education.MaxStateEducationFragment
 import com.example.ui.state.max.work.MaxStateWorkFragment
 import com.example.ui.stories.StoriesFragment
-import com.example.ui.subevent.SubeventFragment
+import com.example.ui.subevent.SubEventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
@@ -216,7 +216,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeEventSpeakersFragment(): EventSpeakersFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSubeventFragment(): SubeventFragment
+    abstract fun contributeSubeventFragment(): SubEventFragment
 
     @ContributesAndroidInjector
     abstract fun contributeUserListFragment(): SubeventUserListFragment

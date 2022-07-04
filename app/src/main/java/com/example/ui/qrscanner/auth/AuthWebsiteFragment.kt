@@ -11,11 +11,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.QrAuthResponse
-import com.example.extensions.longToDate
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.AuthBackground
 import kotlinx.android.synthetic.main.fragment_auth_website.*
 import javax.inject.Inject
@@ -63,16 +62,14 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
 
     override fun showSuccessEnterMessage() {
         val message = "Авторизация прошла успешно"
-        BaseStateDialog(message, requireActivity()).setSelectCallback {
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
             showEventList()
         }
     }
 
     override fun showErrorEnterMessage() {
         val message = "Не удалось подтвердить вход"
-        BaseStateDialog(message, requireActivity()).setSelectCallback {
-        }
-
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {  }
     }
 
     override fun showEventList() {

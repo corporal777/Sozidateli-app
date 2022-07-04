@@ -25,7 +25,7 @@ interface ActivitiesContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(day : EventScheduleCalendarDay, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+        fun setSubEvents(canShow : Boolean, day : EventScheduleCalendarDay, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollContent(day: EventScheduleCalendarDay)
@@ -46,7 +46,10 @@ interface ActivitiesContract {
         fun updateSubEvent(subEvent: EventActivityModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubEventsNew(subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+        fun updateSubEventsNew(canShow : Boolean,subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSchemeButton(scheme: List<String>?)
     }
 
     interface Presenter : BaseContract.Presenter {

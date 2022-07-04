@@ -13,6 +13,8 @@ import com.xwray.groupie.Section
 import java.util.*
 
 class SubEventsWithDateItem(
+    val eventId : String,
+    val canShow: Boolean?,
     val date: String,
     val listEvents: List<EventActivityModel>,
     val selectedTags: List<Tag>,
@@ -31,12 +33,20 @@ class SubEventsWithDateItem(
         add(mDateItem)
         if (!listEvents.isNullOrEmpty()) {
             listEvents.map { data ->
-                if (data.mNoEvent){
-                    if (listEvents.size < 2){
+                if (data.mNoEvent) {
+                    if (listEvents.size < 2) {
                         mDataItem.add(NoSubEventItem(mNoParamTitle))
                     }
-                }else {
-                    mDataItem.add(EventActivityItem(data, selectedTags, clickListener))
+                } else {
+                    mDataItem.add(
+                        EventActivityItem(
+                            eventId,
+                            data,
+                            selectedTags,
+                            clickListener,
+                            canShow ?: false
+                        )
+                    )
                 }
             }
         } else {
@@ -71,22 +81,6 @@ class SubEventsWithDateItem(
     fun updateButtonState(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
         mDataItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged()
-    }
-
-    fun updateEventType(subEvent: EventActivityModel) {
-        val idLong = subEvent.id?.toLong()
-        var position = 0
-        val item = mDataItem.findItemBy<EventActivityItem> { it.id == idLong }
-        if (item != null) {
-            position = mDataItem.getPosition(item)
-            if (subEvent.mNoEvent) {
-                mDataItem.remove(item)
-                mDataItem.add(position, NoSubEventItem(mNoParamTitle))
-            } else {
-                mDataItem.add(position, EventActivityItem(subEvent, selectedTags, clickListener))
-            }
-        }
-
     }
 
     fun getDayName(): String? {

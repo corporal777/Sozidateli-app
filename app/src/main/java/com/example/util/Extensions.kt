@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.annotation.ColorInt
 import androidx.core.view.*
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import coil.load
 import coil.request.ImageRequest
@@ -98,29 +99,48 @@ fun Activity.setWindowTransparency(listener: OnSystemInsetsChangedListener = { _
     InsetUtil.removeSystemInsets(window.decorView, listener)
 //    window.navigationBarColor = Color.TRANSPARENT
 //    window.statusBarColor = Color.TRANSPARENT
-
 }
 
+fun Activity.cancelWindowTransparency(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
+    InsetUtil.returnSystemInsets(window.decorView, listener)
+}
 
-fun View.updateMargin(
-    left: Int = marginLeft,
-    top: Int = marginTop,
-    right: Int = marginRight,
-    bottom: Int = marginBottom
-) = updateLayoutParams<ViewGroup.MarginLayoutParams> { updateMargins(left, top, right, bottom) }
+fun Activity.doEdgeWindow(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
+    InsetUtil.doEdgeDisplay(window.decorView, listener)
+}
 
 typealias OnSystemInsetsChangedListener = (statusBarSize: Int, navigationBarSize: Int) -> Unit
 
-
 object InsetUtil {
+
+    fun doEdgeDisplay(view: View, listener: OnSystemInsetsChangedListener) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            ViewCompat.onApplyWindowInsets(
+                view,
+                insets.replaceSystemWindowInsets(0, 0, 0, 0)
+            )
+        }
+    }
 
     fun removeSystemInsets(view: View, listener: OnSystemInsetsChangedListener) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-
-            //view.updatePadding(bottom = insets.systemWindowInsetBottom + 10)
             ViewCompat.onApplyWindowInsets(
                 view,
                 insets.replaceSystemWindowInsets(0, 0, 0, insets.systemWindowInsetBottom)
+            )
+        }
+    }
+
+    fun returnSystemInsets(view: View, listener: OnSystemInsetsChangedListener) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            ViewCompat.onApplyWindowInsets(
+                view,
+                insets.replaceSystemWindowInsets(
+                    0,
+                    insets.systemWindowInsetTop,
+                    0,
+                    insets.systemWindowInsetBottom
+                )
             )
         }
     }
@@ -202,9 +222,11 @@ fun getMonthName(month: Int): String {
 }
 
 @SuppressLint("HardwareIds")
-fun getDeviceId(context : Context): String {
-    return Settings.Secure.getString(context.contentResolver,
-        Settings.Secure.ANDROID_ID)
+fun getDeviceId(context: Context): String {
+    return Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ANDROID_ID
+    )
 }
 
 fun getDeviceName(): String {

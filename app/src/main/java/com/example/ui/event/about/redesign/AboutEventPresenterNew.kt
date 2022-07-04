@@ -39,7 +39,6 @@ class AboutEventPresenterNew
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val userEventInfo = userEventData.userEvent?.eventInfo
-
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
             else eventRepository.getEventDetails(eventId)
@@ -48,23 +47,16 @@ class AboutEventPresenterNew
                 .withLoadingDialog(viewState)
 
         compositeDisposable += eventInfoMaybe
-//            .subscribeSimple(
-//                onError = {
-//                    it.printStackTrace()
-//                },
-//                onSuccess = { eventInfo ->
-//                    setEventInfoData(eventInfo)
-//                })
             .subscribeSimple { eventInfo ->
                 setEventInfoData(eventInfo)
             }
-        Log.e("TOKEN", appData.token!!)
+
     }
 
     private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
         Log.e("EVENT ID", eventId)
-
+        Log.e("TOKEN", appData.token!!)
         mTags.clear()
         eventInfo?.event?.binds?.tag?.map {
             mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
@@ -72,17 +64,17 @@ class AboutEventPresenterNew
         viewState.apply {
             setEventData(
                 eventInfo?.event,
-                eventInfo?.event?.binds?.currentUserRegistration?.status?.value,
                 eventInfo?.event?.binds?.page,
+                eventInfo?.event?.binds?.member?.filter { it.role == "speaker" },
                 eventInfo?.event?.binds?.partner,
-                mTags,
-                eventInfo?.event?.userAgreement?.name ?: eventInfo?.event?.userAgreement?.uri
+                mTags
             )
         }
         setSubEvents(eventInfo?.event)
     }
 
     private fun setSubEvents(eventNew: EventNew?) {
+        val isApproved = event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
         eventNew.let {
             if (!it?.binds?.activity.isNullOrEmpty()) {
                 val listSubEvents = it?.binds?.activity?.groupBy { event ->
@@ -103,7 +95,7 @@ class AboutEventPresenterNew
                         filteredSubEvents[map.key ?: ""] = list
                     }
                 }
-                viewState.setSubEvents(filteredSubEvents.toSortedMap())
+                viewState.setSubEvents(isApproved, filteredSubEvents.toSortedMap())
             }
         }
 
@@ -123,6 +115,38 @@ class AboutEventPresenterNew
 
     override fun onShowEventActivitiesClick() {
         viewState.showEventActivities(eventId, emptyList())
+    }
+
+    override fun onAddEventToFavoriteClick() {
+        if (event?.event?.binds?.userFavorite != null) {
+            compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
+                .performOnBackgroundOutOnMain()
+                .withProgressBarLoadingDialog(viewState)
+                .subscribeSimple {
+                    this.event?.event?.binds?.userFavorite = null
+                    viewState.changeEventSubscription(false)
+                }
+        } else {
+            compositeDisposable += eventRepository.addToFavorites(
+                AddToFavoriteModel(
+                    appData.getId(),
+                    AddToFavoriteEntityModel(
+                        AddToFavoriteEntityModel.FAVORITE_EVENT,
+                        eventId.toInt()
+                    )
+                )
+            )
+                .performOnBackgroundOutOnMain()
+                .withProgressBarLoadingDialog(viewState)
+                .subscribeSimple {
+                    this.event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                    viewState.apply {
+                        changeEventSubscription(true)
+                        showEventAddedToFavoriteMessage()
+                        viewState.showProgressBarLoadingDialog()
+                    }
+                }
+        }
     }
 
     override fun onCreateEventSubscriptionClick() {
@@ -211,8 +235,6 @@ class AboutEventPresenterNew
     }
 
     override fun onSubEventClick(subEvent: EventActivityModel) {
-
-        //viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
         checkInternetAndRun {
             viewState.showSubEvent(eventId, subEvent.id.toString())
         }
@@ -245,16 +267,16 @@ class AboutEventPresenterNew
     }
 
 
-    override fun onChangeFavoriteClick() {
-        if (event?.event?.binds?.userFavorite != null) {
-            compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
+    override fun onAddOrganizationToFavoriteClick() {
+        if (event?.event?.binds?.organization?.binds?.userFavorite != null) {
+            val id = event?.event?.binds?.organization?.binds?.userFavorite?.id.toString()
+            compositeDisposable += eventRepository.deleteFromFavorite(id)
                 .performOnBackgroundOutOnMain()
                 .withProgressBarLoadingDialog(viewState)
-                //.withLoadingDialog(viewState)
                 .subscribeSimple(
                     onComplete = {
-                        event?.event?.binds?.userFavorite = null
-                        viewState.changeEventSubscription(false)
+                        event?.event?.binds?.organization?.binds?.userFavorite = null
+                        viewState.changeOrganizationSubscription(false)
                     }, onError = {
                         it.printStackTrace()
                     })
@@ -263,18 +285,18 @@ class AboutEventPresenterNew
                 AddToFavoriteModel(
                     appData.getId(),
                     AddToFavoriteEntityModel(
-                        AddToFavoriteEntityModel.FAVORITE_EVENT,
-                        eventId.toInt()
+                        AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                        event?.event?.binds?.organization?.id?.toInt()
                     )
                 )
             )
                 .performOnBackgroundOutOnMain()
                 .withProgressBarLoadingDialog(viewState)
-                //.withLoadingDialog(viewState)
                 .subscribeSimple(
                     onSuccess = {
-                        event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                        viewState.changeEventSubscription(true)
+                        event?.event?.binds?.organization?.binds?.userFavorite =
+                            EventUserFavorite(it.id, it.user)
+                        viewState.changeOrganizationSubscription(true)
                     }, onError = {
                         it.printStackTrace()
                     })
@@ -288,7 +310,6 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
-            //.withLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(
@@ -302,6 +323,5 @@ class AboutEventPresenterNew
         viewState.showOrganization(organization)
 
     override fun onShareClick() = viewState.showShare(eventId)
-
 
 }

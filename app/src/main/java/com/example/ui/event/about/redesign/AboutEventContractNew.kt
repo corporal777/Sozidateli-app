@@ -13,19 +13,16 @@ interface AboutEventContractNew {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventData(
                 eventData: EventNew?,
-                userRegistration: Event.Status?,
                 pages: List<PageModel>?,
+                members : List<MemberModel>?,
                 partners: List<PartnerModel>?,
                 tags : List<Tag>,
-                userAgreement: String?
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
                 event: EventNew?,
                 userRegistration: Event.Status?
-                /*event: EventData,
-                userRegistration: Event.RegistrationStatus?*/
         )
 
 
@@ -47,6 +44,12 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventAddedToFavoriteMessage()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun changeOrganizationSubscription(isSubscribed: Boolean)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showShare(eventId: String)
 
@@ -66,8 +69,7 @@ interface AboutEventContractNew {
         fun showMap(mapInfo: MapInfo?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
-
+        fun setSubEvents(isApproved : Boolean, subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -75,7 +77,7 @@ interface AboutEventContractNew {
         fun onPageClick(page: Int/*EventPage*/)
         fun onPartnerClick(partner: Int/*EventParther*/)
         fun onRefreshRequest()
-        fun onChangeFavoriteClick()
+
         fun onOrganizationClick(organization: String)
 
         fun onActionCancel()
@@ -89,7 +91,8 @@ interface AboutEventContractNew {
         fun onTagSelected()
 
         fun onShowEventActivitiesClick()
-
+        fun onAddOrganizationToFavoriteClick()
+        fun onAddEventToFavoriteClick()
         fun onCreateEventSubscriptionClick()
         fun onDeleteEventSubscriptionClick()
     }

@@ -1,77 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userSpeakerBarLayout"
-        android:id="@+id/list_speakers_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:paddingBottom="40dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="1"
-        tools:listitem="@layout/item_event_detail_image_block" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        app:layout_constraintTop_toTopOf="parent"
-        app:elevation="0dp"
-        android:id="@+id/userSpeakerBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
-
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:elevation="10dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_speakers_content"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingBottom="40dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_event_detail_image_block" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/white"
-            app:contentInsetStart="0dp">
+            app:elevation="0dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white"
+                android:elevation="10dp"
+                app:contentInsetStart="0dp">
 
-                <ImageView
-                    android:id="@+id/ivBack"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/custom_toolbar_btn_background_selectable"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_back_black"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/toolbar_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnAddToFavorite"
-                    android:visibility="invisible"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="155dp"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/custom_btn_add_favorites_selectable"
-                    android:minHeight="@dimen/auth_button_min_height"
-                    android:text="@string/add_to_favorites"
-                    android:textAllCaps="false"
-                    android:textColor="#BE9B72"
-                    android:textSize="11sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    <ImageView
+                        android:id="@+id/iv_back"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/custom_toolbar_btn_background_selectable"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_back_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_go_to_profile"
+                        fontPath="fonts/sf_pro_text_semibold.ttf"
+                        android:layout_width="155dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/custom_btn_add_favorites_selectable"
+                        android:text="@string/go_to_profile"
+                        android:textAllCaps="false"
+                        android:textColor="#BE9B72"
+                        android:textSize="11sp"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/iv_add_To_favorite" />
+
+                    <ImageView
+                        android:id="@+id/iv_add_To_favorite"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                        android:padding="9dp"
+                        android:src="@drawable/ic_star"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.MaterialToolbar>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
 
-    </com.google.android.material.appbar.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

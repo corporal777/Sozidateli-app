@@ -39,6 +39,7 @@
             android:letterSpacing="-0.02"
             android:textColor="@color/white"
             android:textSize="15sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnEventAction"
@@ -56,15 +57,16 @@
             android:letterSpacing="-0.02"
             android:textColor="@color/white"
             android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@id/address_ln"
+            app:layout_constraintBottom_toTopOf="@id/format_ln"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvRequestsDate"
             tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
 Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. " />
 
+
         <LinearLayout
-            android:id="@+id/address_ln"
+            android:id="@+id/format_ln"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -75,7 +77,39 @@
                 fontPath="fonts/sf_pro_text_semibold.ttf"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="Адрес:"
+                android:text="@string/format_label"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:id="@+id/tv_format"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix"
+                tools:text="Конференция" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/address_ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/format_ln">
+
+            <TextView
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/address_label"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 tools:ignore="MissingPrefix" />

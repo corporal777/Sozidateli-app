@@ -9,7 +9,7 @@ import com.example.data.models.*
 import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
-import com.example.ui.subevent.SubeventFragmentArgs
+import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.subevent.items.SubEventItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -128,8 +128,8 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
-        val args = SubeventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
-        findNavController().navigate(R.id.subevent_fragment, args)
+        val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+        findNavController().navigate(R.id.subEvent_fragment, args)
     }
 
     override fun showAllTags() {

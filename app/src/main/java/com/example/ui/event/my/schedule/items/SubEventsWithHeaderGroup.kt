@@ -13,30 +13,45 @@ import com.xwray.groupie.Section
 
 class SubEventsWithHeaderGroup(
     val firstItem: Boolean,
+    val id: String,
     val title: String?,
     val image: String?,
     val date: String,
-    val listEvents: List<EventActivityModel>
+    val listEvents: List<EventActivityModel>,
+    val onHeaderClick: (id: String) -> Unit,
+    val onSubEventClickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
 
     private val mDataItem = Section()
     private val mHeaderItem = Section()
+    private val mNoParamTitle = "По данным параметрам нет событий"
 
     init {
-        mHeaderItem.apply {
-            if (firstItem) {
-                update(listOf(EventActivityDateItem(date), EventImageHeaderItem(title, image)))
-            } else {
-                update(listOf(EventActivityDateItem(date)))
+        if (title == "No Event") {
+            mHeaderItem.add(EventActivityDateItem(date))
+            mDataItem.add(NoSubEventItem(mNoParamTitle))
+            add(mHeaderItem)
+            add(mDataItem)
+        } else {
+            mHeaderItem.apply {
+                if (firstItem) {
+                    update(listOf(EventActivityDateItem(date), EventImageHeaderItem(title, image) {
+                        onHeaderClick(id)
+                    }))
+                } else {
+                    update(listOf(EventActivityDateItem(date)))
+                }
             }
+            add(mHeaderItem)
+            mDataItem.update(
+                listEvents.map { data ->
+                    EventActivityItem(id, data, emptyList(), onSubEventClickListener, false)
+                }
+            )
+            add(mDataItem)
         }
-        add(mHeaderItem)
-        mDataItem.update(
-            listEvents.map { data ->
-                EventActivityItem(data, emptyList(), null)
-            }
-        )
-        add(mDataItem)
+
+
     }
 
     override fun getGroup(position: Int): Group {

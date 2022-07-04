@@ -109,6 +109,10 @@ interface NewApi {
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
     //+
+    @GET("v1/user-calendar/events")
+    fun getUserCalendarEvents(@Query("binds") binds: String): Maybe<ApiNewResponse<List<EventNew>>>
+
+    //+
     @GET ("v1/event/event-list")
     fun getOrganizationEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 

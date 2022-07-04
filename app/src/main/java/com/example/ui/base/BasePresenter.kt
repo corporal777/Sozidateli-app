@@ -13,6 +13,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import io.reactivex.observers.DisposableMaybeObserver
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.plugins.RxJavaPlugins
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
@@ -233,6 +235,7 @@ open class BasePresenter<V : BaseContract.View>
             createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
         )
     }
+
 
     fun <T> Flowable<T>.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,

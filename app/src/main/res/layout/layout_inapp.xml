@@ -90,7 +90,7 @@
                 android:id="@+id/btnNegative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_button_cancel"
+                android:background="@drawable/btn_background_cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/button_cancel_text"
                 android:textSize="16sp"

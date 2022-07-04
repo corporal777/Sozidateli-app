@@ -84,6 +84,15 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun showBadge(show : Boolean)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun setMainTheme()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun setStartDestinationRecommendationsFragment()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun setStartDestinationAuthFragment()
     }
 
     interface Presenter : BaseContract.Presenter {

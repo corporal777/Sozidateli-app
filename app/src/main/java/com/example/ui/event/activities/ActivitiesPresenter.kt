@@ -13,13 +13,13 @@ import com.example.data.models.*
 import com.example.extensions.*
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.search.SearchInterface
+import com.example.util.getDaysFromDateToDate
+import com.example.util.getDaysFromMondayToSundayNew
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarLoadingDialog
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -41,13 +41,9 @@ class ActivitiesPresenter
     var daysSize = 0
     var canDoActions = false
 
-
     var firstAttach = true
     private lateinit var mFirstDay: EventScheduleCalendarDay
     private lateinit var mLastDay: EventScheduleCalendarDay
-
-    private var mStartEventDate = ""
-    private var mEndEventDate = ""
 
     private val mSubEventsMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
     private var mShortSubEventsMap = mapOf<String, List<EventActivityModel>>()
@@ -61,20 +57,13 @@ class ActivitiesPresenter
             .subscribeSimple {
                 Log.e("ActivitiesFragment", "Events: " + it.activity.activities.size)
                 userEvent = it
-                mStartEventDate = userEvent.eventInfo.event.holdingDate?.from ?: ""
-                mEndEventDate = userEvent.eventInfo.event.holdingDate?.to ?: ""
                 if (currentDay == null) {
                     findDay()
                 }
                 canDoActions = userEvent.eventInfo.event.binds?.currentUserRegistration != null
                 invalidateData()
+                viewState.setSchemeButton(userEvent.eventInfo.event.destinationScheme)
             }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun attachView(view: ActivitiesContract.View?) {
-        super.attachView(view)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -88,111 +77,14 @@ class ActivitiesPresenter
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getAllDates(): ArrayList<String> {
-        val mStartDate = defaultServerDateFormatter.parse(mStartEventDate).time
-        val mEndDate = defaultServerDateFormatter.parse(mEndEventDate).time
 
-        var mDayOfWeek = mStartDate.calendar().get(Calendar.DAY_OF_WEEK)
-        var mStartDay = mStartDate.calendar().get(Calendar.DAY_OF_MONTH) - 1
+        val subEvents =
+            userEvent.eventInfo.event.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
+        val mStartEventDate = subEvents?.get(0)?.holdingDate?.from ?: ""
+        val mEndEventDate = subEvents?.last()?.holdingDate?.from ?: ""
+        //return getDaysFromMondayToSundayNew(mStartEventDate, mEndEventDate)
 
-
-        val mDates = arrayListOf<String>()
-        val calStart = mStartDate.calendar()
-        val calEnd = mEndDate.calendar()
-
-        //val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        val maxDayStart = calStart.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-        if (mDayOfWeek == 2) {
-            for (i in mStartDay until maxDayStart) {
-                calStart[Calendar.DAY_OF_MONTH] = i + 1
-                mDates.add(df.format(calStart.time))
-            }
-        } else {
-            when {
-                getMonday(mDayOfWeek) < mStartDay || getMonday(mDayOfWeek) == mStartDay -> {
-                    mStartDay -= getMonday(mDayOfWeek)
-                    for (i in mStartDay until maxDayStart) {
-                        calStart[Calendar.DAY_OF_MONTH] = i + 1
-                       mDates.add(df.format(calStart.time))
-                    }
-
-                }
-                else -> {
-
-                    val calStartDatePrev = Calendar.getInstance()
-                    var firstMondayPrevDate = 0
-                    var lastDayOfPrevDate = 0
-                    calStartDatePrev.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                    calStartDatePrev.set(Calendar.DAY_OF_WEEK_IN_MONTH, 5);
-                    calStartDatePrev.set(Calendar.MONTH, calStart.get(Calendar.MONTH) - 1);
-                    calStartDatePrev.set(Calendar.YEAR, calStart.get(Calendar.YEAR));
-
-                    if (calStartDatePrev.get(Calendar.MONTH) != calStart.get(Calendar.MONTH)) {
-                        firstMondayPrevDate = calStartDatePrev.get(Calendar.DATE)
-                        lastDayOfPrevDate = calStartDatePrev.getActualMaximum(Calendar.DAY_OF_MONTH)
-                    } else {
-                        calStartDatePrev.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                        calStartDatePrev.set(Calendar.DAY_OF_WEEK_IN_MONTH, 4);
-                        calStartDatePrev.set(Calendar.MONTH, calStart.get(Calendar.MONTH) - 1);
-                        calStartDatePrev.set(Calendar.YEAR, calStart.get(Calendar.YEAR));
-                        firstMondayPrevDate = calStartDatePrev.get(Calendar.DATE)
-                        lastDayOfPrevDate = calStartDatePrev.getActualMaximum(Calendar.DAY_OF_MONTH)
-                    }
-
-                    for (i in firstMondayPrevDate - 1 until lastDayOfPrevDate) {
-                        calStartDatePrev[Calendar.DAY_OF_MONTH] = i + 1
-                        if (!mDates.contains(df.format(calStartDatePrev.time))) {
-                            mDates.add(df.format(calStartDatePrev.time))
-                        }
-
-                    }
-                    for (i in 0 until maxDayStart) {
-                        calStart[Calendar.DAY_OF_MONTH] = i + 1
-                        if (!mDates.contains(df.format(calStart.time))) {
-                            mDates.add(df.format(calStart.time))
-                        }
-                    }
-
-                }
-            }
-        }
-
-        val mEndMonth = mEndDate.calendar().get(Calendar.MONTH)
-        var mEndDayOfWeek = mEndDate.calendar().get(Calendar.DAY_OF_WEEK)
-        var mEndDay = mEndDate.calendar().get(Calendar.DAY_OF_MONTH)
-
-        if (mEndDayOfWeek == 1) {
-            for (i in 0 until mEndDay) {
-                calEnd[Calendar.DAY_OF_MONTH] = i + 1
-                if (!mDates.contains(df.format(calEnd.time)))
-                    mDates.add(df.format(calEnd.time))
-            }
-        } else {
-            val maxDayEnd = calEnd.getActualMaximum(Calendar.DAY_OF_MONTH)
-            for (i in 0 until maxDayEnd) {
-                calEnd[Calendar.DAY_OF_MONTH] = i + 1
-                if (!mDates.contains(df.format(calEnd.time)))
-                   mDates.add(df.format(calEnd.time))
-
-                if (calEnd[Calendar.DAY_OF_MONTH] > mEndDay && calEnd.get(Calendar.DAY_OF_WEEK) == 1) {
-                    break
-                }
-                if (calEnd[Calendar.DAY_OF_MONTH] == maxDayEnd && calEnd.get(Calendar.DAY_OF_WEEK) != 1) {
-                    val currentDW = (7 - calEnd.get(Calendar.DAY_OF_WEEK)) + 1
-                    val calNext = Calendar.getInstance()
-                    calNext.set(Calendar.MONTH, calEnd.get(Calendar.MONTH) + 1)
-                    for (k in 0 until currentDW) {
-                        calNext[Calendar.DAY_OF_MONTH] = k + 1
-                        if (!mDates.contains(df.format(calNext.time)))
-                           mDates.add(df.format(calNext.time))
-                    }
-                }
-            }
-        }
-
-        return mDates
+        return getDaysFromDateToDate(mStartEventDate, mEndEventDate)
     }
 
 
@@ -208,8 +100,9 @@ class ActivitiesPresenter
                 })
 
                 getAllDates().let { allDates ->
-                    mDays = userEventData.createCalendarDaysNew(allDates.map {
 
+                    mDays = userEventData.createCalendarDaysNew(allDates.map {
+                        Log.e("DATE", it)
                         val mList = LinkedList<EventActivityModel>()
                         val date = defaultServerDateFormatter.parse(it)
                         mList.addAll(userEvent.activity.activities.filter { x ->
@@ -301,8 +194,8 @@ class ActivitiesPresenter
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
         viewState.apply {
-            selectDay(day)
             scrollContent(day)
+            selectDay(day)
         }
         //invalidateDay()
     }
@@ -343,12 +236,13 @@ class ActivitiesPresenter
             }
         }
             .performOnBackgroundOutOnMain()
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onComplete = {
+                    val canShow =
+                        userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
                     viewState.apply {
                         Log.e("ActivitiesFragment", "Events: " + mOnlySubEventsMap.size)
-                        updateSubEventsNew(mOnlySubEventsMap, selectedTags)
+                        updateSubEventsNew(canShow, mOnlySubEventsMap, selectedTags)
                     }
                 })
     }
@@ -359,10 +253,12 @@ class ActivitiesPresenter
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
         var mFilteredMap = mSubEventsMap
+        val canShow =
+            userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
 
         viewState.apply {
             Log.e("ActivitiesFragment", "Events: " + mFilteredMap.size)
-            setSubEvents(day, mFilteredMap, selectedTags)
+            setSubEvents(canShow, day, mFilteredMap, selectedTags)
         }
     }
 
@@ -513,11 +409,11 @@ class ActivitiesPresenter
         return mFirstDay
     }
 
-    fun getLastDay() :EventScheduleCalendarDay {
+    fun getLastDay(): EventScheduleCalendarDay {
         return mLastDay
     }
 
-    fun getCurrentDay(day: EventScheduleCalendarDay): EventScheduleCalendarDay{
+    fun getCurrentDay(day: EventScheduleCalendarDay): EventScheduleCalendarDay {
         return day
     }
 

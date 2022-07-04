@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="auth_logo_margin_top">64dp</dimen>
     <dimen name="auth_logo_height">50dp</dimen>
     <dimen name="auth_button_min_height">52dp</dimen>
     <dimen name="auth_label_text_size">20sp</dimen>
     <dimen name="auth_block_label_text_size">15sp</dimen>
     <dimen name="auth_block_login_label_text_size">18sp</dimen>
+
+
+    <!--  new margins  -->
+    <dimen name="event_added_to_favorite_dialog_size">220dp</dimen>
+    <dimen name="event_added_to_favorite_dialog_icon_size">75dp</dimen>
+
+    <dimen name="sub_event_description_text_size">13sp</dimen>
+    <dimen name="sub_event_description_show_more_text_size">15sp</dimen>
+    <!--  new margins  -->
 </resources>

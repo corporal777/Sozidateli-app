@@ -15,11 +15,9 @@ import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestEditItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.ui.base.BaseFragment
-import com.example.ui.state.UserState
 import com.example.ui.state.base.MainInfoFragmentArgs
-import com.example.ui.state.max.MaxStateMainInfoFragmentDirections
 import com.example.ui.state.max.MaxStateScreenType
-import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -111,7 +109,7 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
         when (Utils.maxStateScreen(presenter.getUserData())) {
             MaxStateScreenType.EDUCATION ->
                 findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
-            MaxStateScreenType.DONE -> BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
+            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
                     .setSelectCallback {
                         when (presenter.screen) {
                             1 -> findNavController().popBackStack(R.id.profile_fragment, false)

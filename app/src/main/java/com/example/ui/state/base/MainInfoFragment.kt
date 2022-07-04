@@ -1,7 +1,6 @@
 package com.example.ui.state.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -10,28 +9,25 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
-import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
 import com.example.extensions.findItemBy
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.MainInfoEditItem
-import com.example.holders.MaxStateMainInfoEditItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
-import com.example.ui.userprofile.editfile.UserEditFileFragment
-import com.example.ui.views.*
+import com.example.ui.views.AddPhoneEmailDialog
+import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.RegisterDataType
+import com.example.ui.views.SetPasswordDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.suggestFieldView.DaDataUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.Utils.maxStateScreen
-import com.example.util.firstLetterToUppercase
-import com.example.util.phoneToServer
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_register_email.*
@@ -202,10 +198,7 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
                                 .setScreen(presenter.screen)
                         )
                     MaxStateScreenType.DONE -> {
-                        BaseStateDialog(
-                            resources.getString(R.string.you_got_max_state),
-                            requireActivity()
-                        )
+                        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
                             .setSelectCallback {
                                 when (presenter.screen) {
                                     1 -> findNavController().popBackStack(
@@ -235,10 +228,9 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
     }
 
     private fun baseActionsWithSuccess() {
-        BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
-            .setSelectCallback {
-                baseActions()
-            }
+        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_base_state)).setSelectCallback {
+            baseActions()
+        }
     }
 
     private fun baseActions() {

@@ -5,13 +5,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
@@ -26,7 +26,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -42,14 +42,12 @@ import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
+import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.about.old.AboutEventFragment
-import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragmentNew
@@ -60,8 +58,6 @@ import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
-import com.example.ui.qrscanner.QrScannerToAuthWebFragment
-import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
@@ -69,13 +65,11 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
 import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
@@ -114,6 +108,33 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navFragmentsLifecycleCallback =
         object : FragmentManager.FragmentLifecycleCallbacks() {
+
+            override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
+                super.onFragmentPaused(fm, f)
+                if (f is AboutEventFragmentNew) {
+                    cancelWindowTransparency()
+                }
+            }
+
+            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                super.onFragmentStarted(fm, f)
+                if (f is AboutEventFragmentNew) {
+                    setWindowTransparency()
+                }
+                if (f is SplashFragment) {
+                    hideToolbar()
+                }
+
+            }
+
+            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                super.onFragmentDestroyed(fm, f)
+                if (f is AboutEventFragmentNew) {
+                    cancelWindowTransparency()
+                }
+                if (f is StoriesFragment) presenter.onStoriesComplete()
+            }
+
             override fun onFragmentViewCreated(
                 fm: FragmentManager,
                 f: Fragment,
@@ -142,14 +163,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     else -> hideNavBar()
                 }
 
-                setupNavBarItems(f)
-
-                if (f is StoriesFragment || f is AboutEventFragment || f is AboutEventFragmentNew || f is AuthorizationFragment || f is AuthWebsiteFragment || f is QrScannerToAuthWebFragment || f is WelcomeFragment) {
-                    root.updateMargin(top = 0)
-                } else {
-                    root.updateMargin(top = 80)
-                }
-
                 if (f is ToolbarFragment) {
                     supportActionBar?.title = f.title
                     (supportActionBar as? ToolbarContentActionBar)?.apply {
@@ -161,6 +174,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 } else {
                     hideToolbar()
                 }
+
+                setupNavBarItems(f)
 
                 val isLightStatus: Boolean
                 val bg: Drawable?
@@ -182,10 +197,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 root.background = bg
             }
 
-            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentDestroyed(fm, f)
-                if (f is StoriesFragment) presenter.onStoriesComplete()
-            }
+
         }
 
     private val backClick = object : OnBackPressedCallback(true) {
@@ -207,12 +219,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
-    private lateinit var inappBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var inAppBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private var noInternetDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setMainTheme()
+        //setMainTheme()
         super.onCreate(savedInstanceState)
         super.setSupportActionBar(toolbar)
         super.getSupportActionBar()?.apply {
@@ -222,11 +234,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 ToolbarContentView(this@MainActivity),
                 ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             )
-
         }
-        IS_EXPANDED = true
-        setWindowTransparency()
 
+        val progressBar = CustomProgressView(this@MainActivity)
+        progressBar.setSize(35.dp)
+        progressBar.setProgressColor(
+            ContextCompat.getColor(
+                this@MainActivity,
+                R.color.main_brown_color_new
+            )
+        )
+        progressViewContainer.addView(progressBar, 0)
+
+        IS_EXPANDED = true
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
             navFragmentsLifecycleCallback,
             false
@@ -234,7 +254,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         onBackPressedDispatcher.addCallback(this, backClick)
         setupMainNavBar()
         subscribeOnNotificationChanel()
-        inappBehavior = ScrollingChildBehavior.from(inappContainer).apply {
+        inAppBehavior = ScrollingChildBehavior.from(inappContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
@@ -252,6 +272,24 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
 
         ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
+    }
+
+    override fun setStartDestinationRecommendationsFragment() {
+        val navHostFragment =
+            (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
+        val inflater = navHostFragment.navController.navInflater
+        val graph = inflater.inflate(R.navigation.main_navigation)
+        graph.startDestination = R.id.recommendations_fragment
+        navHostFragment.navController.graph = graph
+    }
+
+    override fun setStartDestinationAuthFragment() {
+        val navHostFragment =
+            (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
+        val inflater = navHostFragment.navController.navInflater
+        val graph = inflater.inflate(R.navigation.main_navigation)
+        graph.startDestination = R.id.authorization_fragment
+        navHostFragment.navController.graph = graph
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
@@ -285,7 +323,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (Intent.ACTION_VIEW == appLinkAction) {
 
             QR_CODE_TO_AUTH_WEB = intent.dataString ?: ""
-            var mCode = intent.dataString ?: ""
+            val mCode = intent.dataString ?: ""
 
             if (!mCode.isNullOrEmpty() || mCode.contentEquals("code") || mCode.contentEquals("qr")) {
                 presenter.openAuthWebsiteFragment(mCode)
@@ -455,13 +493,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showDialogHasMaxState() {
-        BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
-            .setSelectCallback {}
+        MessageDialogWithBrownButton(this, getString(R.string.you_got_max_state)).setSelectCallback {}
+//        BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
+//            .setSelectCallback {}
     }
 
     override fun showDialogHasBaseState() {
-        BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
-            .setSelectCallback {}
+        MessageDialogWithBrownButton(this, getString(R.string.you_got_base_state)).setSelectCallback {}
+//        BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
+//            .setSelectCallback {}
     }
 
     override fun showChat(chatId: String, userName: String) {
@@ -527,6 +567,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
 
     override fun showRecommendations() {
+        window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.main_background)))
         if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment) {
             findNavController().navigate(
                 R.id.recommendations_fragment, null, NavOptions.Builder()
@@ -640,11 +681,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             flNotificationContainer.updatePadding(bottom = llButtons.height - llButtons.paddingTop / 2)
         }
 
-        inappBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        inAppBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun hideInapp() {
-        inappBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun createNotificationFragment(inapp: Notification): NotificationFragment {
@@ -712,8 +753,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onBackPressed() {
-        if (inappBehavior.state == BottomSheetBehavior.STATE_HIDDEN) super.onBackPressed()
-        else inappBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        if (inAppBehavior.state == BottomSheetBehavior.STATE_HIDDEN) super.onBackPressed()
+        else inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun showBackButton(show: Boolean) {
@@ -858,28 +899,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
 
-    private fun showNotificationBadge(canShow: Boolean) {
-        val bottomMenu = mainNavBar.getChildAt(0) as? BottomNavigationMenuView
-        val notificationItem = bottomMenu?.getChildAt(3) as? BottomNavigationItemView
-
-        val badge = LayoutInflater.from(this)
-            .inflate(R.layout.badge_layout_new, bottomMenu, false)
-
-        val badgeLayout: FrameLayout.LayoutParams =
-            FrameLayout.LayoutParams(badge?.layoutParams!!).apply {
-                gravity = Gravity.CENTER_HORIZONTAL
-                topMargin = resources.getDimension(R.dimen.design_bottom_navigation_margin).toInt()
-                leftMargin = 10.dp
-            }
-        if (canShow) {
-            notificationItem?.addView(badge, badgeLayout)
-        } else {
-            notificationItem?.removeView(badge)
-        }
-
-
-    }
-
     private fun setupNavBarItems(f: Fragment) {
         when (f) {
             is RecommendationsFragment -> {
@@ -905,13 +924,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mainNavBar.visibility = View.GONE
     }
 
-    override fun getLoadingView(): View = flLoading
+    override fun getLoadingView(): View {
+        progress_white_background.isVisible = true
+        return flLoading
+    }
 
-    override fun getProgressBarLoadingView(): View = progressBarLoading
+    override fun getProgressBarLoadingView(): View {
+        progress_white_background.isVisible = false
+        return flLoading
+    }
 
     override fun layout() = R.layout.activity_main
 
-    private fun setMainTheme() {
+    override fun setMainTheme() {
         window.navigationBarColor =
             navBarColorDefault
         setTheme(R.style.AppTheme)

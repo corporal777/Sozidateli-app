@@ -11,26 +11,27 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class QrScannerPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository,
-        private val rxPermissions: RxPermissions,
-        appData: AppData
+    private val eventRepository: EventRepository,
+    private val rxPermissions: RxPermissions,
+    appData: AppData
 ) : BasePresenter<QrScannerContract.View>(appData), QrScannerContract.Presenter {
 
     override fun attachView(view: QrScannerContract.View?) {
         super.attachView(view)
         compositeDisposable += rxPermissions
-                .request(Manifest.permission.CAMERA)
-                .subscribe({
-                    if (it) viewState.startPreview()
-                    else viewState.showNoPermission()
-                }, {
-                    it.printStackTrace()
-                })
+            .request(Manifest.permission.CAMERA)
+            .subscribe({
+                if (it) viewState.startPreview()
+                else viewState.showNoPermission()
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun onDecodeQrCode(code: String) {
@@ -39,18 +40,23 @@ class QrScannerPresenter
         val parsedCode = codee ?: uri.lastPathSegment
         if (parsedCode == null) viewState.showEventNotFoundError()
         else {
-            compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+            compositeDisposable += eventRepository.getEventsList(
+                mapOf(
+                    EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
                     EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-                    EventNew.EVENT_CODE to parsedCode))
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        if (it.data.isNotEmpty())
-                            viewState.showEvent(it.data[0]?.id.toString())
-                    }, {
-                        viewState.showEventNotFoundError()
-                        it.printStackTrace()
-                    })
+                    EventNew.EVENT_CODE to parsedCode
+                )
+            )
+                .performOnBackgroundOutOnMain()
+                .withProgressBarLoadingDialog(viewState)
+                //.withLoadingDialog(viewState)
+                .subscribe({
+                    if (it.data.isNotEmpty())
+                        viewState.showEvent(it.data[0]?.id.toString())
+                }, {
+                    viewState.showEventNotFoundError()
+                    it.printStackTrace()
+                })
         }
     }
 

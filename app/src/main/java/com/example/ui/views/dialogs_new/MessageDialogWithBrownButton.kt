@@ -15,7 +15,9 @@ class MessageDialogWithBrownButton(val context: Context, val message: String) {
 
     private val mBinding = DialogMessageWithGrayButtonBinding.inflate(LayoutInflater.from(context))
 
-    private lateinit var mAlertDialog : AlertDialog
+    private var clickAction: () -> Unit = {}
+
+    private lateinit var mAlertDialog: AlertDialog
     private val mBuilder = AlertDialog.Builder(context)
 
     init {
@@ -26,6 +28,7 @@ class MessageDialogWithBrownButton(val context: Context, val message: String) {
             text = message
         }
         mBinding.btnAction.setOnClickListener {
+            clickAction.invoke()
             mAlertDialog.dismiss()
         }
 
@@ -34,6 +37,11 @@ class MessageDialogWithBrownButton(val context: Context, val message: String) {
         val inset = InsetDrawable(back, 50)
         mAlertDialog.window?.setBackgroundDrawable(inset)
         mAlertDialog.show()
+    }
+
+    fun setSelectCallback(block: () -> Unit): MessageDialogWithBrownButton {
+        clickAction = block
+        return this
     }
 
 }

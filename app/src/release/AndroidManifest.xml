@@ -33,6 +33,11 @@
                     android:host="sozidateli.ru"
                     android:pathPrefix="/event"
                     android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/auth"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 

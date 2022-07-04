@@ -8,13 +8,14 @@ import setOnClickListener
 
 class EventImageHeaderItem(
     val title: String?,
-    val image: String?
+    val image: String?,
+    val onHeaderClick: () -> Unit
 ) : BindableItem<ItemEventImageHeaderBinding>() {
 
     override fun bind(viewBinding: ItemEventImageHeaderBinding, position: Int) {
         viewBinding.apply {
             cardHeader.setOnClickListener {
-
+                onHeaderClick.invoke()
             }
             eventTitle.text = title
             eventImage.setImage(image)

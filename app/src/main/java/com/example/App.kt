@@ -44,7 +44,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
         // You should not init your app in this process.
 //            return
 //        }
-//        LeakCanary.install(this)
+        //LeakCanary.install(this)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

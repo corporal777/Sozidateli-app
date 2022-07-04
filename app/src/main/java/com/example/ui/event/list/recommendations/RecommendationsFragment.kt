@@ -80,15 +80,11 @@ class RecommendationsFragment : BaseFragment(), RecommendationsContract.View {
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-       // override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-       // override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {}
-
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
             presenter.onShowEventClick(event)
         }
-       // override fun onShowFilterClick(format: Int) {}
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 

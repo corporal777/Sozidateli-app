@@ -28,8 +28,8 @@ import com.example.holders.ProfileDataAdditionalFilesEditNewGroup
 import com.example.holders.ProfileDataFileEditItem
 import com.example.holders.ProfileDataFileItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BaseStateDialog
 import com.example.ui.views.InfoDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -301,9 +301,8 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
                     R.id.maxStateEducationFragment,
                     bundleOf("screen" to presenter.screen)
                 )
-            MaxStateScreenType.DONE -> BaseStateDialog(
-                resources.getString(R.string.you_got_max_state),
-                requireActivity()
+            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(requireContext(),
+                resources.getString(R.string.you_got_max_state)
             )
                 .setSelectCallback {
                     when (presenter.screen) {

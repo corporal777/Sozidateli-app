@@ -8,15 +8,15 @@ import com.xwray.groupie.NestedGroup
 open class SpeakerGroup(
     private var speaker: MemberModel/*Speaker*/,
     private val onSpeakerClick: (MemberModel/*Speaker*/) -> Unit,
-    private val onFavoriteChangeClick: (MemberModel/*Speaker*/) -> Unit
+    //private val onFavoriteChangeClick: (MemberModel/*Speaker*/) -> Unit
 ) : NestedGroup() {
 
 
     private val subEventSpeakerItem = SubEventSpeakerItem(
         speaker.binds?.user?.id ?: 0,
         speaker.binds?.user?.nameLastName ?: "",
-        speaker.binds?.user?.address?.city ?: "Moscow",
-        speaker.description,
+        speaker.binds?.user?.address?.city ?: "",
+        speaker.organizationAndPosition,
         speaker.binds?.user?.image?.uri,
         speaker.status ?: "",
         speaker.binds?.user?.state?.isRegistered ?: false
@@ -24,17 +24,17 @@ open class SpeakerGroup(
         registerGroupDataObserver(this@SpeakerGroup)
     }
 
-    private val userItem = UserItem(
-        speaker.binds?.user?.id ?: 0,
-        speaker.binds?.user?.fullName ?: "",
-        speaker.description/*binds?.user?.address?.city*/,
-        speaker.binds?.user?.image?.uri,
-        { onSpeakerClick(speaker) },
-        speaker.binds?.user?.getUserSubscribeAction(),
-        { onFavoriteChangeClick(speaker) }
-    ).apply {
-        registerGroupDataObserver(this@SpeakerGroup)
-    }
+//    private val userItem = UserItem(
+//        speaker.binds?.user?.id ?: 0,
+//        speaker.binds?.user?.fullName ?: "",
+//        speaker.description/*binds?.user?.address?.city*/,
+//        speaker.binds?.user?.image?.uri,
+//        { onSpeakerClick(speaker) },
+//        speaker.binds?.user?.getUserSubscribeAction(),
+//        { onFavoriteChangeClick(speaker) }
+//    ).apply {
+//        registerGroupDataObserver(this@SpeakerGroup)
+//    }
     /*private val userItem = UserItem(
             speaker.user.user_id,
             speaker.user.fullName,

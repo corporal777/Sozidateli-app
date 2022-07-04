@@ -50,7 +50,9 @@ data class EventNew(
     val image: EventUserAgreement? = null,
     val address: NewUserAddress? = null,
     var binds: EventBindsModel? = null,
-    var userRegistration: Event.RegistrationStatus? = null
+    var userRegistration: Event.RegistrationStatus? = null,
+    @SerializedName("destination-scheme")
+    val destinationScheme : List<String>? = null
 ) : Parcelable {
 
     companion object {
@@ -353,6 +355,8 @@ data class MemberModel(
     val role: String? = null,
     val status: String? = null,
     val description: String? = null,
+    val isLead : Boolean? = null,
+    val isNewUser : Boolean? = null,
     @SerializedName("organizationAndPosition")
     val organizationAndPosition: String? = null,
     val binds: MemberBindsModel? = null

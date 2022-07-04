@@ -11,12 +11,12 @@
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeToRefresh"
+        android:id="@+id/swipe_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/eventContentList"
+            android:id="@+id/event_content_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
@@ -30,7 +30,7 @@
 
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/aboutEventAppBar"
+        android:id="@+id/about_event_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
@@ -38,19 +38,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/aboutEventToolbar"
+            android:id="@+id/about_event_toolbar"
             android:layout_width="match_parent"
             android:layout_height="85dp"
             android:background="@null"
             app:contentInsetStart="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/tbContent"
+                android:id="@+id/tb_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/tbBackground"
+                    android:id="@+id/tb_background"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -67,11 +67,11 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnAddToCalendar"
+                    android:id="@+id/btn_add_to_calendar"
                     fontPath="fonts/sf_pro_text_semibold.ttf"
                     android:layout_width="145dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/custom_btn_add_to_calendar_background"
                     android:minHeight="@dimen/auth_button_min_height"
@@ -80,8 +80,20 @@
                     android:textColor="@android:color/white"
                     android:textSize="11sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/iv_share" />
+                    app:layout_constraintEnd_toStartOf="@id/iv_add_to_favorite" />
 
+                <ImageView
+                    android:id="@+id/iv_add_to_favorite"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="9dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/ic_star_btn_background"
+                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                    android:src="@drawable/ic_star"
+                    app:tint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/iv_share" />
 
                 <ImageView
                     android:id="@+id/iv_share"

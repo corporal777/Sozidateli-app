@@ -34,13 +34,13 @@ class CalendarHorizontalListItem(
 
     fun changeDay(day: EventScheduleCalendarDay): Boolean {
         var isDay = false
-        items.find { it.day == day }?.let {
+        items.find { it.day.millis == day.millis }?.let {
             isDay = true
         }
         return isDay
     }
 
-    fun getFirstItem() : EventScheduleCalendarDay{
+    fun getFirstItem(): EventScheduleCalendarDay {
         return items[0].day
     }
 
@@ -67,20 +67,24 @@ class CalendarHorizontalListItem(
     }
 
 
-    fun selectDayNew(day: EventScheduleCalendarDay) {
+    fun selectDayNew(day: EventScheduleCalendarDay): Boolean {
+        var isItem = false
         items.find { it.day.millis == day.millis }?.let {
+            isItem = true
             if (!it.isSelected) {
                 it.isSelected = true
                 it.notifyChanged()
             }
         }
+
         deselectAllExceptNew(day)
+        return isItem
     }
 
 
-    fun deselectAllExceptNew(except: EventScheduleCalendarDay) {
+    private fun deselectAllExceptNew(except: EventScheduleCalendarDay) {
         items.forEach {
-            if (it.day.dayOfMonth != except.dayOfMonth && it.isSelected) {
+            if (it.day.millis != except.millis && it.isSelected) {
                 it.isSelected = false
                 it.notifyChanged()
             }

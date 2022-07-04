@@ -10,7 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.*
 import com.example.R
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.BaseStateDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.REQUEST_CAMERA
 import com.example.util.REQUIRED_CAMERA_PERMISSIONS
 import kotlinx.android.synthetic.main.fragment_auth_web.*
@@ -105,8 +105,6 @@ class QrScannerToAuthWebFragment : BaseFragment(), QrScannerToAuthWebContract.Vi
 
     override fun showErrorScanningMessage() {
         val message = "Не удалось отсканировать"
-        BaseStateDialog(message, requireActivity()).setSelectCallback {
-
-        }
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {  }
     }
 }
