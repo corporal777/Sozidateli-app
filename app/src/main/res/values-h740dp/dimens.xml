@@ -15,5 +15,8 @@
 
     <dimen name="sub_event_description_text_size">13sp</dimen>
     <dimen name="sub_event_description_show_more_text_size">15sp</dimen>
+
+    <dimen name="swipe_distance_start_margin">0dp</dimen>
+    <dimen name="swipe_distance_end_margin">70dp</dimen>
     <!--  new margins  -->
 </resources>

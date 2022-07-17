@@ -153,7 +153,7 @@ class RegisterEmailNewPresenter
         viewState.showEmailError(false)
         if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
             loginType = "phone"
-            Utils.newPhoneValidator(context, email)
+            Utils.newPhoneValidator(email)
             viewState.changeFieldType(loginType, false)
         } else {
             loginType = "email"
@@ -262,7 +262,7 @@ class RegisterEmailNewPresenter
         val firstNameValid = !firstName.isNullOrBlank()
         val lastNameValid = !lastName.isNullOrBlank()
         val passwordValid = password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
-        val emailValid = if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(context, email?: "")
+        val emailValid = if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(email?: "")
         val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
         return firstNameValid
                 && lastNameValid

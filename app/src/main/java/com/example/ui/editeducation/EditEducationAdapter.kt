@@ -29,41 +29,54 @@ import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsMonthYearPicker
+import initDropDownView
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import java.util.*
 
-class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
-                           private val addEducationClick: () -> Unit,
-                           private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit,
-                           private val onRemoveDegreeClickListener: (position: Int) -> Unit,
-                           private val isDataValid: () -> Unit,
-                           private val onRemoveEducationClickListener: (position: Int) -> Unit): ListAdapter<EditEducationModel, ViewHolder<*>>(EditEducationDiffCallback()) {
+class EditEducationAdapter(
+    private val addHigthLevelClick: () -> Unit,
+    private val addEducationClick: () -> Unit,
+    private val hasAcademicDegree: (hasAcademic: Boolean) -> Unit,
+    private val onRemoveDegreeClickListener: (position: Int) -> Unit,
+    private val isDataValid: () -> Unit,
+    private val onRemoveEducationClickListener: (position: Int) -> Unit
+) : ListAdapter<EditEducationModel, ViewHolder<*>>(EditEducationDiffCallback()) {
 
     private lateinit var popupReceiving: EducationPopupWindow
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
         return when (viewType) {
             EDUCATION_LEVEL -> ViewHolder(
-                    ItemEducationLevelBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemEducationLevelBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             HIGHT_LEVEL_ITEM -> ViewHolder(
-                    ItemHightEducationBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemHightEducationBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             ADD_HIGHT_LEVEL -> ViewHolder(
-                    ItemProfileButtonEditNewBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemProfileButtonEditNewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             EDUCATION_ITEM -> ViewHolder(
-                    ItemEditEducationBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemEditEducationBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             else -> ViewHolder(
-                    ItemProfileButtonEditNewBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemProfileButtonEditNewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
         }
     }
 
@@ -71,11 +84,17 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
         when (getItemViewType(position)) {
             EDUCATION_LEVEL -> {
                 val holderEdL = holder as ViewHolder<ItemEducationLevelBinding>
-                setupDropDown(holderEdL.binding.tvEducationLevel, holderEdL.binding.scAcadDegry, getItem(position).availableEducations?.map { it.name }?: emptyList()
-                        , getItem(position).selectedDegree, getItem(position)) {
+                setupDropDown(holderEdL.binding.tvEducationLevel,
+                    holderEdL.binding.scAcadDegry,
+                    getItem(position).availableEducations?.map { it.name } ?: emptyList(),
+                    getItem(position).selectedDegree,
+                    getItem(position)
+                ) {
                     getItem(position).selectedDegree = it
                 }
-                holderEdL.binding.scEducation.initSwitch(getItem(position).educationLevel?.showInProfile?: false) { getItem(position).educationLevel?.showInProfile = it }
+                holderEdL.binding.scEducation.initSwitch(
+                    getItem(position).educationLevel?.showInProfile ?: false
+                ) { getItem(position).educationLevel?.showInProfile = it }
                 holderEdL.binding.scAcadDegry.isChecked = getItem(position).hasAcademicDegreee
                 holderEdL.binding.scAcadDegry.setOnCheckedChangeListener { _, b ->
                     getItem(position).hasAcademicDegreee = b
@@ -85,20 +104,34 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
             }
             HIGHT_LEVEL_ITEM -> {
                 val holderHightL = holder as ViewHolder<ItemHightEducationBinding>
-                setupDegreeDropDown(holderHightL.binding.tvDegreesLevel, holderHightL.binding.tilDegreesLevel,
-                        getItem(holder.adapterPosition).availableDegrees?: emptyList(), getItem(holder.adapterPosition).availableDegrees?.find { it.id == getItem(holder.adapterPosition).academicDegrees?.degree }?.name) {
+                setupDegreeDropDown(holderHightL.binding.tvDegreesLevel,
+                    holderHightL.binding.tilDegreesLevel,
+                    getItem(holder.adapterPosition).availableDegrees ?: emptyList(),
+                    getItem(holder.adapterPosition).availableDegrees?.find { it.id == getItem(holder.adapterPosition).academicDegrees?.degree }?.name
+                ) {
                     //mDegreesLevel = it?.name
                     getItem(holder.adapterPosition).academicDegrees?.degree = it?.id
                 }
-                setupDegreeDropDown(holderHightL.binding.tvSciencesLevel, holderHightL.binding.tilSciencesLevel,
-                        getItem(holder.adapterPosition).availableSciences?: emptyList(), getItem(holder.adapterPosition).availableSciences?.find { it.id == getItem(holder.adapterPosition).academicDegrees?.speciality }?.name) {
+                setupDegreeDropDown(holderHightL.binding.tvSciencesLevel,
+                    holderHightL.binding.tilSciencesLevel,
+                    getItem(holder.adapterPosition).availableSciences ?: emptyList(),
+                    getItem(holder.adapterPosition).availableSciences?.find {
+                        it.id == getItem(holder.adapterPosition).academicDegrees?.speciality
+                    }?.name
+                ) {
                     //mSciencesLevel = it?.name
                     getItem(holder.adapterPosition).academicDegrees?.speciality = it?.id
                 }
 
-                holderHightL.binding.btnRemove.setOnClickListener { onRemoveDegreeClickListener(holder.adapterPosition) }
+                holderHightL.binding.btnRemove.setOnClickListener {
+                    onRemoveDegreeClickListener(
+                        holder.adapterPosition
+                    )
+                }
 
-                holderHightL.binding.scEducation.initSwitch(getItem(holder.adapterPosition).academicDegrees?.showInProfile?: false) { getItem(holder.adapterPosition).academicDegrees?.showInProfile = it }
+                holderHightL.binding.scEducation.initSwitch(
+                    getItem(holder.adapterPosition).academicDegrees?.showInProfile ?: false
+                ) { getItem(holder.adapterPosition).academicDegrees?.showInProfile = it }
 
                 if (getItem(holder.adapterPosition).isDeleteVisible)
                     holderHightL.binding.btnRemove.visibility = View.VISIBLE
@@ -120,22 +153,36 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
                 val holderEduc = holder as ViewHolder<ItemEditEducationBinding>
                 val now = Date()
                 var isDateCheckboxWasSet = false
-                val startDate = getItem(holder.adapterPosition).education?.begin?.parseToDate(defaultServerDateFormatter)
+                val startDate = getItem(holder.adapterPosition).education?.begin?.parseToDate(
+                    defaultServerDateFormatter
+                )
                 holderEduc.binding.etStart.setText(startDate?.let { formatDateYear(it).capitalize() })
-                holderEduc.binding.tilStart.initAsMonthYearPicker(startDate, minDate = getItem(holder.adapterPosition).birthday, maxDate = now) { year, month, day ->
+                holderEduc.binding.tilStart.initAsMonthYearPicker(
+                    startDate,
+                    minDate = getItem(holder.adapterPosition).birthday,
+                    maxDate = now
+                ) { year, month, day ->
                     holderEduc.binding.tilStart.error = null
-                    getItem(holder.adapterPosition).education?.begin = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                    getItem(holder.adapterPosition).education?.begin =
+                        formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                     isDateValid(holderEduc.binding, getItem(holder.adapterPosition))
                     isDataValidd(getItem(holder.adapterPosition))
                     //validateEnableButton()
                     profileDateFormat(year, month, day)
                 }
 
-                val finishDate = getItem(holder.adapterPosition).education?.end?.parseToDate(defaultServerDateFormatter)
+                val finishDate = getItem(holder.adapterPosition).education?.end?.parseToDate(
+                    defaultServerDateFormatter
+                )
                 holderEduc.binding.etFinish.setText(finishDate?.let { formatDateYear(it).capitalize() })
-                holderEduc.binding.tilFinish.initAsMonthYearPicker(finishDate, minDate = getItem(holder.adapterPosition).birthday, maxDate = now) { year, month, day ->
+                holderEduc.binding.tilFinish.initAsMonthYearPicker(
+                    finishDate,
+                    minDate = getItem(holder.adapterPosition).birthday,
+                    maxDate = now
+                ) { year, month, day ->
                     holderEduc.binding.tilFinish.error = null
-                    getItem(holder.adapterPosition).education?.end = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                    getItem(holder.adapterPosition).education?.end =
+                        formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                     isDateValid(holderEduc.binding, getItem(holder.adapterPosition))
                     isDataValidd(getItem(holder.adapterPosition))
                     //validateEnableButton()
@@ -162,23 +209,47 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
                     isDataValidd(getItem(holder.adapterPosition))
                     //validateEnableButton()
                 }
-                holderEduc.binding.etSpeciality.initInput(getItem(holder.adapterPosition).education?.speciality) {
-                    holderEduc.binding.tilSpeciality.error = null
-                    getItem(holder.adapterPosition).education?.speciality = it.toString()
-                    isDataValidd(getItem(holder.adapterPosition))
-                    //validateEnableButton()
-                }
-                holderEduc.binding.scEducation.initSwitch(getItem(holder.adapterPosition).education?.showInProfile?:false) {
+                val selectedVariant = getItem(holder.adapterPosition).education?.speciality
+                val notSelectedVariant = holder.itemView.context.getString(R.string.profile_educate_speciality)
+                initDropDownView(holderEduc.binding.etSpeciality,
+                    getSpeciality(),
+                    selectedVariant,
+                    null,
+                    { it },
+                    { it },
+                    {
+                        getItem(holder.adapterPosition).education?.speciality = it
+                        isDataValidd(getItem(holder.adapterPosition))
+                    })
+//                holderEduc.binding.etSpeciality.isEnabled = true
+//                holderEduc.binding.tilSpeciality.isEnabled = true
+//                holderEduc.binding.etSpeciality.initInput(getItem(holder.adapterPosition).education?.speciality) {
+//                    holderEduc.binding.tilSpeciality.error = null
+//                    getItem(holder.adapterPosition).education?.speciality = it.toString()
+//                    isDataValidd(getItem(holder.adapterPosition))
+//                    //validateEnableButton()
+//                }
+                holderEduc.binding.scEducation.initSwitch(
+                    getItem(holder.adapterPosition).education?.showInProfile ?: false
+                ) {
                     getItem(holder.adapterPosition).education?.showInProfile = it
                 }
-                holderEduc.binding.btnRemove.setOnClickListener { onRemoveEducationClickListener(holder.adapterPosition) }
+                holderEduc.binding.btnRemove.setOnClickListener {
+                    onRemoveEducationClickListener(
+                        holder.adapterPosition
+                    )
+                }
 
                 if (getItem(holder.adapterPosition).isDeleteVisible)
                     holderEduc.binding.btnRemove.visibility = View.VISIBLE
                 else
                     holderEduc.binding.btnRemove.visibility = View.GONE
 
-                showErrors(getItem(holder.adapterPosition).showErrors, holderEduc.binding, getItem(holder.adapterPosition))
+                showErrors(
+                    getItem(holder.adapterPosition).showErrors,
+                    holderEduc.binding,
+                    getItem(holder.adapterPosition)
+                )
                 holderEduc.binding.executePendingBindings()
             }
             ADD_EDUCATION -> {
@@ -198,22 +269,35 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
         return getItem(position).type
     }
 
-    private fun showErrors(isShow: Boolean, holder: ItemEditEducationBinding, item: EditEducationModel) {
+    private fun showErrors(
+        isShow: Boolean,
+        holder: ItemEditEducationBinding,
+        item: EditEducationModel
+    ) {
         if (isShow) {
             if (!isStartValid(item.education?.begin)) holder.tilStart.apply {
                 error = resources.getString(R.string.required_field)
             }
-            if (!isFinishValid(item.education?.begin, item.education?.end, item.isNotFinishedSelected)) holder.tilFinish.apply {
+            if (!isFinishValid(
+                    item.education?.begin,
+                    item.education?.end,
+                    item.isNotFinishedSelected
+                )
+            ) holder.tilFinish.apply {
                 error = resources.getString(R.string.profile_education_finish_error)
             }
             if (!isOrganizationValid(item.education?.organization)) holder.tilInstitution.apply {
-                error = if ((item.education?.organization?.length?: 0) < 4 && (item.education?.organization?.length?: 0) > 0)
+                error = if ((item.education?.organization?.length
+                        ?: 0) < 4 && (item.education?.organization?.length ?: 0) > 0
+                )
                     resources.getString(R.string.ten_letters_error)
                 else
                     resources.getString(R.string.profile_educate_institution_empty_error)
             }
             if (!isSpecialityValid(item.education?.speciality)) holder.tilSpeciality.apply {
-                error = if ((item.education?.speciality?.length?: 0) < 4 && (item.education?.speciality?.length?: 0) > 0)
+                error = if ((item.education?.speciality?.length
+                        ?: 0) < 4 && (item.education?.speciality?.length ?: 0) > 0
+                )
                     resources.getString(R.string.five_letters_error)
                 else
                     resources.getString(R.string.enter_specialty)
@@ -226,7 +310,12 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
         if (!isStartValid(item.education?.begin)) {
             isValid = false
         }
-        if (!isFinishValid(item.education?.begin, item.education?.end, item.isNotFinishedSelected)) {
+        if (!isFinishValid(
+                item.education?.begin,
+                item.education?.end,
+                item.isNotFinishedSelected
+            )
+        ) {
             isValid = false
         }
         if (!isOrganizationValid(item.education?.organization)) {
@@ -245,8 +334,9 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
 
     private fun isDateValid(viewHolder: ItemEditEducationBinding, item: EditEducationModel) {
         if (!item.education?.begin.isNullOrBlank() && !item.education?.end.isNullOrBlank()) {
-            if (validateEndDate(item.education?.begin?: "", item.education?.end?: "")) {
-                viewHolder.tilFinish.error = viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
+            if (validateEndDate(item.education?.begin ?: "", item.education?.end ?: "")) {
+                viewHolder.tilFinish.error =
+                    viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
             } else {
                 viewHolder.tilFinish.error = null
             }
@@ -272,25 +362,39 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
                 val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
                 val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
                 if (finishDate == null || startDate == null) false
-                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(startDate)
+                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(
+                    startDate
+                )
             }
         }
     }
 
     private fun isOrganizationValid(mInstitution: String?): Boolean =
-        (mInstitution?.length?: 0) >= 4
+        (mInstitution?.length ?: 0) >= 4
 
     private fun isSpecialityValid(mSpeciality: String?): Boolean =
-        (mSpeciality?.length?: 0) >= 4
+        (mSpeciality?.length ?: 0) >= 4
 
 
     fun isDataValid(item: EditEducationModel) = isStartValid(item.education?.begin) &&
             isFinishValid(item.education?.begin, item.education?.end, item.isNotFinishedSelected) &&
             isOrganizationValid(item.education?.organization) && isSpecialityValid(item.education?.speciality)
 
-    private fun setupDegreeDropDown(textView: AutoCompleteTextView, textInputLayout: TextInputLayout, variants: List<EducationLevelNew>, initialVariant: String?, onSelect: (EducationLevelNew?) -> Unit) {
+    private fun setupDegreeDropDown(
+        textView: AutoCompleteTextView,
+        textInputLayout: TextInputLayout,
+        variants: List<EducationLevelNew>,
+        initialVariant: String?,
+        onSelect: (EducationLevelNew?) -> Unit
+    ) {
         textView.apply {
-            setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, variants.map { item -> item.name }.toTypedArray()))
+            setAdapter(
+                NoFilterArrayAdapter(
+                    context,
+                    android.R.layout.simple_list_item_1,
+                    variants.map { item -> item.name }.toTypedArray()
+                )
+            )
             setText(initialVariant)
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 textInputLayout.error = null
@@ -299,7 +403,14 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
         }
     }
 
-    private fun setupDropDown(textView: AppCompatTextView, cb: AppCompatCheckBox, variants: List<String>, initialVariant: String?, item: EditEducationModel, onSelect: (String?) -> Unit) {
+    private fun setupDropDown(
+        textView: AppCompatTextView,
+        cb: AppCompatCheckBox,
+        variants: List<String>,
+        initialVariant: String?,
+        item: EditEducationModel,
+        onSelect: (String?) -> Unit
+    ) {
         textView.apply {
             popupReceiving = EducationPopupWindow(context, variants.toList())
             text = initialVariant
@@ -341,13 +452,37 @@ class EditEducationAdapter(private val addHigthLevelClick: () -> Unit,
     }
 
     private fun isTrigger(text: String?) = text == "Более одного высшего" || text == "Высшее"
+
+    private fun getSpeciality(): List<String> {
+        return arrayListOf(
+            "Архитектура",
+            "Ветеринарные",
+            "Географические",
+            "Искусствоведение",
+            "Культурология",
+            "Медицинские",
+            "Педагогические",
+            "Политические",
+            "Психологические",
+            "Социологические",
+            "Теология",
+            "Фармацевтические",
+            "Юридические"
+        )
+    }
 }
 
-class EditEducationDiffCallback: DiffUtil.ItemCallback<EditEducationModel>() {
+class EditEducationDiffCallback : DiffUtil.ItemCallback<EditEducationModel>() {
 
-    override fun areItemsTheSame(oldItem: EditEducationModel, newItem: EditEducationModel): Boolean =
-            oldItem.id == newItem.id
+    override fun areItemsTheSame(
+        oldItem: EditEducationModel,
+        newItem: EditEducationModel
+    ): Boolean =
+        oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: EditEducationModel, newItem: EditEducationModel): Boolean =
-            oldItem == newItem
+    override fun areContentsTheSame(
+        oldItem: EditEducationModel,
+        newItem: EditEducationModel
+    ): Boolean =
+        oldItem == newItem
 }

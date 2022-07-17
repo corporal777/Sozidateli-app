@@ -8,6 +8,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 interface SocketIOManager {
+    fun subscribeNewChatMessage():Flowable<ApiNewResponse<List<MessageModel>>>
     fun subscribeToChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>>
     fun stopListenChatUpdate()
     fun connectToChat(chatId: String): Completable

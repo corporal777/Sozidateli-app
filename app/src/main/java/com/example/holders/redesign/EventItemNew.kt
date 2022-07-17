@@ -224,7 +224,6 @@ class EventItemNew(
     override fun hasSameContentAs(other: Item<*>): Boolean {
         if (this === other) return true
         if (other !is EventStatusItem) return false
-
         if (eventId != other.eventId) return false
         if (status != other.status) return false
         if (userRegistration != other.userRegistration) return false

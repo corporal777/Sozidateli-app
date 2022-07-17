@@ -140,8 +140,4 @@ class SearchChatFragment : AbstractSearchUserFragment<SearchChatPresenter>(), Se
     override fun layout() = R.layout.fragment_chat_search
 
 
-    override fun createItemNew(itemData: List<UserDetail?>): Group {
-        TODO("Not yet implemented")
-    }
-
 }

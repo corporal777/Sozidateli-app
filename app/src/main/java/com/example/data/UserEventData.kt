@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import com.example.data.database.EventMemberDao
 import com.example.data.database.UserEventDao
 import com.example.data.models.*

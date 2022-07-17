@@ -127,6 +127,24 @@ class SocketIOManagerImpl
                 }
             }, BackpressureStrategy.LATEST)
 
+    override fun subscribeNewChatMessage(): Flowable<ApiNewResponse<List<MessageModel>>> =
+        Flowable.create({ emitter ->
+            val listener = Emitter.Listener { args ->
+                Log.i("ChatSocket", "Data: " + args.toString())
+                val lastMessage = Gson().fromJson(args[0].toString(), MessageModel::class.java)
+                val result = ApiNewResponse(listOf(lastMessage), 1)
+                emitter.onNext(result)
+            }
+
+            mSocket?.on("user-new-message", listener)
+            Log.i("ChatSocket", "Started listening new-message event")
+
+            emitter.setCancellable {
+                Log.i("ChatSocket", "Stopped listening new-message")
+                mSocket?.off("user-new-message", listener)
+            }
+        }, BackpressureStrategy.LATEST)
+
     override fun subscribeToTotalNotificationsCount(): Flowable<Int> =
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->

@@ -135,7 +135,7 @@ class LoginPresenter
                 && password.isNotEmpty()*/
         return if (isPhone(login) && !isContainLetters(login)) {
             loginType = "phone"
-            newPhoneValidator(context, login) && password.isNotEmpty()
+            newPhoneValidator(login) && password.isNotEmpty()
         } else {
             loginType = "email"
             AuthValidateUtil.isValidEmail(login) && password.isNotEmpty()

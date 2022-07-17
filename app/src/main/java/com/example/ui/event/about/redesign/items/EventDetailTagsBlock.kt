@@ -17,11 +17,13 @@ class EventDetailTagsBlock(
     init {
         add(mLabelItem)
         mDataItem.apply {
-            update(listOf(
-                TagsItem(listTags) {
-                    onTagClick(it)
-                }
-            ))
+            if (!listTags.isNullOrEmpty()){
+                update(listOf(
+                    TagsItem(listTags) {
+                        onTagClick(it)
+                    }
+                ))
+            }
         }
         add(mDataItem)
     }

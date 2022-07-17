@@ -49,6 +49,11 @@ interface BaseContract {
         @StateStrategyType(SkipStrategy::class)
         fun showErrorMessage(canGoBack : Boolean, message: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun setAppBarElevation(value : Float)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setToolbarTitle(title : String)
     }
 
     interface LoadingView {

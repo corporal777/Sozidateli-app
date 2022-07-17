@@ -2,11 +2,13 @@ package com.example.ui.chatList.contacts
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -15,6 +17,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
+import com.example.util.TranslateAnimationUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -22,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_chat_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatListFragment : BaseFragment(), ChatListContract.View {
+class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragment(), ChatListContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListPresenter
@@ -59,8 +62,21 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var mDy = 0
         recyclerView.apply {
             adapter = this@ChatListFragment.adapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    mDy += dy
+                    onScrollState.onScrollOffsetValue(mDy)
+                    if (dy <= 0){
+                        onScrollState.onScrollUp(dy)
+                    }else {
+                        onScrollState.onScrollDown(dy)
+                    }
+                }
+            })
         }
 
         fabNewChat.apply {
@@ -132,4 +148,10 @@ class ChatListFragment : BaseFragment(), ChatListContract.View {
     }
 
     override fun layout() = R.layout.fragment_chat_list
+
+    interface OnChatListScrollingState{
+        fun onScrollUp(value : Int)
+        fun onScrollDown(value : Int)
+        fun onScrollOffsetValue(value: Int)
+    }
 }

@@ -1,34 +1,57 @@
 package com.example.ui.chatList
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.ui.views.ChangeStateDialog
-import com.example.ui.views.StateType
+import com.example.util.TranslateAnimationUtil
 import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarFragment {
+class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
 
-    override val title: String
-        get() = getString(R.string.chat_list)
 
     @InjectPresenter
     lateinit var presenter: ChatListTabsPresenter
 
+    private var isFinishAnimation = true
+
     @Inject
     lateinit var presenterProvider: Provider<ChatListTabsPresenter>
+
+    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState{
+        override fun onScrollUp(value: Int) {
+            showView(clTabs)
+            Log.e("VALUE", value.toString())
+        }
+
+        override fun onScrollDown(value: Int) {
+            hideView(clTabs)
+        }
+
+        override fun onScrollOffsetValue(value: Int) {
+            val mElevation = abs(value / 10f)
+            app_bar_layout.apply {
+                elevation = if (mElevation <= 10f) {
+                    mElevation
+                } else {
+                    10f
+                }
+            }
+        }
+    }
 
     @ProvidePresenter
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
@@ -46,7 +69,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
 
     private val fragments by lazy {
         listOf(
-                ChatListFragment(),
+                ChatListFragment(onScrollStateChangeListener),
                 InviteListFragment()
         )
     }
@@ -59,6 +82,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
                 override fun getCount() = fragments.size
             }
             addOnPageChangeListener(pageChangeListener)
+            //setOnTouchListener(TranslateAnimationUtil(requireContext(), clTabs))
         }
 
         btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
@@ -87,4 +111,52 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View, ToolbarF
     }
 
     override fun layout() = R.layout.fragment_chat_list_tabs
+
+
+    private fun hideView(animationView: View) {
+        if (animationView == null || animationView.getVisibility() == View.GONE) {
+            return
+        }
+        val animationDown =
+            AnimationUtils.loadAnimation(animationView.getContext(), R.anim.move_up)
+        animationDown.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+                animationView.setVisibility(View.VISIBLE)
+                isFinishAnimation = false
+            }
+
+            override fun onAnimationEnd(animation: Animation) {
+                animationView.setVisibility(View.GONE)
+                isFinishAnimation = true
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {}
+        })
+        if (isFinishAnimation) {
+            animationView.startAnimation(animationDown)
+        }
+    }
+
+    private fun showView(animationView : View) {
+        if (animationView == null || animationView.getVisibility() == View.VISIBLE) {
+            return
+        }
+        val animationUp =
+            AnimationUtils.loadAnimation(animationView.getContext(), R.anim.move_down)
+        animationUp.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+                animationView.setVisibility(View.VISIBLE)
+                isFinishAnimation = false
+            }
+
+            override fun onAnimationEnd(animation: Animation) {
+                isFinishAnimation = true
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {}
+        })
+        if (isFinishAnimation) {
+            animationView.startAnimation(animationUp)
+        }
+    }
 }

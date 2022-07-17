@@ -117,6 +117,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.navigateUp()
     }
 
+    override fun setAppBarElevation(value: Float) {
+
+    }
+
+    override fun setToolbarTitle(title: String) {
+
+    }
+
     override fun showNoConnectionMessage(show: Boolean) {
         mActivity?.showNoConnectionMessage(show)
     }

@@ -9,16 +9,19 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.databinding.FragmentUserStateBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.Utils
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_user_state.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment: BaseFragment(), UserStateContract.View, ToolbarFragment {
+class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateContract.View, SimpleTitleToolbar{
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -31,6 +34,7 @@ class UserStateFragment: BaseFragment(), UserStateContract.View, ToolbarFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarTitle(getString(R.string.states))
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 presenter.onClickClose()
@@ -82,8 +86,4 @@ class UserStateFragment: BaseFragment(), UserStateContract.View, ToolbarFragment
     }
 
     override fun layout(): Int = R.layout.fragment_user_state
-
-    override val title: CharSequence?
-        get() = getString(R.string.states)
-
 }

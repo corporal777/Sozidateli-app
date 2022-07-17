@@ -11,15 +11,18 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
+import com.example.databinding.FragmentAuthorizationBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.FinishRegisterDialog
 import com.example.util.AuthBackground
 import kotlinx.android.synthetic.main.fragment_authorization.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, AuthorizationContract.View {
+class AuthorizationFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
+    BackgroundImageFragment, AuthorizationContract.View {
 
     private var showFinishRegister = false
     override val isLightStatus = false
@@ -33,22 +36,25 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
     @ProvidePresenter
     fun providePresenter(): AuthorizationPresenter = presenterProvider.get().apply {
         navArgs<AuthorizationFragmentArgs>().value.also {
-            this@AuthorizationFragment.showFinishRegister = it.showFinishRegister?: false
+            this@AuthorizationFragment.showFinishRegister = it.showFinishRegister ?: false
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.apply {
 //        ibFacebook.setOnClickListener { presenter.authFb() }
 //        ibVk.setOnClickListener { presenter.authVk() }
 //        ibOk.setOnClickListener { presenter.authOk() }
-        ibEmail.setOnClickListener { presenter.onEmailClick() }
-        ibLogin.setOnClickListener { presenter.onLoginClick() }
-        if (showFinishRegister)
-            FinishRegisterDialog(requireContext())
+            ibEmail.setOnClickListener { presenter.onEmailClick() }
+            ibLogin.setOnClickListener { presenter.onLoginClick() }
+            if (showFinishRegister)
+                FinishRegisterDialog(requireContext())
                     .setSelectCallback {
 
                     }
+        }
+
     }
 
     override fun showLogin() {
@@ -57,14 +63,18 @@ class AuthorizationFragment : BaseFragment(), BackgroundImageFragment, Authoriza
 
     override fun showEmailRegistration() {
         //if (BuildConfig.NEW_PROFILE_EDIT) {
-            findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
+        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
         /*} else {
             findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
         }*/
     }
 
     override fun showSnRegistration(snUser: SnUser) {
-        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterSnFragment(snUser))
+        findNavController().navigate(
+            AuthorizationFragmentDirections.authorizationFragmentToRegisterSnFragment(
+                snUser
+            )
+        )
     }
 
     override fun getFragmentBackgroundDrawable(): Drawable? {

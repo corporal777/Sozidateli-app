@@ -2,7 +2,6 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -26,9 +25,8 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.activities.items.SearchActivityItem
-import com.example.ui.event.my.schedule.items.NewItemTest
-import com.example.ui.event.my.schedule.items.SortedEvents
-import com.example.ui.event.my.schedule.items.SubEventsWithHeaderGroup
+import com.example.ui.event.my.schedule.items.MyScheduleEventsData
+import com.example.ui.event.my.schedule.items.MyScheduleSubEventsGroup
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.dialogs_new.CalendarBottomSheet
@@ -70,12 +68,15 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
             mPresenter.onSubEventClick(eventId, subEvent)
         }
+
         override fun onAddToScheduleClick(subEvent: EventActivityModel) {
             mPresenter.onAddSubEventToScheduleClick(subEvent)
         }
+
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
             mPresenter.onRemoveSubEventFromScheduleClick(subEvent)
         }
+
         override fun onUpdateScheduleState(subEvent: EventActivityModel) {
         }
 
@@ -129,7 +130,8 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                                 val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
                                 val now =
                                     mPresenter.createCalendarDay(
-                                        defaultServerDateFormatter.parse(item.date).time)
+                                        defaultServerDateFormatter.parse(item.date).time
+                                    )
                                 changeDayWhenScrollDown(now)
                                 if (!mCanChangeDay) {
                                     changeDay(now)
@@ -157,39 +159,14 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
 
     override fun setContent(data: List<EventNew?>) {
         eventsSection.clear()
-        data.forEach { event ->
-            var isFirstItem = true
-            val id = event?.id.toString()
-            val title = event?.name
-            val image = event?.image?.uri
-            val mSubEventsMap = event?.binds?.activity?.groupBy { subEvent ->
-                subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
-            }?.toSortedMap()
-            mSubEventsMap?.forEach {
-                eventsSection.add(
-                    SubEventsWithHeaderGroup(
-                        isFirstItem,
-                        id,
-                        title,
-                        image,
-                        it.key,
-                        it.value,
-                        { id ->
-                            mPresenter.onShowEventClick(id)
-                        }, mSubEventClickListener
-                    )
-                )
-                isFirstItem = false
-            }
-        }
     }
 
-    override fun setContentNew(data: List<SortedEvents?>) {
+    override fun setContentNew(data: List<MyScheduleEventsData?>) {
         eventsSection.clear()
         data.map {
             if (it != null) {
                 eventsSection.add(
-                    NewItemTest(
+                    MyScheduleSubEventsGroup(
                         it,
                         { id ->
                             mPresenter.onShowEventClick(id)
@@ -197,22 +174,28 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                     )
                 )
             }
-
         }
-
     }
 
     override fun setHeaderAndCalendar(
         subEventDays: List<CalendarDay>,
         month: String,
-        days: List<EventScheduleCalendarDay>?
+        days: List<EventScheduleCalendarDay>?,
+        firstDate: CalendarDay?,
+        lastDate: CalendarDay?
     ) {
         mBinding.apply {
             calendarContainer.isVisible = true
             tvMonth.apply {
                 text = month
                 setOnClickListener {
-                    CalendarBottomSheet(requireContext(), mCurrentDay, subEventDays).setSelectCallback {
+                    CalendarBottomSheet(
+                        requireContext(),
+                        mCurrentDay,
+                        subEventDays,
+                        firstDate,
+                        lastDate
+                    ).setSelectCallback {
                         val valueLong =
                             defaultServerDateFormatter.parse(defaultServerDateFormatter.format(it.time)).time
                         val date = mPresenter.createCalendarDay(valueLong)
@@ -247,9 +230,13 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 try {
                     val item = calendarAdapter.getItem(position) as CalendarHorizontalListItem
-                    mCurrentDay = item.getFirstItem()
                     val day = item.getFirstItem().millis.calendar()
-                    val mMonth = getMonthName(day.get(Calendar.MONTH))
+                    val currentYear = System.currentTimeMillis().calendar().get(Calendar.YEAR)
+                    val mMonth = if (currentYear == day.get(Calendar.YEAR)) {
+                        getMonthName(day.get(Calendar.MONTH))
+                    } else {
+                        getMonthName(day.get(Calendar.MONTH)) + " " + day.get(Calendar.YEAR)
+                    }
                     mBinding.tvMonth.text = mMonth
                 } catch (e: Exception) {
 
@@ -274,7 +261,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
             //mPresenter.findNearestEventDay(day)
         }
         if (group != null) {
-
             if (date == group.date) {
                 val position = groupAdapter.getAdapterPosition(group)
                 val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
@@ -335,6 +321,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     override fun selectDay(
         day: EventScheduleCalendarDay
     ) {
+        mCurrentDay = day
         for (i in 0 until calendarSection.itemCount) {
             val item = calendarSection.getItem(i) as CalendarHorizontalListItem
             item.selectDay(day)
@@ -374,7 +361,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     }
 
     private fun initCollapseLabel() {
-        mBinding.activitiesAppBar.addOnOffsetChangedListener(
+        mBinding.appBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
                 updateViews(Math.abs(i / appBarLayout.totalScrollRange.toFloat()))
             })

@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -22,22 +23,23 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
+import com.example.databinding.FragmentProfileBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
-class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment{
+class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View, SimpleTitleToolbar{
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
-
-    override val title: CharSequence?
-        get() = getString(R.string.profile_label)
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -61,24 +63,44 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment{
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarTitle(getString(R.string.profile_label))
+        mBinding.apply {
+            profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                mDy += scrollY - oldScrollY
+                val mElevation = abs(mDy / 10f)
+//                appBarLayout.apply {
+//                    elevation = if (mElevation <= 10f) {
+//                        mElevation
+//                    } else {
+//                        10f
+//                    }
+//                }
+                setAppBarElevation(mElevation)
+            })
 
-        ivAvatar.apply {
-            clipToOutline = true
+            ivAvatar.apply {
+                clipToOutline = true
+            }
+            ivBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            tvEditProfile.setOnClickListener { presenter.onProfileClick() }
+            tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
+            tvEvents.setOnClickListener { presenter.onEventsClick() }
+            tvBanned.setOnClickListener { presenter.onBannedClick() }
+            tvSupport.setOnClickListener { presenter.onSupportClick() }
+            tvRate.setOnClickListener { presenter.onRateClick() }
+            tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
+            tvLogout.setOnClickListener { presenter.onLogoutClick() }
+            tvSettings.setOnClickListener { presenter.onSettingsClick() }
+            tvStates.setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+            }
+            tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
         }
 
-        tvEditProfile.setOnClickListener { presenter.onProfileClick() }
-        tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
-        tvEvents.setOnClickListener { presenter.onEventsClick() }
-        tvBanned.setOnClickListener { presenter.onBannedClick() }
-        tvSupport.setOnClickListener { presenter.onSupportClick() }
-        tvRate.setOnClickListener { presenter.onRateClick() }
-        tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
-        tvLogout.setOnClickListener { presenter.onLogoutClick() }
-        tvSettings.setOnClickListener { presenter.onSettingsClick() }
-        tvStates.setOnClickListener {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-        }
-        tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
+
         //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
         //showUserStateDialog()
     }
@@ -236,9 +258,10 @@ class ProfileFragment : BaseFragment(), ProfileContract.View, ToolbarFragment{
         intent.putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
         intent.putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
         intent.putExtra(EXTRA_TEXT, buildEmailText(uid))
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
+//        if (intent.resolveActivity(requireContext().packageManager) != null) {
+//            startActivity(intent)
+//        }
+        startActivity(intent)
     }
 
     private fun buildEmailText(uid: String): String {

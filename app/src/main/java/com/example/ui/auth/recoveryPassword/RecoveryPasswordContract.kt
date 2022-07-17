@@ -24,8 +24,8 @@ interface RecoveryPasswordContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onRecoveryClick(context: Context)
-        fun onChangeEmailText(email: String, context: Context)
+        fun onRecoveryClick()
+        fun onChangeEmailText(email: String)
         fun onUserUnderstand()
         fun onCloseClick()
         fun onSetPassword(code: String, password: String)

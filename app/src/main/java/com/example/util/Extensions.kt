@@ -139,7 +139,7 @@ object InsetUtil {
                     0,
                     insets.systemWindowInsetTop,
                     0,
-                    insets.systemWindowInsetBottom
+                    insets.systemWindowInsetBottom,
                 )
             )
         }
@@ -255,4 +255,15 @@ private fun capitalize(str: String): String {
         phrase += c
     }
     return phrase
+}
+
+fun removeFirstAndLastSpaces(str: String?): String {
+    val reg = "[\\s]+$".toRegex()
+    val regLast = "^[\\s]+".toRegex()
+    val value = str?.replace(regLast, "")
+    return value?.replace(reg, "") ?: ""
+}
+
+fun removeAllSpaces(str: String?): String {
+    return str?.replace("\\s".toRegex(), "") ?: ""
 }

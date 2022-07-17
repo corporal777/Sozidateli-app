@@ -2,6 +2,7 @@ package com.example.ui.views.dialogs_new
 
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
@@ -21,7 +22,9 @@ import java.util.*
 class CalendarBottomSheet(
     private val context: Context,
     private val day: EventScheduleCalendarDay,
-    eventDays: List<CalendarDay>
+    eventDays: List<CalendarDay>,
+    val minDate: CalendarDay?,
+    val maxDate: CalendarDay?
 ) {
 
     private val mBinding = BottomSheetCalendarBinding.inflate(LayoutInflater.from(context))
@@ -39,12 +42,17 @@ class CalendarBottomSheet(
         )
 
         mBinding.calendarView.apply {
+            state().edit()
+                .setMinimumDate(minDate)
+                .setMaximumDate(maxDate)
+                .commit()
             tileWidth = 50.dp
             tileHeight = 40.dp
             setTitleMonths(R.array.custom_months)
             setDateSelected(date, true)
             setCurrentDate(date, true)
             addDecorator(EventDecorator(getColor(context, R.color.main_brown_color_new), eventDays))
+            addDecorator(SelectedDayDecorator(date))
             setOnDateChangedListener { widget, date, selected ->
                 Toast.makeText(context, date.date.toString(), Toast.LENGTH_SHORT).show()
                 val cal = Calendar.getInstance()
@@ -82,6 +90,23 @@ class CalendarBottomSheet(
 
         init {
             this.dates = HashSet(dates)
+        }
+    }
+
+    class SelectedDayDecorator(date: CalendarDay?) :
+        DayViewDecorator {
+        private val date: CalendarDay
+        override fun shouldDecorate(day: CalendarDay): Boolean {
+            return date == day
+        }
+
+
+        override fun decorate(view: DayViewFacade) {
+            view.addSpan(DotSpan(7F, Color.WHITE))
+        }
+
+        init {
+            this.date = date!!
         }
     }
 

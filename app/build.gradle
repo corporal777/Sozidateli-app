@@ -23,8 +23,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 53
-        versionName "1.0.25"
+        versionCode 56
+        versionName "1.0.28"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
         //flavorDimensions "default"
@@ -266,7 +266,7 @@ dependencies {
 
     // sn
     implementation 'com.vk:androidsdk:1.6.9'
-    implementation 'com.facebook.android:facebook-android-sdk:5.9.0'
+    implementation 'com.facebook.android:facebook-android-sdk:5.11.2'
     implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
 
     // tests

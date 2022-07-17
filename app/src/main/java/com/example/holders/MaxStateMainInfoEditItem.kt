@@ -324,7 +324,6 @@ class MaxStateMainInfoEditItem(
     fun workPhoneIsValid(): Boolean{
         var isValid = true
         if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
-                context,
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {

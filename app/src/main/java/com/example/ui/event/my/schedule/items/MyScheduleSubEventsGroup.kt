@@ -9,8 +9,8 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
-class NewItemTest(
-    val data: SortedEvents,
+class MyScheduleSubEventsGroup(
+    val data: MyScheduleEventsData,
     val onHeaderClick: (id: String) -> Unit,
     val onSubEventClickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
@@ -43,18 +43,18 @@ class NewItemTest(
             } else {
                 if (!data.subEvents.isNullOrEmpty()) {
                     data.subEvents.forEach { subEvents ->
-                        if (!subEvents.date.isNullOrEmpty()) {
-                            add(EventActivityDateItem(subEvents.date))
+                        if (!subEvents.key.isNullOrEmpty()) {
+                            add(EventActivityDateItem(subEvents.key))
                         }
-                        if (!subEvents.data.isNullOrEmpty()) {
-                            subEvents.data.forEach {
+                        if (!subEvents.value.isNullOrEmpty()) {
+                            subEvents.value.forEach {
                                 add(
                                     EventActivityItem(
                                         data.eventId,
                                         it,
                                         emptyList(),
                                         onSubEventClickListener,
-                                        false
+                                        true
                                     )
                                 )
                             }

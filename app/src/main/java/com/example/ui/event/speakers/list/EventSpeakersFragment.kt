@@ -125,10 +125,8 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
             }.apply {
                 when {
                     cashCollapseState != null && cashCollapseState != this -> {
-
                         when (first) {
                             TO_EXPANDED -> {
-                                IS_EXPANDED = true
                                 tvLabelSmall.apply {
                                     alpha = 1F
                                     animate().setDuration(500).alpha(0.0f)
@@ -141,8 +139,7 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
                                     animate().setDuration(500).alpha(1.0f)
                                 }
                             }
-                            RecommendationsFragment.TO_COLLAPSED -> {
-                                IS_EXPANDED = false
+                            TO_COLLAPSED -> {
                                 tvLabelSmall.apply {
                                     alpha = 0F
                                     animate().setDuration(500).alpha(1.0f)
@@ -155,10 +152,10 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
                                 }
                             }
                         }
-                        cashCollapseState = Pair(first, RecommendationsFragment.SWITCHED)
+                        cashCollapseState = Pair(first, SWITCHED)
                     }
                     else -> {
-                        cashCollapseState = Pair(first, RecommendationsFragment.WAIT_FOR_SWITCH)
+                        cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
                     }
                 }
             }

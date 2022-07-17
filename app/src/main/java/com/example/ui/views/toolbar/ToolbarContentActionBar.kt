@@ -31,10 +31,6 @@ class ToolbarContentActionBar(
     fun getTitleView(block: TextView.() -> Unit) = customView.getTitleView(block)
 
 
-    fun showElevation(){
-        customView.elevation = 10f
-    }
-
     override fun setDisplayHomeAsUpEnabled(showHomeAsUp: Boolean) {
         if (showHomeAsUp) addLeftView(navigationIcon, 0)
         else (removeLeftView(navigationIcon))

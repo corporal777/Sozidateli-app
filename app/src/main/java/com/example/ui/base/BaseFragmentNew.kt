@@ -25,9 +25,10 @@ import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment(), BaseContract.View {
+abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment(),
+    BaseContract.View {
 
-    lateinit var mBinding : binding
+    lateinit var mBinding: binding
 
     private val params = PermissionsParams()
     protected var mActivity: BaseActivity? = null
@@ -116,6 +117,14 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
 
     fun showKeyboard(view: View) {
         mActivity?.showKeyboard(view)
+    }
+
+    override fun setAppBarElevation(value: Float) {
+        mActivity?.setAppBarElevation(value)
+    }
+
+    override fun setToolbarTitle(title: String) {
+        mActivity?.setToolbarTitle(title)
     }
 
     override fun navigateUp() {

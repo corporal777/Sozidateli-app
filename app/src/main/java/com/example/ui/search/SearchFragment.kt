@@ -69,7 +69,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         super.onViewCreated(view, savedInstanceState)
         searchList.apply {
             adapter = this@SearchFragment.adapter
-
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }

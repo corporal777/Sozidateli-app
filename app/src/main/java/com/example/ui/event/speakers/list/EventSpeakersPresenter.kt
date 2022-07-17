@@ -15,6 +15,9 @@ import com.example.ui.base.BasePresenter
 import com.example.ui.event.speakers.list.items.ActionTypeEventSpeakers
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -56,49 +59,68 @@ class EventSpeakersPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is EmptyResultSetException) {
-                        getOrUpdateMembersDataFromNetwork(ActionTypeEventSpeakers.INSERT)
-                    }
                     it.printStackTrace()
+                    val mSortedList = arrayListOf<MemberModel>()
+                    eventRepository.getSpeakersWithoutPagination(
+                        mapOf(
+                            MemberModel.MEMBER_EVENT to eventId,
+                            MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
+                            MemberModel.MEMBER_BINDS to "user"
+                        )
+                    )
+                        .doOnSuccess { list ->
+                            mSortedList.addAll(list.filter { x -> x.isLead == true }
+                                .sortedBy { x -> x.binds?.user?.fullName })
+                            mSortedList.addAll(list.filter { x -> x.isLead == false }
+                                .sortedBy { x -> x.binds?.user?.fullName })
+                        val eventMember =
+                            EventMember(eventId, mSortedList, System.currentTimeMillis())
+                            userEventData.insertEventMembers(eventMember)
+                        }
+                        .performOnBackgroundOutOnMain()
+                        .subscribeSimple {
+                            viewState.apply { setData(it) }
+                        }
+
+
                 }, onSuccess = { eventMember ->
                     val mList = eventMember.members
                     viewState.apply { setData(mList) }
-                    getOrUpdateMembersDataFromNetwork(ActionTypeEventSpeakers.UPDATE)
                 })
     }
 
     private fun getOrUpdateMembersDataFromNetwork(actionType: ActionTypeEventSpeakers) {
-        val sortedList = arrayListOf<MemberModel>()
-        processLoadMembersFromNetwork(
-            actionType,
-            sortedList,
-            eventRepository.getSpeakersWithoutPagination(
-                mapOf(
-                    MemberModel.MEMBER_EVENT to eventId,
-                    MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
-                    MemberModel.MEMBER_BINDS to "user"
-                )
-            )
-                .flatMapCompletable { list ->
-                    Completable.fromAction {
-                        sortedList.addAll(list.filter { x -> x.isLead == true }
-                            .sortedBy { x -> x.binds?.user?.fullName })
-                        sortedList.addAll(list.filter { x -> x.isLead == false }
-                            .sortedBy { x -> x.binds?.user?.fullName })
-                        val eventMember =
-                            EventMember(eventId, sortedList, System.currentTimeMillis())
-                        when (actionType) {
-                            ActionTypeEventSpeakers.INSERT -> {
-                                userEventData.insertEventMembers(eventMember)
-                            }
-                            ActionTypeEventSpeakers.UPDATE -> {
-                                userEventData.updateEventMembers(eventMember)
-                            }
-                        }
-
-                    }
-                }
-        )
+//        val sortedList = arrayListOf<MemberModel>()
+//        processLoadMembersFromNetwork(
+//            actionType,
+//            sortedList,
+//            eventRepository.getSpeakersWithoutPagination(
+//                mapOf(
+//                    MemberModel.MEMBER_EVENT to eventId,
+//                    MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
+//                    MemberModel.MEMBER_BINDS to "user"
+//                )
+//            )
+//                .flatMapCompletable { list ->
+//                    Completable.fromAction {
+//                        sortedList.addAll(list.filter { x -> x.isLead == true }
+//                            .sortedBy { x -> x.binds?.user?.fullName })
+//                        sortedList.addAll(list.filter { x -> x.isLead == false }
+//                            .sortedBy { x -> x.binds?.user?.fullName })
+//                        val eventMember =
+//                            EventMember(eventId, sortedList, System.currentTimeMillis())
+//                        when (actionType) {
+//                            ActionTypeEventSpeakers.INSERT -> {
+//                                userEventData.insertEventMembers(eventMember)
+//                            }
+//                            ActionTypeEventSpeakers.UPDATE -> {
+//                                userEventData.updateEventMembers(eventMember)
+//                            }
+//                        }
+//
+//                    }
+//                }
+//        )
     }
 
     private fun processLoadMembersFromNetwork(

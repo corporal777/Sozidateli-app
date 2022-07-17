@@ -16,22 +16,33 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
+import com.example.databinding.FragmentRegisterEmailNewBinding
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
+import com.example.util.AuthValidateUtil
+import com.example.util.removeFirstAndLastSpaces
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
+import onFocusChanged
 import onTextChanged
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
+class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding>(), RegisterEmailNewContract.View {
 
     override fun layout() = R.layout.fragment_register_email_new
 
     private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
-            it.isLetter() || it == '-'
+            it.isLetter() || it == '-' || it == ' '
+        }
+    })
+
+    private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_'
         }
     })
 
@@ -46,55 +57,86 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ivClose.setOnClickListener { presenter.onClickClose() }
+        mBinding.apply {
+            ivClose.setOnClickListener { presenter.onClickClose() }
 
-        etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) } }
-        etFirstName.filters = filter
-        etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
-        etLastName.filters = filter
-        etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
-        etMiddleName.filters = filter
-        etEmail.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) } }
-        etEmailAgain.onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailAgainText(text) } }
-        /*etPassword.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordText(text) } }
-        etPasswordConfirm.onTextChanged { it?.toString()?.let { text -> presenter.onChangePasswordConfirmText(text) } }*/
-        scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
-        password.setShowAgree(true)
+            etFirstName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+            etLastName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+            etMiddleName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+            etEmail.apply {
+                filters = emailFilter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus){
+                        if (!AuthValidateUtil.isValidEmail(this.text.toString())){
+                            showEmailError(true)
+                        }
+                    }
+                }
+            }
+            etEmailAgain.apply {
+                filters = emailFilter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailAgainText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus){
+                        if (!text.isNullOrEmpty()){
+                            if (text.toString() != mBinding.etEmail.text.toString()){
+                                showEmailAgainError(true)
+                            }
+                        }
+                    }
+                }
+            }
 
-        password.setHyperlinkClickCallback {
-            showUserAgreement()
-        }
-        password.setPasswordValidCallback {
-            presenter.onChangeNewPasswordText(it.password ?: "", it.isValid)
-        }
-        password.setChangedSelectionCallback {
-            presenter.onClickAgree(it)
-        }
-        ibRegister.setOnClickListener {
-            /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {*/
+
+            scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
+            password.setShowAgree(true)
+
+            password.setHyperlinkClickCallback {
+                showUserAgreement()
+            }
+            password.setPasswordValidCallback {
+                presenter.onChangeNewPasswordText(it.password ?: "", it.isValid)
+            }
+            password.setChangedSelectionCallback {
+                presenter.onClickAgree(it)
+            }
+            ibRegister.setOnClickListener {
+                /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {*/
                 presenter.onClickRegister(
-                        etEmail.text?.toString(),
-                        etFirstName.text?.toString(),
-                        etLastName.text?.toString(),
-                        password.etPassword.text?.toString(),//etPassword.text?.toString(),
-                        //etPasswordConfirm.text?.toString(),
-                        password.cbAgree.isChecked
+                    etEmail.text?.toString(),
+                    etFirstName.text?.toString(),
+                    etLastName.text?.toString(),
+                    password.etPassword.text?.toString(),//etPassword.text?.toString(),
+                    //etPasswordConfirm.text?.toString(),
+                    password.cbAgree.isChecked
                 )
-            /*} else {
-                showWrongPhoneError(true)
-            }*/
-        }
-        /*etMobilePhone.apply {
-            getPhoneCallback {
-                presenter.onChangePhoneText(it)
             }
         }
-        etMobilePhone.apply {
-            onTextChanged {
-                presenter.onChangePhoneText(it?.toString() ?: "")
-            }
-            addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        }*/
     }
 
     override fun showEmailNotUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
@@ -133,9 +175,9 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
             phoneVerified: Boolean,
             isAgree: Boolean
     ) {
-        etEmail.setText(email)
-        etFirstName.setText(firstName)
-        etLastName.setText(lastName)
+        mBinding.etEmail.setText(email)
+        mBinding.etFirstName.setText(firstName)
+        mBinding.etLastName.setText(lastName)
         /*etPassword.setText(password)
         etPasswordConfirm.setText(passwordConfirm)*/
         this.password.etPassword.setText(password)
@@ -149,7 +191,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun changeFieldType(type: String, isValid: Boolean) {
-        tilEmailAgain.isVisible = type == "email" && isValid
+        mBinding.tilEmailAgain.isVisible = type == "email" && isValid
     }
 
     override fun showPhoneConfirm(phone: String) {
@@ -162,23 +204,23 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
-        etMiddleName.isEnabled = enable
+        mBinding.etMiddleName.isEnabled = enable
         if (!enable) {
-            etMiddleName.setText("")
+            mBinding.etMiddleName.setText("")
             presenter.onChangeMiddleNameText("")
         }
     }
 
     override fun showFirstNameError(show: Boolean) {
-        tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
+        mBinding.tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
     }
 
     override fun showLastNameError(show: Boolean) {
-        tilLastName.error = if (show) getString(R.string.auth_error_no_last_name) else null
+        mBinding.tilLastName.error = if (show) getString(R.string.auth_error_no_last_name) else null
     }
 
     override fun showEmailError(show: Boolean) {
-        tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
+        mBinding.tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
     }
 
     override fun showPasswordError(show: Boolean) {
@@ -193,11 +235,11 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
     }
 
     override fun showEmailAgainError(show: Boolean) {
-        tilEmailAgain.error = if (show) getString(R.string.auth_error_email_do_not_match) else null
+        mBinding.tilEmailAgain.error = if (show) getString(R.string.auth_error_email_do_not_match) else null
     }
 
     override fun showAgreementError(show: Boolean) {
-        tvAgreeError.isInvisible = !show
+        mBinding.tvAgreeError.isInvisible = !show
     }
 
     override fun showWrongPhoneError(show: Boolean) {
@@ -209,7 +251,7 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun enableRegisterBtn(isEnable: Boolean) {
         //btnPhoneConfirm.apply { isEnabled = isEnable }
-        ibRegister.apply { isEnabled = isEnable }
+        mBinding.ibRegister.apply { isEnabled = isEnable }
     }
 
     override fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean) {
@@ -223,7 +265,6 @@ class RegisterEmailNewFragment : BaseFragment(), RegisterEmailNewContract.View {
 
     override fun showEmailConfirmation(email: String, password: String) {
         findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToAuthorizationFragment().setShowFinishRegister(true))
-        //findNavController().navigate(RegisterEmailNewFragmentDirections.emailRegisterToEmailConfirm(email, password, null))
     }
 
     override fun showSnRegistration(snUser: SnUser) {

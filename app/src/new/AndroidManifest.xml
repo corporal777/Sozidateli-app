@@ -20,14 +20,14 @@
                     android:scheme="https" />
 
                 <data
+                    android:host="alfa.sozidateli.ru"
                     android:path="/qr"
-                    android:scheme="https"
-                    android:host="alfa.sozidateli.ru"/>
+                    android:scheme="https" />
 
                 <data
+                    android:host="sozidateli.ru"
                     android:path="/qr"
-                    android:scheme="https"
-                    android:host="sozidateli.ru"/>
+                    android:scheme="https" />
 
                 <data
                     android:host="alfa.sozidateli.ru"
@@ -49,9 +49,9 @@
                     android:pathPrefix="/event"
                     android:scheme="https" />
                 <data
+                    android:host="alfa.sozidateli.ru"
                     android:path="/"
-                    android:scheme="https"
-                    android:host="alfa.sozidateli.ru"/>
+                    android:scheme="https" />
 
             </intent-filter>
         </activity>

@@ -36,8 +36,15 @@ class SubEventPresenter @Inject constructor(
 
     private fun getSubEventData() {
         val subEventId = subEventId
+        val speakersList = arrayListOf<MemberModel>()
         compositeDisposable += eventRepository.getEventActivityDetail(subEventId)
             .zipWith(eventRepository.getEventDetailForRegister(eventId).toSingle())
+            .doOnSuccess {
+                speakersList.addAll(it.first.binds?.member?.filter { x -> x.isLead == true }
+                    ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+                speakersList.addAll(it.first.binds?.member?.filter { x -> x.isLead == false }
+                    ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+            }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
@@ -51,7 +58,7 @@ class SubEventPresenter @Inject constructor(
                 subEvent.binds?.member?.forEach { speaker ->
                     speaker.binds?.user?.isCurrentUser = speaker.user == uid
                 }
-                viewState.setSpeakers(subEvent.binds?.member ?: emptyList())
+                viewState.setSpeakers(speakersList)
             }
     }
 

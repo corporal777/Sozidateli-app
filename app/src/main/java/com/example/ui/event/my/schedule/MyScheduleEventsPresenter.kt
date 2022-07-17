@@ -6,15 +6,16 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
-import com.example.data.models.*
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventNew
+import com.example.data.models.EventScheduleCalendarDay
 import com.example.di.Connectivity
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.my.schedule.items.SortedEvents
-import com.example.ui.event.my.schedule.items.SortedSubEvents
+import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.util.getDaysFromDateToDate
 import com.example.util.getMonthName
@@ -27,7 +28,6 @@ import withDelay
 import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 @InjectViewState
@@ -43,7 +43,7 @@ class MyScheduleEventsPresenter
     private var mFirstDate = ""
     private var mLastDate = ""
     private val mSubEventsList = arrayListOf<EventActivityModel>()
-    private val mSubEventsDates = arrayListOf<CalendarDay>()
+    private var mSubEventsDates = arrayListOf<CalendarDay>()
     private val mEventsList = arrayListOf<EventNew>()
     private var mSearchText = ""
 
@@ -66,8 +66,10 @@ class MyScheduleEventsPresenter
                                 mSubEventsList.add(x)
                             }
                     }
-                    mFirstDate = mSubEventsList.get(0).holdingDate?.from ?: ""
-                    mLastDate = mSubEventsList.last().holdingDate?.from ?: ""
+                    mFirstDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                        .get(0).holdingDate?.from ?: ""
+                    mLastDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                        .last().holdingDate?.from ?: ""
                 }
             }
             .performOnBackgroundOutOnMain()
@@ -82,7 +84,23 @@ class MyScheduleEventsPresenter
 
     private fun initCalendarDays(subEventDates: List<CalendarDay>, list: List<EventNew?>) {
         val mDays = arrayListOf<EventScheduleCalendarDay>()
+        val listReadyEvents = arrayListOf<MyScheduleEventsData>()
+        var firstCalendarDate: CalendarDay? = null
+        var lastCalendarDate: CalendarDay? = null
         compositeDisposable += Completable.fromAction {
+            val startCal = defaultServerDateFormatter.parse(mFirstDate).time.calendar()
+            val endCal = defaultServerDateFormatter.parse(mLastDate).time.calendar()
+            firstCalendarDate = CalendarDay(
+                startCal.get(Calendar.YEAR),
+                startCal.get(Calendar.MONTH) + 1,
+                1
+            )
+            lastCalendarDate = CalendarDay(
+                endCal.get(Calendar.YEAR),
+                endCal.get(Calendar.MONTH) + 1,
+                endCal.getActualMaximum(Calendar.DAY_OF_MONTH)
+            )
+
             mDays.addAll(
                 userEventData.createCalendarDays(
                     getDaysFromDateToDate(
@@ -92,18 +110,35 @@ class MyScheduleEventsPresenter
                         defaultServerDateFormatter.parse(it).time
                     })
             )
+            listReadyEvents.addAll(transformDataToShow(list))
         }.performOnBackgroundOutOnMain()
             .subscribeSimple {
                 val mEventDate = defaultServerDateFormatter.parse(mFirstDate).time
-                val mMonth =
+                val currentYear = System.currentTimeMillis().calendar().get(Calendar.YEAR)
+
+                val mMonth = if (currentYear == mEventDate.calendar().get(Calendar.YEAR)) {
                     getMonthName(mEventDate.calendar().get(Calendar.MONTH))
+                } else {
+                    getMonthName(
+                        mEventDate.calendar().get(Calendar.MONTH)
+                    ) + " " + mEventDate.calendar().get(Calendar.YEAR)
+                }
+//                val mMonth =
+//                    getMonthName(mEventDate.calendar().get(Calendar.MONTH))
+
                 val mFirstEventDate =
                     createCalendarDay(mEventDate)
                 viewState.apply {
-                    setHeaderAndCalendar(subEventDates, mMonth, mDays)
+                    setHeaderAndCalendar(
+                        subEventDates,
+                        mMonth,
+                        mDays,
+                        firstCalendarDate,
+                        lastCalendarDate
+                    )
                     scrollToDay(mFirstEventDate)
                     setSearchBlock()
-                    sortData(list)
+                    setContentNew(listReadyEvents)
                     //setContent(list)
                 }
 
@@ -208,122 +243,45 @@ class MyScheduleEventsPresenter
 
     override fun onSearchTextChange(text: String) {
         mSearchText = text
-        Log.e("TEXT", mSearchText)
-        updateData()
+        updateData(text)
     }
 
-    private fun updateData() {
-        val listEvents = arrayListOf<SortedEvents>()
+    private fun updateData(text: String) {
+        val listEvents = arrayListOf<MyScheduleEventsData>()
         compositeDisposable += Completable.fromAction {
             mEventsList.forEach { event ->
-                var count = 0
-                val list = event.binds?.activity?.filter { x -> isHasSearchText(mSearchText, x) }
-
+                val list = event.binds?.activity?.filter { x -> isHasSearchText(text, x) }
                 val mDate = event.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
-                    //?.get(0)?.holdingDate?.from
                     ?.get(0)?.holdingDate?.from?.split(" ")?.get(0) ?: ""
-
-                val listSubEvents = arrayListOf<SortedSubEvents>()
                 val mSubEventsMap = list?.groupBy { subEvent ->
                     subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
                 }?.toSortedMap()
 
-                Log.e("DATE", mDate?:"")
-                Log.e("DATE", mSubEventsMap?.keys.toString())
-                if (!mSubEventsMap.isNullOrEmpty()){
-                    mSubEventsMap?.put("", mSubEventsMap.remove(mDate))
+                if (!mSubEventsMap.isNullOrEmpty()) {
+                    mSubEventsMap.put("", mSubEventsMap.remove(mDate))
                 }
-
-                mSubEventsMap?.forEach {
-                    listSubEvents.add(SortedSubEvents(it.key, it.value))
-//                    if (count < 1) {
-//                        listSubEvents.add(SortedSubEvents("", it.value))
-//                        count++
-//                    } else {
-//                        listSubEvents.add(SortedSubEvents(it.key, it.value))
-//                    }
-                }
-
                 val canShowPlaceholder = mSubEventsMap.isNullOrEmpty()
-
-                val mEvent = SortedEvents(
-                    mDate ?: "",
-                    event?.id.toString(),
-                    event?.name ?: "",
-                    event?.image?.uri ?: "",
-                    listSubEvents,
-                    canShowPlaceholder
+                listEvents.add(
+                    MyScheduleEventsData(
+                        mDate,
+                        event.id.toString(),
+                        event.name ?: "",
+                        event.image?.uri ?: "",
+                        mSubEventsMap ?: emptyMap(),
+                        canShowPlaceholder
+                    )
                 )
-                listEvents.add(mEvent)
             }
-
-
         }.performOnBackgroundOutOnMain()
-//            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.setContentNew(listEvents)
                 //viewState.setContent(eventsList)
             }
     }
 
-//    private fun updateData() {
-//        val listEvents = arrayListOf<SortedEvents>()
-//        compositeDisposable += Completable.fromAction {
-//            mEventsList.forEach { event ->
-//                var count = 0
-//                val list = event.binds?.activity?.filter { x -> isHasSearchText(mSearchText, x) }
-//
-//                val mDate = event.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
-//                    //?.get(0)?.holdingDate?.from
-//                    ?.get(0)?.holdingDate?.from?.split(" ")?.get(0) ?: ""
-//
-//                val listSubEvents = arrayListOf<SortedSubEvents>()
-//                val mSubEventsMap = list?.groupBy { subEvent ->
-//                    subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
-//                }?.toSortedMap()
-//
-//                Log.e("DATE", mDate?:"")
-//                Log.e("DATE", mSubEventsMap?.keys.toString())
-//                if (!mSubEventsMap.isNullOrEmpty()){
-//                    mSubEventsMap?.put("", mSubEventsMap.remove(mDate))
-//                }
-//
-//                mSubEventsMap?.forEach {
-//                    listSubEvents.add(SortedSubEvents(it.key, it.value))
-////                    if (count < 1) {
-////                        listSubEvents.add(SortedSubEvents("", it.value))
-////                        count++
-////                    } else {
-////                        listSubEvents.add(SortedSubEvents(it.key, it.value))
-////                    }
-//                }
-//
-//                val canShowPlaceholder = mSubEventsMap.isNullOrEmpty()
-//
-//                val mEvent = SortedEvents(
-//                    mDate ?: "",
-//                    event?.id.toString(),
-//                    event?.name ?: "",
-//                    event?.image?.uri ?: "",
-//                    listSubEvents,
-//                    canShowPlaceholder
-//                )
-//                listEvents.add(mEvent)
-//            }
-//
-//
-//        }.performOnBackgroundOutOnMain()
-////            .withProgressBarLoadingDialog(viewState)
-//            .subscribeSimple {
-//                viewState.setContentNew(listEvents)
-//                //viewState.setContent(eventsList)
-//            }
-//    }
-
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
-        Log.e("TEXT", mSearchText)
-        updateData()
+        updateData(text)
     }
 
     override fun onShowEventClick(eventId: String) {
@@ -371,33 +329,32 @@ class MyScheduleEventsPresenter
         )
     }
 
-    private fun sortData(list: List<EventNew?>) {
-        val listEvents = arrayListOf<SortedEvents>()
+    private fun transformDataToShow(list: List<EventNew?>): List<MyScheduleEventsData> {
+        val listScheduleEvents = arrayListOf<MyScheduleEventsData>()
+
         list.forEach { event ->
-            var count = 0
-            val listSubEvents = arrayListOf<SortedSubEvents>()
-            val mSubEventsMap = event?.binds?.activity?.groupBy { subEvent ->
-                subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
+            val firstDate = event?.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
+                ?.get(0)?.holdingDate?.from?.split(" ")?.get(0) ?: ""
+
+            val eventsMap = event?.binds?.activity?.groupBy { x ->
+                x.holdingDate?.from?.split(" ")?.get(0) ?: ""
             }?.toSortedMap()
-            mSubEventsMap?.forEach {
-                if (count < 1) {
-                    listSubEvents.add(SortedSubEvents("", it.value))
-                    count++
-                } else {
-                    listSubEvents.add(SortedSubEvents(it.key, it.value))
-                }
+
+            if (!eventsMap.isNullOrEmpty()) {
+                eventsMap.put("", eventsMap.remove(firstDate))
             }
-            val mEvent = SortedEvents(
-                mSubEventsMap?.keys?.elementAt(0) ?: "",
-                event?.id.toString(),
-                event?.name ?: "",
-                event?.image?.uri ?: "",
-                listSubEvents,
-                false
+            listScheduleEvents.add(
+                MyScheduleEventsData(
+                    firstDate,
+                    event?.id.toString(),
+                    event?.name ?: "",
+                    event?.image?.uri ?: "",
+                    eventsMap ?: emptyMap(),
+                    false
+                )
             )
-            listEvents.add(mEvent)
         }
-        viewState.setContentNew(listEvents)
+        return listScheduleEvents
     }
 
 

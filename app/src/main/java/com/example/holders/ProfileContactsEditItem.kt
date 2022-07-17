@@ -437,7 +437,6 @@ class ProfileContactsEditItem(
         }
 
         if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
-                context,
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {

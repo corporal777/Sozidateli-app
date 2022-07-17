@@ -69,7 +69,7 @@ interface AboutEventContractNew {
         fun showMap(mapInfo: MapInfo?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(isApproved : Boolean, subEvents: MutableMap<String, ArrayList<EventActivityModel>>)
+        fun setSubEvents(isApproved : Boolean, subEvents: Map<String, List<EventActivityModel>>)
     }
 
     interface Presenter : BaseContract.Presenter {

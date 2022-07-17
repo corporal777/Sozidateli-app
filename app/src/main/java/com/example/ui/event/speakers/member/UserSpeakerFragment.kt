@@ -29,6 +29,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
     UserSpeakerContract.View {
@@ -81,14 +82,15 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         mBinding.apply {
             listSpeakersContent.apply {
                 this.adapter = groupAdapter
-                setHasFixedSize(true)
                 setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                     mDy += scrollY - oldScrollY
-                    if (mDy <= 10) {
-                        appBar.elevation = mDy
-                            .toFloat()
-                    } else {
-                        appBar.elevation = 10f
+                    val mElevation = abs(mDy / 10f)
+                    appBar.apply {
+                        elevation = if (mElevation <= 10f) {
+                            mElevation
+                        } else {
+                            10f
+                        }
                     }
                 }
             }

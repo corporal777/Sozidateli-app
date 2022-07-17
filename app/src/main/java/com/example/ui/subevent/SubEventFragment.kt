@@ -1,6 +1,7 @@
 package com.example.ui.subevent
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.example.databinding.FragmentSubeventBinding
 import com.example.extensions.findItemBy
 import com.example.holders.SpeakerGroup
 import com.example.holders.SubeventInfoItem
+import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
 import com.xwray.groupie.GroupAdapter
@@ -20,6 +22,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventContract.View {
 
@@ -39,6 +42,7 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         subEventId = args.subEventId
     }
 
+    private val headerSection = Section()
     private val infoSection = Section()
     private val speakersSection by lazy {
         Section().apply {
@@ -51,22 +55,27 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        var mDy = 0
+        val mO = 1.0f
         mBinding.apply {
             contentList.apply {
                 adapter = GroupAdapter<GroupieViewHolder>().apply {
+                    //add(headerSection)
                     add(infoSection)
                     add(speakersSection)
                 }
-                addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
                         mDy += dy
+                        val mAlpha = abs(mDy / 100f)
+                        val mAlphaBig = -abs(mDy / 100f)
+                        val mElevation = abs(mDy / 10f)
                         appBarLayout.apply {
-                            if (mDy >= 30) {
-                                elevation = 10f
+                            elevation = if (mElevation <= 10f) {
+                                mElevation
                             } else {
-                                elevation = 0f
+                                10f
                             }
                         }
                     }
@@ -80,6 +89,7 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
     }
 
     override fun setData(isApproved: Boolean, subEvent: EventActivityModel) {
+        headerSection.update(listOf(ScreenHeaderItem(getString(R.string.event))))
         infoSection.update(listOf(SubeventInfoItem(isApproved, subEvent, {
             presenter.onAddToScheduleClick(it)
         }, {
@@ -111,12 +121,12 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         infoSection.findItemBy<SubeventInfoItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (mBinding.contentList!= null) {
-            mDy += mBinding.contentList.scrollY
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        if (mBinding.contentList!= null) {
+//            mDy += mBinding.contentList.scrollY
+//        }
+//    }
 
     override fun layout() = R.layout.fragment_subevent
 }

@@ -64,7 +64,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
                     binding.btnPositive.isEnabled = AuthValidateUtil.isValidEmail(it.toString())
                 }
                 RegisterDataType.PHONE, RegisterDataType.CHANGE_PHONE -> {
-                    binding.btnPositive.isEnabled = Utils.newPhoneValidator(activity, it.toString())
+                    binding.btnPositive.isEnabled = Utils.newPhoneValidator(it.toString())
                 }
                 RegisterDataType.CODE -> {
                     binding.btnPositive.isEnabled = it.toString().length == CODE_SIZE

@@ -14,7 +14,8 @@
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
-        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowBackground">@color/main_background</item>
+<!--        <item name="android:windowBackground">@drawable/splash_background</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <!--        <item name="android:navigationBarColor">@android:color/white</item>-->
@@ -409,6 +410,8 @@
     </style>
 
     <style name="Profile.Edit.Input.SingleLine">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontFamily">@font/sf_pro_text</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
@@ -431,6 +434,8 @@
     </style>
 
     <style name="Profile.Edit.Switch" parent="Profile.Edit.InputTitle">
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="fontFamily">@font/sf_pro_text</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingStart">5dp</item>
         <item name="android:paddingTop">7dp</item>

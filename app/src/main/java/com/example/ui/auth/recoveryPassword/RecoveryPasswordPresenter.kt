@@ -39,8 +39,8 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onRecoveryClick(context: Context) {
-        if (isDataValid(context)) {
+    override fun onRecoveryClick() {
+        if (isDataValid()) {
            val res =  when (loginType) {
                 "email" -> email
                 else -> Utils.validatePhoneBeforeSend(email)
@@ -66,20 +66,20 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onChangeEmailText(email: String, context: Context) {
+    override fun onChangeEmailText(email: String) {
         viewState.showEmailError(false)
         this.email = email
-        performDataChange(context)
+        performDataChange()
     }
 
-    private fun performDataChange(context: Context) {
-        viewState.enableRecoveryBtn(isDataValid(context))
+    private fun performDataChange() {
+        viewState.enableRecoveryBtn(isDataValid())
     }
 
-    private fun isDataValid(context: Context): Boolean {
+    private fun isDataValid(): Boolean {
         return if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
             loginType = "phone"
-            Utils.newPhoneValidator(context, email)
+            Utils.newPhoneValidator(email)
         } else {
             loginType = "email"
             AuthValidateUtil.isValidEmail(email)

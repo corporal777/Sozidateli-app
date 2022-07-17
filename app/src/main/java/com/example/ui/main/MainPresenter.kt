@@ -90,9 +90,17 @@ class MainPresenter
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
-                viewState.showBadge(it > 0)
+                viewState.showBadgeNotification(it > 0)
             }, {
-                viewState.showBadge(false)
+                viewState.showBadgeNotification(false)
+            })
+
+        compositeDisposable += appData.chatMessageCountSubject
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.showBadgeChat(it > 0)
+            }, {
+                viewState.showBadgeChat(false)
             })
 
     }
@@ -624,6 +632,7 @@ class MainPresenter
                     if (chatCompositeDisposable.size() == 1) {
                         //subscribeChatNewMessage()
                         subscribeChatUnreadCount()
+                        subscribeChatNewMessage()
                         subscribeChatRequestsCount()
                         emitValueUpdates()
                     }
@@ -699,13 +708,29 @@ class MainPresenter
     }
 
     private fun subscribeChatNewMessage() {
-        /*chatCompositeDisposable += haChat.subscribeToNewMessage()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    processNewChatMessage(it)
-                }, {
-                    it.printStackTrace()
-                })*/
+        chatCompositeDisposable += socket.subscribeNewChatMessage()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                it.data.forEach { message ->
+                    chatHelper.showNotificationIfCan(
+                        message.chat.toString(),
+                        message.id.toString(),
+                        message.sender?.name + " " + message.sender?.lastName,
+                        message.message ?: "",
+                        "",
+                        message.sender?.avatar
+                    )
+                }
+
+                Log.e("NEW MESSAGE", it.data.toString())
+            }
+//        chatCompositeDisposable += haChat.subscribeToNewMessage()
+//                .performOnBackgroundOutOnMain()
+//                .subscribe({
+//                    processNewChatMessage(it)
+//                }, {
+//                    it.printStackTrace()
+//                })
     }
 
     private fun emitValueUpdates() {

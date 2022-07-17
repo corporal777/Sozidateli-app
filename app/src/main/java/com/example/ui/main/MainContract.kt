@@ -83,7 +83,10 @@ interface MainContract {
         fun showAuthWebsiteFragment(code : String)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun showBadge(show : Boolean)
+        fun showBadgeNotification(show : Boolean)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun showBadgeChat(show : Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun setMainTheme()

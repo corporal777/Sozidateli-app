@@ -8,9 +8,9 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class EventDetailInformationBlock(
-    val label : String,
+    val label: String,
     val data: EventNew?,
-    val pages : List<PageModel>?,
+    val pages: List<PageModel>?,
     val mapClick: () -> Unit,
     val pageClick: (id: Int) -> Unit
 ) : NestedGroup() {
@@ -26,7 +26,7 @@ class EventDetailInformationBlock(
                     EventPageItemNew(
                         1,
                         "Как добраться"
-                    ) { mapClick })
+                    ) { mapClick() })
             }
             if (!pages.isNullOrEmpty()) {
                 addAll(pages.map { item ->
@@ -43,7 +43,7 @@ class EventDetailInformationBlock(
     override fun getGroup(position: Int): Group {
         return when (position) {
             0 -> mLabelItem
-             1 -> mContentSection
+            1 -> mContentSection
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
         }
     }

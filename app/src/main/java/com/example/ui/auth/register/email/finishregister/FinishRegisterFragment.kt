@@ -20,14 +20,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
+import com.example.databinding.FragmentFinishRegisterBinding
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog.Companion.CODE_SIZE
-import com.example.util.ClickableSpan
+import com.example.util.*
 import com.example.util.Utils.timerFormatter
-import com.example.util.getDeviceId
-import com.example.util.getDeviceName
-import com.example.util.initSwitch
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.btnResend
 import kotlinx.android.synthetic.main.fragment_finish_register.etEmail
@@ -39,11 +38,12 @@ import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
 import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
+import onFocusChanged
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
+class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(), FinishRegisterContract.View {
 
     private var isNoMiddleName = false
     private var loginType = "email"
@@ -55,7 +55,13 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
-            it.isLetter() || it == '-'
+            it.isLetter() || it == '-' || it == ' '
+        }
+    })
+
+    private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_'
         }
     })
 
@@ -94,100 +100,127 @@ class FinishRegisterFragment : BaseFragment(), FinishRegisterContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (loginType == "email") {
-            ibRegister.apply { isEnabled = true }
-        }
-        ivClose.setOnClickListener { presenter.onClickClose() }
-        //cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
-        //cbAgree.isChecked = true
-        if (BuildConfig.NEW_PROFILE_EDIT) {
-            //tilMiddleName.visibility = View.VISIBLE
-            //llAgree.visibility = View.GONE
-            //phone_layout.visibility = View.VISIBLE
-        } else {
-            //tilMiddleName.visibility = View.GONE
-            //llAgree.visibility = View.VISIBLE
-            //phone_layout.visibility = View.GONE
-        }
-        //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
-        scNoMiddleName.initSwitch(isNoMiddleName) {
-            presenter.onNoMiddleNameChecked(it)
-        }
-        /*etMobilePhone.getPhoneCallback { it.let { text ->
-            presenter.onChangePhoneText(text)
-        } }*/
-        etFirstName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeNameText(text) } }
-        etFirstName.filters = filter
-        etLastName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
-        etLastName.filters = filter
-        etMiddleName.onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
-        etMiddleName.filters = filter
-        etCode.onTextChanged {
-            tilCode.error = null
-            it?.toString()?.let { text -> presenter.onChangeCodeText(text) }
-        }
-        val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
-            val linkStart = 11
-            val linkEnd = length
-            setSpan(ClickableSpan(drawUnderline = false) {
-                presenter.onClickUserAgreement()
-            }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-
-        /*tvAgree.apply {
-            text = agreementText
-            movementMethod = LinkMovementMethod.getInstance()
-        }
-
-        flAgree.setOnClickListener {
-            cbAgree.apply {
-                isChecked = !isChecked
+        mBinding.apply {
+            if (loginType == "email") {
+                ibRegister.apply { isEnabled = true }
             }
-        }*/
-        btnResend.apply {
-            setTextColor(ColorStateList(
+            ivClose.setOnClickListener { presenter.onClickClose() }
+            //cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
+            //cbAgree.isChecked = true
+            if (BuildConfig.NEW_PROFILE_EDIT) {
+                //tilMiddleName.visibility = View.VISIBLE
+                //llAgree.visibility = View.GONE
+                //phone_layout.visibility = View.VISIBLE
+            } else {
+                //tilMiddleName.visibility = View.GONE
+                //llAgree.visibility = View.VISIBLE
+                //phone_layout.visibility = View.GONE
+            }
+            //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
+            scNoMiddleName.initSwitch(isNoMiddleName) {
+                presenter.onNoMiddleNameChecked(it)
+            }
+            /*etMobilePhone.getPhoneCallback { it.let { text ->
+                presenter.onChangePhoneText(text)
+            } }*/
+            etFirstName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+
+            etLastName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeLastNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+
+            etMiddleName.apply {
+                filters = filter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) } }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        setText(removeFirstAndLastSpaces(text.toString()))
+                    }
+                }
+            }
+            etEmail.filters = emailFilter
+            etCode.onTextChanged {
+                tilCode.error = null
+                it?.toString()?.let { text -> presenter.onChangeCodeText(text) }
+            }
+            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
+                val linkStart = 11
+                val linkEnd = length
+                setSpan(ClickableSpan(drawUnderline = false) {
+                    presenter.onClickUserAgreement()
+                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+
+            /*tvAgree.apply {
+                text = agreementText
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+
+            flAgree.setOnClickListener {
+                cbAgree.apply {
+                    isChecked = !isChecked
+                }
+            }*/
+            btnResend.apply {
+                setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
                     intArrayOf(ContextCompat.getColor(requireContext(), R.color.colorAccent), ContextCompat.getColor(requireContext(), R.color.action_button_disabled_text_color))
-            ))
-            setOnClickListener { presenter.sendCodeAgain() }
-        }
-        ibCancel.setOnClickListener {
-            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-            presenter.logout()
-        }
-        ibRegister.setOnClickListener {
-            when (loginType) {
-                "phone" -> {
-                    if (etCode.text?.length != CODE_SIZE) {
-                        tilCode.error = resources.getString(R.string.auth_error_no_code)
-                    } else {
+                ))
+                setOnClickListener { presenter.sendCodeAgain() }
+            }
+            ibCancel.setOnClickListener {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                presenter.logout()
+            }
+            ibRegister.setOnClickListener {
+                when (loginType) {
+                    "phone" -> {
+                        if (etCode.text?.length != CODE_SIZE) {
+                            tilCode.error = resources.getString(R.string.auth_error_no_code)
+                        } else {
+                            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+                            presenter.onHandleAuthLink()
+                        }
+                    }
+                    "email" -> {
                         (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                         presenter.onHandleAuthLink()
                     }
                 }
+
+                /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
+                presenter.onHandleAuthLink()
+                } else {
+                    showWrongPhoneError(true)
+                }*/
+            }
+            //btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
+            //scNoMiddleName.isChecked = isNoMiddleName
+            when (loginType) {
+                "phone" -> {
+                    tvText.text = requireContext().resources.getString(R.string.code_dialog_text, presenter.phone)
+                    layPhoneConfirm.isVisible = true
+                }
                 "email" -> {
-                    (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                    presenter.onHandleAuthLink()
+                    layPhoneConfirm.isVisible = false
                 }
             }
+        }
 
-            /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
-            presenter.onHandleAuthLink()
-            } else {
-                showWrongPhoneError(true)
-            }*/
-        }
-        //btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
-        //scNoMiddleName.isChecked = isNoMiddleName
-        when (loginType) {
-            "phone" -> {
-                tvText.text = requireContext().resources.getString(R.string.code_dialog_text, presenter.phone)
-                layPhoneConfirm.isVisible = true
-            }
-            "email" -> {
-                layPhoneConfirm.isVisible = false
-            }
-        }
     }
 
     override fun logedout() {

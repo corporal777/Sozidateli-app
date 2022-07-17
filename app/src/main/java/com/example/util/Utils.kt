@@ -46,7 +46,7 @@ object Utils {
         return regex.containsMatchIn(text)
     }
 
-    fun newPhoneValidator(context: Context, phone: String): Boolean {
+    fun newPhoneValidator(phone: String): Boolean {
         var isValid = true
         if (phone.contains("+")) {
             if (phone.length == 12) {

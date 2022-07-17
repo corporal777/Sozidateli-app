@@ -193,7 +193,6 @@ class MainInfoEditItem(
                 setOnClickListener {
                     val phone = etMobilePhone.text.toString()
                     if (/*phone.isValidPhoneNumber(context)*/Utils.newPhoneValidator(
-                            context,
                             phone.replace(" ", "").replace("-", "")
                         )
                     ) {

@@ -1,6 +1,7 @@
 package com.example.ui.auth.recoveryPassword
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -11,25 +12,36 @@ import androidx.core.text.toSpannable
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.databinding.FragmentRecoveryPasswordBinding
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
+import com.example.util.AuthValidateUtil
 import com.example.util.SimpleTextWatcher
 import kotlinx.android.synthetic.main.dialog_password_recovery.view.*
 import kotlinx.android.synthetic.main.fragment_recovery_password.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onFocusChanged
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
+class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding>(), RecoveryPasswordContract.View {
 
     @InjectPresenter
     lateinit var presenter: RecoveryPasswordPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<RecoveryPasswordPresenter>
+
+    private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_'
+        }
+    })
 
     @ProvidePresenter
     fun providePresenter(): RecoveryPasswordPresenter = presenterProvider.get().apply {
@@ -40,23 +52,32 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnRecovery.setOnClickListener { presenter.onRecoveryClick(requireContext()) }
-        etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-            presenter.onChangeEmailText(charSequence.toString(), requireContext())
-        })
-        ibClose.setOnClickListener { presenter.onCloseClick() }
+        mBinding.apply {
+            btnRecovery.setOnClickListener { presenter.onRecoveryClick() }
+//            etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
+//                presenter.onChangeEmailText(charSequence.toString())
+//            })
+
+            etEmail.apply {
+                filters = emailFilter
+                onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }
+            }
+
+            ibClose.setOnClickListener { presenter.onCloseClick() }
+        }
+
     }
 
     override fun setEmail(email: String) {
-        etEmail.setText(email)
+        mBinding.etEmail.setText(email)
     }
 
     override fun enableRecoveryBtn(isEnable: Boolean) {
-        btnRecovery.apply { isEnabled = isEnable }
+        mBinding.btnRecovery.apply { isEnabled = isEnable }
     }
 
     override fun showEmailError(show: Boolean) {
-        tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
+        mBinding.tilEmail.error = if (show) getString(R.string.auth_error_wrong_email) else null
     }
 
     override fun showRecoveryNotification(email: String) {

@@ -64,7 +64,8 @@ fun TextView.setDateCheckYearText(date: Long) {
     val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
     val now = Calendar.getInstance()
 
-    val format = if (dateCalendar.get(YEAR) == now.get(YEAR)) DATE_FORMAT_FULL_MONTH_NO_YEAR else DATE_FORMAT_FULL_MONTH_FULL_YEAR
+    val format =
+        if (dateCalendar.get(YEAR) == now.get(YEAR)) DATE_FORMAT_FULL_MONTH_NO_YEAR else DATE_FORMAT_FULL_MONTH_FULL_YEAR
     val formatted = SimpleDateFormat(format, Locale.getDefault()).format(dateCalendar.time)
 
     this.text = formatted
@@ -95,9 +96,18 @@ fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWa
     val watcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = onTextChanged(s)
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
+            onTextChanged(s)
     }
     addTextChangedListener(watcher)
+    return watcher
+}
+
+fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.OnFocusChangeListener {
+    val watcher = View.OnFocusChangeListener { v, hasFocus ->
+        onFocusChanged(hasFocus)
+    }
+    onFocusChangeListener = watcher
     return watcher
 }
 
@@ -154,25 +164,29 @@ fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
     text = toFormat?.format(statusText) ?: statusText
     setTextColor(ContextCompat.getColor(context, statusTextColorRes))
     background = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.background_corners,
-            ContextThemeWrapper(context, statusBackgroundStyleRes).theme
+        resources,
+        R.drawable.background_corners,
+        ContextThemeWrapper(context, statusBackgroundStyleRes).theme
     )
 }
 
 fun User.Status.getUserStatusText(context: Context): String {
-    return "${context.getString(R.string.status_your_status)} ${context.getString(when (this) {
-        User.Status.LOW_PROTECTION -> R.string.profile_status_low
-        User.Status.MID_PROTECTION -> R.string.profile_status_mid
-        User.Status.MAX_PROTECTION -> R.string.profile_status_max
-    })}"
+    return "${context.getString(R.string.status_your_status)} ${
+        context.getString(
+            when (this) {
+                User.Status.LOW_PROTECTION -> R.string.profile_status_low
+                User.Status.MID_PROTECTION -> R.string.profile_status_mid
+                User.Status.MAX_PROTECTION -> R.string.profile_status_max
+            }
+        )
+    }"
 }
 
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
-            .transform(CropCircleTransformation())
-            .apply { placeholder?.let { placeholder(it) } }
-            .into(this)
+        .transform(CropCircleTransformation())
+        .apply { placeholder?.let { placeholder(it) } }
+        .into(this)
 }
 
 fun ImageView.setCircleImage(bitmap: Bitmap?, placeholder: Int? = null) {
@@ -185,7 +199,8 @@ fun SimpleDateFormat.parseTimestamp(source: String): Long {
 }
 
 fun Context.isConnectedToNetwork(): Boolean {
-    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    val connectivityManager =
+        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
     return connectivityManager?.activeNetworkInfo?.isConnected ?: false
 }
 
@@ -211,7 +226,11 @@ fun View.setSelectableItemBackgroundBorderless() = with(TypedValue()) {
     setBackgroundResource(resourceId)
 }
 
-fun Bitmap.toBodyPart(name: String, fileName: String, compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): MultipartBody.Part {
+fun Bitmap.toBodyPart(
+    name: String,
+    fileName: String,
+    compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG
+): MultipartBody.Part {
     return let { bitmap ->
         val byteArray = ByteArrayOutputStream().let {
             bitmap.compress(compressFormat, 100, it)
@@ -228,7 +247,10 @@ fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null):
     return isValidPhoneNumber(phoneNumberUtil, defaultRegion)
 }
 
-fun String?.isValidPhoneNumber(phoneNumberUtil: PhoneNumberUtil, defaultRegion: String? = null): Boolean {
+fun String?.isValidPhoneNumber(
+    phoneNumberUtil: PhoneNumberUtil,
+    defaultRegion: String? = null
+): Boolean {
     if (this.isNullOrEmpty()) return false
     val parsedPhone = try {
         phoneNumberUtil.parse(this, defaultRegion)
@@ -238,47 +260,116 @@ fun String?.isValidPhoneNumber(phoneNumberUtil: PhoneNumberUtil, defaultRegion: 
     return phoneNumberUtil.isValidNumber(parsedPhone)
 }
 
-fun TextInputLayout.initAsMonthYearPicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int) -> String?) {
-    initAsDatePicker(startDate, minDate, maxDate, includeTime = false, showDates = false) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
+fun TextInputLayout.initAsMonthYearPicker(
+    startDate: Date?,
+    minDate: Date? = null,
+    maxDate: Date? = null,
+    transformDate: (year: Int, month: Int, day: Int) -> String?
+) {
+    initAsDatePicker(
+        startDate,
+        minDate,
+        maxDate,
+        includeTime = false,
+        showDates = false
+    ) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
 }
 
-fun TextInputLayout.initAsDatePicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int) -> String?) {
-    initAsDatePicker(startDate, minDate, maxDate, includeTime = false, showDates = true) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
+fun TextInputLayout.initAsDatePicker(
+    startDate: Date?,
+    minDate: Date? = null,
+    maxDate: Date? = null,
+    transformDate: (year: Int, month: Int, day: Int) -> String?
+) {
+    initAsDatePicker(
+        startDate,
+        minDate,
+        maxDate,
+        includeTime = false,
+        showDates = true
+    ) { year, month, dayOfMonth, _, _ -> transformDate(year, month, dayOfMonth) }
 }
 
-fun TextInputLayout.initAsDateTimePicker(startDate: Date?, minDate: Date? = null, maxDate: Date? = null, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
-    initAsDatePicker(startDate, minDate, maxDate, includeTime = true, showDates = true) { year, month, dayOfMonth, hour, minute -> transformDate(year, month, dayOfMonth, hour, minute) }
-}
-
-private fun TextInputLayout.initAsDatePicker(startDate: Date?, minDate: Date?, maxDate: Date?, includeTime: Boolean, showDates: Boolean, transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?) {
-    val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
-    val showTimePicker: (year: Int, month: Int, day: Int, startHour: Int, startMinute: Int) -> Unit = { year, month, day, startHour: Int, startMinute: Int ->
-        TimePickerDialog(context, R.style.AlertDialogTheme, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-            calendar.set(year, month, day, hour, minute)
-            editText?.setText(transformDate(year, month, day, hour, minute))
-        }, startHour, startMinute, true)
-                .show()
+fun TextInputLayout.initAsDateTimePicker(
+    startDate: Date?,
+    minDate: Date? = null,
+    maxDate: Date? = null,
+    transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?
+) {
+    initAsDatePicker(
+        startDate,
+        minDate,
+        maxDate,
+        includeTime = true,
+        showDates = true
+    ) { year, month, dayOfMonth, hour, minute ->
+        transformDate(
+            year,
+            month,
+            dayOfMonth,
+            hour,
+            minute
+        )
     }
+}
+
+private fun TextInputLayout.initAsDatePicker(
+    startDate: Date?,
+    minDate: Date?,
+    maxDate: Date?,
+    includeTime: Boolean,
+    showDates: Boolean,
+    transformDate: (year: Int, month: Int, day: Int, hour: Int, minute: Int) -> String?
+) {
+    val calendar = Calendar.getInstance().apply { time = startDate ?: Date() }
+    val showTimePicker: (year: Int, month: Int, day: Int, startHour: Int, startMinute: Int) -> Unit =
+        { year, month, day, startHour: Int, startMinute: Int ->
+            TimePickerDialog(
+                context,
+                R.style.AlertDialogTheme,
+                TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                    calendar.set(year, month, day, hour, minute)
+                    editText?.setText(transformDate(year, month, day, hour, minute))
+                },
+                startHour,
+                startMinute,
+                true
+            )
+                .show()
+        }
 
     val showDatePicker = {
-        DatePickerDialog(context, if (showDates) R.style.AlertDialogTheme else R.style.AlertDialogTheme_DatePickerSpinner, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            if (includeTime) showTimePicker(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
-            else {
-                calendar.set(year, month, dayOfMonth)
-                editText?.setText(transformDate(year, month, dayOfMonth, 0, 0))
-            }
-        }, calendar.get(YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                .apply {
-                    minDate?.let { datePicker.minDate = it.time }
-                    maxDate?.let { datePicker.maxDate = it.time }
-                    if (!showDates) {
-                        val yearRes = context.resources.getIdentifier("android:id/day", null, null)
-                        if (yearRes != 0) {
-                            datePicker.findViewById<View>(yearRes)?.isVisible = false
-                        }
+        DatePickerDialog(
+            context,
+            if (showDates) R.style.AlertDialogTheme else R.style.AlertDialogTheme_DatePickerSpinner,
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                if (includeTime) showTimePicker(
+                    year,
+                    month,
+                    dayOfMonth,
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE)
+                )
+                else {
+                    calendar.set(year, month, dayOfMonth)
+                    editText?.setText(transformDate(year, month, dayOfMonth, 0, 0))
+                }
+            },
+            calendar.get(YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+            .apply {
+                minDate?.let { datePicker.minDate = it.time }
+                maxDate?.let { datePicker.maxDate = it.time }
+                if (!showDates) {
+                    val yearRes = context.resources.getIdentifier("android:id/day", null, null)
+                    if (yearRes != 0) {
+                        datePicker.findViewById<View>(yearRes)?.isVisible = false
                     }
                 }
-                .show()
+            }
+            .show()
     }
 
     setEndIconDrawable(R.drawable.ic_calendar)
@@ -295,28 +386,57 @@ private fun TextInputLayout.initAsDatePicker(startDate: Date?, minDate: Date?, m
     }
 }
 
-fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Collection<String>, selectedVariant: String?, notSelectedVariant: String? = null, findValue: (String?) -> T?, onVariantChange: (T?) -> Unit) {
+fun <T> initDropDownView(
+    textView: AutoCompleteTextView,
+    variants: Collection<String>,
+    selectedVariant: String?,
+    notSelectedVariant: String? = null,
+    findValue: (String?) -> T?,
+    onVariantChange: (T?) -> Unit
+) {
     val variantsMap = linkedMapOf<String, T?>()
     variants.associateWithTo(variantsMap) { findValue(it) }
     initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
 }
 
-fun <K, V> initDropDownView(textView: AutoCompleteTextView, variants: Collection<K>, selectedVariant: String?, notSelectedVariant: String? = null, transformKey: (K) -> String, findValue: (K?) -> V?, onVariantChange: (V?) -> Unit) {
+fun <K, V> initDropDownView(
+    textView: AutoCompleteTextView,
+    variants: Collection<K>,
+    selectedVariant: String?,
+    notSelectedVariant: String? = null,
+    transformKey: (K) -> String,
+    findValue: (K?) -> V?,
+    onVariantChange: (V?) -> Unit
+) {
     val variantsMap = linkedMapOf<String, V?>()
     variants.associateTo(variantsMap, { transformKey(it) to findValue(it) })
     initDropDownView(textView, variantsMap, selectedVariant, notSelectedVariant, onVariantChange)
 }
 
-fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T?>, selectedVariant: String?, notSelectedVariant: String? = null, onVariantChange: (T?) -> Unit) {
-    val fullFilter = if (notSelectedVariant != null) mutableMapOf<String, T?>(notSelectedVariant to null).apply {
-        putAll(variants)
-    }
-    else variants
+fun <T> initDropDownView(
+    textView: AutoCompleteTextView,
+    variants: Map<String, T?>,
+    selectedVariant: String?,
+    notSelectedVariant: String? = null,
+    onVariantChange: (T?) -> Unit
+) {
+    val fullFilter =
+        if (notSelectedVariant != null) mutableMapOf<String, T?>(notSelectedVariant to null).apply {
+            putAll(variants)
+        }
+        else variants
 
     textView.apply {
         keyListener = null
         (tag as? TextWatcher)?.let { removeTextChangedListener(it) }
-        setAdapter(NoFilterArrayAdapter(context, R.layout.item_dropdown, R.id.tvText, fullFilter.keys.toMutableList()))
+        setAdapter(
+            NoFilterArrayAdapter(
+                context,
+                R.layout.item_dropdown,
+                R.id.tvText,
+                fullFilter.keys.toMutableList()
+            )
+        )
         setText(selectedVariant ?: notSelectedVariant, false)
         tag = onTextChanged {
             if (notSelectedVariant != null && it.toString() == notSelectedVariant) {
@@ -335,23 +455,24 @@ fun <T> initDropDownView(textView: AutoCompleteTextView, variants: Map<String, T
 }
 
 fun Uri.fileName(contentResolver: ContentResolver): String? {
-    return contentResolver.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
-        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { nameIndex ->
-            cursor.moveToFirst()
-            if (nameIndex >= 0) cursor.getString(nameIndex)
-            else null
+    return contentResolver.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+        ?.use { cursor ->
+            cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { nameIndex ->
+                cursor.moveToFirst()
+                if (nameIndex >= 0) cursor.getString(nameIndex)
+                else null
+            }
         }
-    }
 }
 
 inline fun <reified T> JsonElement?.fromJson(deserializer: JsonDeserializer<T>? = null): T? {
     if (this == null) return null
     return GsonBuilder()
-            .apply {
-                if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
-            }
-            .create()
-            .fromJson(this, T::class.java)
+        .apply {
+            if (deserializer != null) registerTypeAdapter(T::class.java, deserializer)
+        }
+        .create()
+        .fromJson(this, T::class.java)
 }
 
 fun View.setOnClickListener(listener: () -> Unit) {

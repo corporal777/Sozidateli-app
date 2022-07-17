@@ -1,5 +1,6 @@
 package com.example.ui.event.about.redesign
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -12,7 +13,9 @@ import com.example.ui.base.BasePresenter
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
@@ -53,52 +56,71 @@ class AboutEventPresenterNew
 
     }
 
+
+    @SuppressLint("LogNotTimber")
     private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
         Log.e("EVENT ID", eventId)
         Log.e("TOKEN", appData.token!!)
-        mTags.clear()
-        eventInfo?.event?.binds?.tag?.map {
-            mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
-        }
-        viewState.apply {
-            setEventData(
-                eventInfo?.event,
-                eventInfo?.event?.binds?.page,
-                eventInfo?.event?.binds?.member?.filter { it.role == "speaker" },
-                eventInfo?.event?.binds?.partner,
-                mTags
-            )
-        }
-        setSubEvents(eventInfo?.event)
+        var pair = Pair<Boolean, Map<String, List<EventActivityModel>>>(false, emptyMap())
+        compositeDisposable += userEventData.getSortedSpeakersFromLocalDb(eventId)
+            .doOnSuccess {
+                val eventMember = getSortedSpeakers(eventInfo)
+                eventMember.isDataFromLocalStorage = true
+                userEventData.updateEventMembers(eventMember)
+            }
+            .onErrorResumeNext {
+                it.printStackTrace()
+                val eventMember = getSortedSpeakers(eventInfo)
+                eventMember.isDataFromLocalStorage = true
+                userEventData.insertEventMembers(eventMember)
+                Single.just(eventMember)
+            }
+            .doOnSuccess {
+                it
+            }
+            .doFinally {
+                pair = getSubEvents(eventInfo?.event)
+                mTags.clear()
+                eventInfo?.event?.binds?.tag?.map {
+                    mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
+                }
+            }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    setEventData(
+                        eventInfo?.event,
+                        eventInfo?.event?.binds?.page,
+                        it.members,
+                        eventInfo?.event?.binds?.partner,
+                        mTags
+                    )
+                    setSubEvents(pair.first, pair.second)
+                }
+            }
     }
 
-    private fun setSubEvents(eventNew: EventNew?) {
-        val isApproved = event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+    private fun getSubEvents(eventNew: EventNew?): Pair<Boolean, Map<String, List<EventActivityModel>>> {
+        val isApproved =
+            event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+        var filteredSubEvents = mutableMapOf<String, ArrayList<EventActivityModel>>()
         eventNew.let {
             if (!it?.binds?.activity.isNullOrEmpty()) {
-                val listSubEvents = it?.binds?.activity?.groupBy { event ->
-                    event.holdingDate?.from?.split(" ")?.get(0)
-                }
-                val filteredSubEvents = mutableMapOf<String, ArrayList<EventActivityModel>>()
-                var mSize = 4
-
-                listSubEvents?.map { map ->
-                    if (mSize != 0) {
-                        val list = arrayListOf<EventActivityModel>()
-                        map.value.forEach { event ->
-                            if (mSize != 0) {
-                                list.add(event)
-                                mSize -= 1
-                            }
-                        }
-                        filteredSubEvents[map.key ?: ""] = list
+                val list = arrayListOf<EventActivityModel>()
+                if (it?.binds?.activity?.size!! > 4) {
+                    for (i in 0 until 4) {
+                        list.add(it.binds?.activity!!.get(i))
                     }
+                } else {
+                    list.addAll(it.binds?.activity ?: emptyList())
                 }
-                viewState.setSubEvents(isApproved, filteredSubEvents.toSortedMap())
+                filteredSubEvents = list.groupBy { event ->
+                    event.holdingDate?.from?.split(" ")?.get(0)
+                } as MutableMap<String, ArrayList<EventActivityModel>>
             }
         }
-
+        return Pair(isApproved, filteredSubEvents.toSortedMap())
     }
 
     override fun onTagSelected() {
@@ -164,7 +186,6 @@ class AboutEventPresenterNew
     }
 
     override fun onDeleteEventSubscriptionClick() {
-
         val mSubscriptionId = event?.event?.binds?.eventSubscribe?.id ?: 0
         compositeDisposable += eventRepository.deleteEventSubscription(eventId.toInt())
             .andThen(eventRepository.getEventDetails(eventId))
@@ -184,7 +205,8 @@ class AboutEventPresenterNew
         compositeDisposable += eventRepository.getEventDetails(eventId)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(onError = {
+            .subscribeSimple(
+                onError = {
                 it.printStackTrace()
             }, onSuccess = {
                 setEventInfoData(it)
@@ -246,9 +268,11 @@ class AboutEventPresenterNew
     override fun onMapPageSelected() {
         viewState.apply {
             val eventInfo = event
-            showMap(
-                eventInfo?.event?.createMapInfo(),
-            )
+            if (eventInfo?.event?.address?.lat != null && eventInfo.event.address.lon != null) {
+                showMap(
+                    eventInfo.event.createMapInfo(),
+                )
+            }
         }
     }
 
@@ -323,5 +347,15 @@ class AboutEventPresenterNew
         viewState.showOrganization(organization)
 
     override fun onShareClick() = viewState.showShare(eventId)
+
+    private fun getSortedSpeakers(eventInfo: EventInfo?): EventMember {
+        val list = eventInfo?.event?.binds?.member?.filter { it.role == "speaker" }
+        val members = arrayListOf<MemberModel>()
+        members.addAll(list?.filter { x -> x.isLead == true }
+            ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+        members.addAll(list?.filter { x -> x.isLead == false }
+            ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+        return EventMember(eventId, members, System.currentTimeMillis())
+    }
 
 }

@@ -8,7 +8,7 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.ui.base.BaseContract
-import com.example.ui.event.my.schedule.items.SortedEvents
+import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -17,7 +17,13 @@ interface MyScheduleEventsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setHeaderAndCalendar(subEventDays : List<CalendarDay>, month : String, days: List<EventScheduleCalendarDay>?)
+        fun setHeaderAndCalendar(
+            subEventDays: List<CalendarDay>,
+            month: String,
+            days: List<EventScheduleCalendarDay>?,
+            firstDate: CalendarDay?,
+            lastDate : CalendarDay?
+        )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSearchBlock()
@@ -26,7 +32,7 @@ interface MyScheduleEventsContract {
         fun setContent(data: List<EventNew?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContentNew(data: List<SortedEvents?>)
+        fun setContentNew(data: List<MyScheduleEventsData?>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(eventId: String)
@@ -41,7 +47,7 @@ interface MyScheduleEventsContract {
         fun scrollContent(day: EventScheduleCalendarDay)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showMessageDialog(message : String)
+        fun showMessageDialog(message: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEvent(subEvent: EventActivityModel)
@@ -50,13 +56,13 @@ interface MyScheduleEventsContract {
         fun showSubEvent(eventId: String, subEventId: String)
     }
 
-    interface Presenter : BaseContract.Presenter{
+    interface Presenter : BaseContract.Presenter {
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)
         fun onDaySelected(day: EventScheduleCalendarDay)
-        fun onShowEventClick(eventId : String)
+        fun onShowEventClick(eventId: String)
         fun findNearestEventDay(day: EventScheduleCalendarDay)
-        fun onSubEventClick(eventId : String, subEvent: EventActivityModel)
+        fun onSubEventClick(eventId: String, subEvent: EventActivityModel)
         fun onAddSubEventToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveSubEventFromScheduleClick(subEvent: EventActivityModel)
 

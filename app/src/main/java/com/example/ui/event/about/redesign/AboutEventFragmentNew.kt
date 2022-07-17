@@ -21,6 +21,7 @@ import com.example.extensions.*
 import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
@@ -45,18 +46,17 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
     BackgroundImageFragment {
 
     private var mLightStatus = false
-    private var _binding: FragmentAboutEventNewBinding? = null
-    private val mBinding get() = _binding!!
-
     private var mDy: Int = 0
     private var mEventId = ""
+    private var _binding: FragmentAboutEventNewBinding? = null
+    private val mBinding get() = _binding!!
 
     override fun layout() = R.layout.fragment_about_event_new
 
     private val subEventsBlock = Section()
 
     @InjectPresenter
-    lateinit var presenterNew: AboutEventPresenterNew
+    lateinit var mPresenter: AboutEventPresenterNew
 
     @Inject
     lateinit var presenterNewProvider: Provider<AboutEventPresenterNew>
@@ -72,30 +72,31 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
 
 
     private val onActionClickListener = object : EventDetailActionBlock.OnActionClickListener {
-        override fun onActionRegister() = presenterNew.onGoToEventClick()
-        override fun onActionCancel() = presenterNew.onActionCancel()
+        override fun onActionRegister() = mPresenter.onGoToEventClick()
+        override fun onActionCancel() = mPresenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onSubscribeEvent() = presenterNew.onCreateEventSubscriptionClick()
-        override fun onDeleteSubscribeEvent() = presenterNew.onDeleteEventSubscriptionClick()
+        override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
+        override fun onDeleteSubscribeEvent() = mPresenter.onDeleteEventSubscriptionClick()
 
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
-            presenterNew.onSubEventClick(subEvent)
+            mPresenter.onSubEventClick(subEvent)
         }
 
         override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenterNew.onAddToScheduleClick(subEvent)
+            mPresenter.onAddToScheduleClick(subEvent)
 
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenterNew.onRemoveFromScheduleClick(subEvent)
+            mPresenter.onRemoveFromScheduleClick(subEvent)
 
         override fun onUpdateScheduleState(subEvent: EventActivityModel) {}
     }
 
     private var actionItem: EventDetailActionBlock? = null
     private var organizationItem: EventDetailOrganizationBlock? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -121,19 +122,24 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
         }
 
 
-        mBinding.ivShare.setOnClickListener(presenterNew::onShareClick)
+        mBinding.swipeToRefresh.setProgressViewOffset(
+            true,
+            resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
+            resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
+        )
+
+        mBinding.ivShare.setOnClickListener(mPresenter::onShareClick)
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
         mBinding.swipeToRefresh.setOnRefreshListener {
-            presenterNew.onRefreshRequest()
+            mPresenter.onRefreshRequest()
         }
     }
 
-
     override fun setSubEvents(
         isApproved: Boolean,
-        subEvents: MutableMap<String, ArrayList<EventActivityModel>>
+        subEvents: Map<String, List<EventActivityModel>>
     ) {
         if (!subEvents.isNullOrEmpty()) {
             subEventsBlock.update(
@@ -171,8 +177,8 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             this@AboutEventFragmentNew.actionItem = this
         }
         val organizationItem = EventDetailOrganizationBlock(eventData,
-            { presenterNew.onAddOrganizationToFavoriteClick() },
-            { presenterNew.onOrganizationClick(it) }).apply {
+            { mPresenter.onAddOrganizationToFavoriteClick() },
+            { mPresenter.onOrganizationClick(it) }).apply {
             this@AboutEventFragmentNew.organizationItem = this
         }
 
@@ -182,14 +188,16 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             actionItem,
             Section().apply {
                 add(organizationItem)
-                add(
-                    EventDetailInformationBlock(
-                        getString(R.string.information),
-                        eventData,
-                        pages,
-                        { presenterNew.onMapPageSelected() },
-                        { presenterNew.onPageClick(it) })
-                )
+                if (!eventData?.address?.fullValue.isNullOrEmpty() || !pages.isNullOrEmpty()) {
+                    add(
+                        EventDetailInformationBlock(
+                            getString(R.string.information),
+                            eventData,
+                            pages,
+                            { mPresenter.onMapPageSelected() },
+                            { mPresenter.onPageClick(it) })
+                    )
+                }
             },
             Section().apply {
                 if (!members.isNullOrEmpty()) {
@@ -197,25 +205,25 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                         EventDetailSpeakersBlock(
                             getString(R.string.speakers),
                             members,
-                            { presenterNew.onSpeakerClick(it) },
-                            { presenterNew.onShowAllSpeakersClick() })
+                            { mPresenter.onSpeakerClick(it) },
+                            { mPresenter.onShowAllSpeakersClick() })
                     )
                 }
                 add(EventDetailTagsBlock(getString(R.string.event_program), tags) {
-                    presenterNew.onTagSelected()
+                    mPresenter.onTagSelected()
                 })
             },
             subEventsBlock,
             Section().apply {
                 add(EventDetailShowActivitiesButtonBlock {
-                    presenterNew.onShowEventActivitiesClick()
+                    mPresenter.onShowEventActivitiesClick()
                 })
                 if (!partners.isNullOrEmpty()) {
                     add(
                         EventDetailPartnersBlock(
                             getString(R.string.partners_label),
                             partners
-                        ) { presenterNew.onPartnerClick(it) })
+                        ) { mPresenter.onPartnerClick(it) })
                 }
             }
         ))
@@ -319,26 +327,6 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
         )
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (mBinding.eventContentList != null) {
-            //mDy += eventContentList.scrollY
-        }
-    }
-
-
-    companion object {
-        const val ABOUT_FROM_EVENT = 1
-        const val ABOUT_FROM_OTHER = 2
-    }
-
-    override val isLightStatus: Boolean
-        get() = mLightStatus
-
-    override fun getFragmentBackgroundDrawable(): Drawable? {
-        return null
-    }
-
     private fun setBlackIcons() {
         mBinding.apply {
             ivAddToFavorite.imageTintList =
@@ -384,7 +372,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                     setImageResource(R.drawable.ic_star)
                 }
                 setOnClickListener {
-                    presenterNew.onAddEventToFavoriteClick()
+                    mPresenter.onAddEventToFavoriteClick()
                 }
             }
         }
@@ -428,7 +416,6 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                     tbContent.setBackgroundColor(Color.TRANSPARENT)
                     setBackgroundColor(Color.BLACK)
                     val mAlpha = Math.abs(offset / (1000).toFloat())
-                    Log.e("WHITE", mAlpha.toString())
                     alpha = mAlpha
                     aboutEventAppBar.apply {
                         elevation = 0f
@@ -438,13 +425,12 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                     //setWhiteIcons()
                 }
             }
-            if (offset > 1900) {
+            if (offset > 1600) {
                 tbBackground.apply {
                     tbContent.setBackgroundColor(Color.BLACK)
                     setBackgroundColor(Color.WHITE)
-                    val value = offset - 1900
+                    val value = offset - 1600
                     val mAlpha = Math.abs(value / (1000).toFloat())
-                    Log.e("BLACk", mAlpha.toString())
                     alpha = mAlpha
                 }
                 aboutEventAppBar.apply {
@@ -459,6 +445,18 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             }
         }
 
+    }
+
+    companion object {
+        const val ABOUT_FROM_EVENT = 1
+        const val ABOUT_FROM_OTHER = 2
+    }
+
+    override val isLightStatus: Boolean
+        get() = mLightStatus
+
+    override fun getFragmentBackgroundDrawable(): Drawable? {
+        return null
     }
 
     override fun onDestroyView() {

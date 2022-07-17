@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.OnBackPressedCallback
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -52,6 +54,7 @@ import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.rating.EventRatingFragmentArgs
+import com.example.ui.event.speakers.list.EventSpeakersFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
@@ -66,6 +69,7 @@ import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarContentView
 import com.example.util.*
@@ -73,6 +77,8 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
 import kotlinx.android.synthetic.main.item_action_button.view.*
 import kotlinx.android.synthetic.main.layout_inapp.*
 import org.json.JSONObject
@@ -104,6 +110,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     private lateinit var mBadgeNotification: BadgeDrawable
+    private lateinit var mBadgeChat: BadgeDrawable
 
 
     private val navFragmentsLifecycleCallback =
@@ -124,6 +131,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is SplashFragment) {
                     hideToolbar()
                 }
+                if (f is StoriesFragment){
+                    doEdgeWindow()
+                }
 
             }
 
@@ -132,7 +142,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is AboutEventFragmentNew) {
                     cancelWindowTransparency()
                 }
-                if (f is StoriesFragment) presenter.onStoriesComplete()
+                if (f is StoriesFragment){
+                    cancelWindowTransparency()
+                    presenter.onStoriesComplete()
+                }
             }
 
             override fun onFragmentViewCreated(
@@ -163,17 +176,17 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     else -> hideNavBar()
                 }
 
-                if (f is ToolbarFragment) {
-                    supportActionBar?.title = f.title
-                    (supportActionBar as? ToolbarContentActionBar)?.apply {
-                        f.setupToolbarContent(
-                            this
-                        )
-                    }
-                    showToolbar()
-                } else {
-                    hideToolbar()
-                }
+//                if (f is ToolbarFragment) {
+//                    supportActionBar?.title = f.title
+//                    (supportActionBar as? ToolbarContentActionBar)?.apply {
+//                        f.setupToolbarContent(
+//                            this
+//                        )
+//                    }
+//                    showToolbar()
+//                } else {
+//                    hideToolbar()
+//                }
 
                 setupNavBarItems(f)
 
@@ -195,6 +208,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     if (f is NavBarColorFragment) f.navBarColor else navBarColorDefault
 
                 root.background = bg
+
+                if (f is SimpleTitleToolbar){
+                    appBar.visibility = View.VISIBLE
+                }else {
+                    appBar.visibility = View.GONE
+                }
+
             }
 
 
@@ -226,16 +246,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         //setMainTheme()
         super.onCreate(savedInstanceState)
-        super.setSupportActionBar(toolbar)
-        super.getSupportActionBar()?.apply {
-            setDisplayShowCustomEnabled(true)
-            setDisplayShowTitleEnabled(false)
-            setCustomView(
-                ToolbarContentView(this@MainActivity),
-                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            )
-        }
-
+//        super.setSupportActionBar(toolbar)
+//        super.getSupportActionBar()?.apply {
+//            setDisplayShowCustomEnabled(true)
+//            setDisplayShowTitleEnabled(false)
+//            setCustomView(
+//                ToolbarContentView(this@MainActivity),
+//                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+//            )
+//        }
         val progressBar = CustomProgressView(this@MainActivity)
         progressBar.setSize(35.dp)
         progressBar.setProgressColor(
@@ -322,14 +341,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         val appLinkAction = intent.action
         if (Intent.ACTION_VIEW == appLinkAction) {
 
-            QR_CODE_TO_AUTH_WEB = intent.dataString ?: ""
-            val mCode = intent.dataString ?: ""
-
-            if (!mCode.isNullOrEmpty() || mCode.contentEquals("code") || mCode.contentEquals("qr")) {
-                presenter.openAuthWebsiteFragment(mCode)
-                intent.data = null
-            }
-
             intent.data?.also {
                 val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
                 val email = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
@@ -337,9 +348,26 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
                 val changeEmail = it.getQueryParameter(CHANGE_EMAIL)
                 val usip = it.getQueryParameter(USIP)
-
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
+
+                if (lastPath == PATH_EVENT_MEMBER) {
+                    val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
+                    val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
+                    presenter.onInviteRegister(
+                        memberEmail ?: "",
+                        memberCode ?: "",
+                        "",
+                        "",
+                        "",
+                        0
+                    )
+                }
+                if (lastPath == PATH_QR) {
+                    QR_CODE_TO_AUTH_WEB = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
+                    val mCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
+                    presenter.openAuthWebsiteFragment(mCode)
+                }
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
                     if (lastPath.contains(PATH_HIDDEN))
@@ -384,6 +412,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     presenter.onHandleChangeEmailConfirm(authCode ?: "", email ?: "")
                 } else if (lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
+
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
                     presenter.onInviteRegister(
@@ -493,13 +522,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showDialogHasMaxState() {
-        MessageDialogWithBrownButton(this, getString(R.string.you_got_max_state)).setSelectCallback {}
+        MessageDialogWithBrownButton(
+            this,
+            getString(R.string.you_got_max_state)
+        ).setSelectCallback {}
 //        BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
 //            .setSelectCallback {}
     }
 
     override fun showDialogHasBaseState() {
-        MessageDialogWithBrownButton(this, getString(R.string.you_got_base_state)).setSelectCallback {}
+        MessageDialogWithBrownButton(
+            this,
+            getString(R.string.you_got_base_state)
+        ).setSelectCallback {}
 //        BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
 //            .setSelectCallback {}
     }
@@ -836,6 +871,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
     }
 
+    override fun setAppBarElevation(value: Float) {
+        appBar.apply {
+            elevation = if (value <= 10f) {
+                value
+            } else {
+                10f
+            }
+        }
+    }
+
+    override fun setToolbarTitle(title: String) {
+        toolbar_label.text = title
+    }
+
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
@@ -890,12 +939,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
         mBadgeNotification = mainNavBar.getOrCreateBadge(R.id.notification)
         mBadgeNotification.backgroundColor = Color.RED
+        mBadgeChat = mainNavBar.getOrCreateBadge(R.id.chats)
+        mBadgeChat.backgroundColor = Color.RED
     }
 
 
-    override fun showBadge(show: Boolean) {
+    override fun showBadgeNotification(show: Boolean) {
         mBadgeNotification.isVisible = show
         //showNotificationBadge(show)
+    }
+
+    override fun showBadgeChat(show: Boolean) {
+        mBadgeChat.isVisible = show
     }
 
 
