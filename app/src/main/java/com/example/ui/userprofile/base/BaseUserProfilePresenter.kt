@@ -19,6 +19,7 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
     @CallSuper
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         val updated = kotlin.runCatching { onUserUpdated(user) }.isSuccess
 
         compositeDisposable += appData.userNewChangeSubject
@@ -30,6 +31,7 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
 
 
     }
+
 
     private fun onUserUpdated(optionalUser: Optional<UserDetail>) {
         onUserUpdated(optionalUser.value)

@@ -79,7 +79,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipe_to_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -95,7 +95,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="1"
                 tools:listitem="@layout/item_profile_data_user" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.example.ui.views.CustomSwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

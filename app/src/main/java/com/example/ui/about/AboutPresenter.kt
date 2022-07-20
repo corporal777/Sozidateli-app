@@ -10,6 +10,12 @@ class AboutPresenter
 @Inject constructor( appData: AppData
 ) : BasePresenter<AboutContract.View>(appData), AboutContract.Presenter {
 
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun attachView(view: AboutContract.View?) {
         super.attachView(view)
     }

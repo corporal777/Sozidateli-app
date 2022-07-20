@@ -186,6 +186,13 @@
                 <View style="@style/ViewDivider.Horizontal" />
 
                 <TextView
+                    android:id="@+id/tvSessions"
+                    style="@style/Profile.Button"
+                    android:text="@string/sessions_label" />
+
+                <View style="@style/ViewDivider.Horizontal" />
+
+                <TextView
                     android:id="@+id/tvRate"
                     style="@style/Profile.Button"
 

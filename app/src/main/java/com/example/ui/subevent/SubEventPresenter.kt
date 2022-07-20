@@ -47,19 +47,24 @@ class SubEventPresenter @Inject constructor(
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                val subEvent = it.first
-                val isApproved =
-                    it.second.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-                if (firstLoading) viewState.setData(isApproved, subEvent)
-                firstLoading = false
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onSuccess = {
+                    val subEvent = it.first
+                    val isApproved =
+                        it.second.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+                    if (firstLoading) viewState.setData(isApproved, subEvent)
+                    firstLoading = false
 
-                val uid = appData.getId()
-                subEvent.binds?.member?.forEach { speaker ->
-                    speaker.binds?.user?.isCurrentUser = speaker.user == uid
-                }
-                viewState.setSpeakers(speakersList)
-            }
+                    val uid = appData.getId()
+                    subEvent.binds?.member?.forEach { speaker ->
+                        speaker.binds?.user?.isCurrentUser = speaker.user == uid
+                    }
+                    viewState.setSpeakers(speakersList)
+                })
+
     }
 
     override fun onSpeakerClick(speaker: MemberModel) {

@@ -17,7 +17,6 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_SEND
 import com.example.holders.RatingItem
 import com.example.holders.registerEvent.*
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
@@ -29,10 +28,10 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventRatingFragment : BaseFragment(), EventRatingContract.View, ToolbarFragment {
+class EventRatingFragment : BaseFragment(), EventRatingContract.View{
 
-    override val title: CharSequence
-        get() = getString(R.string.event_rating_title)
+//    override val title: CharSequence
+//        get() = getString(R.string.event_rating_title)
 
     @InjectPresenter
     lateinit var presenter: EventRatingPresenter

@@ -546,6 +546,14 @@
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
             app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
+        <action
+            android:id="@+id/action_profile_fragment_to_user_sessions_fragment"
+            app:destination="@id/user_sessions_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+
         <argument
             android:name="isShowPopup"
             app:argType="boolean" />
@@ -713,11 +721,18 @@
         <action
             android:id="@+id/action_chat_fragment_to_user_fragment"
             app:destination="@id/user_fragment"
-            app:enterAnim="@anim/profile_enter"
-            app:exitAnim="@anim/profile_exit"
             app:launchSingleTop="true"
-            app:popEnterAnim="@anim/profile_popup_enter"
-            app:popExitAnim="@anim/profile_popup_exit" />
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+
+<!--            app:enterAnim="@anim/profile_enter"-->
+<!--            app:exitAnim="@anim/profile_exit"-->
+<!--            -->
+<!--            app:popEnterAnim="@anim/profile_popup_enter"-->
+<!--            app:popExitAnim="@anim/profile_popup_exit" -->
+
     </fragment>
 
     <fragment
@@ -1362,6 +1377,14 @@
         android:name="com.example.ui.event.my.schedule.MyScheduleEventsFragment"
         android:label="MyScheduleEventsFragment"
         tools:layout="@layout/fragment_my_schedule_events">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_sessions_fragment"
+        android:name="com.example.ui.userSessions.UserSessionsFragment"
+        android:label="UserSessionsFragment"
+        tools:layout="@layout/fragment_user_sessions">
 
     </fragment>
 

@@ -1,12 +1,19 @@
 package com.example.ui.event.activities.items
 
+import android.content.Context
 import android.graphics.Color
+import android.os.Handler
+import android.util.AttributeSet
+import android.util.DisplayMetrics
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.R
 import com.example.util.PositionOffsetScrollListener
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import io.socket.client.On
 import kotlinx.android.synthetic.main.item_horizontal_list.*
 
 open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
@@ -16,11 +23,6 @@ open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
     protected var recyclerView: RecyclerView? = null
         private set
 
-    private val scrollListener = PositionOffsetScrollListener(LinearLayoutManager.HORIZONTAL) { position, offset ->
-        scrollPosition = position
-        scrollOffset = offset
-    }
-
     var adapter: RecyclerView.Adapter<VH>? = null
 
     var backgroundColor = Color.TRANSPARENT
@@ -29,8 +31,7 @@ open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
         viewHolder.recyclerView.apply {
             recyclerView = this
             adapter = this@HorizontalListItemNew.adapter
-            scrollToPositionWithOffset(scrollPosition, scrollOffset)
-            addOnScrollListener(scrollListener)
+            layoutManager = CenterLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             setBackgroundColor(backgroundColor)
             isNestedScrollingEnabled = false
         }
@@ -48,21 +49,45 @@ open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
 
     fun smoothScrollToPosition(position: Int) {
         val recyclerView = this.recyclerView
-        if (recyclerView == null) {
-            scrollPosition = position
-            scrollOffset = 0
-        } else {
-            recyclerView.smoothScrollToPosition(position)
-        }
+        recyclerView?.smoothScrollToPosition(position)
     }
 
     override fun unbind(holder: GroupieViewHolder) {
         super.unbind(holder)
-        recyclerView?.apply {
-            removeOnScrollListener(scrollListener)
-        }
         recyclerView = null
     }
 
     override fun getLayout() = R.layout.item_horizontal_list_new
+
+    inner class CenterLayoutManager : LinearLayoutManager {
+        constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(
+            context,
+            orientation,
+            reverseLayout
+        )
+
+        override fun smoothScrollToPosition(
+            recyclerView: RecyclerView,
+            state: RecyclerView.State,
+            position: Int
+        ) {
+            val centerSmoothScroller = CenterSmoothScroller(recyclerView.context)
+            centerSmoothScroller.targetPosition = position
+            startSmoothScroll(centerSmoothScroller)
+        }
+
+        inner class CenterSmoothScroller(context: Context) : LinearSmoothScroller(context) {
+            override fun calculateDtToFit(
+                viewStart: Int,
+                viewEnd: Int,
+                boxStart: Int,
+                boxEnd: Int,
+                snapPreference: Int
+            ): Int = (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
+
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return 20f / displayMetrics.densityDpi
+            }
+        }
+    }
 }

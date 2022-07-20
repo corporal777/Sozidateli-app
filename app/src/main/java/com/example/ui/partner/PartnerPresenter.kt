@@ -25,9 +25,11 @@ class PartnerPresenter
 
     lateinit var dataEventId: String
     lateinit var dataPartnerId: String
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         compositeDisposable += eventRepository.getPartnerDetails(dataPartnerId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
@@ -43,6 +45,16 @@ class PartnerPresenter
                         setData(it.partner, it.logo, it.background)
                     }
                 }
+    }
+
+    override fun attachView(view: PartnerContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     private class PartnerAndImages(

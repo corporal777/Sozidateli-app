@@ -27,7 +27,7 @@ interface EventContactsContract {
         fun openUrl(url: String)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onShareClick()
         fun onOpenRouteClick()
         fun onOpenAddressClick()

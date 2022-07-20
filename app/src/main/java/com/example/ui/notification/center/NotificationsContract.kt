@@ -24,7 +24,7 @@ interface NotificationsContract {
         fun showNotification(notification: Notification)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onNotificationUrlClick(url: String)
         fun onItemTake(position: Int)
         fun onRefreshRequest()

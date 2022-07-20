@@ -17,6 +17,11 @@ class EnterCodePresenter
         appData: AppData
 ) : BasePresenter<EnterCodeContract.View>(appData), EnterCodeContract.Presenter {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun onSearchClick(code: String) {
         compositeDisposable += eventRepository.getEventsList(mapOf(EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
                 EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",

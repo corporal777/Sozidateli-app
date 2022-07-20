@@ -39,9 +39,12 @@ interface UserSpeakerContract{
 
         @StateStrategyType(SkipStrategy::class)
         fun showSpeakerAddedToFavoriteMessage()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun changeAppbarElevation(value : Float)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
         fun onWriteMessageClick(speaker: UserDetail)
         fun onAddSpeakerToFavoriteClick(id: String)
 

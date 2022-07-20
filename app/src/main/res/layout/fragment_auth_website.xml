@@ -1,210 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/svContent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:background="@android:color/black">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="85dp"
-            android:contentDescription="@string/content_description_logo"
-            android:src="@drawable/ic_app_logo_main"
-            app:layout_constraintBottom_toTopOf="@id/space"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
 
-        <TextView
-            android:id="@+id/tvJoinMessage"
-            fontPath="fonts/sf_pro_display_semibold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="40dp"
-            android:lineSpacingExtra="2dp"
-            android:text="@string/auth_web_title_login"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivLogo"
-            tools:ignore="MissingPrefix" />
+        <ScrollView
+            android:id="@+id/svContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            tools:background="@android:color/black">
 
 
-        <LinearLayout
-            android:id="@+id/llInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="40dp"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvJoinMessage">
-
-            <TextView
-                android:id="@+id/tvEmail"
-                fontPath="fonts/sf_pro_display_semibold.ttf"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Информация о входе:"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingPrefix" />
+                android:orientation="vertical">
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/device"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
+                <ImageView
+                    android:id="@+id/ivLogo"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Устройство:"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                    tools:ignore="MissingPrefix" />
-
-                <TextView
-                    android:id="@+id/tvDevice"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text=""
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                    tools:ignore="MissingPrefix" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/ip"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="IP адрес:"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                    tools:ignore="MissingPrefix" />
+                    android:layout_height="85dp"
+                    android:contentDescription="@string/content_description_logo"
+                    android:src="@drawable/ic_app_logo_main"
+                    app:layout_constraintBottom_toTopOf="@id/space"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <TextView
-                    android:id="@+id/tvIPAddress"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvJoinMessage"
+                    fontPath="fonts/sf_pro_display_semibold.ttf"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text=""
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/auth_web_title_login"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                    android:textSize="20sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLogo"
                     tools:ignore="MissingPrefix" />
 
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/time"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llInfo"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Время:"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                    tools:ignore="MissingPrefix" />
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="40dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvJoinMessage">
 
-                <TextView
-                    android:id="@+id/tvTime"
-                    fontPath="fonts/sf_pro_display_regular.OTF"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        fontPath="fonts/sf_pro_display_semibold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Информация о входе:"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/device"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Устройство:"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            tools:ignore="MissingPrefix" />
+
+                        <TextView
+                            android:id="@+id/tvDevice"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            tools:ignore="MissingPrefix" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/ip"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="IP адрес:"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            tools:ignore="MissingPrefix" />
+
+
+                        <TextView
+                            android:id="@+id/tvIPAddress"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            tools:ignore="MissingPrefix" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/time"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Время:"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            tools:ignore="MissingPrefix" />
+
+                        <TextView
+                            android:id="@+id/tvTime"
+                            fontPath="fonts/sf_pro_display_regular.OTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
+                            app:layout_constraintStart_toEndOf="@id/time"
+                            app:layout_constraintTop_toBottomOf="@id/ip"
+                            tools:ignore="MissingPrefix" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/space"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnConfirm"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="40dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/background_corners"
+                    android:minHeight="@dimen/auth_button_min_height"
+                    android:text="@string/confirm"
+                    android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
-                    app:layout_constraintStart_toEndOf="@id/time"
-                    app:layout_constraintTop_toBottomOf="@id/ip"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <androidx.legacy.widget.Space
-            android:id="@+id/space"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnConfirm"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/background_corners"
-            android:minHeight="@dimen/auth_button_min_height"
-            android:text="@string/confirm"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:theme="@style/ViewBackgroundAccent"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm" />
+                    android:textSize="16sp"
+                    android:theme="@style/ViewBackgroundAccent"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm" />
 
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDoNotConfirm"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/background_corners_border"
-            android:minHeight="@dimen/auth_button_min_height"
-            android:text="@string/do_not_confirm"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:theme="@style/ViewBackgroundAccent"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnDoNotConfirm"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="40dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/background_corners_border"
+                    android:minHeight="@dimen/auth_button_min_height"
+                    android:text="@string/do_not_confirm"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:theme="@style/ViewBackgroundAccent"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</ScrollView>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
+

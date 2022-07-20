@@ -59,18 +59,18 @@ class CalendarHorizontalListPager(
     }
 
     fun scrollToDay(day: EventScheduleCalendarDay) {
-        var mPosition = 0
-        if (day.hasEvents){
-            Handler().post(Runnable {
-                selectDay(day)
-                val item = section.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
-                if (item != null){
-                    mPosition = section.getPosition(item!!)
-                    Log.e("Pos", mPosition.toString())
-                    mViewPager?.setCurrentItem(mPosition, true)
-                }
-            })
-        }
+//        var mPosition = 0
+//        if (day.hasEvents){
+//            Handler().post(Runnable {
+//                selectDay(day)
+//                val item = section.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
+//                if (item != null){
+//                    mPosition = section.getPosition(item!!)
+//                    Log.e("Pos", mPosition.toString())
+//                    mViewPager?.setCurrentItem(mPosition, true)
+//                }
+//            })
+//        }
 
     }
 

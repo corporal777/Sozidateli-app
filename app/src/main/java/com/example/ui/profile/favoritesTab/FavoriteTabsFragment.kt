@@ -2,32 +2,24 @@ package com.example.ui.profile.favoritesTab
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationsFilter
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentFavoriteBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.list.OrganizationsFragmentArgs
 import com.example.ui.users.favorite.FavoriteUsersFragment
-import kotlinx.android.synthetic.main.fragment_favorite.*
-import kotlinx.android.synthetic.main.fragment_favorite.btnTabEvents
-import kotlinx.android.synthetic.main.fragment_favorite.btnTabOrganizations
-import kotlinx.android.synthetic.main.fragment_favorite.btnTabUsers
-import kotlinx.android.synthetic.main.fragment_favorite.clTabs
-import kotlinx.android.synthetic.main.fragment_favorite.viewPager
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragment {
-
-    override val title: String
-        get() = getString(R.string.profile_favorite)
-
+class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(), FavoriteContract.View, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: FavoritePresenter
@@ -60,23 +52,25 @@ class FavoriteTabsFragment : BaseFragment(), FavoriteContract.View, ToolbarFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager.run {
-            addOnPageChangeListener(pageChangeListener)
-            adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-                override fun getItem(position: Int) = fragments[position]
+        setToolbarTitle(getString(R.string.profile_favorite))
+        mBinding.apply {
+            viewPager.run {
+                addOnPageChangeListener(pageChangeListener)
+                adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                    override fun getItem(position: Int) = fragments[position] as Fragment
 
-                override fun getCount() = fragments.size
+                    override fun getCount() = fragments.size
+                }
+                selectTab(currentItem)
             }
-            selectTab(currentItem)
+            btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
+            btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
+            btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
         }
-
-        btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
-        btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
-        btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
     }
 
     private fun selectTab(position: Int) {
-        clTabs.apply {
+        mBinding.clTabs.apply {
             for (p in 0 until childCount) {
                 getChildAt(p).isSelected = p == position
             }

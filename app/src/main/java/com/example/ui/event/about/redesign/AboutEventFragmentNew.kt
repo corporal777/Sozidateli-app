@@ -340,6 +340,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                 requireContext(),
                 R.drawable.custom_btn_add_to_calendar_background_black
             )
+            mLightStatus = true
             requireActivity().window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
@@ -348,6 +349,7 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
 
     private fun setWhiteIcons() {
         mBinding.apply {
+            mLightStatus = false
             requireActivity().window.decorView.systemUiVisibility = 0
             btnAddToCalendar.setTextColor(Color.WHITE)
             btnAddToCalendar.background = ContextCompat.getDrawable(

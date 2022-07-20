@@ -3,67 +3,37 @@ package com.example.ui.search.user
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onTextChanged
 
-abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : SearchFragment<P, UserDetail, SearchFilter.UserNew>(), SearchUserContract.View {
+abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> :
+    SearchFragment<P, UserDetail, SearchFilter.UserNew>(), SearchUserContract.View {
 
     override fun createItem(itemData: UserDetail?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
         else UserItem(
-                itemData.id,
-                itemData.fullName,
-                itemData.address?.city,
-                itemData.image?.uri,
-                { presenter.onUserClick(itemData) },
-                itemData.getUserSubscribeAction(),
-                { presenter.onUserActionCLick(itemData) })
+            itemData.id,
+            itemData.nameLastName,
+            itemData.address?.city,
+            itemData.image?.uri,
+            { presenter.onUserClick(itemData) },
+            itemData.getUserSubscribeAction(),
+            { presenter.onUserActionCLick(itemData) })
     }
 
     override fun createItemNew(itemData: List<UserDetail?>): Group {
-        val mSection = Section()
-        var label = ""
-        var title = ""
-        mSection.update(itemData.map {
-            if (it == null){
-                label = ""
-                PlaceholderItem(PlaceholderItem.Type.USER)
-            }
-            else {
-                title = when(itemData.size){
-                    1 -> {
-                        "пользователь"
-                    }
-                    2,3,4 -> {
-                        "пользователя"
-                    }
-                    else -> "пользователей"
-                }
-                label = itemData.size.toString() + " " + title + " найдено"
-                UserItem(
-                    it.id,
-                    it.fullName,
-                    it.address?.city,
-                    it.image?.uri,
-                    { presenter.onUserClick(it) },
-                    it.getUserSubscribeAction(),
-                    { presenter.onUserActionCLick(it) })
-            }
-        })
-        headerSection.update(listOf(SearchItemLabel(label)))
-        return mSection
+        return Section()
     }
 
     override fun updateUser(user: UserDetail) {
@@ -88,7 +58,14 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> : Se
                 tilTheme.isVisible = false
                 tilSpec.isVisible = false
             } else {
-                initInterests(interests, tvTheme, tilSpec, tvSpec, filter.theme, filter.spec) { theme, spec ->
+                initInterests(
+                    interests,
+                    tvTheme,
+                    tilSpec,
+                    tvSpec,
+                    filter.theme,
+                    filter.spec
+                ) { theme, spec ->
                     filter.theme = theme
                     filter.spec = spec
                 }

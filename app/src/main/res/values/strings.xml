@@ -31,6 +31,7 @@
     <string name="my_events_declined">Заявка не подтверждена</string>
 
     <string name="organizations_favorites">Избранное</string>
+    <string name="organizations">Организации</string>
     <string name="blank_list_error">Увы…</string>
     <string name="organizations_favorites_empty_list_description">Пока Вы не добавили ни одной организации. \nДобавьте организации в избранное, чтобы первым узнавать об их новых мероприятиях</string>
     <string name="events_favorites_empty_list_description">Пока Вы не добавили ни одного мероприятия. \nДобавьте мероприятия в избранное, чтобы получать быстрый доступ и следить за их статусами</string>
@@ -119,6 +120,7 @@
     <string name="auth_login_registration_confirm">Пользователь не найден. Зарегистрировать нового пользователя?</string>
 
     <string name="notifications_label">Центр уведомлений</string>
+    <string name="notification_label">Уведомление</string>
     <string name="notifications_read_more">Показать полностью</string>
     <string name="notifications_mark_as_read">Отметить прочитанным</string>
     <string name="notifications_was_read">Прочитано</string>
@@ -528,7 +530,7 @@
     <string name="register_event_select_category_hint">Выберите категорию</string>
     <string name="select_file_error">Возможно файл не существует или вы выбрали его из облака. Для загрузки используйте файлы хранящиеся на устройстве.</string>
 
-    <string name="schedule_title">Мое расписание</string>
+    <string name="schedule_title">Моё расписание</string>
     <string name="schedule_events_title">Все события</string>
     <string name="schedule_empty_event_placeholder">В этом мероприятии нет событий</string>
     <string name="schedule_my_empty_day_placeholder_title">Список пуст</string>
@@ -869,6 +871,7 @@
     <string name="scheme_of_building">Схема комплекса</string>
     <string name="search_input_activity_hint">Название, описание или спикера</string>
     <string name="search_input_event_hint">Название или описание мероприятия</string>
+    <string name="search_text_only"> Поиск</string>
     <string name="schedule_tags_title_new">Теги</string>
     <string name="yet_btn_text">еще</string>
     <string name="no_activity_title">Событий нет</string>
@@ -882,6 +885,15 @@
     <string name="added_to_favorite">Добавлено в\nизбранное</string>
     <string name="scan_qr_code_title">Сканировать QR-код</string>
     <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="kill_all_other_sessions">Завершить все другие сеансы</string>
+    <string name="sessions_label">Устройства</string>
+    <string name="show_all_sessions_history">Показать историю активности</string>
+    <string name="hide_all_sessions_history">Скрыть</string>
+    <string name="app_label">Приложение</string>
+    <string name="ip_address_label">IP-адрес</string>
+    <string name="geoposition_label">Геопозиция</string>
+    <string name="kill_session_label">Завершить сеанс</string>
+    <string name="this_day_doesnt_have_event">По выбранному дню нет событий.</string>
 
 
     <string-array name="custom_months">

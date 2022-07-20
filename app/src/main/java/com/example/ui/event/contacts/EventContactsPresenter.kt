@@ -24,9 +24,11 @@ class EventContactsPresenter
     var place: String? = null
     var mapInfo: MapInfo? = null
     var places: Array<Place>? = null
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         viewState.setData(
                 phones,
                 emails,
@@ -38,6 +40,18 @@ class EventContactsPresenter
                 places
         )
     }
+
+    override fun attachView(view: EventContactsContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
 
     override fun onShareClick() {
         val mapInfo = this.mapInfo ?: return

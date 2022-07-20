@@ -1,126 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/notification_center_notification_read"
-            android:paddingBottom="8dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/Notification.Title"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:text="@string/notifications_simple_title"
-                android:lineSpacingExtra="@dimen/lines_space"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingPrefix" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/notification_center_notification_read"
+                android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/tvDate"
-                style="@style/Notification.Date"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-                tools:ignore="MissingPrefix"
-                tools:text="@tools:sample/date/ddmmyy" />
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/Notification.Title"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:lineSpacingExtra="@dimen/lines_space"
+                    android:text="@string/notifications_simple_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingPrefix" />
 
-            <TextView
-                android:id="@+id/tvMessage"
-                style="@style/Notification.Message"
-                app:layout_constraintBottom_toTopOf="@+id/btnRate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDate"
-                app:layout_constraintVertical_bias="0.0"
-                app:layout_goneMarginBottom="10dp"
-                tools:ignore="MissingPrefix"
-                tools:text="@tools:sample/lorem/random" />
+                <TextView
+                    android:id="@+id/tvDate"
+                    style="@style/Notification.Date"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@tools:sample/date/ddmmyy" />
 
-            <TextView
-                android:id="@+id/tvActionText"
-                style="@style/Notification.Action"
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_marginTop="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                app:layout_goneMarginBottom="10dp"
-                app:layout_goneMarginTop="16dp"
-                tools:ignore="MissingPrefix"
-                tools:text="@string/notifications_state_accepted"
-                tools:visibility="visible" />
+                <TextView
+                    android:id="@+id/tvMessage"
+                    style="@style/Notification.Message"
+                    app:layout_constraintBottom_toTopOf="@+id/btnRate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDate"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_goneMarginBottom="10dp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@tools:sample/lorem/random" />
 
-            <!--<androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnChangeDecision"
-                style="@style/Notification.ActionButton"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_marginTop="10dp"
-                android:text="@string/notifications_change_decision"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tvActionText"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                tools:visibility="visible" />-->
+                <TextView
+                    android:id="@+id/tvActionText"
+                    style="@style/Notification.Action"
+                    fontPath="fonts/Roboto-Medium.ttf"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+                    app:layout_goneMarginBottom="10dp"
+                    app:layout_goneMarginTop="16dp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/notifications_state_accepted"
+                    tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRate"
-                style="@style/Notification.ActionButton"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_marginTop="10dp"
-                android:text="@string/notifications_rate_event"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                tools:visibility="gone" />
+                <!--<androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnChangeDecision"
+                    style="@style/Notification.ActionButton"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/notifications_change_decision"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/tvActionText"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+                    tools:visibility="visible" />-->
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAccept"
-                style="@style/Notification.ActionButton"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_marginTop="10dp"
-                android:text="@string/notifications_accept"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnCancel"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                tools:visibility="gone" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRate"
+                    style="@style/Notification.ActionButton"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/notifications_rate_event"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+                    tools:visibility="gone" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnCancel"
-                style="@style/Notification.ActionButton"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:text="@string/notifications_cancel"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="@+id/btnAccept"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.374"
-                app:layout_constraintStart_toEndOf="@+id/btnAccept"
-                app:layout_constraintTop_toTopOf="@+id/btnAccept"
-                app:layout_constraintVertical_bias="0.0"
-                tools:visibility="gone" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnAccept"
+                    style="@style/Notification.ActionButton"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/notifications_accept"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnCancel"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+                    tools:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Notification.ActionButton"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:text="@string/notifications_cancel"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAccept"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.374"
+                    app:layout_constraintStart_toEndOf="@+id/btnAccept"
+                    app:layout_constraintTop_toTopOf="@+id/btnAccept"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:visibility="gone" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

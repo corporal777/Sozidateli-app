@@ -29,7 +29,9 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
@@ -109,6 +111,26 @@ fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.O
     }
     onFocusChangeListener = watcher
     return watcher
+}
+
+fun RecyclerView.onScrolled(onScrolled : (dx: Int, dy: Int) -> Unit) : RecyclerView.OnScrollListener{
+    val listener = object : RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+        }
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) = onScrolled(dx, dy)
+    }
+    addOnScrollListener(listener)
+    return listener
+}
+
+fun NestedScrollView.onScrolled(onScrolled : (scrollY : Int, oldScrollY : Int, scrollX : Int, oldScrollX : Int) -> Unit) : NestedScrollView.OnScrollChangeListener {
+    val listener =
+        NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            onScrolled(scrollY, oldScrollY, scrollX, oldScrollX)
+        }
+    setOnScrollChangeListener(listener)
+    return listener
 }
 
 fun TextView.checkIsEllipsized(onChecked: (Boolean) -> Unit) {

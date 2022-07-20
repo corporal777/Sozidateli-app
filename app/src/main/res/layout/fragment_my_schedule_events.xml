@@ -82,7 +82,7 @@
                 android:id="@+id/calendarContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/tvMonth"
@@ -98,18 +98,26 @@
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
                     app:drawableEndCompat="@drawable/ic_arrow_down_for_tags"
-                    app:layout_constraintBottom_toTopOf="@id/calendarPager"
+                    app:layout_constraintBottom_toTopOf="@id/calendar_list"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingPrefix"
                     tools:text="October" />
 
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/calendarPager"
+                <!--                <androidx.viewpager2.widget.ViewPager2-->
+                <!--                    android:id="@+id/calendarPager"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:orientation="horizontal"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@id/tvMonth" />-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/calendar_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvMonth" />
 
@@ -118,25 +126,15 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/eventsList"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:clipToPadding="false"
-                android:paddingBottom="30dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_sub_event" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:clipToPadding="false"
+            android:paddingBottom="70dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:listitem="@layout/item_sub_event" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

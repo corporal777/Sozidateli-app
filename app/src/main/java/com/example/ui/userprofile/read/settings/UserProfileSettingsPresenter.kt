@@ -17,10 +17,13 @@ import com.example.ui.userprofile.phoneconfirm.PhoneConfirmPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.phoneToServer
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.subjects.BehaviorSubject
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
+import java.lang.Math.abs
 import javax.inject.Inject
 
 @InjectViewState
@@ -32,6 +35,23 @@ class UserProfileSettingsPresenter @Inject constructor(
     private val authRepository: AuthRepository
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData),
     UserProfileSettingsContract.Presenter {
+
+    private var mDy = 0
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
+    override fun attachView(view: UserProfileSettingsContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(abs(mDy / 10f))
+    }
+
+    fun changeScrollingOffset(value : Int){
+        mDy += value
+        viewState.setAppBarElevation(abs(mDy / 10f))
+    }
 
     override fun onChangePhoneClick() {
         viewState.showPhoneEdit()

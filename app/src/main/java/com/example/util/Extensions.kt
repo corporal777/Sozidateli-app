@@ -22,6 +22,8 @@ import androidx.annotation.ColorInt
 import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -267,3 +269,17 @@ fun removeFirstAndLastSpaces(str: String?): String {
 fun removeAllSpaces(str: String?): String {
     return str?.replace("\\s".toRegex(), "") ?: ""
 }
+
+fun getSmoothScroller(context: Context, position : Int): RecyclerView.SmoothScroller {
+    val mSmoothScroller: RecyclerView.SmoothScroller =
+        object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+    mSmoothScroller.targetPosition = position
+    return mSmoothScroller
+}
+
+
+

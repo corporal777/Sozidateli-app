@@ -1,9 +1,9 @@
 package com.example.ui.search.tabs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
@@ -11,7 +11,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
@@ -22,7 +21,6 @@ import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
 import kotlinx.android.synthetic.main.fragment_search_tabs.*
 import onTextChanged
-import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -70,7 +68,7 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
                 childFragmentManager,
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
             ) {
-                override fun getItem(position: Int) = fragments[position]
+                override fun getItem(position: Int) = fragments[position] as Fragment
 
                 override fun getCount() = fragments.size
             }

@@ -10,24 +10,23 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
+import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.layout_list.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class NotificationsFragment : BaseFragment(), NotificationsContract.View, ToolbarFragment {
+class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), NotificationsContract.View, SimpleTitleToolbar {
 
-    override val title: CharSequence
-        get() = getString(R.string.notifications_label)
 
     @InjectPresenter
     lateinit var presenter: NotificationsPresenter
@@ -95,11 +94,17 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = this@NotificationsFragment.adapter
-        }
+        setToolbarTitle(getString(R.string.notifications_label))
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = this@NotificationsFragment.adapter
+                onScrolled { dx, dy ->
+                    presenter.changeAppBarElevation(dy)
+                }
+            }
 
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        }
     }
 
     override fun setData(notifications: List<Notification?>) {
@@ -143,7 +148,7 @@ class NotificationsFragment : BaseFragment(), NotificationsContract.View, Toolba
             }
 
         })
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showNotification(notification: Notification) {

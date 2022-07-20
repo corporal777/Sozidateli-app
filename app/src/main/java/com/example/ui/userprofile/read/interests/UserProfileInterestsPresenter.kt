@@ -21,6 +21,8 @@ class UserProfileInterestsPresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileInterestsContract.View>(appData),
     UserProfileInterestsContract.Presenter {
 
+    private var mDy = 0
+
     override fun onUserUpdated(user: UserDetail?) {
         val userInterests = user?.interests
 
@@ -47,8 +49,16 @@ class UserProfileInterestsPresenter @Inject constructor(
             }, {
                 it.printStackTrace()
             })
+    }
 
+    override fun attachView(view: UserProfileInterestsContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
 
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     private fun groupUserInterests(

@@ -17,7 +17,7 @@ interface EditWorksContract {
         fun showUpdateError(message: String? = null)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onSaveWorkClick(data: WorkExperienceServerModel)
     }
 }

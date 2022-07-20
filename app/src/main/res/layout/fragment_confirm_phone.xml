@@ -1,95 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/tvDescription"
-        style="@style/Profile.Data"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/phone_confirm_description" />
 
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilCode"
-        style="@style/Profile.Edit.InputLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        app:endIconMode="none"
-        app:errorEnabled="true"
-        app:errorIconDrawable="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etCode"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/phone_confirm_hint"
-            android:inputType="textVisiblePassword" />
-    </com.example.ui.views.CustomTextInputLayout>
+        <TextView
+            android:id="@+id/tvDescription"
+            style="@style/Profile.Data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/phone_confirm_description" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="@drawable/background_action_button_selector"
-        android:minHeight="52dp"
-        android:text="@string/phone_confirm_confirm"
-        android:textAllCaps="false"
-        android:textColor="@color/text_color_action_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCode" />
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilCode"
+            style="@style/Profile.Edit.InputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            app:endIconMode="none"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnResend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="@drawable/background_action_button_selector"
-        android:enabled="false"
-        android:minHeight="52dp"
-        android:text="@string/phone_confirm_resend"
-        android:textAllCaps="false"
-        android:textColor="@color/text_color_action_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSave" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCode"
+                style="@style/Profile.Edit.Input.SingleLine"
+                android:hint="@string/phone_confirm_hint"
+                android:inputType="textVisiblePassword" />
+        </com.example.ui.views.CustomTextInputLayout>
 
-    <TextView
-        android:id="@+id/tvTimer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:textColor="@color/profile_data_disabled"
-        android:textSize="16sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnResend"
-        tools:text="Повторная отправка кода доступна через 3:00" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_action_button_selector"
+            android:minHeight="52dp"
+            android:text="@string/phone_confirm_confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/text_color_action_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilCode" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnResend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_action_button_selector"
+            android:enabled="false"
+            android:minHeight="52dp"
+            android:text="@string/phone_confirm_resend"
+            android:textAllCaps="false"
+            android:textColor="@color/text_color_action_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSave" />
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:textColor="@color/profile_data_disabled"
+            android:textSize="16sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnResend"
+            tools:text="Повторная отправка кода доступна через 3:00" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

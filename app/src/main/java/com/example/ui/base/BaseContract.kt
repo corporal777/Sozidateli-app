@@ -75,4 +75,9 @@ interface BaseContract {
 
     interface Presenter {
     }
+
+    interface OnChangeElevation {
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun changeAppBarElevation(value : Int)
+    }
 }

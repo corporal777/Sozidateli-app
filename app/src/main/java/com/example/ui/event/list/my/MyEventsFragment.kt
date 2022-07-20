@@ -9,14 +9,11 @@ import com.example.data.models.Event
 import com.example.data.models.MyEventsFilter
 import com.example.holders.MyEventsHeaderItem
 import com.example.holders.ScreenLabelItem
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContract.View, ToolbarFragment {
-
-    override val title = ""
+class MyEventsFragment : EventListFragment<MyEventsPresenter>(), MyEventsContract.View {
 
     @InjectPresenter
     override lateinit var presenter: MyEventsPresenter

@@ -8,21 +8,21 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
+import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, ToolbarFragment {
-
-    override val title = ""
+class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), OrganizationsContract.View,
+    SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: OrganizationsPresenter
@@ -54,25 +54,35 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = this@OrganizationsFragment.adapter
+        setToolbarTitle(getString(R.string.organizations))
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = this@OrganizationsFragment.adapter
+                onScrolled { dx, dy ->
+                    presenter.changeAppBarElevation(dy)
+                }
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setNoFilterHeader() {
-        headGroup.update(listOf(
+        headGroup.update(
+            listOf(
                 ScreenLabelItem(getString(R.string.tab_organizations_title)),
                 OrganizationsHeaderItem(object : OrganizationsHeaderItem.OnFilterClickListener {
                     override fun onFavoritesClick() = presenter.onFavoritesClick()
                 })
-        ))
+            )
+        )
     }
 
     override fun setFavoritesHeader() {
-        headGroup.update(listOf(
+        headGroup.update(
+            listOf(
                 ScreenLabelItem(getString(R.string.organizations_favorites))
-        ))
+            )
+        )
     }
 
     override fun changeSubscription(organization: OrganizationNew/*Organization*/) {
@@ -84,34 +94,45 @@ class OrganizationsFragment : BaseFragment(), OrganizationsContract.View, Toolba
         organizationSection.update(organizations.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
             else OrganizationItem(
-                    it,
-                    { presenter.onOrganizationClick(it) },
-                    { presenter.onRemoveFromFavoriteClick(it) }
+                it,
+                { presenter.onOrganizationClick(it) },
+                { presenter.onRemoveFromFavoriteClick(it) }
             )
         })
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showNoFilterEmptyListPlaceholder() {
         organizationSection.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showFavoritesEmptyListPlaceholder() {
-        organizationSection.update(listOf(NoDataItem(
-                /*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
-                getString(R.string.organizations_favorites_empty_list_description)
-        )))
-        swipeToRefresh.isRefreshing = false
+        organizationSection.update(
+            listOf(
+                NoDataItem(
+                    /*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
+                    getString(R.string.organizations_favorites_empty_list_description)
+                )
+            )
+        )
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showOrganization(organization: OrganizationNew/*Organization*/) {
-        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle())
+        findNavController().navigate(
+            R.id.organization_fragment,
+            OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+        )
     }
 
     override fun showFavorites() {
-        findNavController().navigate(OrganizationsFragmentDirections.organizationsFragmentToSelf(OrganizationsFilter.FAVORITES))
+        findNavController().navigate(
+            OrganizationsFragmentDirections.organizationsFragmentToSelf(
+                OrganizationsFilter.FAVORITES
+            )
+        )
     }
 
-    override fun layout() = R.layout.fragment_event_speakers
+    override fun layout() = R.layout.layout_list
 }

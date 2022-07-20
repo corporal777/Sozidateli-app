@@ -14,7 +14,6 @@ import com.example.R
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.util.TranslateAnimationUtil
 import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider

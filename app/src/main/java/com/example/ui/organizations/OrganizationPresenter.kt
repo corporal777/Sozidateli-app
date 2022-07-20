@@ -34,42 +34,28 @@ class OrganizationPresenter
     lateinit var organization: OrganizationNew
     private var scroll = 0
     private var firstLaunch = true
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         loadData(true)
     }
 
+    override fun attachView(view: OrganizationContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.changeScrollY(scroll)
+        if (firstLaunch) firstLaunch = false
+        else loadData(true)
+    }
+
+    fun changeScrollingOffset(value : Int){
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
     private fun loadData(withLoadingPlaceholder: Boolean) {
-        /*compositeDisposable += organizationRepository.getOrganizationById(organizationId)
-                .performOnBackgroundOutOnMain()
-                .flatMap {
-                    Maybe.zip(it.organization.logo.loadBitmap(), it.organization.background.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, OrganizationDataAndImages> { logo, bg ->
-                        OrganizationDataAndImages(it, logo.value, bg.value)
-                    })
-                            .toSingle()
-                }
-                .let {
-                    if (withLoadingPlaceholder) it.withLoadingDialog(viewState)
-                    else it
-                }
-                .subscribe({
-                    val organizationData = it.data
-                    val uid = appData.getUser().user_id
-                    organizationData.members.forEach { member ->
-                        member.user?.isCurrentUser = member.user?.user_id == uid
-                    }
-                    viewState.setOrganization(
-                            it.logo,
-                            it.background,
-                            organizationData.organization,
-                            organizationData.events,
-                            organizationData.members
-                    )
-                    viewState.setSubscribed(organizationData.organization.isSubscribed ?: false)
-                }, {
-                    it.printStackTrace()
-                })*/
         compositeDisposable += organizationRepository.getOrganizationDetails(organizationId)
             .performOnBackgroundOutOnMain()
             .flatMap {
@@ -168,12 +154,7 @@ class OrganizationPresenter
         viewState.setSubscribed(organizationData.binds?.userFavorite != null)
     }
 
-    override fun attachView(view: OrganizationContract.View?) {
-        super.attachView(view)
-        viewState.changeScrollY(scroll)
-        if (firstLaunch) firstLaunch = false
-        else loadData(true)
-    }
+
 
     override fun onShowMoreEventsClick() {
         viewState.showEvents(organizationId)

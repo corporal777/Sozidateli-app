@@ -11,11 +11,13 @@ import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
-import com.example.extensions.parsePhone
+import com.example.data.models.EventPhoneModel
+import com.example.data.models.MapInfo
+import com.example.data.models.Place
+import com.example.databinding.FragmentEventContactsBinding
 import com.example.holders.ProfileFieldTextItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.ClickableSpan
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
@@ -25,23 +27,22 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.fragment_event_contacts.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventContactsFragment : BaseFragment(), EventContactsContract.View, ToolbarFragment {
+class EventContactsFragment : BaseFragmentNew<FragmentEventContactsBinding>(),
+    EventContactsContract.View, SimpleTitleToolbar {
 
     companion object {
         private val MAP_OPTIONS_DEFAULT = GoogleMapOptions()
-                .liteMode(true)
-                .mapToolbarEnabled(false)
-                .zoomControlsEnabled(false)
+            .liteMode(true)
+            .mapToolbarEnabled(false)
+            .zoomControlsEnabled(false)
 
-        private const val MAP_TAG = "com.example.ui.event.contacts.EventContactsFragment.SupportMapFragment"
+        private const val MAP_TAG =
+            "com.example.ui.event.contacts.EventContactsFragment.SupportMapFragment"
     }
-
-    override val title: String?
-        get() = requireContext().resources.getString(R.string.user_profile_contacts)
 
     @InjectPresenter
     lateinit var presenter: EventContactsPresenter
@@ -71,100 +72,140 @@ class EventContactsFragment : BaseFragment(), EventContactsContract.View, Toolba
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = groupAdapter
+        setToolbarTitle(getString(R.string.user_profile_contacts))
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+                onScrolled { dx, dy ->
+                    presenter.changeAppBarElevation(dy)
+                }
+            }
         }
+
     }
 
     override fun setData(
-            phones: List<EventPhoneModel/*PhoneAffiliation*/>,
-            emails: List<EventPhoneModel/*EmailAffiliation*/>,
-            webLinks: List<String>,
-            socialLinks: List<String>,
-            address: String?,
-            place: String?,
-            mapInfo: MapInfo?,
-            places: Array<Place>?
+        phones: List<EventPhoneModel/*PhoneAffiliation*/>,
+        emails: List<EventPhoneModel/*EmailAffiliation*/>,
+        webLinks: List<String>,
+        socialLinks: List<String>,
+        address: String?,
+        place: String?,
+        mapInfo: MapInfo?,
+        places: Array<Place>?
     ) {
-        groupAdapter.update(mutableListOf<Item>().apply {
-            addAll(phones.map {
-                ProfileFieldTextItem(it.title/*it.affiliation*/ ?: "", it.value/*it.phone.parsePhone(requireContext())*/?: "", ""/*it.additional*/)
+        mBinding.apply {
+            groupAdapter.update(mutableListOf<Item>().apply {
+                addAll(phones.map {
+                    ProfileFieldTextItem(
+                        it.title/*it.affiliation*/ ?: "",
+                        it.value/*it.phone.parsePhone(requireContext())*/ ?: "",
+                        ""/*it.additional*/
+                    )
+                })
+                addAll(emails.map {
+                    ProfileFieldTextItem(
+                        it.title/*it.affiliation*/ ?: "",
+                        it.value ?: ""/*it.email*/,
+                        null
+                    )
+                })
+                if (webLinks.isNotEmpty()) {
+                    add(
+                        ProfileFieldTextItem(
+                            getString(R.string.event_contacts_site),
+                            webLinks.joinToString("\n"),
+                            null
+                        )
+                    )
+                }
+                if (socialLinks.isNotEmpty()) {
+                    add(
+                        ProfileFieldTextItem(
+                            getString(R.string.event_contacts_social_networks),
+                            socialLinks.joinToString("\n"),
+                            null
+                        )
+                    )
+                }
+                if (!address.isNullOrEmpty()) {
+                    val clickableSpan = ClickableSpan(drawUnderline = false) {
+                        presenter.onOpenAddressClick()
+                    }
+                    val addressClickable = address.toSpannable().apply {
+                        set(0, address.length, clickableSpan)
+                    }
+                    add(
+                        ProfileFieldTextItem(
+                            getString(R.string.event_contacts_address),
+                            addressClickable,
+                            null
+                        )
+                    )
+                }
+                if (!place.isNullOrEmpty()) {
+                    flMapContainer.isVisible = true
+                    llMapAction.isVisible = true
+                    add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place, null))
+                } else {
+                    flMapContainer.isVisible = false
+                    llMapAction.isVisible = false
+                }
             })
-            addAll(emails.map { ProfileFieldTextItem(it.title/*it.affiliation*/ ?: "", it.value?: ""/*it.email*/, null) })
-            if (webLinks.isNotEmpty()) {
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_site), webLinks.joinToString("\n"), null))
-            }
-            if (socialLinks.isNotEmpty()) {
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_social_networks), socialLinks.joinToString("\n"), null))
-            }
             if (!address.isNullOrEmpty()) {
-                val clickableSpan = ClickableSpan(drawUnderline = false) {
-                    presenter.onOpenAddressClick()
-                }
-                val addressClickable = address.toSpannable().apply {
-                    set(0, address.length, clickableSpan)
-                }
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_address), addressClickable, null))
-            }
-            if (!place.isNullOrEmpty()) {
-                flMapContainer.isVisible = true
-                llMapAction.isVisible = true
-                add(ProfileFieldTextItem(getString(R.string.event_contacts_place), place, null))
+                setupMap(mapInfo)
+                llMapContent.visibility = View.VISIBLE
             } else {
-                flMapContainer.isVisible = false
-                llMapAction.isVisible = false
+                llMapContent.visibility = View.GONE
             }
-        })
-        if (!address.isNullOrEmpty()) {
-            setupMap(mapInfo)
-            llMapContent.visibility = View.VISIBLE
-        } else {
-            llMapContent.visibility = View.GONE
         }
+
     }
 
     private fun setupMap(mapInfo: MapInfo?) {
-        if (mapInfo != null) {
-            val lat = mapInfo.lat
-            val lon = mapInfo.lon
-            if (lat != null && lon != null) {
-                if (childFragmentManager.findFragmentByTag(MAP_TAG) == null) {
-                    childFragmentManager.beginTransaction()
+        mBinding.apply {
+            if (mapInfo != null) {
+                val lat = mapInfo.lat
+                val lon = mapInfo.lon
+                if (lat != null && lon != null) {
+                    if (childFragmentManager.findFragmentByTag(MAP_TAG) == null) {
+                        childFragmentManager.beginTransaction()
                             .replace(R.id.flMapContainer, mapFragment, MAP_TAG)
                             .commitNow()
+                    }
+
+                    mapFragment.getMapAsync {
+                        it.clear()
+
+                        val latLng = LatLng(mapInfo.lat, mapInfo.lon)
+                        it.addMarker(MarkerOptions().position(latLng))
+                        it.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                    }
+
+                    btnShare.setOnClickListener { presenter.onShareClick() }
+                    btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
+
+                    llMapAction.isVisible = true
+                } else {
+                    llMapAction.isVisible = false
                 }
 
-                mapFragment.getMapAsync {
-                    it.clear()
-
-                    val latLng = LatLng(mapInfo.lat, mapInfo.lon)
-                    it.addMarker(MarkerOptions().position(latLng))
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                val title = mapInfo.title
+                tvMapDescriptionTitle.apply {
+                    text = title
+                    isVisible = !title.isNullOrEmpty()
                 }
 
-                btnShare.setOnClickListener { presenter.onShareClick() }
-                btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
+                val description = mapInfo.description
+                tvMapDescription.apply {
+                    text = description
+                    isVisible = !description.isNullOrEmpty()
+                }
 
-                llMapAction.isVisible = true
+                llMapContent.isVisible = true
             } else {
-                llMapAction.isVisible = false
+                llMapContent.isVisible = false
             }
-
-            val title = mapInfo.title
-            tvMapDescriptionTitle.apply {
-                text = title
-                isVisible = !title.isNullOrEmpty()
-            }
-
-            val description = mapInfo.description
-            tvMapDescription.apply {
-                text = description
-                isVisible = !description.isNullOrEmpty()
-            }
-
-            llMapContent.isVisible = true
-        } else {
-            llMapContent.isVisible = false
         }
     }
 

@@ -10,8 +10,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentUserStateBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.toolbar.SimpleTitleToolbar

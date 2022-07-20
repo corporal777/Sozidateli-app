@@ -7,34 +7,31 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Interest
 import com.example.data.models.InterestNew
 import com.example.data.models.UserEditDataType
+import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_user_profile_interests.*
-import kotlinx.android.synthetic.main.fragment_user_profile_main_data.btnEdit
+import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContract.View,
-    ToolbarFragment {
-
-    override val title: String?
-        get() = getString(R.string.user_profile_interests)
+class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
+    UserProfileInterestsContract.View,
+    SimpleTitleToolbar {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     private val onItemExpandChange: OnExpandChange<*> = {
         if (it.isExpanded) {
             val position = adapter.getAdapterPosition(it.titleItem)
-            (rvInterests.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+            (mBinding.rvInterests.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
                 position,
                 0
             )
@@ -54,13 +51,18 @@ class UserProfileInterestsFragment : BaseFragment(), UserProfileInterestsContrac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        rvInterests.adapter = adapter
-        btnEdit.setOnClickListener(presenter::onEditClick)
+        setToolbarTitle(getString(R.string.user_profile_interests))
+        mBinding.apply {
+            rvInterests.adapter = adapter
+            rvInterests.onScrolled { dx, dy ->
+                presenter.changeAppBarElevation(dy)
+            }
+            btnEdit.setOnClickListener(presenter::onEditClick)
+        }
     }
 
     override fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>) {
-        if (interests.isNullOrEmpty()){
+        if (interests.isNullOrEmpty()) {
             navigateUp()
         }
         val items = interests.map {

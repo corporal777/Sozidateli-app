@@ -8,6 +8,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.InterestNew
 import com.example.data.models.InterestsModel
 import com.example.data.models.user.User
+import com.example.ui.base.BaseContract
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
 interface UserProfileInterestsContract {
@@ -25,7 +26,7 @@ interface UserProfileInterestsContract {
         fun showNextScreen()
     }
 
-    interface Presenter : BaseUserProfileContract.Presenter {
+    interface Presenter : BaseUserProfileContract.Presenter, BaseContract.OnChangeElevation {
         fun onEditClick()
     }
 }

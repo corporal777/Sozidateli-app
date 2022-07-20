@@ -9,21 +9,17 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentUserProfileBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_user_profile.*
-import kotlinx.android.synthetic.main.item_profile_data_current_user.btnEdit
-import kotlinx.android.synthetic.main.item_profile_data_current_user.ivAvatar
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFragment {
+class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(), UserProfileContract.View, SimpleTitleToolbar {
 
-    override val title: String?
-        get() = getString(R.string.user_profile_label)
 
     override fun layout() = R.layout.fragment_user_profile
 
@@ -38,17 +34,20 @@ class UserProfileFragment : BaseFragment(), UserProfileContract.View, ToolbarFra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnEdit.setOnClickListener(presenter::onEditAvatarClick)
-        btnMainInfo.setOnClickListener(presenter::onMainDataClick)
-        btnContacts.setOnClickListener(presenter::onContactsClick)
-        btnInterests.setOnClickListener(presenter::onInterestsClick)
-        btnEducation.setOnClickListener(presenter::onEducationClick)
-        btnExperience.setOnClickListener(presenter::onExperienceClick)
+        setToolbarTitle(getString(R.string.user_profile_label))
+        mBinding.apply {
+            btnEdit.setOnClickListener(presenter::onEditAvatarClick)
+            btnMainInfo.setOnClickListener(presenter::onMainDataClick)
+            btnContacts.setOnClickListener(presenter::onContactsClick)
+            btnInterests.setOnClickListener(presenter::onInterestsClick)
+            btnEducation.setOnClickListener(presenter::onEducationClick)
+            btnExperience.setOnClickListener(presenter::onExperienceClick)
+        }
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
-        ivAvatar.apply {
+        mBinding.ivAvatar.apply {
             val avatarUrl = user.image?.uri?.takeIf { it.isNotBlank() }
             clipToOutline = true
             transitionName = avatarUrl

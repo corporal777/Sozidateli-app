@@ -21,9 +21,11 @@ class PagePresenter
 
     lateinit var dataEventId: String
     lateinit var dataPageId: String
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         compositeDisposable += eventRepository.getPageDetails(dataPageId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
@@ -31,6 +33,16 @@ class PagePresenter
                 .subscribeSimple {
                     viewState.setContent(/*it.picture*/"", it.name?: "", it.title, it.content, it.files)
                 }
+    }
+
+    override fun attachView(view: PageContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onDocumentClick(document: FileModel) {

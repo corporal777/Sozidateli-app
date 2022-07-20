@@ -7,17 +7,16 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.TagChip
 import kotlinx.android.synthetic.main.fragment_tags.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class TagsFragment : BaseFragment(), TagsContract.View, ToolbarFragment {
+class TagsFragment : BaseFragment(), TagsContract.View {
 
-    override val title: CharSequence
-        get() = requireContext().resources.getString(R.string.tags)
+//    override val title: CharSequence
+//        get() = requireContext().resources.getString(R.string.tags)
 
     @InjectPresenter
     lateinit var presenter: TagsPresenter

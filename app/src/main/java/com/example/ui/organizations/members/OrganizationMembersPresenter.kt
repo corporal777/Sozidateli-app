@@ -44,6 +44,7 @@ class OrganizationMembersPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)
@@ -53,6 +54,7 @@ class OrganizationMembersPresenter
                     it.printStackTrace()
                 })
     }
+
 
     override fun onMemberClick(member: /*OrganizationMember*/OrganizationNewMemberModel) {
         viewState.showUser(member.user?.toString()?: "")

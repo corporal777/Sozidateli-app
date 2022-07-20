@@ -17,7 +17,6 @@ import com.example.data.models.MapInfo
 import com.example.data.models.Place
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
@@ -26,10 +25,6 @@ import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
 import com.example.ui.event.schedule.my.EventMyScheduleFragment
-import com.example.ui.views.accountView.AccountView
-import com.example.ui.views.chatView.ChatView
-import com.example.ui.views.notifications.NotificationsView
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.BottomNavigationViewHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -38,10 +33,8 @@ import kotlinx.android.synthetic.main.item_action_button.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragment,
+class EventTabsFragment : BaseFragment(), EventTabsContract.View,
     DoNotCheckConnectionFragment, NavBarColorFragment {
-
-    override val title: String? = null
 
     override val navBarColor: Int by lazy {
         ContextCompat.getColor(requireContext(), R.color.navBarTabs)
@@ -199,21 +192,21 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View, ToolbarFragmen
         findNavController().navigate(EventTabsFragmentDirections.eventToNotifications())
     }
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        toolbarContentActionBar.apply {
-            addRightView(AccountView(requireContext()).also {
-                it.canShowBadge = false
-                it.setOnClickListener { mPresenter.onMenuAccountClick() }
-            })
-            addRightView(ChatView(requireContext()).also {
-                it.setOnClickListener { mPresenter.onMenuChatClick() }
-            })
-            addRightView(NotificationsView(requireContext()).also {
-                it.setOnClickListener { mPresenter.onMenuNotificationsClick() }
-            })
-        }
-    }
+//    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
+//        super.setupToolbarContent(toolbarContentActionBar)
+//        toolbarContentActionBar.apply {
+//            addRightView(AccountView(requireContext()).also {
+//                it.canShowBadge = false
+//                it.setOnClickListener { mPresenter.onMenuAccountClick() }
+//            })
+//            addRightView(ChatView(requireContext()).also {
+//                it.setOnClickListener { mPresenter.onMenuChatClick() }
+//            })
+//            addRightView(NotificationsView(requireContext()).also {
+//                it.setOnClickListener { mPresenter.onMenuNotificationsClick() }
+//            })
+//        }
+//    }
 
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {

@@ -12,6 +12,7 @@ import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.Group
 
 interface MyScheduleEventsContract {
     interface View : BaseContract.View {
@@ -20,13 +21,10 @@ interface MyScheduleEventsContract {
         fun setHeaderAndCalendar(
             subEventDays: List<CalendarDay>,
             month: String,
-            days: List<EventScheduleCalendarDay>?,
+            days: List<EventScheduleCalendarDay>,
             firstDate: CalendarDay?,
             lastDate : CalendarDay?
         )
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSearchBlock()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContent(data: List<EventNew?>)

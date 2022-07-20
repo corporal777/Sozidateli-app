@@ -22,7 +22,7 @@ interface PageContract {
         fun openLinkInBrowser(link: String)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onDocumentClick(document: FileModel)
     }
 }

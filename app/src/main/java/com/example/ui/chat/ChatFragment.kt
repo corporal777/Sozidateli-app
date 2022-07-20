@@ -30,10 +30,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenterTag
 import com.example.R
 import com.example.data.models.ChatMessage
 import com.example.data.models.Message.MessageType
+import com.example.databinding.FragmentChatBinding
 import com.example.extensions.dp
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.image.ImageViewActivityArgs
@@ -50,10 +52,12 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
 import setCircleImage
+import setOnClickListener
+import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
+class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, ToolbarFragment {
 
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
@@ -84,15 +88,16 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
     private val imageClickListener = { url: String, imageView: ImageView ->
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                requireActivity(),
-                Pair(imageView, imageView.transitionName)
+            requireActivity(),
+            Pair(imageView, imageView.transitionName)
         )
 
         findNavController().navigate(
-                R.id.image_view_activity,
-                ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build().toBundle(),
-                null,
-                ActivityNavigatorExtras(options)
+            R.id.image_view_activity,
+            ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build()
+                .toBundle(),
+            null,
+            ActivityNavigatorExtras(options)
         )
     }
 
@@ -111,26 +116,33 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         setHasOptionsMenu(true)
+        mBinding.apply {
+            btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
+            btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
+            btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
 
-        btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
-        btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
-        btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
+            rvChat.apply {
+                adapter = chatAdapter
+                (itemAnimator as SimpleItemAnimator).apply {
+                    supportsChangeAnimations = false
+                    changeDuration = 0
+                }
+                //itemAnimator = null
 
-        rvChat.apply {
-            adapter = chatAdapter
-            (itemAnimator as SimpleItemAnimator).apply {
-                supportsChangeAnimations = false
-                changeDuration = 0
-            }
-            itemAnimator = null
-
-            addOnScrollListener(PaginationScrollListener(10,
+                addOnScrollListener(PaginationScrollListener(10,
                     {
                         if (adapter?.itemCount != 0) {
-                            val id = if (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) is ChatUnreadLabelItem) {
-                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 3) as ChatMessageItem).message.message._id.toInt()
+                            val id = if (chatAdapter.getItem(
+                                    (adapter?.itemCount ?: 1) - 2
+                                ) is ChatUnreadLabelItem
+                            ) {
+                                (chatAdapter.getItem(
+                                    (adapter?.itemCount ?: 1) - 3
+                                ) as ChatMessageItem).message.message._id.toInt()
                             } else {
-                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) as ChatMessageItem).message.message._id.toInt()
+                                (chatAdapter.getItem(
+                                    (adapter?.itemCount ?: 1) - 2
+                                ) as ChatMessageItem).message.message._id.toInt()
                             }
                             presenter.onLoadNextMessagesRequest(id)
                         }
@@ -142,16 +154,28 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
                         }
                         //presenter.onLoadNextMessagesRequest()
                     }
-            ))
-            addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-                presenter.onScrollChange(position, offset)
-            })
-            bottomScroller.setupWithRecyclerView(this)
+                ))
+                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
+                    presenter.onScrollChange(position, offset)
+                })
+                bottomScroller.setupWithRecyclerView(this)
 
-            doOnNextLayout { startPostponedEnterTransition() }
+                doOnNextLayout { startPostponedEnterTransition() }
+            }
+
+            etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable {
+                presenter.onMessageInput(
+                    it.toString()
+                )
+            })
         }
 
-        etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable { presenter.onMessageInput(it.toString()) })
+        mBinding.tvUserName.setOnClickListener {
+            presenter.onUserClick()
+        }
+        mBinding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun clearMessageInput() = etMessage.text.clear()
@@ -174,21 +198,36 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
     override fun showYouBanUser() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_baned_by_you_background))
+            textActionContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.chat_action_baned_by_you_background
+                )
+            )
             tvActionText.text = getString(R.string.chat_banned_by_you)
         }
     }
 
     override fun showYouBanned() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_you_baned_background))
+            textActionContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.chat_action_you_baned_background
+                )
+            )
             tvActionText.text = getString(R.string.chat_you_banned)
         }
     }
 
     override fun showWaitForInviteAccept() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chat_action_wait_for_accept_background))
+            textActionContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.chat_action_wait_for_accept_background
+                )
+            )
             tvActionText.text = getString(R.string.chat_wait_accept)
         }
     }
@@ -196,16 +235,20 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     override fun showChatConfirm(userName: String?) {
         showActionView(R.layout.layout_chat_action_confirmation, true) {
             tvNeedConfirm.text = userName
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let { getString(R.string.chat_need_confirm_user_name, it) }
-                    ?: getString(R.string.chat_need_confirm)
+                ?.takeIf { it.isNotBlank() }
+                ?.let { getString(R.string.chat_need_confirm_user_name, it) }
+                ?: getString(R.string.chat_need_confirm)
 
             btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
             btnBlock.setOnClickListener { presenter.onBlockChatClick() }
         }
     }
 
-    private fun showActionView(@LayoutRes layout: Int, animate: Boolean, viewApply: View.() -> Unit) {
+    private fun showActionView(
+        @LayoutRes layout: Int,
+        animate: Boolean,
+        viewApply: View.() -> Unit
+    ) {
         actionContainer.removeAllViews()
         layoutInflater.inflate(layout, actionContainer).apply(viewApply)
 
@@ -218,10 +261,10 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
     override fun showChatBlockConfirmation() {
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.user_ban_confirmation_title)
-                .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+            .setTitle(R.string.user_ban_confirmation_title)
+            .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun focusOnInput(showKeyboard: Boolean) {
@@ -268,11 +311,19 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
                         else -> ChatMessageTextItem(it)
                     }
 
-                    item.apply { onBindListener = { presenter.onChatMessageOnScreen(message.message) } }
+                    item.apply {
+                        onBindListener = { presenter.onChatMessageOnScreen(message.message) }
+                    }
                 }
                 is ChatMessage.NewMessages -> ChatUnreadLabelItem(it.count)
                 is ChatMessage.Date -> ChatDateItem(it.date)
-                is ChatMessage.Accept -> ChatAcceptItem { it.message.let { message -> presenter.onChatMessageOnScreen(message) } }
+                is ChatMessage.Accept -> ChatAcceptItem {
+                    it.message.let { message ->
+                        presenter.onChatMessageOnScreen(
+                            message
+                        )
+                    }
+                }
             }
         })
     }
@@ -296,7 +347,8 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun cancelNotificationByChatId(chatId: String) {
-        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(chatId.hashCode())
     }
 
@@ -333,10 +385,10 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     override fun openImageFullScreen(url: String, imageView: ImageView) {
         val transitionName = imageView.transitionName
         findNavController().navigate(
-                R.id.image_view_activity,
-                ImageViewActivityArgs.Builder(url, null, null, transitionName).build().toBundle(),
-                null,
-                FragmentNavigatorExtras(imageView to transitionName)
+            R.id.image_view_activity,
+            ImageViewActivityArgs.Builder(url, null, null, transitionName).build().toBundle(),
+            null,
+            FragmentNavigatorExtras(imageView to transitionName)
         )
     }
 
@@ -345,40 +397,60 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
     }
 
     override fun showEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
+        findNavController().navigate(
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+        )
     }
 
     override fun setUserAvatar(url: String) {
-        toolbarContentActionBar.removeAllRightViews()
-        ToolbarButton(requireContext()).apply {
+        mBinding.ivAvatar.apply {
             setCircleImage(url)
             isEnabled = false
             isClickable = false
-            toolbarContentActionBar.addRightView(this)
         }
+//        toolbarContentActionBar.removeAllRightViews()
+//        ToolbarButton(requireContext()).apply {
+//            setCircleImage(url)
+//            isEnabled = false
+//            isClickable = false
+//            toolbarContentActionBar.addRightView(this)
+//        }
     }
 
     override fun setTitle(title: String) {
-        toolbarContentActionBar.apply {
-            getTitleView { setTitle(ellipsizeTitle(this, title)) }
-        }
+//        toolbarContentActionBar.apply {
+//            getTitleView { setTitle(ellipsizeTitle(this, title)) }
+//        }
+        mBinding.tvUserName.text = title
     }
 
     private fun ellipsizeTitle(titleView: TextView, title: CharSequence): CharSequence {
         return titleView.let {
             val titleSpannable = SpannableStringBuilder(title).apply {
-                if (imageSpan != null) append("  ").setSpan(imageSpan, length - 1, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                if (imageSpan != null) append("  ").setSpan(
+                    imageSpan,
+                    length - 1,
+                    length,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                )
             }
-            TextUtils.ellipsize(titleSpannable, it.paint, (it.width - it.paddingRight - it.paddingLeft).toFloat(), TextUtils.TruncateAt.END)
+            TextUtils.ellipsize(
+                titleSpannable,
+                it.paint,
+                (it.width - it.paddingRight - it.paddingLeft).toFloat(),
+                TextUtils.TruncateAt.END
+            )
         }
     }
 
+
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
-        toolbarContentActionBar.apply {
-            setOnToolbarClickListener { presenter.onUserClick() }
-        }
+//        this.toolbarContentActionBar = toolbarContentActionBar
+//        toolbarContentActionBar.apply {
+//            setOnToolbarClickListener { presenter.onUserClick() }
+//        }
     }
 
     override fun hideKeyboard() {
@@ -387,7 +459,7 @@ class ChatFragment : BaseFragment(), ChatContract.View, ToolbarFragment {
 
     override fun onDetach() {
         super.onDetach()
-        toolbarContentActionBar.apply { setOnToolbarClickListener(null) }
+        //toolbarContentActionBar.apply { setOnToolbarClickListener(null) }
     }
 
     override fun layout() = R.layout.fragment_chat

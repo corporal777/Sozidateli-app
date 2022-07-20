@@ -47,8 +47,11 @@ class NotificationsPresenter
             }
             .buildList(enablePlaceholders = true)
 
+    private var mDy = 0
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         compositeDisposable += appData.notificationsCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple { if (!blockInvalidation) pagination.invalidate() }
@@ -77,8 +80,14 @@ class NotificationsPresenter
 
     override fun attachView(view: NotificationsContract.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
         if (firstLaunch) firstLaunch = false
         else pagination.invalidate()
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onNotificationUrlClick(url: String) {

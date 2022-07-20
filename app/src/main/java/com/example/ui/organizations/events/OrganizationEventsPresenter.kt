@@ -32,6 +32,11 @@ class OrganizationEventsPresenter
                 Event.FILTER_SHOW_CANCELED to true
         ))
     }*/
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         //TODO Finish this screen
         return eventRepository.getOrganizationEventsList(mapOf(

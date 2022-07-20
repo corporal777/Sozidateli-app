@@ -23,13 +23,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
+import com.example.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.holders.EventDataListItem
 import com.example.holders.EventGroup
 import com.example.holders.EventStatusItem
 import com.example.holders.UserItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -39,20 +39,16 @@ import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.StateType
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_organization.*
-import kotlinx.android.synthetic.main.fragment_organization.btnAction
-import kotlinx.android.synthetic.main.fragment_organization.llContent
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarFragment {
-
-    override val title: CharSequence
-        get() = requireContext().resources.getString(R.string.profile_work_organization)
+class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), OrganizationContract.View,
+    SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: OrganizationPresenter
@@ -68,8 +64,12 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     private val onEventClickListener = object : EventStatusItem.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
-        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-        override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) = presenter.onActionWriteToOrganization(emails)
+        override fun onActionCancel(event: String, registrationId: String?) =
+            presenter.onActionCancel(event, registrationId)
+
+        override fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>) =
+            presenter.onActionWriteToOrganization(emails)
+
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
@@ -79,37 +79,49 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        scrollContainer.setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
-            presenter.onScrollPositionChange(scrollY)
-        }
+        setToolbarTitle(getString(R.string.profile_work_organization))
+        mBinding.apply {
+            scrollContainer.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                presenter.onScrollPositionChange(scrollY)
+                presenter.changeScrollingOffset(scrollY - oldScrollY)
+            })
 
-        llContent.isVisible = false
+            llContent.isVisible = false
 
-        btnAction.apply {
-            setOnClickListener {
-                when (action) {
-                    UserSubscribeButton.Action.FAVORITE -> presenter.onSubscribeClick()
-                    UserSubscribeButton.Action.UNFAVORITE -> presenter.onUnsubscribeClick()
-                    else -> throw IllegalArgumentException("Wrong action: $it for organization")
+            btnAction.apply {
+                setOnClickListener {
+                    when (action) {
+                        UserSubscribeButton.Action.FAVORITE -> presenter.onSubscribeClick()
+                        UserSubscribeButton.Action.UNFAVORITE -> presenter.onUnsubscribeClick()
+                        else -> throw IllegalArgumentException("Wrong action: $it for organization")
+                    }
                 }
             }
+
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
 
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
-    override fun setOrganization(logo: Bitmap?, background: Bitmap?, organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/) {
-        ivBackground.apply {
+    override fun setOrganization(
+        logo: Bitmap?,
+        background: Bitmap?,
+        organization: OrganizationNew/*Organization, events: List<Event>, users: List<OrganizationMember>*/
+    ) {
+        mBinding.ivBackground.apply {
             clipToOutline = true
             if (background == null) {
                 isVisible = false
             } else {
                 isVisible = true
                 setImageBitmap(background)
-                setOnImageClickListener(this, organization.backgroundColor?.value/*organization.background*/)
+                setOnImageClickListener(
+                    this,
+                    organization.backgroundColor?.value/*organization.background*/
+                )
             }
         }
-        ivLogo.apply {
+        mBinding.ivLogo.apply {
             clipToOutline = true
             if (logo == null) {
                 isInvisible = true
@@ -120,70 +132,88 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             }
         }
 
-        tvOrganizationImageName.apply {
-            text = /*organization.name*/organization.legalInformation?.name?.full ?: organization.legalInformation?.name?.short
+        mBinding.tvOrganizationImageName.apply {
+            text = /*organization.name*/organization.legalInformation?.name?.full
+                ?: organization.legalInformation?.name?.short
             clipToOutline = true
-            ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(Color.parseColor(if (organization.backgroundColor?.value.isNullOrEmpty()) "#000000" else organization.backgroundColor?.value)
-                    ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)/*ColorStateList.valueOf(organization.backgroundColor.parseColor()
-                    ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)*/))
+            ViewCompat.setBackgroundTintList(
+                this, ColorStateList.valueOf(
+                    Color.parseColor(if (organization.backgroundColor?.value.isNullOrEmpty()) "#000000" else organization.backgroundColor?.value)
+                        ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)/*ColorStateList.valueOf(organization.backgroundColor.parseColor()
+                    ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)*/
+                )
+            )
         }
 
-        tvName.text = /*organization.name*/organization.legalInformation?.name?.short ?: organization.legalInformation?.name?.full
+        mBinding.tvName.text = /*organization.name*/
+            organization.legalInformation?.name?.short ?: organization.legalInformation?.name?.full
 
-        val links = /*organization.webLinks?.joinToString(separator = "\n")*/organization.site?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val links = /*organization.webLinks?.joinToString(separator = "\n")*/
+            organization.site?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasLinks = !links.isNullOrEmpty()
-        tvLinksTitle.isVisible = hasLinks
-        tvLinks.apply {
+        mBinding.tvLinksTitle.isVisible = hasLinks
+        mBinding.tvLinks.apply {
             isVisible = hasLinks
             text = links
             removeUrlUnderline()
         }
 
-        val snLinks = /*organization.socialLinks?.joinToString(separator = "\n")*/organization.socialLink?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val snLinks = /*organization.socialLinks?.joinToString(separator = "\n")*/
+            organization.socialLink?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasSnLinks = !snLinks.isNullOrEmpty()
-        tvSnLinksTitle.isVisible = hasSnLinks
-        tvSnLinks.apply {
+        mBinding.tvSnLinksTitle.isVisible = hasSnLinks
+        mBinding.tvSnLinks.apply {
             isVisible = hasSnLinks
             text = snLinks
             removeUrlUnderline()
         }
 
-        val emails = /*organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }*/organization.email?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val emails =
+            /*organization.emails?.joinToString(separator = "\n") { it.getAffiliationString() }*/
+            organization.email?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasEmails = !emails.isNullOrEmpty()
-        tvEmailTitle.isVisible = hasEmails
-        tvEmail.apply {
+        mBinding.tvEmailTitle.isVisible = hasEmails
+        mBinding.tvEmail.apply {
             isVisible = hasEmails
             text = emails
             removeUrlUnderline()
         }
 
-        val phones = /*organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }*/organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() }
+        val phones =
+            /*organization.phones?.joinToString(separator = "\n") { it.getAffiliationString() }*/
+            organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() }
         val hasPhones = !phones.isNullOrEmpty()
-        tvPhoneTitle.isVisible = hasPhones
-        tvPhone.apply {
+        mBinding.tvPhoneTitle.isVisible = hasPhones
+        mBinding.tvPhone.apply {
             isVisible = hasPhones
             text = phones
             removeUrlUnderline()
         }
         if (!organization.address.isNullOrEmpty()) {
-            val hasAddress = /*!organization.addressShort.isNullOrEmpty()*/!organization.address[0].fullValue.isNullOrEmpty() ||
-                    !organization.address.isNullOrEmpty()
+            val hasAddress = /*!organization.addressShort.isNullOrEmpty()*/
+                !organization.address[0].fullValue.isNullOrEmpty() ||
+                        !organization.address.isNullOrEmpty()
 
-            tvAddressTitle.isVisible = hasAddress
-            tvAddress.apply {
+            mBinding.tvAddressTitle.isVisible = hasAddress
+            mBinding.tvAddress.apply {
                 isVisible = hasAddress
-                text = /*organization.addressShort ?: organization.address*/organization.address[0].fullValue// ?: organization.address
+                text = /*organization.addressShort ?: organization.address*/
+                    organization.address[0].fullValue// ?: organization.address
             }
         }
 
-        tvDescription.apply {
-            isVisible = /*!organization.descriptionFull.isNullOrEmpty()*/!organization.description.isNullOrEmpty()
+        mBinding.tvDescription.apply {
+            isVisible = /*!organization.descriptionFull.isNullOrEmpty()*/
+                !organization.description.isNullOrEmpty()
             text = /*organization.descriptionFull*/organization.description
         }
 
-        layout_members.isVisible = organization.binds?.membersSize != 0
-        tvPeoples.text = getString(R.string.organization_peoples).format(/*organization.totalMembers*/organization.binds?.membersSize)
-        rvPeoples.adapter = usersAdapter.apply {
+        mBinding.layoutMembers.isVisible = organization.binds?.membersSize != 0
+        mBinding.tvPeoples.text =
+            getString(R.string.organization_peoples).format(/*organization.totalMembers*/
+                organization.binds?.membersSize
+            )
+        mBinding.rvPeoples.adapter = usersAdapter.apply {
             /*update(users.mapNotNull {
                 val user = it.user ?: return@mapNotNull null
                 UserItem(
@@ -197,101 +227,108 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
             })*/
             organization.binds?.member?.mapNotNull {
                 UserItem(
-                        it.user?: 0,
-                        it.binds?.user?.fullName?: "",
-                        it.binds?.user?.address?.city,
-                        it.binds?.user?.image?.uri,
-                        { presenter.onUserClick(it.binds?.user) },
-                        it.binds?.user?.getUserSubscribeAction(),
-                        { presenter.onUserActionCLick(it.binds?.user) })
+                    it.user ?: 0,
+                    it.binds?.user?.nameLastName ?: "",
+                    it.binds?.user?.address?.city,
+                    it.binds?.user?.image?.uri,
+                    { presenter.onUserClick(it.binds?.user) },
+                    it.binds?.user?.getUserSubscribeAction(),
+                    { presenter.onUserActionCLick(it.binds?.user) })
             }?.let { update(it) }
         }
-        btnPeoples.apply {
-            isVisible = (organization.binds?.membersSize?:0) > 3
+        mBinding.btnPeoples.apply {
+            isVisible = (organization.binds?.membersSize ?: 0) > 3
             setOnClickListener { presenter.onShowMoreUsersClick() }
         }
 
         //tvEvents.text = getString(R.string.organization_events)/*.format(organization.totalEvents)*/
-        tvEvents.text = getString(R.string.organization_events).format(organization.binds?.eventsSize)
-        layout_events.isVisible = organization.binds?.eventsSize != 0
-        rvEvents.apply {
+        mBinding.tvEvents.text =
+            getString(R.string.organization_events).format(organization.binds?.eventsSize)
+        mBinding.layoutEvents.isVisible = organization.binds?.eventsSize != 0
+        mBinding.rvEvents.apply {
             adapter = GroupAdapter<GroupieViewHolder>().apply {
                 organization.binds?.events?.map(::createItem)?.let { update(it) }
             }
         }
-        btnEvents.apply {
-            isVisible = (organization.binds?.eventsSize?:0) > 0
+        mBinding.btnEvents.apply {
+            isVisible = (organization.binds?.eventsSize ?: 0) > 0
             setOnClickListener { presenter.onShowMoreEventsClick() }
         }
 
-        llContent.isVisible = true
-        swipeToRefresh.isRefreshing = false
+        mBinding.llContent.isVisible = true
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     private fun createItem(itemData: EventNew?): Group {
-       return EventGroup(
-                /*itemData.id,
-                itemData.status,
-                itemData.userRegistration,
-                itemData.backgroundColor,
-                itemData.backgroundImage,
-                itemData.takeFormat(),
-                itemData.organization?.emails,
-                !itemData.canRegister,
-                onEventClickListener,
-                EventDataListItem(
-                        -itemData.id.toLong(),
-                        itemData.name,
-                        itemData.shortAddress ?: itemData.addressCity,
-                        itemData.conferenceStart,
-                        itemData.conferenceFirstActivityStart
-                ).apply {
-                    showStartTime = false
-                },
-                itemData.userAgreement*/
-                itemData?.id.toString(),
-                itemData?.status?.value,
-                /*if (itemData?.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/itemData?.binds?.currentUserRegistration?.status?.value,
-                itemData?.binds?.organization?.backgroundColor?.value,
-                itemData?.image?.uri,
-                EventFormat(name = if (itemData?.format?.name.isNullOrEmpty()) itemData?.format?.custom?: "" else itemData?.format?.name?: ""),
-                itemData?.binds?.organization?.email,
-                /*!itemData?.binds?.rights?.registration!!*/(itemData?.status?.value?: "") != Event.Status.REGISTRATION,
-                onEventClickListener,
-                EventDataListItem(
-                        -(itemData?.id?.toLong()?: 0),
-                        itemData?.name,
-                        itemData?.address?.getShortAddress(),
-                        itemData?.holdingDate?.from,
-                        itemData?.binds?.getFirstActionStartDate()
-                ).apply {
-                    showStartTime = false
-                },
-                itemData?.userAgreement?.name?: itemData?.userAgreement?.uri,
-               itemData?.binds?.eventRegistrationState,
-               true,
-               itemData?.binds?.currentUserRegistration?.id?.toString()
+        return EventGroup(
+            /*itemData.id,
+            itemData.status,
+            itemData.userRegistration,
+            itemData.backgroundColor,
+            itemData.backgroundImage,
+            itemData.takeFormat(),
+            itemData.organization?.emails,
+            !itemData.canRegister,
+            onEventClickListener,
+            EventDataListItem(
+                    -itemData.id.toLong(),
+                    itemData.name,
+                    itemData.shortAddress ?: itemData.addressCity,
+                    itemData.conferenceStart,
+                    itemData.conferenceFirstActivityStart
+            ).apply {
+                showStartTime = false
+            },
+            itemData.userAgreement*/
+            itemData?.id.toString(),
+            itemData?.status?.value,
+            /*if (itemData?.binds?.userRegister?.isNotEmpty() == true) itemData.binds?.userRegister?.get(0)?.status?.value else null*/
+            itemData?.binds?.currentUserRegistration?.status?.value,
+            itemData?.binds?.organization?.backgroundColor?.value,
+            itemData?.image?.uri,
+            EventFormat(
+                name = if (itemData?.format?.name.isNullOrEmpty()) itemData?.format?.custom
+                    ?: "" else itemData?.format?.name ?: ""
+            ),
+            itemData?.binds?.organization?.email,
+            /*!itemData?.binds?.rights?.registration!!*/
+            (itemData?.status?.value ?: "") != Event.Status.REGISTRATION,
+            onEventClickListener,
+            EventDataListItem(
+                -(itemData?.id?.toLong() ?: 0),
+                itemData?.name,
+                itemData?.address?.getShortAddress(),
+                itemData?.holdingDate?.from,
+                itemData?.binds?.getFirstActionStartDate()
+            ).apply {
+                showStartTime = false
+            },
+            itemData?.userAgreement?.name ?: itemData?.userAgreement?.uri,
+            itemData?.binds?.eventRegistrationState,
+            true,
+            itemData?.binds?.currentUserRegistration?.id?.toString()
         )
     }
 
     private fun setOnImageClickListener(imageView: ImageView, url: String?) {
         imageView.setOnClickListener {
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    requireActivity(),
-                    Pair(it, it.transitionName)
+                requireActivity(),
+                Pair(it, it.transitionName)
             )
 
             findNavController().navigate(
-                    R.id.image_view_activity,
-                    ImageViewActivityArgs.Builder(url, null, null, it.transitionName).build().toBundle(),
-                    null,
-                    ActivityNavigatorExtras(options)
+                R.id.image_view_activity,
+                ImageViewActivityArgs.Builder(url, null, null, it.transitionName).build()
+                    .toBundle(),
+                null,
+                ActivityNavigatorExtras(options)
             )
         }
     }
 
     override fun setSubscribed(isSubscribed: Boolean) {
-        btnAction.apply {
+        mBinding.btnAction.apply {
             setAction(if (isSubscribed) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
         }
     }
@@ -304,13 +341,13 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
 
     override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>) {
         AlertDialog.Builder(requireContext())
-                .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
-                    val email = emails[which]
-                    presenter.onWriteToOrganizationEmailChosen(email)
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+            .setItems(emails.map { it.getAffiliationString() }.toTypedArray()) { dialog, which ->
+                val email = emails[which]
+                presenter.onWriteToOrganizationEmailChosen(email)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/) {
@@ -323,38 +360,63 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle())
+        findNavController().navigate(
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+            R.id.request_fragment,
+            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun selectEvent() {
-        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
+        findNavController().navigate(
+            R.id.event_tabs_fragment, null, NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
-                .build())
+                .build()
+        )
     }
 
     override fun showSearch(format: Int) {
         val filter = SearchFilter.Event().apply { this.format = format }
-        findNavController().navigate(R.id.search_tabs_fragment, SearchTabsFragmentArgs.Builder(filter).build().toBundle())
+        findNavController().navigate(
+            R.id.search_tabs_fragment,
+            SearchTabsFragmentArgs.Builder(filter).build().toBundle()
+        )
     }
 
     override fun showEvents(organizationId: String) {
-        findNavController().navigate(OrganizationFragmentDirections.organizationToOrganizationEvents(organizationId))
+        findNavController().navigate(
+            OrganizationFragmentDirections.organizationToOrganizationEvents(
+                organizationId
+            )
+        )
     }
 
     override fun showAboutEvent(event: Event) {
-        findNavController().navigate(R.id.about_event_fragment, AboutEventFragmentArgs.Builder(event.id, ABOUT_FROM_OTHER).build().toBundle())
+        findNavController().navigate(
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event.id, ABOUT_FROM_OTHER).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: Event) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event.id).build().toBundle())
+        findNavController().navigate(
+            R.id.request_fragment,
+            EventRegistrationFragmentArgs.Builder(event.id).build().toBundle()
+        )
     }
 
     override fun showUsers(organizationId: String) {
-        findNavController().navigate(OrganizationFragmentDirections.organizationToOrganizationUsers(organizationId))
+        findNavController().navigate(
+            OrganizationFragmentDirections.organizationToOrganizationUsers(
+                organizationId
+            )
+        )
     }
 
     override fun showUser(id: String) {
@@ -362,18 +424,21 @@ class OrganizationFragment : BaseFragment(), OrganizationContract.View, ToolbarF
     }
 
     override fun changeScrollY(scroll: Int) {
-        scrollContainer.scrollTo(0, scroll)
+        mBinding.scrollContainer.scrollTo(0, scroll)
     }
 
     override fun showRegistrationFieldsRequest(fields: List<String>) {
         EventRegistrationProfileFieldsDialog(requireContext(), fields) {
             presenter.onShowEditProfileClick()
         }
-                .show()
+            .show()
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(
+            R.id.user_profile_fragment,
+            UserFragmentArgs.Builder(id).build().toBundle()
+        )
     }
 
     override fun layout() = R.layout.fragment_organization

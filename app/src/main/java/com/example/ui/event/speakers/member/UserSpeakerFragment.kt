@@ -27,6 +27,7 @@ import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -37,7 +38,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     @InjectPresenter
     lateinit var presenter: UserSpeakerPresenter
-    private var mDy: Int = 0
+
 
     @Inject
     lateinit var presenterProvider: Provider<UserSpeakerPresenter>
@@ -76,23 +77,25 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         override fun onUpdateScheduleState(subEvent: EventActivityModel) {}
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             listSpeakersContent.apply {
                 this.adapter = groupAdapter
-                setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                    mDy += scrollY - oldScrollY
-                    val mElevation = abs(mDy / 10f)
-                    appBar.apply {
-                        elevation = if (mElevation <= 10f) {
-                            mElevation
-                        } else {
-                            10f
-                        }
-                    }
+                onScrolled { dx, dy ->
+                    presenter.changeAppBarElevation(dy)
                 }
+//                setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+//                    mDy += scrollY - oldScrollY
+//                    val mElevation = abs(mDy / 10f)
+//                    appBar.apply {
+//                        elevation = if (mElevation <= 10f) {
+//                            mElevation
+//                        } else {
+//                            10f
+//                        }
+//                    }
+//                }
             }
 
             ivBack.setOnClickListener {
@@ -109,12 +112,22 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     }
 
+    override fun changeAppbarElevation(value: Float) {
+        mBinding.appBar.apply {
+            elevation = if (value <= 10f) {
+                value
+            } else {
+                10f
+            }
+        }
+    }
+
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
         findNavController().navigate(
             UserSpeakerFragmentDirections.userToChat(userName, chatId)
                 .apply {
-                setUserAvatar(userAvatar)
-            })
+                    setUserAvatar(userAvatar)
+                })
     }
 
 
@@ -139,7 +152,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
                 UserSpeakerMainInfoItem(
                     presenter.isCurrentUser(),
                     speaker.binds?.user,
-                    speaker.binds?.user?.fullName ?: "",
+                    speaker.binds?.user?.nameLastName ?: "",
                     speaker.binds?.user?.address?.city ?: "",
                     speaker.organizationAndPosition,
                     speaker.binds?.user?.image?.uri,
@@ -181,7 +194,8 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     override fun updateSubEvent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
-        subEventsDataSection.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged(subEvent)
+        subEventsDataSection.findItemBy<EventActivityItem> { it.id == idLong }
+            ?.notifyChanged(subEvent)
     }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
@@ -212,12 +226,6 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (mBinding.listSpeakersContent != null) {
-            mDy += mBinding.listSpeakersContent.scrollY
-        }
-    }
 
     override fun layout(): Int = R.layout.fragment_user_speaker
 }

@@ -9,9 +9,8 @@ import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.holders.DayHeaderItem
 import com.example.holders.NoDataItem
-import com.example.ui.subevent.items.SubEventItem
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.subevent.items.SubEventItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -20,9 +19,8 @@ import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View, ToolbarFragment {
+class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View {
 
-    override val title: String? = null
 
     @InjectPresenter
     lateinit var presenter: FavoriteSubeventPresenter

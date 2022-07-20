@@ -1,104 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:fillViewport="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_profile_field_text" />
+        android:background="@android:color/white"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/llMapContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_data_margin"
-            android:layout_marginEnd="@dimen/profile_data_margin"
-            android:orientation="vertical"
-            android:paddingBottom="20dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/flMapContainer"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="331dp"
-                tools:visibility="visible"/>
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_profile_field_text" />
 
             <LinearLayout
-                android:id="@+id/llMapAction"
+                android:id="@+id/llMapContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/action_button_height"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/btnShare"
-                    android:layout_width="62dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/background_highlight"
-                    android:elevation="1dp"
-                    android:src="@drawable/ic_show_on_map"
-                    android:theme="@style/ViewBackgroundMapShare" />
+                android:layout_marginStart="@dimen/profile_data_margin"
+                android:layout_marginEnd="@dimen/profile_data_margin"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
 
                 <FrameLayout
-                    android:id="@+id/btnGoTo"
+                    android:id="@+id/flMapContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/background_highlight"
-                    android:elevation="0dp"
-                    android:theme="@style/ViewBackgroundAccent">
+                    android:layout_height="331dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        fontPath="fonts/Roboto-Medium.ttf"
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llMapAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/action_button_height"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/btnShare"
+                        android:layout_width="62dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:drawableStart="@drawable/ic_route"
-                        android:drawablePadding="12dp"
-                        android:gravity="center"
-                        android:text="@string/map_route"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        tools:ignore="MissingPrefix" />
-                </FrameLayout>
+                        android:background="@drawable/background_highlight"
+                        android:elevation="1dp"
+                        android:src="@drawable/ic_show_on_map"
+                        android:theme="@style/ViewBackgroundMapShare" />
+
+                    <FrameLayout
+                        android:id="@+id/btnGoTo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/background_highlight"
+                        android:elevation="0dp"
+                        android:theme="@style/ViewBackgroundAccent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            fontPath="fonts/Roboto-Medium.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:drawableStart="@drawable/ic_route"
+                            android:drawablePadding="12dp"
+                            android:gravity="center"
+                            android:text="@string/map_route"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp"
+                            tools:ignore="MissingPrefix" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvMapDescriptionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="17sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/event_map_tab_how_to_get" />
+
+                <TextView
+                    android:id="@+id/tvMapDescription"
+                    fontPath="fonts/Roboto-Light.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:autoLink="all"
+                    android:textSize="16sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@tools:sample/lorem/random" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvMapDescriptionTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textSize="17sp"
-                tools:ignore="MissingPrefix"
-                tools:text="@string/event_map_tab_how_to_get" />
-
-            <TextView
-                android:id="@+id/tvMapDescription"
-                fontPath="fonts/Roboto-Light.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:autoLink="all"
-                android:textSize="16sp"
-                tools:ignore="MissingPrefix"
-                tools:text="@tools:sample/lorem/random" />
         </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -22,6 +22,11 @@ class QrScannerPresenter
     appData: AppData
 ) : BasePresenter<QrScannerContract.View>(appData), QrScannerContract.Presenter {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun attachView(view: QrScannerContract.View?) {
         super.attachView(view)
         compositeDisposable += rxPermissions

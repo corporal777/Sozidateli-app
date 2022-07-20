@@ -7,19 +7,17 @@ import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentConfirmPasswordBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
-import kotlinx.android.synthetic.main.fragment_confirm_password.*
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, ToolbarFragment {
+class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(),
+    PasswordConfirmContract.View, SimpleTitleToolbar {
 
-    override val title: String? by lazy {
-        getString(R.string.status_profile_title_set)
-    }
 
     val args: PasswordConfirmFragmentArgs by navArgs()
 
@@ -38,19 +36,28 @@ class PasswordConfirmFragment : BaseFragment(), PasswordConfirmContract.View, To
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        etPassword.onTextChanged { tilPassword.error = null }
-        btnSave.setOnClickListener {
-            val password = etPassword.text?.toString()
-            if (!password.isNullOrEmpty()) presenter.onClickConfirmPassword(password)
+        setToolbarTitle(getString(R.string.status_profile_title_set))
+        mBinding.apply {
+            etPassword.onTextChanged { tilPassword.error = null }
+            btnSave.setOnClickListener {
+                val password = etPassword.text?.toString()
+                if (!password.isNullOrEmpty()) presenter.onClickConfirmPassword(password)
+            }
         }
     }
 
     override fun showConfirmPasswordError() {
-        tilPassword.error = getString(R.string.password_confirm_wrong_password)
+        mBinding.tilPassword.error = getString(R.string.password_confirm_wrong_password)
     }
 
     override fun showPhoneConfirm(phone: String, password: String) {
         hideKeyboard()
-        findNavController().navigate(PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(phone, password, FROM_PROFILE))
+        findNavController().navigate(
+            PasswordConfirmFragmentDirections.passwordConfirmToPhoneConfirm(
+                phone,
+                password,
+                FROM_PROFILE
+            )
+        )
     }
 }

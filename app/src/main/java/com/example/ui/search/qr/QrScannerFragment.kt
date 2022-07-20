@@ -13,17 +13,14 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.example.R
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
-import kotlinx.android.synthetic.main.fragment_qr_scanner.*
+import com.example.databinding.FragmentQrScannerBinding
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class QrScannerFragment : BaseFragment(), QrScannerContract.View, ToolbarFragment {
-    override val title: CharSequence
-        get() = getString(R.string.qr_scan_label)
+class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScannerContract.View, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: QrScannerPresenter
@@ -38,22 +35,25 @@ class QrScannerFragment : BaseFragment(), QrScannerContract.View, ToolbarFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        codeScanner = CodeScanner(requireActivity(), scannerView).apply {
+        setToolbarTitle(getString(R.string.qr_scan_label))
+        codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
             decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
         }
-        btnToEnterCode.setOnClickListener { presenter.onEnterCodeClick() }
-        btnPermissionRequest.setOnClickListener { presenter.onRequestPermissionClick() }
+        mBinding.apply {
+            btnToEnterCode.setOnClickListener { presenter.onEnterCodeClick() }
+            btnPermissionRequest.setOnClickListener { presenter.onRequestPermissionClick() }
+        }
     }
 
     override fun startPreview() {
-        clScanner.isVisible = true
-        clPermissionRequest.isVisible = false
+        mBinding.clScanner.isVisible = true
+        mBinding.clPermissionRequest.isVisible = false
         codeScanner.apply { if (!isPreviewActive) startPreview() }
     }
 
     override fun showNoPermission() {
-        clScanner.isVisible = false
-        clPermissionRequest.isVisible = true
+        mBinding.clScanner.isVisible = false
+        mBinding.clPermissionRequest.isVisible = true
     }
 
     override fun onPause() {

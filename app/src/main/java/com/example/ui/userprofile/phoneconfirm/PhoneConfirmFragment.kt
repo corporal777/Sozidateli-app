@@ -8,19 +8,16 @@ import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentConfirmPhoneBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
-import kotlinx.android.synthetic.main.fragment_confirm_phone.*
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarFragment {
-
-    override val title: String? by lazy {
-        getString(R.string.status_profile_title_set)
-    }
+class PhoneConfirmFragment : BaseFragmentNew<FragmentConfirmPhoneBinding>(),
+    PhoneConfirmContract.View, SimpleTitleToolbar {
 
     override fun layout() = R.layout.fragment_confirm_phone
 
@@ -38,37 +35,40 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
     fun providePresenter(): PhoneConfirmPresenter = presenterProvider.get().apply {
         phone = args.phone
         password = args.password
-        screenType = args.screenType?: FROM_OTHER
+        screenType = args.screenType ?: FROM_OTHER
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnResend.setOnClickListener { presenter.onResendClick() }
-        btnSave.setOnClickListener {
-            val code = etCode.text?.toString()
-            if (!code.isNullOrEmpty()) {
-                (requireActivity() as MainActivity).startEditPhoneListener(true)
-                presenter.onCodeSendClick(code)
-            } else (requireActivity() as MainActivity).startEditPhoneListener(true)
+        setToolbarTitle(getString(R.string.status_profile_title_set))
+        mBinding.apply {
+            btnResend.setOnClickListener { presenter.onResendClick() }
+            btnSave.setOnClickListener {
+                val code = etCode.text?.toString()
+                if (!code.isNullOrEmpty()) {
+                    (requireActivity() as MainActivity).startEditPhoneListener(true)
+                    presenter.onCodeSendClick(code)
+                } else (requireActivity() as MainActivity).startEditPhoneListener(true)
+            }
+            etCode.onTextChanged { tilCode.error = null }
         }
-        etCode.onTextChanged { tilCode.error = null }
     }
 
     override fun setCanResend(canResend: Boolean) {
-        btnResend.isEnabled = canResend
+        mBinding.btnResend.isEnabled = canResend
     }
 
     override fun setTimeLeft(time: String?) {
         if (time == null) {
-            tvTimer.isVisible = false
+            mBinding.tvTimer.isVisible = false
         } else {
-            tvTimer.text = String.format(timerMessage, time)
-            tvTimer.isVisible = true
+            mBinding.tvTimer.text = String.format(timerMessage, time)
+            mBinding.tvTimer.isVisible = true
         }
     }
 
     override fun setPhone(phone: String) {
-        tvDescription.text = getString(R.string.phone_confirm_description, phone)
+        mBinding.tvDescription.text = getString(R.string.phone_confirm_description, phone)
     }
 
     override fun showSendSmsError() {
@@ -76,7 +76,7 @@ class PhoneConfirmFragment : BaseFragment(), PhoneConfirmContract.View, ToolbarF
     }
 
     override fun showWrongCodeError() {
-        tilCode.error = getString(R.string.phone_confirm_wrong_code)
+        mBinding.tilCode.error = getString(R.string.phone_confirm_wrong_code)
         (requireActivity() as MainActivity).startEditPhoneListener(false)
     }
 

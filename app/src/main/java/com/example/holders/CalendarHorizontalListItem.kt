@@ -1,16 +1,23 @@
 package com.example.holders
 
 import android.graphics.Color
+import androidx.recyclerview.widget.RecyclerView
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.ui.event.activities.items.HorizontalListItemNew
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Completable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import performOnBackgroundOutOnMain
 
 class CalendarHorizontalListItem(
     days: List<EventScheduleCalendarDay>,
     private val onDaySelect: (date: EventScheduleCalendarDay) -> Unit
 ) : HorizontalListItemNew<GroupieViewHolder>() {
 
+
+    val compositeDisposable = CompositeDisposable()
 
     private val items = days.map { day ->
         DayItem(day, onDaySelect)
@@ -32,6 +39,24 @@ class CalendarHorizontalListItem(
         deselectAllExcept(day)
     }
 
+    fun selectFirstDay(){
+        val day = items.first()
+        if (!day.isSelected){
+            day.isSelected = true
+            day.notifyChanged()
+        }
+        deselectAllExcept(day.day)
+    }
+    fun deselectAllExcept(except: EventScheduleCalendarDay) {
+        items.find { it.day != except && it.isSelected }?.let {
+            if (it.isSelected) {
+                it.isSelected = false
+                it.notifyChanged()
+            }
+        }
+    }
+
+
     fun changeDay(day: EventScheduleCalendarDay): Boolean {
         var isDay = false
         items.find { it.day.millis == day.millis }?.let {
@@ -40,31 +65,24 @@ class CalendarHorizontalListItem(
         return isDay
     }
 
-    fun getFirstItem(): EventScheduleCalendarDay {
-        return items[0].day
-    }
-
-    fun scrollToDay(day: EventScheduleCalendarDay): Boolean {
-        var isDay = false
-        items.find { it.day == day }?.let {
-            isDay = true
-
+    fun scrollToDay(day: EventScheduleCalendarDay){
+        var position = 0
+        compositeDisposable += Completable.fromAction {
+            position = items.indexOfFirst { it.day == day }
         }
-//        val position = items.indexOfFirst { it.day == day }
-//
-//        if (position == RecyclerView.NO_POSITION) return
-//        scrollToPositionWithOffset(position, 0)
-        return isDay
-    }
-
-    fun deselectAllExcept(except: EventScheduleCalendarDay) {
-        items.forEach {
-            if (it.day != except && it.isSelected) {
-                it.isSelected = false
-                it.notifyChanged()
+            .performOnBackgroundOutOnMain()
+            .subscribe {
+                val item = items.get(position)
+                deselectAllExcept(day)
+                if (!item.isSelected) {
+                    item.isSelected = true
+                    item.notifyChanged()
+                }
+                smoothScrollToPosition(position)
             }
-        }
     }
+
+
 
 
     fun selectDayNew(day: EventScheduleCalendarDay): Boolean {

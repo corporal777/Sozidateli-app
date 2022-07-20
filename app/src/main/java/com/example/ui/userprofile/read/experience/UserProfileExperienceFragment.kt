@@ -7,24 +7,19 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.UserEditDataType
-import com.example.data.models.user.User
+import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_user_profile_interests.*
-import kotlinx.android.synthetic.main.fragment_user_profile_main_data.btnEdit
+import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContract.View, ToolbarFragment {
-
-    override val title: String?
-        get() = getString(R.string.user_profile_experience)
+class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(), UserProfileExperienceContract.View, SimpleTitleToolbar {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -41,8 +36,14 @@ class UserProfileExperienceFragment : BaseFragment(), UserProfileExperienceContr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvInterests.adapter = adapter
-        btnEdit.setOnClickListener(presenter::onEditClick)
+        setToolbarTitle(getString(R.string.user_profile_experience))
+        mBinding.apply {
+            rvInterests.adapter = adapter
+            rvInterests.onScrolled { dx, dy ->
+                presenter.changeAppBarElevation(dy)
+            }
+            btnEdit.setOnClickListener(presenter::onEditClick)
+        }
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {

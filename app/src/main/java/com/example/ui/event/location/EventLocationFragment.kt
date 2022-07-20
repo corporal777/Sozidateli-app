@@ -11,7 +11,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MapInfo
 import com.example.data.models.Place
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.map.MapFragment
@@ -19,9 +18,8 @@ import kotlinx.android.synthetic.main.fragment_map_tabs.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventLocationFragment : BaseFragment(), EventLocationContract.View, ToolbarFragment {
+class EventLocationFragment : BaseFragment(), EventLocationContract.View {
 
-    override val title: String? = null
 
     @InjectPresenter(type = PresenterType.WEAK, tag = "EventLocationPresenter")
     lateinit var presenter: EventLocationPresenter

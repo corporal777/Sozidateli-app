@@ -50,6 +50,19 @@ interface NewApi {
     fun sendPhoneCode(@Path("id") id: Int, @Query("phone") phone: String): Completable
 
     //+
+    @GET("v1/user/get-sessions")
+    fun getAllUsersSessions(): Maybe<UserSessions>
+
+    @GET("v1/user/get-device-sessions")
+    fun getAllUsersSessionsFromCurrentDevice(@Query("deviceId") deviceId: String): Maybe<UserSessions>
+
+    @PATCH("v1/user/kill-sessions")
+    fun killAllUsersOtherSessions(): Completable
+
+    @PATCH("v1/user/kill-session/{id}")
+    fun killUsersDeviceSession(@Path("id") id: Int): Completable
+
+    //+
     @GET("v1/event")
     fun getEventCalendar(@QueryMap map: Map<String, Any>): Maybe<EventsListModel>
 

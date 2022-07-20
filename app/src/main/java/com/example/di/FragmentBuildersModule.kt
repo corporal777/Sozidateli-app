@@ -72,6 +72,7 @@ import com.example.ui.subevent.SubEventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
+import com.example.ui.userSessions.UserSessionsFragment
 import com.example.ui.userprofile.edit.UserEditFragment
 import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
@@ -346,4 +347,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMyScheduleEventsFragmentNew(): MyScheduleEventsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUserSessionsFragment(): UserSessionsFragment
 }

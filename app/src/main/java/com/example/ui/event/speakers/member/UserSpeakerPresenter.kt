@@ -16,6 +16,7 @@ import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarLoadingDialog
+import java.lang.Math.abs
 import javax.inject.Inject
 
 @InjectViewState
@@ -32,10 +33,21 @@ class UserSpeakerPresenter
     lateinit var memberId: String
 
     lateinit var mUser: UserDetail
+    private var mDy: Int = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadUserData()
+    }
+
+    override fun attachView(view: UserSpeakerContract.View?) {
+        super.attachView(view)
+        viewState.changeAppbarElevation(abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.changeAppbarElevation(abs(mDy / 10f))
     }
 
     private fun loadUserData() {

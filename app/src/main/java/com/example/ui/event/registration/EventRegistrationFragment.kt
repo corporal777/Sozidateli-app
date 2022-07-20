@@ -3,14 +3,8 @@ package com.example.ui.event.registration
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.NavOptions
@@ -26,31 +20,28 @@ import com.example.data.models.EventRegistration
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
+import com.example.databinding.FragmentRequestBinding
 import com.example.extensions.*
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
-import com.example.util.ClickableSpan
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.view.*
 import kotlinx.android.synthetic.main.fragment_request.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View, ToolbarFragment {
+class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
+    EventRegistrationContract.View, SimpleTitleToolbar {
 
-    override val title: CharSequence
-        get() = getString(R.string.request_label)
 
     @InjectPresenter
     lateinit var presenter: EventRegistrationPresenter
@@ -71,80 +62,124 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
         }
     }
 
-    private val personalDataFileClickListener: OnPersonalDataFileClickListener = { presenter.onPersonalDataFileClick(it) }
-    private val onFieldDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit = { presenter.onDataChange(it) }
+    private val personalDataFileClickListener: OnPersonalDataFileClickListener =
+        { presenter.onPersonalDataFileClick(it) }
+    private val onFieldDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit =
+        { presenter.onDataChange(it) }
 
     private var bottomDialog: Dialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarTitle(getString(R.string.request_label))
         recyclerView.apply { adapter = this@EventRegistrationFragment.adapter }
     }
 
-    override fun setFields(event: EventRegistration,
-                           groupField: EventRegisterField?,
-                           selectedGroup: String?,
-                           groups: List<EventGroup>,
-                           fieldsData: List<EventRegisterFieldData<*>>,
-                           withConfirm: Boolean) {
+    override fun setFields(
+        event: EventRegistration,
+        groupField: EventRegisterField?,
+        selectedGroup: String?,
+        groups: List<EventGroup>,
+        fieldsData: List<EventRegisterFieldData<*>>,
+        withConfirm: Boolean
+    ) {
         section.apply {
-            setHeader(RegisterEventHeaderItem(
+            setHeader(
+                RegisterEventHeaderItem(
                     -100L,
                     event.name,
                     null,
                     event.conferenceStart?.formatToEventDatesIntervalNew(event.conferenceFinish),
-                    event.conferenceRegistrationFinishDate?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear),
+                    event.conferenceRegistrationFinishDate?.parseAndFormat(
+                        defaultServerDateFormatter,
+                        dateFormatterFullMothFullYear
+                    ),
                     event.registrationHeadline,
                     event.registrationSubtitle
-            ))
+                )
+            )
 
             if (withConfirm) setFooter(saveButtonItem)
 
             if (groupField != null) {
-                add(EventRegistrationGroupsItem(groupField.id.toLong(), groupField.description, groups, selectedGroup) {
-                    presenter.onSelectedGroupChange(it)
-                }.withEventRegistrationTitle(groupField.name))
+                add(
+                    EventRegistrationGroupsItem(
+                        groupField.id.toLong(),
+                        groupField.description,
+                        groups,
+                        selectedGroup
+                    ) {
+                        presenter.onSelectedGroupChange(it)
+                    }.withEventRegistrationTitle(groupField.name)
+                )
             }
 
             addAll(fieldsData.map {
                 when (it) {
                     is EventRegisterFieldData.String ->
-                        RegisterEventStringItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventStringItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.Date ->
-                        RegisterEventDateItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventDateItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.SelectBox ->
-                        EventRegistrationSelectBoxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        EventRegistrationSelectBoxItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventRadioBoxItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventCheckboxItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.Boolean ->
-                        RegisterEventBooleanItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it, withTitle = false)
+                        RegisterEventBooleanItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it, withTitle = false)
                     is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, onDataChange = onFieldDataChange).createFieldItemFrom(it)
+                        RegisterEventPassportItem(
+                            it,
+                            onDataChange = onFieldDataChange
+                        ).createFieldItemFrom(it)
                     is EventRegisterFieldData.File ->
-                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
+                        EventRegistrationFileGroup(
+                            requireContext(),
+                            it,
+                            onFieldDataChange
+                        ) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
                 }
             })
         }
     }
 
     private fun Group.createFieldItemFrom(
-            fieldData: EventRegisterFieldData<*>,
-            customTitle: String? = null,
-            withTitle: Boolean = true,
-            withFile: Boolean = true
+        fieldData: EventRegisterFieldData<*>,
+        customTitle: String? = null,
+        withTitle: Boolean = true,
+        withFile: Boolean = true
     ): Group {
         val field = fieldData.field
         return let {
             val title = if (withTitle) customTitle ?: field.name else null
             it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
         }
-                .let {
-                    val file = if (withFile) field.rightFile else null
-                    it.withEventRegistrationPersonalDataFile(file?.file, field.rightFileDescription
-                            ?: file?.filename, personalDataFileClickListener)
-                }
+            .let {
+                val file = if (withFile) field.rightFile else null
+                it.withEventRegistrationPersonalDataFile(
+                    file?.file, field.rightFileDescription
+                        ?: file?.filename, personalDataFileClickListener
+                )
+            }
     }
 
     override fun showEventRegisterConfirmation() {
@@ -208,7 +243,8 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
             if (maybeApproved)
                 setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
             positiveButton {
-                text = getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
+                text =
+                    getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
                 clickListener = {
                     if (canGoToEvent) presenter.onSuccessGoToEvent() else presenter.onSuccessGoToList()
                     true
@@ -230,10 +266,12 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
     }
 
     override fun openFileSelector() {
-        startActivityForResult(Intent()
+        startActivityForResult(
+            Intent()
                 .setType("*/*")
                 .setAction(Intent.ACTION_OPEN_DOCUMENT)
-                .addCategory(Intent.CATEGORY_OPENABLE), REQUEST_CODE_FILE)
+                .addCategory(Intent.CATEGORY_OPENABLE), REQUEST_CODE_FILE
+        )
     }
 
     override fun updateFileField(fieldId: String) {
@@ -249,11 +287,14 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
 
     override fun showWrongFileExtensions(availableExtensions: List<String>) {
         val message = getString(R.string.event_register_file_extension_wrong)
-                .format(availableExtensions.joinToString { it.toLowerCase(Locale.getDefault()) })
+            .format(availableExtensions.joinToString { it.toLowerCase(Locale.getDefault()) })
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun findEventRegistrationFileGroup(parent: NestedGroup, fieldId: String): EventRegistrationFileGroup? {
+    private fun findEventRegistrationFileGroup(
+        parent: NestedGroup,
+        fieldId: String
+    ): EventRegistrationFileGroup? {
         if (parent is EventRegistrationFileGroup) return parent
         for (i in 0 until parent.groupCount) {
             val group = parent.getGroup(i)
@@ -300,8 +341,8 @@ class EventRegistrationFragment : BaseFragment(), EventRegistrationContract.View
         findNavController().apply {
             graph.startDestination = R.id.event_tabs_fragment
             val opts = NavOptions.Builder()
-                    .setPopUpTo(R.id.recommendations_fragment, true)
-                    .build()
+                .setPopUpTo(R.id.recommendations_fragment, true)
+                .build()
             navigate(R.id.event_tabs_fragment, null, opts)
         }
     }

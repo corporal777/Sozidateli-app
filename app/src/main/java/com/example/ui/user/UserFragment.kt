@@ -38,6 +38,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -102,17 +103,14 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         super.onViewCreated(view, savedInstanceState)
         mBinding.contentList.apply {
             adapter = this@UserFragment.adapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    mDy = recyclerView.computeVerticalScrollOffset()
-                    if (recyclerView.computeVerticalScrollOffset() <= 10) {
-                        mBinding.appBar.elevation = mDy.toFloat()
-                    } else {
-                        mBinding.appBar.elevation = 10f
-                    }
+            onScrolled { dx, dy ->
+                mDy = this.computeVerticalScrollOffset()
+                if (this.computeVerticalScrollOffset() <= 10) {
+                    mBinding.appBar.elevation = mDy.toFloat()
+                } else {
+                    mBinding.appBar.elevation = 10f
                 }
-            })
+            }
         }
         mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         mBinding.ivBack.setOnClickListener {
@@ -147,7 +145,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
             HEADER_ITEM_ID,
             user.image?.uri,
             avatar,
-            user.fullName,
+            user.nameLastName,
             user.id,
             { presenter.onEditMainDataClick() },
             { imageView ->
@@ -162,7 +160,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
             HEADER_ITEM_ID,
             user.image?.uri,
             avatar,
-            user.fullName,
+            user.nameLastName,
             user.id,
             user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
             user.binds?.userFavorite != null,

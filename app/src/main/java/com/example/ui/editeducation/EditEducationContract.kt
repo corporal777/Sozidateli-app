@@ -14,7 +14,7 @@ interface EditEducationContract {
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
     }
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
     }
 }

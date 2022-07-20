@@ -12,9 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.fragment_edit_degree.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.tilDegreesLevel
@@ -24,10 +22,8 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.tvS
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EditDegreeFragment: BaseFragment(), EditDegreeContract.View, ToolbarFragment {
+class EditDegreeFragment: BaseFragment(), EditDegreeContract.View {
 
-    override val title: String? = null
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
     var mDegreesLevel: String? = null
     var mSciencesLevel: String? = null
     var position: Int = 0
@@ -57,10 +53,6 @@ class EditDegreeFragment: BaseFragment(), EditDegreeContract.View, ToolbarFragme
         }
     }
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
-    }
 
     override fun setUserData(user: User) {
         mDegreesLevel = if (mDegreesLevel == null)
@@ -96,7 +88,7 @@ class EditDegreeFragment: BaseFragment(), EditDegreeContract.View, ToolbarFragme
     }
 
     private fun setTitle(@StringRes titleRes: Int) {
-        toolbarContentActionBar.setTitle(titleRes)
+        //setToolbarTitle(titleRes)
     }
 
     companion object {

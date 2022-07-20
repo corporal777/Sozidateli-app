@@ -20,8 +20,11 @@ class EditEducationPresenter
         private val userRepository: UserRepository
 ) : BasePresenter<EditEducationContract.View>(appData), EditEducationContract.Presenter {
 
+    private var mDy = 0
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         compositeDisposable += appData.userNewChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
@@ -33,6 +36,16 @@ class EditEducationPresenter
                     it.printStackTrace()
                     viewState.navigateUp()
                 })
+    }
+
+    override fun attachView(view: EditEducationContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {

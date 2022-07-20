@@ -83,9 +83,9 @@ class SubEventsWithDateItem(
         mDataItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged()
     }
 
-    fun getDayName(): String? {
-        return mDateItem.findItemBy<EventActivityDateItem> { true }?.getDay()
-    }
+//    fun getDayName(): String? {
+//        return mDateItem.findItemBy<EventActivityDateItem> { true }?.getDay()
+//    }
 
     override fun getGroupCount() = 2
 

@@ -27,7 +27,7 @@ interface NotificationContract {
         fun showSuccessCanceled()
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onNotificationUrlClick(url: String)
         fun onNotificationAcceptClick()
         fun onNotificationCancelClick()

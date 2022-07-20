@@ -28,10 +28,12 @@ class NotificationPresenter
 ) : BasePresenter<NotificationContract.View>(appData), NotificationContract.Presenter {
 
     lateinit var notification: Notification
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(notification)
+        viewState.setAppBarElevation(0f)
         if (!notification.wasRead && notification.type != Notification.Type.RATE) {
             compositeDisposable += userRepository.markAsRead(notification.id.toString())
                 .performOnBackgroundOutOnMain()
@@ -54,6 +56,16 @@ class NotificationPresenter
                     viewState.setData(notification)
                 }
             }
+    }
+
+    override fun attachView(view: NotificationContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onNotificationUrlClick(url: String) {

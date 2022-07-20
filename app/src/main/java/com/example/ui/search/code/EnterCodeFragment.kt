@@ -7,18 +7,16 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentEnterCodeBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
-import kotlinx.android.synthetic.main.fragment_enter_code.*
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EnterCodeFragment : BaseFragment(), EnterCodeContract.View, ToolbarFragment {
-
-    override val title: CharSequence
-        get() = getString(R.string.code_input_label)
+class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCodeContract.View,
+    SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: EnterCodePresenter
@@ -31,30 +29,38 @@ class EnterCodeFragment : BaseFragment(), EnterCodeContract.View, ToolbarFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        etCode.apply {
-            setOnKeyListener { _, keyCode, _ ->
-                when (keyCode) {
-                    EditorInfo.IME_ACTION_DONE -> {
-                        presenter.onSearchClick(etCode.text.toString())
-                        true
+        setToolbarTitle(getString(R.string.code_input_label))
+        mBinding.apply {
+            etCode.apply {
+                setOnKeyListener { _, keyCode, _ ->
+                    when (keyCode) {
+                        EditorInfo.IME_ACTION_DONE -> {
+                            presenter.onSearchClick(etCode.text.toString())
+                            true
+                        }
+                        else -> false
                     }
-                    else -> false
+                }
+                requestFocus()
+
+                onTextChanged {
+                    btnSearch.isEnabled = !it.isNullOrEmpty()
                 }
             }
-            requestFocus()
-
-            onTextChanged {
-                btnSearch.isEnabled = !it.isNullOrEmpty()
+            btnSearch.apply {
+                isEnabled = !etCode.text.isNullOrEmpty()
+                setOnClickListener { presenter.onSearchClick(etCode.text.toString()) }
             }
-        }
-        btnSearch.apply {
-            isEnabled = !etCode.text.isNullOrEmpty()
-            setOnClickListener { presenter.onSearchClick(etCode.text.toString()) }
         }
     }
 
     override fun showEvent(eventId: /*Event*/String) {
-        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(eventId, ABOUT_FROM_OTHER))
+        findNavController().navigate(
+            EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(
+                eventId,
+                ABOUT_FROM_OTHER
+            )
+        )
     }
 
     override fun showEventNotFoundError() {

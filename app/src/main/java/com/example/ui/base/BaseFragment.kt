@@ -50,15 +50,15 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         savedInstanceState: Bundle?
     ): View? {
 
-//        RxJavaPlugins.setErrorHandler { e ->
-//            if (e is UndeliverableException) {
-//                e.printStackTrace()
-//            } else {
-//                Thread.currentThread().also { thread ->
-//                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
-//                }
-//            }
-//        }
+        RxJavaPlugins.setErrorHandler { e ->
+            if (e is UndeliverableException) {
+                e.printStackTrace()
+            } else {
+                Thread.currentThread().also { thread ->
+                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+                }
+            }
+        }
 
         return inflater.inflate(layout(), container, false)
     }

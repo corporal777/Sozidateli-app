@@ -11,16 +11,17 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.QrAuthResponse
+import com.example.databinding.FragmentAuthWebsiteBinding
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.AuthBackground
-import kotlinx.android.synthetic.main.fragment_auth_website.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsiteContract.View {
+class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
+    AuthWebsiteContract.View {
 
     override val isLightStatus = false
 
@@ -45,18 +46,20 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
 
 
     override fun setEnterData(data: QrAuthResponse) {
-        tvDevice.text = data.mDevice
-        tvIPAddress.text = data.mIPAddress
-        tvTime.text = longToTime(data.mTimeStamp)
+        mBinding.apply {
+            tvDevice.text = data.mDevice
+            tvIPAddress.text = data.mIPAddress
+            tvTime.text = longToTime(data.mTimeStamp)
+        }
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        btnConfirm.setOnClickListener { mPresenter.onConfirmEnterToWebsiteClick() }
-        btnDoNotConfirm.setOnClickListener { mPresenter.onDoNotConfirmToEnterWebsiteClick() }
-
+        mBinding.apply {
+            btnConfirm.setOnClickListener { mPresenter.onConfirmEnterToWebsiteClick() }
+            btnDoNotConfirm.setOnClickListener { mPresenter.onDoNotConfirmToEnterWebsiteClick() }
+        }
     }
 
 
@@ -69,7 +72,7 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
 
     override fun showErrorEnterMessage() {
         val message = "Не удалось подтвердить вход"
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {  }
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback { }
     }
 
     override fun showEventList() {
@@ -81,19 +84,21 @@ class AuthWebsiteFragment : BaseFragment(), BackgroundImageFragment, AuthWebsite
     }
 
     override fun showContent() {
-        tvJoinMessage.isVisible = true
-        llInfo.isVisible = true
-        btnConfirm.isVisible = true
-        btnDoNotConfirm.isVisible = true
-
-
+        mBinding.apply {
+            tvJoinMessage.isVisible = true
+            llInfo.isVisible = true
+            btnConfirm.isVisible = true
+            btnDoNotConfirm.isVisible = true
+        }
     }
 
     override fun hideContent() {
-        tvJoinMessage.isVisible = false
-        llInfo.isVisible = false
-        btnConfirm.isVisible = false
-        btnDoNotConfirm.isVisible = false
+        mBinding.apply {
+            tvJoinMessage.isVisible = false
+            llInfo.isVisible = false
+            btnConfirm.isVisible = false
+            btnDoNotConfirm.isVisible = false
+        }
     }
 
 

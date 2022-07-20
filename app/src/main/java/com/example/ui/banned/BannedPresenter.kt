@@ -17,6 +17,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class BannedPresenter
@@ -26,6 +27,7 @@ class BannedPresenter
 ) : BasePresenter<BannedContract.View>(appData), BannedContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
 
     private var firstLaunch = true
+    private var mDy = 0
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.bannedList(mapOf(
@@ -38,6 +40,7 @@ class BannedPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         viewState.setItems(List(20) { null })
         compositeDisposable += Observable.create(pagination)
                 .performOnBackgroundOutOnMain()
@@ -50,8 +53,14 @@ class BannedPresenter
 
     override fun attachView(view: BannedContract.View?) {
         super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+//        if (firstLaunch) firstLaunch = false
+//        else pagination.invalidate()
+    }
+
+    fun changeScrollingOffset(value : Int){
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onUserClick(userChat: UserChat) {

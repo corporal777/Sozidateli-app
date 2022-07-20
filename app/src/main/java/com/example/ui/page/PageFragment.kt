@@ -5,27 +5,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Document
 import com.example.data.models.FileModel
+import com.example.databinding.FragmentPageBinding
 import com.example.holders.DocumentItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_page.*
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
-
-    override val title: String? = null
+class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: PagePresenter
@@ -43,34 +40,37 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
 
     private val args: PageFragmentArgs by navArgs()
 
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
-
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = groupAdapter
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+            }
+            scrollContainer.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                presenter.changeAppBarElevation(scrollY - oldScrollY)
+            })
         }
+
     }
 
     override fun setContent(
-            logo: String?,
-            contentTitle: String,
-            title: String?,
-            content: String?,
-            documents: List<FileModel>?
+        logo: String?,
+        contentTitle: String,
+        title: String?,
+        content: String?,
+        documents: List<FileModel>?
     ) {
-        toolbarContentActionBar.title = contentTitle
-
-        ivLogo.apply {
+        setToolbarTitle(contentTitle)
+        mBinding.ivLogo.apply {
             clipToOutline = true
             val visible = !logo.isNullOrEmpty()
             if (visible) Picasso.get().load(logo).into(this)
             isVisible = visible
         }
 
-        tvTitle.apply {
+        mBinding.tvTitle.apply {
             if (title.isNullOrBlank()) {
                 isVisible = false
             } else {
@@ -79,7 +79,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
             }
         }
 
-        tvInfo.apply {
+        mBinding.tvInfo.apply {
             if (content.isNullOrBlank()) {
                 isVisible = false
             } else {
@@ -89,7 +89,7 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         }
 
         groupAdapter.update(documents?.map { DocumentItem(it) { presenter.onDocumentClick(it) } }
-                ?: emptyList())
+            ?: emptyList())
     }
 
     override fun openLinkInBrowser(link: String) {
@@ -97,10 +97,6 @@ class PageFragment : BaseFragment(), PageContract.View, ToolbarFragment {
         startActivity(browserIntent)
     }
 
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
-    }
 
     override fun layout() = R.layout.fragment_page
 }

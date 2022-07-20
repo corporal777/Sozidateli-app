@@ -41,6 +41,7 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
 import java.io.*
+import java.lang.StringBuilder
 import java.util.*
 import javax.inject.Inject
 
@@ -82,7 +83,7 @@ class ChatPresenter
         EventBus.getDefault().register(this)
 
         userAvatar?.let { viewState.setUserAvatar(it) }
-        userName?.let { viewState.setTitle(it) }
+        userName?.let { viewState.setTitle(initUserName(it)) }
 
         subscribeToChatEvents()
 
@@ -242,7 +243,7 @@ class ChatPresenter
                         //val name = it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
                         if (userName != name) {
                             userName = name
-                            setTitle(name)
+                            setTitle(initUserName(name))
                         }
 
                         isChatHasMessages = it.binds?.lastUnreadMessage != null
@@ -703,5 +704,18 @@ class ChatPresenter
     companion object {
         private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 50
         private const val LAST_UNREAD_INDEX_INVALID = -1
+    }
+
+    private fun initUserName(name : String) : String{
+        var str = ""
+        str = if (name.length > 15){
+            StringBuilder(
+                name.substring(0, 15).replace("\n", " ")
+            ).append("...")
+                .toString()
+        }else {
+            name
+        }
+        return str
     }
 }

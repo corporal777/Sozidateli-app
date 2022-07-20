@@ -24,6 +24,11 @@ class PasswordConfirmPresenter
 
     lateinit var phone: String
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun onClickConfirmPassword(password: String) {
         compositeDisposable += userRepository.checkIfPasswordValid(password)
                 .performOnBackgroundOutOnMain()

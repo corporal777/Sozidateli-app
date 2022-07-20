@@ -82,6 +82,7 @@ class LoginPresenter
                     .withLoadingDialog(viewState)
                     .subscribeSimple(
                             onError = {
+                                it.printStackTrace()
                                 val hasApiError = (it as? ApiError)
                                         ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
 
@@ -110,6 +111,7 @@ class LoginPresenter
                     .withLoadingDialog(viewState)
                     .subscribeSimple(
                             onError = {
+                                it.printStackTrace()
                                 val hasApiError = (it as? ApiError)
                                         ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
 

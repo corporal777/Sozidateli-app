@@ -67,7 +67,7 @@ android {
         signingConfig signingConfigs.debug
 
         applicationVariants.all { variant ->
-            def buildType = variant.buildType.name + "-Frankenstein"
+            def buildType = variant.buildType.name + ""
             variant.outputs.all {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }

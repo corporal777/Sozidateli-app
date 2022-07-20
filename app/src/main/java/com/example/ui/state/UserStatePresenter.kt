@@ -14,7 +14,7 @@ class UserStatePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
+        viewState.setAppBarElevation(0f)
     }
 
     override fun attachView(view: UserStateContract.View?) {

@@ -258,16 +258,16 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
     }
 
     override fun scrollToDay(day: EventScheduleCalendarDay) {
-        var mPosition = 0
-        Handler().post(Runnable {
-            selectDay(day)
-            val item =
-                calendarSection.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
-            if (item != null) {
-                mPosition = calendarSection.getPosition(item)
-                calendarPager?.setCurrentItem(mPosition, true)
-            }
-        })
+//        var mPosition = 0
+//        Handler().post(Runnable {
+//            selectDay(day)
+//            val item =
+//                calendarSection.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
+//            if (item != null) {
+//                mPosition = calendarSection.getPosition(item)
+//                calendarPager?.setCurrentItem(mPosition, true)
+//            }
+//        })
     }
 
     private fun changeDayWhenScrollDown(day: EventScheduleCalendarDay) {

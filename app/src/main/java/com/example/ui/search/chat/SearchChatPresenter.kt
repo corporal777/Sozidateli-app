@@ -2,63 +2,131 @@ package com.example.ui.search.chat
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.EventNew
+import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
+import com.example.extensions.buildList
+import com.example.extensions.groupByNotNull
 import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
+import com.example.ui.base.BasePresenter
 import com.example.ui.search.user.AbstractSearchUserPresenter
 import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.PaginationList
+import com.example.util.pagination.applyErrorHandler
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.plusAssign
+import performOnBackgroundOutOnMain
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @InjectViewState
 class SearchChatPresenter
 @Inject constructor(
-        appData: AppData,
-        userRepository: UserRepository,
-        commonRepository: CommonRepository,
-        private val chatRepository: ChatRepository,
-        private val eventRepository: EventRepository
-) : AbstractSearchUserPresenter<SearchChatContract.View>(appData, userRepository, commonRepository, eventRepository), SearchChatContract.Presenter {
+    appData: AppData,
+    userRepository: UserRepository,
+    val commonRepository: CommonRepository
+) : BasePresenter<SearchChatContract.View>(appData), SearchChatContract.Presenter {
 
     private var isDataLoadWithFilter = false
+    private var filter = SearchFilter.UserNew()
+    private var mSearchText = ""
+    private lateinit var paginationList: PaginationList<UserDetail?>
+    private var mDy = 0
 
-    /*override val pagination = PaginationDataSourceFactory { limit, offset ->
-        val filter = buildFilter()
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        initData()
+        initInterest()
+    }
 
-        if (filter.isEmpty()) {
-            isDataLoadWithFilter = false
-            chatRepository.searchUser(limit, offset)
-        } else {
-            isDataLoadWithFilter = true
-            userRepository.usersList(limit, offset, filter)
+    override fun attachView(view: SearchChatContract.View?) {
+        super.attachView(view)
+        viewState.changeAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.changeAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    private fun initInterest() {
+        compositeDisposable += commonRepository.getInterests()
+            .map { interests ->
+                interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
+            }
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                this.filter.interests = it
+            }, {
+                it.printStackTrace()
+            })
+    }
+
+
+    override fun onUserClick(user: UserDetail) = viewState.showUser(user)
+    override fun onFilterClick() = viewState.showFilter(filter)
+    override fun onFilterApplyClick() = initData()
+    override fun onRefreshRequest() = paginationList.invalidate()
+    override fun onSearchTextChange(text: String) {
+        mSearchText = text
+        initData()
+    }
+
+    private fun initData() {
+        viewState.setUsersData(List(20) { null })
+        if (!::paginationList.isInitialized) {
+            paginationList = pagination.applyErrorHandler {
+                it.printStackTrace()
+            }
+                .buildList(enablePlaceholders = false)
         }
-    }*/
 
-    override fun onDataLoaded(data: List<UserDetail?>) {
-        if (isDataLoadWithFilter) {
-            super.onDataLoaded(data)
-        } else {
-            dispatchListUpdate(data)
+        compositeDisposable += Observable.create(paginationList)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (it.isNullOrEmpty()) {
+                    viewState.showEmptyDataPlaceholder()
+                } else {
+                    viewState.setUsersData(it)
+                    //dispatchListUpdate(it)
+                }
+            }
+    }
+
+    private val pagination = PaginationDataSourceFactory { limit, offset ->
+        val data = mutableMapOf<String, Any>().apply {
+            put(UserDetail.USER_LIMIT, limit)
+            put(UserDetail.USER_OFFSET, offset)
+            put(UserDetail.USER_BINDS, "userFavorite")
+            val address = filter.address
+            if (!address.isNullOrEmpty()) put(UserDetail.USER_ADDRESS_STREET, address)
+            val interest = filter.spec ?: filter.theme
+            if (interest != null) put(FILTER_INTEREST, interest)
+            if (mSearchText.isNotEmpty()) put(UserDetail.USER_SEARCH, mSearchText.trim())
+        }
+        userRepository.getUsers(data).doOnSuccess {
+            val uid = appData.getId()
+            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
         }
     }
 
-    private fun dispatchListUpdate(users: List<UserDetail?>) {
-        val favorites = mutableListOf<UserDetail>()
-        val chats = mutableListOf<UserDetail>()
-        val another = mutableListOf<UserDetail>()
-        users.forEach {
-            when {
-                it == null -> {
-                    // do nothing
-                }
-                it.binds?.userFavorite != null -> favorites.add(it)
-                //it.is_has_chat -> chats.add(it)
-                else -> another.add(it)
-            }
-        }
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
 
-        viewState.setItems(favorites, chats, another)
+    companion object {
+        private const val FILTER_CONTENT = "content"
+        private const val FILTER_NAME = "user_fio"
+        private const val FILTER_ADDRESS = "user_address"
+        private const val FILTER_EMAIL = "user_email"
+        private const val FILTER_PHONE = "user_phone"
+        private const val FILTER_FAVORITES = "is_in_favorite"
+        private const val FILTER_INTEREST = "interests"
+        private const val FILTER_AGE = "user_age"
+
+        private const val SEARCH_AGE_MIN = 14
+        private const val SEARCH_AGE_MAX = 150
     }
 }

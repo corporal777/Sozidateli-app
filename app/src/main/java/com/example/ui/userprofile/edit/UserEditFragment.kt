@@ -27,7 +27,6 @@ import com.example.data.models.user.User
 import com.example.extensions.findGroupBy
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
@@ -48,15 +47,13 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment {
+class UserEditFragment : BaseFragment(), UserEditContract.View {
 
     private lateinit var dialog: AddPhoneEmailDialog
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
     private var mainInfoFiles: List<FileModel>? = null
-
-    override val title: String? = null
 
     private lateinit var data: ProfileContactsEditItem
 
@@ -674,12 +671,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View, ToolbarFragment 
     override fun setAdditionalFilesTitle() = setTitle(R.string.profile_files_title)
 
     private fun setTitle(@StringRes titleRes: Int) {
-        toolbarContentActionBar.setTitle(titleRes)
-    }
-
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-        this.toolbarContentActionBar = toolbarContentActionBar
+        //setToolbarTitle(titleRes)
     }
 
     override fun navigateUp() {

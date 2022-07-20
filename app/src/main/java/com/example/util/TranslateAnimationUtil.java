@@ -34,21 +34,17 @@ public class TranslateAnimationUtil implements View.OnTouchListener {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.e("DISTANCE", distanceY + "");
-            if (distanceY > 0) {
-
-                scrollingState.onHideView();
-            } else {
-                scrollingState.onShowView();
-            }
+            scrollingState.onScrollingOffset(distanceY);
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
-
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
     }
 
     public interface OnScrollingState{
-        void onShowView();
-        void onHideView();
+        void onScrollingOffset(float dy);
     }
 }

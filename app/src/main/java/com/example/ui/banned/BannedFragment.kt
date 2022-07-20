@@ -7,25 +7,25 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.databinding.LayoutListBinding
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
-
-    override val title: CharSequence
-        get() = getString(R.string.profile_banned)
+class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: BannedPresenter
+
+    var mDy = 0
 
     @Inject
     lateinit var presenterProvider: Provider<BannedPresenter>
@@ -45,11 +45,18 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = this@BannedFragment.adapter
-        }
 
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        setToolbarTitle(getString(R.string.profile_banned))
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = this@BannedFragment.adapter
+                onScrolled { dx, dy ->
+                    presenter.changeScrollingOffset(dy)
+                }
+            }
+
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        }
     }
 
     override fun setItems(userChats: List<UserChat?>) {
@@ -59,15 +66,8 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             adapter.update(userChats.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
-                        /*it.id,
-                        it.user.fullName,
-                        it.user.user_city,
-                        it.user.user_avatar,
-                        { presenter.onUserClick(it) },
-                        UserSubscribeButton.Action.UNBLOCK,
-                        { presenter.onUnblockLick(it) }*/
                         it.id,
-                        it.user.fullName,
+                        it.user.nameLastName,
                         it.user.address?.getShortAddress()/*user_city*/,
                         it.user.image.uri/*user_avatar*/,
                         { presenter.onUserClick(it) },
@@ -77,12 +77,13 @@ class BannedFragment : BaseFragment(), BannedContract.View, ToolbarFragment {
             })
         }
 
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun openUserInfo(userId: String) {
         findNavController().navigate(BannedFragmentDirections.bannedFragmentToUserFragment(userId))
     }
+
 
     override fun layout() = R.layout.layout_list
 }

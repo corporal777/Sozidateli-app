@@ -29,6 +29,7 @@ class OrganizationsPresenter
 ) : BasePresenter<OrganizationsContract.View>(appData), OrganizationsContract.Presenter {
 
     lateinit var filter: OrganizationsFilter
+    private var mDy = 0
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         when (filter) {
@@ -59,6 +60,7 @@ class OrganizationsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         when (filter) {
             OrganizationsFilter.FAVORITES -> viewState.setFavoritesHeader()
             OrganizationsFilter.NONE -> viewState.setNoFilterHeader()
@@ -94,8 +96,14 @@ class OrganizationsPresenter
 
     override fun attachView(view: OrganizationsContract.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
         if (firstLaunch) firstLaunch = false
         else pagination.invalidate()
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {

@@ -86,10 +86,12 @@
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/layout_inapp" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/layout_inapp" />
 
     <FrameLayout
-        android:id="@+id/flLoading"
+        android:id="@+id/fl_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
@@ -106,7 +108,7 @@
 
 
         <LinearLayout
-            android:id="@+id/progressViewContainer"
+            android:id="@+id/progress_view_container"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
@@ -126,7 +128,7 @@
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/errorContainer"
+        android:id="@+id/error_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
@@ -139,7 +141,7 @@
         tools:visibility="visible">
 
         <TextView
-            android:id="@+id/tvErrorMessage"
+            android:id="@+id/tv_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -149,11 +151,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibErrorClose"
+            app:layout_constraintTop_toBottomOf="@+id/ib_error_close"
             tools:text="@string/request_execution_error" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ibErrorClose"
+            android:id="@+id/ib_error_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -166,7 +168,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/navBarContainer"
+        android:id="@+id/nav_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
@@ -176,11 +178,11 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#C6C6C8"
-            app:layout_constraintBottom_toTopOf="@id/mainNavBar"
+            app:layout_constraintBottom_toTopOf="@id/main_nav_bar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/mainNavBar"
+            android:id="@+id/main_nav_bar"
             style="@style/MainBottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

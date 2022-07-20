@@ -22,6 +22,7 @@ class PlaceholderItem(
         Type.USER -> R.layout.item_user_placeholder
         Type.CHAT_LIST -> R.layout.item_user_chat_placeholder
         Type.NOTIFICATION -> R.layout.item_notification_placeholder
+        Type.SESSIONS -> R.layout.item_sessions_placeholder
     }
 
     enum class Type {
@@ -33,6 +34,7 @@ class PlaceholderItem(
         SEARCH_EVENT,
         USER,
         CHAT_LIST,
-        NOTIFICATION
+        NOTIFICATION,
+        SESSIONS
     }
 }

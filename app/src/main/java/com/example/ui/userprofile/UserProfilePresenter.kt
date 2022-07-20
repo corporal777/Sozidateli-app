@@ -39,6 +39,11 @@ class UserProfilePresenter @Inject constructor(
         viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
     }
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
     override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
 

@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import com.example.databinding.ActivityMainBinding
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.view.*
@@ -14,11 +15,14 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     private var countVisibleLoading = 0
+    lateinit var mBinding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(layout())
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        //setContentView(layout())
+        setContentView(mBinding.root)
         getLoadingView().setOnTouchListener { _, _ -> return@setOnTouchListener true }
     }
 

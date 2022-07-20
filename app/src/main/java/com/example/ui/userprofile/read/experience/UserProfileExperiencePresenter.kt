@@ -10,5 +10,17 @@ class UserProfileExperiencePresenter @Inject constructor(
         appData: AppData
 ) : BaseUserProfilePresenter<UserProfileExperienceContract.View>(appData), UserProfileExperienceContract.Presenter {
 
+    private var mDy = 0
+
     override fun onEditClick() = viewState.showEdit()
+
+    override fun attachView(view: UserProfileExperienceContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+    }
 }

@@ -36,6 +36,9 @@ interface ProfileContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSettings()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSessions()
+
         @StateStrategyType(SkipStrategy::class)
         fun emailSuccess()
 
@@ -65,6 +68,7 @@ interface ProfileContract {
         fun onProfileClick()
         fun onFavoritesClick()
         fun onEventsClick()
+        fun onSessionsClick()
         fun onAboutApplicationClick()
         fun onBannedClick()
         fun onSupportClick()

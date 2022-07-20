@@ -2,32 +2,36 @@ package com.example.ui.notification
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
+import com.example.databinding.FragmentNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarFragment {
+class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
+    NotificationContract.View, SimpleTitleToolbar {
 
-    override val title: CharSequence? = null
     var isCanceled = false
 
     @InjectPresenter
@@ -48,47 +52,58 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
         true
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setToolbarTitle(getString(R.string.notification_label))
+        mBinding.nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            presenter.changeAppBarElevation(scrollY - oldScrollY)
+        })
+    }
+
     override fun setData(notification: Notification) {
         Log.e("NOTE", notification.toString())
+        mBinding.apply {
+            tvDate.apply {
+                val parsedDate = notification.date.parseAndFormat(
+                    defaultServerDateTimeFormatter,
+                    defaultDateTimeFormatter
+                )
+                text = parsedDate
+            }
 
-        tvDate.apply {
-            val parsedDate = notification.date.parseAndFormat(
-                defaultServerDateTimeFormatter,
-                defaultDateTimeFormatter
-            )
-            text = parsedDate
-        }
-
-        tvMessage.apply {
-            text = notification.message?.parseAsHtml()
-            BetterLinkMovementMethod.linkifyHtml(this)
-                .setOnLinkClickListener { _, url ->
-                    if (url.contains("https") || url.contains("http")) {
-                        val i = Intent(Intent.ACTION_VIEW)
-                        i.data = Uri.parse(url)
-                        startActivity(i)
-                    } else if (url.contains("organization")) {
-                        val organizationId = url.replace("organization", "").replace("/", "")
-                        findNavController().navigate(
-                            NotificationFragmentDirections.notificationToOrganizationFragment(
-                                organizationId
+            tvMessage.apply {
+                text = notification.message?.parseAsHtml()
+                BetterLinkMovementMethod.linkifyHtml(this)
+                    .setOnLinkClickListener { _, url ->
+                        if (url.contains("https") || url.contains("http")) {
+                            val i = Intent(Intent.ACTION_VIEW)
+                            i.data = Uri.parse(url)
+                            startActivity(i)
+                        } else if (url.contains("organization")) {
+                            val organizationId = url.replace("organization", "").replace("/", "")
+                            findNavController().navigate(
+                                NotificationFragmentDirections.notificationToOrganizationFragment(
+                                    organizationId
+                                )
                             )
-                        )
-                        Log.INFO
-                    } else if (url.contains("event")) {
-                        val eventId = url.replace("event", "").replace("/", "")
-                        findNavController().navigate(
-                            NotificationFragmentDirections.notificationToAboutEventFragment(
-                                eventId,
-                                ABOUT_FROM_OTHER
+                            Log.INFO
+                        } else if (url.contains("event")) {
+                            val eventId = url.replace("event", "").replace("/", "")
+                            findNavController().navigate(
+                                NotificationFragmentDirections.notificationToAboutEventFragment(
+                                    eventId,
+                                    ABOUT_FROM_OTHER
+                                )
                             )
-                        )
-                    } else {
-                        Log.INFO
+                        } else {
+                            Log.INFO
+                        }
+                        true
                     }
-                    true
-                }
+            }
         }
+
+
 
         val titleRes: Int
         var actionTextRes: Int? = null
@@ -157,7 +172,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
             }
         }
 
-        tvTitle.apply {
+        mBinding.tvTitle.apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
                 text = context.resources.getString(
                     R.string.notification_event_title,
@@ -181,17 +196,17 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
             }
         }
 
-        tvActionText.apply {
+        mBinding.tvActionText.apply {
             isVisible = actionTextRes != null
             text = actionTextRes?.let { getString(it) }
         }
 
-        btnRate.apply {
+        mBinding.btnRate.apply {
             isVisible = canRate
             setOnClickListener { presenter.onNotificationRateClick() }
         }
 
-        btnAccept.apply {
+        mBinding.btnAccept.apply {
             setOnClickListener {
                 isAccepted = true
                 presenter.onNotificationAcceptClick()
@@ -200,7 +215,7 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 //            //isVisible = canAccept
         }
 
-        btnCancel.apply {
+        mBinding.btnCancel.apply {
             //isVisible = canAccept
             setOnClickListener {
                 if (isAccepted)
@@ -244,23 +259,27 @@ class NotificationFragment : BaseFragment(), NotificationContract.View, ToolbarF
 //            errors
 //        ).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
 
-        btnAccept.enableOrDisableButton(true)
+        mBinding.btnAccept.enableOrDisableButton(true)
         GetMaxStateDialog(requireContext())
             .setSelectCallback { findNavController().navigate(R.id.userStateFragment) }
     }
 
     override fun showSuccessAccepted() {
-        btnAccept.enableOrDisableButton(false)
-        btnCancel.enableOrDisableButton(true)
-        btnAccept.text = getString(R.string.notifications_state_accepted)
-        btnCancel.text = getString(R.string.notifications_cancel)
+        mBinding.apply {
+            btnAccept.enableOrDisableButton(false)
+            btnCancel.enableOrDisableButton(true)
+            btnAccept.text = getString(R.string.notifications_state_accepted)
+            btnCancel.text = getString(R.string.notifications_cancel)
+        }
     }
 
     override fun showSuccessCanceled() {
-        btnCancel.enableOrDisableButton(false)
-        btnAccept.enableOrDisableButton(true)
-        btnCancel.text = getString(R.string.notifications_state_cancelled)
-        btnAccept.text = getString(R.string.notifications_accept)
+        mBinding.apply {
+            btnCancel.enableOrDisableButton(false)
+            btnAccept.enableOrDisableButton(true)
+            btnCancel.text = getString(R.string.notifications_state_cancelled)
+            btnAccept.text = getString(R.string.notifications_accept)
+        }
     }
 
     override fun showRating(eventId: String) {

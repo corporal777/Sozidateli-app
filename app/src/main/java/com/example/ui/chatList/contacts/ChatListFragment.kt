@@ -1,10 +1,7 @@
 package com.example.ui.chatList.contacts
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +11,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
-import com.example.util.TranslateAnimationUtil
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

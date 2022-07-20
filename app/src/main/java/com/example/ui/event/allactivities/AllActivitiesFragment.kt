@@ -8,13 +8,15 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
-import com.example.extensions.*
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.endOfDay
+import com.example.extensions.findItemBy
+import com.example.extensions.startOfDay
 import com.example.holders.DayAllHeaderItem
 import com.example.holders.DayHeaderItem
-import com.example.ui.subevent.items.SubEventItem
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.subevent.SubEventFragmentArgs
+import com.example.ui.subevent.items.SubEventItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_activitys.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AllActivitiesFragment: BaseFragment(), AllActivitiesContract.View, ToolbarFragment {
+class AllActivitiesFragment: BaseFragment(), AllActivitiesContract.View {
 
     @InjectPresenter
     lateinit var presenter: AllActivitiesPresenter
@@ -136,6 +138,4 @@ class AllActivitiesFragment: BaseFragment(), AllActivitiesContract.View, Toolbar
     fun getEmptyDayPlaceholderText(): String = getString(R.string.schedule_my_empty_day_placeholder_title)
     fun getEmptyDayPlaceholderDescription(): String? = getString(R.string.schedule_my_empty_day_placeholder_description)
 
-    override val title: CharSequence?
-        get() = getString(R.string.all_activities)
 }

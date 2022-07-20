@@ -24,17 +24,15 @@ import com.example.R
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
+import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.abs
 
 class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View, SimpleTitleToolbar{
 
@@ -43,7 +41,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
-    private var mDy: Int = 0
 
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
@@ -60,14 +57,12 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarTitle(getString(R.string.profile_label))
         mBinding.apply {
             profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                mDy += scrollY - oldScrollY
-                val mElevation = abs(mDy / 10f)
+                presenter.changeScrollingOffset(scrollY - oldScrollY)
 //                appBarLayout.apply {
 //                    elevation = if (mElevation <= 10f) {
 //                        mElevation
@@ -75,29 +70,30 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 //                        10f
 //                    }
 //                }
-                setAppBarElevation(mElevation)
             })
 
             ivAvatar.apply {
                 clipToOutline = true
             }
-            ivBack.setOnClickListener {
-                findNavController().navigateUp()
+
+
+            tvStates.setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+            }
+            tvBanned.setOnClickListener { presenter.onBannedClick() }
+            tvSettings.setOnClickListener { presenter.onSettingsClick() }
+            tvSupport.setOnClickListener { presenter.onSupportClick() }
+            tvRate.setOnClickListener { presenter.onRateClick() }
+            tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
+            tvLogout.setOnClickListener { presenter.onLogoutClick() }
+            tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
+            tvSessions.setOnClickListener {
+                presenter.onSessionsClick()
             }
 
             tvEditProfile.setOnClickListener { presenter.onProfileClick() }
             tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
             tvEvents.setOnClickListener { presenter.onEventsClick() }
-            tvBanned.setOnClickListener { presenter.onBannedClick() }
-            tvSupport.setOnClickListener { presenter.onSupportClick() }
-            tvRate.setOnClickListener { presenter.onRateClick() }
-            tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
-            tvLogout.setOnClickListener { presenter.onLogoutClick() }
-            tvSettings.setOnClickListener { presenter.onSettingsClick() }
-            tvStates.setOnClickListener {
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-            }
-            tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
         }
 
 
@@ -250,6 +246,10 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     override fun showSettings() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserProfileSettingsFragment())
+    }
+
+    override fun showSessions() {
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserSessionsFragment())
     }
 
     override fun openSupportEmail(uid: String) {

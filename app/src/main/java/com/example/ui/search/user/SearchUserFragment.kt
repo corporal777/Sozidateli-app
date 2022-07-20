@@ -2,6 +2,7 @@ package com.example.ui.search.user
 
 import android.os.Bundle
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.data.models.UserDetail

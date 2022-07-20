@@ -51,6 +51,7 @@ class PhoneConfirmPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         viewState.setPhone(phone)
         compositeDisposable += timerCompositeDisposable
         compositeDisposable += smsCompositeDisposable
