@@ -218,15 +218,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
             val fr = navHostFragment.childFragmentManager.fragments[0]
             val navContr = findNavController(R.id.navHostFragment)
-            if (fr is TagsFragment) {
+            if (fr is ProfileFragment || fr is MyEventsFragmentNew || fr is NotificationsFragment || fr is ChatListTabsFragment) {
+                navContr.popBackStack(R.id.recommendations_fragment, false)
+            } else if (fr is TagsFragment) {
                 fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
-
             } else if (fr is AllActivitiesFragment) {
                 fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
                 navContr.navigateUp()
             } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                 finish()
-            } else navContr.navigateUp()
+            } else {
+                navContr.navigateUp()
+            }
         }
     }
 
@@ -282,7 +285,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             })
         }
-
+        mBinding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 

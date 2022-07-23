@@ -41,7 +41,10 @@ data class UserDetail(
         @SerializedName("academicDegrees")
         var academicDegrees: List<EducationLevel>? = null,
         @SerializedName("isCurrentUser")
-        var isCurrentUser: Boolean = false
+        var isCurrentUser: Boolean = false,
+        @SerializedName("blockedNotifications")
+        val blockedNotifications : BlockedNotifications? = null
+
 ): Parcelable {
 
         val nameLastName: String
@@ -84,6 +87,11 @@ data class UserDetail(
                 const val USER_MIDDLE_NAME = "middleName"
                 const val USER_PHONE = "phone"
                 const val USER_STATE = "state"
+
+                const val BLOCK_EVENT = "blockEvent"
+                const val BLOCK_ORG = "blockOrg"
+                const val BLOCK_PROJECT = "blockPGRF"
+
                 const val USER_GENDER = "gender"
                 const val USER_BIRTHDAY = "birthday"
                 const val USER_NOTES = "notes"
@@ -397,6 +405,17 @@ data class ToggleStringModel(
         var value: String? = null,
         @SerializedName("showInProfile")
         var showInProfile: Boolean? = null
+): Parcelable
+
+
+@Parcelize
+data class BlockedNotifications(
+        @SerializedName("event")
+        var event : Boolean,
+        @SerializedName("projects")
+        var projects : Boolean,
+        @SerializedName("organizations")
+        var organizations : Boolean
 ): Parcelable
 
 @Parcelize

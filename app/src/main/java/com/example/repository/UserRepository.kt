@@ -59,7 +59,7 @@ interface UserRepository {
     fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
     fun sendPhoneCode(id: Int, phone: String): Completable
 
-    fun getAllUsersSessions(): Maybe<UserSessions>
+    fun getAllUsersSessions(deviceId: String): Maybe<List<UserSessionModel>>
     fun getAllUsersSessionsFromCurrentDevice(deviceId : String): Maybe<UserSessions>
     fun killAllUsersOtherSessions(): Completable
     fun killUsersDeviceSession(id : Int): Completable

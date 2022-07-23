@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -22,6 +23,7 @@ import com.example.extensions.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
 import com.google.android.material.textfield.TextInputLayout
@@ -40,6 +42,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     override fun layout() = R.layout.fragment_user_profile_settings
     private var isConfirmed = false
 
+    private lateinit var mUser : UserDetail
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -59,7 +62,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
             })
 
-            btnPhoneEdit.setOnClickListener {
+            tvEditPhone.setOnClickListener {
                 dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
                     .setSelectCallback {
                         if (it.type == RegisterDataType.CHANGE_PHONE) {
@@ -72,13 +75,54 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                         }
                     }
             }
-            btnPasswordEdit.setOnClickListener(presenter::onChangePasswordClick)
+            tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
 
             btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
-            scPrivacy.setOnCheckedChangeListener { _, b ->
+            scPrivacyProfile.setOnCheckedChangeListener { _, b ->
                 presenter.onChangePrivacyConfirm(b)
             }
-            btnEmailEdit.setOnClickListener(presenter::onChangeEmailClick)
+
+            ivBlockProject.setOnClickListener {
+                if (mUser.blockedNotifications?.projects != true){
+                    TitleMessageDialog(
+                        requireContext(),
+                        getString(R.string.block_notification_project_title),
+                        getString(R.string.block_notification_project_message)
+                    ).setSelectCallback { state ->
+                        presenter.onBlockProjectNotificationsClick(state)
+                    }
+                }else {
+                    presenter.onBlockProjectNotificationsClick(false)
+                }
+            }
+            ivBlockEvent.setOnClickListener {
+                if (mUser.blockedNotifications?.event != true){
+                    TitleMessageDialog(
+                        requireContext(),
+                        getString(R.string.block_notification_event_title),
+                        getString(R.string.block_notification_event_message)
+                    ).setSelectCallback { state ->
+                        presenter.onBlockEventNotificationsClick(state)
+                    }
+                }else {
+                    presenter.onBlockEventNotificationsClick(false)
+                }
+            }
+            ivBlockOrg.setOnClickListener {
+                if (mUser.blockedNotifications?.organizations != true){
+                    TitleMessageDialog(
+                        requireContext(),
+                        getString(R.string.block_notification_org_title),
+                        getString(R.string.block_notification_org_message)
+                    ).setSelectCallback { state ->
+                        presenter.onBlockOrganizationNotificationsClick(state)
+                    }
+                }else {
+                    presenter.onBlockOrganizationNotificationsClick(false)
+                }
+            }
+//
+            tvEditEmail.setOnClickListener(presenter::onChangeEmailClick)
         }
 
     }
@@ -126,14 +170,15 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
+        mUser = user
         mBinding.apply {
-            tilSurname.initNameInput(user.lastName)
-            tilName.initNameInput(user.name)
-            tilMiddleName.initNameInput(user.getMiddleName())
-            scNoMiddleName.apply {
-                isChecked = user.middleName?.absent ?: false
-                isEnabled = false
-            }
+//            tilSurname.initNameInput(user.lastName)
+//            tilName.initNameInput(user.name)
+//            tilMiddleName.initNameInput(user.getMiddleName())
+//            scNoMiddleName.apply {
+//                isChecked = user.middleName?.absent ?: false
+//                isEnabled = false
+//            }
 
             isConfirmed = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed == true
 
@@ -147,7 +192,22 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             tvPhoneMobile.text = phone
 
             tvEmail.text = user.email?.onConfirmation ?: user.email?.value
-            scPrivacy.isChecked = user.state?.isHidden ?: false
+            scPrivacyProfile.isChecked = user.state?.isHidden ?: false
+
+            //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
+            //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
+//            if (user.blockedNotifications?.organizations == true){
+//                ivBlockOrg.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.main_brown_color_new)
+//            }else {
+//                ivBlockOrg.imageTintList = null
+//            }
+
+            //scBlockNoteProjects.isChecked = user.blockedNotifications?.projects ?: false
+            ivBlockEvent.setImage(user.blockedNotifications?.event?:false)
+            ivBlockProject.setImage(user.blockedNotifications?.projects?:false)
+            ivBlockOrg.setImage(user.blockedNotifications?.organizations?:false)
+
+
             ivInfo.isVisible =
                 !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
             ivInfo.setOnClickListener {

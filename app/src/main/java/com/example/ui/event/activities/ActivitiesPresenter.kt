@@ -88,7 +88,6 @@ class ActivitiesPresenter
     }
 
 
-    //private val onLoadingComplete: () -> Unit = {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun invalidateData() {
         viewState.apply {
@@ -252,22 +251,45 @@ class ActivitiesPresenter
 
         val day = currentDay ?: return daySubEventsError()
         val selectedTags = tags.filter { it.isSelected }
-        var mFilteredMap = mSubEventsMap
-        val canShow =
-            userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+        var mFilteredMap = mutableMapOf<String, LinkedList<EventActivityModel>>()
 
-        viewState.apply {
-            Log.e("ActivitiesFragment", "Events: " + mFilteredMap.size)
-            setSubEvents(canShow, day, mFilteredMap, selectedTags)
+        compositeDisposable += Completable.fromAction {
+            if (selectedTags.isNullOrEmpty()) {
+                mFilteredMap = mSubEventsMap
+            }else {
+                mSubEventsMap.forEach {
+                    val mList = LinkedList<EventActivityModel>()
+                    it.value.forEach { event ->
+                        mList.add(event)
+                        val emptyEvent = EventActivityModel(hide = true, mNoEvent = true)
+                        selectedTags.forEach { tag ->
+                            if (!filterTagsNew(event, tag)) {
+                                mList.remove(event)
+                                if (!mList.contains(emptyEvent) && mList.isNullOrEmpty()) {
+                                    mList.add(emptyEvent)
+                                }
+                            }
+                        }
+                    }
+                    mFilteredMap[it.key] = mList
+                }
+
+            }
         }
-    }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val canShow =
+                    userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+
+                viewState.apply {
+                    Log.e("ActivitiesFragment", "Events: " + mFilteredMap.size)
+                    setSubEvents(canShow, day, mFilteredMap, selectedTags)
+                }
+            }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onDayChanged(date: Long) {
-//        val currentDayDate = currentDay?.millis ?: return
-//        if (date.calendar().isSameDay(currentDayDate.calendar())) invalidateDay()
     }
+
 
     override fun onSubEventClick(subEvent: EventActivityModel) {
         checkInternetAndRun {
@@ -401,20 +423,8 @@ class ActivitiesPresenter
         return mDay
     }
 
-    fun getTagsList() = userEvent.activity.groups.plus(userEvent.activity.tags)
-        .map { NewTags(it.id, it.name, it.isSelected) }
-
-
-    fun getFirstDay(): EventScheduleCalendarDay {
-        return mFirstDay
-    }
-
     fun getLastDay(): EventScheduleCalendarDay {
         return mLastDay
-    }
-
-    fun getCurrentDay(day: EventScheduleCalendarDay): EventScheduleCalendarDay {
-        return day
     }
 
 }

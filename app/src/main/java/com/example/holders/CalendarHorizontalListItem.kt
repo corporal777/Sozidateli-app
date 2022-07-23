@@ -17,8 +17,6 @@ class CalendarHorizontalListItem(
 ) : HorizontalListItemNew<GroupieViewHolder>() {
 
 
-    val compositeDisposable = CompositeDisposable()
-
     private val items = days.map { day ->
         DayItem(day, onDaySelect)
     }
@@ -39,24 +37,6 @@ class CalendarHorizontalListItem(
         deselectAllExcept(day)
     }
 
-    fun selectFirstDay(){
-        val day = items.first()
-        if (!day.isSelected){
-            day.isSelected = true
-            day.notifyChanged()
-        }
-        deselectAllExcept(day.day)
-    }
-    fun deselectAllExcept(except: EventScheduleCalendarDay) {
-        items.find { it.day != except && it.isSelected }?.let {
-            if (it.isSelected) {
-                it.isSelected = false
-                it.notifyChanged()
-            }
-        }
-    }
-
-
     fun changeDay(day: EventScheduleCalendarDay): Boolean {
         var isDay = false
         items.find { it.day.millis == day.millis }?.let {
@@ -65,24 +45,31 @@ class CalendarHorizontalListItem(
         return isDay
     }
 
-    fun scrollToDay(day: EventScheduleCalendarDay){
-        var position = 0
-        compositeDisposable += Completable.fromAction {
-            position = items.indexOfFirst { it.day == day }
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribe {
-                val item = items.get(position)
-                deselectAllExcept(day)
-                if (!item.isSelected) {
-                    item.isSelected = true
-                    item.notifyChanged()
-                }
-                smoothScrollToPosition(position)
-            }
+    fun getFirstItem(): EventScheduleCalendarDay {
+        return items[0].day
     }
 
+    fun scrollToDay(day: EventScheduleCalendarDay): Boolean {
+        var isDay = false
+        items.find { it.day == day }?.let {
+            isDay = true
 
+        }
+//        val position = items.indexOfFirst { it.day == day }
+//
+//        if (position == RecyclerView.NO_POSITION) return
+//        scrollToPositionWithOffset(position, 0)
+        return isDay
+    }
+
+    fun deselectAllExcept(except: EventScheduleCalendarDay) {
+        items.forEach {
+            if (it.day != except && it.isSelected) {
+                it.isSelected = false
+                it.notifyChanged()
+            }
+        }
+    }
 
 
     fun selectDayNew(day: EventScheduleCalendarDay): Boolean {

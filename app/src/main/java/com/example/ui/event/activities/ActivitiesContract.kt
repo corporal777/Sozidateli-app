@@ -55,7 +55,6 @@ interface ActivitiesContract {
     interface Presenter : BaseContract.Presenter {
         fun onDaySelected(day: EventScheduleCalendarDay)
         fun onTagSelectedListChange()
-        fun onDayChanged(date: Long)
 
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onAddToScheduleClick(subEvent: EventActivityModel)

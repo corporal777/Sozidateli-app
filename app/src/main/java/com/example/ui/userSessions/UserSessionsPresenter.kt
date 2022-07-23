@@ -31,31 +31,31 @@ class UserSessionsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.showSessionsLoadingPlaceholder()
         getUserSessionsData()
     }
 
     private fun getUserSessionsData() {
-        viewState.setOtherSessions(List(20) { null })
-        compositeDisposable += userRepository.getAllUsersSessions()
+        compositeDisposable += userRepository.getAllUsersSessions(deviceId)
             .doOnSuccess {
-                allOtherSessions.addAll(it.userSessions)
-                if (it.userSessions.size > 3) {
+                allOtherSessions.addAll(it)
+                if (it.size > 3) {
                     for (i in 0 until 3) {
-                        shortAllOtherSessions.add(it.userSessions[i])
+                        shortAllOtherSessions.add(it[i])
                     }
                 }
             }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple { allSessions ->
+            .subscribeSimple { _ ->
                 compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(deviceId)
                     .performOnBackgroundOutOnMain()
                     .subscribeSimple { currentSessions ->
                         viewState.setCurrentSession(currentSessions.userSessions[0])
-                        if (allSessions.userSessions.size > 3) {
+                        if (allOtherSessions.size > 3) {
                             viewState.showSessionsActionButton(actionType)
                             viewState.setOtherSessions(shortAllOtherSessions)
                         }else {
-                            viewState.setOtherSessions(allSessions.userSessions)
+                            viewState.setOtherSessions(allOtherSessions)
                         }
                     }
             }
@@ -63,22 +63,25 @@ class UserSessionsPresenter
 
     override fun killAllSessionsClick() {
         compositeDisposable += userRepository.killAllUsersOtherSessions()
-            .andThen(userRepository.getAllUsersSessions())
+            .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.hideSessionsActionButton()
-                viewState.updateOtherSessions(it.userSessions)
+                viewState.setOtherSessions(it)
             }
     }
 
     override fun killUsersDeviceSessionClick(id: Int) {
         compositeDisposable += userRepository.killUsersDeviceSession(id)
-            .andThen(userRepository.getAllUsersSessions())
+            .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                viewState.updateOtherSessions(it.userSessions)
+                viewState.setOtherSessions(it)
+                if (it.size <= 3){
+                    viewState.hideSessionsActionButton()
+                }
             }
     }
 
@@ -89,9 +92,9 @@ class UserSessionsPresenter
     override fun showOrHideSessionsHistoryClick(action: SessionsAction) {
         viewState.apply {
             if (action == SessionsAction.SHOWN) {
-                updateOtherSessions(allOtherSessions)
+                setOtherSessions(allOtherSessions)
             } else {
-                updateOtherSessions(shortAllOtherSessions)
+                setOtherSessions(shortAllOtherSessions)
             }
         }
     }

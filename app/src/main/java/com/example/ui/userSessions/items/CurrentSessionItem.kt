@@ -9,7 +9,8 @@ import setOnClickListener
 
 class CurrentSessionItem(
     val session: UserSessionModel,
-    val onKillSessions: () -> Unit
+    val onKillSessions: () -> Unit,
+    val onShowSession: (session : UserSessionModel) -> Unit
 ) : BindableItem<ItemCurrentSessionBinding>() {
 
 
@@ -21,6 +22,9 @@ class CurrentSessionItem(
             decorDeviceIcon(ivDeviceIcon, session.device)
             btnKillSessions.setOnClickListener {
                 onKillSessions.invoke()
+            }
+            cardSession.setOnClickListener {
+                onShowSession(session)
             }
         }
     }

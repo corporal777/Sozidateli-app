@@ -18,19 +18,21 @@ interface MyScheduleEventsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setHeaderAndCalendar(
+        fun setHeaderCalendar(days: List<EventScheduleCalendarDay>, )
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setMonthCalendar(
             subEventDays: List<CalendarDay>,
-            month: String,
-            days: List<EventScheduleCalendarDay>,
+            month : String,
             firstDate: CalendarDay?,
             lastDate : CalendarDay?
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContent(data: List<EventNew?>)
+        fun setSearchContent()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContentNew(data: List<MyScheduleEventsData?>)
+        fun setContent(data: List<MyScheduleEventsData?>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(eventId: String)

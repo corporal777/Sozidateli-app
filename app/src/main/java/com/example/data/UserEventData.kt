@@ -162,6 +162,31 @@ class UserEventData(
         } as ArrayList<EventScheduleCalendarDay>
     }
 
+    fun createCalendarDaysForSchedule(dates: List<Long>, list : List<EventActivityModel>): ArrayList<EventScheduleCalendarDay> {
+        val sortedDates = dates.sorted()
+        val allDates = sortedDates.map { day ->
+            val cal = day.calendar()
+            EventScheduleCalendarDay(
+                day,
+                cal.get(Calendar.WEEK_OF_MONTH),
+                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+                    ?: "",
+                cal.get(Calendar.DAY_OF_MONTH),
+                false
+            )
+        } as ArrayList<EventScheduleCalendarDay>
+        allDates.forEachIndexed { index, day ->
+            list.forEach { eventDay ->
+                val eventDate = defaultServerDateFormatter.parse(eventDay.holdingDate?.from).time
+                if (eventDate == day.millis) {
+                    allDates[index].hasEvents = true
+                }
+            }
+        }
+
+        return allDates
+    }
+
     fun clear() {
         days = null
         userEvent = null

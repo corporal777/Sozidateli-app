@@ -39,18 +39,18 @@ class CalendarItem(val date: EventScheduleCalendarDay) : BindableItem<CustomCale
     override fun bind(viewBinding: CustomCalendarItemBinding, position: Int) {
         viewBinding.apply {
             calendarList.adapter = groupAdapter
-            monthLabel.text =
-                getMonthName(mCalendar.get(Calendar.MONTH)) + " " + mCalendar.get(Calendar.YEAR)
-
-            ivNext.setOnClickListener {
-                mCounter += 1
-                val mCal = Calendar.getInstance()
-                mCal.set(Calendar.MONTH, mCalendar.get(Calendar.MONTH) + mCounter)
-                setDays(mCal)
-                monthLabel.text =
-                    getMonthName(mCal.get(Calendar.MONTH)) + " " + mCal.get(Calendar.YEAR)
-                Log.e("MONTH", getMonthName(mCal.time.calendar().get(Calendar.MONTH)))
-            }
+//            monthLabel.text =
+//                getMonthName(mCalendar.get(Calendar.MONTH)) + " " + mCalendar.get(Calendar.YEAR)
+//
+//            ivNext.setOnClickListener {
+//                mCounter += 1
+//                val mCal = Calendar.getInstance()
+//                mCal.set(Calendar.MONTH, mCalendar.get(Calendar.MONTH) + mCounter)
+//                setDays(mCal)
+//                monthLabel.text =
+//                    getMonthName(mCal.get(Calendar.MONTH)) + " " + mCal.get(Calendar.YEAR)
+//                Log.e("MONTH", getMonthName(mCal.time.calendar().get(Calendar.MONTH)))
+//            }
         }
 
     }

@@ -47,17 +47,17 @@
 
                     <TextView
                         android:id="@+id/toolbar_label"
-                        fontPath="fonts/sf_pro_display_bold.ttf"
+                        fontPath="fonts/sf_pro_text_semibold.ttf"
+                        android:letterSpacing="-0.02"
+                        android:textSize="17sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:gravity="center"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:letterSpacing="0.01"
                         android:text="@string/chat_list"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingPrefix" />

@@ -140,7 +140,10 @@ class UserRepositoryImp
         }.ignoreElement()
     }*/
 
-    override fun getAllUsersSessions(): Maybe<UserSessions> = newApi.getAllUsersSessions()
+    override fun getAllUsersSessions(deviceId: String): Maybe<List<UserSessionModel>> =
+        newApi.getAllUsersSessions().map {
+            it.userSessions.filter { x -> x.deviceId != deviceId }
+        }
 
     override fun getAllUsersSessionsFromCurrentDevice(deviceId: String): Maybe<UserSessions> =
         newApi.getAllUsersSessionsFromCurrentDevice(deviceId)

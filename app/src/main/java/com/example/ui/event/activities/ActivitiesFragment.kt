@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
@@ -20,6 +21,7 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
+import com.example.databinding.FragmentActivitysBinding
 import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.NoDataItem
@@ -28,6 +30,7 @@ import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
 import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubEventFragmentArgs
@@ -37,13 +40,17 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_activitys.*
 import kotlinx.android.synthetic.main.fragment_map_new.*
+import onScrollStateChanged
+import onScrolled
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.collections.ArrayList
 
 
-class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
+class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), ActivitiesContract.View {
+
+    override fun layout(): Int = R.layout.fragment_activitys
 
     @InjectPresenter
     lateinit var presenter: ActivitiesPresenter
@@ -107,8 +114,6 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
     }
 
 
-    override fun layout(): Int = R.layout.fragment_activitys
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,20 +135,19 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.apply {
-            adapter = groupAdapter
-            val mLayoutManager = this.layoutManager as LinearLayoutManager
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+                val mLayoutManager = this.layoutManager as LinearLayoutManager
+                onScrolled { _, dy ->
                     mDy += dy
                     val lastItem = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     try {
                         if (mDy <= 0) {
-                            changeDay(presenter.getFirstDay())
-                            calendarPager?.setCurrentItem(0, true)
+                            val item = calendarSection.getItem(0) as CalendarHorizontalListItem
+                            changeDay(item.getFirstItem())
+                            calendarPager.setCurrentItem(0, true)
                         } else {
-
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
                             val now =
                                 createCalendarDay(defaultServerDateFormatter.parse(item?.date).time)
@@ -160,30 +164,30 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
 
                     }
                 }
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    mCanChangeDay = newState != SCROLL_STATE_DRAGGING
+                onScrollStateChanged { _, newState ->
+                    mCanChangeDay =
+                        newState != AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
                 }
-            })
+            }
+            calendarPager.apply {
+                adapter = calendarAdapter
+                offscreenPageLimit = 3
+            }
+            ivBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
         }
-        calendarPager.apply {
-            adapter = calendarAdapter
-            offscreenPageLimit = 3
-        }
-        ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
         initCollapseLabel()
     }
 
 
     override fun setSchemeButton(scheme: List<String>?) {
-        btnGoToScheme.apply {
-            isVisible = !scheme.isNullOrEmpty()
-            setOnClickListener {
+        mBinding.apply {
+            btnGoToScheme.apply {
+                isVisible = !scheme.isNullOrEmpty()
+                setOnClickListener {
 
+                }
             }
         }
     }
@@ -307,22 +311,15 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
 
 
     override fun scrollContent(day: EventScheduleCalendarDay) {
-        val mSmoothScroller: SmoothScroller =
-            object : LinearSmoothScroller(requireContext()) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_START
-                }
-            }
+
         val date = defaultServerDateFormatter.format(day.millis)
         val group =
             groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
         if (group != null) {
-            if (date == group.date) {
-                val position = groupAdapter.getAdapterPosition(group)
-                val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                mSmoothScroller.targetPosition = position
-                mLayoutManager.startSmoothScroll(mSmoothScroller)
-            }
+            val position = groupAdapter.getAdapterPosition(group)
+            val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+            mSmoothScroller.targetPosition = position
+            mLayoutManager.startSmoothScroll(mSmoothScroller)
         }
     }
 
@@ -385,7 +382,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
     }
 
     private fun initCollapseLabel() {
-        activitiesAppBar.addOnOffsetChangedListener(
+        mBinding.activitiesAppBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
                 mAppBarScrollValue = Math.abs(i / appBarLayout.totalScrollRange.toFloat())
                 updateViews(Math.abs(i / appBarLayout.totalScrollRange.toFloat()))
@@ -402,14 +399,14 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
                 cashCollapseState != null && cashCollapseState != this -> {
                     when (first) {
                         TO_EXPANDED -> {
-                            tvLabelLarge.apply {
+                            mBinding.tvLabelLarge.apply {
                                 visibility = View.VISIBLE
                                 alpha = 0F
                                 animate().setDuration(500).alpha(1.0f)
                             }
                         }
                         TO_COLLAPSED -> {
-                            tvLabelLarge.apply {
+                            mBinding.tvLabelLarge.apply {
                                 visibility = View.GONE
                                 alpha = 0F
                                 animate().setDuration(500).alpha(1.0f)
@@ -447,7 +444,7 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
     }
 
 
-    fun createCalendarDay(date: Long): EventScheduleCalendarDay {
+    private fun createCalendarDay(date: Long): EventScheduleCalendarDay {
         val cal = date.calendar()
         return EventScheduleCalendarDay(
             date,
@@ -458,6 +455,15 @@ class ActivitiesFragment : BaseFragment(), ActivitiesContract.View {
             false
         )
     }
+
+    private val mSmoothScroller by lazy {
+        object : LinearSmoothScroller(requireContext()) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+    }
+
 
     override fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int) {
     }

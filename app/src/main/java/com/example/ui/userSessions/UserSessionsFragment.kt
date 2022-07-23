@@ -6,17 +6,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.FragmentChatBinding
 import com.example.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventPageItemNew
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.chat.ChatContract
-import com.example.ui.profile.ProfileFragmentArgs
-import com.example.ui.profile.ProfilePresenter
 import com.example.ui.userSessions.items.*
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
 import com.example.util.getDeviceId
 import com.xwray.groupie.GroupAdapter
@@ -44,15 +40,10 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         presenter.deviceId = getDeviceId(requireContext())
     }
 
-    private val currentSessionSection by lazy {
-        Section().apply {
-            setHeader(SessionsHeaderItem("Текущий сеанс"))
-            setHideWhenEmpty(true)
-        }
-    }
+    private val currentSessionSection = Section()
     private val otherSessionsSection by lazy {
         Section().apply {
-            setHeader(SessionsHeaderItem("Активные сеансы"))
+            setHeader(SessionsHeaderItem(getString(R.string.active_sessions_label)))
             setHideWhenEmpty(true)
         }
     }
@@ -70,29 +61,46 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.rvSessions.apply {
+            startPostponedEnterTransition()
             adapter = groupAdapter
+        }
+        mBinding.ivInfo.setOnClickListener {
+            showSessionInfoDialog()
         }
     }
 
 
     override fun setCurrentSession(session: UserSessionModel) {
-        currentSessionSection.update(listOf(CurrentSessionItem(session) {
-            presenter.killAllSessionsClick()
-        }))
+        currentSessionSection.update(
+            listOf(
+                SessionsHeaderItem(getString(R.string.current_session_label)),
+                CurrentSessionItem(
+                    session,
+                    { presenter.killAllSessionsClick() },
+                    { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
+                )
+            )
+        )
     }
 
     override fun setOtherSessions(sessions: List<UserSessionModel?>) {
         otherSessionsSection.update(
             sessions.map {
-                if (it == null) PlaceholderItem(PlaceholderItem.Type.SESSIONS)
-                else
-                    OtherSessionItem(it) { session ->
-                        presenter.showSessionClick(session)
-                    }
+                OtherSessionItem(it) { s ->
+                    showSessionDialog(
+                        { presenter.killUsersDeviceSessionClick(s.sessionId) },
+                        s
+                    )
+                }
             }
         )
 
     }
+
+    override fun showSessionsLoadingPlaceholder() {
+        currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
+    }
+
 
     override fun showSessionsActionButton(action: SessionsAction) {
         sessionsHistorySection.update(listOf(SessionsHistoryActionItem(action) {
@@ -101,29 +109,31 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     }
 
     override fun showSessionBottomSheetDialog(session: UserSessionModel) {
-        SessionBottomSheet(requireContext(), session).setSelectCallback {
-            presenter.killUsersDeviceSessionClick(it)
-        }
+//        SessionBottomSheet(actionClick, requireContext(), session).onKillDeviceSession {
+//            if (getDeviceId(requireContext()) == it.deviceId) {
+//                presenter.killAllSessionsClick()
+//            } else {
+//                presenter.killUsersDeviceSessionClick(it.sessionId)
+//            }
+//        }
     }
 
     override fun hideSessionsActionButton() {
         sessionsHistorySection.clear()
     }
 
-    override fun updateOtherSessions(sessions: List<UserSessionModel?>) {
-        otherSessionsSection.update(
-            sessions.map {
-                OtherSessionItem(it) { session ->
-                    presenter.showSessionClick(session)
-                }
-            }
-        )
-    }
-
     override fun updateSessionsActionButton(action: SessionsAction) {
         sessionsHistorySection.findItemBy<SessionsHistoryActionItem> { true }?.notifyChanged(action)
     }
 
+    private fun showSessionDialog(actionClick: () -> Unit, session: UserSessionModel) {
+        SessionBottomSheet(actionClick, requireContext(), session)
+    }
+
+    private fun showSessionInfoDialog(){
+        val message = getString(R.string.session_info_message)
+        MessageDialogWithGreenButton(requireContext(), message)
+    }
 
     override fun layout(): Int = R.layout.fragment_user_sessions
 }

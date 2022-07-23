@@ -32,6 +32,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
@@ -113,23 +114,52 @@ fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.O
     return watcher
 }
 
-fun RecyclerView.onScrolled(onScrolled : (dx: Int, dy: Int) -> Unit) : RecyclerView.OnScrollListener{
-    val listener = object : RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-        }
+fun RecyclerView.onScrolled(
+    onScrolled: (dx: Int, dy: Int) -> Unit,
+): RecyclerView.OnScrollListener {
+    val listener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) = onScrolled(dx, dy)
     }
     addOnScrollListener(listener)
     return listener
 }
 
-fun NestedScrollView.onScrolled(onScrolled : (scrollY : Int, oldScrollY : Int, scrollX : Int, oldScrollX : Int) -> Unit) : NestedScrollView.OnScrollChangeListener {
+fun RecyclerView.onScrollStateChanged(
+    onStateChange: (recyclerView: RecyclerView, newState: Int) -> Unit
+): RecyclerView.OnScrollListener {
+    val listener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) =
+            onStateChange(recyclerView, newState)
+
+    }
+    addOnScrollListener(listener)
+    return listener
+}
+
+fun NestedScrollView.onScrolled(onScrolled: (scrollY: Int, oldScrollY: Int, scrollX: Int, oldScrollX: Int) -> Unit): NestedScrollView.OnScrollChangeListener {
     val listener =
         NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             onScrolled(scrollY, oldScrollY, scrollX, oldScrollX)
         }
     setOnScrollChangeListener(listener)
+    return listener
+}
+
+fun ViewPager2.onPageChanged(
+    onPageChanged: (
+        position: Int,
+        positionOffset: Float,
+        positionOffsetPixels: Int
+    ) -> Unit
+): ViewPager2.OnPageChangeCallback {
+    val listener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) = onPageChanged(position, positionOffset, positionOffsetPixels)
+    }
+    registerOnPageChangeCallback(listener)
     return listener
 }
 

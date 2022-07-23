@@ -84,6 +84,10 @@ interface UserProfileSettingsContract {
         fun onChangePrivacyClick()
         fun onChangePrivacyConfirm(hidden: Boolean)
 
+        fun onBlockProjectNotificationsClick(hidden: Boolean)
+        fun onBlockOrganizationNotificationsClick(hidden: Boolean)
+        fun onBlockEventNotificationsClick(hidden: Boolean)
+
         fun onDeleteProfileClick()
         fun onDeleteProfileConfirm()
 

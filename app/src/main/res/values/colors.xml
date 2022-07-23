@@ -9,6 +9,7 @@
     <color name="navBarTabs">#000000</color>
 
     <color name="red">#ed1c24</color>
+    <color name="red_new">#FF0000</color>
     <color name="gray">#E4E4E4</color>
     <color name="hint_gray">#939598</color>
     <color name="main_background">#FFFFFF</color>

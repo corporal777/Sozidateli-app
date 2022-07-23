@@ -15,7 +15,7 @@
         <item name="android:timePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:windowBackground">@color/main_background</item>
-<!--        <item name="android:windowBackground">@drawable/splash_background</item>-->
+        <!--        <item name="android:windowBackground">@drawable/splash_background</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <!--        <item name="android:navigationBarColor">@android:color/white</item>-->
@@ -26,16 +26,16 @@
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
     </style>
 
-        <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-            <item name="colorPrimary">@color/colorPrimary</item>
-            <item name="colorPrimaryDark">@color/colorPrimary</item>
-            <item name="colorAccent">@color/colorAccent</item>
-            <item name="android:statusBarColor">@android:color/transparent</item>
-            <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-            <item name="android:navigationBarColor">@color/colorPrimary</item>
-            <item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>
-            <item name="android:windowBackground">@drawable/splash_background</item>
-        </style>
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
 
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
@@ -383,6 +383,13 @@
         <item name="android:layout_marginBottom">6dp</item>
     </style>
 
+    <style name="Profile.Edit.InputFieldNew">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">font/sf_pro_text_semibold.ttf</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/vk_black</item>
+    </style>
+
     <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxBackgroundColor">@color/input_background</item>
         <item name="boxStrokeColor">@color/input_background</item>
@@ -392,6 +399,11 @@
         <item name="boxCornerRadiusTopStart">@dimen/background_input_corners_radius</item>
         <item name="hintEnabled">false</item>
         <item name="errorTextColor">@color/attention_action</item>
+    </style>
+
+    <style name="BackgroundTextFieldNew">
+        <item name="background">@drawable/background_input_text_field_new</item>
+        <item name="minHeight">45dp</item>
     </style>
 
     <style name="Profile.Edit.InputLayout.DropDown">
@@ -441,8 +453,19 @@
         <item name="fontFamily">@font/sf_pro_text</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingStart">5dp</item>
-        <item name="android:paddingTop">7dp</item>
-        <item name="android:paddingBottom">7dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:button">@drawable/drawable_switch</item>
+    </style>
+
+    <style name="Profile.Edit.SwitchNew">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/profile_title_text</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="fontFamily">@font/sf_pro_text</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingStart">5dp</item>
         <item name="android:button">@drawable/drawable_switch</item>
     </style>
 
@@ -636,8 +659,18 @@
     </style>
 
     <style name="Profile.Edit.TextViewTitle">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">font/sf_pro_display.OTF</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/chat_list_date</item>
+        <item name="android:layout_marginBottom">9dp</item>
+    </style>
+
+    <style name="Profile.Edit.BlockTitle">
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="fontPath">font/sf_pro_text.ttf</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/vk_black</item>
         <item name="android:layout_marginBottom">9dp</item>
     </style>
 
@@ -712,6 +745,52 @@
     <style name="TextAppearance.MaterialCalendarWidget.WeekDayWeekend" parent="android:TextAppearance.DeviceDefault.Small">
         <item name="android:textColor">#543C3C43</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="BtnBrownStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontFamily">@font/sf_pro_text_bold</item>
+        <item name="android:background">@drawable/custom_btn_brown_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_color_action_button</item>
+    </style>
+
+    <style name="BtnGrayStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontFamily">@font/sf_pro_text_bold</item>
+        <item name="android:background">@drawable/custom_btn_gray_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_color_action_button</item>
+    </style>
+
+    <style name="BtnCancelStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontFamily">@font/sf_pro_text_bold</item>
+        <item name="android:background">@drawable/custom_btn_cancel_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_color_action_button</item>
+    </style>
+
+    <style name="BtnWhiteStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontFamily">@font/sf_pro_text_bold</item>
+        <item name="android:background">@drawable/custom_btn_white_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_color_action_button</item>
+    </style>
+
+    <style name="BtnGreenStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontFamily">@font/sf_pro_text_bold</item>
+        <item name="android:background">@drawable/custom_btn_green_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_color_action_button</item>
     </style>
 
 

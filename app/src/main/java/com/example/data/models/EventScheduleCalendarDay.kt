@@ -5,5 +5,5 @@ data class EventScheduleCalendarDay(
         val week: Int,
         val dayOfWeek: String,
         val dayOfMonth: Int,
-        val hasEvents: Boolean
+        var hasEvents: Boolean
 )

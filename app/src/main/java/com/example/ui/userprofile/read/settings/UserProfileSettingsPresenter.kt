@@ -17,12 +17,14 @@ import com.example.ui.userprofile.phoneconfirm.PhoneConfirmPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.phoneToServer
+import com.facebook.share.model.ShareMessengerURLActionButton
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.BehaviorSubject
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import java.lang.Math.abs
 import javax.inject.Inject
 
@@ -48,7 +50,7 @@ class UserProfileSettingsPresenter @Inject constructor(
         viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
-    fun changeScrollingOffset(value : Int){
+    fun changeScrollingOffset(value: Int) {
         mDy += value
         viewState.setAppBarElevation(abs(mDy / 10f))
     }
@@ -254,6 +256,25 @@ class UserProfileSettingsPresenter @Inject constructor(
         }
     }
 
+
+    override fun onBlockEventNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_EVENT to hidden)) {
+            it.blockedNotifications?.event = hidden
+        }
+    }
+
+    override fun onBlockOrganizationNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_ORG to hidden)) {
+            it.blockedNotifications?.organizations = hidden
+        }
+    }
+
+    override fun onBlockProjectNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_PROJECT to hidden)) {
+            it.blockedNotifications?.projects = hidden
+        }
+    }
+
     override fun onChangeNotConfirmedPhone(phone: String) {
 //        appData.updateUserNew {
 //            if (this.phone?.firstOrNull()?.type == PHONE_PERSONAL) {
@@ -299,7 +320,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     private fun updateUser(data: Map<String, Any?>, onComplete: (UserDetail) -> Unit) {
         compositeDisposable += userRepository.updateProfile(appData.getId(), data)
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()

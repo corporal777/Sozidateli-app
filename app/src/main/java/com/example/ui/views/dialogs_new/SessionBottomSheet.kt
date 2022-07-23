@@ -16,14 +16,19 @@ import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.calendarView.DayViewDecorator
 import com.example.ui.views.calendarView.DayViewFacade
 import com.example.ui.views.calendarView.spans.DotSpan
+import com.example.util.getDeviceId
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import setOnClickListener
 import java.util.*
 
-class SessionBottomSheet(val context: Context, val session: UserSessionModel) {
+class SessionBottomSheet(
+    val onActionClick: () -> Unit,
+    val context: Context,
+    val session: UserSessionModel
+) {
 
     private val mBinding = BottomSheetSessionBinding.inflate(LayoutInflater.from(context))
-    private var onActionClick: (id : Int) -> Unit = {}
+
     private var mDialog = BottomSheetDialog(context)
 
     init {
@@ -35,8 +40,15 @@ class SessionBottomSheet(val context: Context, val session: UserSessionModel) {
             tvIpAddress.text = session.ipAddress
             tvLocation.text = session.location
             decorDeviceIcon(ivDeviceIcon, session.device)
+            if (getDeviceId(context) == session.deviceId) {
+                tvActionKill.text = context.getString(R.string.kill_all_other_sessions)
+            } else {
+                tvActionKill.text = context.getString(R.string.kill_session_label)
+            }
+
             cardAction.setOnClickListener {
-                onActionClick(session.sessionId)
+                onActionClick.invoke()
+                //onActionKillDeviceSession(session)
                 mDialog.dismiss()
             }
         }
@@ -59,10 +71,8 @@ class SessionBottomSheet(val context: Context, val session: UserSessionModel) {
 
     }
 
-    fun setSelectCallback(block: (id : Int) -> Unit): SessionBottomSheet {
-        onActionClick = block
-        return this
-    }
-
-
+//    fun onKillDeviceSession(block: (session: UserSessionModel) -> Unit): SessionBottomSheet {
+//        //onActionKillDeviceSession = block
+//        return this
+//    }
 }

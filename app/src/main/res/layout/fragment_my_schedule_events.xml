@@ -82,7 +82,7 @@
                 android:id="@+id/calendarContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:visibility="invisible">
 
                 <TextView
                     android:id="@+id/tvMonth"
@@ -98,26 +98,18 @@
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
                     app:drawableEndCompat="@drawable/ic_arrow_down_for_tags"
-                    app:layout_constraintBottom_toTopOf="@id/calendar_list"
+                    app:layout_constraintBottom_toTopOf="@id/calendarPager"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingPrefix"
                     tools:text="October" />
 
 
-                <!--                <androidx.viewpager2.widget.ViewPager2-->
-                <!--                    android:id="@+id/calendarPager"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:orientation="horizontal"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@id/tvMonth" />-->
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/calendar_list"
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/calendarPager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvMonth" />
 

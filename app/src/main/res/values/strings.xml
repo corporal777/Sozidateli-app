@@ -361,7 +361,7 @@
     <string name="profile_status">Ваш статус: %s</string>
     <string name="profile_status_more">Подробнее о статусе</string>
     <string name="profile_title">Личный кабинет</string>
-    <string name="profile_settings">Настройки аккаунта</string>
+    <string name="profile_settings">Настройки профиля</string>
     <string name="profile_favorite">Избранное</string>
     <string name="profile_me_events">Мои мероприятия</string>
     <string name="profile_current_event">Текущее мероприятие</string>
@@ -458,6 +458,7 @@
     <string name="profile_files_title">Файлы рекомендаций</string>
     <string name="profile_files">Файлы</string>
     <string name="profile_edit_title">Редактирование</string>
+    <string name="edit_title">Редактировать</string>
     <string name="profile_edit_name_and_photo">ФИО и фото</string>
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
@@ -894,6 +895,20 @@
     <string name="geoposition_label">Геопозиция</string>
     <string name="kill_session_label">Завершить сеанс</string>
     <string name="this_day_doesnt_have_event">По выбранному дню нет событий.</string>
+    <string name="current_session_label">Текущий сеанс</string>
+    <string name="active_sessions_label">Активные сеансы</string>
+    <string name="confidence_label">Конфиденциальность</string>
+    <string name="control_sending">Управление рассылками</string>
+    <string name="user_profile_off_messaging_projects">Отписаться от рассылки по проектам</string>
+    <string name="user_profile_off_messaging_events">Отписаться от рассылки по мероприятиям</string>
+    <string name="user_profile_off_messaging_organizations">Отписаться от рассылки по организациям</string>
+    <string name="session_info_message">История активности показывает информацию о том, с каких устройств и в какое время вы входили на сайт. В случае обнаружения подозрительной активности рекомендуем завершить подозрительные сеансы, нажав на кнопку \"Завершить сеанс\".</string>
+    <string name="block_notification_org_title">Отписаться от рассылки по организациям</string>
+    <string name="block_notification_org_message">Вы уверены, что хотите отписаться от рассылки по организациям с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма, связанные с организациями на сайте «Созидатели», в том числе приглашения стать сотрудником организации, не будут приходить на email аккаунта после отписки от рассылки.</string>
+    <string name="block_notification_event_title">Отписаться от рассылки по мероприятиям</string>
+    <string name="block_notification_event_message">Вы уверены, что хотите отписаться от рассылки по мероприятиям с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма по мероприятиям, организуемым через сайт «Созидатели», не будут приходить на email аккаунта после отписки от рассылки.</string>
+    <string name="block_notification_project_title">Отписаться от рассылки по проектам</string>
+    <string name="block_notification_project_message">Вы уверены, что хотите отписаться от рассылки по проектам с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма с приглашением в команду проекта не будут приходить на email аккаунта после отписки от рассылки.</string>
 
 
     <string-array name="custom_months">

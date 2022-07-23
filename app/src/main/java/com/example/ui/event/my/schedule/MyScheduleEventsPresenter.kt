@@ -19,6 +19,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.views.calendarView.CalendarDay
+import com.example.util.getCurrentYear
 import com.example.util.getDaysFromDateToDate
 import com.example.util.getMonthName
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -35,6 +36,7 @@ import java.util.*
 import javax.inject.Inject
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import performOnBackground
+import kotlin.collections.ArrayList
 
 
 @InjectViewState
@@ -53,6 +55,9 @@ class MyScheduleEventsPresenter
     private var mSubEventsDates = arrayListOf<CalendarDay>()
     private val mEventsList = arrayListOf<EventNew>()
     private var mSearchText = ""
+
+    var firstCalendarDate: CalendarDay? = null
+    var lastCalendarDate: CalendarDay? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -73,29 +78,35 @@ class MyScheduleEventsPresenter
                                 mSubEventsList.add(x)
                             }
                     }
-                    mFirstDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
-                        .get(0).holdingDate?.from ?: ""
-                    mLastDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
-                        .last().holdingDate?.from ?: ""
                 }
+            }
+            .doOnSuccess {
+                mFirstDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                    .get(0).holdingDate?.from ?: ""
+                mLastDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                    .last().holdingDate?.from ?: ""
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                if (it.isNullOrEmpty()) {
-                } else {
-                    initCalendarDays(mSubEventsDates, it)
-                }
-            }
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                }, onSuccess = {
+                    if (it.isNullOrEmpty()) {
+                    } else {
+                        initCalendarDays(mSubEventsDates, it)
+                    }
+                })
+
     }
 
     private fun initCalendarDays(subEventDates: List<CalendarDay>, list: List<EventNew?>) {
         val mDays = arrayListOf<EventScheduleCalendarDay>()
         val listReadyEvents = arrayListOf<MyScheduleEventsData>()
-        var firstCalendarDate: CalendarDay? = null
-        var lastCalendarDate: CalendarDay? = null
+
         lateinit var mNearestDate: EventScheduleCalendarDay
         compositeDisposable += Completable.fromAction {
+
             val startCal = defaultServerDateFormatter.parse(mFirstDate).time.calendar()
             val endCal = defaultServerDateFormatter.parse(mLastDate).time.calendar()
             firstCalendarDate = CalendarDay(
@@ -108,51 +119,39 @@ class MyScheduleEventsPresenter
                 endCal.get(Calendar.MONTH) + 1,
                 endCal.getActualMaximum(Calendar.DAY_OF_MONTH)
             )
-
             mDays.addAll(
-                userEventData.createCalendarDays(
+                userEventData.createCalendarDaysForSchedule(
                     getDaysFromDateToDate(
                         mFirstDate,
                         mLastDate
-                    ).map {
-                        defaultServerDateFormatter.parse(it).time
-                    })
+                    ).map { defaultServerDateFormatter.parse(it).time }, mSubEventsList
+                )
             )
+
             listReadyEvents.addAll(transformDataToShow(list))
             mNearestDate = findNearestDay(Calendar.getInstance().timeInMillis)
-        }.performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                //val mEventDate = defaultServerDateFormatter.parse(mFirstDate).time
-                val mEventDate = mNearestDate.millis
-                val currentYear = System.currentTimeMillis().calendar().get(Calendar.YEAR)
 
-                val mMonth = if (currentYear == mEventDate.calendar().get(Calendar.YEAR)) {
-                    getMonthName(mEventDate.calendar().get(Calendar.MONTH))
-                } else {
-                    getMonthName(
-                        mEventDate.calendar().get(Calendar.MONTH)
-                    ) + " " + mEventDate.calendar().get(Calendar.YEAR)
-                }
-//                val mMonth =
-//                    getMonthName(mEventDate.calendar().get(Calendar.MONTH))
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onComplete = {
+                    val mEventDate = mNearestDate.millis
+                    val mMonth = getMonthName(mNearestDate.millis.calendar())
+                    val mFirstEventDate =
+                        createCalendarDay(mEventDate)
+                    viewState.apply {
+                        setHeaderCalendar(mDays)
+                        setMonthCalendar(subEventDates, mMonth, firstCalendarDate, lastCalendarDate)
+                        setSearchContent()
+                        setContent(listReadyEvents)
+                        scrollToDay(mFirstEventDate)
+                        scrollContent(mNearestDate)
+                    }
+                })
 
-                val mFirstEventDate =
-                    createCalendarDay(mEventDate)
-                viewState.apply {
-                    setHeaderAndCalendar(
-                        subEventDates,
-                        mMonth,
-                        mDays,
-                        firstCalendarDate,
-                        lastCalendarDate
-                    )
-                    setContentNew(listReadyEvents)
-                    scrollToDay(mFirstEventDate)
-                    scrollContent(mNearestDate)
-                    //setContent(list)
-                }
-
-            }
     }
 
 
@@ -233,7 +232,7 @@ class MyScheduleEventsPresenter
             }
         }.performOnBackgroundOutOnMain()
             .subscribeSimple {
-                viewState.setContentNew(listEvents)
+                viewState.setContent(listEvents)
                 //viewState.setContent(eventsList)
             }
     }
@@ -317,12 +316,18 @@ class MyScheduleEventsPresenter
     }
 
     private fun findNearestDay(today: Long): EventScheduleCalendarDay {
-        val eventDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }.find { event ->
+        var eventDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }.find { event ->
             val date = defaultServerDateFormatter.parse(event.holdingDate?.from).time
             date == today || date - today > 0
-        }?.holdingDate?.from?.split(" ")?.get(0) ?: ""
+        }?.holdingDate?.from?.split(" ")?.get(0)
 
-        Log.e("NEAR DATE", eventDate?:"")
+        if (eventDate.isNullOrEmpty()) {
+            eventDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                .last().holdingDate?.from?.split(" ")
+                ?.get(0)
+        }
+
+        Log.e("NEAR DATE", eventDate ?: "")
         return createCalendarDay(defaultServerDateFormatter.parse(eventDate).time.calendar().timeInMillis)
     }
 

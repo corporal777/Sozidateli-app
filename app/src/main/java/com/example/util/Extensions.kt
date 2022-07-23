@@ -29,6 +29,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.Transformation
 import com.example.R
+import com.example.extensions.calendar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import onTextChanged
@@ -205,7 +206,8 @@ fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
     return Color.argb(alpha, red, green, blue)
 }
 
-fun getMonthName(month: Int): String {
+fun getMonthName(calendar : Calendar): String {
+    var month = ""
     val monthNames = arrayOf(
         "Январь",
         "Февраль",
@@ -220,7 +222,14 @@ fun getMonthName(month: Int): String {
         "Ноябрь",
         "Декабрь"
     )
-    return monthNames[month]
+    val cal = System.currentTimeMillis()
+
+    month = if (getCurrentYear() == calendar.get(Calendar.YEAR)){
+        monthNames[calendar.get(Calendar.MONTH)]
+    }else {
+        monthNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
+    }
+    return month
 }
 
 @SuppressLint("HardwareIds")
@@ -270,16 +279,10 @@ fun removeAllSpaces(str: String?): String {
     return str?.replace("\\s".toRegex(), "") ?: ""
 }
 
-fun getSmoothScroller(context: Context, position : Int): RecyclerView.SmoothScroller {
-    val mSmoothScroller: RecyclerView.SmoothScroller =
-        object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }
-    mSmoothScroller.targetPosition = position
-    return mSmoothScroller
-}
+fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.YEAR)
+fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)
+fun getCurrentDay(): Int = System.currentTimeMillis().calendar().get(Calendar.DAY_OF_MONTH)
+
 
 
 
