@@ -214,9 +214,16 @@
 
 
                 <TextView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/tvChangeAccount"
+                    style="@style/Profile.Button"
+                    android:text="@string/change_account_label" />
+
+                <View style="@style/ViewDivider.Horizontal" />
+
+                <TextView
                     android:id="@+id/tvLogout"
                     style="@style/Profile.Button"
-                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:text="@string/profile_logout"
                     android:textColor="@color/profile_logout_text" />

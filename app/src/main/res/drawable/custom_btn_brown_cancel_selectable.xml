@@ -8,5 +8,5 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/btn_background_brown" />
+        android:drawable="@drawable/background_corners_border" />
 </ripple>

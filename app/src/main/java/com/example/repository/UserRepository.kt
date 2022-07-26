@@ -63,6 +63,7 @@ interface UserRepository {
     fun getAllUsersSessionsFromCurrentDevice(deviceId : String): Maybe<UserSessions>
     fun killAllUsersOtherSessions(): Completable
     fun killUsersDeviceSession(id : Int): Completable
+    fun deleteUsersDeviceSession(id : Int): Completable
 
     fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel>
     fun logout(id: Int): Completable

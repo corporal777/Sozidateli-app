@@ -79,18 +79,13 @@
                         tools:ignore="MissingPrefix" />
 
                     <androidx.appcompat.widget.AppCompatButton
+                        style="@style/BtnBrownStyle"
                         android:id="@+id/ibEmail"
-                        fontPath="fonts/Roboto-Medium.ttf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/background_corners"
                         android:minHeight="@dimen/auth_button_min_height"
-                        android:text="@string/auth_action_register"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:theme="@style/ViewBackgroundAccent" />
+                        android:text="@string/auth_action_register" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,17 +116,13 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/ibLogin"
-                        fontPath="fonts/Roboto-Medium.ttf"
+                        style="@style/BtnBrownCancelStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:background="@drawable/background_corners_border"
                         android:minHeight="@dimen/auth_button_min_height"
                         android:text="@string/auth_label_login"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:theme="@style/ViewBackgroundAccent" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

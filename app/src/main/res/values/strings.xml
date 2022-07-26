@@ -909,6 +909,13 @@
     <string name="block_notification_event_message">Вы уверены, что хотите отписаться от рассылки по мероприятиям с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма по мероприятиям, организуемым через сайт «Созидатели», не будут приходить на email аккаунта после отписки от рассылки.</string>
     <string name="block_notification_project_title">Отписаться от рассылки по проектам</string>
     <string name="block_notification_project_message">Вы уверены, что хотите отписаться от рассылки по проектам с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма с приглашением в команду проекта не будут приходить на email аккаунта после отписки от рассылки.</string>
+    <string name="change_account_label">Сменить аккаунт</string>
+    <string name="change_account_for_enter">Выберите аккаунт для входа</string>
+    <string name="logout_from_account">Выйти из аккаунта</string>
+    <string name="logout_end_remove_from_list">Выйти и удалить из списка</string>
+    <string name="you_logged_out_from">Вы вышли из аккаунтов:</string>
+    <string name="remove_from_list">Удалить из списка</string>
+    <string name="enter_to_another_account">Войти в другой аккаунт</string>
 
 
     <string-array name="custom_months">

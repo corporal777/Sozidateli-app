@@ -123,7 +123,7 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
         }
 
         ibRegistered.setOnClickListener {
-            findNavController().navigate(InviteRegisterFragmentDirections.actionToInviteRegisterToLoginFragment().setIsRegistered(true).setInviteId(presenter.invite?: 0))
+            findNavController().navigate(InviteRegisterFragmentDirections.actionToInviteRegisterToLoginFragment("").setIsRegistered(true).setInviteId(presenter.invite?: 0))
             /*findNavController().navigate(R.id.login_fragment, bundleOf("isRegistered" to true, "inviteId" to presenter.invite),
                     NavOptions.Builder()
                             .setPopUpTo(R.id.main_navigation, true)

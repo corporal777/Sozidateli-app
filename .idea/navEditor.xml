@@ -129,6 +129,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="auth_fragment_new">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="authorization_fragment">
                     <value>
                       <LayoutPositions>
@@ -208,6 +220,27 @@
                               </value>
                             </entry>
                             <entry key="action_baseStateInterestsFragment_to_maxStateWorkFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="change_account_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="change_account_fragment_to_authFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -973,7 +1006,17 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_profile_fragment_to_user_sessions_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="profile_to_about">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="profile_to_change_account">
                               <value>
                                 <LayoutPositions />
                               </value>

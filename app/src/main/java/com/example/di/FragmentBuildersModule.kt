@@ -1,8 +1,10 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
+import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.auth.authorization.AuthorizationFragmentNew
 import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
@@ -107,6 +109,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeLoginFragment(): AuthorizationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeLoginFragmentNew(): AuthorizationFragmentNew
 
     @ContributesAndroidInjector
     abstract fun contributeLoginEmailFragment(): LoginFragment
@@ -350,4 +355,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserSessionsFragment(): UserSessionsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChangeAccountFragment(): ChangeAccountFragment
 }

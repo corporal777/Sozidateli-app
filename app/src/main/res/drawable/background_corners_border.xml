@@ -2,11 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:radius="@dimen/background_default_corners_radius" />
+            <corners android:radius="@dimen/background_corners_eight" />
             <stroke
                 android:width="1.5dp"
-                android:color="?attr/viewBackground" />
+                android:color="#C3996C" />
         </shape>
     </item>
-    <item android:drawable="?attr/selectableItemBackground" />
 </layer-list>

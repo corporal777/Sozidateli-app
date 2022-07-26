@@ -37,8 +37,8 @@ interface LoginContract {
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickBack()
-        fun onChangeLoginText(login: String, context: Context)
-        fun onChangePasswordText(password: String, context: Context)
+        fun onChangeLoginText(login: String)
+        fun onChangePasswordText(password: String)
         fun onClickLogin(login: String, password: String, invite: Int)
         fun onClickRecoverPassword()
     }

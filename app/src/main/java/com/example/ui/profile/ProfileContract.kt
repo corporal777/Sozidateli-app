@@ -16,6 +16,9 @@ interface ProfileContract {
         fun showProfile(uid: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChangeAccount()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFavorites()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -69,6 +72,7 @@ interface ProfileContract {
         fun onFavoritesClick()
         fun onEventsClick()
         fun onSessionsClick()
+        fun onChangeAccountClick()
         fun onAboutApplicationClick()
         fun onBannedClick()
         fun onSupportClick()

@@ -62,6 +62,9 @@ interface NewApi {
     @PATCH("v1/user/kill-session/{id}")
     fun killUsersDeviceSession(@Path("id") id: Int): Completable
 
+    @PATCH("v1/user/delete-session/{id}")
+    fun deleteUsersDeviceSession(@Path("id") id: Int): Completable
+
     //+
     @GET("v1/event")
     fun getEventCalendar(@QueryMap map: Map<String, Any>): Maybe<EventsListModel>

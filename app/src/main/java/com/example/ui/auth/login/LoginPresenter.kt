@@ -56,16 +56,16 @@ class LoginPresenter
 
     override fun onClickBack() = viewState.navigateUp()
 
-    override fun onChangeLoginText(login: String, context: Context) {
+    override fun onChangeLoginText(login: String) {
         this.login = login
         viewState.showLoginError(false)
-        performDataChange(context)
+        performDataChange()
     }
 
-    override fun onChangePasswordText(password: String, context: Context) {
+    override fun onChangePasswordText(password: String) {
         this.password = password
         viewState.showPasswordError(false)
-        performDataChange(context)
+        performDataChange()
     }
 
     override fun onClickRecoverPassword() {
@@ -128,11 +128,11 @@ class LoginPresenter
         }
     }
 
-    private fun performDataChange(context: Context) {
-        viewState.enableLoginBtn(isDataValid(context))
+    private fun performDataChange() {
+        viewState.enableLoginBtn(isDataValid())
     }
 
-    private fun isDataValid(context: Context): Boolean {
+    private fun isDataValid(): Boolean {
         /*return (AuthValidateUtil.isValidEmail(login) || login.isValidPhoneNumber())
                 && password.isNotEmpty()*/
         return if (isPhone(login) && !isContainLetters(login)) {

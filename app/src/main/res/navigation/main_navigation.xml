@@ -62,6 +62,7 @@
         <action
             android:id="@+id/login_to_recovery_action"
             app:destination="@id/recovery_password_fragment" />
+
         <argument
             android:name="isRegistered"
             android:defaultValue="false"
@@ -71,6 +72,11 @@
             android:name="inviteId"
             android:defaultValue="-1"
             app:argType="integer" />
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -526,6 +532,14 @@
             app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
+            android:id="@+id/profile_to_change_account"
+            app:destination="@+id/change_account_fragment"
+            app:enterAnim="@anim/slide_from_right_enter"
+            app:exitAnim="@anim/slide_from_right_exit"
+            app:popEnterAnim="@anim/slide_from_right_popup_enter"
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+
+        <action
             android:id="@+id/profile_to_favorite"
             app:destination="@+id/favorite_fragment" />
 
@@ -721,17 +735,17 @@
         <action
             android:id="@+id/action_chat_fragment_to_user_fragment"
             app:destination="@id/user_fragment"
-            app:launchSingleTop="true"
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit"/>
+            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
-<!--            app:enterAnim="@anim/profile_enter"-->
-<!--            app:exitAnim="@anim/profile_exit"-->
-<!--            -->
-<!--            app:popEnterAnim="@anim/profile_popup_enter"-->
-<!--            app:popExitAnim="@anim/profile_popup_exit" -->
+        <!--            app:enterAnim="@anim/profile_enter"-->
+        <!--            app:exitAnim="@anim/profile_exit"-->
+        <!--            -->
+        <!--            app:popEnterAnim="@anim/profile_popup_enter"-->
+        <!--            app:popExitAnim="@anim/profile_popup_exit" -->
 
     </fragment>
 
@@ -1384,8 +1398,28 @@
         android:id="@+id/user_sessions_fragment"
         android:name="com.example.ui.userSessions.UserSessionsFragment"
         android:label="UserSessionsFragment"
-        tools:layout="@layout/fragment_user_sessions">
+        tools:layout="@layout/fragment_user_sessions" />
+
+    <fragment
+        android:id="@+id/change_account_fragment"
+        android:name="com.example.ui.accountChange.ChangeAccountFragment"
+        android:label="ChangeAccountFragment"
+        tools:layout="@layout/fragment_change_account">
+
+        <action
+            android:id="@+id/change_account_fragment_to_authFragment"
+            app:destination="@id/auth_fragment_new" />
+
+        <action
+            android:id="@+id/change_account_fragment_to_loginFragment"
+            app:destination="@id/login_fragment" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/auth_fragment_new"
+        android:name="com.example.ui.auth.authorization.AuthorizationFragmentNew"
+        android:label="AuthorizationFragmentNew"
+        tools:layout="@layout/fragment_authorization" />
 
 </navigation>

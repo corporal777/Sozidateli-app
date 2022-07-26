@@ -58,7 +58,7 @@ class AuthorizationFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
     }
 
     override fun showLogin() {
-        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction())
+        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction(""))
     }
 
     override fun showEmailRegistration() {

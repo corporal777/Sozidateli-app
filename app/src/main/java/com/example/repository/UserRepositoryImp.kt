@@ -148,6 +148,8 @@ class UserRepositoryImp
     override fun getAllUsersSessionsFromCurrentDevice(deviceId: String): Maybe<UserSessions> =
         newApi.getAllUsersSessionsFromCurrentDevice(deviceId)
 
+    override fun deleteUsersDeviceSession(id: Int): Completable = newApi.deleteUsersDeviceSession(id)
+
     override fun killAllUsersOtherSessions(): Completable = newApi.killAllUsersOtherSessions()
 
     override fun killUsersDeviceSession(id: Int): Completable = newApi.killUsersDeviceSession(id)

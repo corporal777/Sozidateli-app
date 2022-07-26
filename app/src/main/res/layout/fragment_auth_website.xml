@@ -176,38 +176,27 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnConfirm"
-                    fontPath="fonts/Roboto-Medium.ttf"
-                    android:layout_width="match_parent"
+                    style="@style/BtnBrownStyle"                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="40dp"
                     android:layout_marginTop="50dp"
                     android:layout_marginBottom="30dp"
-                    android:background="@drawable/background_corners"
                     android:minHeight="@dimen/auth_button_min_height"
                     android:text="@string/confirm"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:theme="@style/ViewBackgroundAccent"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm" />
 
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnDoNotConfirm"
-                    fontPath="fonts/Roboto-Medium.ttf"
+                    style="@style/BtnBrownCancelStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="40dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/background_corners_border"
                     android:minHeight="@dimen/auth_button_min_height"
                     android:text="@string/do_not_confirm"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:theme="@style/ViewBackgroundAccent"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent" />
 

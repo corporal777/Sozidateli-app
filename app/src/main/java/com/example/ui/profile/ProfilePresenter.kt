@@ -77,6 +77,7 @@ class ProfilePresenter
     }
 
     override fun onSessionsClick() = viewState.showSessions()
+    override fun onChangeAccountClick() = viewState.showChangeAccount()
 
     override fun onRateClick() {
         viewState.openPlayMarket()

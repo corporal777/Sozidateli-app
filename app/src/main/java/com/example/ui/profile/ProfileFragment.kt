@@ -34,7 +34,8 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View, SimpleTitleToolbar{
+class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View,
+    SimpleTitleToolbar {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
@@ -89,6 +90,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
             tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
             tvSessions.setOnClickListener {
                 presenter.onSessionsClick()
+            }
+            tvChangeAccount.setOnClickListener {
+                presenter.onChangeAccountClick()
             }
 
             tvEditProfile.setOnClickListener { presenter.onProfileClick() }
@@ -217,6 +221,10 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         /*} else {
             findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
         }*/
+    }
+
+    override fun showChangeAccount() {
+        findNavController().navigate(ProfileFragmentDirections.profileToChangeAccount())
     }
 
     private fun showUserStateDialog() {

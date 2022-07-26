@@ -106,6 +106,7 @@ data class UserDetail(
                 const val USER_BINDS = "binds"
                 const val USER_ADDRESS_STREET = "addressStreet"
                 const val USER_SEARCH = "search"
+                const val USER_ID = "id"
                 const val USER_CONTACT_INFORMATION = "contactInformation"
                 const val USER_REGISTRATION_FINISH = "registrationFinish"
         }
