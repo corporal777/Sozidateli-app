@@ -33,6 +33,7 @@ interface LoginContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
 
+
     }
 
     interface Presenter : BaseAuthContract.Presenter {

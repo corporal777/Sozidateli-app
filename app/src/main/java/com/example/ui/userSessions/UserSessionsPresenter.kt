@@ -12,8 +12,10 @@ import com.example.ui.profile.ProfileContract
 import com.example.ui.userSessions.items.SessionsAction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserSessionsPresenter
@@ -24,15 +26,20 @@ class UserSessionsPresenter
 ) : BasePresenter<UserSessionsContract.View>(appData), UserSessionsContract.Presenter {
 
     var deviceId = ""
-    private var isShownAll = false
     private val allOtherSessions = arrayListOf<UserSessionModel>()
     private val shortAllOtherSessions = arrayListOf<UserSessionModel>()
     private var actionType = SessionsAction.HIDDEN
+    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showSessionsLoadingPlaceholder()
         getUserSessionsData()
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     private fun getUserSessionsData() {
@@ -50,7 +57,7 @@ class UserSessionsPresenter
                 compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(deviceId)
                     .performOnBackgroundOutOnMain()
                     .subscribeSimple { currentSessions ->
-                        viewState.setCurrentSession(currentSessions.userSessions[0])
+                        viewState.setCurrentSession(currentSessions.userSessions.last())
                         if (allOtherSessions.size > 3) {
                             viewState.showSessionsActionButton(actionType)
                             viewState.setOtherSessions(shortAllOtherSessions)
@@ -65,7 +72,8 @@ class UserSessionsPresenter
         compositeDisposable += userRepository.killAllUsersOtherSessions()
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.hideSessionsActionButton()
                 viewState.setOtherSessions(it)
@@ -76,7 +84,8 @@ class UserSessionsPresenter
         compositeDisposable += userRepository.killUsersDeviceSession(id)
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.setOtherSessions(it)
                 if (it.size <= 3){

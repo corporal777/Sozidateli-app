@@ -15,7 +15,7 @@
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_institution" />
+                android:text="@string/profile_institution"/>
 
             <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilInstitution"
@@ -44,31 +44,23 @@
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_educate_speciality" />
+                android:text="@string/profile_educate_speciality"/>
 
             <com.example.ui.views.CustomTextInputLayout
                 android:id="@+id/tilSpeciality"
-                style="@style/Profile.Edit.InputLayout.DropDown"
+                style="@style/Profile.Edit.InputLayout"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="20dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null">
 
-                <!--                <com.google.android.material.textfield.TextInputEditText-->
-                <!--                    android:id="@+id/etSpeciality"-->
-                <!--                    style="@style/Profile.Edit.Input.SingleLine"-->
-                <!--                    android:hint="@string/profile_educate_speciality"-->
-                <!--                    android:inputType="textMultiLine|textCapSentences"-->
-                <!--                    android:maxLines="5" />-->
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSpeciality"
-                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                    style="@style/Profile.Edit.Input.SingleLine"
                     android:hint="@string/profile_educate_speciality"
-                    android:maxLines="5"
-                    android:paddingStart="@dimen/background_input_padding"
-                    android:paddingEnd="@dimen/background_input_padding" />
-
-
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="5" />
             </com.example.ui.views.CustomTextInputLayout>
         </LinearLayout>
 
@@ -91,7 +83,7 @@
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_profile_receipt_date" />
+                    android:text="@string/user_profile_receipt_date"/>
 
                 <com.example.ui.views.CustomTextInputLayout
                     android:id="@+id/tilStart"
@@ -124,7 +116,7 @@
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_profile_expiration_date" />
+                    android:text="@string/user_profile_expiration_date"/>
 
                 <com.example.ui.views.CustomTextInputLayout
                     android:id="@+id/tilFinish"

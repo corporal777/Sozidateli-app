@@ -2,6 +2,7 @@ package com.example.ui.userSessions
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -18,6 +19,7 @@ import com.example.util.getDeviceId
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,7 +42,12 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         presenter.deviceId = getDeviceId(requireContext())
     }
 
-    private val currentSessionSection = Section()
+    private val currentSessionSection by lazy {
+        Section().apply {
+            setHeader(SessionsHeaderItem(getString(R.string.current_session_label)))
+//            setHideWhenEmpty(true)
+        }
+    }
     private val otherSessionsSection by lazy {
         Section().apply {
             setHeader(SessionsHeaderItem(getString(R.string.active_sessions_label)))
@@ -63,24 +70,32 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         mBinding.rvSessions.apply {
             startPostponedEnterTransition()
             adapter = groupAdapter
+            onScrolled { _, dy ->
+                presenter.changeAppBarElevation(dy)
+            }
         }
         mBinding.ivInfo.setOnClickListener {
             showSessionInfoDialog()
         }
+        mBinding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
 
-    override fun setCurrentSession(session: UserSessionModel) {
-        currentSessionSection.update(
-            listOf(
-                SessionsHeaderItem(getString(R.string.current_session_label)),
-                CurrentSessionItem(
-                    session,
-                    { presenter.killAllSessionsClick() },
-                    { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
+    override fun setCurrentSession(session: UserSessionModel?) {
+        if (session == null) {
+            currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
+        } else
+            currentSessionSection.update(
+                listOf(
+                    CurrentSessionItem(
+                        session,
+                        { presenter.killAllSessionsClick() },
+                        { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
+                    )
                 )
             )
-        )
     }
 
     override fun setOtherSessions(sessions: List<UserSessionModel?>) {
@@ -130,9 +145,19 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         SessionBottomSheet(actionClick, requireContext(), session)
     }
 
-    private fun showSessionInfoDialog(){
+    private fun showSessionInfoDialog() {
         val message = getString(R.string.session_info_message)
-        MessageDialogWithGreenButton(requireContext(), message)
+        MessageDialogWithBrownButton(requireContext(), message)
+    }
+
+    override fun setAppBarElevation(value: Float) {
+        mBinding.appBarLayout.apply {
+            elevation = if (value <= 10f) {
+                value
+            } else {
+                10f
+            }
+        }
     }
 
     override fun layout(): Int = R.layout.fragment_user_sessions

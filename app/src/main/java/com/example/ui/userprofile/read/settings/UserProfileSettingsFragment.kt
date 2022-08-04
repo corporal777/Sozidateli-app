@@ -42,7 +42,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     override fun layout() = R.layout.fragment_user_profile_settings
     private var isConfirmed = false
 
-    private lateinit var mUser : UserDetail
+    private lateinit var mUser: UserDetail
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -78,50 +78,43 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
 
             btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
-            scPrivacyProfile.setOnCheckedChangeListener { _, b ->
-                presenter.onChangePrivacyConfirm(b)
+
+            ivPrivacyProfile.setOnClickListener {
+                if (mUser.state?.isHidden == true){
+                    presenter.onChangePrivacyConfirm(false)
+                }else {
+                    presenter.onChangePrivacyConfirm(true)
+                }
+
             }
 
             ivBlockProject.setOnClickListener {
-                if (mUser.blockedNotifications?.projects != true){
-                    TitleMessageDialog(
-                        requireContext(),
-                        getString(R.string.block_notification_project_title),
-                        getString(R.string.block_notification_project_message)
-                    ).setSelectCallback { state ->
-                        presenter.onBlockProjectNotificationsClick(state)
-                    }
-                }else {
-                    presenter.onBlockProjectNotificationsClick(false)
+                showBlockingInfoDialog(
+                    mUser.blockedNotifications?.projects?:false,
+                    getString(R.string.block_notification_project_title),
+                    getString(R.string.block_notification_project_message)
+                ){
+                    presenter.onBlockProjectNotificationsClick(it)
                 }
             }
             ivBlockEvent.setOnClickListener {
-                if (mUser.blockedNotifications?.event != true){
-                    TitleMessageDialog(
-                        requireContext(),
-                        getString(R.string.block_notification_event_title),
-                        getString(R.string.block_notification_event_message)
-                    ).setSelectCallback { state ->
-                        presenter.onBlockEventNotificationsClick(state)
-                    }
-                }else {
-                    presenter.onBlockEventNotificationsClick(false)
+                showBlockingInfoDialog(
+                    mUser.blockedNotifications?.event?:false,
+                    getString(R.string.block_notification_event_title),
+                    getString(R.string.block_notification_event_message)
+                ) { state ->
+                    presenter.onBlockEventNotificationsClick(state)
                 }
             }
             ivBlockOrg.setOnClickListener {
-                if (mUser.blockedNotifications?.organizations != true){
-                    TitleMessageDialog(
-                        requireContext(),
-                        getString(R.string.block_notification_org_title),
-                        getString(R.string.block_notification_org_message)
-                    ).setSelectCallback { state ->
-                        presenter.onBlockOrganizationNotificationsClick(state)
-                    }
-                }else {
-                    presenter.onBlockOrganizationNotificationsClick(false)
+                showBlockingInfoDialog(
+                    mUser.blockedNotifications?.organizations?:false,
+                    getString(R.string.block_notification_org_title),
+                    getString(R.string.block_notification_org_message)
+                ) { state ->
+                    presenter.onBlockOrganizationNotificationsClick(state)
                 }
             }
-//
             tvEditEmail.setOnClickListener(presenter::onChangeEmailClick)
         }
 
@@ -192,7 +185,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             tvPhoneMobile.text = phone
 
             tvEmail.text = user.email?.onConfirmation ?: user.email?.value
-            scPrivacyProfile.isChecked = user.state?.isHidden ?: false
+            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
 
             //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
             //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
@@ -203,9 +196,10 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 //            }
 
             //scBlockNoteProjects.isChecked = user.blockedNotifications?.projects ?: false
-            ivBlockEvent.setImage(user.blockedNotifications?.event?:false)
-            ivBlockProject.setImage(user.blockedNotifications?.projects?:false)
-            ivBlockOrg.setImage(user.blockedNotifications?.organizations?:false)
+            ivPrivacyProfile.setImage(user.state?.isHidden ?: false)
+            ivBlockEvent.setImage(user.blockedNotifications?.event ?: false)
+            ivBlockProject.setImage(user.blockedNotifications?.projects ?: false)
+            ivBlockOrg.setImage(user.blockedNotifications?.organizations ?: false)
 
 
             ivInfo.isVisible =
@@ -365,5 +359,27 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 UserEditDataType.PHONE
             )
         )
+    }
+
+    private fun showBlockingInfoDialog(
+        status: Boolean,
+        title: String,
+        message: String,
+        onAction: (state: Boolean) -> Unit
+    ) {
+        if (!status) {
+            TitleMessageDialog(
+                requireContext(),
+                title,
+                message
+            ).setSelectCallback { state ->
+                if (state) {
+                    onAction.invoke(state)
+                }
+            }
+        } else {
+            onAction.invoke(false)
+        }
+
     }
 }

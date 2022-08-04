@@ -28,6 +28,7 @@ import coil.load
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.Transformation
+import com.example.BuildConfig
 import com.example.R
 import com.example.extensions.calendar
 import com.google.android.material.datepicker.CalendarConstraints
@@ -246,6 +247,14 @@ fun getDeviceName(): String {
     return if (model.startsWith(manufacturer)) {
         capitalize(model)
     } else capitalize(manufacturer) + " " + model
+}
+
+fun getAppVersion(): String {
+    return BuildConfig.VERSION_NAME
+}
+
+fun getAppVersionCode(): String {
+    return BuildConfig.VERSION_CODE.toString()
 }
 
 private fun capitalize(str: String): String {

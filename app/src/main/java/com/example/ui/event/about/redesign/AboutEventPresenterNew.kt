@@ -10,6 +10,7 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.views.StateType
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -19,6 +20,7 @@ import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
@@ -50,10 +52,14 @@ class AboutEventPresenterNew
                 .withLoadingDialog(viewState)
 
         compositeDisposable += eventInfoMaybe
-            .subscribeSimple { eventInfo ->
-                setEventInfoData(eventInfo)
-            }
-
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    catchEventError(it)
+                },
+                onSuccess = { eventInfo ->
+                    setEventInfoData(eventInfo)
+                })
     }
 
 
@@ -143,7 +149,8 @@ class AboutEventPresenterNew
         if (event?.event?.binds?.userFavorite != null) {
             compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
+                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = null
                     viewState.changeEventSubscription(false)
@@ -159,7 +166,8 @@ class AboutEventPresenterNew
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
+                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.apply {
@@ -175,7 +183,8 @@ class AboutEventPresenterNew
         compositeDisposable += eventRepository.createEventSubscription(eventId.toInt())
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(
@@ -190,7 +199,8 @@ class AboutEventPresenterNew
         compositeDisposable += eventRepository.deleteEventSubscription(eventId.toInt())
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(
@@ -207,10 +217,10 @@ class AboutEventPresenterNew
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                it.printStackTrace()
-            }, onSuccess = {
-                setEventInfoData(it)
-            })
+                    it.printStackTrace()
+                }, onSuccess = {
+                    setEventInfoData(it)
+                })
 
     }
 
@@ -284,7 +294,8 @@ class AboutEventPresenterNew
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.updateSubEvent(subEvent)
             }
@@ -296,7 +307,8 @@ class AboutEventPresenterNew
             val id = event?.event?.binds?.organization?.binds?.userFavorite?.id.toString()
             compositeDisposable += eventRepository.deleteFromFavorite(id)
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
+                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onComplete = {
                         event?.event?.binds?.organization?.binds?.userFavorite = null
@@ -315,7 +327,8 @@ class AboutEventPresenterNew
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
+                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onSuccess = {
                         event?.event?.binds?.organization?.binds?.userFavorite =
@@ -333,7 +346,8 @@ class AboutEventPresenterNew
         )
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(
@@ -356,6 +370,48 @@ class AboutEventPresenterNew
         members.addAll(list?.filter { x -> x.isLead == false }
             ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
         return EventMember(eventId, members, System.currentTimeMillis())
+    }
+
+
+    private fun catchEventError(t: Throwable) {
+        if (t is HttpException) {
+            when (t.code()) {
+                403 -> {
+                    try {
+                        val error = Gson().fromJson(
+                            t.response()?.errorBody()?.string(),
+                            NewErrors::class.java
+                        )
+                        when (error.errors[0].message) {
+                            "you have no access for such operation" -> {
+                                val message =
+                                    "В данный момент страница мероприятия доступна только владельцу или администратору"
+                                viewState.showErrorMessageWithResult(false, "", message)
+                            }
+                            "The event has been banned" -> {
+                                val eventName = error.errors[0].additionalData?.name
+                                val eventId = error.errors[0].additionalData?.id.toString()
+                                val message =
+                                    "Мероприятие «$eventName» заблокировано."
+                                viewState.showErrorMessageWithResult(true, eventId, message)
+                            }
+                            "The event has been cancelled" -> {
+                                val eventName = error.errors[0].additionalData?.name
+                                val eventId = error.errors[0].additionalData?.id.toString()
+                                val message =
+                                    "Мероприятие «$eventName» было отменено организатором."
+                                viewState.showErrorMessageWithResult(true, eventId, message)
+                            }
+                            else -> {
+                                onReceiveError(t)
+                            }
+                        }
+                    } catch (e: Exception) {
+
+                    }
+                }
+            }
+        }
     }
 
 }

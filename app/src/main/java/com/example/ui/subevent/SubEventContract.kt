@@ -16,9 +16,11 @@ interface SubEventContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSpeakerProfile(speaker: MemberModel)
 
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEvent(subEvent: EventActivityModel)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEventErrorMessageDialog(withResult : Boolean, id : String, message : String)
     }
 
     interface Presenter : BaseContract.Presenter {

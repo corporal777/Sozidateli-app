@@ -16,7 +16,8 @@ class PlaceholderItem(
         Type.SPEAKER_LIST -> R.layout.item_speaker_list_placeholder
         Type.SPEAKER_MAIN -> R.layout.item_speaker_placeholder
         Type.SUB_EVENT -> R.layout.item_sub_event_placeholder
-        Type.EVENT -> R.layout.item_event_placeholder
+        //Type.EVENT -> R.layout.item_event_placeholder
+        Type.EVENT -> R.layout.item_event_new_placeholder
         Type.SEARCH_EVENT -> R.layout.item_search_event_placeholder
         Type.ORGANIZATION -> R.layout.item_organization_placeholder
         Type.USER -> R.layout.item_user_placeholder

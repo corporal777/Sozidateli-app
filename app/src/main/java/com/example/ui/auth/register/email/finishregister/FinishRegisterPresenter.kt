@@ -17,6 +17,8 @@ import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.PHONE_PERSONAL
+import com.example.util.getAppVersion
+import com.example.util.getAppVersionCode
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -32,12 +34,13 @@ import javax.inject.Inject
 @InjectViewState
 class FinishRegisterPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val authRepository: AuthRepository,
-        private val phoneNumberUtil: PhoneNumberUtil,
-        private val userRepository: UserRepository,
-        snAuthManager: SnAuthManager
-) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData), FinishRegisterContract.Presenter {
+    private val appData: AppData,
+    private val authRepository: AuthRepository,
+    private val phoneNumberUtil: PhoneNumberUtil,
+    private val userRepository: UserRepository,
+    snAuthManager: SnAuthManager
+) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData),
+    FinishRegisterContract.Presenter {
 
     private var firstName: String? = null
     private var defFirstName: String? = null
@@ -55,6 +58,8 @@ class FinishRegisterPresenter
     var loginType = "email"
     var deviceId = ""
     var deviceModel = ""
+    var appVersion = getAppVersion()
+    var appCode = getAppVersionCode()
 
     var snUser: SnUser? = null
     private var phoneVerified: Boolean = false
@@ -64,11 +69,11 @@ class FinishRegisterPresenter
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
         compositeDisposable += appData.userPhoneConfirmedSubject
-                .performOnBackgroundOutOnMain()
-                .subscribeBy {
-                    phoneVerified = it
-                    viewState.updatePhoneConfirmationStatus(it)
-                }
+            .performOnBackgroundOutOnMain()
+            .subscribeBy {
+                phoneVerified = it
+                viewState.updatePhoneConfirmationStatus(it)
+            }
     }
 
     fun startTimer() {
@@ -79,18 +84,18 @@ class FinishRegisterPresenter
         }
 
         timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val timeLeft = TIMER_SECONDS_COUNT - (it.toInt() + 1)
-                    if (timeLeft < 0) {
-                        timerCompositeDisposable.clear()
-                        viewState.setCanResend(true)
-                    } else {
-                        viewState.setTimeLeft(timeLeft)
-                    }
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val timeLeft = TIMER_SECONDS_COUNT - (it.toInt() + 1)
+                if (timeLeft < 0) {
+                    timerCompositeDisposable.clear()
+                    viewState.setCanResend(true)
+                } else {
+                    viewState.setTimeLeft(timeLeft)
+                }
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun attachView(view: FinishRegisterContract.View?) {
@@ -120,32 +125,41 @@ class FinishRegisterPresenter
 
     override fun getData() {
         val login = if (loginType == "email") email else phone
-        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel(loginType, login?: ""), LoginModel("temporary", code), deviceId, deviceModel))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
+        compositeDisposable += authRepository.authEmailOrPhone(
+            AuthBody(
+                LoginModel(loginType, login ?: ""),
+                LoginModel("temporary", code),
+                deviceId,
+                deviceModel,
+                appCode,
+                appVersion
+            )
+        )
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
 
-                        },
-                        onComplete = {
-                            compositeDisposable += userRepository.getUserShortData()
-                                    .performOnBackgroundOutOnMain()
-                                    .subscribe({
-                                        firstName = it.name
-                                        defFirstName = it.name
-                                        lastName = it.lastName
-                                        defLastName = it.lastName
-                                        middleName = it.getMiddleName()
-                                        defMiddleName = if (middleName.isNullOrEmpty()) "" else middleName
-                                        viewState.setData(
-                                                it.email?.value, it.name, it.middleName?.value,
-                                                it.lastName, it.phone?.get(0)?.value, isAgree, false
-                                        )
-                                        viewState.unblockTokenListener()
-                                    }, {  })
-                        }
-                )
+                },
+                onComplete = {
+                    compositeDisposable += userRepository.getUserShortData()
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({
+                            firstName = it.name
+                            defFirstName = it.name
+                            lastName = it.lastName
+                            defLastName = it.lastName
+                            middleName = it.getMiddleName()
+                            defMiddleName = if (middleName.isNullOrEmpty()) "" else middleName
+                            viewState.setData(
+                                it.email?.value, it.name, it.middleName?.value,
+                                it.lastName, it.phone?.get(0)?.value, isAgree, false
+                            )
+                            viewState.unblockTokenListener()
+                        }, { })
+                }
+            )
     }
 
     override fun onChangePhoneText(phone: String) {
@@ -164,7 +178,9 @@ class FinishRegisterPresenter
 
     override fun onChangeCodeText(code: String) {
         this.phoneCode = code
-        if (code.length == 6) viewState.enableRegisterBtn(true) else viewState.enableRegisterBtn(false)
+        if (code.length == 6) viewState.enableRegisterBtn(true) else viewState.enableRegisterBtn(
+            false
+        )
     }
 
     override fun authVk() {
@@ -199,12 +215,12 @@ class FinishRegisterPresenter
     }
 
     override fun sendCodeAgain() {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone?: "")
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    startTimer()
-                    viewState.codeSuccess()
-                }, { it.printStackTrace() })
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone ?: "")
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                startTimer()
+                viewState.codeSuccess()
+            }, { it.printStackTrace() })
     }
 
     override fun logout() {
@@ -217,52 +233,77 @@ class FinishRegisterPresenter
 
         when (loginType) {
             "phone" -> {
-                compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone?: "", phoneCode?: ""))
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({
-                            userRepository.updateUserProfile(appData.getId(),
-                                    mutableMapOf<String, Any>().apply {
-                                        put(USER_PHONE, arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))
-                                        if (defFirstName != firstName) put(USER_NAME, firstName?: "")
-                                        if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
-                                        if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
-                                        put(USER_REGISTRATION_FINISH, true)
-                                    }
-                                    /*mapOf(USER_NAME to firstName,
-                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                                    USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
-                            )
-                                    .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
-                                    .subscribe({ viewState.openHome() }, { })
-                                    .call(compositeDisposable)
-                        }, {
-                            viewState.codeError()
-                        })
+                compositeDisposable += authRepository.confirmPhone(
+                    ConfirmCodeBody(
+                        "personal",
+                        phone ?: "",
+                        phoneCode ?: ""
+                    )
+                )
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        userRepository.updateUserProfile(appData.getId(),
+                            mutableMapOf<String, Any>().apply {
+                                put(
+                                    USER_PHONE,
+                                    arrayListOf(
+                                        FieldDetails(
+                                            value = phone?.replace(" ", ""),
+                                            type = PHONE_PERSONAL,
+                                            isVisible = true,
+                                            isConfirmed = true
+                                        )
+                                    )
+                                )
+                                if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
+                                if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
+                                if (defMiddleName != middleName) put(
+                                    USER_MIDDLE_NAME,
+                                    FieldDetails(value = middleName, absent = noMiddleNameChecked)
+                                )
+                                put(USER_REGISTRATION_FINISH, true)
+                            }
+                            /*mapOf(USER_NAME to firstName,
+                            USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
+                            USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
+                        )
+                            .performOnBackgroundOutOnMain()
+                            .withLoadingDialog(viewState)
+                            .subscribe({ viewState.openHome() }, { })
+                            .call(compositeDisposable)
+                    }, {
+                        viewState.codeError()
+                    })
             }
             "email" -> {
-                userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email?: ""))
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({
+                userRepository.confirmEmailCode(
+                    appData.getId(),
+                    EmailCodeBody(code = code, email = email ?: "")
+                )
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
 
-                            userRepository.updateUserProfile(appData.getId(),
-                                    mutableMapOf<String, Any>().apply {
-                                        put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
-                                        if (defFirstName != firstName) put(USER_NAME, firstName?: "")
-                                        if (defLastName != lastName) put(USER_LAST_NAME, lastName?: "")
-                                        if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
-                                        put(USER_REGISTRATION_FINISH, true)
-                                    }
-                                   /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
-                                    USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
-                            )
-                                    .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
-                                    .subscribe({ viewState.openHome() }, { })
-                                    .call(compositeDisposable)
-                        }, {
-                            viewState.codeError()
-                        })
+                        userRepository.updateUserProfile(appData.getId(),
+                            mutableMapOf<String, Any>().apply {
+                                put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
+                                if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
+                                if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
+                                if (defMiddleName != middleName) put(
+                                    USER_MIDDLE_NAME,
+                                    FieldDetails(value = middleName, absent = noMiddleNameChecked)
+                                )
+                                put(USER_REGISTRATION_FINISH, true)
+                            }
+                            /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                             USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
+                        )
+                            .performOnBackgroundOutOnMain()
+                            .withLoadingDialog(viewState)
+                            .subscribe({ viewState.openHome() }, { })
+                            .call(compositeDisposable)
+                    }, {
+                        viewState.codeError()
+                    })
             }
         }
     }

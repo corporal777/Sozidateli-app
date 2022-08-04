@@ -87,8 +87,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
                 })
             }
         }
-
-
         initCollapseLabel()
         mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         mBinding.etSearch.setOnClickListener {

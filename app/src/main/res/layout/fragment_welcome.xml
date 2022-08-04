@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,14 +27,13 @@
 
 
         <androidx.legacy.widget.Space
-            android:layout_marginTop="50dp"
             android:id="@+id/space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/tvGreeting"
+            app:layout_constraintBottom_toTopOf="@id/tvGreeting"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/ivLogo" />
 
         <LinearLayout
             android:id="@+id/progressViewContainer"
@@ -48,7 +46,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvGreeting"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/space"/>
+            app:layout_constraintTop_toBottomOf="@id/space" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -64,13 +62,13 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvGreeting"
             fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:letterSpacing="-0.01"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:gravity="center"
+            android:letterSpacing="-0.01"
             android:textColor="@android:color/white"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -3,6 +3,7 @@ package com.example.ui.notification.center
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -108,11 +109,13 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     }
 
     override fun setData(notifications: List<Notification?>) {
+        Log.e("NOTE", notifications[0].toString())
         adapter.update(notifications.map {
 
             if (it == null) {
                 PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
             }
+
             else when (it.type) {
                 Notification.Type.SIMPLE -> SimpleNotificationItem(
                     it,

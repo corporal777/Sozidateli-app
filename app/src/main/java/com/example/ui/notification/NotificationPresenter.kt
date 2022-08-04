@@ -7,12 +7,14 @@ import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.CancelBody
 import com.example.data.bodies.DeclineBody
+import com.example.data.models.InviteDetail
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -102,7 +104,6 @@ class NotificationPresenter
     }
 
     override fun onNotificationCancelClick() {
-        Log.e("Error", "Cancel")
         //updateNotificationInvite(userRepository.notificationsInviteDecline(notification.id), notification.id)
 
         when (notification.notificationMainType) {
@@ -159,6 +160,7 @@ class NotificationPresenter
     }
 
     private fun declineAssistance(id: Int) {
+        Log.e("ID", id.toString())
         updateNotificationInvite(userRepository.declineAssistance(id.toString()), id)
     }
 

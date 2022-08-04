@@ -261,7 +261,7 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditEducationFragment.adapter
-                onScrolled { dx, dy ->
+                onScrolled { _, dy ->
                     presenter.changeAppBarElevation(dy)
                 }
             }

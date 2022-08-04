@@ -18,6 +18,11 @@
 
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">50dp</dimen>
+
+    <dimen name="event_item_height_new">340dp</dimen>
+
+    <dimen name="current_session_item_height">110dp</dimen>
+    <dimen name="other_session_item_height">85dp</dimen>
     <!--  new margins  -->
 
 </resources>

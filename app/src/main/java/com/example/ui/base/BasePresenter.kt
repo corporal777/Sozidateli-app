@@ -156,11 +156,6 @@ open class BasePresenter<V : BaseContract.View>
                                         getHasBase(),
                                         getUserData()
                                     )
-                                    "you have no access for such operation" -> {
-                                        val message =
-                                            "В данный момент страница мероприятия доступна только владельцу или администратору"
-                                        viewState.showErrorMessage(true, message)
-                                    }
                                     else -> onReceiveError(it)
                                 }
                             } catch (e: Exception) {
@@ -174,6 +169,7 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     data class NewErrors(val errors: List<NewError>)
+    data class NewEventErrors(val errors: List<NewBannedOrCancelledError>)
     data class Errors(val errors: List<ErrorModel>)
     data class ErrorModel(
         val code: String? = null,
@@ -185,8 +181,23 @@ open class BasePresenter<V : BaseContract.View>
         val code: String? = null,
         val type: String? = null,
         val profileLevelRequired: String? = null,
-        val message: String? = null
+        val message: String? = null,
+        val additionalData: EventAdditionalDataError? = null
     )
+
+    data class NewBannedOrCancelledError(
+        val code: String? = null,
+        val type: String? = null,
+        val message: String? = null,
+        val additionalData: EventAdditionalDataError? = null
+
+    )
+
+    data class EventAdditionalDataError(
+        val id: Int? = null,
+        val name: String? = null,
+    )
+
 
     fun Completable.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,

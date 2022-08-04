@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.InviteDetail
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
@@ -104,7 +105,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         }
 
 
-
         val titleRes: Int
         var actionTextRes: Int? = null
         var canRate = false
@@ -117,19 +117,20 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         when (notification.type) {
             Notification.Type.SIMPLE -> {
                 titleRes = R.string.notifications_simple_title
-                btnAccept.isEnabled = false
-                btnCancel.isEnabled = false
-                btnAccept.isVisible = false
-                btnCancel.isVisible = false
+                mBinding.apply {
+                    btnAccept.isVisible = false
+                    btnCancel.isVisible = false
+                }
             }
             Notification.Type.ACCEPTABLE -> {
                 titleRes = R.string.notifications_acceptable_title
                 when (notification.acceptState) {
+                    //when (InviteDetail.getInviteState(invite)) {
                     Notification.AcceptState.DISABLED -> {
                         tvActionText.isVisible = true
                         actionTextRes = R.string.notifications_state_disabled
-                        btnAccept.isVisible = false
-                        btnCancel.isVisible = false
+                        mBinding.btnAccept.isVisible = false
+                        mBinding.btnCancel.isVisible = false
                     }
                     Notification.AcceptState.ACCEPTED -> {
                         btnAccept.enableOrDisableButton(false)
@@ -233,9 +234,11 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         }*/
     }
 
-    private fun AppCompatButton.enableOrDisableButton(isEnabledd: Boolean) {
-        isEnabled = isEnabledd
-        if (isEnabledd)
+
+
+    private fun AppCompatButton.enableOrDisableButton(enabled: Boolean) {
+        isEnabled = enabled
+        if (enabled)
             setBackgroundResource(R.drawable.background_corners)
         else
             setBackgroundResource(R.drawable.background_corners_disabled)

@@ -7,7 +7,7 @@
                 android:width="1dp"
                 android:color="@color/button_cancel_border" />
             <solid android:color="@color/button_cancel_background" />
-            <corners android:radius="@dimen/background_input_padding_five" />
+            <corners android:radius="@dimen/background_corners_eight" />
         </shape>
     </item>
 </layer-list>

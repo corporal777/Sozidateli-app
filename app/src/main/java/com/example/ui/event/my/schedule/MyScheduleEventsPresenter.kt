@@ -6,37 +6,31 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
+import com.example.data.models.Event
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.di.Connectivity
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.findItemBy
-import com.example.holders.redesign.EventActivityDateItem
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.views.calendarView.CalendarDay
-import com.example.util.getCurrentYear
 import com.example.util.getDaysFromDateToDate
 import com.example.util.getMonthName
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.Group
-import com.xwray.groupie.GroupAdapter
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
-import withDelay
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import performOnBackground
-import kotlin.collections.ArrayList
 
 
 @InjectViewState
@@ -64,27 +58,29 @@ class MyScheduleEventsPresenter
         getEventsList()
     }
 
+    override fun attachView(view: MyScheduleEventsContract.View?) {
+        super.attachView(view)
+        viewState.getResultForUpdate()
+    }
+
     private fun getEventsList() {
         compositeDisposable += eventRepository.getUserCalendarEvents()
-            .doOnSuccess {
-                if (!it.isNullOrEmpty()) {
-                    mEventsList.addAll(it)
-                    it.forEach { subEvent ->
-                        subEvent.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
-                            ?.forEach { x ->
-                                val cal =
-                                    defaultServerDateFormatter.parse(x.holdingDate?.from).time.calendar()
-                                mSubEventsDates.add(setEventCalendarDays(cal))
-                                mSubEventsList.add(x)
-                            }
-                    }
+            .doOnSuccess { list ->
+                if (!list.isNullOrEmpty()) {
+                    mEventsList.addAll(list)
+                    list.forEach { subEvent ->
+                            subEvent.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
+                                ?.forEach { x ->
+                                    val cal =
+                                        defaultServerDateFormatter.parse(x.holdingDate?.from).time.calendar()
+                                    mSubEventsDates.add(setEventCalendarDays(cal))
+                                    mSubEventsList.add(x)
+                                }
+                        }
+                    mFirstDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }[0].holdingDate?.from ?: ""
+                    mLastDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
+                        .last().holdingDate?.from ?: ""
                 }
-            }
-            .doOnSuccess {
-                mFirstDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
-                    .get(0).holdingDate?.from ?: ""
-                mLastDate = mSubEventsList.sortedBy { x -> x.holdingDate?.from }
-                    .last().holdingDate?.from ?: ""
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -100,13 +96,12 @@ class MyScheduleEventsPresenter
 
     }
 
-    private fun initCalendarDays(subEventDates: List<CalendarDay>, list: List<EventNew?>) {
-        val mDays = arrayListOf<EventScheduleCalendarDay>()
-        val listReadyEvents = arrayListOf<MyScheduleEventsData>()
 
+    private fun initCalendarDays(subEventDates: List<CalendarDay>, list: List<EventNew?>) {
+        val listReadyEvents = arrayListOf<MyScheduleEventsData>()
+        val mDays = arrayListOf<EventScheduleCalendarDay>()
         lateinit var mNearestDate: EventScheduleCalendarDay
         compositeDisposable += Completable.fromAction {
-
             val startCal = defaultServerDateFormatter.parse(mFirstDate).time.calendar()
             val endCal = defaultServerDateFormatter.parse(mLastDate).time.calendar()
             firstCalendarDate = CalendarDay(
@@ -148,6 +143,7 @@ class MyScheduleEventsPresenter
                         setSearchContent()
                         setContent(listReadyEvents)
                         scrollToDay(mFirstEventDate)
+                        Log.e("DATE", mNearestDate.dayOfMonth.toString())
                         scrollContent(mNearestDate)
                     }
                 })
@@ -204,6 +200,11 @@ class MyScheduleEventsPresenter
         updateData(text)
     }
 
+    override fun onSearchTextSubmit(text: String) {
+        mSearchText = text
+        updateData(text)
+    }
+
     private fun updateData(text: String) {
         val listEvents = arrayListOf<MyScheduleEventsData>()
         compositeDisposable += Completable.fromAction {
@@ -237,11 +238,6 @@ class MyScheduleEventsPresenter
             }
     }
 
-    override fun onSearchTextSubmit(text: String) {
-        mSearchText = text
-        updateData(text)
-    }
-
     override fun onShowEventClick(eventId: String) {
         viewState.showAboutEvent(eventId)
     }
@@ -253,9 +249,50 @@ class MyScheduleEventsPresenter
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    catchEventError(it)
+                },
+                onComplete = {
+                    viewState.updateSubEvent(subEvent)
+                })
+    }
+
+    override fun onRemoveCalendarDays(data: Map<String, List<EventActivityModel>>) {
+        val subEventsList = arrayListOf<EventActivityModel>()
+        val listDays = arrayListOf<EventScheduleCalendarDay>()
+        compositeDisposable += eventRepository.getUserCalendarEvents()
+            .doOnSuccess { list ->
+                if (!list.isNullOrEmpty()) {
+                    list.filter { x -> x.status?.value != Event.Status.BANNED }
+                        .forEach { subEvent ->
+                            subEvent.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
+                                ?.forEach { x ->
+                                    subEventsList.add(x)
+                                }
+                        }
+                    val firstDate = subEventsList.sortedBy { x -> x.holdingDate?.from }
+                        .get(0).holdingDate?.from ?: ""
+                    val lastDate = subEventsList.sortedBy { x -> x.holdingDate?.from }
+                        .last().holdingDate?.from ?: ""
+
+                    listDays.addAll(
+                        userEventData.createCalendarDaysForSchedule(
+                            getDaysFromDateToDate(
+                                firstDate,
+                                lastDate
+                            ).map { defaultServerDateFormatter.parse(it).time }, mSubEventsList
+                        )
+                    )
+                }
+            }
+            .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                viewState.updateSubEvent(subEvent)
+                viewState.setHeaderCalendar(listDays)
+                viewState.updateCalendarDays()
             }
     }
 
@@ -327,8 +364,44 @@ class MyScheduleEventsPresenter
                 ?.get(0)
         }
 
-        Log.e("NEAR DATE", eventDate ?: "")
         return createCalendarDay(defaultServerDateFormatter.parse(eventDate).time.calendar().timeInMillis)
+    }
+
+    private fun catchEventError(t: Throwable) {
+        if (t is HttpException) {
+            try {
+                val error = Gson().fromJson(
+                    t.response()?.errorBody()?.string(),
+                    NewErrors::class.java
+                )
+                when (error.errors[0].message) {
+                    "The event has been banned" -> {
+                        val eventName = error.errors[0].additionalData?.name
+                        val eventId = error.errors[0].additionalData?.id.toString()
+                        val message =
+                            "Мероприятие «$eventName» заблокировано."
+                        viewState.showErrorMessage(eventId, message)
+                    }
+                    "The event has been cancelled" -> {
+                        val eventName = error.errors[0].additionalData?.name
+                        val eventId = error.errors[0].additionalData?.id.toString()
+                        val message =
+                            "Мероприятие «$eventName» было отменено организатором."
+                        viewState.showErrorMessage(eventId, message)
+                    }
+                    else -> {
+                        onReceiveError(t)
+                    }
+                }
+            } catch (e: Exception) {
+
+            }
+            when (t.code()) {
+                403 -> {
+
+                }
+            }
+        }
     }
 
 }

@@ -400,7 +400,7 @@ class UserRepositoryImp
             }
     }
 
-    override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>> {
+    override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>> {
         return newApi.getUsers(map)
             .map { it.data }
     }
@@ -453,6 +453,9 @@ class UserRepositoryImp
 
     override fun declineAssistance(assistanceId: String): Completable =
         newApi.declineAssistance(assistanceId)
+
+    override fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail> =
+        newApi.getInviteAssistanceDetail(assistanceId)
 
     override fun cancelEvMember(evMemberId: String, body: CancelBody): Completable =
         newApi.cancelEvMember(evMemberId, body)

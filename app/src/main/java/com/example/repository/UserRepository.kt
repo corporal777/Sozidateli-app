@@ -91,7 +91,7 @@ interface UserRepository {
     fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>>
     fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
-    fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
+    fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>>
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
     fun unblockUser(id : Int): Completable
@@ -106,6 +106,7 @@ interface UserRepository {
     fun declinePgrf(pgrfId: String): Completable
     fun approveAssistance(assistanceId: String): Completable
     fun declineAssistance(assistanceId: String): Completable
+    fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail>
     fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
     fun checkEmailPhone(email: String?, phone: String?): Completable
 }

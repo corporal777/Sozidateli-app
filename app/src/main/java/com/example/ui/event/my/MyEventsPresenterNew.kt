@@ -23,6 +23,7 @@ import performOnBackgroundOutOnMain
 import withProgressBarLoadingDialog
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class MyEventsPresenterNew
@@ -41,6 +42,7 @@ class MyEventsPresenterNew
     private var mSearchText = ""
 
     private var isCommonDataLoaded = false
+    private var mDy = 0
 
     private val pagination: PaginationDataSourceFactory<EventNew?> =
         PaginationDataSourceFactory(::getPaginationRequest)
@@ -48,8 +50,14 @@ class MyEventsPresenterNew
 
     override fun attachView(view: MyEventsContractNew.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(Math.abs(mDy / 10f))
         if (isFirstAttach) isFirstAttach = false
         else paginationList.invalidate()
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun onFirstViewAttach() {

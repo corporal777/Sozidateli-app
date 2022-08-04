@@ -29,6 +29,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -64,7 +65,7 @@ class RecommendationsPresenter
     }
 
     private fun getEventsList(){
-        viewState.setData(List(20) { null })
+        viewState.setData(List(10) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -77,7 +78,8 @@ class RecommendationsPresenter
             .subscribeSimple {
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()
                 else {
-                    compositeDisposable += eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
+                    viewState.setData(it)
+                    /*compositeDisposable += eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple(
                             onError = { error ->
@@ -89,7 +91,7 @@ class RecommendationsPresenter
                                 }
                                 viewState.setData(it.filterNotNull())
                             }
-                        )
+                        )*/
                 }
             }
 
@@ -106,7 +108,8 @@ class RecommendationsPresenter
     private fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         Log.e("EventsList", "limit: $limit ,offset: $offset")
         return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset, /*EVENT_SORT_TYPE to "desc",*/
-            EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"/*,
+            //EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"/*,
+            EVENT_BINDS to "organization,user-registration,current-user-registration,eventRegistrationState"/*,
                 EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false, EVENT_STATUS to "registration,running,registrationFinished,approved"))
     }
 
@@ -121,15 +124,14 @@ class RecommendationsPresenter
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt()?: 0)
             .andThen(eventRepository.getEventDetails(event))
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 paginationList.invalidate()
             }
     }
 
-    override fun onActionShowEvent(event: String) {
-    }
-
+    override fun onActionShowEvent(event: String) {}
     override fun onSearchClick() = viewState.showSearch()
     override fun onActionRegister(event: String) { viewState.showEventRequest(event) }
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)

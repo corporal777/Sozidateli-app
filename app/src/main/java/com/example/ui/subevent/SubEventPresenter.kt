@@ -1,5 +1,6 @@
 package com.example.ui.subevent
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.EventCalendarBody
@@ -8,10 +9,12 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withProgressBarLoadingDialog
 import javax.inject.Inject
@@ -49,6 +52,7 @@ class SubEventPresenter @Inject constructor(
             .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
+                    catchSubEventError(it)
                     it.printStackTrace()
                 },
                 onSuccess = {
@@ -172,6 +176,42 @@ class SubEventPresenter @Inject constructor(
             .subscribeSimple {
                 viewState.updateSubEvent(subEvent)
             }
+    }
+
+    private fun catchSubEventError(t: Throwable) {
+        if (t is HttpException) {
+            when (t.code()) {
+                403 -> {
+                    try {
+                        val error = Gson().fromJson(
+                            t.response()?.errorBody()?.string(),
+                            NewErrors::class.java
+                        )
+                        when (error.errors[0].message) {
+                            "The event has been banned" -> {
+                                val eventName = error.errors[0].additionalData?.name
+                                val eventId = error.errors[0].additionalData?.id.toString()
+                                val message =
+                                    "Мероприятие «$eventName» заблокировано."
+                                viewState.showEventErrorMessageDialog(true, eventId, message)
+                            }
+                            "The event has been cancelled" -> {
+                                val eventName = error.errors[0].additionalData?.name
+                                val eventId = error.errors[0].additionalData?.id.toString()
+                                val message =
+                                    "Мероприятие «$eventName» было отменено организатором."
+                                viewState.showEventErrorMessageDialog(true, eventId, message)
+                            }
+                            else -> {
+                                onReceiveError(t)
+                            }
+                        }
+                    } catch (e: Exception) {
+
+                    }
+                }
+            }
+        }
     }
 
 }

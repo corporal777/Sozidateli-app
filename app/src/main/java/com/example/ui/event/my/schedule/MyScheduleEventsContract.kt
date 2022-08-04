@@ -54,6 +54,15 @@ interface MyScheduleEventsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun getResultForUpdate()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showErrorMessage(eventId: String, message: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateCalendarDays()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -65,6 +74,7 @@ interface MyScheduleEventsContract {
         fun onSubEventClick(eventId: String, subEvent: EventActivityModel)
         fun onAddSubEventToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveSubEventFromScheduleClick(subEvent: EventActivityModel)
+        fun onRemoveCalendarDays(data: Map<String, List<EventActivityModel>>)
 
     }
 }

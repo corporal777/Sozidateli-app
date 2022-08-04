@@ -118,7 +118,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/btnWriteMessage"
             fontPath="fonts/sf_pro_text_bold.ttf"
             android:layout_width="match_parent"

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer_view_container"
     android:layout_width="match_parent"
+    app:shimmer_duration="1500"
     android:layout_height="wrap_content">
 
     <LinearLayout

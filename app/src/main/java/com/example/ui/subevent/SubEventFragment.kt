@@ -1,8 +1,9 @@
 package com.example.ui.subevent
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -17,6 +18,8 @@ import com.example.holders.SubeventInfoItem
 import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -57,6 +60,7 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         super.onViewCreated(view, savedInstanceState)
         var mDy = 0
         val mO = 1.0f
+
         mBinding.apply {
             contentList.apply {
                 adapter = GroupAdapter<GroupieViewHolder>().apply {
@@ -127,6 +131,16 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
 //            mDy += mBinding.contentList.scrollY
 //        }
 //    }
+
+    override fun showEventErrorMessageDialog(withResult: Boolean, id: String, message: String) {
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
+            if (withResult) {
+                setFragmentResult("eventKey", bundleOf("eventId" to id))
+            }
+            findNavController().navigateUp()
+        }
+
+    }
 
     override fun layout() = R.layout.fragment_subevent
 }

@@ -2,9 +2,13 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -19,8 +23,10 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
+import com.example.holders.DayItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
@@ -31,6 +37,7 @@ import com.example.ui.event.my.schedule.items.MyScheduleSubEventsGroup
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.dialogs_new.CalendarBottomSheet
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.getMonthName
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -118,6 +125,8 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         initCollapseLabel()
         mBinding.apply {
             eventsList.apply {
+                setItemViewCacheSize(10)
+                recycledViewPool.setMaxRecycledViews(0, 10)
                 adapter = groupAdapter
                 val mLayoutManager = this.layoutManager as LinearLayoutManager
                 onScrolled { _, dy ->
@@ -126,8 +135,12 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                     try {
                         if (mDy <= 0) {
                             calendarPager.setCurrentItem(0, true)
-                            val item = calendarSection.getItem(0) as CalendarHorizontalListItem
-                            changeDay(item.getFirstItem())
+                            //val item = calendarSection.getItem(0) as CalendarHorizontalListItem
+                            val item = eventsSection.getGroup(0) as MyScheduleSubEventsGroup
+                            val day =
+                                mPresenter.createCalendarDay(defaultServerDateFormatter.parse(item.getFirstItemDate()).time)
+                            changeDay(day)
+                            changeDayWhenScrollDown(day)
                         } else {
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
                             val now =
@@ -169,14 +182,16 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     }
 
     override fun setSearchContent() {
-        searchSection.update(listOf(
-            SearchActivityItem({
-                mPresenter.onSearchTextChange(it)
-            }, {
-                mPresenter.onSearchTextSubmit(it)
-                hideKeyboard()
-            })
-        ))
+        searchSection.update(
+            listOf(
+                SearchActivityItem({
+                    mPresenter.onSearchTextChange(it)
+                }, {
+                    mPresenter.onSearchTextSubmit(it)
+                    hideKeyboard()
+                })
+            )
+        )
     }
 
     override fun setContent(data: List<MyScheduleEventsData?>) {
@@ -196,7 +211,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     }
 
     override fun setHeaderCalendar(days: List<EventScheduleCalendarDay>) {
-
+        calendarSection.clear()
         val listDays = arrayListOf<EventScheduleCalendarDay>()
         var mCount = 0
         var mCountSize = 0
@@ -287,6 +302,53 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     override fun showSubEvent(eventId: String, subEventId: String) {
         val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
         findNavController().navigate(R.id.subEvent_fragment, args)
+    }
+
+    override fun getResultForUpdate() {
+        setFragmentResultListener("eventKey") { _, bundle ->
+            val result = bundle.getString("eventId")
+            if (!result.isNullOrEmpty()) {
+                removeBannedOrCancelledEvent(result)
+                showToast(result)
+            } else {
+                showToast("NULL EVENT ID")
+            }
+        }
+    }
+
+    override fun showErrorMessage(eventId: String, message: String) {
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
+            if (!eventId.isNullOrEmpty()) {
+                removeBannedOrCancelledEvent(eventId)
+            }
+        }
+    }
+
+    private fun removeBannedOrCancelledEvent(eventId: String) {
+        val group =
+            eventsSection.findGroupBy<MyScheduleSubEventsGroup> { x -> x.getEventId() == eventId }
+        if (group != null) {
+            val position = eventsSection.getPosition(group)
+            eventsSection.remove(group)
+            eventsSection.notifyItemRemoved(position)
+            mPresenter.onRemoveCalendarDays(group.data.subEvents)
+        }
+    }
+
+    override fun updateCalendarDays() {
+        val layoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        val lastItem = layoutManager.findFirstCompletelyVisibleItemPosition()
+        try {
+            val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
+            val now =
+                mPresenter.createCalendarDay(
+                    defaultServerDateFormatter.parse(item.date).time
+                )
+            changeDayWhenScrollDown(now)
+            changeDay(now)
+        } catch (e: Exception) {
+
+        }
     }
 
     override fun scrollToDay(day: EventScheduleCalendarDay) {

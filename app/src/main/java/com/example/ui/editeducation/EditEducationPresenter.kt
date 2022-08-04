@@ -1,5 +1,6 @@
 package com.example.ui.editeducation
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
@@ -10,6 +11,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import ru.ok.android.sdk.LOG_TAG
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -49,6 +51,10 @@ class EditEducationPresenter
     }
 
     override fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
+        educationsList?.forEach {
+            Log.e("EDU", it.toString())
+        }
+
         compositeDisposable += userRepository.updateUserEducationScreen(educationLevel, educationsList, degree)
                 .performOnBackgroundOutOnMain()
                 .withLoadingDialog(viewState)

@@ -21,10 +21,10 @@ class CalendarHorizontalListItem(
         DayItem(day, onDaySelect)
     }
 
-
     init {
         adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
         backgroundColor = Color.WHITE
+
     }
 
     fun selectDay(day: EventScheduleCalendarDay) {

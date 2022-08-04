@@ -216,4 +216,15 @@ class AppData(
         userPhoneConfirmedSubject.onNext(false)
         token = null
     }
+
+    fun logoutNew() {
+        isLoggedOut = true
+        user = null
+        appPrefs.userId = -1
+        notificationsCount = 0
+        chatRequestsCount = 0
+        chatUnreadMessageCount = 0
+        userChangeSubject.onNext(Optional(null))
+        userPhoneConfirmedSubject.onNext(false)
+    }
 }

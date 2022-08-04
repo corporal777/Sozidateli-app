@@ -700,7 +700,7 @@
     <string name="user_profile_email_title">Email</string>
     <string name="user_profile_email_hint">Не указано</string>
     <string name="user_profile_privacy_title">Приватность профиля</string>
-    <string name="user_profile_privacy_hidden">Не показывать профиль другим пользователям портала</string>
+    <string name="user_profile_privacy_hidden">   Не показывать профиль другим пользователям портала</string>
     <string name="user_profile_privacy_visible">Показывать профиль другим пользователям портала</string>
     <string name="user_profile_privacy_edit">Изменить</string>
     <string name="user_profile_delete_profile">Удалить профиль</string>
@@ -916,6 +916,7 @@
     <string name="you_logged_out_from">Вы вышли из аккаунтов:</string>
     <string name="remove_from_list">Удалить из списка</string>
     <string name="enter_to_another_account">Войти в другой аккаунт</string>
+    <string name="browser_label">Браузер</string>
 
 
     <string-array name="custom_months">

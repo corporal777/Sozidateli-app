@@ -4,30 +4,34 @@ import com.google.gson.annotations.SerializedName
 
 data class UserSessions(
     @SerializedName("sessions")
-    val userSessions : List<UserSessionModel>
+    val userSessions: List<UserSessionModel>
 )
 
 data class UserSessionModel(
     @SerializedName("userId")
-    val userId : Int,
+    val userId: Int,
     @SerializedName("sessionId")
-    val sessionId : Int,
+    val sessionId: Int,
     @SerializedName("sessionUid")
-    val sessionUid : String,
+    val sessionUid: String,
     @SerializedName("sessionStart")
-    val sessionStart : String,
+    val sessionStart: String,
     @SerializedName("sessionEnd")
-    val sessionEnd : String,
+    val sessionEnd: String,
     @SerializedName("ip")
-    val ipAddress : String,
+    val ipAddress: String,
     @SerializedName("device")
-    val device : String,
+    val device: String,
     @SerializedName("deviceId")
-    val deviceId : String,
+    val deviceId: String,
+    @SerializedName("appVersion")
+    val appVersion: String? = null,
+    @SerializedName("appBuild")
+    val appBuild: String? = null,
     @SerializedName("deviceModel")
-    val deviceModel : String,
+    val deviceModel: String,
     @SerializedName("location")
-    val location : String,
+    val location: String,
     @SerializedName("isLogged")
-    val isLogged : Boolean
+    var isLogged: Boolean
 )

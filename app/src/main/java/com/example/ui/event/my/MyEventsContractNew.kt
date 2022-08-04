@@ -44,7 +44,7 @@ interface MyEventsContractNew {
         )
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)
         fun onShowFiltersClick()

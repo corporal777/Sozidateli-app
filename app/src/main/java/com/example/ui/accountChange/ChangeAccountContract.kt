@@ -10,10 +10,13 @@ import com.example.ui.base.BaseContract
 interface ChangeAccountContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAccounts(users: Map<UserSessionModel, UserDetail>)
+        fun setAccounts(canShow : Boolean, users: Map<UserSessionModel, UserDetail>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUnLoggedAccounts(users: Map<UserSessionModel, UserDetail>)
+        fun setUnLoggedAccounts(canShow : Boolean, users: Map<UserSessionModel, UserDetail>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setLoginToAnotherAccountButton()
 
         @StateStrategyType(SkipStrategy::class)
         fun showMessage(message : String)
@@ -23,10 +26,28 @@ interface ChangeAccountContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showLoginFragment(login : String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showProgressLoading()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideProgressLoading()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun removeLoggedAccount(id : Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun removeUnLoggedAccount(id : Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateAccounts(state : Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun addUnLoggedAccount(state: Boolean, session : UserSessionModel, user : UserDetail)
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
-        fun logoutFromAccount(session: UserSessionModel)
+        fun logoutFromAccount(session: UserSessionModel, userDetail: UserDetail)
         fun switchAccount(session: UserSessionModel, userDetail: UserDetail)
         fun authToAccountClick()
         fun loginToAccountClick(user : UserDetail)

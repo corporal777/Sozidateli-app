@@ -66,16 +66,6 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
         mBinding.apply {
             speakersList.apply {
                 adapter = groupAdapter
-//                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                        mDy += dy
-//                        if (mDy >= 30) {
-//                            appBarLayout.elevation = 10f
-//                        } else {
-//                            appBarLayout.elevation = 0f
-//                        }
-//                    }
-//                })
             }
             ivBack.setOnClickListener {
                 findNavController().navigateUp()

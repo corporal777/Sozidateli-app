@@ -146,23 +146,45 @@
                     android:textSize="15sp"
                     tools:ignore="MissingPrefix" />
 
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/confidence_label" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/scPrivacyProfile"
-                    style="@style/Profile.Edit.Switch"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:text="@string/user_profile_privacy_hidden"
-                    tools:checked="true" />
-
             </LinearLayout>
 
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:text="@string/confidence_label" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp">
+
+                <com.example.ui.views.dialogs_new.CustomCheckView
+                    android:id="@+id/iv_privacy_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="5dp"
+                    android:src="@drawable/drawable_switch"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Profile.Edit.BlockTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/user_profile_privacy_hidden"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_privacy_profile"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.Edit.TextViewTitle"

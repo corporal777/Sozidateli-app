@@ -12,17 +12,17 @@ interface AboutEventContractNew {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setEventData(
-                eventData: EventNew?,
-                pages: List<PageModel>?,
-                members : List<MemberModel>?,
-                partners: List<PartnerModel>?,
-                tags : List<Tag>,
+            eventData: EventNew?,
+            pages: List<PageModel>?,
+            members: List<MemberModel>?,
+            partners: List<PartnerModel>?,
+            tags: List<Tag>,
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
-                event: EventNew?,
-                userRegistration: Event.Status?
+            event: EventNew?,
+            userRegistration: Event.Status?
         )
 
 
@@ -60,7 +60,7 @@ interface AboutEventContractNew {
         fun showSubEvent(eventId: String, subEventId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventActivities(eventId: String, listTags : List<NewTags>)
+        fun showEventActivities(eventId: String, listTags: List<NewTags>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSpeakerProfile(speakerId: Int)
@@ -68,8 +68,11 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showMap(mapInfo: MapInfo?)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(isApproved : Boolean, subEvents: Map<String, List<EventActivityModel>>)
+        fun setSubEvents(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>)
     }
 
     interface Presenter : BaseContract.Presenter {

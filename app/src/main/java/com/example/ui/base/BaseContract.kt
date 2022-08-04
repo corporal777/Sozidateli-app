@@ -64,6 +64,12 @@ interface BaseContract {
         fun hideLoadingDialog()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showCustomProgressDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideCustomProgressDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showProgressBarLoadingDialog()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -71,6 +77,12 @@ interface BaseContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun enableBackClick()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun disableBackClick()
     }
 
     interface Presenter {

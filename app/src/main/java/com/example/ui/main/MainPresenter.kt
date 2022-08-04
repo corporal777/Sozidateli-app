@@ -119,7 +119,6 @@ class MainPresenter
                     isAuthRequired = true
                     viewState.apply {
                         showLogin()
-                        //setStartDestinationAuthFragment()
                         checkIntent()
                     }
                 } else {
@@ -130,7 +129,9 @@ class MainPresenter
 
     var isEditingPhone = false
     private fun loadUser() {
-        if (isAuthRequired) viewState.showLoadingDialog()
+        //if (isAuthRequired) viewState.showLoadingDialog()
+        val loadUser = userRepository.getUserShortNew()
+            .ignoreElement()
         val inApp = userRepository.getInAppList(
             mapOf(
                 NotificationModel.NOTIFICATION_LIMIT to 50,
@@ -141,11 +142,7 @@ class MainPresenter
         ).doOnSuccess { inappList = LinkedList(it) }
             .ignoreElement()
 
-        val loadUser = userRepository.getUserShortNew()
-            //.doOnSuccess { inappList = LinkedList(it.inapps) }
-            .ignoreElement()
-        val loadCalendar = checkUserLocation()
-        compositeDisposable += Completable.merge(listOf(loadUser, loadCalendar, inApp))
+        compositeDisposable += Completable.merge(listOf(loadUser, checkUserLocation(), inApp))
             .andThen(Completable.defer { checkInternetConnected() })
             .andThen(subscribeToNotifications())
             .doOnComplete { connectToSocket(appData.getId()) }
@@ -160,7 +157,6 @@ class MainPresenter
                             showEvent()
                         } else {
                             if (!isFromQr) {
-                                //setStartDestinationRecommendationsFragment()
                                 showRecommendations()
                             } else {
                                 if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {

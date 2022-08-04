@@ -30,29 +30,50 @@ import setOnClickListener
 
 
 class EventActivityItem(
-    val eventId : String,
+    val eventId: String,
     val subEvent: EventActivityModel,
     private val selectedTags: List<Tag>?,
     clickListener: OnEventActivityClickListener?,
-    val canShow: Boolean,
+    private val canShow: Boolean,
 ) : Item(subEvent.id?.toLong() ?: 0) {
 
     private val mClickListener by weak(clickListener)
     private var mIsCollapsed = true
     private val mTime = subEvent.holdingDate?.from
         .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+    private var fullDescription = ""
+
+    private var canShowButton = false
+
+    private val listener by lazy {
+        object : CustomExpandableTextView.TextStateListener {
+            override fun onChangeState(isCollapsed: Boolean) {
+                mIsCollapsed = isCollapsed
+            }
+        }
+    }
+
+    init {
+        canShowButton = canShow
+        val today = System.currentTimeMillis()
+        val subEventDate = defaultServerDateTimeFormatter.parse(subEvent.holdingDate?.to).time
+        if (today > subEventDate){
+            canShowButton = false
+        }
+        fullDescription = StringBuilder(subEvent.description?.replace("\n", " ")).toString()
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvLectureTime.text = mTime
+            tvLectureName.text = subEvent.title
 
-            val fullDescription = StringBuilder(subEvent.description?.replace("\n", " ")).toString()
-            val listener = object : CustomExpandableTextView.TextStateListener {
-                override fun onChangeState(isCollapsed: Boolean) {
-                    mIsCollapsed = isCollapsed
-                }
+            auditoryContainer.apply {
+                isVisible = !subEvent.binds?.auditorium?.name.isNullOrEmpty()
+                tvLectureAuditory.text = subEvent.binds?.auditorium?.name
             }
+
             var isAdded = false
             if (!isAdded) {
                 isAdded = true
@@ -106,14 +127,8 @@ class EventActivityItem(
 //
 //            }
 
-            tvLectureName.text = subEvent.title
 
-            auditoryContainer.apply {
-                isVisible = !subEvent.binds?.auditorium?.name.isNullOrEmpty()
-                tvLectureAuditory.text = subEvent.binds?.auditorium?.name
-            }
-
-            decorActionButton(btnAddToTimetable, subEvent)
+            decorActionButton(canShowButton, btnAddToTimetable, subEvent)
 
             tagGroup.apply {
                 val createChip: (Tag) -> CompoundButton = {
@@ -145,7 +160,11 @@ class EventActivityItem(
         }
     }
 
-    private fun decorActionButton(button: AppCompatButton, mSubEvent: EventActivityModel) {
+    private fun decorActionButton(
+        canShow: Boolean,
+        button: AppCompatButton,
+        mSubEvent: EventActivityModel
+    ) {
         button.apply {
             isVisible = canShow
             if (mSubEvent.binds?.userCalendar != null) {
@@ -181,7 +200,7 @@ class EventActivityItem(
         if (payload == null) super.bind(viewHolder, position, payloads)
         else {
             if (payload is EventActivityModel) {
-                decorActionButton(viewHolder.btnAddToTimetable, payload)
+                decorActionButton(canShowButton, viewHolder.btnAddToTimetable, payload)
             }
         }
 

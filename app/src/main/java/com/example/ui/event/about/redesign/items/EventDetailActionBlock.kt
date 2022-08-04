@@ -39,35 +39,25 @@ class EventDetailActionBlock(
     init {
         val limitDate = eventData?.requestsApply?.dateLimit
             ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
-        val startRequestDate = eventData?.requestsApply?.dateFrom
-            ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
 
-        if (!eventData?.requestsApply?.dateFrom.isNullOrEmpty()) {
-            val mToday = Date()
-            val mStartDate = defaultServerDateFormatter.parse(eventData?.requestsApply?.dateFrom)
-            //val mDay = ChronoUnit.DAYS.between(mStartDate.toInstant(), mToday.toInstant())
+        val requestDate = eventData?.requestsApply?.dateFrom
+        if (!requestDate.isNullOrEmpty()) {
+            val mToday = System.currentTimeMillis()
+            val mStartReq =
+                defaultServerDateTimeFormatter.parse(eventData?.requestsApply?.dateFrom).time
 
-            val mTodayCal = Calendar.getInstance(Locale.getDefault())
-            val mStartCal =
-                defaultServerDateFormatter.parse(eventData?.requestsApply?.dateFrom).calendar()
-
-            mDate = if (mStartCal.timeInMillis > mTodayCal.timeInMillis) {
-                val day = daysBetween(mTodayCal.time, mStartCal.time)
+            if (mStartReq > mToday) {
+                val day = daysBetweenNew(mToday, mStartReq)
                 mCanShowDate = true
-                "До начала приема заявок $day дней"
+                mDate = "До начала приема заявок $day дней"
             } else {
-                if (!limitDate.isNullOrEmpty()) {
-                    mCanShowDate = true
-                }
-                "Заявки принимаются по $limitDate"
+                mCanShowDate = !limitDate.isNullOrEmpty()
+                mDate = "Заявки принимаются по $limitDate"
             }
-        } else {
-            if (!limitDate.isNullOrEmpty()) {
-                mCanShowDate = true
-            }
+        }else {
+            mCanShowDate = !limitDate.isNullOrEmpty()
             mDate = "Заявки принимаются по $limitDate"
         }
-
     }
 
     override fun bind(viewBinding: ItemEventDetailActionBlockBinding, position: Int) {
@@ -255,6 +245,14 @@ class EventDetailActionBlock(
 
     private fun daysBetween(d1: Date, d2: Date): Int {
         return ((d2.time - d1.time) / (1000 * 60 * 60 * 24)).toInt()
+    }
+
+    private fun daysBetweenNew(d1: Long, d2: Long): Int {
+        var days = 0
+        for (i in d1..d2 step 86400000) {
+            days++
+        }
+        return days
     }
 
 }

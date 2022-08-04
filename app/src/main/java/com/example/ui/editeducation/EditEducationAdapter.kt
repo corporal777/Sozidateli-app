@@ -209,26 +209,17 @@ class EditEducationAdapter(
                     isDataValidd(getItem(holder.adapterPosition))
                     //validateEnableButton()
                 }
-                val selectedVariant = getItem(holder.adapterPosition).education?.speciality
-                val notSelectedVariant = holder.itemView.context.getString(R.string.profile_educate_speciality)
-                initDropDownView(holderEduc.binding.etSpeciality,
-                    getSpeciality(),
-                    selectedVariant,
-                    null,
-                    { it },
-                    { it },
-                    {
-                        getItem(holder.adapterPosition).education?.speciality = it
-                        isDataValidd(getItem(holder.adapterPosition))
-                    })
-//                holderEduc.binding.etSpeciality.isEnabled = true
-//                holderEduc.binding.tilSpeciality.isEnabled = true
-//                holderEduc.binding.etSpeciality.initInput(getItem(holder.adapterPosition).education?.speciality) {
-//                    holderEduc.binding.tilSpeciality.error = null
-//                    getItem(holder.adapterPosition).education?.speciality = it.toString()
-//                    isDataValidd(getItem(holder.adapterPosition))
-//                    //validateEnableButton()
-//                }
+                holderEduc.binding.etSpeciality.initInput(getItem(holder.adapterPosition).education?.speciality) {
+                    holderEduc.binding.tilSpeciality.error = null
+                    if (it.toString().isNullOrEmpty()) {
+                        getItem(holder.adapterPosition).education?.speciality = ""
+                    } else {
+                        getItem(holder.adapterPosition).education?.speciality = it.toString()
+                    }
+
+                    isDataValidd(getItem(holder.adapterPosition))
+                    //validateEnableButton()
+                }
                 holderEduc.binding.scEducation.initSwitch(
                     getItem(holder.adapterPosition).education?.showInProfile ?: false
                 ) {
@@ -294,14 +285,12 @@ class EditEducationAdapter(
                 else
                     resources.getString(R.string.profile_educate_institution_empty_error)
             }
-            if (!isSpecialityValid(item.education?.speciality)) holder.tilSpeciality.apply {
-                error = if ((item.education?.speciality?.length
-                        ?: 0) < 4 && (item.education?.speciality?.length ?: 0) > 0
-                )
-                    resources.getString(R.string.five_letters_error)
-                else
-                    resources.getString(R.string.enter_specialty)
-            }
+//            if (!isSpecialityValid(item.education?.speciality)) holder.tilSpeciality.apply {
+//                error = if ((item.education?.speciality?.length?: 0) < 4 && (item.education?.speciality?.length?: 0) > 0)
+//                    resources.getString(R.string.five_letters_error)
+//                else
+//                    resources.getString(R.string.enter_specialty)
+//            }
         }
     }
 
@@ -321,9 +310,9 @@ class EditEducationAdapter(
         if (!isOrganizationValid(item.education?.organization)) {
             isValid = false
         }
-        if (!isSpecialityValid(item.education?.speciality)) {
-            isValid = false
-        }
+//        if (!isSpecialityValid(item.education?.speciality)) {
+//            isValid = false
+//        }
         item.isDataValid = isValid
         validateEnableButton()
     }
@@ -452,24 +441,6 @@ class EditEducationAdapter(
     }
 
     private fun isTrigger(text: String?) = text == "Более одного высшего" || text == "Высшее"
-
-    private fun getSpeciality(): List<String> {
-        return arrayListOf(
-            "Архитектура",
-            "Ветеринарные",
-            "Географические",
-            "Искусствоведение",
-            "Культурология",
-            "Медицинские",
-            "Педагогические",
-            "Политические",
-            "Психологические",
-            "Социологические",
-            "Теология",
-            "Фармацевтические",
-            "Юридические"
-        )
-    }
 }
 
 class EditEducationDiffCallback : DiffUtil.ItemCallback<EditEducationModel>() {

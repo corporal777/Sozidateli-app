@@ -21,6 +21,7 @@ import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
@@ -83,6 +84,14 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun enableBackClick() {
+        mActivity?.enableBackClick()
+    }
+
+    override fun disableBackClick() {
+        mActivity?.disableBackClick()
+    }
+
     override fun showLoadingDialog() {
         mActivity?.showLoadingDialog()
     }
@@ -101,6 +110,14 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
 
     override fun hideAllLoadingDialogs() {
         mActivity?.hideAllLoadingDialogs()
+    }
+
+    override fun showCustomProgressDialog() {
+        mActivity?.showCustomProgressDialog()
+    }
+
+    override fun hideCustomProgressDialog() {
+        mActivity?.hideCustomProgressDialog()
     }
 
     override fun hideKeyboard() {
@@ -227,6 +244,7 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
         mBinding.unbind()
         hideKeyboard()
         hideAllLoadingDialogs()
+        hideCustomProgressDialog()
     }
 
     class PermissionsParams {

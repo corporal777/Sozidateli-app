@@ -85,17 +85,6 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
                 onScrolled { dx, dy ->
                     presenter.changeAppBarElevation(dy)
                 }
-//                setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-//                    mDy += scrollY - oldScrollY
-//                    val mElevation = abs(mDy / 10f)
-//                    appBar.apply {
-//                        elevation = if (mElevation <= 10f) {
-//                            mElevation
-//                        } else {
-//                            10f
-//                        }
-//                    }
-//                }
             }
 
             ivBack.setOnClickListener {
@@ -153,8 +142,8 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
                     presenter.isCurrentUser(),
                     speaker.binds?.user,
                     speaker.binds?.user?.nameLastName ?: "",
-                    speaker.binds?.user?.address?.city ?: "",
-                    speaker.organizationAndPosition,
+                    speaker.organizationAndPosition ?: "",
+                    speaker.description,
                     speaker.binds?.user?.image?.uri,
                     speaker.status ?: "",
                     speaker.binds?.user?.state?.isRegistered ?: false

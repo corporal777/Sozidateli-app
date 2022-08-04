@@ -31,15 +31,64 @@ class SessionBottomSheet(
 
     private var mDialog = BottomSheetDialog(context)
 
+    private var deviceName = ""
+    private var deviceIp = ""
+    private var deviceLocation = ""
+
     init {
+        if (session != null) {
+            deviceIp = if (!session.ipAddress.isNullOrEmpty()) {
+                session.ipAddress
+            } else {
+                "IP адрес не определен"
+            }
+            deviceLocation =
+                if (session.location.isNullOrEmpty() || session.location.contains("Location not defined")) {
+                    "Не определено"
+                } else {
+                    session.location
+                }
+
+            deviceName = if (!session.device.isNullOrEmpty()) {
+                if (session.device.contains("iOS", true) || session.device.contains("android", true)
+                ) {
+                    if (!session.appVersion.isNullOrEmpty()) {
+                        session.device + " " + session.appVersion + " (" + session.appBuild + ")"
+                    } else {
+                        session.device
+                    }
+                } else {
+                    session.device
+                }
+            } else {
+                if (session.deviceModel.contains("iphone", true)) {
+                    "Созидатели iOS"
+                } else {
+                    "Устройство не определено"
+                }
+            }
+
+
+        }
+
         mDialog.setContentView(mBinding.root)
 
 
         mBinding.apply {
-            tvDevice.text = session.device
-            tvIpAddress.text = session.ipAddress
-            tvLocation.text = session.location
-            decorDeviceIcon(ivDeviceIcon, session.device)
+            if (deviceName.contains("iOS", true) || deviceName.contains("android", true)) {
+                tvDeviceType.text = context.getString(R.string.app_label)
+            } else {
+                if (session.deviceModel.contains("iphone", true)) {
+                    tvDeviceType.text = context.getString(R.string.app_label)
+                } else {
+                    tvDeviceType.text = context.getString(R.string.browser_label)
+                }
+            }
+            tvDevice.text = deviceName
+            tvIpAddress.text = deviceIp
+            tvLocation.text = deviceLocation
+
+            decorDeviceIcon(ivDeviceIcon, session)
             if (getDeviceId(context) == session.deviceId) {
                 tvActionKill.text = context.getString(R.string.kill_all_other_sessions)
             } else {
@@ -60,15 +109,22 @@ class SessionBottomSheet(
     }
 
 
-    private fun decorDeviceIcon(icon: ImageView, device: String) {
-        if (device.contains("android", true)) {
-            icon.setImageResource(R.drawable.ic_android_device)
-        } else if (device.contains("ios", true)) {
-            icon.setImageResource(R.drawable.ic_apple_device)
+    private fun decorDeviceIcon(icon: ImageView, session: UserSessionModel) {
+        if (session.device.isNullOrEmpty()) {
+            if (session.deviceModel.contains("iphone", true)) {
+                icon.setImageResource(R.drawable.ic_apple_device)
+            } else {
+                icon.setImageResource(R.drawable.ic_desktop_device)
+            }
         } else {
-            icon.setImageResource(R.drawable.ic_desktop_device)
+            if (session.device.contains("android", true)) {
+                icon.setImageResource(R.drawable.ic_android_device)
+            } else if (session.device.contains("ios", true)) {
+                icon.setImageResource(R.drawable.ic_apple_device)
+            } else {
+                icon.setImageResource(R.drawable.ic_desktop_device)
+            }
         }
-
     }
 
 //    fun onKillDeviceSession(block: (session: UserSessionModel) -> Unit): SessionBottomSheet {

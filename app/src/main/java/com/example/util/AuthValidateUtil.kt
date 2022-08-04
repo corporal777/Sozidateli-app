@@ -15,9 +15,14 @@ object AuthValidateUtil {
                     ")+"
     )
 
+    private val PHONE_PATTERN = Pattern.compile(
+        "^[0-9\\+]+$"
+    )
+
     private val PASSWORD_PATTERN = Pattern.compile("^.{6,}\$")
 
     fun isValidEmail(email: CharSequence) = EMAIL_PATTERN.matcher(email).matches()
+    fun isDigits(email: CharSequence) = PHONE_PATTERN.matcher(email).matches()
 
     fun isValidPassword(password: CharSequence) = PASSWORD_PATTERN.matcher(password).matches()
 

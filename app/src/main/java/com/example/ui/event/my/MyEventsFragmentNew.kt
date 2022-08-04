@@ -13,6 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
+import com.example.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
 import com.example.holders.EventStatusItem
 import com.example.holders.NoDataItem
@@ -21,6 +22,7 @@ import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.my.items.NoEventItem
 import com.example.ui.event.my.items.SearchEventItem
@@ -41,16 +43,16 @@ import kotlinx.android.synthetic.main.fragment_my_events.*
 import kotlinx.android.synthetic.main.fragment_my_events.swipeToRefresh
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import kotlinx.android.synthetic.main.layout_list.*
+import onScrolled
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
+class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEventsContractNew.View {
 
     @InjectPresenter
     lateinit var presenter: MyEventsPresenterNew
 
-    private var mDy = 0
     private var mFilterDialog: BottomSheetDialog? = null
     private var mFilterView: View? = null
 
@@ -105,26 +107,18 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        eventsList.apply {
-            adapter = groupAdapter
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    mDy += dy
-                    if (mDy >= 30) {
-                        appBarLayout.elevation = 10f
-                    } else {
-                        appBarLayout.elevation = 0f
-                    }
+        mBinding.apply {
+            eventsList.apply {
+                adapter = groupAdapter
+                onScrolled { _, dy ->
+                    presenter.changeAppBarElevation(dy)
                 }
-            })
+            }
+            btnGoToMyTimeTable.setOnClickListener {
+                showMyScheduleEvents()
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
-
-        btnGoToMyTimeTable.setOnClickListener {
-            showMyScheduleEvents()
-        }
-
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(data: List<EventNew?>) {
@@ -135,7 +129,7 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
                 onEventClickListener,
             )
         })
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
 
@@ -196,7 +190,7 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
                 )
             )
         )
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showAboutEvent(event: String) {
@@ -393,12 +387,16 @@ class MyEventsFragmentNew : BaseFragment(), MyEventsContractNew.View {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (eventsList != null) {
-            mDy += eventsList.scrollY
+    override fun setAppBarElevation(value: Float) {
+        mBinding.appBarLayout.apply {
+            elevation = if (value <= 10f) {
+                value
+            } else {
+                10f
+            }
         }
     }
+
 
     override fun layout(): Int = R.layout.fragment_my_events
 }

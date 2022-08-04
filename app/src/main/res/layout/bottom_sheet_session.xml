@@ -96,6 +96,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/tv_device_type"
                     fontPath="fonts/sf_pro_text.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

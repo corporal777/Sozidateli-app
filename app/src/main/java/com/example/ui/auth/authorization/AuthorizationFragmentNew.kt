@@ -11,6 +11,7 @@ import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
 import com.example.interfaces.BackgroundImageFragment
+import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.FinishRegisterDialog
 import com.example.util.AuthBackground
@@ -42,23 +43,17 @@ class AuthorizationFragmentNew : BaseFragmentNew<FragmentAuthorizationBinding>()
     }
 
     override fun showLogin() {
-        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction(""))
+        findNavController().navigate(
+            R.id.login_fragment,
+            LoginFragmentArgs.Builder("").build().toBundle()
+        )
     }
 
     override fun showEmailRegistration() {
-        //if (BuildConfig.NEW_PROFILE_EDIT) {
-        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
-        /*} else {
-            findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
-        }*/
+        findNavController().navigate(R.id.register_email_new_fragment)
     }
 
     override fun showSnRegistration(snUser: SnUser) {
-        findNavController().navigate(
-            AuthorizationFragmentDirections.authorizationFragmentToRegisterSnFragment(
-                snUser
-            )
-        )
     }
 
     override fun getFragmentBackgroundDrawable(): Drawable? {

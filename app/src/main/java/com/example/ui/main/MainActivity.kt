@@ -86,6 +86,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
+    private var mCanGoBack = true
+
     @Inject
     lateinit var presenterProvider: Provider<MainPresenter>
 
@@ -228,7 +230,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                 finish()
             } else {
-                navContr.navigateUp()
+                if (mCanGoBack)
+                    navContr.navigateUp()
             }
         }
     }
@@ -251,15 +254,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 //                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 //            )
 //        }
-        val progressBar = CustomProgressView(this@MainActivity)
-        progressBar.setSize(35.dp)
-        progressBar.setProgressColor(
-            ContextCompat.getColor(
-                this@MainActivity,
-                R.color.main_brown_color_new
-            )
-        )
-        mBinding.progressViewContainer.addView(progressBar, 0)
 
         IS_EXPANDED = true
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
@@ -989,6 +983,31 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun getProgressBarLoadingView(): View {
         mBinding.progressWhiteBackground.isVisible = false
         return mBinding.flLoading
+    }
+
+    override fun addProgressView() {
+        val progressBar = CustomProgressView(this@MainActivity)
+        progressBar.setSize(35.dp)
+        progressBar.setProgressColor(
+            ContextCompat.getColor(
+                this@MainActivity,
+                R.color.main_brown_color_new
+            )
+        )
+        mBinding.progressViewContainer.addView(progressBar, 0)
+    }
+
+    override fun enableBackClickListener() {
+        mCanGoBack = true
+    }
+
+    override fun disableBackClickListener(){
+        mCanGoBack = false
+    }
+
+
+    override fun removeProgressView() {
+        mBinding.progressViewContainer.removeAllViews()
     }
 
     override fun layout() = R.layout.activity_main

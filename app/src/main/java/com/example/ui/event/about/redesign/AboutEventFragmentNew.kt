@@ -8,6 +8,8 @@ import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +35,8 @@ import com.example.ui.subevent.SubEventFragmentArgs
 
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -317,6 +321,15 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             R.id.request_fragment,
             EventRegistrationFragmentArgs.Builder(event).build().toBundle()
         )
+    }
+
+    override fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String) {
+        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
+            if (withResult) {
+                setFragmentResult("eventKey", bundleOf("eventId" to eventId))
+            }
+            findNavController().navigateUp()
+        }
     }
 
 

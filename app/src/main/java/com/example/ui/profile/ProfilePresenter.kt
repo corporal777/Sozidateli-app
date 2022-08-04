@@ -14,18 +14,21 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
+import withDelay
 import withLoadingDialog
 import java.lang.Exception
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class ProfilePresenter
 @Inject constructor(
-        private val userRepository: UserRepository,
-        private val appData: AppData,
-        private val socket: SocketIOManager,
-        private val notificationManager: NotificationManager,
-        private val authRepository: AuthRepository
+    private val userRepository: UserRepository,
+    private val appData: AppData,
+    private val socket: SocketIOManager,
+    private val notificationManager: NotificationManager,
+    private val authRepository: AuthRepository
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     private var mDy = 0
@@ -34,30 +37,30 @@ class ProfilePresenter
         super.onFirstViewAttach()
         viewState.setAppBarElevation(0f)
         compositeDisposable += userRepository.getUserShortNew()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.setUser(it)
-                    getAdditionalData()
-                }, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.setUser(it)
+                getAdditionalData()
+            }, { it.printStackTrace() })
 
     }
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
         viewState.setUserState(appData.hasBaseState, appData.hasMaxState)
         try {
             viewState.setUser(appData.getUserNew())
         } catch (e: Exception) {
             compositeDisposable += userRepository.getUserShortNew()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        viewState.setUser(appData.getUserNew())
-                    }, { it.printStackTrace() })
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    viewState.setUser(appData.getUserNew())
+                }, { it.printStackTrace() })
         }
     }
 
-    fun changeScrollingOffset(value : Int){
+    fun changeScrollingOffset(value: Int) {
         mDy += value
         viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
@@ -85,20 +88,25 @@ class ProfilePresenter
 
     override fun onLogoutClick() {
         compositeDisposable += userRepository.logout(appData.getId())
-                .doOnComplete {
-                    appData.isSubscribedToPush = false
-                    socket.disconnectFromSocket()
-                    appData.logout()
-                    notificationManager.cancelAll()
+            .withDelay(500)
+            .doOnComplete {
+                appData.isSubscribedToPush = false
+                socket.disconnectFromSocket()
+                appData.logout()
+                notificationManager.cancelAll()
+            }
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            //.withLoadingDialog(viewState)
+            .subscribeBy(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showRequestErrorMessage()
+                },
+                onComplete = {
+
                 }
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            it.printStackTrace()
-                            viewState.showRequestErrorMessage()
-                        }
-                )
+            )
         /*compositeDisposable += userRepository.getFcmToken()
                 .flatMapCompletable { userRepository.notificationsUnregister(it.token) }
                 .doOnComplete {
@@ -119,49 +127,49 @@ class ProfilePresenter
 
     private fun getAdditionalData() {
         compositeDisposable += userRepository.getEducationLevel()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
 
         compositeDisposable += userRepository.getSpeciality()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
 
         compositeDisposable += userRepository.getAcademicDegrees()
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({}, { it.printStackTrace() })
     }
 
     override fun sendEmail(email: String) {
         compositeDisposable += authRepository.registerEmailResend(email)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.hideDialogProgress()
-                    appData.updateUserNew {
-                        this.email = FieldDetails(email, null, true, false, false, null)
-                    }
-                    viewState.emailSuccess()
-                }, {
-                    viewState.hideDialogProgress()
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.hideDialogProgress()
+                appData.updateUserNew {
+                    this.email = FieldDetails(email, null, true, false, false, null)
+                }
+                viewState.emailSuccess()
+            }, {
+                viewState.hideDialogProgress()
+                it.printStackTrace()
+            })
     }
 
     override fun checkEmailIsUnique(email: String) {
         compositeDisposable += userRepository.checkEmailPhone(email, null)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ sendEmail(email) },
-                        { viewState.showEmailNotUnique(email) })
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({ sendEmail(email) },
+                { viewState.showEmailNotUnique(email) })
     }
 
     override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ sendPhone(phone) },
-                        { viewState.showPhoneNotUnique(phone) })
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({ sendPhone(phone) },
+                { viewState.showPhoneNotUnique(phone) })
     }
 
     override fun onQrScannerToAuthWebClick() {
@@ -170,26 +178,26 @@ class ProfilePresenter
 
     override fun sendPhone(phone: String) {
         compositeDisposable += authRepository.registerPhoneResend("personal", phone)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.hideDialogProgress()
-                    viewState.phoneSuccess(phone)
-                }, {
-                    viewState.hideDialogProgress()
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.hideDialogProgress()
+                viewState.phoneSuccess(phone)
+            }, {
+                viewState.hideDialogProgress()
+                it.printStackTrace()
+            })
     }
 
     override fun confirmCode(phone: String, code: String) {
         compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.hideDialogProgress()
-                    viewState.codeSuccess()
-                }, {
-                    viewState.hideDialogProgress()
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.hideDialogProgress()
+                viewState.codeSuccess()
+            }, {
+                viewState.hideDialogProgress()
+                it.printStackTrace()
+            })
     }
 
     override fun onSettingsClick() {

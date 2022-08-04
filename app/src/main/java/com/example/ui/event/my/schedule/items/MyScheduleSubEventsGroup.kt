@@ -84,6 +84,15 @@ class MyScheduleSubEventsGroup(
         }
     }
 
+    fun getEventId(): String {
+        return data.eventId
+    }
+
+    fun getFirstItemDate() : String? {
+        return (mHeaderItem.getItem(0) as EventActivityDateItem).date
+
+    }
+
     override fun getGroupCount() = 2
 
 }

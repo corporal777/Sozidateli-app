@@ -2,6 +2,8 @@ package com.example.ui.accountChange
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -9,21 +11,20 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
-import com.example.holders.redesign.ScreenHeaderItem
-import com.example.ui.accountChange.items.AccountItem
-import com.example.ui.accountChange.items.LoginButtonItem
-import com.example.ui.accountChange.items.LogoItem
-import com.example.ui.accountChange.items.UnLoggedAccountsHeader
+import com.example.extensions.dp
+import com.example.extensions.findGroupBy
+import com.example.extensions.forEachGroups
+import com.example.holders.CalendarHorizontalListItem
+import com.example.ui.accountChange.items.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.profile.ProfileFragmentArgs
-import com.example.ui.profile.ProfilePresenter
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.dialogs_new.ChangeAccountBottomDialog
+import com.example.ui.views.CustomProgressView
+import com.example.ui.accountChange.items.ChangeAccountBottomDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.getDeviceId
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -70,34 +71,32 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         mBinding.accountsList.apply {
             startPostponedEnterTransition()
             adapter = groupAdapter
+            onScrolled { _, dy ->
+                presenter.changeAppBarElevation(dy)
+            }
         }
     }
 
-    override fun setAccounts(users: Map<UserSessionModel, UserDetail>) {
+    override fun setAccounts(canShow: Boolean, users: Map<UserSessionModel, UserDetail>) {
         accountsSection.update(
             users.map { x ->
-                AccountItem(presenter.getUserId(), x.value, {
-                    showDialog(
-                        presenter.isCurrentUser(it.id.toString()),
-                        x.key
-                    )
+                AccountItem(canShow, x.key, presenter.getUserId(), x.value, {
+                    showChangeDialog(x.key, x.value)
                 }, {
                     presenter.switchAccount(x.key, it)
                 })
             }
         )
-        loginButtonSection.update(listOf(LoginButtonItem {
-            presenter.authToAccountClick()
-        }))
+
     }
 
-    override fun setUnLoggedAccounts(users: Map<UserSessionModel, UserDetail>) {
+    override fun setUnLoggedAccounts(canShow: Boolean, users: Map<UserSessionModel, UserDetail>) {
         unLoggedAccountsSection.update(
             users.map { m ->
-                AccountItem(presenter.getUserId(), m.value, {
-                    showDialog(
-                        presenter.isCurrentUser(it.id.toString()),
-                        m.key
+                AccountItem(canShow, m.key, presenter.getUserId(), m.value, {
+                    showKillDialog(
+                        m.key,
+                        m.value
                     )
                 }, {
                     presenter.loginToAccountClick(it)
@@ -105,6 +104,17 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
             }
         )
     }
+
+    override fun setLoginToAnotherAccountButton() {
+        loginButtonSection.update(listOf(LoginButtonItem {
+            presenter.authToAccountClick()
+        }))
+    }
+
+    override fun removeLoggedAccount(id: Int) {}
+    override fun removeUnLoggedAccount(id: Int) {}
+    override fun updateAccounts(state: Boolean) {}
+    override fun addUnLoggedAccount(state: Boolean, session: UserSessionModel, user: UserDetail) {}
 
     override fun showMessage(message: String) {
         showToast(message)
@@ -120,21 +130,53 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         )
     }
 
-    private fun showDialog(isCurrentUser: Boolean, session: UserSessionModel) {
-        val dialog = ChangeAccountBottomDialog(
-            isCurrentUser,
-            session
+    private fun showChangeDialog(session: UserSessionModel, user: UserDetail) {
+        val dialog = ChangeAccountBottomDialog(session, user)
+        dialog.show(requireActivity().supportFragmentManager, "dialog")
+        dialog.setLogoutCallback { s ->
+            presenter.logoutFromAccount(s.first, s.second)
+        }
+        dialog.setLogoutAndKillCallback { s ->
+            presenter.logoutFromAccountAndKill(s)
+        }
+    }
+
+    private fun showKillDialog(session: UserSessionModel, user: UserDetail) {
+        val dialog = KillAccountBottomDialog(
+            session,
+            user
         )
         dialog.show(requireActivity().supportFragmentManager, "dialog")
         dialog.setKillCallback { s ->
             presenter.killSession(s)
         }
-        dialog.setLogoutCallback { s ->
-            presenter.logoutFromAccount(s)
+    }
+
+    override fun showProgressLoading() {
+        val progressBar = CustomProgressView(requireContext())
+        progressBar.setSize(35.dp)
+        progressBar.setProgressColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.main_brown_color_new
+            )
+        )
+        mBinding.progressContainer.apply {
+            isVisible = true
+            addView(progressBar, 0)
         }
-        dialog.setLogoutAndKillCallback { s ->
-            presenter.logoutFromAccountAndKill(s)
+    }
+
+    override fun hideProgressLoading() {
+        mBinding.progressContainer.apply {
+            isVisible = false
+            removeAllViews()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hideProgressLoading()
     }
 
     override fun layout(): Int = R.layout.fragment_change_account

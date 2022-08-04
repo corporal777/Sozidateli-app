@@ -64,13 +64,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         mBinding.apply {
             profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
-//                appBarLayout.apply {
-//                    elevation = if (mElevation <= 10f) {
-//                        mElevation
-//                    } else {
-//                        10f
-//                    }
-//                }
             })
 
             ivAvatar.apply {

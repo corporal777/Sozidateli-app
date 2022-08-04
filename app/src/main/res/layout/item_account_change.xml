@@ -102,7 +102,7 @@
             android:id="@+id/iv_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_text_background_selectable"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="5dp"
             android:src="@drawable/ic_account_menu"
             app:layout_constraintBottom_toBottomOf="parent"

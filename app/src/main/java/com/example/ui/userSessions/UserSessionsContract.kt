@@ -20,7 +20,7 @@ interface UserSessionsContract {
         fun setOtherSessions(sessions: List<UserSessionModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setCurrentSession(session: UserSessionModel)
+        fun setCurrentSession(session: UserSessionModel?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSessionsLoadingPlaceholder()
@@ -38,7 +38,7 @@ interface UserSessionsContract {
         fun showSessionBottomSheetDialog(session: UserSessionModel)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun killAllSessionsClick()
         fun killUsersDeviceSessionClick(id: Int)
         fun showSessionClick(session: UserSessionModel)

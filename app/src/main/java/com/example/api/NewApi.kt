@@ -238,7 +238,7 @@ interface NewApi {
     fun getOrganizationMembersWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationMemberModel>>>
 
     @GET("v1/user")
-    fun getUsers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UserDetail?>?>>
+    fun getUsers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UserDetail>?>>
 
     @PATCH("v1/user/{id}/unblock")
     fun unblockUser(@Path("id") id : Int): Completable
@@ -288,6 +288,9 @@ interface NewApi {
 
     @PATCH("v1/user-notification/{id}/acknowledge")
     fun markAsRead(@Path("id") notificationId: String): Completable
+
+    @GET("v1/user-external-invite/assistance/{id}")
+    fun getInviteAssistanceDetail(@Path("id") assistanceId: String): Single<InviteDetail>
 
     @PATCH("v1/organization-member/{id}/approve")
     fun approveOrgMember(@Path("id") orgMemberId: String, @Body body: ApproveBody): Completable

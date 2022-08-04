@@ -160,3 +160,4 @@ data class NotificationEventInfo(
     val name: String?,
     val link: String?
 ) : Parcelable
+
